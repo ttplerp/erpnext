@@ -30,6 +30,7 @@
   "auto_create_assets",
   "is_grouped_asset",
   "asset_category",
+  "asset_sub_category",
   "asset_naming_series",
   "over_delivery_receipt_allowance",
   "over_billing_allowance",
@@ -133,11 +134,9 @@
    "bold": 1,
    "fieldname": "item_code",
    "fieldtype": "Data",
-   "in_global_search": 1,
    "label": "Item Code",
    "oldfieldname": "item_code",
    "oldfieldtype": "Data",
-   "reqd": 1,
    "unique": 1
   },
   {
@@ -903,6 +902,14 @@
    "fieldname": "accounting",
    "fieldtype": "Tab Break",
    "label": "Accounting"
+  },
+  {
+   "depends_on": "is_fixed_asset",
+   "fieldname": "asset_sub_category",
+   "fieldtype": "Link",
+   "label": "Asset Sub Category",
+   "mandatory_depends_on": "is_fixed_asset",
+   "options": "Asset Sub Category"
   }
  ],
  "icon": "fa fa-tag",
@@ -911,7 +918,7 @@
  "index_web_pages_for_search": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2022-09-13 04:08:17.431731",
+ "modified": "2022-11-14 11:43:36.656390",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",
@@ -975,7 +982,6 @@
    "share": 1
   }
  ],
- "quick_entry": 1,
  "search_fields": "item_name,description,item_group,customer_code",
  "show_name_in_global_search": 1,
  "show_preview_popup": 1,
