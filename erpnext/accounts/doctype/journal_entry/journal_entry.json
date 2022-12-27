@@ -9,21 +9,26 @@
  "engine": "InnoDB",
  "field_order": [
   "entry_type_and_date",
+  "business_activity",
+  "branch",
   "title",
   "voucher_type",
   "naming_series",
   "finance_book",
   "process_deferred_accounting",
   "reversal_of",
-  "tax_withholding_category",
   "column_break1",
   "from_template",
   "company",
   "posting_date",
   "apply_tds",
+  "tax_withholding_category",
   "2_add_edit_gl_entries",
   "accounts",
+  "tds_table",
   "section_break99",
+  "use_cheque_lot",
+  "cheque_lot",
   "cheque_no",
   "cheque_date",
   "user_remark",
@@ -99,7 +104,7 @@
    "no_copy": 1,
    "oldfieldname": "naming_series",
    "oldfieldtype": "Select",
-   "options": "ACC-JV-.YYYY.-",
+   "options": "Journal Voucher\nBank Payment Voucher\nBank Receipt Voucher\nCash Receipt Voucher\nCash Payment Voucher\nContra Entry\nMaintenance Invoice",
    "print_hide": 1,
    "reqd": 1,
    "set_only_once": 1
@@ -268,7 +273,7 @@
   },
   {
    "fieldname": "total_amount_in_words",
-   "fieldtype": "Data",
+   "fieldtype": "Small Text",
    "hidden": 1,
    "label": "Total Amount in Words",
    "no_copy": 1,
@@ -508,16 +513,15 @@
    "depends_on": "eval:doc.apply_tds",
    "fieldname": "tax_withholding_category",
    "fieldtype": "Link",
-   "label": "Tax Withholding Category",
+   "label": "Tax Category",
    "mandatory_depends_on": "eval:doc.apply_tds",
    "options": "Tax Withholding Category"
   },
   {
    "default": "0",
-   "depends_on": "eval:['Credit Note', 'Debit Note'].includes(doc.voucher_type)",
    "fieldname": "apply_tds",
    "fieldtype": "Check",
-   "label": "Apply Tax Withholding Amount "
+   "label": "Apply Tax Amount "
   },
   {
    "depends_on": "eval:doc.docstatus",
@@ -533,13 +537,52 @@
    "label": "Process Deferred Accounting",
    "options": "Process Deferred Accounting",
    "read_only": 1
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.voucher_type == \"Bank Entry\"",
+   "fieldname": "use_cheque_lot",
+   "fieldtype": "Check",
+   "label": "Use Cheque Lot"
+  },
+  {
+   "depends_on": "use_cheque_lot",
+   "fieldname": "cheque_lot",
+   "fieldtype": "Link",
+   "label": "Cheque Lot",
+   "options": "Cheque Lot"
+  },
+  {
+   "fieldname": "business_activity",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Business Activity",
+   "options": "Business Activity"
+  },
+  {
+   "fieldname": "tds_table",
+   "fieldtype": "HTML",
+   "label": "TDS Table",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 176,
  "is_submittable": 1,
- "links": [],
- "modified": "2022-06-23 22:01:32.348337",
+ "links": [
+  {
+   "link_doctype": "Asset Value Adjustment",
+   "link_fieldname": "journal_entry"
+  }
+ ],
+ "modified": "2022-11-18 12:05:10.610995",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",
