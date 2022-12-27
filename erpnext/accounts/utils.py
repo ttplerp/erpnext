@@ -124,7 +124,9 @@ def get_fiscal_years(
 	if verbose == 1:
 		frappe.msgprint(error_msg)
 	raise FiscalYearError(error_msg)
-
+@frappe.whitelist()
+def get_account_type(account,company):
+	return frappe.db.get_value("Account",{"name":account,"company":company},"account_type")
 
 @frappe.whitelist()
 def get_fiscal_year_filter_field(company=None):
@@ -910,7 +912,11 @@ def get_account_name(
 		},
 		"name",
 	)
-
+@frappe.whitelist()
+def get_tds_account(percent,company):
+	if not percent:
+		frappe.throw("TDS Percent is mandatory")
+	return frappe.db.get_value("TDS Account Item",{"parent":company,"tds_percent":percent}, "account")
 
 @frappe.whitelist()
 def get_companies():
@@ -1037,7 +1043,7 @@ def update_cost_center(docname, cost_center_name, cost_center_number, company, m
 
 	frappe.db.set_value("Cost Center", docname, "cost_center_name", cost_center_name.strip())
 
-	new_name = get_autoname_with_number(cost_center_number, cost_center_name, company)
+	new_name = get_autoname_with_number(cost_center_number, cost_center_name, docname, company)
 	if docname != new_name:
 		frappe.rename_doc("Cost Center", docname, new_name, force=1, merge=merge)
 		return new_name
@@ -1060,14 +1066,16 @@ def validate_field_number(doctype_name, docname, number_value, company, field_na
 			)
 
 
-def get_autoname_with_number(number_value, doc_title, company):
+def get_autoname_with_number(number_value, doc_title, name, company):
 	"""append title with prefix as number and suffix as company's abbreviation separated by '-'"""
-	company_abbr = frappe.get_cached_value("Company", company, "abbr")
-	parts = [doc_title.strip(), company_abbr]
-
+	if name:
+		name_split = name.split("-")
+		parts = [doc_title.strip(), name_split[len(name_split) - 1].strip()]
+	else:
+		abbr = frappe.get_cached_value("Company", company, ["abbr"], as_dict=True)
+		parts = [doc_title.strip(), abbr.abbr]
 	if cstr(number_value).strip():
 		parts.insert(0, cstr(number_value).strip())
-
 	return " - ".join(parts)
 
 
@@ -1452,23 +1460,21 @@ def update_voucher_outstanding(voucher_type, voucher_no, account, party_type, pa
 
 	if party:
 		common_filter.append(ple.party == party)
-
 	ple_query = QueryPaymentLedger()
-
+	# frappe.throw(str(ple_query))
 	# on cancellation outstanding can be an empty list
 	voucher_outstanding = ple_query.get_voucher_outstandings(vouchers, common_filter=common_filter)
-	if voucher_type in ["Sales Invoice", "Purchase Invoice", "Fees"] and voucher_outstanding:
+	if voucher_type in ["Sales Invoice", "Purchase Invoice", "Fees","EME Invoice","Transporter Invoice","Repair And Service Invoice"] and voucher_outstanding:
 		outstanding = voucher_outstanding[0]
 		ref_doc = frappe.get_doc(voucher_type, voucher_no)
-
 		# Didn't use db_set for optimisation purpose
+		# frappe.throw('here')
 		ref_doc.outstanding_amount = outstanding["outstanding_in_account_currency"]
 		frappe.db.set_value(
 			voucher_type, voucher_no, "outstanding_amount", outstanding["outstanding_in_account_currency"]
 		)
-
 		ref_doc.set_status(update=True)
-
+	# frappe.throw('Biren Working here')
 
 def delink_original_entry(pl_entry):
 	if pl_entry:
@@ -1686,5 +1692,4 @@ class QueryPaymentLedger(object):
 		self.get_payments = get_payments
 		self.get_invoices = get_invoices
 		self.query_for_outstanding()
-
 		return self.voucher_outstandings

@@ -20,3 +20,5 @@ Telephony
 Bulk Transaction
 E-commerce
 Subcontracting
+Budget
+Fleet Management

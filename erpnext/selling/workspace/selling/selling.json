@@ -704,16 +704,17 @@
    "type": "Link"
   }
  ],
- "modified": "2022-04-26 13:29:55.087240",
+ "modified": "2022-12-20 14:27:00.681406",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Selling",
  "owner": "Administrator",
  "parent_page": "",
  "public": 1,
+ "quick_lists": [],
  "restrict_to_domain": "",
  "roles": [],
- "sequence_id": 23.0,
+ "sequence_id": 29.0,
  "shortcuts": [
   {
    "color": "Grey",

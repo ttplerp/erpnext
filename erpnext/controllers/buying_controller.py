@@ -6,9 +6,8 @@ import frappe
 from frappe import ValidationError, _, msgprint
 from frappe.contacts.doctype.address.address import get_address_display
 from frappe.utils import cint, cstr, flt, getdate
-from frappe.utils.data import nowtime
 
-from erpnext.accounts.doctype.budget.budget import validate_expense_against_budget
+from erpnext.budget.doctype.budget.budget import validate_expense_against_budget
 from erpnext.accounts.party import get_party_details
 from erpnext.buying.utils import update_last_purchase_rate, validate_for_items
 from erpnext.controllers.sales_and_purchase_return import get_rate_for_return
@@ -194,16 +193,16 @@ class BuyingController(SubcontractingController):
 
 		if self.meta.get_field("base_in_words"):
 			if self.meta.get_field("base_rounded_total") and not self.is_rounded_total_disabled():
-				amount = abs(self.base_rounded_total)
+				amount = self.base_rounded_total
 			else:
-				amount = abs(self.base_grand_total)
+				amount = self.base_grand_total
 			self.base_in_words = money_in_words(amount, self.company_currency)
 
 		if self.meta.get_field("in_words"):
 			if self.meta.get_field("rounded_total") and not self.is_rounded_total_disabled():
-				amount = abs(self.rounded_total)
+				amount = self.rounded_total
 			else:
-				amount = abs(self.grand_total)
+				amount = self.grand_total
 
 			self.in_words = money_in_words(amount, self.currency)
 
@@ -290,16 +289,12 @@ class BuyingController(SubcontractingController):
 				# Get outgoing rate based on original item cost based on valuation method
 
 				if not d.get(frappe.scrub(ref_doctype)):
-					posting_time = self.get("posting_time")
-					if not posting_time and self.doctype == "Purchase Order":
-						posting_time = nowtime()
-
 					outgoing_rate = get_incoming_rate(
 						{
 							"item_code": d.item_code,
 							"warehouse": d.get("from_warehouse"),
 							"posting_date": self.get("posting_date") or self.get("transation_date"),
-							"posting_time": posting_time,
+							"posting_time": self.get("posting_time"),
 							"qty": -1 * flt(d.get("stock_qty")),
 							"serial_no": d.get("serial_no"),
 							"batch_no": d.get("batch_no"),
@@ -313,12 +308,7 @@ class BuyingController(SubcontractingController):
 
 					rate = flt(outgoing_rate * (d.conversion_factor or 1), d.precision("rate"))
 				else:
-					field = "incoming_rate" if self.get("is_internal_supplier") else "rate"
-					rate = flt(
-						frappe.db.get_value(ref_doctype, d.get(frappe.scrub(ref_doctype)), field)
-						* (d.conversion_factor or 1),
-						d.precision("rate"),
-					)
+					rate = frappe.db.get_value(ref_doctype, d.get(frappe.scrub(ref_doctype)), "rate")
 
 				if self.is_internal_transfer():
 					if rate != d.rate:
@@ -641,18 +631,19 @@ class BuyingController(SubcontractingController):
 			frappe.msgprint(message, title="Success", indicator="green")
 
 	def make_asset(self, row, is_grouped_asset=False):
-		if not row.asset_location:
-			frappe.throw(_("Row {0}: Enter location for the asset item {1}").format(row.idx, row.item_code))
+		if not row.cost_center:
+			frappe.throw(_("Row {0}: Enter cost center for the asset item {1}").format(row.idx, row.item_code))
 
 		item_data = frappe.db.get_value(
-			"Item", row.item_code, ["asset_naming_series", "asset_category"], as_dict=1
+			"Item", row.item_code, ["asset_naming_series", "asset_category","asset_sub_category"], as_dict=1
 		)
 
 		if is_grouped_asset:
 			purchase_amount = flt(row.base_amount + row.item_tax_amount)
 		else:
 			purchase_amount = flt(row.base_rate + row.item_tax_amount)
-
+		if not row.abbr:
+			row.abbr = frappe.db.get_value('Asset Category',item_data.get("asset_category"),'abbr')
 		asset = frappe.get_doc(
 			{
 				"doctype": "Asset",
@@ -660,14 +651,16 @@ class BuyingController(SubcontractingController):
 				"asset_name": row.item_name,
 				"naming_series": item_data.get("asset_naming_series") or "AST",
 				"asset_category": item_data.get("asset_category"),
-				"location": row.asset_location,
+				"asset_sub_category":item_data.get("asset_sub_category"),
+				"abbr":row.abbr,
+				"cost_center": row.cost_center,
 				"company": self.company,
 				"supplier": self.supplier,
 				"purchase_date": self.posting_date,
 				"calculate_depreciation": 1,
 				"purchase_receipt_amount": purchase_amount,
 				"gross_purchase_amount": purchase_amount,
-				"asset_quantity": row.qty if is_grouped_asset else 0,
+				"asset_quantity": row.qty if is_grouped_asset else 1,
 				"purchase_receipt": self.name if self.doctype == "Purchase Receipt" else None,
 				"purchase_invoice": self.name if self.doctype == "Purchase Invoice" else None,
 			}

@@ -59,51 +59,52 @@ erpnext.accounts.PurchaseInvoice = class PurchaseInvoice extends erpnext.buying.
 			this.show_stock_ledger();
 		}
 
-		if(!doc.is_return && doc.docstatus == 1 && doc.outstanding_amount != 0){
-			if(doc.on_hold) {
-				this.frm.add_custom_button(
-					__('Change Release Date'),
-					function() {me.change_release_date()},
-					__('Hold Invoice')
-				);
-				this.frm.add_custom_button(
-					__('Unblock Invoice'),
-					function() {me.unblock_invoice()},
-					__('Create')
-				);
-			} else if (!doc.on_hold) {
-				this.frm.add_custom_button(
-					__('Block Invoice'),
-					function() {me.block_invoice()},
-					__('Create')
-				);
-			}
-		}
+		// if(!doc.is_return && doc.docstatus == 1 && doc.outstanding_amount != 0){
+		// 	if(doc.on_hold) {
+		// 		this.frm.add_custom_button(
+		// 			__('Change Release Date'),
+		// 			function() {me.change_release_date()},
+		// 			__('Hold Invoice')
+		// 		);
+		// 		this.frm.add_custom_button(
+		// 			__('Unblock Invoice'),
+		// 			function() {me.unblock_invoice()},
+		// 			__('Create')
+		// 		);
+		// 	} else if (!doc.on_hold) {
+		// 		this.frm.add_custom_button(
+		// 			__('Block Invoice'),
+		// 			function() {me.block_invoice()},
+		// 			__('Create')
+		// 		);
+		// 	}
+		// }
 
 		if(doc.docstatus == 1 && doc.outstanding_amount != 0
 			&& !(doc.is_return && doc.return_against)) {
 			this.frm.add_custom_button(__('Payment'), this.make_payment_entry, __('Create'));
+			debugger;
 			cur_frm.page.set_inner_btn_group_as_primary(__('Create'));
 		}
 
-		if(!doc.is_return && doc.docstatus==1) {
-			if(doc.outstanding_amount >= 0 || Math.abs(flt(doc.outstanding_amount)) < flt(doc.grand_total)) {
-				cur_frm.add_custom_button(__('Return / Debit Note'),
-					this.make_debit_note, __('Create'));
-			}
+		// if(!doc.is_return && doc.docstatus==1) {
+		// 	if(doc.outstanding_amount >= 0 || Math.abs(flt(doc.outstanding_amount)) < flt(doc.grand_total)) {
+		// 		cur_frm.add_custom_button(__('Return / Debit Note'),
+		// 			this.make_debit_note, __('Create'));
+		// 	}
 
-			if(!doc.auto_repeat) {
-				cur_frm.add_custom_button(__('Subscription'), function() {
-					erpnext.utils.make_subscription(doc.doctype, doc.name)
-				}, __('Create'))
-			}
-		}
+		// 	if(!doc.auto_repeat) {
+		// 		cur_frm.add_custom_button(__('Subscription'), function() {
+		// 			erpnext.utils.make_subscription(doc.doctype, doc.name)
+		// 		}, __('Create'))
+		// 	}
+		// }
 
-		if (doc.outstanding_amount > 0 && !cint(doc.is_return)) {
-			cur_frm.add_custom_button(__('Payment Request'), function() {
-				me.make_payment_request()
-			}, __('Create'));
-		}
+		// if (doc.outstanding_amount > 0 && !cint(doc.is_return)) {
+		// 	cur_frm.add_custom_button(__('Payment Request'), function() {
+		// 		me.make_payment_request()
+		// 	}, __('Create'));
+		// }
 
 		if(doc.docstatus===0) {
 			this.frm.add_custom_button(__('Purchase Order'), function() {
@@ -539,11 +540,11 @@ frappe.ui.form.on("Purchase Invoice", {
 	},
 
 	add_custom_buttons: function(frm) {
-		if (frm.doc.docstatus == 1 && frm.doc.per_received < 100) {
-			frm.add_custom_button(__('Purchase Receipt'), () => {
-				frm.events.make_purchase_receipt(frm);
-			}, __('Create'));
-		}
+		// if (frm.doc.docstatus == 1 && frm.doc.per_received < 100) {
+		// 	frm.add_custom_button(__('Purchase Receipt'), () => {
+		// 		frm.events.make_purchase_receipt(frm);
+		// 	}, __('Create'));
+		// }
 
 		if (frm.doc.docstatus == 1 && frm.doc.per_received > 0) {
 			frm.add_custom_button(__('Purchase Receipt'), () => {

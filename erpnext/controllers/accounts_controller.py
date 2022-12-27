@@ -38,7 +38,6 @@ from erpnext.accounts.party import (
 	validate_party_frozen_disabled,
 )
 from erpnext.accounts.utils import get_account_currency, get_fiscal_years, validate_fiscal_year
-from erpnext.assets.doctype.asset.depreciation import make_depreciation_entry
 from erpnext.buying.utils import update_last_purchase_rate
 from erpnext.controllers.print_settings import (
 	set_print_templates_for_item_table,
@@ -206,10 +205,6 @@ class AccountsController(TransactionBase):
 	def on_trash(self):
 		# delete sl and gl entries on deletion of transaction
 		if frappe.db.get_single_value("Accounts Settings", "delete_linked_ledger_entries"):
-			ple = frappe.qb.DocType("Payment Ledger Entry")
-			frappe.qb.from_(ple).delete().where(
-				(ple.voucher_type == self.doctype) & (ple.voucher_no == self.name)
-			).run()
 			frappe.db.sql(
 				"delete from `tabGL Entry` where voucher_type=%s and voucher_no=%s", (self.doctype, self.name)
 			)
@@ -378,7 +373,7 @@ class AccountsController(TransactionBase):
 				)
 
 	def validate_inter_company_reference(self):
-		if self.doctype not in ("Purchase Invoice", "Purchase Receipt"):
+		if self.doctype not in ("Purchase Invoice", "Purchase Receipt", "Purchase Order"):
 			return
 
 		if self.is_internal_transfer():
@@ -572,11 +567,6 @@ class AccountsController(TransactionBase):
 			# if user changed the discount percentage then set user's discount percentage ?
 			if pricing_rule_args.get("price_or_product_discount") == "Price":
 				item.set("pricing_rules", pricing_rule_args.get("pricing_rules"))
-				if pricing_rule_args.get("apply_rule_on_other_items"):
-					other_items = json.loads(pricing_rule_args.get("apply_rule_on_other_items"))
-					if other_items and item.item_code not in other_items:
-						return
-
 				item.set("discount_percentage", pricing_rule_args.get("discount_percentage"))
 				item.set("discount_amount", pricing_rule_args.get("discount_amount"))
 				if pricing_rule_args.get("pricing_rule_for") == "Rate":
@@ -823,6 +813,7 @@ class AccountsController(TransactionBase):
 				"reference_row": d.reference_row,
 				"remarks": d.remarks,
 				"advance_amount": flt(d.amount),
+				"advance_account":d.advance_account,
 				"allocated_amount": allocated_amount,
 				"ref_exchange_rate": flt(d.exchange_rate),  # exchange_rate of advance entry
 			}
@@ -830,15 +821,17 @@ class AccountsController(TransactionBase):
 			self.append("advances", advance_row)
 
 	def get_advance_entries(self, include_unallocated=True):
+		# is advance intorduced as advance account is different 
+		is_advance = True
 		if self.doctype == "Sales Invoice":
-			party_account = self.debit_to
+			party_account = get_party_account('Customer', self.customer, self.company,is_advance)
 			party_type = "Customer"
 			party = self.customer
 			amount_field = "credit_in_account_currency"
 			order_field = "sales_order"
 			order_doctype = "Sales Order"
 		else:
-			party_account = self.credit_to
+			party_account = get_party_account('Supplier', self.supplier, self.company,is_advance)
 			party_type = "Supplier"
 			party = self.supplier
 			amount_field = "debit_in_account_currency"
@@ -856,7 +849,6 @@ class AccountsController(TransactionBase):
 		)
 
 		res = journal_entries + payment_entries
-
 		return res
 
 	def is_inclusive_tax(self):
@@ -981,14 +973,15 @@ class AccountsController(TransactionBase):
 			party_type = "Customer"
 			party = self.customer
 			party_account = self.debit_to
-			dr_or_cr = "credit_in_account_currency"
+			dr_or_cr = "debit_in_account_currency"
 		else:
 			party_type = "Supplier"
 			party = self.supplier
 			party_account = self.credit_to
-			dr_or_cr = "debit_in_account_currency"
+			dr_or_cr = "credit_in_account_currency"
 
 		lst = []
+		# frappe.msgprint(str(self.outstanding_amount))
 		for d in self.get("advances"):
 			if flt(d.allocated_amount) > 0:
 				args = frappe._dict(
@@ -998,7 +991,7 @@ class AccountsController(TransactionBase):
 						"voucher_detail_no": d.reference_row,
 						"against_voucher_type": self.doctype,
 						"against_voucher": self.name,
-						"account": party_account,
+						"account": d.advance_account,
 						"party_type": party_type,
 						"party": party,
 						"is_advance": "Yes",
@@ -1025,7 +1018,6 @@ class AccountsController(TransactionBase):
 
 		if lst:
 			from erpnext.accounts.utils import reconcile_against_document
-
 			reconcile_against_document(lst)
 
 	def on_cancel(self):
@@ -1880,99 +1872,6 @@ class AccountsController(TransactionBase):
 		):
 			throw(_("Conversion rate cannot be 0 or 1"))
 
-	def check_finance_books(self, item, asset):
-		if (
-			len(asset.finance_books) > 1
-			and not item.get("finance_book")
-			and not self.get("finance_book")
-			and asset.finance_books[0].finance_book
-		):
-			frappe.throw(
-				_("Select finance book for the item {0} at row {1}").format(item.item_code, item.idx)
-			)
-
-	def depreciate_asset(self, asset):
-		asset.flags.ignore_validate_update_after_submit = True
-		asset.prepare_depreciation_data(date_of_disposal=self.posting_date)
-		asset.save()
-
-		make_depreciation_entry(asset.name, self.posting_date)
-
-	def reset_depreciation_schedule(self, asset):
-		asset.flags.ignore_validate_update_after_submit = True
-
-		# recreate original depreciation schedule of the asset
-		asset.prepare_depreciation_data(date_of_return=self.posting_date)
-
-		self.modify_depreciation_schedule_for_asset_repairs(asset)
-		asset.save()
-
-	def modify_depreciation_schedule_for_asset_repairs(self, asset):
-		asset_repairs = frappe.get_all(
-			"Asset Repair", filters={"asset": asset.name}, fields=["name", "increase_in_asset_life"]
-		)
-
-		for repair in asset_repairs:
-			if repair.increase_in_asset_life:
-				asset_repair = frappe.get_doc("Asset Repair", repair.name)
-				asset_repair.modify_depreciation_schedule()
-				asset.prepare_depreciation_data()
-
-	def reverse_depreciation_entry_made_after_disposal(self, asset):
-		from erpnext.accounts.doctype.journal_entry.journal_entry import make_reverse_journal_entry
-
-		posting_date_of_original_disposal = self.get_posting_date_of_disposal_entry()
-
-		row = -1
-		finance_book = asset.get("schedules")[0].get("finance_book")
-		for schedule in asset.get("schedules"):
-			if schedule.finance_book != finance_book:
-				row = 0
-				finance_book = schedule.finance_book
-			else:
-				row += 1
-
-			if schedule.schedule_date == posting_date_of_original_disposal:
-				if not self.disposal_was_made_on_original_schedule_date(
-					asset, schedule, row, posting_date_of_original_disposal
-				) or self.disposal_happens_in_the_future(posting_date_of_original_disposal):
-
-					reverse_journal_entry = make_reverse_journal_entry(schedule.journal_entry)
-					reverse_journal_entry.posting_date = nowdate()
-					frappe.flags.is_reverse_depr_entry = True
-					reverse_journal_entry.submit()
-
-					frappe.flags.is_reverse_depr_entry = False
-					asset.flags.ignore_validate_update_after_submit = True
-					schedule.journal_entry = None
-					asset.save()
-
-	def get_posting_date_of_disposal_entry(self):
-		if self.doctype == "Sales Invoice" and self.return_against:
-			return frappe.db.get_value("Sales Invoice", self.return_against, "posting_date")
-		else:
-			return self.posting_date
-
-	# if the invoice had been posted on the date the depreciation was initially supposed to happen, the depreciation shouldn't be undone
-	def disposal_was_made_on_original_schedule_date(
-		self, asset, schedule, row, posting_date_of_disposal
-	):
-		for finance_book in asset.get("finance_books"):
-			if schedule.finance_book == finance_book.finance_book:
-				orginal_schedule_date = add_months(
-					finance_book.depreciation_start_date, row * cint(finance_book.frequency_of_depreciation)
-				)
-
-				if orginal_schedule_date == posting_date_of_disposal:
-					return True
-		return False
-
-	def disposal_happens_in_the_future(self, posting_date_of_disposal):
-		if posting_date_of_disposal > getdate():
-			return True
-
-		return False
-
 
 @frappe.whitelist()
 def get_tax_rate(account_head):
@@ -2176,7 +2075,7 @@ def get_advance_journal_entries(
 		select
 			'Journal Entry' as reference_type, t1.name as reference_name,
 			t1.remark as remarks, t2.{0} as amount, t2.name as reference_row,
-			t2.reference_name as against_order, t2.exchange_rate
+			t2.reference_name as against_order, t2.exchange_rate, t2.account as advance_account
 		from
 			`tabJournal Entry` t1, `tabJournal Entry Account` t2
 		where
@@ -2225,14 +2124,13 @@ def get_advance_payment_entries(
 		else:
 			reference_condition = ""
 			order_list = []
-
 		payment_entries_against_order = frappe.db.sql(
 			"""
 			select
 				'Payment Entry' as reference_type, t1.name as reference_name,
 				t1.remarks, t2.allocated_amount as amount, t2.name as reference_row,
 				t2.reference_name as against_order, t1.posting_date,
-				t1.{0} as currency, t1.{4} as exchange_rate
+				t1.{0} as currency, t1.{1} as advance_account, t1.{4} as exchange_rate
 			from `tabPayment Entry` t1, `tabPayment Entry Reference` t2
 			where
 				t1.name = t2.parent and t1.{1} = %s and t1.payment_type = %s
@@ -2250,7 +2148,7 @@ def get_advance_payment_entries(
 		unallocated_payment_entries = frappe.db.sql(
 			"""
 				select 'Payment Entry' as reference_type, name as reference_name, posting_date,
-				remarks, unallocated_amount as amount, {2} as exchange_rate, {3} as currency
+				remarks, unallocated_amount as amount, {2} as exchange_rate, {3} as currency,{0} as advance_account
 				from `tabPayment Entry`
 				where
 					{0} = %s and party_type = %s and party = %s and payment_type = %s

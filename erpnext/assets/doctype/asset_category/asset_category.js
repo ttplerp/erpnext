@@ -35,6 +35,7 @@ frappe.ui.form.on('Asset Category', {
 				"filters": {
 					"root_type": ["in", ["Expense", "Income"]],
 					"is_group": 0,
+					"account_type": "Depreciation",
 					"company": d.company_name
 				}
 			};
@@ -50,6 +51,22 @@ frappe.ui.form.on('Asset Category', {
 				}
 			};
 		});
-
+		frm.set_query('asset_sub_category', 'finance_book', function(doc, cdt, cdn) {
+			var d  = locals[cdt][cdn];
+			return {
+				"filters": {
+					"asset_category":frm.doc.asset_category
+				}
+			};
+		});
+	},
+	refresh:function(frm){
+		frm.set_query('asset_sub_category', 'finance_books', function(doc, cdt, cdn) {
+			return {
+				"filters": {
+					"asset_category":doc.name
+				}
+			};
+		});
 	}
 });

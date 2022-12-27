@@ -10,6 +10,14 @@ frappe.ui.form.on("Item", {
 		frm.add_fetch('attribute', 'to_range', 'to_range');
 		frm.add_fetch('attribute', 'increment', 'increment');
 		frm.add_fetch('tax_type', 'tax_rate', 'tax_rate');
+
+		frm.set_query("asset_sub_category", function() {
+			return {
+				filters: {
+					asset_category: frm.doc.asset_category,
+				}
+			};
+		});
 	},
 	onload: function(frm) {
 		erpnext.item.setup_queries(frm);
@@ -153,8 +161,15 @@ frappe.ui.form.on("Item", {
 		frm.toggle_reqd('customer', frm.doc.is_customer_provided_item ? 1:0);
 	},
 
+	asset_category:function(){
+		frm.add_fetch('asset_category', 'asset_sub_category', 'asset_sub_category');
+	},
+
 	validate: function(frm){
 		erpnext.item.weight_to_validate(frm);
+	},
+	item_group: function(frm){
+		frm.set_value("is_fixed_asset", frm.doc.item_group === "Fixed Assets" ? 1 : 0);
 	},
 
 	image: function() {

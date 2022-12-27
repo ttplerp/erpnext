@@ -104,7 +104,7 @@
  "icon": "fa fa-wrench",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-11-24 19:15:24.357187",
+ "modified": "2022-12-02 16:59:11.781844",
  "modified_by": "Administrator",
  "module": "Manufacturing",
  "name": "Operation",
@@ -131,10 +131,23 @@
    "role": "Manufacturing Manager",
    "share": 1,
    "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Administrator",
+   "share": 1,
+   "write": 1
   }
  ],
  "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }

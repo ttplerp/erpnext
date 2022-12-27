@@ -32,6 +32,7 @@ from erpnext.assets.doctype.asset.depreciation import (
 )
 from erpnext.assets.doctype.asset_category.asset_category import get_asset_category_account
 from erpnext.controllers.accounts_controller import AccountsController
+from barcode import EAN13, Code128
 
 class Asset(AccountsController):
 	def validate(self):
@@ -54,6 +55,7 @@ class Asset(AccountsController):
 		self.set_status()
 		self.make_asset_movement()
 		self.make_asset_je_entry()
+		self.generate_asset_barcode()
 		if not self.booked_fixed_asset and self.validate_make_gl_entry():
 			self.make_gl_entries()
 
@@ -65,8 +67,22 @@ class Asset(AccountsController):
 		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry")
 		make_reverse_gl_entries(voucher_type="Asset", voucher_no=self.name)
 		self.db_set("booked_fixed_asset", 0)
+
 	def fetch_default_account(self):
 		self.asset_account, self.credit_account, self.accumulated_depreciation_account = frappe.db.get_value('Asset Category Account',{'parent':self.asset_category},['fixed_asset_account','credit_account','accumulated_depreciation_account'])
+
+	def generate_asset_barcode(self):
+		number = str(self.name)
+		path = Code128(number)
+		self.db_set('asset_barcode',path.save(str(self.name)))
+		frappe.db.commit()
+
+	@frappe.whitelist()
+	def get_barcode(self):
+		file = open('{}'.format(self.asset_barcode)).read()
+		# frappe.msgprint(file, title="Asset Barcode")
+		return file
+
 	def validate_asset_and_reference(self):
 		if self.purchase_invoice or self.purchase_receipt:
 			reference_doc = "Purchase Invoice" if self.purchase_invoice else "Purchase Receipt"
@@ -1106,10 +1122,10 @@ def create_asset_repair(asset, asset_name):
 
 
 @frappe.whitelist()
-def create_asset_value_adjustment(asset, asset_category, company):
+def create_asset_value_adjustment(asset, asset_category, company, asset_account, credit_account):
 	asset_value_adjustment = frappe.new_doc("Asset Value Adjustment")
 	asset_value_adjustment.update(
-		{"asset": asset, "company": company, "asset_category": asset_category}
+		{"asset": asset, "company": company, "asset_category": asset_category, "fixed_asset_account": asset_account, "credit_account": credit_account}
 	)
 	return asset_value_adjustment
 
@@ -1243,6 +1259,7 @@ def make_asset_movement(assets, purpose=None):
 	for asset in assets:
 		asset = frappe.get_doc("Asset", asset.get("name"))
 		asset_movement.company = asset.get("company")
+		asset_movement.purpose = "Transfer"
 		asset_movement.append(
 			"assets",
 			{

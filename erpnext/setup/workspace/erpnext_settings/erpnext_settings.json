@@ -10,7 +10,7 @@
  "idx": 0,
  "label": "ERPNext Settings",
  "links": [],
- "modified": "2022-06-27 16:53:07.056620",
+ "modified": "2022-12-20 14:26:59.092197",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "ERPNext Settings",
@@ -20,14 +20,8 @@
  "quick_lists": [],
  "restrict_to_domain": "",
  "roles": [],
- "sequence_id": 12.0,
+ "sequence_id": 14.0,
  "shortcuts": [
-  {
-   "icon": "project",
-   "label": "Projects Settings",
-   "link_to": "Projects Settings",
-   "type": "DocType"
-  },
   {
    "icon": "accounting",
    "label": "Accounts Settings",
@@ -35,59 +29,9 @@
    "type": "DocType"
   },
   {
-   "icon": "stock",
-   "label": "Stock Settings",
-   "link_to": "Stock Settings",
-   "type": "DocType"
-  },
-  {
-   "icon": "sell",
-   "label": "Selling Settings",
-   "link_to": "Selling Settings",
-   "type": "DocType"
-  },
-  {
-   "icon": "buying",
-   "label": "Buying Settings",
-   "link_to": "Buying Settings",
-   "type": "DocType"
-  },
-  {
-   "icon": "support",
-   "label": "Support Settings",
-   "link_to": "Support Settings",
-   "type": "DocType"
-  },
-  {
-   "icon": "retail",
-   "label": "E Commerce Settings",
-   "link_to": "E Commerce Settings",
-   "type": "DocType"
-  },
-  {
    "icon": "website",
    "label": "Portal Settings",
    "link_to": "Portal Settings",
-   "type": "DocType"
-  },
-  {
-   "icon": "organization",
-   "label": "Manufacturing Settings",
-   "link_to": "Manufacturing Settings",
-   "restrict_to_domain": "Manufacturing",
-   "type": "DocType"
-  },
-  {
-   "icon": "setting",
-   "label": "Domain Settings",
-   "link_to": "Domain Settings",
-   "type": "DocType"
-  },
-  {
-   "doc_view": "",
-   "icon": "crm",
-   "label": "CRM Settings",
-   "link_to": "CRM Settings",
    "type": "DocType"
   }
  ],

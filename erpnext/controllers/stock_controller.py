@@ -67,7 +67,6 @@ class StockController(AccountsController):
 			or provisional_accounting_for_non_stock_items
 		):
 			warehouse_account = get_warehouse_account_map(self.company)
-
 			if self.docstatus == 1:
 				if not gl_entries:
 					gl_entries = self.get_gl_entries(warehouse_account)
@@ -77,7 +76,6 @@ class StockController(AccountsController):
 			gl_entries = []
 			gl_entries = self.get_asset_gl_entry(gl_entries)
 			make_gl_entries(gl_entries, from_repost=from_repost)
-
 	def validate_serialized_batch(self):
 		from erpnext.stock.doctype.serial_no.serial_no import get_serial_nos
 
@@ -137,12 +135,10 @@ class StockController(AccountsController):
 
 		sle_map = self.get_stock_ledger_details()
 		voucher_details = self.get_voucher_details(default_expense_account, default_cost_center, sle_map)
-
 		gl_list = []
 		warehouse_with_no_account = []
 		precision = self.get_debit_field_precision()
 		for item_row in voucher_details:
-
 			sle_list = sle_map.get(item_row.name)
 			if sle_list:
 				for sle in sle_list:
@@ -190,7 +186,6 @@ class StockController(AccountsController):
 						)
 					elif sle.warehouse not in warehouse_with_no_account:
 						warehouse_with_no_account.append(sle.warehouse)
-
 		if warehouse_with_no_account:
 			for wh in warehouse_with_no_account:
 				if frappe.db.get_value("Warehouse", wh, "company"):
@@ -229,14 +224,12 @@ class StockController(AccountsController):
 			return details
 		else:
 			details = self.get("items")
-
 			if default_expense_account or default_cost_center:
 				for d in details:
 					if default_expense_account and not d.get("expense_account"):
 						d.expense_account = default_expense_account
 					if default_cost_center and not d.get("cost_center"):
 						d.cost_center = default_cost_center
-
 			return details
 
 	def get_items_and_warehouses(self) -> Tuple[List[str], List[str]]:
@@ -424,7 +417,6 @@ class StockController(AccountsController):
 
 	def make_sl_entries(self, sl_entries, allow_negative_stock=False, via_landed_cost_voucher=False):
 		from erpnext.stock.stock_ledger import make_sl_entries
-
 		make_sl_entries(sl_entries, allow_negative_stock, via_landed_cost_voucher)
 
 	def make_gl_entries_on_cancel(self):
@@ -699,47 +691,6 @@ class StockController(AccountsController):
 				create_item_wise_repost_entries(voucher_type=self.doctype, voucher_no=self.name)
 			else:
 				create_repost_item_valuation_entry(args)
-
-	def add_gl_entry(
-		self,
-		gl_entries,
-		account,
-		cost_center,
-		debit,
-		credit,
-		remarks,
-		against_account,
-		debit_in_account_currency=None,
-		credit_in_account_currency=None,
-		account_currency=None,
-		project=None,
-		voucher_detail_no=None,
-		item=None,
-		posting_date=None,
-	):
-
-		gl_entry = {
-			"account": account,
-			"cost_center": cost_center,
-			"debit": debit,
-			"credit": credit,
-			"against": against_account,
-			"remarks": remarks,
-		}
-
-		if voucher_detail_no:
-			gl_entry.update({"voucher_detail_no": voucher_detail_no})
-
-		if debit_in_account_currency:
-			gl_entry.update({"debit_in_account_currency": debit_in_account_currency})
-
-		if credit_in_account_currency:
-			gl_entry.update({"credit_in_account_currency": credit_in_account_currency})
-
-		if posting_date:
-			gl_entry.update({"posting_date": posting_date})
-
-		gl_entries.append(self.get_gl_dict(gl_entry, item=item))
 
 
 def repost_required_for_queue(doc: StockController) -> bool:

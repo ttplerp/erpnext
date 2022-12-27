@@ -11,8 +11,11 @@
   "year",
   "disabled",
   "is_short_year",
+  "column_break_4",
   "year_start_date",
   "year_end_date",
+  "closed",
+  "section_break_8",
   "companies",
   "auto_created"
  ],
@@ -42,8 +45,7 @@
    "no_copy": 1,
    "oldfieldname": "year_start_date",
    "oldfieldtype": "Date",
-   "reqd": 1,
-   "set_only_once": 1
+   "reqd": 1
   },
   {
    "fieldname": "year_end_date",
@@ -77,15 +79,30 @@
    "fieldtype": "Check",
    "label": "Is Short Year",
    "set_only_once": 1
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "closed",
+   "fieldtype": "Check",
+   "label": "Financial Year Closed"
+  },
+  {
+   "fieldname": "section_break_8",
+   "fieldtype": "Section Break"
   }
  ],
  "icon": "fa fa-calendar",
  "idx": 1,
  "links": [],
- "modified": "2020-11-05 12:16:53.081573",
+ "modified": "2022-11-08 12:31:41.555773",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Fiscal Year",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
@@ -122,5 +139,6 @@
  ],
  "show_name_in_global_search": 1,
  "sort_field": "name",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "states": []
 }

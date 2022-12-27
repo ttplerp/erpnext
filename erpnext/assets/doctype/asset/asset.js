@@ -10,7 +10,7 @@ frappe.ui.form.on('Asset', {
 			return {
 				"filters": {
 					"disabled": 0,
-					"is_fixed_asset": 1,
+					// "is_fixed_asset": 1,
 					"is_stock_item": 0
 				}
 			};
@@ -39,7 +39,14 @@ frappe.ui.form.on('Asset', {
 	company: function(frm) {
 		erpnext.accounts.dimensions.update_dimension(frm, frm.doctype);
 	},
-
+	show_barcode: function(frm){
+		if(frm.doc.asset_barcode){
+			frappe.call({
+				method: "get_barcode",
+				doc:frm.doc,
+			})
+		}
+	},
 	setup: function(frm) {
 		frm.make_methods = {
 			'Asset Movement': () => {
@@ -77,7 +84,20 @@ frappe.ui.form.on('Asset', {
 		frappe.ui.form.trigger("Asset", "is_existing_asset");
 		frm.toggle_display("next_depreciation_date", frm.doc.docstatus < 1);
 		frm.events.make_schedules_editable(frm);
-
+		if(frm.doc.asset_barcode != undefined || frm.doc.asset_barcode != null){
+			var wrapper = cur_frm.fields_dict['barcode_image'].wrapper;
+			if(wrapper.firstElementChild != null){
+				wrapper.firstElementChild.remove();
+			}
+			frappe.call({
+				method: "get_barcode",
+				doc:frm.doc,
+				callback: function(r){
+					$(r.message).appendTo(wrapper);
+					frm.refresh_field("barcode_image");
+				}
+			})
+		}
 		if (frm.doc.docstatus==1) {
 			if (in_list(["Submitted", "Partially Depreciated", "Fully Depreciated"], frm.doc.status)) {
 				frm.add_custom_button(__("Transfer Asset"), function() {
@@ -104,13 +124,13 @@ frappe.ui.form.on('Asset', {
 				}, __("Manage"));
 			}
 
-			frm.add_custom_button(__("Repair Asset"), function() {
-				frm.trigger("create_asset_repair");
-			}, __("Manage"));
+			// frm.add_custom_button(__("Repair Asset"), function() {
+			// 	frm.trigger("create_asset_repair");
+			// }, __("Manage"));
 
-			frm.add_custom_button(__("Split Asset"), function() {
-				frm.trigger("split_asset");
-			}, __("Manage"));
+			// frm.add_custom_button(__("Split Asset"), function() {
+			// 	frm.trigger("split_asset");
+			// }, __("Manage"));
 
 			if (frm.doc.status != 'Fully Depreciated') {
 				frm.add_custom_button(__("Adjust Asset Value"), function() {
@@ -393,7 +413,9 @@ frappe.ui.form.on('Asset', {
 			args: {
 				"asset": frm.doc.name,
 				"asset_category": frm.doc.asset_category,
-				"company": frm.doc.company
+				"company": frm.doc.company,
+				"asset_account": frm.doc.asset_account,
+				"credit_account": frm.doc.credit_account
 			},
 			method: "erpnext.assets.doctype.asset.asset.create_asset_value_adjustment",
 			freeze: 1,

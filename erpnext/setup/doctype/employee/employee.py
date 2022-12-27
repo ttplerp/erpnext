@@ -10,9 +10,9 @@ from frappe.permissions import (
 	remove_user_permission,
 	set_user_permission_if_allowed,
 )
-from frappe.utils import cstr, getdate, today, validate_email_address
+from frappe.utils import cstr, getdate, today, validate_email_address, cint,flt
 from frappe.utils.nestedset import NestedSet
-
+from frappe.model.naming import make_autoname
 from erpnext.utilities.transaction_base import delete_events
 
 
@@ -27,17 +27,18 @@ class InactiveEmployeeStatusError(frappe.ValidationError):
 class Employee(NestedSet):
 	nsm_parent_field = "reports_to"
 
-	def autoname(self):
-		set_name_by_naming_series(self)
-		self.employee = self.name
-
 	def validate(self):
 		from erpnext.controllers.status_updater import validate_status
-
 		validate_status(self.status, ["Active", "Inactive", "Suspended", "Left"])
-
-		self.employee = self.name
-		self.set_employee_name()
+		# naming done with combination with joining year, month and 4 digits series
+		if self.old_id:
+			self.employee =	self.name = self.old_id
+			return
+		year_month = str(self.date_of_joining)[2:4] + str(self.date_of_joining)[5:7]
+		name = make_autoname('EMP.####')[3:]
+		self.employee = self.name = year_month + name
+		if not self.employee_name:
+			self.set_employee_name()
 		self.validate_date()
 		self.validate_email()
 		self.validate_status()
@@ -218,6 +219,7 @@ class Employee(NestedSet):
 
 	def validate_duplicate_user_id(self):
 		Employee = frappe.qb.DocType("Employee")
+		# frappe.throw(str(Employee))
 		employee = (
 			frappe.qb.from_(Employee)
 			.select(Employee.name)
@@ -371,6 +373,49 @@ def create_user(employee, user=None, email=None):
 	user.insert()
 	return user.name
 
+@frappe.whitelist()
+def get_overtime_rate(employee, grade, employee_group):
+	basic = frappe.db.sql("select b.eligible_for_overtime_and_payment, a.amount as basic_pay from `tabSalary Detail` a, `tabSalary Structure` b where a.parent = b.name and a.salary_component = 'Basic Pay' and b.is_active = 'Yes' and b.employee = \'" + str(employee) + "\'", as_dict=True)
+	if basic:
+			if not cint(basic[0].eligible_for_overtime_and_payment):
+				if not frappe.db.get_value("Employee Grade", frappe.db.get_value("Employee", employee, "grade"), "eligible_for_overtime"):
+					frappe.throw(_("Employee is not eligible for Overtime"))
+	else:
+		pass
+	# 		if frappe.db.sql("select 1 from `tabRate Base on Grade` where employee_grade='{}'".format(grade)):
+	# 			if frappe.db.sql("select 1 from `tabSite Employee Group` where employee_group='{}'".format(employee_group)):
+	# 				site_rate = frappe.get_single("HR Settings")
+	# 				return site_rate.site_rate
+
+	# 			if frappe.db.sql("select 1 from `tabWorkshop Employee Group` where employee_group='{}'".format(employee_group)):
+	# 				workshop_rate = frappe.get_single("HR Settings")
+	# 				return workshop_rate.workshop_rate
+	# 		return ((flt(basic[0].basic_pay)) / (30 * 8))
+	# else:
+	# 		frappe.throw("No Salary Structure found for the employee")
+@frappe.whitelist()
+def get_rate(employee, overtime_type):
+	#return frappe.db.get_value("Employee", employee, "overtime_normal_rate")
+	if overtime_type == "Overtime (Normal Rate)":
+		return frappe.db.get_value("Employee", employee, "overtime_normal_rate")
+		#return frappe.db.get_value("Employee", employee, "overtime_normal_rate")
+	if overtime_type == "Sunday Overtime (Half Day)":
+		return frappe.db.get_value("Employee", employee, "sunday_overtime_half_day")
+		#return frappe.db.get_value("Employee", employee, "sunday_overtime_half_day")
+	if overtime_type == "Sunday Overtime (Full Day)":
+		return frappe.db.get_value("Employee", employee, "sunday_overtime_full_day")
+		#return frappe.db.get_value("Employee", employee, "sunday_overtime_full_day")
+	
+
+# @frappe.whitelist()
+# def get_sunday_half(employee, overtime_type):
+# 	return frappe.db.get_value("Employee", employee, "sunday_overtime_half_day")
+# 	#return frappe.db.sql("select sunday_overtime_half_day from `tabEmployee` where name='{}'".format(employee))
+
+# @frappe.whitelist()
+# def get_sunday_full_day(employee, overtime_type):
+# 	return frappe.db.get_value("Employee", employee, "sunday_overtime_full_day")
+# 	#return frappe.db.sql("select sunday_overtime_full_day from `tabEmployee` where name='{}'".format(employee))
 
 def get_all_employee_emails(company):
 	"""Returns list of employee emails either based on user_id or company_email"""
@@ -451,3 +496,28 @@ def has_upload_permission(doc, ptype="read", user=None):
 	if get_doc_permissions(doc, user=user, ptype=ptype).get(ptype):
 		return True
 	return doc.user_id == user
+
+def get_permission_query_conditions(user):
+	if not user: user = frappe.session.user
+	user_roles = frappe.get_roles(user)
+	if "HR User" in user_roles or "HR Manager" in user_roles or "Accounts User" in user_roles:
+		return
+	else:
+		return """(
+			exists(select 1
+				from `tabEmployee` as e
+				where e.name = `tabEmployee`.name
+				and e.user_id = '{user}')
+		)""".format(user=user)
+
+def has_record_permission(doc, user):
+	if not user: user = frappe.session.user
+	user_roles = frappe.get_roles(user)
+
+	if "HR User" in user_roles or "HR Manager" in user_roles:
+		return True
+	else:			
+		if frappe.db.exists("Employee", {"name":doc.name, "user_id": user}):
+			return True
+		else:
+			return False 

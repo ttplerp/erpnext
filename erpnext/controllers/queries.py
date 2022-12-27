@@ -816,3 +816,12 @@ def get_fields(doctype, fields=None):
 		fields.insert(1, meta.title_field.strip())
 
 	return unique(fields)
+@frappe.whitelist()
+def get_equipment_no(doctype,txt, searchfield, start, page_len, filters):
+	return frappe.db.sql("select equipment_number  from `tabEquipment` where is_disabled != 1")
+
+@frappe.whitelist()
+def filter_branch_wh(doctype, txt, searchfield, start, page_len, filters):
+	if not filters.get("branch"):
+			frappe.throw("Select Branch First")
+	return frappe.db.sql("select a.parent from `tabWarehouse Branch` a, `tabWarehouse` b where a.parent = b.name and a.branch = %s and b.disabled = 0", filters.get("branch"))

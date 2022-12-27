@@ -153,16 +153,16 @@ frappe.query_reports["General Ledger"] = {
 				});
 			}
 		},
-		{
-			"fieldname":"project",
-			"label": __("Project"),
-			"fieldtype": "MultiSelectList",
-			get_data: function(txt) {
-				return frappe.db.get_link_options('Project', txt, {
-					company: frappe.query_report.get_filter_value("company")
-				});
-			}
-		},
+		// {
+		// 	"fieldname":"project",
+		// 	"label": __("Project"),
+		// 	"fieldtype": "MultiSelectList",
+		// 	get_data: function(txt) {
+		// 		return frappe.db.get_link_options('Project', txt, {
+		// 			company: frappe.query_report.get_filter_value("company")
+		// 		});
+		// 	}
+		// },
 		{
 			"fieldname": "include_dimensions",
 			"label": __("Consider Accounting Dimensions"),
