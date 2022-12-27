@@ -1,0 +1,410 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2022-10-19 15:40:25.115510",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_1",
+  "branch",
+  "cost_center",
+  "location",
+  "distance",
+  "check_raw_material_product_qty",
+  "column_break_3",
+  "warehouse",
+  "work_type",
+  "supplier",
+  "transfer",
+  "to_warehouse",
+  "transporter_rate_base_on",
+  "section_break_7",
+  "posting_date",
+  "posting_time",
+  "column_break_11",
+  "production_type",
+  "column_break_6",
+  "remarks",
+  "section_break_10",
+  "get_raw_material",
+  "raw_materials",
+  "section_break_12",
+  "get_product",
+  "items",
+  "section_break_28",
+  "coal_raising_type",
+  "column_break_30",
+  "group",
+  "no_of_labours",
+  "machine_hours",
+  "column_break_32",
+  "tire",
+  "oms",
+  "machine_payable",
+  "column_break_37",
+  "grand_amount",
+  "penalty_amount",
+  "amount",
+  "section_break_13",
+  "production_waste",
+  "section_break_24",
+  "raw_material_qty",
+  "product_qty",
+  "column_break_5",
+  "company",
+  "currency",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_1",
+   "fieldtype": "Section Break",
+   "label": "Production Details"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.branch",
+   "fieldname": "location",
+   "fieldtype": "Link",
+   "label": "Location",
+   "options": "Location",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.transporter_rate_base_on == \"Location\"",
+   "fieldname": "distance",
+   "fieldtype": "Link",
+   "label": "Distance(KM)",
+   "options": "Distance",
+   "read_only": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "check_raw_material_product_qty",
+   "fieldtype": "Check",
+   "label": "Raw material and Product Qty must be equal"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.branch",
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "options": "Warehouse",
+   "reqd": 1
+  },
+  {
+   "fieldname": "work_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Work Type",
+   "options": "Own\nPrivate",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.work_type =='Private'",
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Contractor",
+   "options": "Supplier"
+  },
+  {
+   "default": "0",
+   "fieldname": "transfer",
+   "fieldtype": "Check",
+   "label": "Transfer Item After Production"
+  },
+  {
+   "depends_on": "eval:doc.transfer",
+   "fieldname": "to_warehouse",
+   "fieldtype": "Link",
+   "label": "Transfer To Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "description": "Select Only If Transporter Payment is Involved",
+   "fieldname": "transporter_rate_base_on",
+   "fieldtype": "Select",
+   "label": "Transporter Rate Base On",
+   "options": "\nLocation\nWarehouse"
+  },
+  {
+   "fieldname": "section_break_7",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "posting_time",
+   "fieldtype": "Time",
+   "label": "Posting TIme",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "production_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Production Type",
+   "options": "Planned\nAdhoc",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "section_break_10",
+   "fieldtype": "Section Break",
+   "label": "Raw Material Details"
+  },
+  {
+   "fieldname": "get_raw_material",
+   "fieldtype": "Button",
+   "label": "Get Raw Materials"
+  },
+  {
+   "fieldname": "raw_materials",
+   "fieldtype": "Table",
+   "options": "Production Material Item"
+  },
+  {
+   "fieldname": "section_break_12",
+   "fieldtype": "Section Break",
+   "label": "Product Details"
+  },
+  {
+   "fieldname": "get_product",
+   "fieldtype": "Button",
+   "label": "Get Product Item"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "options": "Production Product Item"
+  },
+  {
+   "description": "Applicable for Production of coal",
+   "fieldname": "section_break_28",
+   "fieldtype": "Section Break",
+   "label": "Coal Raising Deails"
+  },
+  {
+   "fieldname": "coal_raising_type",
+   "fieldtype": "Select",
+   "label": "Coal Raising Type",
+   "options": "\nManual\nMachine Sharing\nSMCL Machine"
+  },
+  {
+   "depends_on": "eval:doc.coal_raising_type == 'Manual' || doc.coal_raising_type == 'Machine Sharing'",
+   "fieldname": "column_break_30",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "group",
+   "fieldtype": "Link",
+   "label": "Group",
+   "options": "Departmental Group"
+  },
+  {
+   "fieldname": "no_of_labours",
+   "fieldtype": "Int",
+   "label": "No. of Labours"
+  },
+  {
+   "depends_on": "eval:doc.coal_raising_type == 'Machine Sharing';",
+   "fieldname": "machine_hours",
+   "fieldtype": "Float",
+   "label": "Machine Hours"
+  },
+  {
+   "fieldname": "column_break_32",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tire",
+   "fieldtype": "Link",
+   "label": "Tire",
+   "options": "Tire",
+   "read_only": 1
+  },
+  {
+   "fieldname": "oms",
+   "fieldtype": "Float",
+   "label": "OMS",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.coal_raising_type == 'Machine sharing';",
+   "fieldname": "machine_payable",
+   "fieldtype": "Currency",
+   "label": "Machine Payable",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_37",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "grand_amount",
+   "fieldtype": "Float",
+   "label": "Grand Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "penalty_amount",
+   "fieldtype": "Float",
+   "label": "Penalty Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Net Amount",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_13",
+   "fieldtype": "Section Break",
+   "label": "Production Waste"
+  },
+  {
+   "fieldname": "production_waste",
+   "fieldtype": "Table",
+   "options": "Production Waste"
+  },
+  {
+   "fieldname": "section_break_24",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "raw_material_qty",
+   "fieldtype": "Float",
+   "label": "Total Raw Material Qty",
+   "read_only": 1
+  },
+  {
+   "fieldname": "product_qty",
+   "fieldtype": "Float",
+   "label": "Total Product Qty",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Production",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2022-10-20 10:25:35.819662",
+ "modified_by": "Administrator",
+ "module": "Production",
+ "name": "Production",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Production User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Production Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Administrator",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
