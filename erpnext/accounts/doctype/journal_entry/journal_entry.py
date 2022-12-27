@@ -25,6 +25,7 @@ from erpnext.accounts.utils import (
 	get_stock_and_account_balance,
 )
 from erpnext.controllers.accounts_controller import AccountsController
+from frappe.model.naming import make_autoname
 
 
 class StockAccountInvalidTransaction(frappe.ValidationError):
@@ -34,6 +35,48 @@ class StockAccountInvalidTransaction(frappe.ValidationError):
 class JournalEntry(AccountsController):
 	def __init__(self, *args, **kwargs):
 		super(JournalEntry, self).__init__(*args, **kwargs)
+
+	# Ver 1.0 by SSK on 09/08/2016, autoname() method is added
+	def autoname(self):
+		series_seq = ""
+		if self.voucher_type == 'Journal Entry':
+				series_seq = 'JEJV'
+		elif self.voucher_type == 'Bank Entry':
+				if self.naming_series == 'Bank Payment Voucher':
+						series_seq = 'JEBP'
+				elif self.naming_series == 'Bank Receipt Voucher':
+						series_seq = 'JEBR'
+				else:
+						series_seq = 'JEBE'
+		elif self.voucher_type == 'Cash Entry':
+				if self.naming_series == 'Cash Payment Voucher':
+						series_seq = 'JECP'
+				elif self.naming_series == 'Cash Receipt Voucher':
+						series_seq = 'JECR'
+				else:
+						series_seq = 'JECA'
+		elif self.voucher_type == 'Debit Note':
+				series_seq = 'JEDN'
+		elif self.voucher_type == 'Credit Note':
+				series_seq = 'JECN'
+		elif self.voucher_type == 'Contra Entry':
+				series_seq = 'JECE'
+		elif self.voucher_type == 'Excise Entry':
+				series_seq = 'JEEE'
+		elif self.voucher_type == 'Write Off Entry':
+				series_seq = 'JEWE'
+		elif self.voucher_type == 'Opening Entry':
+					series_seq = 'JEOP'
+		elif self.voucher_type == 'Depreciation Entry':
+				series_seq = 'JEDE'
+		elif self.voucher_type == 'Maintenance Invoice':
+				series_seq = 'JEMA'
+		elif self.voucher_type == 'Hire Invoice':
+				series_seq = 'JEHI'
+		else:
+				series_seq = 'JEJE'
+
+		self.name = make_autoname(str(series_seq) + '.YY.MM.#####')
 
 	def get_feed(self):
 		return self.voucher_type
