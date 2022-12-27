@@ -1,0 +1,207 @@
+{
+ "actions": [],
+ "autoname": "RIMB.YY.MM.DD.##",
+ "creation": "2022-12-20 14:21:24.883650",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "company",
+  "branch",
+  "posting_date",
+  "party_type",
+  "purpose",
+  "column_break_6",
+  "cost_center",
+  "business_activity",
+  "party",
+  "advance_details_section",
+  "get_imprest_advance",
+  "imprest_advance_list",
+  "expense_details_section",
+  "items",
+  "amount_details_section",
+  "total_amount",
+  "remarks",
+  "journal_entry",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "party_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Party Type",
+   "options": "\nEmployee",
+   "reqd": 1
+  },
+  {
+   "fieldname": "purpose",
+   "fieldtype": "Select",
+   "label": "Purpose",
+   "options": "\nImprest",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "branch.cost_center",
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "business_activity",
+   "fieldtype": "Link",
+   "label": "Business Activity",
+   "options": "Business Activity",
+   "reqd": 1
+  },
+  {
+   "fieldname": "party",
+   "fieldtype": "Dynamic Link",
+   "ignore_user_permissions": 1,
+   "label": "Party",
+   "options": "party_type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "advance_details_section",
+   "fieldtype": "Section Break",
+   "label": "ADVANCE DETAILS"
+  },
+  {
+   "depends_on": "eval:doc.docstatus != 1",
+   "fieldname": "get_imprest_advance",
+   "fieldtype": "Button",
+   "label": "Get Imprest Advance"
+  },
+  {
+   "fieldname": "imprest_advance_list",
+   "fieldtype": "Table",
+   "label": "Imprest Advance List",
+   "options": "Imprest Advance Item"
+  },
+  {
+   "fieldname": "expense_details_section",
+   "fieldtype": "Section Break",
+   "label": "EXPENSE DETAILS"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "options": "Reimbursement Items",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amount_details_section",
+   "fieldtype": "Section Break",
+   "label": "AMOUNT DETAILS"
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "label": "Total Payable Amount",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "journal_entry",
+   "fieldtype": "Data",
+   "label": "Journal Entry"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Reimbursement",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2022-12-20 18:07:49.283325",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Reimbursement",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Employee",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

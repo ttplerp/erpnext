@@ -1,0 +1,171 @@
+{
+ "autoname": "RRCORE.YYYY.MM.#######",
+ "creation": "2016-06-30 14:24:29.313258",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "purpose",
+  "supplier",
+  "purchase_invoice",
+  "receipt_date",
+  "receipt_number",
+  "amended_from",
+  "cheque_number",
+  "cheque_date",
+  "month",
+  "fiscal_year",
+  "branch",
+  "bill_no",
+  "rrco_receipt_tool",
+  "employee",
+  "employee_name"
+ ],
+ "fields": [
+  {
+   "fieldname": "purpose",
+   "fieldtype": "Data",
+   "label": "Purpose"
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Read Only",
+   "label": "Supplier",
+   "read_only": 1
+  },
+  {
+   "fieldname": "purchase_invoice",
+   "fieldtype": "Data",
+   "label": "Purchase Invoice"
+  },
+  {
+   "fieldname": "receipt_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Receipt Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "receipt_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Receipt Number",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "RRCO Receipt Entries",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "cheque_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Cheque No",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cheque_date",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Cheque Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "month",
+   "fieldtype": "Data",
+   "label": "Month"
+  },
+  {
+   "fieldname": "fiscal_year",
+   "fieldtype": "Data",
+   "label": "Fiscal Year"
+  },
+  {
+   "fieldname": "bill_no",
+   "fieldtype": "Data",
+   "label": "Bill No",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rrco_receipt_tool",
+   "fieldtype": "Link",
+   "label": "Reference No",
+   "options": "RRCO Receipt Tool",
+   "read_only": 1
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee",
+   "read_only": 1
+  },
+  {
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name",
+   "options": "employee.employee_name",
+   "read_only": 1
+  }
+ ],
+ "is_submittable": 1,
+ "modified": "2022-01-04 10:39:16.178066",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "RRCO Receipt Entries",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Administrator",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

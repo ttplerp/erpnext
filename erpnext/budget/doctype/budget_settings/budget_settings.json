@@ -1,0 +1,88 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2022-09-14 08:35:03.562087",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "budget_commit_on",
+  "column_break_2",
+  "allow_budget_deviation",
+  "deviation",
+  "section_break_5",
+  "allowed_account_types",
+  "column_break_7",
+  "allowed_transactions"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "description": "If Checked, we must provide the deviation percentage",
+   "fieldname": "allow_budget_deviation",
+   "fieldtype": "Check",
+   "label": "Allow Budget Deviation"
+  },
+  {
+   "depends_on": "eval:doc.allow_budget_deviation",
+   "fieldname": "deviation",
+   "fieldtype": "Percent",
+   "label": "Allow Deviation (%)"
+  },
+  {
+   "description": "Budget commit for Buying(Purchase) module",
+   "fieldname": "budget_commit_on",
+   "fieldtype": "Select",
+   "label": "Commit Budget On",
+   "options": "Purchase Order\nMaterial Request"
+  },
+  {
+   "fieldname": "allowed_account_types",
+   "fieldtype": "Table",
+   "label": "Allowed Account Types for Budget Allocation ",
+   "options": "Budget Settings Account Types"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "allowed_transactions",
+   "fieldtype": "Table",
+   "label": "Transaction for Budget Check and Consumption",
+   "options": "Budget Transaction"
+  },
+  {
+   "fieldname": "section_break_5",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2022-11-08 14:40:52.068873",
+ "modified_by": "Administrator",
+ "module": "Budget",
+ "name": "Budget Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

@@ -1,0 +1,40 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2022-10-19 15:15:35.829040",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "distance",
+  "rate"
+ ],
+ "fields": [
+  {
+   "fieldname": "distance",
+   "fieldtype": "Link",
+   "label": "Distance",
+   "options": "Distance"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Rate",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2022-10-19 15:15:35.829040",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Transporter Distance Rate",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

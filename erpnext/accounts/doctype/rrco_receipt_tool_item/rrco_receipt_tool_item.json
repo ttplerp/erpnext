@@ -1,0 +1,78 @@
+{
+ "creation": "2021-01-23 12:22:11.256271",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "transaction",
+  "party",
+  "invoice_no",
+  "invoice_date",
+  "column_break_3",
+  "invoice_amount",
+  "tax_amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "invoice_no",
+   "fieldtype": "Dynamic Link",
+   "in_list_view": 1,
+   "label": "Invoice No",
+   "options": "transaction",
+   "read_only": 1
+  },
+  {
+   "fieldname": "invoice_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Invoice Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "invoice_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Invoice Amount",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "tax_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Tax Amount",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "transaction",
+   "fieldtype": "Link",
+   "label": "Transaction",
+   "options": "DocType",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "party",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Party",
+   "read_only": 1,
+   "reqd": 1
+  }
+ ],
+ "istable": 1,
+ "modified": "2022-01-04 10:48:03.547182",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "RRCO Receipt Tool Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
