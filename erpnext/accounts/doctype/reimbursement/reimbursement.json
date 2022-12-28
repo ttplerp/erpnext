@@ -140,8 +140,9 @@
   },
   {
    "fieldname": "journal_entry",
-   "fieldtype": "Data",
-   "label": "Journal Entry"
+   "fieldtype": "Link",
+   "label": "Journal Entry",
+   "options": "Journal Entry"
   },
   {
    "fieldname": "amended_from",
@@ -156,7 +157,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-12-20 18:07:49.283325",
+ "modified": "2022-12-28 14:42:26.502573",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Reimbursement",
