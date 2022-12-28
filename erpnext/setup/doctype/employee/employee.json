@@ -194,6 +194,7 @@
   {
    "fieldname": "company",
    "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "Company",
    "options": "Company",
    "print_hide": 1,
@@ -979,7 +980,7 @@
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2022-12-20 15:34:41.167549",
+ "modified": "2022-12-28 19:16:37.873756",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",

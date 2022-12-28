@@ -903,8 +903,7 @@
    "fieldname": "pol_advance_account",
    "fieldtype": "Link",
    "label": "POL Advance Account",
-   "options": "Account",
-   "reqd": 1
+   "options": "Account"
   },
   {
    "fieldname": "other_settings_tab",
@@ -932,22 +931,19 @@
    "fieldname": "security_deposit_account",
    "fieldtype": "Link",
    "label": "Security Deposit Account",
-   "options": "Account",
-   "reqd": 1
+   "options": "Account"
   },
   {
    "fieldname": "weighbridge_account",
    "fieldtype": "Link",
    "label": "Weighbridge Account",
-   "options": "Account",
-   "reqd": 1
+   "options": "Account"
   },
   {
    "fieldname": "clearing_account",
    "fieldtype": "Link",
    "label": "Clearing Account",
-   "options": "Account",
-   "reqd": 1
+   "options": "Account"
   },
   {
    "fieldname": "column_break_124",
@@ -957,8 +953,7 @@
    "fieldname": "default_unloading_account",
    "fieldtype": "Link",
    "label": "Default Unloading Account",
-   "options": "Account",
-   "reqd": 1
+   "options": "Account"
   },
   {
    "fieldname": "tds_account_item",
@@ -983,7 +978,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2022-12-20 15:57:27.499264",
+ "modified": "2022-12-28 19:55:19.955730",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",
