@@ -571,7 +571,7 @@ permission_query_conditions = {
 	# "Purchase Invoice": "erpnext.accounts.doctype.purchase_invoice.purchase_invoice.get_permission_query_conditions",
 	# "Purchase Receipt": "erpnext.stock.doctype.purchase_receipt.purchase_receipt.get_permission_query_conditions",
 	"Material Request": "erpnext.stock.doctype.material_request.material_request.get_permission_query_conditions",
-	"Stock Entry": "erpnext.stock.doctype.stock_entry.stock_entry.get_permission_query_conditions",
+	#"Stock Entry": "erpnext.stock.doctype.stock_entry.stock_entry.get_permission_query_conditions",
 	"Employee": "erpnext.setup.doctype.employee.employee.get_permission_query_conditions",
 	"Salary Structure": "hrms.payroll.doctype.salary_structure.salary_structure.get_permission_query_conditions",
 	"Salary Slip": "hrms.payroll.doctype.salary_slip.salary_slip.get_permission_query_conditions",
