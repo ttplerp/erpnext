@@ -3,7 +3,6 @@
  "allow_events_in_timeline": 1,
  "allow_import": 1,
  "allow_rename": 1,
- "autoname": "field:old_id",
  "creation": "2022-02-21 11:54:09.632218",
  "doctype": "DocType",
  "document_type": "Setup",
@@ -157,7 +156,8 @@
    "label": "Employee",
    "no_copy": 1,
    "print_hide": 1,
-   "report_hide": 1
+   "report_hide": 1,
+   "unique": 1
   },
   {
    "fieldname": "salutation",
@@ -236,11 +236,13 @@
    "oldfieldtype": "Date"
   },
   {
+   "description": "Employee ID is created by extracting year and month\neg. 30-12-2022, ID will be HR-EMP-2212+ four digit serial number",
    "fieldname": "date_of_joining",
    "fieldtype": "Date",
    "label": "Date of Joining",
    "oldfieldname": "date_of_joining",
-   "oldfieldtype": "Date"
+   "oldfieldtype": "Date",
+   "reqd": 1
   },
   {
    "bold": 1,
@@ -980,12 +982,11 @@
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2022-12-28 19:16:37.873756",
+ "modified": "2022-12-30 23:17:37.344895",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
- "name_case": "Title Case",
- "naming_rule": "Set by user",
+ "name_case": "UPPER CASE",
  "owner": "Administrator",
  "permissions": [
   {
