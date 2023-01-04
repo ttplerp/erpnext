@@ -24,6 +24,7 @@ from erpnext.accounts.utils import (
 	get_stock_and_account_balance,
 )
 from erpnext.controllers.accounts_controller import AccountsController
+from frappe.model.naming import make_autoname
 
 
 class StockAccountInvalidTransaction(frappe.ValidationError):
@@ -33,6 +34,52 @@ class StockAccountInvalidTransaction(frappe.ValidationError):
 class JournalEntry(AccountsController):
 	def __init__(self, *args, **kwargs):
 		super(JournalEntry, self).__init__(*args, **kwargs)
+
+	# Ver 1.0 by SSK on 09/08/2016, autoname() method is added
+	def autoname(self):
+		series_seq = ""
+		if self.voucher_type == 'Journal Entry':
+				series_seq = 'JEJV'
+		elif self.voucher_type == 'Bank Entry':
+				if self.naming_series == 'Bank Payment Voucher':
+						series_seq = 'JEBP'
+				elif self.naming_series == 'Bank Receipt Voucher':
+						series_seq = 'JEBR'
+				else:
+						series_seq = 'JEBE'
+		elif self.voucher_type == 'Cash Entry':
+				if self.naming_series == 'Cash Payment Voucher':
+						series_seq = 'JECP'
+				elif self.naming_series == 'Cash Receipt Voucher':
+						series_seq = 'JECR'
+				else:
+						series_seq = 'JECA'
+		elif self.voucher_type == 'Debit Note':
+				series_seq = 'JEDN'
+		elif self.voucher_type == 'Credit Note':
+				series_seq = 'JECN'
+		elif self.voucher_type == 'Contra Entry':
+				series_seq = 'JECE'
+		elif self.voucher_type == 'Excise Entry':
+				series_seq = 'JEEE'
+		elif self.voucher_type == 'Write Off Entry':
+				series_seq = 'JEWE'
+		elif self.voucher_type == 'Opening Entry':
+					series_seq = 'JEOP'
+		elif self.voucher_type == 'Depreciation Entry':
+				series_seq = 'JEDE'
+		elif self.voucher_type == 'Maintenance Invoice':
+				series_seq = 'JEMA'
+		elif self.voucher_type == 'Hire Invoice':
+				series_seq = 'JEHI'
+		else:
+				series_seq = 'JEJE'
+		# self.name = make_autoname(str(series_seq) + '.YY.MM.#####')
+
+		# Added by Jai, 2 Jun, 2022
+		year = formatdate(self.posting_date, "YY")
+		month = formatdate(self.posting_date, "MM")
+		self.name = make_autoname(str(series_seq) + '.{}.{}.#####'.format(year, month))
 
 	def get_feed(self):
 		return self.voucher_type
@@ -83,6 +130,7 @@ class JournalEntry(AccountsController):
 		self.update_advance_paid()
 		self.update_inter_company_jv()
 		self.update_invoice_discounting()
+		self.update_project_transaction_details() #added by Jai
 
 	def on_cancel(self):
 		from erpnext.accounts.utils import unlink_ref_doc_from_payment_entries
@@ -96,6 +144,7 @@ class JournalEntry(AccountsController):
 		self.unlink_inter_company_jv()
 		self.unlink_asset_adjustment_entry()
 		self.update_invoice_discounting()
+		self.update_project_transaction_details() #added by Jai
 
 	def get_title(self):
 		return self.pay_to_recd_from or self.accounts[0].account
@@ -998,13 +1047,44 @@ class JournalEntry(AccountsController):
 			d.account_balance = account_balance[d.account]
 			d.party_balance = party_balance[(d.party_type, d.party)]
 
+	def update_project_transaction_details(self):
+		for d in self.accounts:
+			if d.project and not self.docstatus == 2:
+				project_capitalize = frappe.db.get_value("Project", d.project, "status")
+				if project_capitalize == 'Capitalized':
+					frappe.throw(_("This {} is already Capitalized".format(d.project)))
+
+				total_overall_project_cost = frappe.db.get_value("Project", d.project, "total_overall_project_cost")
+				doc = frappe.get_doc("Project", d.project)
+				doc.append("transaction_details", {
+					"posting_date": self.posting_date,
+					"invoice_no": self.name,
+					"amount": d.debit
+				})
+				total_overall_project_cost += d.debit
+				doc.total_overall_project_cost = total_overall_project_cost
+				doc.save(ignore_permissions = True)
+			elif d.project and self.docstatus == 2:
+				project_capitalize = frappe.db.get_value("Project", d.project, "status")
+				if project_capitalize == 'Capitalized':
+					frappe.throw(_("This {} is Linked to the Project {}".format(self.name, d.project)))
+
+				total_overall_project_cost = frappe.db.get_value("Project", d.project, "total_overall_project_cost")
+				doc = frappe.get_doc("Project", d.project)
+				total_overall_project_cost -= d.debit
+				doc.total_overall_project_cost = total_overall_project_cost
+				doc.save(ignore_permissions = True)
+
+				frappe.db.sql(""" delete from `tabTransaction Details` where invoice_no = %s """, self.name)
 
 @frappe.whitelist()
-def get_default_bank_cash_account(company, account_type=None, mode_of_payment=None, account=None):
+def get_default_bank_cash_account(company, account_type=None, mode_of_payment=None, account=None, cost_center=None):
 	from erpnext.accounts.doctype.sales_invoice.sales_invoice import get_bank_cash_account
 
 	if mode_of_payment:
 		account = get_bank_cash_account(mode_of_payment, company).get("account")
+		if cost_center:
+			account = get_bank_cash_account(mode_of_payment, company, cost_center).get("account")
 
 	if not account:
 		"""
@@ -1014,6 +1094,8 @@ def get_default_bank_cash_account(company, account_type=None, mode_of_payment=No
 		"""
 		if account_type == "Bank":
 			account = frappe.get_cached_value("Company", company, "default_bank_account")
+			if cost_center and frappe.db.get_value("Cost Center", cost_center, "cost_center_for") == "DHQ":
+				account = frappe.get_cached_value("Company", company, "default_bank_account_dhq")
 			if not account:
 				account_list = frappe.get_all(
 					"Account", filters={"company": company, "account_type": "Bank", "is_group": 0}
@@ -1177,7 +1259,7 @@ def get_payment_entry(ref_doc, args):
 
 	# Make it bank_details
 	bank_account = get_default_bank_cash_account(
-		ref_doc.company, "Bank", account=args.get("bank_account")
+		ref_doc.company, "Bank", account=args.get("bank_account"), cost_center=cost_center
 	)
 	if bank_account:
 		bank_row.update(bank_account)
