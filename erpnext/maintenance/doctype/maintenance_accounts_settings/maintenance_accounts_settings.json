@@ -1,0 +1,230 @@
+{
+ "actions": [],
+ "creation": "2017-08-02 11:54:50.349058",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_1",
+  "default_services_account",
+  "column_break_3",
+  "default_goods_account",
+  "section_break_5",
+  "maintenance_expense_account",
+  "repair_and_maintenance_expense_account",
+  "column_break_5",
+  "default_receivable_account",
+  "default_bank_account",
+  "section_break_9",
+  "hire_revenue_account",
+  "hire_revenue_internal_account",
+  "discount_account",
+  "column_break_11",
+  "default_advance_account",
+  "hire_expense_account",
+  "section_break_13",
+  "default_pol_expense_account",
+  "pool_vehicle_pol_expenses",
+  "column_break_15",
+  "default_pol_advance_account",
+  "amc_and_rental_account_details_section",
+  "rental_table",
+  "amc_account_detail_section",
+  "amc_account_item"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_1",
+   "fieldtype": "Section Break",
+   "label": "Default Account Settings"
+  },
+  {
+   "fieldname": "default_services_account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Default Services Account",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "default_goods_account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Default Goods Account",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_5",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "maintenance_expense_account",
+   "fieldtype": "Link",
+   "label": "Maintenance Expense Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "repair_and_maintenance_expense_account",
+   "fieldtype": "Link",
+   "label": "Repair and Maintenance Expense Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "default_receivable_account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Default Receivable Account",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_9",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "hire_revenue_account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Default Hire Revenue Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "hire_revenue_internal_account",
+   "fieldtype": "Link",
+   "label": "Hire Revenue Account (Internal)",
+   "options": "Account"
+  },
+  {
+   "fieldname": "discount_account",
+   "fieldtype": "Link",
+   "label": "Default Discount Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "column_break_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "default_advance_account",
+   "fieldtype": "Link",
+   "label": "Hire Advance Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "hire_expense_account",
+   "fieldtype": "Link",
+   "label": "Hire Expense Account",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_13",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "default_pol_expense_account",
+   "fieldtype": "Link",
+   "label": "Default POL Expense Account (Machinaries)",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_15",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pool_vehicle_pol_expenses",
+   "fieldtype": "Link",
+   "label": "Pool Vehicle POL Expenses",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "default_pol_advance_account",
+   "fieldtype": "Link",
+   "label": "Default POL Advance Account",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amc_and_rental_account_details_section",
+   "fieldtype": "Section Break",
+   "label": "RENTAL ACCOUNT DETAILS"
+  },
+  {
+   "fieldname": "rental_table",
+   "fieldtype": "Table",
+   "options": "Rental Account Item"
+  },
+  {
+   "fieldname": "amc_account_detail_section",
+   "fieldtype": "Section Break",
+   "label": "AMC ACCOUNT DETAIL"
+  },
+  {
+   "fieldname": "amc_account_item",
+   "fieldtype": "Table",
+   "options": "AMC Account Item"
+  },
+  {
+   "description": "* This account takes precedence over <b>Expense Bank Account</b> defined under <b>Branch</b> master.",
+   "fieldname": "default_bank_account",
+   "fieldtype": "Link",
+   "label": "Default Expense Bank Account",
+   "options": "Account"
+  }
+ ],
+ "issingle": 1,
+ "links": [],
+ "modified": "2022-12-20 17:03:10.123902",
+ "modified_by": "Administrator",
+ "module": "Maintenance",
+ "name": "Maintenance Accounts Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

@@ -1,159 +1,174 @@
 // Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and Contributors
 // License: GNU General Public License v3. See license.txt
 frappe.ui.form.on("Project", {
-	setup(frm) {
-		frm.make_methods = {
-			'Timesheet': () => {
-				open_form(frm, "Timesheet", "Timesheet Detail", "time_logs");
-			},
-			'Purchase Order': () => {
-				open_form(frm, "Purchase Order", "Purchase Order Item", "items");
-			},
-			'Purchase Receipt': () => {
-				open_form(frm, "Purchase Receipt", "Purchase Receipt Item", "items");
-			},
-			'Purchase Invoice': () => {
-				open_form(frm, "Purchase Invoice", "Purchase Invoice Item", "items");
-			},
-		};
-	},
-	onload: function (frm) {
-		const so = frm.get_docfield("sales_order");
-		so.get_route_options_for_new_doc = () => {
-			if (frm.is_new()) return;
+    onload: function(frm) {
+        frm.set_query('cost_center', function(doc, cdt, cdn) {
 			return {
-				"customer": frm.doc.customer,
-				"project_name": frm.doc.name
-			};
-		};
-
-		frm.set_query('customer', 'erpnext.controllers.queries.customer_query');
-
-		frm.set_query("user", "users", function () {
-			return {
-				query: "erpnext.projects.doctype.project.project.get_users_for_project"
+				filters: {
+					"center_category": 'Course',
+					"is_disabled": 0
+				}
 			};
 		});
 
-		// sales order
-		frm.set_query('sales_order', function () {
-			var filters = {
-				'project': ["in", frm.doc.__islocal ? [""] : [frm.doc.name, ""]]
-			};
-
-			if (frm.doc.customer) {
-				filters["customer"] = frm.doc.customer;
-			}
-
+        frm.set_query('branch', function(doc, cdt, cdn) {
 			return {
-				filters: filters
+				filters: {
+					"is_disabled": 0
+				}
 			};
 		});
-	},
+    },
+    refresh: function (frm) {
+        frm.set_df_property("project_code", "read_only", frm.is_new() ? 0 : 1);
 
-	refresh: function (frm) {
-		if (frm.doc.__islocal) {
-			frm.web_link && frm.web_link.remove();
-		} else {
-			frm.add_web_link("/projects?project=" + encodeURIComponent(frm.doc.name));
-
-			frm.trigger('show_dashboard');
-		}
-		frm.trigger("set_custom_buttons");
-	},
-
-	set_custom_buttons: function(frm) {
-		if (!frm.is_new()) {
-			frm.add_custom_button(__('Duplicate Project with Tasks'), () => {
-				frm.events.create_duplicate(frm);
-			}, __("Actions"));
-
-			frm.trigger("set_project_status_button");
-
-
-			if (frappe.model.can_read("Task")) {
-				frm.add_custom_button(__("Gantt Chart"), function () {
-					frappe.route_options = {
-						"project": frm.doc.name
-					};
-					frappe.set_route("List", "Task", "Gantt");
-				}, __("View"));
-
-				frm.add_custom_button(__("Kanban Board"), () => {
-					frappe.call('erpnext.projects.doctype.project.project.create_kanban_board_if_not_exists', {
-						project: frm.doc.name
-					}).then(() => {
-						frappe.set_route('List', 'Task', 'Kanban', frm.doc.project_name);
-					});
-				}, __("View"));
-			}
+        if(frm.doc.settlement===1){
+			frm.add_custom_button(__('Accounting Ledger'), function(){
+				frappe.route_options = {
+					voucher_no: frm.doc.name,
+					from_date: frm.doc.posting_date,
+					to_date: frm.doc.posting_date,
+					company: frm.doc.company,
+					group_by_voucher: false
+				};
+				frappe.set_route("query-report", "General Ledger");
+			}, __("View"));
 		}
 
+        if (frm.doc.settlement != 1 && frm.doc.status != 'Cancelled') {
+			frm.add_custom_button("Monthly Settlement", function () {
+				frappe.call({
+					method: "monthly_settlement",
+					doc: cur_frm.doc,
+                    callback: function(r){
+                        console.log(r.message)
+                        cur_frm.refresh()
+                    }
+				})
+			}).addClass("btn-primary");
+		}
 
-	},
+        if(frm.doc.status != 'Capitalized' && frm.doc.status != 'Cancelled'){
+            frm.add_custom_button(__("Capitalize"), function() {
+                // frappe.msgprint("Custom Information");
+                frm.trigger("make_project_caiptalize");
+            });
+        }
+        
+        // frappe.call({
+        // 	method: "erpnext.projects.doctype.project.project.get_project_cost",
+        // 	args: {
+        // 		project_definition: cur_frm.doc.name
+        // 	},
+        // 	callback: function (r, rt) {
+        // 		frm.refresh_fields()
+        // 		let total_cost = 0;
+        // 		frm.doc.project_sites.map((item) => {
+        // 			total_cost = total_cost + item.total_cost
+        // 		})
+        // 		frm.doc.total_overall_project_cost = total_cost
+        // 		cur_frm.refresh_fields()
+    // 	},
+        // });
+        frm.refresh_fields();
+    },
+    make_project_caiptalize: function(frm) {
+        var dialog = new frappe.ui.Dialog({
+            title: __("Capitalize Project"),
+            fields: [
+                {"fieldtype": "Link", "label": __("Project Asset Item Code"),
+                    "fieldname": "item_code", "options":"Item",
+                    "reqd": 1,
+                    // "get_query": function () {
+                    //     return {
+                    //         filters: [
+                    //             ["Item", "disabled", "!=", 0],
+                    //             ["Item", "is_fixed_asset", "=", 1],
+                    //             ["Item", "is_stock_item", "!=", 0]
+                    //         ]
+                    //     };
+                    // },
+                    onchange: function(e) {
+                        // console.log("Selected : ", this.value)
+                        if (this.value){
+                            frappe.call({
+                                method: 'erpnext.projects.doctype.project.project.get_item_expense_account',
+                                args:{
+                                    'item_code': this.value,             
+                                },
+                                async: false,
+                                callback: function(r){
+                                    r.message.forEach(function(rec) {
+                                        $("input[data-fieldname='account_name']").val(rec.expense_account);
+                                        $("input[data-fieldname='item_name']").val(rec.item_name);
+                                    });
+                                }
+                            });
+                        }
+                        
+                    }
+                },    
+                {"fieldtype": "Data", "label": __("Asset Item Name"),
+                    "fieldname": "item_name", "options":"",
+                    "reqd": 0
+                },    
+                {"fieldtype": "Link", "label": __("Account"),
+                    "fieldname": "account_name", "options":"Account",
+                    "reqd": 0
+                },    
+                // {"fieldtype": "Button", "label": __("Make Capitalize"),#Jai, optioinal method
+                //     "fieldname": "make_project_capitalize", "cssClass": "btn-primary"
+                // },
+            ]
+        });
+        // d.fields_dict.ht.$wrapper.html('Hello World');
+        // dialog.fields_dict.item_code.$input.on('change', function(){ #this function not working
+        //     // dialog.fields_dict.account_name.refresh();
+        //     console.warn('im jai')
+        // }); 
 
-	set_project_status_button: function(frm) {
-		frm.add_custom_button(__('Set Project Status'), () => {
-			let d = new frappe.ui.Dialog({
-				"title": __("Set Project Status"),
-				"fields": [
-					{
-						"fieldname": "status",
-						"fieldtype": "Select",
-						"label": "Status",
-						"reqd": 1,
-						"options": "Completed\nCancelled",
-					},
-				],
-				primary_action: function() {
-					frm.events.set_status(frm, d.get_values().status);
-					d.hide();
-				},
-				primary_action_label: __("Set Project Status")
-			}).show();
-		}, __("Actions"));
-	},
-
-	create_duplicate: function(frm) {
-		return new Promise(resolve => {
-			frappe.prompt('Project Name', (data) => {
-				frappe.xcall('erpnext.projects.doctype.project.project.create_duplicate_project',
-					{
-						prev_doc: frm.doc,
-						project_name: data.value
-					}).then(() => {
-					frappe.set_route('Form', "Project", data.value);
-					frappe.show_alert(__("Duplicate project has been created"));
-				});
-				resolve();
-			});
-		});
-	},
-
-	set_status: function(frm, status) {
-		frappe.confirm(__('Set Project and all Tasks to status {0}?', [status.bold()]), () => {
-			frappe.xcall('erpnext.projects.doctype.project.project.set_project_status',
-				{project: frm.doc.name, status: status}).then(() => {
-				frm.reload_doc();
-			});
-		});
-	},
-
+        dialog.set_primary_action(__('Create'), function(frm) {
+            dialog.hide();
+            var args = dialog.get_values();
+            console.log(args)
+            frappe.call({
+                method: "capitalize_project_process",
+                doc: cur_frm.doc,
+                args: {
+                    "item_code": args.item_code,
+                    "item_name": args.item_name,
+                    "account": args.account_name                 
+                },
+                callback: function (r) {
+                    console.log(r.message)
+                    cur_frm.reload_doc();
+                    show_alert('Project Capitalizaion Done');
+                }
+            });
+        });
+        
+        // dialog.fields_dict.make_project_capitalize.$input.click(function() { #Jai, optioinal method
+        //     var args = dialog.get_values();
+        //     console.log(args)
+        // });
+        dialog.show()
+    }
 });
 
-function open_form(frm, doctype, child_doctype, parentfield) {
-	frappe.model.with_doctype(doctype, () => {
-		let new_doc = frappe.model.get_new_doc(doctype);
+/* V14 recidule Jai */
+// function open_form(frm, doctype, child_doctype, parentfield) {
+// 	frappe.model.with_doctype(doctype, () => {
+// 		let new_doc = frappe.model.get_new_doc(doctype);
 
-		// add a new row and set the project
-		let new_child_doc = frappe.model.get_new_doc(child_doctype);
-		new_child_doc.project = frm.doc.name;
-		new_child_doc.parent = new_doc.name;
-		new_child_doc.parentfield = parentfield;
-		new_child_doc.parenttype = doctype;
-		new_doc[parentfield] = [new_child_doc];
+// 		// add a new row and set the project
+// 		let new_child_doc = frappe.model.get_new_doc(child_doctype);
+// 		new_child_doc.project = frm.doc.name;
+// 		new_child_doc.parent = new_doc.name;
+// 		new_child_doc.parentfield = parentfield;
+// 		new_child_doc.parenttype = doctype;
+// 		new_doc[parentfield] = [new_child_doc];
 
-		frappe.ui.form.make_quick_entry(doctype, null, null, new_doc);
-	});
+// 		frappe.ui.form.make_quick_entry(doctype, null, null, new_doc);
+// 	});
 
-}
+// }

@@ -561,7 +561,7 @@ class POSInvoice(SalesInvoice):
 	def set_account_for_mode_of_payment(self):
 		for pay in self.payments:
 			if not pay.account:
-				pay.account = get_bank_cash_account(pay.mode_of_payment, self.company).get("account")
+				pay.account = get_bank_cash_account(pay.mode_of_payment, self.company, self.cost_center).get("account")
 
 	@frappe.whitelist()
 	def create_payment_request(self):

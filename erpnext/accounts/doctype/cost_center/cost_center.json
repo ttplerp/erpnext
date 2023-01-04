@@ -13,7 +13,9 @@
   "cost_center_name",
   "cost_center_number",
   "parent_cost_center",
+  "center_category",
   "company",
+  "cost_center_for",
   "cb0",
   "is_group",
   "disabled",
@@ -144,13 +146,25 @@
    "label": "Budget Cost Center",
    "mandatory_depends_on": "eval:doc.use_budget_from_parent",
    "options": "Cost Center"
+  },
+  {
+   "fieldname": "center_category",
+   "fieldtype": "Select",
+   "label": "Center Category",
+   "options": "\nDomain\nCourse"
+  },
+  {
+   "fieldname": "cost_center_for",
+   "fieldtype": "Select",
+   "label": "For DSP/DHQ",
+   "options": "\nDHQ\nDSP"
   }
  ],
  "icon": "fa fa-money",
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2022-09-28 12:36:21.032071",
+ "modified": "2023-01-04 14:45:14.726801",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Cost Center",

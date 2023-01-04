@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_import": 1,
- "autoname": "format:SMCL-{abbr}-{YY}-{####}",
+ "autoname": "ASSET.YY.######",
  "creation": "2022-01-18 02:26:55.975005",
  "doctype": "DocType",
  "document_type": "Document",
@@ -10,9 +10,11 @@
   "company",
   "item_code",
   "item_name",
+  "description",
   "asset_owner",
   "asset_owner_company",
   "is_existing_asset",
+  "old_asset_code",
   "supplier",
   "customer",
   "image",
@@ -29,11 +31,16 @@
   "disposal_date",
   "posting_date",
   "accounting_dimensions_section",
-  "custodian",
-  "custodian_name",
+  "issued_to",
+  "issue_to_employee",
+  "employee_name",
+  "issue_to_desuup",
+  "desuup_name",
+  "issue_to_other",
   "dimension_col_break",
   "branch",
   "cost_center",
+  "project",
   "purchase_details_section",
   "purchase_receipt",
   "purchase_invoice",
@@ -81,7 +88,8 @@
   "column_break_51",
   "purchase_receipt_amount",
   "default_finance_book",
-  "amended_from"
+  "amended_from",
+  "aid_reference"
  ],
  "fields": [
   {
@@ -180,13 +188,6 @@
    "in_list_view": 1,
    "label": "Location",
    "options": "Location"
-  },
-  {
-   "fieldname": "custodian",
-   "fieldtype": "Link",
-   "ignore_user_permissions": 1,
-   "label": "Custodian",
-   "options": "Employee"
   },
   {
    "fetch_from": "branch.cost_center",
@@ -510,13 +511,6 @@
    "options": "Company:company:default_currency"
   },
   {
-   "fetch_from": "custodian.employee_name",
-   "fieldname": "custodian_name",
-   "fieldtype": "Data",
-   "label": "Custodian Name",
-   "read_only": 1
-  },
-  {
    "fetch_from": "custodian.branch",
    "fetch_if_empty": 1,
    "fieldname": "branch",
@@ -579,6 +573,79 @@
    "fieldtype": "Data",
    "label": "Abbr",
    "read_only": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text Editor",
+   "label": "Description",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.is_existing_asset=='1'",
+   "fieldname": "old_asset_code",
+   "fieldtype": "Data",
+   "label": "Old Asset Code"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project",
+   "read_only": 1
+  },
+  {
+   "fieldname": "issued_to",
+   "fieldtype": "Select",
+   "label": "Issued To",
+   "options": "\nEmployee\nDesuup\nOther"
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval: doc.issued_to == 'Employee'",
+   "fieldname": "issue_to_employee",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Isuue To Employee",
+   "options": "Employee"
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval: doc.issued_to == 'Employee'",
+   "fetch_from": "issue_to_employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval: doc.issued_to == 'Desuup'",
+   "fieldname": "issue_to_desuup",
+   "fieldtype": "Link",
+   "label": "Issue To Desuup",
+   "options": "Desuup"
+  },
+  {
+   "depends_on": "eval: doc.issued_to == 'Desuup';",
+   "fetch_from": "issue_to_desuup.desuup_name",
+   "fieldname": "desuup_name",
+   "fieldtype": "Data",
+   "label": "Desuup Name",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval: doc.issued_to == 'Other'",
+   "fieldname": "issue_to_other",
+   "fieldtype": "Data",
+   "label": "Issue To Other"
+  },
+  {
+   "fieldname": "aid_reference",
+   "fieldtype": "Link",
+   "label": "AID Reference",
+   "options": "Asset Issue Details",
+   "read_only": 1
   }
  ],
  "idx": 72,
@@ -601,11 +668,11 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2022-09-27 21:24:23.256261",
+ "modified": "2022-12-28 21:09:28.547394",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",
- "naming_rule": "Expression",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
@@ -649,7 +716,7 @@
    "write": 1
   }
  ],
- "search_fields": "asset_name,custodian,cost_center",
+ "search_fields": "asset_name,cost_center",
  "show_name_in_global_search": 1,
  "sort_field": "modified",
  "sort_order": "DESC",

@@ -1,0 +1,254 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:SEL-{YY}-{MM}-{cohort_name}-{###}",
+ "creation": "2022-12-09 16:42:54.205971",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "training_selection_section",
+  "cohort",
+  "cohort_id",
+  "cohort_name",
+  "description",
+  "slot",
+  "column_break_5",
+  "course",
+  "course_id",
+  "course_name",
+  "course_level",
+  "course_description",
+  "course_start_date",
+  "course_end_date",
+  "column_break_12",
+  "posting_date",
+  "domain",
+  "course_course_center",
+  "pre_requisite",
+  "pre_requisite_course",
+  "remark",
+  "applicants_section",
+  "get_applicants",
+  "item",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "cohort",
+   "fieldtype": "Link",
+   "label": "Cohort",
+   "options": "Cohort",
+   "read_only_depends_on": "eval:doc.workflow_state != \"Draft\"",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "cohort.cohort_id",
+   "fieldname": "cohort_id",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Cohort ID",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "cohort.cohort_name",
+   "fieldname": "cohort_name",
+   "fieldtype": "Data",
+   "label": "Cohort Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "cohort.description",
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "course",
+   "fieldtype": "Link",
+   "label": "Course",
+   "options": "Course",
+   "read_only_depends_on": "eval:doc.workflow_state != \"Draft\"",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "course.course_id",
+   "fieldname": "course_id",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Course ID",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "course.course_name",
+   "fieldname": "course_name",
+   "fieldtype": "Small Text",
+   "label": "Course Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "course.course_level",
+   "fieldname": "course_level",
+   "fieldtype": "Data",
+   "label": "Course Level",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "course.description",
+   "fieldname": "course_description",
+   "fieldtype": "Small Text",
+   "label": "Course Description",
+   "read_only": 1
+  },
+  {
+   "fieldname": "applicants_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Table",
+   "options": "Training Selection Item"
+  },
+  {
+   "fetch_from": "course.domain",
+   "fieldname": "domain",
+   "fieldtype": "Link",
+   "label": "Domain Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
+  },
+  {
+   "fieldname": "remark",
+   "fieldtype": "Data",
+   "label": "Remarks"
+  },
+  {
+   "bold": 1,
+   "depends_on": "eval:doc.workflow_state == \"Draft\"",
+   "fieldname": "get_applicants",
+   "fieldtype": "Button",
+   "label": "Get Applicants By Cohort and Course"
+  },
+  {
+   "fieldname": "slot",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Slot"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_12",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "course.course",
+   "fieldname": "course_course_center",
+   "fieldtype": "Link",
+   "label": "Course Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
+  },
+  {
+   "fieldname": "training_selection_section",
+   "fieldtype": "Section Break",
+   "label": "Training Selection"
+  },
+  {
+   "default": "0",
+   "fetch_from": "course.pre_requisite",
+   "fieldname": "pre_requisite",
+   "fieldtype": "Check",
+   "label": "Prerequisites Required"
+  },
+  {
+   "depends_on": "eval:doc.pre_requisite",
+   "description": "<b>If no course is selected, the pre-requisite will be qualified as any one course attended</b>",
+   "fetch_from": "course.pre_requisite_course",
+   "fieldname": "pre_requisite_course",
+   "fieldtype": "Link",
+   "label": "Prerequisite Course",
+   "options": "Course"
+  },
+  {
+   "fieldname": "course_start_date",
+   "fieldtype": "Date",
+   "label": "Course Start Date"
+  },
+  {
+   "fieldname": "course_end_date",
+   "fieldtype": "Date",
+   "label": "Course End Date"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Training Selection",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-01-04 08:10:00.471191",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Training Selection",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Training Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Training User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

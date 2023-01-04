@@ -6,7 +6,7 @@ import frappe
 from frappe import _, throw
 from frappe.desk.notifications import clear_doctype_notifications
 from frappe.model.mapper import get_mapped_doc
-from frappe.utils import cint, flt, getdate, nowdate
+from frappe.utils import cint, flt, getdate, nowdate, date_diff
 
 import erpnext
 from erpnext.accounts.utils import get_account_currency
@@ -117,7 +117,7 @@ class PurchaseReceipt(BuyingController):
 		self.validate_uom_is_integer("stock_uom", "stock_qty")
 		self.validate_cwip_accounts()
 		self.validate_provisional_expense_account()
-
+		self.calculate_delay_days()
 		self.check_on_hold_or_closed_status()
 
 		if getdate(self.posting_date) > getdate(nowdate()):
@@ -127,7 +127,11 @@ class PurchaseReceipt(BuyingController):
 		self.reset_default_field_value("set_warehouse", "items", "warehouse")
 		self.reset_default_field_value("rejected_warehouse", "items", "rejected_warehouse")
 		self.reset_default_field_value("set_from_warehouse", "items", "from_warehouse")
-
+	def calculate_delay_days(self):
+		if self.actual_receipt_date and self.schedule_date < self.actual_receipt_date:
+			self.delay_by = flt(date_diff(self.actual_receipt_date,self.schedule_date)) -1
+		else:
+			self.delay_by = 0
 	def validate_cwip_accounts(self):
 		for item in self.get("items"):
 			if item.is_fixed_asset and is_cwip_accounting_enabled(item.asset_category):
@@ -236,6 +240,7 @@ class PurchaseReceipt(BuyingController):
 		self.make_gl_entries()
 		self.repost_future_sle_and_gle()
 		self.set_consumed_qty_in_subcontract_order()
+		self.update_asset_receive_entries()
 
 	def check_next_docstatus(self):
 		submit_rv = frappe.db.sql(
@@ -272,6 +277,30 @@ class PurchaseReceipt(BuyingController):
 		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Repost Item Valuation")
 		self.delete_auto_created_batches()
 		self.set_consumed_qty_in_subcontract_order()
+		self.delete_asset_receive_entries()
+
+	#Update asset entries if asset
+	def update_asset_receive_entries(self):
+		for a in self.items:
+			item_group = frappe.db.get_value("Item", a.item_code, "item_group")
+			if item_group and item_group == "Fixed Asset":
+				ae = frappe.new_doc("Asset Received Entries")
+				ae.item_code = a.item_code
+				ae.child_ref = a.name
+				ae.item_name = a.item_name
+				ae.qty = a.qty
+				ae.company = self.company
+				ae.received_date = self.posting_date
+				ae.reference_type = "Purchase Receipt"
+				ae.ref_doc = self.name
+				ae.branch = self.branch
+				ae.cost_center = a.cost_center
+				ae.warehouse = a.warehouse
+				ae.flags.ignore_permissions = True
+				ae.submit()
+	#Delete asset entries. Taken from old code base
+	def delete_asset_receive_entries(self):
+		frappe.db.sql("delete from `tabAsset Received Entries` where ref_doc = %s", self.name)
 
 	def get_gl_entries(self, warehouse_account=None):
 		from erpnext.accounts.general_ledger import process_gl_map
@@ -675,8 +704,8 @@ class PurchaseReceipt(BuyingController):
 	def get_asset_gl_entry(self, gl_entries):
 		for item in self.get("items"):
 			if item.is_fixed_asset:
-				if is_cwip_accounting_enabled(item.asset_category):
-					self.add_asset_gl_entries(item, gl_entries)
+				# if is_cwip_accounting_enabled(item.asset_category):
+				self.add_asset_gl_entries(item, gl_entries)
 				if flt(item.landed_cost_voucher_amount):
 					self.add_lcv_gl_entries(item, gl_entries)
 					# update assets gross amount by its valuation rate
@@ -688,7 +717,7 @@ class PurchaseReceipt(BuyingController):
 		arbnb_account = self.get_company_default("asset_received_but_not_billed")
 		# This returns category's cwip account if not then fallback to company's default cwip account
 		cwip_account = get_asset_account(
-			"capital_work_in_progress_account", asset_category=item.asset_category, company=self.company
+			"credit_account", asset_category=item.asset_category, company=self.company
 		)
 
 		asset_amount = flt(item.net_amount) + flt(item.item_tax_amount / self.conversion_rate)
@@ -1109,10 +1138,12 @@ def get_permission_query_conditions(user):
 	if not user: user = frappe.session.user
 	user_roles = frappe.get_roles(user)
 
-	if user == "Administrator" or "System Manager" in user_roles: 
+	if user == "Administrator" or "System Manager" in user_roles or "Stock Master" in user_roles: 
 		return
 
 	return """(
+		`tabPurchase Receipt`.owner = '{user}'
+		or
 		exists(select 1
 			from `tabEmployee` as e
 			where e.branch = `tabPurchase Receipt`.branch

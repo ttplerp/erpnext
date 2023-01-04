@@ -1,0 +1,143 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "format:DEP-{YY}-{MM}-{#####}",
+ "creation": "2022-11-28 11:33:47.057761",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "desuung_id",
+  "cid",
+  "profile_id",
+  "start_date",
+  "end_date",
+  "days_attended",
+  "deployment_id",
+  "column_break_6",
+  "deployment_title",
+  "deployment_category",
+  "location",
+  "remark",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "desuung_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Desuung ID",
+   "options": "Desuup",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "desuung_id.cid_number",
+   "fieldname": "cid",
+   "fieldtype": "Data",
+   "label": "Desuung CID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date"
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "End Date"
+  },
+  {
+   "fieldname": "days_attended",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Days Attended",
+   "precision": "2",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "deployment_title",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Deployment Title",
+   "options": "Deployment Title",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fetch_from": "deployment_title.deployment_category",
+   "fieldname": "deployment_category",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Deployment Category",
+   "options": "Deployment Category"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Location"
+  },
+  {
+   "fieldname": "remark",
+   "fieldtype": "Small Text",
+   "label": "Remark"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Deployment",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "profile_id",
+   "fieldtype": "Data",
+   "label": "Profile ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "deployment_id",
+   "fieldtype": "Data",
+   "label": "Deployment ID",
+   "read_only": 1,
+   "unique": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2022-12-22 10:39:41.281921",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Deployment",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "desuung_id",
+ "track_changes": 1
+}

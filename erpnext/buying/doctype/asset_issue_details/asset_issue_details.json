@@ -1,0 +1,372 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "autoname": "AID.YYYY.MM.####",
+ "creation": "2022-11-28 11:59:15.212773",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "company",
+  "branch",
+  "column_break_1",
+  "business_activity",
+  "column_break_3",
+  "entry_date",
+  "section_break_2",
+  "item_code",
+  "uom",
+  "brand",
+  "branch_column",
+  "item_name",
+  "item_description",
+  "engine_no",
+  "model",
+  "material_column",
+  "purchase_receipt",
+  "reg_number",
+  "chesis_no",
+  "section_break_6",
+  "serial_number",
+  "qty",
+  "gdad",
+  "issued_to",
+  "column_break_18",
+  "asset_rate",
+  "amount",
+  "issue_to_employee",
+  "issue_to_desuup",
+  "issue_to_other",
+  "column_break_8",
+  "issued_date",
+  "employee_name",
+  "desuup_name",
+  "receiving_branch",
+  "receiving_cost_center",
+  "reference_code",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "default": "Today",
+   "fieldname": "entry_date",
+   "fieldtype": "Data",
+   "label": "Entry Date",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_2",
+   "fieldtype": "Section Break",
+   "label": "Item Detail"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "item_code.brand",
+   "fieldname": "brand",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Brand"
+  },
+  {
+   "fieldname": "branch_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Material Code",
+   "options": "Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "engine_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Engine No."
+  },
+  {
+   "fieldname": "material_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "item_code.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Material Name",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "reg_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Registration No"
+  },
+  {
+   "fieldname": "chesis_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Chassis No"
+  },
+  {
+   "fieldname": "serial_number",
+   "fieldtype": "Data",
+   "label": "Serial Number"
+  },
+  {
+   "default": "1",
+   "fieldname": "qty",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Issued Quantity",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_18",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "asset_rate",
+   "fieldtype": "Currency",
+   "label": "Asset Rate",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_6",
+   "fieldtype": "Section Break",
+   "label": "Asset Issue Detail"
+  },
+  {
+   "fieldname": "issued_to",
+   "fieldtype": "Select",
+   "label": "Issued To",
+   "options": "\nEmployee\nDesuup\nOther",
+   "reqd": 1
+  },
+  {
+   "default": "Common",
+   "fieldname": "business_activity",
+   "fieldtype": "Link",
+   "label": "Business Activity",
+   "options": "Business Activity",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "issued_date",
+   "fieldtype": "Date",
+   "label": "Issued Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Asset Issue Details",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "reference_code",
+   "fieldtype": "Link",
+   "label": "Asset Reference Code",
+   "options": "Asset",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.issued_to == 'Employee'",
+   "fetch_from": "issue_to_employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "purchase_receipt",
+   "fieldtype": "Link",
+   "label": "Purchase Receipt",
+   "options": "Purchase Receipt",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.qty > 1;",
+   "fieldname": "gdad",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Generate Different Asset Details"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "item_code.stock_uom",
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "label": "UOM",
+   "options": "UOM",
+   "read_only": 1
+  },
+  {
+   "fieldname": "model",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Model"
+  },
+  {
+   "depends_on": "eval:doc.issued_to == 'Employee'",
+   "fieldname": "issue_to_employee",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Issued To Employee",
+   "options": "Employee"
+  },
+  {
+   "depends_on": "eval:doc.issued_to == 'Desuup'",
+   "fieldname": "issue_to_desuup",
+   "fieldtype": "Link",
+   "label": "Issue To Desuup",
+   "options": "Desuup"
+  },
+  {
+   "depends_on": "eval:doc.issued_to == 'Other'",
+   "fieldname": "issue_to_other",
+   "fieldtype": "Data",
+   "label": "Issue To Other"
+  },
+  {
+   "depends_on": "eval:doc.issued_to == 'Desuup'",
+   "fetch_from": "issue_to_desuup.desuup_name",
+   "fieldname": "desuup_name",
+   "fieldtype": "Data",
+   "label": "Desuup Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "issue_to_employee.branch",
+   "fieldname": "receiving_branch",
+   "fieldtype": "Link",
+   "label": "Receiving Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "receiving_branch.cost_center",
+   "fieldname": "receiving_cost_center",
+   "fieldtype": "Link",
+   "label": "Receiving Cost Center",
+   "options": "Cost Center",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "item_description",
+   "fieldtype": "Text Editor",
+   "label": "Item Description",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-01-04 15:14:37.874815",
+ "modified_by": "Administrator",
+ "module": "Buying",
+ "name": "Asset Issue Details",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Stock User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Purchase User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Stock Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Purchase Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

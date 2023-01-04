@@ -1,0 +1,198 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "autoname": "TMGT.YY.MM.###",
+ "creation": "2022-11-23 14:35:26.777959",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "course_info_section",
+  "course",
+  "course_name",
+  "domain",
+  "course_cost_center",
+  "col_brk_1",
+  "cohort",
+  "cohort_name",
+  "status",
+  "monthly_stipend",
+  "col_break_01",
+  "slot",
+  "training_start_date",
+  "training_end_date",
+  "course_duration",
+  "trainer_details_section",
+  "trainer_details",
+  "trainee_details_section",
+  "trainee_details",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "course_info_section",
+   "fieldtype": "Section Break",
+   "label": "Course Information"
+  },
+  {
+   "fieldname": "course",
+   "fieldtype": "Link",
+   "label": "Course",
+   "options": "Course"
+  },
+  {
+   "fieldname": "training_start_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Training Start Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "col_brk_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "course_duration",
+   "fieldtype": "Data",
+   "label": "Duration of Course"
+  },
+  {
+   "fieldname": "training_end_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Training End Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "trainer_details_section",
+   "fieldtype": "Section Break",
+   "label": "Trainer Details"
+  },
+  {
+   "fieldname": "trainee_details_section",
+   "fieldtype": "Section Break",
+   "label": "Trainee Details"
+  },
+  {
+   "allow_bulk_edit": 1,
+   "fieldname": "trainee_details",
+   "fieldtype": "Table",
+   "label": "Trainee Details",
+   "options": "Trainee Details",
+   "reqd": 1
+  },
+  {
+   "allow_bulk_edit": 1,
+   "fieldname": "trainer_details",
+   "fieldtype": "Table",
+   "label": "Trainer Information",
+   "options": "Trainer Information"
+  },
+  {
+   "default": "Created",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "\nCreated\nOn Going\nCompleted\nCancelled"
+  },
+  {
+   "fieldname": "col_break_01",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "slot",
+   "fieldtype": "Int",
+   "label": "Slots"
+  },
+  {
+   "fieldname": "monthly_stipend",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Monthly Stipend"
+  },
+  {
+   "fetch_from": "course.course_name",
+   "fieldname": "course_name",
+   "fieldtype": "Data",
+   "label": "Course Name"
+  },
+  {
+   "fieldname": "cohort",
+   "fieldtype": "Link",
+   "label": "Cohort",
+   "options": "Cohort"
+  },
+  {
+   "fetch_from": "cohort.cohort_name",
+   "fieldname": "cohort_name",
+   "fieldtype": "Data",
+   "label": "Cohort Name"
+  },
+  {
+   "fetch_from": "course.domain",
+   "fieldname": "domain",
+   "fieldtype": "Link",
+   "label": "Domain",
+   "options": "Cost Center",
+   "reqd": 1
+  },
+  {
+   "fieldname": "course_cost_center",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Course Cost Center",
+   "options": "Cost Center"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Training Management",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2022-12-30 14:28:34.266711",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Training Management",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "course, course_name, cohort, cohort_name",
+ "show_name_in_global_search": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

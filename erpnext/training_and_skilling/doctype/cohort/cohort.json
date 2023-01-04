@@ -1,0 +1,122 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:CO-{cohort_name}-{cohort_id}",
+ "creation": "2022-12-03 16:44:03.310825",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "cohort_name",
+  "cohort_id",
+  "open_date",
+  "end_date",
+  "column_break_4",
+  "status",
+  "description",
+  "section_break_7",
+  "item",
+  "cohort_applicantion_section",
+  "fetch_application",
+  "applicant"
+ ],
+ "fields": [
+  {
+   "fieldname": "cohort_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Cohort Name",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "cohort_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Cohort ID",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "open_date",
+   "fieldtype": "Data",
+   "label": "Application Open Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nACTIVE\nOPEN\nCLOSED\nCLOSE"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "depends_on": "eval:doc.cohort_id",
+   "fieldname": "section_break_7",
+   "fieldtype": "Section Break",
+   "label": "Courses"
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Table",
+   "options": "Cohort Item"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Data",
+   "label": "Application End Date",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.cohort_id",
+   "fieldname": "cohort_applicantion_section",
+   "fieldtype": "Section Break",
+   "label": "Registered Cohort Applicantion"
+  },
+  {
+   "fieldname": "applicant",
+   "fieldtype": "Table",
+   "options": "Cohort Applicant"
+  },
+  {
+   "fieldname": "fetch_application",
+   "fieldtype": "Button",
+   "label": "Fetch Applications"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2022-12-13 14:40:04.456593",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Cohort",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "cohort_id, cohort_name, description, status",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

@@ -1,0 +1,149 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2022-12-09 11:35:51.339320",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "profile_id",
+  "did",
+  "cid",
+  "desuup_name",
+  "column_break_5",
+  "mobile",
+  "email",
+  "gender",
+  "date_of_birth",
+  "section_break_10",
+  "cohort_id",
+  "cohort_name",
+  "column_break_13",
+  "course_id",
+  "course_name",
+  "course",
+  "employment_type"
+ ],
+ "fields": [
+  {
+   "fieldname": "profile_id",
+   "fieldtype": "Data",
+   "label": "Profile ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "did",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Desuup ID",
+   "options": "Desuup",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cid",
+   "fieldtype": "Data",
+   "label": "CID",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "did.desuup_name",
+   "fieldname": "desuup_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Desuup Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cohort_id",
+   "fieldtype": "Data",
+   "label": "Cohort ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cohort_name",
+   "fieldtype": "Data",
+   "label": "Cohort Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "course_id",
+   "fieldtype": "Data",
+   "label": "Course ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "course_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Course Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mobile",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Mobile",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "did.email_id",
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "did.gender",
+   "fieldname": "gender",
+   "fieldtype": "Data",
+   "label": "Gender",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "did.date_of_birth",
+   "fieldname": "date_of_birth",
+   "fieldtype": "Data",
+   "label": "Date of Birth",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_10",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_13",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "course",
+   "fieldtype": "Link",
+   "label": "Course",
+   "options": "Course",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "did.employment_type",
+   "fieldname": "employment_type",
+   "fieldtype": "Data",
+   "label": "Employment Type",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2022-12-12 10:51:25.161929",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Cohort Applicant",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

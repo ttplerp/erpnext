@@ -1,0 +1,586 @@
+{
+ "actions": [],
+ "autoname": "JC.YY.MM.####",
+ "creation": "2017-07-17 12:56:53.792301",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "owned_by",
+  "column_break_30",
+  "payment_status",
+  "col_break_100",
+  "dispatch_number",
+  "receive_payment",
+  "section_break_1",
+  "cost_center",
+  "column_break_7",
+  "branch",
+  "column_break_3",
+  "out_source",
+  "supplier",
+  "customer",
+  "sec_break_5",
+  "customer_cost_center",
+  "col_break_7",
+  "customer_branch",
+  "section_break_11",
+  "posting_date",
+  "job_in_time",
+  "settled_using_imprest",
+  "expense_account",
+  "column_break_11",
+  "finish_date",
+  "job_out_time",
+  "col_break_19",
+  "repair_type",
+  "section_break_5",
+  "equipment",
+  "equipment_type",
+  "business_activity",
+  "column_break_4",
+  "equipment_model",
+  "column_break_6",
+  "equipment_number",
+  "section_break_2",
+  "items",
+  "section_break_15",
+  "goods_amount",
+  "column_break_the",
+  "services_amount",
+  "column_break_199",
+  "total_amount",
+  "column_break_34",
+  "outstanding_amount",
+  "section_break_25",
+  "assigned_to",
+  "section_break_13",
+  "break_down_report",
+  "column_break_15",
+  "break_down_report_date",
+  "sb_remarks",
+  "remarks",
+  "reference_section",
+  "journal_entry",
+  "direct_payment_reference",
+  "column_break_17",
+  "payment_jv",
+  "paid",
+  "section_break_54",
+  "company",
+  "workflow_state",
+  "column_break_56",
+  "currency",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "payment_status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Payment Status",
+   "read_only": 1
+  },
+  {
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Workflow State",
+   "options": "Workflow State"
+  },
+  {
+   "fieldname": "owned_by",
+   "fieldtype": "Data",
+   "label": "Owned By",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_30",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.owned_by=='Others'",
+   "fieldname": "dispatch_number",
+   "fieldtype": "Data",
+   "label": "Dispatch Number"
+  },
+  {
+   "fieldname": "col_break_100",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.docstatus == 1 && doc.paid == 0 && doc.owned_by == \"Others\"",
+   "description": "Process Payment from Customer",
+   "fieldname": "receive_payment",
+   "fieldtype": "Button",
+   "hidden": 1,
+   "label": "Receive Payment"
+  },
+  {
+   "fieldname": "section_break_1",
+   "fieldtype": "Section Break",
+   "label": "Customer/Vendor Details"
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "out_source",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Out Source"
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Supplier",
+   "options": "Supplier",
+   "read_only": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Customer",
+   "options": "Customer",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.owned_by == \"CDCL\"",
+   "fieldname": "sec_break_5",
+   "fieldtype": "Section Break",
+   "label": "Intra-DHQ Customer Details"
+  },
+  {
+   "fieldname": "customer_cost_center",
+   "fieldtype": "Read Only",
+   "label": "Customer Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
+  },
+  {
+   "fieldname": "col_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "customer_branch",
+   "fieldtype": "Read Only",
+   "label": "Customer Branch",
+   "options": "Branch",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_11",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Job In Date"
+  },
+  {
+   "fieldname": "job_in_time",
+   "fieldtype": "Time",
+   "label": "Job In Time"
+  },
+  {
+   "default": "0",
+   "fieldname": "settled_using_imprest",
+   "fieldtype": "Check",
+   "label": "Settled Using Imprest?"
+  },
+  {
+   "depends_on": "eval:doc.settled_using_imprest",
+   "fieldname": "expense_account",
+   "fieldtype": "Link",
+   "label": "Credit Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "column_break_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "finish_date",
+   "fieldtype": "Date",
+   "label": "Job Out Date"
+  },
+  {
+   "fieldname": "job_out_time",
+   "fieldtype": "Time",
+   "label": "Job Out Time"
+  },
+  {
+   "fieldname": "col_break_19",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "repair_type",
+   "fieldtype": "Select",
+   "label": "Repair Type",
+   "options": "\nMajor\nMinor"
+  },
+  {
+   "fieldname": "section_break_5",
+   "fieldtype": "Section Break",
+   "label": "Equipment Details"
+  },
+  {
+   "fieldname": "equipment",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Equipment",
+   "options": "Equipment"
+  },
+  {
+   "fieldname": "equipment_type",
+   "fieldtype": "Link",
+   "label": "Equipment Type",
+   "options": "Equipment Type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "business_activity",
+   "fieldtype": "Link",
+   "label": "Business Activity",
+   "options": "Business Activity",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "equipment_model",
+   "fieldtype": "Link",
+   "label": "Equipment Model",
+   "options": "Equipment Model",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "equipment_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Equipment Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_2",
+   "fieldtype": "Section Break",
+   "label": "Job & Cost  Details"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Job Card Items",
+   "options": "Job Card Item"
+  },
+  {
+   "fieldname": "section_break_15",
+   "fieldtype": "Section Break",
+   "label": "Chargeable Amount Details"
+  },
+  {
+   "fieldname": "goods_amount",
+   "fieldtype": "Currency",
+   "label": "Goods Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_the",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "services_amount",
+   "fieldtype": "Currency",
+   "label": "Services Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_199",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "label": "Total Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_34",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "outstanding_amount",
+   "fieldtype": "Currency",
+   "label": "Outstanding Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_25",
+   "fieldtype": "Section Break",
+   "label": "Technician Details"
+  },
+  {
+   "fieldname": "section_break_13",
+   "fieldtype": "Section Break",
+   "label": "Break Down Report Details"
+  },
+  {
+   "fieldname": "break_down_report",
+   "fieldtype": "Link",
+   "label": "Break Down Report",
+   "options": "Break Down Report",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_15",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "break_down_report_date",
+   "fieldtype": "Date",
+   "label": "Break Down Report Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_17",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "payment_jv",
+   "fieldtype": "Data",
+   "label": "Payment Journal",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Job Card",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "paid",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Paid",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sb_remarks",
+   "fieldtype": "Section Break",
+   "label": "REMARKS"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Long Text"
+  },
+  {
+   "fieldname": "section_break_54",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_56",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "journal_entry",
+   "fieldtype": "Data",
+   "label": "Journal Entry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "reference_section",
+   "fieldtype": "Section Break",
+   "label": "Reference"
+  },
+  {
+   "fieldname": "direct_payment_reference",
+   "fieldtype": "Data",
+   "label": "Direct Payment Reference",
+   "read_only": 1
+  },
+  {
+   "fieldname": "assigned_to",
+   "fieldtype": "Table",
+   "label": "Assigned To (Mechanic)",
+   "options": "Mechanic Assigned"
+  }
+ ],
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2022-12-26 09:32:56.114656",
+ "modified_by": "Administrator",
+ "module": "Maintenance",
+ "name": "Job Card",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Auditor",
+   "share": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Workshop User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Administrator",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Drivers and Operators",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Break Down Section",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Fleet Manager",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Management",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Regional Manager",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Fleet User",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Workshop Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "customer, posting_date",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "equipment_number"
+}

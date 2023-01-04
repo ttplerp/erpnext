@@ -1,0 +1,132 @@
+{
+ "actions": [],
+ "creation": "2017-07-18 08:50:52.600653",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "which",
+  "recent_km",
+  "column_break_2",
+  "job",
+  "recent_maintenance_date",
+  "column_break_5",
+  "job_name",
+  "km_difference",
+  "section_break_2",
+  "amount",
+  "uom",
+  "col_break_6",
+  "quantity",
+  "charge_amount",
+  "section_break_12",
+  "stock_entry"
+ ],
+ "fields": [
+  {
+   "fieldname": "which",
+   "fieldtype": "Select",
+   "label": "Service Or Material",
+   "options": "\nService\nItem",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "job",
+   "fieldtype": "Dynamic Link",
+   "in_list_view": 1,
+   "label": "Service/Material Code",
+   "options": "which",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "job_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Service/Material Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_2",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Rate"
+  },
+  {
+   "fieldname": "col_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "quantity",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Quantity",
+   "precision": "2"
+  },
+  {
+   "fieldname": "charge_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Charge Amount ",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_12",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "stock_entry",
+   "fieldtype": "Link",
+   "label": "MIN Number",
+   "options": "Stock Entry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "recent_km",
+   "fieldtype": "Float",
+   "label": "Recent KM",
+   "read_only": 1
+  },
+  {
+   "fieldname": "recent_maintenance_date",
+   "fieldtype": "Date",
+   "label": "Recent Maintenance Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "km_difference",
+   "fieldtype": "Float",
+   "label": "KM Difference",
+   "read_only": 1
+  },
+  {
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "label": "UOM",
+   "options": "UOM"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2022-12-20 13:49:24.841992",
+ "modified_by": "Administrator",
+ "module": "Maintenance",
+ "name": "Job Card Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

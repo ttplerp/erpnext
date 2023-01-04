@@ -1,0 +1,99 @@
+<div class="page-break">
+    <div style="margin-bottom: 7px;" class="text-center">
+        {%= frappe.boot.letter_heads[filters.letter_head || frappe.defaults.get_default("letter_head")] %}
+    </div>
+    <center>
+        <h2><b><u>Subject: POL Application form</u></b></h2>
+    </center>
+    <table>
+        <tbody>
+            <tr>
+                <td><b>Branch Name: </b></td>
+                <td>{{filters.branch}}</td>
+                <td><b>Date: </b></td>
+                <td>{{frappe.format(frappe.datetime.nowdate(),{fieldtype: "Date"})}}</td>
+            </tr>
+            <tr>
+                <td><b>Equipment No: </b></td>
+                <td>{{filters.equipment_no}}</td>
+                <td><b>Name Of Driver: </b></td>
+                <td>.............................</td>
+            </tr>
+            <tr>
+            <tr>
+                <td><b>Previous POL last Kilometer: </b></td>
+                <td>
+                    {% if filters.prev_km_reading %}
+                    {{filters.prev_km_reading}}
+                    {% endif %}
+                    {% if not filters.prev_km_reading %}
+                    0
+                    {% endif %}
+                </td>
+            </tr>
+            </tr>
+        </tbody>
+    </table>
+    <center>
+        <table class="table-bordered" style="margin-top: 15px;">
+            <thead style="font-size: 12px;">
+                <th>Date of Refill</th>
+                <th>KM Reading at Refill</th>
+                <th>KM Difference</th>
+                <th>POL Ltrs.</th>
+                <th>KM/Per Liter</th>
+                <th>OD Amount</th>
+                <th>Amount for POL</th>
+                <th>Book Balance</th>
+            </thead>
+            <tbody style="font-size: 10px;">
+                {% var i = 0 %}
+                {% for d in data %}
+                {% if i < data.length - 1 %} <tr>
+                    <td>{{frappe.format(d.posting_date,{fieldtype: "Date"})}}</td>
+                    <td>{{frappe.format(d.current_km_reading,{fieldtype:"Float"})}}</td>
+                    <td>{{frappe.format(d.km_difference,{fieldtype:"Float"})}}</td>
+                    <td>{{frappe.format(d.qty,{fieldtype:"Float"})}}</td>
+                    <td>{{frappe.format(d.mileage,{fieldtype:"Float"})}}</td>
+                    <td>{{frappe.format(d.od_amount,{fieldtype:"Currency"})}}</td>
+                    <td>{{frappe.format(d.total_amount,{fieldtype:"Currency"})}}</td>
+                    <td>{{frappe.format(d.book_balance,{fieldtype:"Currency"})}}</td>
+                    </tr>
+                    {% endif %}
+                    {% if i == data.length - 1 %}
+                    <tr>
+                        <td colspan="2" style="text-align: center;">Total/Balance</td>
+                        <td>{{frappe.format(d.km_difference,{fieldtype:"Float"})}}</td>
+                        <td>{{frappe.format(d.qty,{fieldtype:"Float"})}}</td>
+                        <td>{{frappe.format(d.mileage,{fieldtype:"Float"})}}</td>
+                        <td>{{frappe.format(d.od_amount,{fieldtype:"Currency"})}}</td>
+                        <td>{{frappe.format(d.total_amount,{fieldtype:"Currency"})}}</td>
+                        <td>{{frappe.format(data[i-1].book_balance,{fieldtype:"Currency"})}}</td>
+                    </tr>
+                    {% endif %}
+                    {% i = i + 1 %}
+                    {% endfor %}
+
+            </tbody>
+        </table>
+    </center>
+    <hr style="font-weight: bold; margin-top: 20%;" />
+    <center>
+        <h2><b>(FOR HEAD OFFICE USE ONLY)</b></h2>
+    </center>
+    <p style="margin-top: 5%;">Please sanction <b>NU............................</b>/- being the cost of POL/
+    <!-- <p style="margin-top: 5%;">Please sanction <b>NU.{{data[data.length-1].total_amount - data[data.length-1].od_amount}}</b>/- being the cost of POL/ -->
+        Diesel for the office
+        Equipment No: <b>{{filters.equipment_no}}</b></p>
+    <div style="margin-top: 10%;">
+        <span>RECOMMEDED BY:.....................................................</span>
+        <span>APPROVED BY:.......................................................</span>
+    </div>
+</div>
+<center>
+    <div style="margin-top: 50px;">This print is system generated and should be considered VALID only with appropriate
+        seal and/or signature. <br> Printed by <b>{{ frappe.session.user }}</b> on <b>{{
+            frappe.format(frappe.datetime.nowdate(),{fieldtype:'Date'})}}</b> at <b>{{ frappe.datetime.now_time()
+            }}</b></div>
+</center>
+</div>

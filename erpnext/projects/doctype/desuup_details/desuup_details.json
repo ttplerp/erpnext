@@ -1,0 +1,46 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2022-11-27 16:04:39.879354",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "desuup_id",
+  "cb_1",
+  "desuup_name"
+ ],
+ "fields": [
+  {
+   "fieldname": "desuup_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Desuup ID",
+   "options": "Desuup"
+  },
+  {
+   "fieldname": "cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "desuup_id.desuup_name",
+   "fieldname": "desuup_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Desuup Name"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2022-11-27 16:05:00.948527",
+ "modified_by": "Administrator",
+ "module": "Projects",
+ "name": "Desuup Details",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -5,12 +5,16 @@
 import frappe
 from frappe import _
 from frappe.model.document import Document
+from erpnext.accounts.utils import make_asset_transfer_gl
+from frappe.utils import getdate, nowdate
+from erpnext.assets.asset_utils import check_valid_asset_transfer
+from erpnext.custom_utils import get_branch_from_cost_center
 
 
 class AssetMovement(Document):
 	def validate(self):
 		self.validate_cost_center()
-		self.validate_employee()
+		# self.validate_employee()
 		self.validate_asset()
 
 	def validate_asset(self):
@@ -63,8 +67,8 @@ class AssetMovement(Document):
 				# 	)
 				if not d.target_cost_center and self.transfer_type == 'Cost Center To Cost Center':
 					frappe.throw(_("Target Cost Center is required while transferring Asset {0}").format(d.asset))
-				if d.source_cost_center == d.target_cost_center:
-					frappe.throw(_("Source and Target Cost Center cannot be same"))
+				# if d.source_cost_center == d.target_cost_center:
+				# 	frappe.throw(_("Source and Target Cost Center cannot be same"))
 
 			if self.purpose == "Receipt":
 				# only when asset is bought and first entry is made
@@ -108,12 +112,27 @@ class AssetMovement(Document):
 
 	def on_submit(self):
 		self.set_latest_cost_center_in_asset()
+		self.make_asset_transfer_gl_entry()
 
 	def on_cancel(self):
 		self.set_latest_cost_center_in_asset()
+		self.cancel_asset_transfer_gl_entry()
+
+	def make_asset_transfer_gl_entry(self):
+		if self.purpose in ["Receipt","Issue"]:
+			return
+
+		for d in self.assets:
+			if d.source_cost_center != d.target_cost_center:
+				make_asset_transfer_gl(self, d.asset, self.transaction_date, d.source_cost_center, d.target_cost_center)
+	
+	def cancel_asset_transfer_gl_entry(self):
+		if self.purpose in ["Receipt","Issue"]:
+			return
+		frappe.db.sql("delete from `tabGL Entry` where voucher_no = %s", self.name)
 
 	def set_latest_cost_center_in_asset(self):
-		current_cost_center, current_employee = "", ""
+		current_cost_center, current_employee, current_employee_name = "", "", ""
 		cond = "1=1"
 
 		for d in self.assets:
@@ -123,7 +142,8 @@ class AssetMovement(Document):
 			# In case of cancellation it corresponds to previous latest document's Cost Center, employee
 			latest_movement_entry = frappe.db.sql(
 				"""
-				SELECT asm_item.target_cost_center, asm_item.to_employee,to_employee_name
+				SELECT asm_item.target_cost_center, asm_item.target_custodian_type, asm_item.to_employee, asm_item.to_employee_name, 
+					asm_item.to_desuup, asm_item.to_desuup_name, asm_item.to_other
 				FROM `tabAsset Movement Item` asm_item, `tabAsset Movement` asm
 				WHERE
 					asm_item.parent=asm.name and
@@ -135,12 +155,67 @@ class AssetMovement(Document):
 				""".format(
 					cond
 				),
-				args,
+				args, as_dict=True
 			)
-			# if latest_movement_entry:
-			# 	current_cost_center = latest_movement_entry[0][0]
-			# 	current_employee 	= latest_movement_entry[0][1]
-			# 	current_employee_name= latest_movement_entry[0][2]
-			# frappe.db.set_value("Asset", d.asset, "cost_center", current_cost_center)
-			# frappe.db.set_value("Asset", d.asset, "custodian", current_employee)
-			# frappe.db.set_value("Asset", d.asset, "custodian_name", current_employee_name)
+			# frappe.throw(str(latest_movement_entry))
+			if latest_movement_entry:
+				current_cost_center = latest_movement_entry[0]['target_cost_center']
+				current_custodian_type = latest_movement_entry[0]['target_custodian_type']
+				if current_custodian_type == 'Employee':
+					frappe.db.set_value("Asset", d.asset, "issue_to_employee", latest_movement_entry[0]['to_employee'])
+					frappe.db.set_value("Asset", d.asset, "employee_name", latest_movement_entry[0]['to_employee_name'])
+					frappe.db.set_value("Asset", d.asset, "issue_to_desuup", "")
+					frappe.db.set_value("Asset", d.asset, "desuup_name", "")
+					frappe.db.set_value("Asset", d.asset, "issue_to_other", "")
+				elif current_custodian_type == 'Desuup':
+					frappe.db.set_value("Asset", d.asset, "issue_to_desuup", latest_movement_entry[0]['to_desuup'])
+					frappe.db.set_value("Asset", d.asset, "desuup_name", latest_movement_entry[0]['to_desuup_name'])
+					frappe.db.set_value("Asset", d.asset, "issue_to_employee", "")
+					frappe.db.set_value("Asset", d.asset, "employee_name", "")
+					frappe.db.set_value("Asset", d.asset, "issue_to_other", "")
+				else:
+					frappe.db.set_value("Asset", d.asset, "issue_to_other", latest_movement_entry[0]['to_other'])
+					frappe.db.set_value("Asset", d.asset, "issue_to_employee", "")
+					frappe.db.set_value("Asset", d.asset, "employee_name", "")
+					frappe.db.set_value("Asset", d.asset, "issue_to_desuup", "")
+					frappe.db.set_value("Asset", d.asset, "desuup_name", "")
+			
+			frappe.db.set_value("Asset", d.asset, "cost_center", current_cost_center)
+			branch = get_branch_from_cost_center(current_cost_center)
+			frappe.db.set_value("Asset", d.asset, "branch", branch)
+			frappe.db.set_value("Asset", d.asset, "issued_to", current_custodian_type)
+
+			equipment = frappe.db.get_value("Equipment", {"asset_code": d.asset}, "name")
+			if equipment:
+				purpose = 'Cancel' if self.docstatus == 2 else ''
+				save_equipment(equipment, branch, self.transaction_date, self.name, purpose)
+
+	def save_equipment(equipment, branch, posting_date, ref_doc, purpose):
+		equip = frappe.get_doc("Equipment", equipment)
+		equip.branch = branch
+		equip.create_equipment_history(branch, posting_date, ref_doc, purpose)
+		equip.save()
+
+	@frappe.whitelist()
+	def get_asset_list(self):
+		if not self.from_employee:
+			frappe.throw("From Employee missing!")
+		else:
+			asset_list = frappe.db.sql("""
+				select name, cost_center, issued_to
+				from `tabAsset` 
+				where issue_to_employee = '{}' 
+				and docstatus = 1 
+				""".format(self.from_employee),as_dict = 1)
+			if asset_list:
+				self.set("assets",[])
+				for x in asset_list:
+					row = self.append("assets",{})
+					data = {
+							"asset":x.name, 
+							"from_employee":self.from_employee, 
+							"from_employee_name":frappe.db.get_value("Employee", self.from_employee, 'employee_name'), 
+							"source_cost_center": x.cost_center,
+							"source_custodian_type": x.issued_to,
+						}
+					row.update(data)

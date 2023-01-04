@@ -98,14 +98,14 @@ def get_user_info(user=None, employee=None, cost_center=None):
 			branch      = frappe.db.get_value("Muster Roll Employee", {"user_id": user}, "branch")
 		
 	warehouse   = frappe.db.get_value("Cost Center", cost_center, "warehouse")
-	approver    = frappe.db.get_value("Approver Item", {"cost_center": cost_center}, "approver")
-	customer    = frappe.db.get_value("Customer", {"cost_center": cost_center}, "name")
+	# approver    = frappe.db.get_value("Approver Item", {"cost_center": cost_center}, "approver")
+	# customer    = frappe.db.get_value("Customer", {"cost_center": cost_center}, "name")
 
 	info.setdefault('cost_center', cost_center)
 	info.setdefault('branch', branch)
 	info.setdefault('warehouse', warehouse)
-	info.setdefault('approver',approver)
-	info.setdefault('customer', customer)
+	# info.setdefault('approver',approver)
+	# info.setdefault('customer', customer)
 	
 	#return [cc, wh, app, cust]
 	return info
@@ -239,8 +239,17 @@ def check_budget_available_for_reappropiation(cost_center, budget_account, trans
 ##
 # Check budget availability in the budget head
 ##
-def check_budget_available(cost_center, budget_account, transaction_date, amount, project = None):
+def check_budget_available(cost_center, budget_account, transaction_date, amount, business_activity, project = None):
+	return
+	
 	consumed=committed= None
+	# budget_against = frappe.db.get_single_value("Accounts Settings", "budget_level")
+	# if not budget_against:
+	# 	frappe.throw("Budget Level not set in Accounts Settings")
+	fiscal_year = frappe.db.sql("select name, year_start_date, year_end_date from `tabFiscal Year` where '{}' between year_start_date and year_end_date and disabled = 0".format(str(transaction_date)), as_dict=True)
+	if not fiscal_year:
+		frappe.throw(_("Transaction date {} does not fall under any of the <b>Fiscal Year</b>").format(str(transaction_date)), title="Budget Check Failed")
+
 	if project:
 		budget_amount = frappe.db.sql("select b.action_if_annual_budget_exceeded as action, \
 						ba.budget_check, ba.budget_amount, b.deviation \
@@ -248,11 +257,22 @@ def check_budget_available(cost_center, budget_account, transaction_date, amount
 						where b.docstatus = 1 \
 						and ba.parent = b.name and ba.cost_center= '{}' \
 						and b.fiscal_year = '{}' \
-						and b.project = '{}' ".format(cost_center, str(transaction_date)[0:4], project), as_dict=True)
+						and b.project = '{}' ".format(cost_center, fiscal_year[0]["name"], project), as_dict=True)
 		if budget_amount:
-			committed = frappe.db.sql("select SUM(cb.amount) as total from `tabCommitted Budget` cb where cb.cost_center=%s and cb.project=%s and cb.reference_date between %s and %s", (cost_center, project, str(transaction_date)[0:4] + "-01-01", str(transaction_date)[0:4] + "-12-31"), as_dict=True)
-			consumed = frappe.db.sql("select SUM(cb.amount) as total from `tabConsumed Budget` cb where cb.cost_center=%s and cb.project=%s and cb.reference_date between %s and %s", (cost_center, project, str(transaction_date)[0:4] + "-01-01", str(transaction_date)[0:4] + "-12-31"), as_dict=True)
-		msg = " Project: <b> " + str(project) +"</b>, for Cost Center :  <b>" + str(cost_center) + "</b> level for <b>" + str(transaction_date)[0:4] + "</b>"
+			committed = frappe.db.sql("select SUM(cb.amount) as total from `tabCommitted Budget` cb where cb.cost_center=%s and cb.project=%s and cb.reference_date between %s and %s", (cost_center, project, fiscal_year[0]["year_start_date"], fiscal_year[0]["year_end_date"]), as_dict=True)
+			consumed = frappe.db.sql("select SUM(cb.amount) as total from `tabConsumed Budget` cb where cb.cost_center=%s and cb.project=%s and cb.reference_date between %s and %s", (cost_center, project, fiscal_year[0]["year_start_date"], fiscal_year[0]["year_end_date"]), as_dict=True)
+		msg = " Project: <b> " + str(project) +"</b>, for Cost Center :  <b>" + str(cost_center) + "</b> level for <b>" + fiscal_year[0]["name"] + "</b>"
+	# if budget_against == "Cost Center without Accounts":
+	# 	budget_amount = frappe.db.sql("select b.action_if_annual_budget_exceeded as action, \
+	# 					ba.budget_check, ba.budget_amount, b.deviation \
+	# 					from `tabBudget` b, `tabBudget Cost Center` ba \
+	# 					where b.docstatus = 1 \
+	# 					and ba.parent = b.name and ba.cost_center= '{}' \
+	# 					and b.fiscal_year = '{}' ".format(cost_center, fiscal_year[0]["name"]), as_dict=True)
+	# 	if budget_amount:
+	# 		committed = frappe.db.sql("select SUM(cb.amount) as total from `tabCommitted Budget` cb where cb.cost_center=%s and cb.reference_date between %s and %s", (cost_center, fiscal_year[0]["year_start_date"], fiscal_year[0]["year_end_date"]), as_dict=True)
+	# 		consumed = frappe.db.sql("select SUM(cb.amount) as total from `tabConsumed Budget` cb where cb.cost_center=%s and cb.reference_date between %s and %s", (cost_center, fiscal_year[0]["year_start_date"], fiscal_year[0]["year_end_date"]), as_dict=True)
+	# 	msg = "Cost Center :  <b>" + str(cost_center) + "</b> level for <b>" + fiscal_year[0]["name"] + "</b>"
 	else:
 		bud_acc_dtl = frappe.get_doc("Account", budget_account)
 		if bud_acc_dtl.has_linked_budget == 1:
@@ -267,18 +287,25 @@ def check_budget_available(cost_center, budget_account, transaction_date, amount
 			cc_doc = frappe.get_doc("Cost Center", cost_center)
 			if cc_doc.use_budget_from_parent:
 				cost_center = cc_doc.parent_cost_center
-		
+
+		# cond = ""
+		# if budget_against == "Cost Center":
+		# 	cond += " and b.budget_against = '{}' and b.cost_center = '{}'".format(budget_against, cost_center)
+		# else:
+		# 	cond += " and b.budget_against = '{}'".format(budget_against)
+
 		budget_amount = frappe.db.sql("select b.action_if_annual_budget_exceeded as action, \
 						ba.budget_check, ba.budget_amount, b.deviation \
 						from `tabBudget` b, `tabBudget Account` ba \
 						where b.docstatus = 1 \
 						and ba.parent = b.name and ba.account= '{}' \
 						and b.fiscal_year = '{}' \
-						and b.cost_center = '{}' ".format(budget_account, str(transaction_date)[0:4], cost_center), as_dict=True)
+						and b.cost_center = '{}' \
+						and b.business_activity = '{}'".format(budget_account, fiscal_year[0]["name"], cost_center, business_activity), as_dict=True)
 		if budget_amount:
-			committed = frappe.db.sql("select SUM(cb.amount) as total from `tabCommitted Budget` cb where cb.account=%s and cb.cost_center=%s and cb.reference_date between %s and %s", (budget_account, cost_center, str(transaction_date)[0:4] + "-01-01", str(transaction_date)[0:4] + "-12-31"), as_dict=True)
-			consumed = frappe.db.sql("select SUM(cb.amount) as total from `tabConsumed Budget` cb where cb.account=%s and cb.cost_center=%s and cb.reference_date between %s and %s", (budget_account, cost_center, str(transaction_date)[0:4] + "-01-01", str(transaction_date)[0:4] + "-12-31"), as_dict=True)
-		msg = "Account: <b>" + str(budget_account) + "</b> set at <b>" + str(cost_center) + "</b> level for <b>" + str(transaction_date)[0:4] + "</b>"
+			committed = frappe.db.sql("select SUM(cb.amount) as total from `tabCommitted Budget` cb where cb.account=%s and cb.cost_center=%s and cb.reference_date between %s and %s and cb.business_activity =%s", (budget_account, cost_center, fiscal_year[0]["year_start_date"], fiscal_year[0]["year_end_date"], business_activity), as_dict=True)
+			consumed = frappe.db.sql("select SUM(cb.amount) as total from `tabConsumed Budget` cb where cb.account=%s and cb.cost_center=%s and cb.reference_date between %s and %s and cb.business_activity =%s", (budget_account, cost_center, fiscal_year[0]["year_start_date"], fiscal_year[0]["year_end_date"], business_activity), as_dict=True)
+		msg = "Account: <b>" + str(budget_account) + "</b> set at <b>" + str(cost_center) + "</b> and Business Activity <b>" + business_activity + "</b> level for <b>" + fiscal_year[0]["name"] + "</b>"
 
 	if not budget_amount:
 		frappe.throw("There is no budget allocated for " + str(msg))
@@ -319,7 +346,7 @@ def get_branch_warehouse(branch):
 
 @frappe.whitelist()
 def get_branch_from_cost_center(cost_center):
-	return frappe.db.get_value("Branch", {"cost_center": cost_center, "is_disabled": 0}, "name")
+	return frappe.db.get_value("Branch", {"cost_center": cost_center, "disabled": 0}, "name")
 
 @frappe.whitelist()
 def kick_users():

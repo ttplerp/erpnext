@@ -56,7 +56,10 @@
   "acc_frozen_upto",
   "column_break_25",
   "frozen_accounts_modifier",
-  "report_settings_sb"
+  "report_settings_sb",
+  "budget_setting_tab",
+  "budget_setting_section",
+  "budget_level"
  ],
  "fields": [
   {
@@ -347,6 +350,24 @@
    "fieldname": "allow_multi_currency_invoices_against_single_party_account",
    "fieldtype": "Check",
    "label": "Allow multi-currency invoices against single party account "
+  },
+  {
+   "fieldname": "budget_setting_tab",
+   "fieldtype": "Tab Break",
+   "hidden": 1,
+   "label": "Budget Setting"
+  },
+  {
+   "fieldname": "budget_setting_section",
+   "fieldtype": "Section Break",
+   "label": "Budget Setting"
+  },
+  {
+   "description": "Different levels of budgeting [Cost Center and Company Level]",
+   "fieldname": "budget_level",
+   "fieldtype": "Select",
+   "label": "Budgeting Level",
+   "options": "Company\nCost Center\nCost Center without Accounts"
   }
  ],
  "icon": "icon-cog",
@@ -354,7 +375,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2022-09-22 09:28:41.065900",
+ "modified": "2022-12-13 17:13:07.948496",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Accounts Settings",

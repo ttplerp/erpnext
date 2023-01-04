@@ -40,7 +40,7 @@ from erpnext.stock.doctype.purchase_receipt.purchase_receipt import (
 	get_item_account_wise_additional_cost,
 	update_billed_amount_based_on_po,
 )
-
+from frappe.model.naming import make_autoname
 
 class WarehouseMissingError(frappe.ValidationError):
 	pass
@@ -66,6 +66,12 @@ class PurchaseInvoice(BuyingController):
 				"overflow_type": "billing",
 			}
 		]
+
+	# Added by Jai, 2 June, 2022
+	def autoname(self):
+		year = formatdate(self.posting_date, "YY")
+		month = formatdate(self.posting_date, "MM")
+		self.name = make_autoname(str("PI") + '.{}.{}.####'.format(year, month))
 
 	def onload(self):
 		super(PurchaseInvoice, self).onload()
@@ -525,6 +531,7 @@ class PurchaseInvoice(BuyingController):
 		self.process_common_party_accounting()
 		self.consume_budget(cancel=False)
 		self.update_tds_receipt_entry()
+		# self.update_project_transaction_details() #added by Jai
 
 	def update_tds_receipt_entry(self):
 		if self.amended_from: 
@@ -1542,6 +1549,7 @@ class PurchaseInvoice(BuyingController):
 		)
 		self.update_advance_tax_references(cancel=1)
 		self.consume_budget(cancel=True)
+		# self.update_project_transaction_details() #added by Jai
 
 	def update_project(self):
 		project_list = []
@@ -1746,6 +1754,41 @@ class PurchaseInvoice(BuyingController):
 			self.db_set("status", self.status, update_modified=update_modified)
 		# frappe.throw(str(frappe.db.get_value(self.doctype,self.name,'outstanding_amount')))
 
+	def update_project_transaction_details(self):
+		for d in self.get('items'):
+			po_doc = frappe.get_doc("Purchase Order", d.purchase_order)
+			if po_doc.docstatus == 1 and not self.docstatus == 2:
+				for i in po_doc.items:
+					if i.project and i.item_code == d.item_code:
+						project_capitalize = frappe.db.get_value("Project", i.project, "status")
+						if project_capitalize == 'Capitalized':
+							frappe.throw(_("This {} is already Capitalized".format(i.project)))
+
+						total_overall_project_cost = frappe.db.get_value("Project", i.project, "total_overall_project_cost")
+						doc = frappe.get_doc("Project", i.project)
+						doc.append("transaction_details", {
+							"posting_date": self.posting_date,
+							"invoice_no": self.name,
+							"amount": d.amount
+						})
+						total_overall_project_cost += d.amount
+						doc.total_overall_project_cost = total_overall_project_cost
+						doc.save(ignore_permissions = True) 
+			elif self.docstatus == 2:
+				for i in po_doc.items:
+					if i.project and i.item_code == d.item_code:
+						project_capitalize = frappe.db.get_value("Project", i.project, "status")
+						if project_capitalize == 'Capitalized':
+							frappe.throw(_("This {} is Linked to the Project {}".format(self.name, i.project)))
+						
+						total_overall_project_cost = frappe.db.get_value("Project", i.project, "total_overall_project_cost")
+						doc = frappe.get_doc("Project", i.project)
+						total_overall_project_cost -= d.amount
+						doc.total_overall_project_cost = total_overall_project_cost
+						doc.save(ignore_permissions = True)
+						# doc.insert(ignore_permissions = True)
+
+				frappe.db.sql(""" delete from `tabTransaction Details` where invoice_no = %s """, self.name)
 # to get details of purchase invoice/receipt from which this doc was created for exchange rate difference handling
 def get_purchase_document_details(doc):
 	if doc.doctype == "Purchase Invoice":

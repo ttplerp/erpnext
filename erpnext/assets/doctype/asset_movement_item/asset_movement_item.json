@@ -9,14 +9,23 @@
   "asset",
   "source_cost_center",
   "source_location",
+  "source_custodian_type",
   "from_employee",
   "from_employee_name",
+  "from_desuup",
+  "from_desuup_name",
+  "others",
   "column_break_2",
   "asset_name",
+  "description",
   "target_location",
-  "target_cost_center",
+  "target_custodian_type",
   "to_employee",
-  "to_employee_name"
+  "to_employee_name",
+  "to_desuup",
+  "to_desuup_name",
+  "to_other",
+  "target_cost_center"
  ],
  "fields": [
   {
@@ -57,9 +66,11 @@
    "in_list_view": 1,
    "label": "From Employee",
    "mandatory_depends_on": "eval: in_list([\"Employee To Employee\"], parent.transfer_type)",
-   "options": "Employee"
+   "options": "Employee",
+   "read_only": 1
   },
   {
+   "depends_on": "eval: doc.target_custodian_type == 'Employee';",
    "fieldname": "to_employee",
    "fieldtype": "Link",
    "ignore_user_permissions": 1,
@@ -109,11 +120,71 @@
    "fieldtype": "Data",
    "label": "To Employee Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "from_desuup",
+   "fieldtype": "Link",
+   "label": "From Desuup",
+   "options": "Desuup",
+   "read_only": 1
+  },
+  {
+   "depends_on": "from_desuup",
+   "fetch_from": "from_desuup.desuup_name",
+   "fieldname": "from_desuup_name",
+   "fieldtype": "Data",
+   "label": "From Desuup Name"
+  },
+  {
+   "fieldname": "others",
+   "fieldtype": "Data",
+   "label": "Others",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "asset.description",
+   "fieldname": "description",
+   "fieldtype": "Text Editor",
+   "label": "Description",
+   "read_only": 1
+  },
+  {
+   "fieldname": "target_custodian_type",
+   "fieldtype": "Select",
+   "label": "Target Custodian Type",
+   "options": "\nEmployee\nDesuup\nOther"
+  },
+  {
+   "depends_on": "eval: doc.target_custodian_type == 'Desuup';",
+   "fieldname": "to_desuup",
+   "fieldtype": "Link",
+   "label": "To Desuup",
+   "options": "Desuup"
+  },
+  {
+   "depends_on": "to_desuup",
+   "fetch_from": "to_desuup.desuup_name",
+   "fieldname": "to_desuup_name",
+   "fieldtype": "Data",
+   "label": "To Desuup Name"
+  },
+  {
+   "depends_on": "eval: doc.target_custodian_type == 'Other';",
+   "fieldname": "to_other",
+   "fieldtype": "Data",
+   "label": "To Other"
+  },
+  {
+   "fieldname": "source_custodian_type",
+   "fieldtype": "Select",
+   "label": "Source Custodian Type",
+   "options": "\nEmployee\nDesuup\nOther",
+   "read_only": 1
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2022-09-23 23:11:15.147235",
+ "modified": "2022-12-28 14:32:52.162046",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset Movement Item",

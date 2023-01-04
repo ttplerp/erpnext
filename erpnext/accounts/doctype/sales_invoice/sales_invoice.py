@@ -1911,10 +1911,17 @@ def get_list_context(context=None):
 
 
 @frappe.whitelist()
-def get_bank_cash_account(mode_of_payment, company):
+def get_bank_cash_account(mode_of_payment, company, cost_center=None):
 	account = frappe.db.get_value(
-		"Mode of Payment Account", {"parent": mode_of_payment, "company": company}, "default_account"
-	)
+			"Mode of Payment Account", {"parent": mode_of_payment, "company": company}, "default_account"
+		)
+	
+	if cost_center:
+		cost_center_for = frappe.db.get_value("Cost Center", cost_center, "cost_center_for")
+		account = frappe.db.get_value(
+			"Mode of Payment Account", {"parent": mode_of_payment, "company": company, "cost_center_for": cost_center_for}, "default_account"
+		)
+		
 	if not account:
 		frappe.throw(
 			_("Please set default Cash or Bank account in Mode of Payment {0}").format(
@@ -1999,7 +2006,7 @@ def make_sales_return(source_name, target_doc=None):
 def set_account_for_mode_of_payment(self):
 	for data in self.payments:
 		if not data.account:
-			data.account = get_bank_cash_account(data.mode_of_payment, self.company).get("account")
+			data.account = get_bank_cash_account(data.mode_of_payment, self.company, self.cost_center).get("account")
 
 
 def get_inter_company_details(doc, doctype):

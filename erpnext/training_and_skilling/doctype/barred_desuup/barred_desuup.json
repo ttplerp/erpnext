@@ -1,0 +1,124 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:BAR-{YY}-{####}",
+ "creation": "2022-11-30 13:17:15.380918",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "desuup_detail_section",
+  "desuung_id",
+  "desuup_name",
+  "column_break_4",
+  "gender",
+  "cid",
+  "date_of_birth",
+  "backlist_details_section",
+  "from_date",
+  "to_date",
+  "column_break_11",
+  "reason"
+ ],
+ "fields": [
+  {
+   "fieldname": "desuup_detail_section",
+   "fieldtype": "Section Break",
+   "label": "Desuup Detail"
+  },
+  {
+   "fieldname": "desuung_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Desuung ID",
+   "options": "Desuup",
+   "set_only_once": 1
+  },
+  {
+   "fetch_from": "desuung_id.desuup_name",
+   "fieldname": "desuup_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Desuup Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "desuung_id.gender",
+   "fieldname": "gender",
+   "fieldtype": "Data",
+   "label": "Gender",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuung_id.cid_number",
+   "fieldname": "cid",
+   "fieldtype": "Data",
+   "label": "CID",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuung_id.date_of_birth",
+   "fieldname": "date_of_birth",
+   "fieldtype": "Date",
+   "label": "Date of Birth",
+   "read_only": 1
+  },
+  {
+   "fieldname": "backlist_details_section",
+   "fieldtype": "Section Break",
+   "label": "Barred Details"
+  },
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "From Date"
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "To Date"
+  },
+  {
+   "fieldname": "column_break_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reason",
+   "fieldtype": "Small Text",
+   "label": "Reason"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2022-12-23 10:03:37.877610",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Barred Desuup",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "desuung_id",
+ "track_changes": 1
+}

@@ -103,7 +103,7 @@ frappe.ui.form.on("Payment Schedule", {
 
 frappe.ui.form.on('Payment Entry', {
 	mode_of_payment: function(frm) {
-		get_payment_mode_account(frm, frm.doc.mode_of_payment, function(account){
+		get_payment_mode_account(frm, frm.doc.mode_of_payment, frm.doc.cost_center, function(account){
 			var payment_account_field = frm.doc.payment_type == "Receive" ? "paid_to" : "paid_from";
 			frm.set_value(payment_account_field, account);
 		})
@@ -118,7 +118,7 @@ frappe.ui.form.on('Salary Structure', {
 	}
 })
 
-var get_payment_mode_account = function(frm, mode_of_payment, callback) {
+var get_payment_mode_account = function(frm, mode_of_payment, cost_center=None, callback) {
 	if(!frm.doc.company) {
 		frappe.throw({message:__("Please select a Company first."), title: __("Mandatory")});
 	}
@@ -131,7 +131,8 @@ var get_payment_mode_account = function(frm, mode_of_payment, callback) {
 		method: "erpnext.accounts.doctype.sales_invoice.sales_invoice.get_bank_cash_account",
 		args: {
 			"mode_of_payment": mode_of_payment,
-			"company": frm.doc.company
+			"company": frm.doc.company,
+			"cost_center": cost_center
 		},
 		callback: function(r, rt) {
 			if(r.message) {

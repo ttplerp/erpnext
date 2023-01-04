@@ -211,7 +211,11 @@ class Asset(AccountsController):
 				"asset": self.name,
 				"asset_name": self.asset_name,
 				"target_cost_center": self.cost_center,
-				"to_employee": self.custodian,
+
+				"target_custodian_type": self.issued_to,
+				"to_employee": self.issue_to_employee if self.issued_to == 'Employee' else '',
+				"to_desuup": self.issue_to_desuup if self.issued_to == 'Desuup' else '',
+				"to_other": self.issue_to_other if self.issued_to == 'Other' else '',
 			}
 		]
 		asset_movement = frappe.get_doc(

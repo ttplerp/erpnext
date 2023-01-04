@@ -15,6 +15,12 @@ frappe.ui.form.on('Payment Entry', {
 			if (!frm.doc.paid_to) frm.set_value("paid_to_account_currency", null);
 		}
 
+		if (frm.doc.from_party == undefined || frm.doc.from_party == ''){
+			frm.toggle_display("from_party_type", 0);
+			frm.toggle_display("from_party", 0);
+			frm.toggle_display("from_party_name", 0);
+		}
+
 		erpnext.accounts.dimensions.setup_dimension_filters(frm, frm.doctype);
 	},
 
@@ -26,7 +32,7 @@ frappe.ui.form.on('Payment Entry', {
 				["Bank", "Cash"] : [frappe.boot.party_account_types[frm.doc.party_type]];
 			return {
 				filters: {
-					"account_type": ["in", account_types],
+					// "account_type": ["in", account_types],
 					"is_group": 0,
 					"company": frm.doc.company
 				}
@@ -80,7 +86,7 @@ frappe.ui.form.on('Payment Entry', {
 				["Bank", "Cash"] : [frappe.boot.party_account_types[frm.doc.party_type]];
 			return {
 				filters: {
-					"account_type": ["in", account_types],
+					// "account_type": ["in", account_types],
 					"is_group": 0,
 					"company": frm.doc.company
 				}
@@ -152,6 +158,14 @@ frappe.ui.form.on('Payment Entry', {
 			return {
 				filters: filters
 			};
+		});
+
+		frm.set_query("from_party_type", function() {
+			return{
+				"filters": {
+					"name": ["in", ["Employee"]],
+				}
+			}
 		});
 	},
 
@@ -406,6 +420,45 @@ frappe.ui.form.on('Payment Entry', {
 				}
 			}
 		);
+
+		// jai added
+		// frappe.model.get_value("Account", frm.doc.paid_from, "account_type", function(d){
+		// 	if(!in_list(["Receivable", "Payable"], d.account_type)){
+		// 		frm.toggle_display("from_party_type", 0);
+		// 		frm.toggle_display("from_party", 0);
+		// 		frm.toggle_display("from_party_name", 0);
+
+		// 		$.each(["from_party_type", "from_party", "from_party_name"], function(i, field) {
+		// 			frm.set_value(field, null);
+		// 		});
+		// 	} else {
+		// 		frm.set_value("from_party_type", "Employee");
+		// 		frm.toggle_display("from_party_type", 1);
+		// 		frm.toggle_display("from_party", 1);
+		// 		frm.toggle_display("from_party_name", 1);
+		// 	}
+		// });
+	},
+
+	paid_from_account_type: function(frm) {
+		if(!in_list(["Receivable", "Payable"], frm.doc.paid_from_account_type)){
+			frm.toggle_display("from_party_type", 0);
+			frm.toggle_display("from_party", 0);
+			frm.toggle_display("from_party_name", 0);
+
+			$.each(["from_party_type", "from_party", "from_party_name"], function(i, field) {
+				frm.set_value(field, null);
+			});
+		} else {
+			frm.set_value("from_party_type", "Employee");
+			frm.toggle_display("from_party_type", 1);
+			frm.toggle_display("from_party", 1);
+			frm.toggle_display("from_party_name", 1);
+		}
+	},
+
+	from_party: function(frm) {
+		frm.add_fetch("from_party", "employee_name", "from_party_name");
 	},
 
 	paid_to: function(frm) {

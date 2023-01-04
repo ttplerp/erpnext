@@ -7,7 +7,7 @@ from functools import reduce
 
 import frappe
 from frappe import ValidationError, _, qb, scrub, throw
-from frappe.utils import cint, comma_or, flt, getdate, nowdate
+from frappe.utils import cint, comma_or, flt, getdate, nowdate, formatdate
 
 import erpnext
 from erpnext.accounts.doctype.bank_account.bank_account import (
@@ -30,6 +30,7 @@ from erpnext.controllers.accounts_controller import (
 	validate_taxes_and_charges,
 )
 from erpnext.setup.utils import get_exchange_rate
+from frappe.model.naming import make_autoname
 
 
 class InvalidPaymentEntry(ValidationError):
@@ -41,6 +42,10 @@ class PaymentEntry(AccountsController):
 		super(PaymentEntry, self).__init__(*args, **kwargs)
 		if not self.is_new():
 			self.setup_party_account_field()
+	
+	def autoname(self):
+		year = formatdate(self.posting_date, "YYYY")
+		self.name = make_autoname(str("PE") + '.{}.#####'.format(year))
 
 	def setup_party_account_field(self):
 		self.party_account_field = None
@@ -884,6 +889,8 @@ class PaymentEntry(AccountsController):
 						"credit": self.base_paid_amount,
 						"cost_center": self.cost_center,
 						"post_net_value": True,
+						"party_type": '' if not self.from_party else self.from_party_type, #jai added
+						"party": '' if not self.from_party else self.from_party, #jai added
 					},
 					item=self,
 				)
@@ -1782,12 +1789,12 @@ def get_payment_entry(
 
 def get_bank_cash_account(doc, bank_account):
 	bank = get_default_bank_cash_account(
-		doc.company, "Bank", mode_of_payment=doc.get("mode_of_payment"), account=bank_account
+		doc.company, "Bank", mode_of_payment=doc.get("mode_of_payment"), account=bank_account, cost_center=doc.get("cost_center")
 	)
 
 	if not bank:
 		bank = get_default_bank_cash_account(
-			doc.company, "Cash", mode_of_payment=doc.get("mode_of_payment"), account=bank_account
+			doc.company, "Cash", mode_of_payment=doc.get("mode_of_payment"), account=bank_account, cost_center=doc.get("cost_center")
 		)
 
 	return bank

@@ -19,12 +19,14 @@
   "item_group",
   "item_sub_group",
   "stock_uom",
+  "hsn_code",
   "column_break0",
   "disabled",
   "allow_alternative_item",
   "is_stock_item",
   "has_variants",
   "is_production_item",
+  "is_pol_item",
   "include_item_in_manufacturing",
   "opening_stock",
   "valuation_rate",
@@ -936,6 +938,17 @@
    "label": "Asset Sub Category",
    "mandatory_depends_on": "is_fixed_asset",
    "options": "Asset Sub Category"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_pol_item",
+   "fieldtype": "Check",
+   "label": "Is POL Item"
+  },
+  {
+   "fieldname": "hsn_code",
+   "fieldtype": "Data",
+   "label": "HSN Code"
   }
  ],
  "icon": "fa fa-tag",
@@ -943,7 +956,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-21 09:32:03.003240",
+ "modified": "2022-11-28 11:57:00.138881",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",

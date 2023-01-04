@@ -21,11 +21,11 @@ class DuplicateBudgetError(frappe.ValidationError):
 
 
 class Budget(Document):
-	def autoname(self):
+	""" def autoname(self):
 		self.name = make_autoname(
 			#self.get(frappe.scrub(self.budget_against)) + "/" + self.fiscal_year + "/.###"
 			"BUD" + "/" + self.fiscal_year + "/.###"
-		)
+		) """
 
 	def validate(self):
 		if not self.get(frappe.scrub(self.budget_against)):
@@ -181,6 +181,7 @@ def committed_consumed_budget(reference=None, reference_no=None):
 						""".format(reference_type=reference, reference_no=reference_no))
 
 def validate_expense_against_budget(args):
+	return
 	args = frappe._dict(args)
 	if args.is_cancelled:
 		committed_consumed_budget(args.voucher_type, args.voucher_no)

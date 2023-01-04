@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "autoname": "field:employee_group_name",
  "creation": "2018-11-19 12:33:31.351364",
  "doctype": "DocType",
@@ -21,6 +22,12 @@
   "column_break_12",
   "salary_advance_limit",
   "no_of_installment_for_salary",
+  "festival_advance_setting_section",
+  "festival_advance_type",
+  "festival_advance_max_months",
+  "col_break_001",
+  "festival_advance_limit",
+  "no_of_installment_for_festival",
   "sb_increment_settings",
   "minimum_months",
   "increment_prorated",
@@ -213,10 +220,45 @@
    "fieldtype": "Table",
    "label": "Leave Credits",
    "options": "Employee Group Item"
+  },
+  {
+   "fieldname": "festival_advance_setting_section",
+   "fieldtype": "Section Break",
+   "label": "FESTIVAL ADVANCE SETTING"
+  },
+  {
+   "fieldname": "festival_advance_type",
+   "fieldtype": "Select",
+   "label": "Festival Advance Type",
+   "options": "\nGross Pay\nFlat Amount\nNet Pay\nBasic Pay"
+  },
+  {
+   "default": "1",
+   "depends_on": "eval:doc.festival_advance_type == \"Gross Pay\" || doc.festival_advance_type == \"Basic Pay\"",
+   "fieldname": "festival_advance_max_months",
+   "fieldtype": "Float",
+   "label": "Festival Advance Max Month"
+  },
+  {
+   "fieldname": "col_break_001",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.festival_advance_type == \"Flat Amount\"",
+   "fieldname": "festival_advance_limit",
+   "fieldtype": "Currency",
+   "label": "Maximum Advance Amount"
+  },
+  {
+   "default": "3",
+   "fieldname": "no_of_installment_for_festival",
+   "fieldtype": "Select",
+   "label": "No. of Installment",
+   "options": "\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12"
   }
  ],
  "links": [],
- "modified": "2022-09-26 12:24:02.826254",
+ "modified": "2022-12-14 15:58:00.466542",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee Group",
@@ -245,7 +287,6 @@
    "share": 1
   }
  ],
- "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

@@ -53,6 +53,7 @@
   "transactions_annual_history",
   "default_settings",
   "default_bank_account",
+  "default_bank_account_dhq",
   "default_cash_account",
   "default_receivable_account",
   "round_off_account",
@@ -73,6 +74,7 @@
   "cost_center",
   "company_cost_center",
   "default_finance_book",
+  "default_payroll_payable_account",
   "auto_accounting_for_stock_settings",
   "enable_perpetual_inventory",
   "enable_provisional_accounting_for_non_stock_items",
@@ -127,7 +129,8 @@
  "fields": [
   {
    "fieldname": "details",
-   "fieldtype": "Section Break",
+   "fieldtype": "Tab Break",
+   "label": "Details",
    "oldfieldtype": "Section Break"
   },
   {
@@ -191,7 +194,7 @@
   },
   {
    "fieldname": "sales_settings",
-   "fieldtype": "Section Break",
+   "fieldtype": "Tab Break",
    "label": "Buying & Selling Settings"
   },
   {
@@ -301,7 +304,7 @@
   },
   {
    "fieldname": "default_settings",
-   "fieldtype": "Section Break",
+   "fieldtype": "Tab Break",
    "label": "Accounts Settings",
    "oldfieldtype": "Section Break"
   },
@@ -310,7 +313,7 @@
    "fieldname": "default_bank_account",
    "fieldtype": "Link",
    "ignore_user_permissions": 1,
-   "label": "Default Bank Account",
+   "label": "Default Bank Account for DSP",
    "no_copy": 1,
    "oldfieldname": "default_bank_account",
    "oldfieldtype": "Link",
@@ -430,7 +433,6 @@
    "depends_on": "eval:!doc.__islocal",
    "fieldname": "cost_center",
    "fieldtype": "Link",
-   "hidden": 1,
    "ignore_user_permissions": 1,
    "label": "Default Cost Center",
    "no_copy": 1,
@@ -454,7 +456,7 @@
   {
    "depends_on": "eval:!doc.__islocal",
    "fieldname": "auto_accounting_for_stock_settings",
-   "fieldtype": "Section Break",
+   "fieldtype": "Tab Break",
    "label": "Stock Settings"
   },
   {
@@ -548,7 +550,7 @@
   {
    "collapsible": 1,
    "fieldname": "budget_detail",
-   "fieldtype": "Section Break",
+   "fieldtype": "Tab Break",
    "label": "Budget Detail"
   },
   {
@@ -561,7 +563,7 @@
    "collapsible": 1,
    "depends_on": "eval: doc.docstatus == 0 && doc.__islocal != 1",
    "fieldname": "company_info",
-   "fieldtype": "Section Break",
+   "fieldtype": "Tab Break",
    "label": "Address & Contact"
   },
   {
@@ -693,7 +695,7 @@
   {
    "collapsible": 1,
    "fieldname": "fixed_asset_defaults",
-   "fieldtype": "Section Break",
+   "fieldtype": "Tab Break",
    "label": "Fixed Asset Defaults"
   },
   {
@@ -730,7 +732,7 @@
   {
    "collapsible": 1,
    "fieldname": "hr_accounts_setting_section",
-   "fieldtype": "Section Break",
+   "fieldtype": "Tab Break",
    "label": "HR & Payroll Settings"
   },
   {
@@ -875,6 +877,21 @@
    "fieldtype": "Link",
    "label": "Default Cost Center",
    "options": "Cost Center"
+  },
+  {
+   "depends_on": "eval:!doc.__islocal",
+   "fieldname": "default_payroll_payable_account",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Default Payroll Payable Account",
+   "no_copy": 1,
+   "options": "Account"
+  },
+  {
+   "fieldname": "default_bank_account_dhq",
+   "fieldtype": "Link",
+   "label": "Default Bank Account for DHQ",
+   "options": "Account"
   }
  ],
  "icon": "fa fa-building",
@@ -882,7 +899,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2022-09-27 11:34:00.973156",
+ "modified": "2022-12-23 12:20:00.988843",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",

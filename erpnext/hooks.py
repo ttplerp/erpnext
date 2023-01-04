@@ -9,7 +9,7 @@ app_color = "#e74c3c"
 app_email = "info@erpnext.com"
 app_license = "GNU General Public License (v3)"
 source_link = "https://github.com/frappe/erpnext"
-app_logo_url = "/assets/erpnext/images/smcl_logo.gif"
+app_logo_url = "/assets/erpnext/images/Desuung-Logo.png"
 required_apps = ["payments"]
 
 
@@ -393,14 +393,14 @@ scheduler_events = {
 		],
 	},
 	"all": [
-		"erpnext.projects.doctype.project.project.project_status_update_reminder",
+		# "erpnext.projects.doctype.project.project.project_status_update_reminder", #project commented by Jai
 		"erpnext.crm.doctype.social_media_post.social_media_post.process_scheduled_social_media_posts",
 	],
 	"hourly": [
 		"erpnext.accounts.doctype.subscription.subscription.process_all",
 		"erpnext.erpnext_integrations.doctype.plaid_settings.plaid_settings.automatic_synchronization",
-		"erpnext.projects.doctype.project.project.hourly_reminder",
-		"erpnext.projects.doctype.project.project.collect_project_status",
+		# "erpnext.projects.doctype.project.project.hourly_reminder", #project commented by Jai
+		# "erpnext.projects.doctype.project.project.collect_project_status", #project commented by Jai
 	],
 	"hourly_long": [
 		"erpnext.stock.doctype.repost_item_valuation.repost_item_valuation.repost_entries",
@@ -419,8 +419,8 @@ scheduler_events = {
 		"erpnext.assets.doctype.asset.asset.update_maintenance_status",
 		"erpnext.assets.doctype.asset.asset.make_post_gl_entry",
 		"erpnext.crm.doctype.contract.contract.update_status_for_contracts",
-		"erpnext.projects.doctype.project.project.update_project_sales_billing",
-		"erpnext.projects.doctype.project.project.send_project_status_email_to_users",
+		# "erpnext.projects.doctype.project.project.update_project_sales_billing", #project commented by Jai
+		# "erpnext.projects.doctype.project.project.send_project_status_email_to_users", #project commented by Jai
 		"erpnext.quality_management.doctype.quality_review.quality_review.review",
 		"erpnext.support.doctype.service_level_agreement.service_level_agreement.check_agreement_status",
 		"erpnext.crm.doctype.email_campaign.email_campaign.send_email_to_leads_or_contacts",

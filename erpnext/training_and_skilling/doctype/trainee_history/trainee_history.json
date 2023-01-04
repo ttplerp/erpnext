@@ -1,0 +1,80 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2023-01-03 14:30:05.181886",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "training_attended",
+  "start_date",
+  "joining_date",
+  "training_ref",
+  "col_br",
+  "course_duration",
+  "end_date",
+  "cohort_batch"
+ ],
+ "fields": [
+  {
+   "fieldname": "training_attended",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Training Attended",
+   "options": "Cost Center"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Start Date"
+  },
+  {
+   "fieldname": "joining_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Joining Date"
+  },
+  {
+   "fieldname": "training_ref",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Training Reference",
+   "options": "Training Management",
+   "read_only": 1
+  },
+  {
+   "fieldname": "col_br",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "course_duration",
+   "fieldtype": "Data",
+   "label": "Duration of Course"
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "End Date"
+  },
+  {
+   "fieldname": "cohort_batch",
+   "fieldtype": "Data",
+   "label": "Cohort Batch"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-01-03 14:30:05.181886",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Trainee History",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

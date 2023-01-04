@@ -1,6 +1,7 @@
 # Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and Contributors
 # License: GNU General Public License v3. See license.txt
 import frappe
+import re
 from frappe import _, scrub, throw
 from frappe.model.naming import set_name_by_naming_series
 from frappe.permissions import (
@@ -10,11 +11,12 @@ from frappe.permissions import (
 	remove_user_permission,
 	set_user_permission_if_allowed,
 )
-from frappe.utils import cstr, getdate, today, validate_email_address, cint,flt
+from frappe.utils import cint, getdate, validate_email_address, today, add_years, format_datetime, cstr, flt, nowdate, date_diff, add_days, datetime
 from frappe.utils.nestedset import NestedSet
 from frappe.model.naming import make_autoname
 from erpnext.utilities.transaction_base import delete_events
-
+from frappe.model.document import Document
+from erpnext.custom_utils import get_year_start_date, get_year_end_date, round5, check_future_date
 
 class EmployeeUserDisabledError(frappe.ValidationError):
 	pass
@@ -27,10 +29,34 @@ class InactiveEmployeeStatusError(frappe.ValidationError):
 class Employee(NestedSet):
 	nsm_parent_field = "reports_to"
 
+	def autoname(self):
+		if self.old_id:
+			self.employee = self.name = self.old_id
+			return
+		else:
+			series_seq = ""
+			if self.employee_group == 'Trainers - DSP':
+				series_seq = 'TNR'
+			elif self.employee_group == 'Tech & Facilitation Team - DSP': 
+				series_seq = 'DEP'
+			elif self.employee_group == 'Steering Committee - DSP':
+				series_seq = 'STC'
+			elif self.employee_group == 'Volunteer - DSP':
+				series_seq = 'VOL'
+			elif self.employee_group == "Employees Under DSP Payroll - DSP":
+				series_seq = 'EMP'
+			else:
+				series_seq = 'EID'
+
+			self.name = make_autoname(str(series_seq) + '.YY.MM.###')
+			self.employee = self.name
+
 	def validate(self):
 		from erpnext.controllers.status_updater import validate_status
 
 		validate_status(self.status, ["Active", "Inactive", "Suspended", "Left"])
+		self.employee = self.name
+		self.employee_number = self.name
 		self.set_employee_name()
 		self.validate_date()
 		self.validate_email()

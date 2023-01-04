@@ -4,6 +4,13 @@
 
 frappe.ui.form.on('Budget', {
 	onload: function(frm) {
+		// if (frm.doc.__islocal) {
+		// 	frappe.model.get_value('Accounts Settings', {'name': 'Accounts Settings'}, 'budget_level',
+		// 		function(d) {
+		// 			frm.set_value("budget_against", d.budget_level);
+		// 	});
+		// }	
+
 		frm.set_query("account", "accounts", function() {
 			return {
 				filters: {

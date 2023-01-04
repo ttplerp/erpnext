@@ -2,7 +2,7 @@
  "actions": [],
  "allow_auto_repeat": 1,
  "allow_import": 1,
- "autoname": "naming_series:",
+ "autoname": "format:SO-{YY}-{MM}-{####}",
  "creation": "2013-06-18 12:39:59",
  "doctype": "DocType",
  "document_type": "Document",
@@ -13,17 +13,19 @@
   "title",
   "business_activity",
   "branch",
-  "naming_series",
+  "item_group",
   "customer",
   "customer_name",
   "order_type",
   "skip_delivery_note",
   "column_break1",
-  "amended_from",
   "company",
   "transaction_date",
   "delivery_date",
   "po_no",
+  "dispatch",
+  "rate_quoted",
+  "location_required",
   "po_date",
   "tax_id",
   "accounting_dimensions_section",
@@ -149,7 +151,12 @@
   "to_date",
   "column_break_108",
   "auto_repeat",
-  "update_auto_repeat_reference"
+  "update_auto_repeat_reference",
+  "header_and_footer_text_section",
+  "sales_order_header_text",
+  "column_break_144",
+  "sales_order_footer_text",
+  "amended_from"
  ],
  "fields": [
   {
@@ -161,29 +168,14 @@
   },
   {
    "allow_on_submit": 1,
-   "default": "{customer_name}",
    "fieldname": "title",
    "fieldtype": "Data",
-   "hidden": 1,
    "hide_days": 1,
    "hide_seconds": 1,
+   "in_list_view": 1,
    "label": "Title",
    "no_copy": 1,
-   "print_hide": 1
-  },
-  {
-   "fieldname": "naming_series",
-   "fieldtype": "Select",
-   "hide_days": 1,
-   "hide_seconds": 1,
-   "label": "Series",
-   "no_copy": 1,
-   "oldfieldname": "naming_series",
-   "oldfieldtype": "Select",
-   "options": "SAL-ORD-.YYYY.-",
-   "print_hide": 1,
-   "reqd": 1,
-   "set_only_once": 1
+   "reqd": 1
   },
   {
    "bold": 1,
@@ -192,6 +184,7 @@
    "hide_days": 1,
    "hide_seconds": 1,
    "in_global_search": 1,
+   "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Customer",
    "oldfieldname": "customer",
@@ -221,7 +214,7 @@
    "label": "Order Type",
    "oldfieldname": "order_type",
    "oldfieldtype": "Select",
-   "options": "\nSales\nMaintenance\nShopping Cart",
+   "options": "Sales\nMaintenance\nShopping Cart",
    "print_hide": 1,
    "reqd": 1
   },
@@ -286,9 +279,9 @@
    "fieldtype": "Date",
    "hide_days": 1,
    "hide_seconds": 1,
-   "in_list_view": 1,
    "label": "Delivery Date",
-   "no_copy": 1
+   "no_copy": 1,
+   "reqd": 1
   },
   {
    "allow_on_submit": 1,
@@ -554,7 +547,8 @@
    "hide_seconds": 1,
    "label": "Set Source Warehouse",
    "options": "Warehouse",
-   "print_hide": 1
+   "print_hide": 1,
+   "reqd": 1
   },
   {
    "fieldname": "items_section",
@@ -680,6 +674,7 @@
   {
    "fieldname": "taxes_section",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "hide_days": 1,
    "hide_seconds": 1,
    "label": "Taxes and Charges",
@@ -714,6 +709,7 @@
   {
    "fieldname": "section_break_40",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "hide_days": 1,
    "hide_seconds": 1
   },
@@ -766,6 +762,7 @@
   {
    "fieldname": "base_total_taxes_and_charges",
    "fieldtype": "Currency",
+   "hidden": 1,
    "hide_days": 1,
    "hide_seconds": 1,
    "label": "Total Taxes and Charges (Company Currency)",
@@ -785,6 +782,7 @@
   {
    "fieldname": "total_taxes_and_charges",
    "fieldtype": "Currency",
+   "hidden": 1,
    "hide_days": 1,
    "hide_seconds": 1,
    "label": "Total Taxes and Charges",
@@ -825,6 +823,7 @@
    "collapsible_depends_on": "discount_amount",
    "fieldname": "section_break_48",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "hide_days": 1,
    "hide_seconds": 1,
    "label": "Additional Discount and Coupon Code"
@@ -1040,6 +1039,7 @@
   {
    "fieldname": "payment_schedule_section",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "hide_days": 1,
    "hide_seconds": 1,
    "label": "Payment Terms"
@@ -1119,6 +1119,7 @@
    "description": "Track this Sales Order against any Project",
    "fieldname": "project",
    "fieldtype": "Link",
+   "hidden": 1,
    "hide_days": 1,
    "hide_seconds": 1,
    "label": "Project",
@@ -1324,6 +1325,7 @@
    "collapsible_depends_on": "commission_rate",
    "fieldname": "sales_team_section_break",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "hide_days": 1,
    "hide_seconds": 1,
    "label": "Commission",
@@ -1380,6 +1382,7 @@
    "collapsible_depends_on": "sales_team",
    "fieldname": "section_break1",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "hide_days": 1,
    "hide_seconds": 1,
    "label": "Sales Team",
@@ -1402,6 +1405,7 @@
    "collapsible": 1,
    "fieldname": "subscription_section",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "hide_days": 1,
    "hide_seconds": 1,
    "label": "Auto Repeat Section",
@@ -1486,10 +1490,11 @@
    "read_only": 1
   },
   {
-   "default": "0",
+   "default": "1",
    "depends_on": "grand_total",
    "fieldname": "disable_rounded_total",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Disable Rounded Total"
   },
   {
@@ -1528,10 +1533,12 @@
    "label": "Accounting Dimensions"
   },
   {
+   "fetch_from": "branch.cost_center",
    "fieldname": "cost_center",
    "fieldtype": "Link",
    "label": "Cost Center",
-   "options": "Cost Center"
+   "options": "Cost Center",
+   "reqd": 1
   },
   {
    "fieldname": "dimension_col_break",
@@ -1550,17 +1557,61 @@
    "hidden": 1,
    "label": "Business Activity",
    "options": "Business Activity"
+  },
+  {
+   "default": "0",
+   "description": "<b>Tick this to include location during Delivery</b>",
+   "fieldname": "location_required",
+   "fieldtype": "Check",
+   "label": "Location Required"
+  },
+  {
+   "fieldname": "header_and_footer_text_section",
+   "fieldtype": "Section Break",
+   "label": "Header and Footer Text"
+  },
+  {
+   "fieldname": "sales_order_header_text",
+   "fieldtype": "Text Editor",
+   "label": "Sales Order Header Text"
+  },
+  {
+   "fieldname": "column_break_144",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sales_order_footer_text",
+   "fieldtype": "Text Editor",
+   "label": "Sales Order Footer Text"
+  },
+  {
+   "fieldname": "item_group",
+   "fieldtype": "Link",
+   "label": "Item Group",
+   "options": "Item Group",
+   "reqd": 1
+  },
+  {
+   "fieldname": "dispatch",
+   "fieldtype": "Link",
+   "label": "Dispatch",
+   "options": "Dispatch"
+  },
+  {
+   "fieldname": "rate_quoted",
+   "fieldtype": "Data",
+   "label": "Rate Quoted"
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 105,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-09-21 00:24:10.741477",
+ "modified": "2022-11-28 12:17:05.659584",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Sales Order",
- "naming_rule": "By \"Naming Series\" field",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
@@ -1632,7 +1683,7 @@
  "sort_order": "DESC",
  "states": [],
  "timeline_field": "customer",
- "title_field": "customer_name",
+ "title_field": "title",
  "track_changes": 1,
  "track_seen": 1
 }

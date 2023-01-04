@@ -1,0 +1,713 @@
+{
+ "actions": [],
+ "autoname": "VLB.YY.MM.####",
+ "creation": "2017-07-21 11:36:55.183323",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "vehicle_request",
+  "equipment_type1",
+  "cost_center",
+  "column_break_1",
+  "branch1",
+  "pol_type",
+  "column_break_4",
+  "equipment1",
+  "registration_number1",
+  "equipment_operator",
+  "section_break_9",
+  "rate_type",
+  "column_break_11",
+  "work_rate",
+  "column_break_13",
+  "idle_rate",
+  "cb_14",
+  "place",
+  "column_break_18",
+  "from_date",
+  "from_time",
+  "column_break_20",
+  "to_date",
+  "to_time",
+  "cb_100",
+  "section_break_1",
+  "equipment_hiring_form",
+  "col_brk_01",
+  "owned_company",
+  "section_break_27",
+  "equipment",
+  "branch",
+  "equipment_model",
+  "registration_number",
+  "column_break_31",
+  "equipment_type",
+  "site_name",
+  "posting_date",
+  "section_break_8",
+  "initial_hour",
+  "column_break_21",
+  "final_hour",
+  "column_break_23",
+  "total_work_time",
+  "column_break_10",
+  "total_idle_time",
+  "section_break_22",
+  "initial_km",
+  "column_break_24",
+  "final_km",
+  "column_break_26",
+  "distance_km",
+  "cb_120",
+  "section_break_34",
+  "hour_taken",
+  "col_break_34",
+  "hour_adjustment_reason",
+  "section_break_4",
+  "vlogs",
+  "section_break_50",
+  "grand_total_km",
+  "column_break_51",
+  "grand_total_fuel_consumption",
+  "column_break_54",
+  "total_days",
+  "section_break_31",
+  "include_km",
+  "ys_km",
+  "consumption_km",
+  "column_break_34",
+  "include_hour",
+  "ys_hours",
+  "consumption_hours",
+  "column_break_37",
+  "other_consumption",
+  "hsd_received",
+  "reason",
+  "consumption",
+  "opening_balance",
+  "closing_balance",
+  "section_break_12",
+  "amended_from",
+  "invoice_created",
+  "payment_completed",
+  "section_break_remarks",
+  "remarks",
+  "workflow_state"
+ ],
+ "fields": [
+  {
+   "fieldname": "vehicle_request",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Vehicle Request",
+   "options": "Vehicle Request"
+  },
+  {
+   "fieldname": "equipment_type1",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Equipment Type",
+   "options": "Equipment Type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "branch1",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "ignore_user_permissions": 1,
+   "label": "Branch",
+   "options": "Branch",
+   "read_only": 1
+  },
+  {
+   "fieldname": "pol_type",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "POL Type"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "equipment1",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Equipment",
+   "options": "Equipment",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.equipment",
+   "fetch_from": "equipment.equipment_number",
+   "fieldname": "registration_number1",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Registration Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "equipment_operator",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Equipment Operator"
+  },
+  {
+   "fieldname": "section_break_9",
+   "fieldtype": "Section Break",
+   "hidden": 1
+  },
+  {
+   "fieldname": "rate_type",
+   "fieldtype": "Data",
+   "label": "Rate Type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "work_rate",
+   "fieldtype": "Currency",
+   "label": "Work Rate",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_13",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "idle_rate",
+   "fieldtype": "Currency",
+   "label": "Idle Rate",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_14",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "place",
+   "fieldtype": "Data",
+   "label": "Place",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_18",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Datetime",
+   "hidden": 1,
+   "label": "From Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "from_time",
+   "fieldtype": "Time",
+   "hidden": 1,
+   "label": "From Time"
+  },
+  {
+   "fieldname": "column_break_20",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Datetime",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "To Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "to_time",
+   "fieldtype": "Time",
+   "hidden": 1,
+   "label": "To Time"
+  },
+  {
+   "fieldname": "cb_100",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_1",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.owned_company != 1",
+   "fieldname": "equipment_hiring_form",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Equipment Hiring Form",
+   "options": "Equipment Hiring Form"
+  },
+  {
+   "fieldname": "col_brk_01",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "owned_company",
+   "fieldtype": "Check",
+   "label": "Owned Company"
+  },
+  {
+   "fieldname": "section_break_27",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "equipment",
+   "fieldtype": "Link",
+   "label": "Equipment",
+   "options": "Equipment",
+   "reqd": 1
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch"
+  },
+  {
+   "fetch_from": "equipment.equipment_model",
+   "fieldname": "equipment_model",
+   "fieldtype": "Read Only",
+   "label": "Equipment Model"
+  },
+  {
+   "fetch_from": "equipment1.equipment_number",
+   "fieldname": "registration_number",
+   "fieldtype": "Read Only",
+   "label": "Registration Number"
+  },
+  {
+   "fieldname": "column_break_31",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "equipment.equipment_type",
+   "fieldname": "equipment_type",
+   "fieldtype": "Read Only",
+   "label": "Equipment Type"
+  },
+  {
+   "fieldname": "site_name",
+   "fieldtype": "Link",
+   "label": "Site Name",
+   "options": "Cost Center"
+  },
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_8",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Time Details"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "initial_hour",
+   "fieldtype": "Float",
+   "label": "Initial Hour "
+  },
+  {
+   "fieldname": "column_break_21",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.initial_hour >= 0",
+   "fieldname": "final_hour",
+   "fieldtype": "Float",
+   "label": "Final Hour"
+  },
+  {
+   "fieldname": "column_break_23",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "total_work_time",
+   "fieldtype": "Float",
+   "label": "Total Work Time (Hours)",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "total_idle_time",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Total Idle Time (Hours)",
+   "precision": "2"
+  },
+  {
+   "fieldname": "section_break_22",
+   "fieldtype": "Section Break",
+   "hidden": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "initial_km",
+   "fieldtype": "Int",
+   "label": "Initial KM",
+   "precision": "1"
+  },
+  {
+   "fieldname": "column_break_24",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.initial_km >= 0",
+   "fieldname": "final_km",
+   "fieldtype": "Int",
+   "label": "Final KM",
+   "precision": "1"
+  },
+  {
+   "fieldname": "column_break_26",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "distance_km",
+   "fieldtype": "Int",
+   "label": "Distance KM",
+   "precision": "1"
+  },
+  {
+   "fieldname": "cb_120",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_34",
+   "fieldtype": "Section Break"
+  },
+  {
+   "description": "Hours to be added to invoice should be (+) and deducted should be (-)",
+   "fieldname": "hour_taken",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Hour Adjustment"
+  },
+  {
+   "fieldname": "col_break_34",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.hour_taken",
+   "fieldname": "hour_adjustment_reason",
+   "fieldtype": "Data",
+   "label": "Hour Adjustment Reason"
+  },
+  {
+   "fieldname": "section_break_4",
+   "fieldtype": "Section Break",
+   "label": "Vehicle Log Details"
+  },
+  {
+   "fieldname": "vlogs",
+   "fieldtype": "Table",
+   "options": "Vehicle Log"
+  },
+  {
+   "fieldname": "section_break_50",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "grand_total_km",
+   "fieldtype": "Float",
+   "label": "Grand Total Km",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_51",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "grand_total_fuel_consumption",
+   "fieldtype": "Float",
+   "label": "Grand Total Fuel Consumption",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_54",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_days",
+   "fieldtype": "Int",
+   "label": "Total Days",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_31",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "HSD Consumption Report",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "include_km",
+   "fieldtype": "Check",
+   "label": "Include KM Consumption"
+  },
+  {
+   "fieldname": "ys_km",
+   "fieldtype": "Float",
+   "label": "Based on KM",
+   "read_only": 1
+  },
+  {
+   "fieldname": "consumption_km",
+   "fieldtype": "Float",
+   "label": "Consumption Based KM Yardstick",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_34",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "include_hour",
+   "fieldtype": "Check",
+   "label": "Include Hour Consumption"
+  },
+  {
+   "fieldname": "ys_hours",
+   "fieldtype": "Float",
+   "label": "Based on Hours",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "consumption_hours",
+   "fieldtype": "Float",
+   "label": "Consumption Based on Hours Yardstick",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_37",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "other_consumption",
+   "fieldtype": "Float",
+   "label": "Other Consumption"
+  },
+  {
+   "fieldname": "hsd_received",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "HSD Received",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.other_consumption",
+   "fieldname": "reason",
+   "fieldtype": "Data",
+   "label": "Other Consumption Reason"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "consumption",
+   "fieldtype": "Float",
+   "label": "HSD Consumption",
+   "read_only": 1
+  },
+  {
+   "fieldname": "opening_balance",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Opening Balance"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "closing_balance",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Closing Balance",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_12",
+   "fieldtype": "Section Break",
+   "hidden": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Vehicle Logbook",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "invoice_created",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Invoice Created"
+  },
+  {
+   "default": "0",
+   "fieldname": "payment_completed",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Payment Completed"
+  },
+  {
+   "fieldname": "section_break_remarks",
+   "fieldtype": "Section Break",
+   "label": "REMARKS"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Text Editor"
+  },
+  {
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "label": "Workflow State",
+   "options": "Workflow State"
+  }
+ ],
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2022-12-29 14:29:24.970523",
+ "modified_by": "Administrator",
+ "module": "Maintenance",
+ "name": "Vehicle Logbook",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Fleet User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Management",
+   "share": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Project Supervisor",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Drivers and Operators",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Auditor",
+   "share": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Administrator",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Fleet Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Maintenance User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "branch",
+ "track_changes": 1
+}

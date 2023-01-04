@@ -2,14 +2,14 @@
  "actions": [],
  "allow_auto_repeat": 1,
  "allow_import": 1,
- "autoname": "naming_series:",
+ "autoname": "PE.YYYY.#####",
  "creation": "2016-06-01 14:38:51.012597",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "type_of_payment",
-  "business_activity",
   "branch",
+  "cost_center",
   "naming_series",
   "payment_type",
   "payment_order_status",
@@ -17,6 +17,7 @@
   "posting_date",
   "company",
   "mode_of_payment",
+  "business_activity",
   "section_break_10",
   "use_cheque_lot",
   "cheque_lot",
@@ -37,6 +38,9 @@
   "paid_from_account_type",
   "paid_from_account_currency",
   "paid_from_account_balance",
+  "from_party_type",
+  "from_party",
+  "from_party_name",
   "column_break_18",
   "paid_to",
   "paid_to_account_type",
@@ -83,8 +87,6 @@
   "clearance_date",
   "accounting_dimensions_section",
   "project",
-  "dimension_col_break",
-  "cost_center",
   "section_break_12",
   "status",
   "custom_remarks",
@@ -110,10 +112,10 @@
    "bold": 1,
    "fieldname": "naming_series",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Series",
    "options": "ACC-PAY-.YYYY.-",
    "print_hide": 1,
-   "reqd": 1,
    "set_only_once": 1
   },
   {
@@ -150,11 +152,12 @@
    "reqd": 1
   },
   {
+   "fetch_from": "branch.cost_center",
    "fieldname": "cost_center",
    "fieldtype": "Link",
    "label": "Cost Center",
    "options": "Cost Center",
-   "reqd": 1
+   "read_only": 1
   },
   {
    "fieldname": "mode_of_payment",
@@ -447,7 +450,6 @@
   {
    "bold": 1,
    "default": "0",
-   "depends_on": "cheque_lot",
    "fieldname": "reference_no",
    "fieldtype": "Data",
    "label": "Reference No",
@@ -455,7 +457,6 @@
   },
   {
    "bold": 1,
-   "depends_on": "cheque_lot",
    "fieldname": "reference_date",
    "fieldtype": "Date",
    "label": "Reference Date",
@@ -590,10 +591,6 @@
    "fieldname": "accounting_dimensions_section",
    "fieldtype": "Section Break",
    "label": "Accounting Dimensions"
-  },
-  {
-   "fieldname": "dimension_col_break",
-   "fieldtype": "Column Break"
   },
   {
    "default": "Draft",
@@ -756,21 +753,41 @@
    "fieldtype": "Section Break"
   },
   {
+   "default": "Common",
    "fieldname": "business_activity",
    "fieldtype": "Link",
-   "hidden": 1,
    "label": "Business Activity",
-   "options": "Business Activity"
+   "options": "Business Activity",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "default": "Employee",
+   "fieldname": "from_party_type",
+   "fieldtype": "Link",
+   "label": "Advance Party Type",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "from_party",
+   "fieldtype": "Dynamic Link",
+   "label": "Advance Party",
+   "options": "from_party_type"
+  },
+  {
+   "fieldname": "from_party_name",
+   "fieldtype": "Data",
+   "label": "Advance Party Name"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-09-26 20:24:32.620753",
+ "modified": "2023-01-03 16:28:41.900851",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Payment Entry",
- "naming_rule": "By \"Naming Series\" field",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {

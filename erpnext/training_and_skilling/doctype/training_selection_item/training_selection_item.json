@@ -1,0 +1,351 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2022-12-09 16:28:37.835487",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "did",
+  "column_break_2",
+  "desuup_name",
+  "desuup_details_section",
+  "cid",
+  "profile_id",
+  "gender",
+  "mobile",
+  "email",
+  "date_of_birth",
+  "column_break_5",
+  "employment_type",
+  "agency_type",
+  "agency",
+  "profession",
+  "qualification",
+  "level",
+  "year_of_completion",
+  "course_name",
+  "column_break_14",
+  "country",
+  "present_address",
+  "dzongkhag",
+  "gewog",
+  "village",
+  "selection_details_section",
+  "update_deployment",
+  "barred_list",
+  "maximum_three_core_skill_check",
+  "course_pre_requisite",
+  "column_break_29",
+  "status",
+  "remark",
+  "point_calculation_detail_section",
+  "total_point",
+  "selection_rank",
+  "column_break_37",
+  "training_attended",
+  "column_break_38",
+  "final_point",
+  "section_break_40",
+  "point_remark",
+  "confirmation_detail_section",
+  "confirmation_status",
+  "column_break_45",
+  "confirmation_remark"
+ ],
+ "fields": [
+  {
+   "fieldname": "did",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Desuup ID",
+   "options": "Desuup"
+  },
+  {
+   "fetch_from": "did.cid_number",
+   "fieldname": "cid",
+   "fieldtype": "Data",
+   "label": "CID",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "did.desuup_name",
+   "fieldname": "desuup_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Desuup Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "did.gender",
+   "fieldname": "gender",
+   "fieldtype": "Data",
+   "label": "Gender",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "did.mobile_number",
+   "fieldname": "mobile",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Mobile",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "did.email_id",
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "did.date_of_birth",
+   "fieldname": "date_of_birth",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Date of Birth",
+   "read_only": 1
+  },
+  {
+   "fieldname": "agency_type",
+   "fieldtype": "Data",
+   "label": "Agency Type"
+  },
+  {
+   "fieldname": "level",
+   "fieldtype": "Data",
+   "label": "Level"
+  },
+  {
+   "fieldname": "year_of_completion",
+   "fieldtype": "Data",
+   "label": "Year of Completion",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_14",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "did.present_country",
+   "fieldname": "country",
+   "fieldtype": "Data",
+   "label": "Country",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "did.present_address",
+   "fieldname": "present_address",
+   "fieldtype": "Data",
+   "label": "Present Address",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "did.dzongkhag",
+   "fieldname": "dzongkhag",
+   "fieldtype": "Data",
+   "label": "Dzongkhag"
+  },
+  {
+   "fetch_from": "did.gewog",
+   "fieldname": "gewog",
+   "fieldtype": "Data",
+   "label": "Gewog",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "did.village",
+   "fieldname": "village",
+   "fieldtype": "Data",
+   "label": "Village",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "did.profile_id",
+   "fieldname": "profile_id",
+   "fieldtype": "Data",
+   "label": "Profile ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "qualification",
+   "fieldtype": "Data",
+   "label": "Qualification"
+  },
+  {
+   "fieldname": "course_name",
+   "fieldtype": "Small Text",
+   "label": "Course Name"
+  },
+  {
+   "fieldname": "agency",
+   "fieldtype": "Data",
+   "label": "Agency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "profession",
+   "fieldtype": "Data",
+   "label": "Profession",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "did.employment_type",
+   "fieldname": "employment_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Employment Type"
+  },
+  {
+   "default": "0",
+   "fieldname": "update_deployment",
+   "fieldtype": "Check",
+   "label": "Update Deployment",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "desuup_details_section",
+   "fieldtype": "Section Break",
+   "label": "Desuup Details"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "selection_details_section",
+   "fieldtype": "Section Break",
+   "label": "Selection Checklist"
+  },
+  {
+   "bold": 1,
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Registered\nWithdrawn\nDisqualified\nBarred\nShortlisted\nStandby",
+   "read_only": 1
+  },
+  {
+   "fieldname": "remark",
+   "fieldtype": "Small Text",
+   "label": "Remark",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_29",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "barred_list",
+   "fieldtype": "Check",
+   "label": "Checked If Desuup is in Barred List",
+   "read_only": 1
+  },
+  {
+   "fieldname": "course_pre_requisite",
+   "fieldtype": "Select",
+   "label": "Meeting of Prerequisites",
+   "options": "\nYes\nNo",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "maximum_three_core_skill_check",
+   "fieldtype": "Check",
+   "label": "Eligibility check to avail a maximum of three core skills",
+   "read_only": 1
+  },
+  {
+   "fieldname": "point_calculation_detail_section",
+   "fieldtype": "Section Break",
+   "label": "Point Calculation Detail"
+  },
+  {
+   "fieldname": "total_point",
+   "fieldtype": "Float",
+   "label": "Total Point",
+   "read_only": 1
+  },
+  {
+   "fieldname": "training_attended",
+   "fieldtype": "Int",
+   "label": "No of Training Attended",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_37",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "point_remark",
+   "fieldtype": "Small Text",
+   "label": "Point Remark",
+   "read_only": 1
+  },
+  {
+   "description": "<b>Final Point = Total Point / (No of Training Attended + 1)</b>",
+   "fieldname": "final_point",
+   "fieldtype": "Float",
+   "label": "Final Point",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_38",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_40",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "selection_rank",
+   "fieldtype": "Int",
+   "label": "Rank",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.docstatus==1",
+   "fieldname": "confirmation_detail_section",
+   "fieldtype": "Section Break",
+   "label": "Confirmation Detail"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "confirmation_status",
+   "fieldtype": "Select",
+   "label": "Confirmation Status",
+   "options": "\nSelected\nWithdraw\nStandby"
+  },
+  {
+   "fieldname": "column_break_45",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "confirmation_remark",
+   "fieldtype": "Small Text",
+   "label": "Confirmation Remarks"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-01-04 10:18:42.061772",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Training Selection Item",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

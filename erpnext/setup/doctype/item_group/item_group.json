@@ -228,11 +228,11 @@
    "label": "Include Descendants"
   },
   {
+   "description": "Eg. ABC00000 [five digit after Prefix]",
    "fieldname": "item_code_base",
-   "fieldtype": "Select",
-   "label": "Initial Item Code No.",
-   "length": 2,
-   "options": "\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10"
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Item Code Base"
   },
   {
    "allow_in_quick_entry": 1,
@@ -250,7 +250,7 @@
  "is_tree": 1,
  "links": [],
  "max_attachments": 3,
- "modified": "2022-09-20 13:11:37.766662",
+ "modified": "2022-12-09 10:33:19.493979",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Item Group",

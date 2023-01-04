@@ -9,8 +9,9 @@
  "field_order": [
   "barcode",
   "item_code",
-  "item_name",
+  "item_type",
   "col_break1",
+  "item_name",
   "customer_item_code",
   "section_break_6",
   "description",
@@ -59,6 +60,20 @@
   "base_net_amount",
   "billed_amt",
   "incoming_rate",
+  "transporter_info_section",
+  "others_equipment",
+  "vehicle_number",
+  "equipment",
+  "transporter_name",
+  "vehicle_type",
+  "column_break_59",
+  "is_volumetric",
+  "gross_vehicle_weight",
+  "tare_weight",
+  "volumetric_weight",
+  "weight_slip_no",
+  "pol_slip_no",
+  "transporter_rate",
   "item_weight_details",
   "weight_per_unit",
   "total_weight",
@@ -97,6 +112,7 @@
   {
    "fieldname": "barcode",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Barcode",
    "print_hide": 1
   },
@@ -110,11 +126,13 @@
    "oldfieldtype": "Link",
    "options": "Item",
    "print_width": "150px",
+   "read_only": 1,
    "reqd": 1,
    "search_index": 1,
    "width": "150px"
   },
   {
+   "fetch_from": "item_code.item_name",
    "fieldname": "item_name",
    "fieldtype": "Data",
    "in_global_search": 1,
@@ -123,6 +141,7 @@
    "oldfieldtype": "Data",
    "print_hide": 1,
    "print_width": "150px",
+   "read_only": 1,
    "reqd": 1,
    "width": "150px"
   },
@@ -142,6 +161,7 @@
    "collapsible": 1,
    "fieldname": "section_break_6",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Description"
   },
   {
@@ -163,6 +183,7 @@
   {
    "fieldname": "image_view",
    "fieldtype": "Image",
+   "hidden": 1,
    "label": "Image View",
    "options": "image",
    "print_hide": 1
@@ -180,6 +201,7 @@
    "oldfieldname": "qty",
    "oldfieldtype": "Currency",
    "print_width": "100px",
+   "read_only": 1,
    "reqd": 1,
    "width": "100px"
   },
@@ -202,11 +224,13 @@
    "fieldtype": "Column Break"
   },
   {
+   "fetch_from": "item_code.stock_uom",
    "fieldname": "uom",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "UOM",
    "options": "UOM",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -246,6 +270,7 @@
   {
    "fieldname": "base_price_list_rate",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Price List Rate (Company Currency)",
    "oldfieldname": "base_ref_rate",
    "oldfieldtype": "Currency",
@@ -259,6 +284,7 @@
    "collapsible": 1,
    "fieldname": "discount_and_margin",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Discount and Margin"
   },
   {
@@ -329,6 +355,7 @@
    "oldfieldtype": "Currency",
    "options": "currency",
    "print_width": "150px",
+   "read_only": 1,
    "width": "150px"
   },
   {
@@ -350,6 +377,7 @@
   {
    "fieldname": "base_rate",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Rate (Company Currency)",
    "oldfieldname": "basic_rate",
    "oldfieldtype": "Currency",
@@ -414,6 +442,7 @@
   {
    "fieldname": "base_net_rate",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Net Rate (Company Currency)",
    "options": "Company:company:default_currency",
    "print_hide": 1,
@@ -422,6 +451,7 @@
   {
    "fieldname": "base_net_amount",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Net Amount (Company Currency)",
    "options": "Company:company:default_currency",
    "print_hide": 1,
@@ -431,6 +461,7 @@
    "collapsible": 1,
    "fieldname": "item_weight_details",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Item Weight Details"
   },
   {
@@ -456,6 +487,7 @@
    "options": "UOM"
   },
   {
+   "collapsible": 1,
    "fieldname": "warehouse_and_reference",
    "fieldtype": "Section Break",
    "label": "Warehouse and Reference"
@@ -470,6 +502,7 @@
    "options": "Warehouse",
    "print_hide": 1,
    "print_width": "100px",
+   "reqd": 1,
    "width": "100px"
   },
   {
@@ -499,6 +532,7 @@
   {
    "fieldname": "batch_no",
    "fieldtype": "Link",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Batch No",
    "oldfieldname": "batch_no",
@@ -534,6 +568,7 @@
   {
    "fieldname": "serial_no",
    "fieldtype": "Text",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Serial No",
    "no_copy": 1,
@@ -585,11 +620,13 @@
    "no_copy": 1,
    "options": "Account",
    "print_hide": 1,
+   "reqd": 1,
    "width": "120px"
   },
   {
    "fieldname": "item_tax_template",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Item Tax Template",
    "options": "Item Tax Template",
    "print_hide": 1
@@ -602,12 +639,14 @@
    "no_copy": 1,
    "options": "Cost Center",
    "print_hide": 1,
+   "reqd": 1,
    "width": "120px"
   },
   {
    "default": "0",
    "fieldname": "allow_zero_valuation_rate",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Allow Zero Valuation Rate",
    "no_copy": 1,
    "print_hide": 1
@@ -685,6 +724,7 @@
    "print_hide": 1
   },
   {
+   "collapsible": 1,
    "fieldname": "accounting_details_section",
    "fieldtype": "Section Break",
    "label": "Accounting Details"
@@ -777,13 +817,110 @@
    "no_copy": 1,
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "transporter_info_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Transporter Info"
+  },
+  {
+   "default": "0",
+   "fieldname": "others_equipment",
+   "fieldtype": "Check",
+   "label": "Others Equipment"
+  },
+  {
+   "depends_on": "eval:!doc.others_equipment",
+   "fieldname": "equipment",
+   "fieldtype": "Link",
+   "label": "Vehicle/Equipment",
+   "mandatory_depends_on": "eval:!doc.others_equipment",
+   "options": "Equipment"
+  },
+  {
+   "fetch_from": "equipment.supplier",
+   "fieldname": "transporter_name",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Transporter Name",
+   "options": "Supplier"
+  },
+  {
+   "fetch_from": "equipment.equipment_type",
+   "fieldname": "vehicle_type",
+   "fieldtype": "Link",
+   "label": "Vehicle Type",
+   "options": "Equipment Type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_59",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "weight_slip_no",
+   "fieldtype": "Data",
+   "label": "Weight Slip No"
+  },
+  {
+   "fieldname": "pol_slip_no",
+   "fieldtype": "Data",
+   "label": "POL Slip No"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_volumetric",
+   "fieldtype": "Check",
+   "label": "Is Volumetric"
+  },
+  {
+   "depends_on": "eval:!doc.is_volumetric",
+   "fieldname": "gross_vehicle_weight",
+   "fieldtype": "Float",
+   "label": "Gross Vehicle Weight",
+   "mandatory_depends_on": "eval:!doc.is_volumetric"
+  },
+  {
+   "depends_on": "eval:!doc.is_volumetric",
+   "fieldname": "tare_weight",
+   "fieldtype": "Float",
+   "label": "Tare Weight",
+   "mandatory_depends_on": "eval:!doc.is_volumetric"
+  },
+  {
+   "depends_on": "eval:doc.is_volumetric",
+   "fieldname": "volumetric_weight",
+   "fieldtype": "Float",
+   "label": "Volumetric Weight",
+   "mandatory_depends_on": "eval:doc.is_volumetric"
+  },
+  {
+   "fieldname": "transporter_rate",
+   "fieldtype": "Currency",
+   "label": "Transporter Rate",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.item_name == \"Dolomite Crushed\";",
+   "fieldname": "item_type",
+   "fieldtype": "Link",
+   "label": "Item Type",
+   "mandatory_depends_on": "eval:doc.item_name == \"Dolomite Crushed\";",
+   "options": "Item Type"
+  },
+  {
+   "depends_on": "eval:doc.others_equipment == 1",
+   "fieldname": "vehicle_number",
+   "fieldtype": "Data",
+   "label": "Vehicle Number"
   }
  ],
  "idx": 1,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-06-17 05:25:47.711177",
+ "modified": "2023-01-03 12:12:54.348577",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Delivery Note Item",

@@ -10,7 +10,7 @@ from frappe.model.document import Document
 class ModeofPayment(Document):
 	def validate(self):
 		self.validate_accounts()
-		self.validate_repeating_companies()
+		# self.validate_repeating_companies()
 		self.validate_pos_mode_of_payment()
 
 	def validate_repeating_companies(self):

@@ -207,20 +207,20 @@ class Company(NestedSet):
 		frappe.local.flags.ignore_root_company_validation = True
 		create_charts(self.name, self.chart_of_accounts, self.existing_company)
 
-		frappe.db.set(
-			self,
-			"default_receivable_account",
-			frappe.db.get_value(
-				"Account", {"company": self.name, "account_type": "Receivable", "is_group": 0}
-			),
-		)
-		frappe.db.set(
-			self,
-			"default_payable_account",
-			frappe.db.get_value(
-				"Account", {"company": self.name, "account_type": "Payable", "is_group": 0}
-			),
-		)
+		# frappe.db.set(
+		# 	self,
+		# 	"default_receivable_account",
+		# 	frappe.db.get_value(
+		# 		"Account", {"company": self.name, "account_type": "Receivable", "is_group": 0}
+		# 	),
+		# )
+		# frappe.db.set(
+		# 	self,
+		# 	"default_payable_account",
+		# 	frappe.db.get_value(
+		# 		"Account", {"company": self.name, "account_type": "Payable", "is_group": 0}
+		# 	),
+		# )
 
 	def create_default_departments(self):
 		records = [
@@ -416,32 +416,33 @@ class Company(NestedSet):
 					"Account", {"account_name": _("Sales Account"), "company": self.name}
 				)
 
-			self.db_set("default_income_account", income_account)
+			# self.db_set("default_income_account", income_account)
 
-		if not self.default_payable_account:
-			self.db_set("default_payable_account", self.default_payable_account)
+		# if not self.default_payable_account:
+		# 	self.db_set("default_payable_account", self.default_payable_account)
 
 		if not self.write_off_account:
 			write_off_acct = frappe.db.get_value(
 				"Account", {"account_name": _("Write Off"), "company": self.name, "is_group": 0}
 			)
 
-			self.db_set("write_off_account", write_off_acct)
+			# self.db_set("write_off_account", write_off_acct)
 
 		if not self.exchange_gain_loss_account:
 			exchange_gain_loss_acct = frappe.db.get_value(
 				"Account", {"account_name": _("Exchange Gain/Loss"), "company": self.name, "is_group": 0}
 			)
 
-			self.db_set("exchange_gain_loss_account", exchange_gain_loss_acct)
+			# self.db_set("exchange_gain_loss_account", exchange_gain_loss_acct)
 
-		if not self.disposal_account:
+		if not self.gain_disposal_account or not self.loss_disposal_account:
 			disposal_acct = frappe.db.get_value(
 				"Account",
 				{"account_name": _("Gain/Loss on Asset Disposal"), "company": self.name, "is_group": 0},
 			)
 
-			self.db_set("disposal_account", disposal_acct)
+			# self.db_set("loss_disposal_account", disposal_acct)
+			# self.db_set("gain_disposal_account", disposal_acct)
 
 	def _set_default_account(self, fieldname, account_type):
 		if self.get(fieldname):
@@ -491,9 +492,9 @@ class Company(NestedSet):
 				cc_doc.flags.ignore_mandatory = True
 			cc_doc.insert()
 
-		frappe.db.set(self, "cost_center", _("Main") + " - " + self.abbr)
-		frappe.db.set(self, "round_off_cost_center", _("Main") + " - " + self.abbr)
-		frappe.db.set(self, "depreciation_cost_center", _("Main") + " - " + self.abbr)
+		# frappe.db.set(self, "cost_center", _("Main") + " - " + self.abbr)
+		# frappe.db.set(self, "round_off_cost_center", _("Main") + " - " + self.abbr)
+		# frappe.db.set(self, "depreciation_cost_center", _("Main") + " - " + self.abbr)
 
 	def after_rename(self, olddn, newdn, merge=False):
 		frappe.db.set(self, "company_name", newdn)
