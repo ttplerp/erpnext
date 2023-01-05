@@ -105,16 +105,14 @@
    "fieldname": "asset_name",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Asset Name",
-   "reqd": 1
+   "label": "Asset Name"
   },
   {
    "fieldname": "item_code",
    "fieldtype": "Link",
    "in_standard_filter": 1,
    "label": "Item Code",
-   "options": "Item",
-   "reqd": 1
+   "options": "Item"
   },
   {
    "depends_on": "item_code",
@@ -181,8 +179,7 @@
    "fieldtype": "Link",
    "label": "Company",
    "options": "Company",
-   "remember_last_selected_value": 1,
-   "reqd": 1
+   "remember_last_selected_value": 1
   },
   {
    "fieldname": "location",
@@ -205,8 +202,7 @@
    "fieldname": "cost_center",
    "fieldtype": "Link",
    "label": "Cost Center",
-   "options": "Cost Center",
-   "reqd": 1
+   "options": "Cost Center"
   },
   {
    "fieldname": "department",
@@ -219,8 +215,7 @@
    "fieldtype": "Date",
    "label": "Purchase Date",
    "read_only": 1,
-   "read_only_depends_on": "eval:!doc.is_existing_asset",
-   "reqd": 1
+   "read_only_depends_on": "eval:!doc.is_existing_asset"
   },
   {
    "fieldname": "disposal_date",
@@ -243,14 +238,12 @@
    "label": "Gross Purchase Amount",
    "options": "Company:company:default_currency",
    "read_only": 1,
-   "read_only_depends_on": "eval:!doc.is_existing_asset",
-   "reqd": 1
+   "read_only_depends_on": "eval:!doc.is_existing_asset"
   },
   {
    "fieldname": "available_for_use_date",
    "fieldtype": "Date",
-   "label": "Available-for-use Date",
-   "reqd": 1
+   "label": "Available-for-use Date"
   },
   {
    "default": "1",
@@ -533,8 +526,7 @@
    "fieldname": "branch",
    "fieldtype": "Link",
    "label": "Branch",
-   "options": "Branch",
-   "reqd": 1
+   "options": "Branch"
   },
   {
    "depends_on": "item_code",
@@ -667,7 +659,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2022-12-14 10:16:14.424611",
+ "modified": "2023-01-05 10:48:05.036745",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",
