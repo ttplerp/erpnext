@@ -35,6 +35,9 @@ from erpnext.controllers.accounts_controller import AccountsController
 from barcode import EAN13, Code128
 
 class Asset(AccountsController):
+	def autoname(self):
+		if self.old_asset_code:
+			self.name = self.old_asset_code
 	def validate(self):
 		self.validate_asset_values()
 		self.validate_asset_and_reference()
@@ -50,6 +53,9 @@ class Asset(AccountsController):
 
 		self.status = self.get_status()
 
+	def rename(self):
+		frappe.rename_doc("Asset", old_name, new_name)
+		
 	def on_submit(self):
 		self.validate_in_use_date()
 		self.set_status()
