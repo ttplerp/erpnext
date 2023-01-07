@@ -233,7 +233,7 @@ class PurchaseReceipt(BuyingController):
 
 		update_serial_nos_after_submit(self, "items")
 
-		self.make_gl_entries()
+		#self.make_gl_entries()
 		self.repost_future_sle_and_gle()
 		self.set_consumed_qty_in_subcontract_order()
 
