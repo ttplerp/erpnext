@@ -75,7 +75,8 @@ class Asset(AccountsController):
 		self.db_set("booked_fixed_asset", 0)
 
 	def fetch_default_account(self):
-		self.asset_account, self.credit_account, self.accumulated_depreciation_account = frappe.db.get_value('Asset Category Account',{'parent':self.asset_category},['fixed_asset_account','credit_account','accumulated_depreciation_account'])
+		self.asset_account, self.accumulated_depreciation_account = frappe.db.get_value('Asset Category Account',{'parent':self.asset_category},['fixed_asset_account','accumulated_depreciation_account'])
+		# self.asset_account, self.credit_account, self.accumulated_depreciation_account = frappe.db.get_value('Asset Category Account',{'parent':self.asset_category},['fixed_asset_account','credit_account','accumulated_depreciation_account'])
 
 	def generate_asset_barcode(self):
 		number = str(self.name)
