@@ -47,7 +47,7 @@ class Asset(AccountsController):
 		if not self.split_from:
 			self.prepare_depreciation_data()
 		self.validate_gross_and_purchase_amount()
-		self.fetch_default_account()
+		#self.fetch_default_account()
 		if self.get("schedules"):
 			self.validate_expected_value_after_useful_life()
 
