@@ -10,6 +10,7 @@ from erpnext.custom_utils import check_uncancelled_linked_doc
 import datetime
 from frappe.model.mapper import get_mapped_doc
 # from datetime import date
+
 class VehicleLogbook(Document):
     def validate(self):
         self.validate_date()
@@ -25,15 +26,17 @@ class VehicleLogbook(Document):
         self.calculate_grand_totals()
         self.calculate_total_days()
         
-
     def validate_date(self):
-        pass
-        # if self.posting_date > str(datetime.datetime.now()): 
-        # 	frappe.throw("Cannot post for Future Date")
-        #         from_date = get_datetime(str(self.from_date) + ' ' + str(self.from_time))
-        #         to_date = get_datetime(str(self.to_date) + ' ' + str(self.to_time))
-        #         if to_date < from_date:
-        #                 frappe.throw("From Date/Time cannot be greater than To Date/Time")
+        if self.vlogs:
+            start_date = self.vlogs[0].date
+            end_date = self.vlogs[len(self.vlogs) - 1].date
+        
+        from_date, to_date = frappe.db.get_value("Equipment Hiring Form", self.equipment_hiring_form, ["start_date", "end_date"])
+
+        if str(start_date) < str(from_date) or str(end_date) > str(to_date):
+            frappe.throw("The Logbook dates should be between '{0}' and '{1}'".format(from_date, to_date))
+        elif str(start_date) > str(end_date):
+            frappe.throw("The Logbook Start date cannot be greater than End Date")
 
     def set_data(self):
         if not self.ehf_name:
@@ -50,7 +53,7 @@ class VehicleLogbook(Document):
         self.calculate_balance()
 
     def on_submit(self):
-        #self.check_double_vl()
+        # self.check_double_vl()
         self.update_consumed()
         #self.calculate_totals()
         self.post_pol_entry()
@@ -67,38 +70,19 @@ class VehicleLogbook(Document):
             doc = frappe.new_doc("POL Entry")
             doc.flags.ignore_permissions = 1 
             doc.branch = self.branch
-            doc.company = "De-Suung"
+            doc.company = self.company
             doc.equipment = self.equipment
-            doc.pol_type = "100268" #TODO: NEED TO ACTUALLY FETCH THIS FROM SOMEWHERE
-            #doc.date = item.from_date
+            doc.pol_type = self.pol_type
             doc.date = item.date
-            doc.posting_time = self.posting_date
+            doc.posting_time = item.from_time
             doc.qty = item.total_consumption
-            doc.reference_type = "Vehicle Logbook"
+            doc.reference_type = self.doctype
             doc.reference_name = self.name
             doc.type = "consumed"
             doc.is_opening = 0 
             doc.own_cost_center = 1
             doc.submit()
-        # for item in self.vlogs: 
-        # 	doc = frappe.new_doc("POL Entry")
-        # 	doc.flags.ignore_permissions = 1 
-        # 	doc.branch = self.branch
-        # 	doc.company = "De-Suung"
-        # 	doc.equipment = self.equipment
-        # 	doc.pol_type = "100268" #TODO: NEED TO ACTUALLY FETCH THIS FROM SOMEWHERE
-        # 	#doc.date = item.from_date
-        # 	doc.date = item.date
-        # 	doc.posting_time = self.from_time
-        # 	doc.qty = item.total_consumption
-        # 	doc.reference_type = "Vehicle Logbook"
-        # 	doc.reference_name = self.name
-        # 	doc.type = "consumed"
-        # 	doc.is_opening = 0 
-        # 	doc.own_cost_center = 1
-        # 	doc.submit()
-
-
+    
     def on_cancel(self):
         self.cancel_pol_entry()
         check_uncancelled_linked_doc(self.doctype, self.name)
@@ -218,15 +202,23 @@ class VehicleLogbook(Document):
                 frappe.msgprint("Closing balance cannot be greater than the tank capacity (" + str(tank) + ")")
 
     def check_double_vl(self):
-        pass
-        # from_datetime = str(get_datetime(str(self.from_date) + ' ' + str(self.from_time)))
-        #         to_datetime = str(get_datetime(str(self.to_date) + ' ' + str(self.to_time)))
+        if self.vlogs:
+            start_date = self.vlogs[0].date
+            end_date = self.vlogs[len(self.vlogs) - 1].date
+            # if not end_date:
+            #     end_date = self.items[len(self.items) - 1].date
 
-        #         query = "select name from `tabVehicle Logbook` where equipment = '{equipment}' and docstatus in (1, 0) and ('{from_date}' between concat(from_date, ' ', from_time) and concat(to_date, ' ', to_time) OR '{to_date}' between concat(from_date, ' ', from_time) and concat(to_date, ' ', to_time) OR ( '{from_date}' <= concat(from_date, ' ', from_time) AND '{to_date}' >= concat(to_date, ' ', to_time) )) and name != '{vl_name}'" .format(from_date=from_datetime, to_date=to_datetime, vl_name=self.name, equipment=self.equipment)
-        #         result = frappe.db.sql(query, as_dict=1)
-        # # frappe.msgprint("this is the result of existing logbook : {}".format(result))
-        # for a in result:
-        #	frappe.throw("The logbook for the same equipment, date, and time has been created at " + str(a.name))
+            vlog_list = frappe.db.sql("""
+                                select a.name
+                                from `tabVehicle Logbook` a, `tabVehicle Log` b
+                                where b.parent = a.name
+                                and a.docstatus = 1
+                                and a.equipment_hiring_form = '{0}'
+                                and equipment = '{1}'
+                                and b.date between '{2}' and '{3}'
+                                """.format(self.equipment_hiring_form, self.equipment, start_date, end_date), as_dict=True)
+            if vlog_list:
+                frappe.throw("The dates in your current Vehicle Logbook has already been recorded in " + str(vlog_list[0].name))
 
     def check_consumption(self):
         no_own_fuel_tank = frappe.db.get_value("Equipment Type", frappe.db.get_value("Equipment", self.equipment, "equipment_type"), "no_own_tank")

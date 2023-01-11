@@ -59,7 +59,13 @@
   "report_settings_sb",
   "budget_setting_tab",
   "budget_setting_section",
-  "budget_level"
+  "budget_level",
+  "tax_deducted_at_source_tds_accouts_tab",
+  "tds_2_account",
+  "tds_3_account",
+  "column_break_57",
+  "tds_5_account",
+  "tds_10_account"
  ],
  "fields": [
   {
@@ -368,6 +374,39 @@
    "fieldtype": "Select",
    "label": "Budgeting Level",
    "options": "Company\nCost Center\nCost Center without Accounts"
+  },
+  {
+   "fieldname": "tax_deducted_at_source_tds_accouts_tab",
+   "fieldtype": "Tab Break",
+   "label": "Tax Deducted at Source (TDS) Accouts"
+  },
+  {
+   "fieldname": "tds_2_account",
+   "fieldtype": "Link",
+   "label": "TDS Account (2%)",
+   "options": "Account"
+  },
+  {
+   "fieldname": "tds_3_account",
+   "fieldtype": "Link",
+   "label": "TDS Account (3%)",
+   "options": "Account"
+  },
+  {
+   "fieldname": "column_break_57",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tds_5_account",
+   "fieldtype": "Link",
+   "label": "TDS Account (5%)",
+   "options": "Account"
+  },
+  {
+   "fieldname": "tds_10_account",
+   "fieldtype": "Link",
+   "label": "TDS Account (10%)",
+   "options": "Account"
   }
  ],
  "icon": "icon-cog",
@@ -375,7 +414,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2022-12-13 17:13:07.948496",
+ "modified": "2023-01-06 17:30:01.047588",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Accounts Settings",

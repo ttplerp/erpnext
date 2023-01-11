@@ -248,7 +248,7 @@
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2022-12-21 10:47:04.230753",
+ "modified": "2023-01-10 15:34:59.511565",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Account",
@@ -302,6 +302,16 @@
    "set_user_permissions": 1,
    "share": 1,
    "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Maintenance Manager",
+   "share": 1
   }
  ],
  "search_fields": "account_number",

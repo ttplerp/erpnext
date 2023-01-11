@@ -569,7 +569,7 @@
  "idx": 176,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-12-22 16:50:59.369083",
+ "modified": "2023-01-10 15:34:23.470063",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",
@@ -612,6 +612,16 @@
    "read": 1,
    "report": 1,
    "role": "Auditor"
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Maintenance Manager",
+   "share": 1
   }
  ],
  "search_fields": "voucher_type,posting_date, due_date, cheque_no",

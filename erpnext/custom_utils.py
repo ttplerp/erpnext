@@ -178,7 +178,7 @@ def prepare_gl(d, args):
 		'fiscal_year': get_fiscal_year(d.posting_date, company=d.company)[0],
 		'voucher_type': d.doctype,
 		'voucher_no': d.name,
-		'remarks': d.remarks,
+		'remarks': d.purpose,
 		'debit': 0,
 		'credit': 0,
 		'debit_in_account_currency': 0,

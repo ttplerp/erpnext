@@ -8,10 +8,8 @@
  "field_order": [
   "vehicle_request",
   "equipment_type1",
-  "cost_center",
   "column_break_1",
   "branch1",
-  "pol_type",
   "column_break_4",
   "equipment1",
   "registration_number1",
@@ -40,10 +38,12 @@
   "branch",
   "equipment_model",
   "registration_number",
+  "posting_date",
   "column_break_31",
   "equipment_type",
+  "cost_center",
   "site_name",
-  "posting_date",
+  "pol_type",
   "section_break_8",
   "initial_hour",
   "column_break_21",
@@ -92,7 +92,8 @@
   "payment_completed",
   "section_break_remarks",
   "remarks",
-  "workflow_state"
+  "column_break_87",
+  "company"
  ],
  "fields": [
   {
@@ -111,9 +112,10 @@
    "read_only": 1
   },
   {
+   "fetch_from": "branch.cost_center",
    "fieldname": "cost_center",
    "fieldtype": "Link",
-   "hidden": 1,
+   "in_list_view": 1,
    "label": "Cost Center",
    "options": "Cost Center",
    "read_only": 1
@@ -133,9 +135,9 @@
   },
   {
    "fieldname": "pol_type",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "POL Type"
+   "fieldtype": "Link",
+   "label": "POL Type",
+   "options": "Item"
   },
   {
    "fieldname": "column_break_4",
@@ -230,7 +232,6 @@
    "fieldname": "to_date",
    "fieldtype": "Datetime",
    "hidden": 1,
-   "in_list_view": 1,
    "label": "To Date",
    "read_only": 1
   },
@@ -271,6 +272,7 @@
    "fieldtype": "Section Break"
   },
   {
+   "fetch_from": "equipment_hiring_form.equipment",
    "fieldname": "equipment",
    "fieldtype": "Link",
    "label": "Equipment",
@@ -286,14 +288,16 @@
   {
    "fetch_from": "equipment.equipment_model",
    "fieldname": "equipment_model",
-   "fieldtype": "Read Only",
-   "label": "Equipment Model"
+   "fieldtype": "Data",
+   "label": "Equipment Model",
+   "read_only": 1
   },
   {
-   "fetch_from": "equipment1.equipment_number",
+   "fetch_from": "equipment.equipment_number",
    "fieldname": "registration_number",
-   "fieldtype": "Read Only",
-   "label": "Registration Number"
+   "fieldtype": "Data",
+   "label": "Registration Number",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_31",
@@ -594,15 +598,20 @@
    "fieldtype": "Text Editor"
   },
   {
-   "fieldname": "workflow_state",
+   "fieldname": "column_break_87",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "company",
    "fieldtype": "Link",
-   "label": "Workflow State",
-   "options": "Workflow State"
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2022-12-29 14:29:24.970523",
+ "modified": "2023-01-10 17:04:20.916946",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Vehicle Logbook",

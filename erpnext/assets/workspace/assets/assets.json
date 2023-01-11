@@ -166,7 +166,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Transactions",
-   "link_count": 1,
+   "link_count": 3,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -180,10 +180,30 @@
    "link_type": "DocType",
    "onboard": 1,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Asset Issue Details",
+   "link_count": 0,
+   "link_to": "Asset Issue Details",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Asset Value Adjustment",
+   "link_count": 0,
+   "link_to": "Asset Value Adjustment",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2022-12-29 15:28:58.046642",
- "modified_by": "Administrator",
+ "modified": "2023-01-10 11:34:59.518708",
+ "modified_by": "pema.dhendup@thimphutechpark.bt",
  "module": "Assets",
  "name": "Assets",
  "owner": "Administrator",

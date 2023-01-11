@@ -4,16 +4,16 @@
 frappe.ui.form.on('Hire Charge Invoice', {
 	refresh: function (frm) {
 		if (frm.doc.docstatus === 1) {
-			frappe.call({
-				method: "erpnext.maintenance.doctype.hire_charge_invoice.hire_charge_invoice.get_payment_entry",
-				args: {
-				  doc_name: frm.doc.name,
-				  total_amount: frm.doc.balance_amount
-				},
-				callback: function (r) {
-				  cur_frm.refresh_field("payment_status");
-				},
-			  })
+			// frappe.call({
+			// 	method: "erpnext.maintenance.doctype.hire_charge_invoice.hire_charge_invoice.get_payment_entry",
+			// 	args: {
+			// 	  doc_name: frm.doc.name,
+			// 	  total_amount: frm.doc.balance_amount
+			// 	},
+			// 	callback: function (r) {
+			// 	  cur_frm.refresh_field("payment_status");
+			// 	},
+			//   })
 			frm.add_custom_button(__('Accounting Ledger'), function () {
 				frappe.route_options = {
 					voucher_no: frm.doc.name,
@@ -71,6 +71,8 @@ frappe.ui.form.on('Hire Charge Invoice', {
 				}
 			});
 		}
+	},
+	ehf_name: function(frm){
 		if (frm.doc.ehf_name){
 			frappe.call({
 				'method': "frappe.client.get",
@@ -137,19 +139,20 @@ frappe.ui.form.on('Hire Charge Invoice', {
 // fetch the tds account specific to the percentage
 // added by phuntsho on march 16 2021
 function check_tds_account(frm, percentage) {
-	if (percentage != 0) {
-		frappe.call({
-			method: "erpnext.maintenance.doctype.hire_charge_invoice.hire_charge_invoice.get_tds_account",
-			args: {
-				"percentage": percentage,
-			},
-			callback: function (r) {
-				frm.set_value("tds_account", r.message)
-				frm.refresh_field("tds_account")
+	frappe.call({
+		method: "erpnext.maintenance.doctype.hire_charge_invoice.hire_charge_invoice.get_tds_account",
+		args: {
+			percent: frm.doc.tds_percentage,
+		},
+		callback: function(r) {
+			if(r.message) {
+				frm.set_value("tds_account", r.message);
+				cur_frm.refresh_field("tds_account");
 			}
-		})
-	}
+		}
+	})
 }
+
 function calculate_balance(frm) {
 	if (frm.doc.total_invoice_amount) {
 		if (!frm.doc.advance_amount) { frm.doc.advance_amount = 0 }
@@ -163,7 +166,7 @@ function calculate_balance(frm) {
 }
 
 // cur_frm.add_fetch("ehf_name", "customer", "customer")
-cur_frm.add_fetch("ehf_name", "private", "owned_by")
+// cur_frm.add_fetch("ehf_name", "private", "owned_by")
 // cur_frm.add_fetch("branch", "cost_center", "cost_center")
 //cur_frm.add_fetch("ehf_name","advance_amount","advance_amount")
 

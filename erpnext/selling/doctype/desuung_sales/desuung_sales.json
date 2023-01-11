@@ -1,0 +1,1390 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "DSS.YY.MM.####",
+ "creation": "2023-01-08 22:22:27.597681",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "customer_section",
+  "branch",
+  "column_break0",
+  "cost_center",
+  "section_break",
+  "title",
+  "naming_series",
+  "customer",
+  "customer_name",
+  "order_type",
+  "business_activity",
+  "column_break1",
+  "company",
+  "posting_time",
+  "posting_date",
+  "credit_account",
+  "debit_account",
+  "delivery_date",
+  "po_date",
+  "contact_info",
+  "customer_address",
+  "address_display",
+  "shipping_address_name",
+  "contact_display",
+  "contact_email",
+  "col_break46",
+  "shipping_address",
+  "contact_mobile",
+  "contact_person",
+  "customer_group",
+  "territory",
+  "currency_and_price_list",
+  "currency",
+  "conversion_rate",
+  "column_break2",
+  "selling_price_list",
+  "price_list_currency",
+  "plc_conversion_rate",
+  "ignore_pricing_rule",
+  "items_section",
+  "items",
+  "section_break_31",
+  "column_break_33a",
+  "journal_no",
+  "journal_date",
+  "remarks",
+  "base_total",
+  "base_net_total",
+  "column_break_33",
+  "total",
+  "net_total",
+  "taxes_section",
+  "taxes_and_charges",
+  "column_break_38",
+  "shipping_rule",
+  "section_break_40",
+  "taxes",
+  "other_charges_calculation",
+  "section_break_43",
+  "base_total_taxes_and_charges",
+  "column_break_46",
+  "total_taxes_and_charges",
+  "section_break_48",
+  "apply_discount_on",
+  "additional_cost_or_discount_description",
+  "base_discount_amount",
+  "column_break_50",
+  "additional_discount_percentage",
+  "discount_amount",
+  "discount_or_cost_amount",
+  "additional_cost",
+  "loading_cost_details",
+  "loading_rate",
+  "column_break_69",
+  "loading_cost",
+  "section_break_68",
+  "transportation_rate",
+  "column_break_70",
+  "total_distance",
+  "total_quantity",
+  "column_break_73",
+  "transportation_charges",
+  "totals",
+  "base_grand_total",
+  "base_rounded_total",
+  "base_in_words",
+  "column_break3",
+  "grand_total",
+  "rounded_total",
+  "in_words",
+  "advance_paid",
+  "packing_list",
+  "packed_items",
+  "terms_section_break",
+  "tc_name",
+  "terms",
+  "more_info",
+  "project",
+  "party_account_currency",
+  "column_break_77",
+  "source",
+  "campaign",
+  "printing_details",
+  "language",
+  "letter_head",
+  "column_break4",
+  "select_print_heading",
+  "status",
+  "delivery_status",
+  "column_break_81",
+  "billing_status",
+  "sales_team_section_break",
+  "sales_partner",
+  "column_break7",
+  "commission_rate",
+  "total_commission",
+  "section_break1",
+  "sales_team",
+  "recurring_order",
+  "settings",
+  "is_recurring",
+  "recurring_id",
+  "recurring_type",
+  "repeat_on_day_of_month",
+  "end_date",
+  "submit_on_creation",
+  "notify_by_email",
+  "notification_email_address",
+  "recurring_print_format",
+  "column_break83",
+  "from_date",
+  "to_date",
+  "next_date",
+  "section_break_124",
+  "validity_period",
+  "cb_123",
+  "vehicle_nos",
+  "section",
+  "sales_order_header_text",
+  "footer_text_column",
+  "sales_order_footer_text",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "customer_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break0",
+   "fieldtype": "Column Break",
+   "oldfieldtype": "Column Break",
+   "width": "50%"
+  },
+  {
+   "fetch_from": "branch.cost_center",
+   "fieldname": "cost_center",
+   "fieldtype": "Data",
+   "label": "Cost Center",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break",
+   "fieldtype": "Section Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "label": "Sales Order Title",
+   "no_copy": 1,
+   "print_hide": 1
+  },
+  {
+   "default": "Sales Product",
+   "fieldname": "naming_series",
+   "fieldtype": "Link",
+   "label": "Sales order Series",
+   "no_copy": 1,
+   "oldfieldname": "naming_series",
+   "oldfieldtype": "Select",
+   "options": "Item Group",
+   "print_hide": 1,
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "label": "Desuung ID",
+   "oldfieldname": "customer",
+   "oldfieldtype": "Link",
+   "options": "Desuup",
+   "print_hide": 1,
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "bold": 1,
+   "fetch_from": "customer.desuup_name",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Desuup Name",
+   "read_only": 1
+  },
+  {
+   "default": "Sales",
+   "fieldname": "order_type",
+   "fieldtype": "Select",
+   "label": "Order Type",
+   "oldfieldname": "order_type",
+   "oldfieldtype": "Select",
+   "options": "Sales",
+   "print_hide": 1,
+   "reqd": 1
+  },
+  {
+   "default": "Common",
+   "fieldname": "business_activity",
+   "fieldtype": "Link",
+   "label": "Business Activity",
+   "options": "Business Activity"
+  },
+  {
+   "fieldname": "column_break1",
+   "fieldtype": "Column Break",
+   "oldfieldtype": "Column Break",
+   "width": "50%"
+  },
+  {
+   "default": "De-Suung",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "label": "Company",
+   "oldfieldname": "company",
+   "oldfieldtype": "Link",
+   "options": "Company",
+   "read_only": 1,
+   "search_index": 1,
+   "width": "150px"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_time",
+   "fieldtype": "Time",
+   "in_filter": 1,
+   "label": "Posting Time",
+   "no_copy": 1,
+   "oldfieldname": "transaction_date",
+   "oldfieldtype": "Date",
+   "reqd": 1,
+   "search_index": 1,
+   "width": "160px"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "credit_account",
+   "fieldtype": "Link",
+   "label": "Credit Account",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "debit_account",
+   "fieldtype": "Link",
+   "label": "Debit Account",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.order_type == 'Sales'",
+   "fieldname": "delivery_date",
+   "fieldtype": "Date",
+   "hidden": 1,
+   "in_filter": 1,
+   "label": "Delivery Date",
+   "no_copy": 1,
+   "oldfieldname": "delivery_date",
+   "oldfieldtype": "Date",
+   "print_hide": 1,
+   "search_index": 1,
+   "width": "160px"
+  },
+  {
+   "depends_on": "eval:doc.po_no",
+   "fieldname": "po_date",
+   "fieldtype": "Date",
+   "label": "Customer's Product Requisition Date",
+   "oldfieldname": "po_date",
+   "oldfieldtype": "Date",
+   "options": "po_no.posting_date",
+   "read_only": 1,
+   "width": "100px"
+  },
+  {
+   "collapsible": 1,
+   "depends_on": "customer",
+   "fieldname": "contact_info",
+   "fieldtype": "Section Break",
+   "label": "Address and Contact",
+   "options": "icon-tag"
+  },
+  {
+   "fieldname": "customer_address",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "in_filter": 1,
+   "label": "Customer Address",
+   "options": "Address",
+   "print_hide": 1
+  },
+  {
+   "fieldname": "address_display",
+   "fieldtype": "Small Text",
+   "hidden": 1,
+   "label": "Address",
+   "read_only": 1
+  },
+  {
+   "fieldname": "shipping_address_name",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "label": "Shipping Address Name",
+   "print_hide": 1
+  },
+  {
+   "fieldname": "contact_display",
+   "fieldtype": "Small Text",
+   "label": "Contact",
+   "read_only": 1
+  },
+  {
+   "fieldname": "contact_email",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Contact Email",
+   "options": "Email",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "col_break46",
+   "fieldtype": "Column Break",
+   "width": "50%"
+  },
+  {
+   "fieldname": "shipping_address",
+   "fieldtype": "Small Text",
+   "hidden": 1,
+   "label": "Shipping Address",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "contact_mobile",
+   "fieldtype": "Data",
+   "label": "Mobile No"
+  },
+  {
+   "fieldname": "contact_person",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "in_filter": 1,
+   "label": "Contact Person",
+   "options": "Contact",
+   "print_hide": 1
+  },
+  {
+   "fieldname": "customer_group",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "in_filter": 1,
+   "label": "Customer Group",
+   "options": "Customer Group",
+   "print_hide": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "territory",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "in_filter": 1,
+   "label": "Territory",
+   "options": "Territory",
+   "print_hide": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "currency_and_price_list",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Material Details and Currency",
+   "options": "icon-tag",
+   "print_hide": 1
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Currency",
+   "oldfieldname": "currency",
+   "oldfieldtype": "Select",
+   "options": "Currency",
+   "print_hide": 1,
+   "width": "100px"
+  },
+  {
+   "description": "Rate at which customer's currency is converted to company's base currency",
+   "fieldname": "conversion_rate",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Exchange Rate",
+   "oldfieldname": "conversion_rate",
+   "oldfieldtype": "Currency",
+   "precision": "9",
+   "print_hide": 1,
+   "width": "100px"
+  },
+  {
+   "fieldname": "column_break2",
+   "fieldtype": "Column Break",
+   "hidden": 1,
+   "width": "50%"
+  },
+  {
+   "fieldname": "selling_price_list",
+   "fieldtype": "Link",
+   "label": "Price List",
+   "oldfieldname": "price_list_name",
+   "oldfieldtype": "Select",
+   "options": "Price List",
+   "print_hide": 1,
+   "read_only": 1,
+   "width": "100px"
+  },
+  {
+   "fieldname": "price_list_currency",
+   "fieldtype": "Link",
+   "label": "Price List Currency",
+   "options": "Currency",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "description": "Rate at which Price list currency is converted to company's base currency",
+   "fieldname": "plc_conversion_rate",
+   "fieldtype": "Float",
+   "label": "Price List Exchange Rate",
+   "precision": "9",
+   "print_hide": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "ignore_pricing_rule",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Ignore Pricing Rule",
+   "no_copy": 1,
+   "permlevel": 1,
+   "print_hide": 1
+  },
+  {
+   "fieldname": "items_section",
+   "fieldtype": "Section Break",
+   "oldfieldtype": "Section Break",
+   "options": "icon-shopping-cart"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Materials",
+   "oldfieldname": "sales_order_details",
+   "oldfieldtype": "Table",
+   "options": "Sales Order Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_31",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_33a",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "journal_no",
+   "fieldtype": "Data",
+   "label": "Journal No",
+   "reqd": 1
+  },
+  {
+   "fieldname": "journal_date",
+   "fieldtype": "Date",
+   "label": "Journal Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "base_total",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Total (Company Currency)",
+   "options": "Company:company:default_currency",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "base_net_total",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Net Total (Company Currency)",
+   "oldfieldname": "net_total",
+   "oldfieldtype": "Currency",
+   "options": "Company:company:default_currency",
+   "print_hide": 1,
+   "read_only": 1,
+   "width": "150px"
+  },
+  {
+   "fieldname": "column_break_33",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total",
+   "fieldtype": "Currency",
+   "label": "Total",
+   "options": "currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "net_total",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Net Total",
+   "options": "currency",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "taxes_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Taxes and Charges",
+   "oldfieldtype": "Section Break",
+   "options": "icon-money"
+  },
+  {
+   "fieldname": "taxes_and_charges",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Taxes and Charges",
+   "oldfieldname": "charge",
+   "oldfieldtype": "Link",
+   "options": "Sales Taxes and Charges Template",
+   "print_hide": 1
+  },
+  {
+   "fieldname": "column_break_38",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "shipping_rule",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Shipping Rule",
+   "oldfieldtype": "Button",
+   "options": "Shipping Rule",
+   "print_hide": 1
+  },
+  {
+   "fieldname": "section_break_40",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "taxes",
+   "fieldtype": "Table",
+   "hidden": 1,
+   "label": "Sales Taxes and Charges",
+   "oldfieldname": "other_charges",
+   "oldfieldtype": "Table",
+   "options": "Sales Taxes and Charges"
+  },
+  {
+   "fieldname": "other_charges_calculation",
+   "fieldtype": "HTML",
+   "hidden": 1,
+   "label": "Taxes and Charges Calculation",
+   "oldfieldtype": "HTML",
+   "print_hide": 1
+  },
+  {
+   "fieldname": "section_break_43",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "base_total_taxes_and_charges",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Total Taxes and Charges (Company Currency)",
+   "oldfieldname": "other_charges_total",
+   "oldfieldtype": "Currency",
+   "options": "Company:company:default_currency",
+   "print_hide": 1,
+   "read_only": 1,
+   "width": "150px"
+  },
+  {
+   "fieldname": "column_break_46",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_taxes_and_charges",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Total Taxes and Charges",
+   "options": "currency",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "collapsible_depends_on": "discount_amount",
+   "fieldname": "section_break_48",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Additional Cost/Discount"
+  },
+  {
+   "default": "Grand Total",
+   "fieldname": "apply_discount_on",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Apply Additional Cost/Discount On",
+   "options": "\nGrand Total\nNet Total",
+   "print_hide": 1
+  },
+  {
+   "fieldname": "additional_cost_or_discount_description",
+   "fieldtype": "Text",
+   "label": "Additional cost or discount description"
+  },
+  {
+   "fieldname": "base_discount_amount",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Additional Discount Cost/Amount (Company Currency)",
+   "options": "Company:company:default_currency",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_50",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "additional_discount_percentage",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Additional Cost/Discount Percentage",
+   "print_hide": 1
+  },
+  {
+   "fieldname": "discount_amount",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Net Discount/Cost Amount",
+   "options": "currency",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "discount_or_cost_amount",
+   "fieldtype": "Currency",
+   "label": "Discount Cost",
+   "options": "currency"
+  },
+  {
+   "fieldname": "additional_cost",
+   "fieldtype": "Currency",
+   "label": "Additional Cost",
+   "options": "currency"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "loading_cost_details",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Loading Cost Details"
+  },
+  {
+   "fieldname": "loading_rate",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Loading Cost Rate"
+  },
+  {
+   "fieldname": "column_break_69",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "loading_cost",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Total Loading Cost",
+   "options": "currency",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.total_quantity",
+   "fieldname": "section_break_68",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Transportation Charges"
+  },
+  {
+   "fieldname": "transportation_rate",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Transportation Rate",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_70",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_distance",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Total Distance"
+  },
+  {
+   "fieldname": "total_quantity",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Total Quantity",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_73",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "transportation_charges",
+   "fieldtype": "Currency",
+   "label": "Transportation Charges",
+   "options": "currency",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "totals",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "oldfieldtype": "Section Break",
+   "options": "icon-money",
+   "print_hide": 1
+  },
+  {
+   "fieldname": "base_grand_total",
+   "fieldtype": "Currency",
+   "label": "Grand Total (Company Currency)",
+   "oldfieldname": "grand_total",
+   "oldfieldtype": "Currency",
+   "options": "Company:company:default_currency",
+   "print_hide": 1,
+   "read_only": 1,
+   "width": "150px"
+  },
+  {
+   "fieldname": "base_rounded_total",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Rounded Total (Company Currency)",
+   "oldfieldname": "rounded_total",
+   "oldfieldtype": "Currency",
+   "options": "Company:company:default_currency",
+   "print_hide": 1,
+   "read_only": 1,
+   "width": "150px"
+  },
+  {
+   "description": "In Words will be visible once you save the Sales Order.",
+   "fieldname": "base_in_words",
+   "fieldtype": "Data",
+   "label": "In Words (Company Currency)",
+   "oldfieldname": "in_words",
+   "oldfieldtype": "Data",
+   "print_hide": 1,
+   "read_only": 1,
+   "width": "200px"
+  },
+  {
+   "fieldname": "column_break3",
+   "fieldtype": "Column Break",
+   "oldfieldtype": "Column Break",
+   "print_hide": 1,
+   "width": "50%"
+  },
+  {
+   "fieldname": "grand_total",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Grand Total",
+   "oldfieldname": "grand_total_export",
+   "oldfieldtype": "Currency",
+   "options": "currency",
+   "read_only": 1,
+   "width": "150px"
+  },
+  {
+   "bold": 1,
+   "fieldname": "rounded_total",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Rounded Total",
+   "oldfieldname": "rounded_total_export",
+   "oldfieldtype": "Currency",
+   "options": "currency",
+   "print_hide": 1,
+   "read_only": 1,
+   "width": "150px"
+  },
+  {
+   "fieldname": "in_words",
+   "fieldtype": "Data",
+   "label": "In Words",
+   "oldfieldname": "in_words_export",
+   "oldfieldtype": "Data",
+   "read_only": 1,
+   "width": "200px"
+  },
+  {
+   "fieldname": "advance_paid",
+   "fieldtype": "Currency",
+   "label": "Advance Paid",
+   "no_copy": 1,
+   "options": "party_account_currency",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "collapsible_depends_on": "packed_items",
+   "fieldname": "packing_list",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Packing List",
+   "oldfieldtype": "Section Break",
+   "options": "icon-suitcase",
+   "print_hide": 1
+  },
+  {
+   "fieldname": "packed_items",
+   "fieldtype": "Table",
+   "hidden": 1,
+   "label": "Packed Items",
+   "oldfieldname": "packing_details",
+   "oldfieldtype": "Table",
+   "options": "Packed Item",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "collapsible_depends_on": "terms",
+   "fieldname": "terms_section_break",
+   "fieldtype": "Section Break",
+   "label": "Sales Terms & Conditions",
+   "oldfieldtype": "Section Break",
+   "options": "icon-legal"
+  },
+  {
+   "fieldname": "tc_name",
+   "fieldtype": "Link",
+   "label": "Sales Terms & Conditions",
+   "oldfieldname": "tc_name",
+   "oldfieldtype": "Link",
+   "options": "Terms and Conditions",
+   "print_hide": 1
+  },
+  {
+   "fieldname": "terms",
+   "fieldtype": "Text Editor",
+   "label": "Sales Terms and Conditions Details",
+   "oldfieldname": "terms",
+   "oldfieldtype": "Text Editor"
+  },
+  {
+   "collapsible": 1,
+   "collapsible_depends_on": "project",
+   "fieldname": "more_info",
+   "fieldtype": "Section Break",
+   "label": "More Information",
+   "oldfieldtype": "Section Break",
+   "options": "icon-file-text",
+   "print_hide": 1
+  },
+  {
+   "description": "Track this Sales Order against any Project",
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "in_filter": 1,
+   "label": "Project",
+   "oldfieldname": "project",
+   "oldfieldtype": "Link",
+   "options": "Project",
+   "search_index": 1
+  },
+  {
+   "fieldname": "party_account_currency",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Party Account Currency",
+   "no_copy": 1,
+   "options": "Currency",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_77",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "source",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Source",
+   "oldfieldname": "source",
+   "oldfieldtype": "Select",
+   "options": "\nExisting Customer\nReference\nAdvertisement\nCold Calling\nExhibition\nSupplier Reference\nMass Mailing\nCustomer's Vendor\nCampaign",
+   "print_hide": 1
+  },
+  {
+   "depends_on": "eval:doc.source == 'Campaign'",
+   "fieldname": "campaign",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Campaign",
+   "oldfieldname": "campaign",
+   "oldfieldtype": "Link",
+   "options": "Campaign",
+   "print_hide": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "printing_details",
+   "fieldtype": "Section Break",
+   "label": "Printing Details"
+  },
+  {
+   "fieldname": "language",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Print Language",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "letter_head",
+   "fieldtype": "Link",
+   "label": "Letter Head",
+   "oldfieldname": "letter_head",
+   "oldfieldtype": "Select",
+   "options": "Letter Head",
+   "print_hide": 1
+  },
+  {
+   "fieldname": "column_break4",
+   "fieldtype": "Column Break",
+   "hidden": 1,
+   "oldfieldtype": "Column Break",
+   "print_hide": 1,
+   "width": "50%"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "select_print_heading",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Print Heading",
+   "no_copy": 1,
+   "oldfieldname": "select_print_heading",
+   "oldfieldtype": "Link",
+   "options": "Print Heading",
+   "print_hide": 1,
+   "report_hide": 1
+  },
+  {
+   "default": "Draft",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "label": "Status",
+   "no_copy": 1,
+   "oldfieldname": "status",
+   "oldfieldtype": "Select",
+   "options": "\nDraft\nTo Deliver and Bill\nTo Bill\nTo Deliver\nCompleted\nCancelled\nClosed",
+   "print_hide": 1,
+   "read_only": 1,
+   "reqd": 1,
+   "search_index": 1,
+   "width": "100px"
+  },
+  {
+   "fieldname": "delivery_status",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Delivery Status",
+   "no_copy": 1,
+   "options": "Not Delivered\nFully Delivered\nPartly Delivered\nClosed\nNot Applicable",
+   "print_hide": 1
+  },
+  {
+   "fieldname": "column_break_81",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "billing_status",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Billing Status",
+   "no_copy": 1,
+   "options": "Not Billed\nFully Billed\nPartly Billed\nClosed",
+   "print_hide": 1
+  },
+  {
+   "collapsible": 1,
+   "collapsible_depends_on": "commission_rate",
+   "fieldname": "sales_team_section_break",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Commission",
+   "oldfieldtype": "Section Break",
+   "options": "icon-group",
+   "print_hide": 1
+  },
+  {
+   "fieldname": "sales_partner",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "in_filter": 1,
+   "label": "Sales Partner",
+   "oldfieldname": "sales_partner",
+   "oldfieldtype": "Link",
+   "options": "Sales Partner",
+   "print_hide": 1,
+   "search_index": 1,
+   "width": "150px"
+  },
+  {
+   "fieldname": "column_break7",
+   "fieldtype": "Column Break",
+   "print_hide": 1,
+   "width": "50%"
+  },
+  {
+   "fieldname": "commission_rate",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Commission Rate",
+   "oldfieldname": "commission_rate",
+   "oldfieldtype": "Currency",
+   "print_hide": 1,
+   "width": "100px"
+  },
+  {
+   "fieldname": "total_commission",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Total Commission",
+   "oldfieldname": "total_commission",
+   "oldfieldtype": "Currency",
+   "options": "Company:company:default_currency",
+   "print_hide": 1
+  },
+  {
+   "collapsible": 1,
+   "collapsible_depends_on": "sales_team",
+   "fieldname": "section_break1",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Sales Team",
+   "print_hide": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "sales_team",
+   "fieldtype": "Table",
+   "hidden": 1,
+   "label": "Sales Team1",
+   "oldfieldname": "sales_team",
+   "oldfieldtype": "Table",
+   "options": "Sales Team",
+   "print_hide": 1
+  },
+  {
+   "collapsible": 1,
+   "collapsible_depends_on": "is_recurring",
+   "fieldname": "recurring_order",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Recurring Order",
+   "options": "icon-time"
+  },
+  {
+   "fieldname": "settings",
+   "fieldtype": "Column Break",
+   "hidden": 1,
+   "label": "Settings"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "depends_on": "eval:doc.docstatus<2",
+   "fieldname": "is_recurring",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Is Recurring",
+   "no_copy": 1,
+   "print_hide": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "is_recurring",
+   "fieldname": "recurring_id",
+   "fieldtype": "Link",
+   "label": "Reference Document",
+   "no_copy": 1,
+   "options": "Sales Order",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.is_recurring && doc.recurring_id === doc.name",
+   "fieldname": "recurring_type",
+   "fieldtype": "Select",
+   "label": "Frequency",
+   "no_copy": 1,
+   "options": "\nMonthly\nQuarterly\nHalf-yearly\nYearly",
+   "print_hide": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.is_recurring && doc.recurring_id === doc.name",
+   "fieldname": "repeat_on_day_of_month",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Repeat on Day of Month",
+   "no_copy": 1,
+   "print_hide": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.is_recurring && doc.recurring_id === doc.name",
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "hidden": 1,
+   "label": "Recurring Upto",
+   "no_copy": 1,
+   "print_hide": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "depends_on": "eval:doc.is_recurring && doc.recurring_id === doc.name",
+   "fieldname": "submit_on_creation",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Submit on creation",
+   "print_hide": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "depends_on": "eval:doc.is_recurring && doc.recurring_id === doc.name",
+   "fieldname": "notify_by_email",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Notify by email",
+   "no_copy": 1,
+   "print_hide": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.is_recurring && doc.notify_by_email && doc.recurring_id === doc.name",
+   "fieldname": "notification_email_address",
+   "fieldtype": "Code",
+   "hidden": 1,
+   "label": "Notification Email Address",
+   "no_copy": 1,
+   "options": "Email",
+   "print_hide": 1
+  },
+  {
+   "depends_on": "eval:doc.is_recurring && doc.notify_by_email && doc.recurring_id === doc.name",
+   "fieldname": "recurring_print_format",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Recurring Print Format",
+   "options": "Print Format"
+  },
+  {
+   "fieldname": "column_break83",
+   "fieldtype": "Column Break",
+   "hidden": 1,
+   "label": "This Document",
+   "print_hide": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "is_recurring",
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "hidden": 1,
+   "label": "From Date",
+   "no_copy": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "is_recurring",
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "hidden": 1,
+   "label": "To Date",
+   "no_copy": 1
+  },
+  {
+   "depends_on": "is_recurring",
+   "fieldname": "next_date",
+   "fieldtype": "Date",
+   "hidden": 1,
+   "label": "Next Date",
+   "no_copy": 1,
+   "print_hide": 1
+  },
+  {
+   "fieldname": "section_break_124",
+   "fieldtype": "Section Break"
+  },
+  {
+   "description": "Validity days of this Sales Order.",
+   "fieldname": "validity_period",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Validity"
+  },
+  {
+   "fieldname": "cb_123",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "vehicle_nos",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Vehicle No"
+  },
+  {
+   "fieldname": "section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Header and Footer Text"
+  },
+  {
+   "fieldname": "sales_order_header_text",
+   "fieldtype": "Text Editor",
+   "label": "Sales Order Header Text"
+  },
+  {
+   "fieldname": "footer_text_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sales_order_footer_text",
+   "fieldtype": "Text Editor",
+   "hidden": 1,
+   "label": "Sales Order Footer Text"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Desuung Sales",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-01-09 11:39:15.955019",
+ "modified_by": "Administrator",
+ "module": "Selling",
+ "name": "Desuung Sales",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Desuung Sales",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

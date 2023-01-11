@@ -17,6 +17,7 @@
   "cohort_name",
   "status",
   "monthly_stipend",
+  "cohort_no",
   "col_break_01",
   "slot",
   "training_start_date",
@@ -120,14 +121,14 @@
   {
    "fieldname": "cohort",
    "fieldtype": "Link",
-   "label": "Cohort",
+   "label": "Cohort Announcement",
    "options": "Cohort"
   },
   {
    "fetch_from": "cohort.cohort_name",
    "fieldname": "cohort_name",
    "fieldtype": "Data",
-   "label": "Cohort Name"
+   "label": "Cohort Announcement Name"
   },
   {
    "fetch_from": "course.domain",
@@ -152,12 +153,18 @@
    "options": "Training Management",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "cohort_no",
+   "fieldtype": "Data",
+   "label": "Cohort No"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-12-30 14:28:34.266711",
+ "modified": "2023-01-10 15:13:33.424728",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Management",

@@ -69,6 +69,7 @@ frappe.query_reports["TDS Certificate"] = {
 			"label" : __("Currency"),
 			"fieldtype": "Link",
 			"options": "Currency",
+			"default": frappe.defaults.get_user_default("currency"),
 			"reqd": 1,
 		},
 		{

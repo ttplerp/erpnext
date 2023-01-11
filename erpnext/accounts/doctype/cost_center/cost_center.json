@@ -164,7 +164,7 @@
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2023-01-04 14:45:14.726801",
+ "modified": "2023-01-10 14:22:02.223986",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Cost Center",
@@ -202,6 +202,15 @@
   {
    "read": 1,
    "role": "Purchase User"
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Fleet User",
+   "share": 1
   }
  ],
  "search_fields": "parent_cost_center, is_group",

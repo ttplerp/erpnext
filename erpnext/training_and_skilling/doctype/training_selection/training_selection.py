@@ -11,6 +11,8 @@ from frappe.utils import (
 
 class TrainingSelection(Document):
 	def validate(self):
+		if self.gender_base_selection:
+			self.slot = int(self.male_slot) + int(self.female_slot)
 		self.check_duplicate_cohort_course()
 		self.workflow_process()
 
@@ -42,36 +44,74 @@ class TrainingSelection(Document):
 	
 	@frappe.whitelist()
 	def applicant_shortlisting(self):
-		idx = 0
-		if self.pre_requisite:
-			for a in self.get("item"):
-				if a.course_pre_requisite == "" and a.status == "Registered":
-					frappe.throw("Course Prerequisite check is missing for Desuup ID <b>{}</b>. Please process the prerequisite check from Utilities".format(a.did))
-			for a in frappe.db.sql(""" SELECT name, did, final_point, DENSE_RANK() OVER (order by final_point desc) as rank
-								from `tabTraining Selection Item` 
-								where status not in ("Withdrawn","Disqualified","Barred")  
-								and course_pre_requisite = "Yes"
-								and parent = '{0}'
-								""".format(self.name), as_dict=True):
-				idx += 1
-				status = "Standby" if idx > self.slot else "Shortlisted"
-				frappe.db.sql("""update `tabTraining Selection Item` 
-								set selection_rank = '{0}', status = '{1}', idx = "{2}"
-								where name= '{3}'""".format(int(a.rank), status, idx, a.name))
+		idx = highest_rank = 0
+		if self.gender_base_selection:
+			if self.male_slot < 1 or self.female_slot < 1:
+				frappe.throw("For Gender Base Selection, Training Slot for male or female should be greater than 0 (Zero)")
+			
+			for gender in ["Male","Female"]:
+				slot = self.male_slot + idx if gender == "Male" else self.female_slot + idx
+				if self.pre_requisite:
+					for a in self.get("item"):
+						if a.course_pre_requisite == "" and a.status == "Registered":
+							frappe.throw("Course Prerequisite check is missing for Desuup ID <b>{}</b>. Please process the prerequisite check from Utilities".format(a.did))
+					for a in frappe.db.sql(""" SELECT name, did, final_point, DENSE_RANK() OVER (order by final_point desc) as rank
+									from `tabTraining Selection Item` 
+									where status not in ("Withdrawn","Disqualified","Barred")  
+									and course_pre_requisite = "Yes"
+									and parent = '{0}'
+									and gender = '{1}'
+									""".format(self.name, gender), as_dict=True):
+						idx += 1
+						status = "Standby" if idx > slot else "Shortlisted"
+						frappe.db.sql("""update `tabTraining Selection Item` 
+									set selection_rank = '{0}', status = '{1}', idx = "{2}"
+									where name= '{3}'""".format(int(a.rank), status, idx, a.name))
+						highest_rank = int(a.rank) if int(a.rank) > highest_rank else highest_rank
+			
+				for b in frappe.db.sql(""" SELECT name, did, final_point, DENSE_RANK() OVER (order by final_point desc) as rank
+									from `tabTraining Selection Item` 
+									where status not in ("Withdrawn","Disqualified","Barred") 
+									and (course_pre_requisite != "Yes" or course_pre_requisite is NULL)
+									and parent = '{0}'
+									and gender = '{1}'
+									""".format(self.name, gender), as_dict=True):
+					idx += 1
+					status = "Standby" if idx > slot else "Shortlisted"
+					frappe.db.sql("""update `tabTraining Selection Item` 
+									set selection_rank = '{0}', status = '{1}', idx = "{2}"
+									where name= '{3}'""".format(int(b.rank) + highest_rank, status, idx, b.name))
+		else:
+			if self.pre_requisite:
+				for a in self.get("item"):
+					if a.course_pre_requisite == "" and a.status == "Registered":
+						frappe.throw("Course Prerequisite check is missing for Desuup ID <b>{}</b>. Please process the prerequisite check from Utilities".format(a.did))
+				for a in frappe.db.sql(""" SELECT name, did, final_point, DENSE_RANK() OVER (order by final_point desc) as rank
+									from `tabTraining Selection Item` 
+									where status not in ("Withdrawn","Disqualified","Barred")  
+									and course_pre_requisite = "Yes"
+									and parent = '{0}'
+									""".format(self.name), as_dict=True):
+					idx += 1
+					status = "Standby" if idx > self.slot else "Shortlisted"
+					frappe.db.sql("""update `tabTraining Selection Item` 
+									set selection_rank = '{0}', status = '{1}', idx = "{2}"
+									where name= '{3}'""".format(int(a.rank), status, idx, a.name))
+					highest_rank = int(a.rank) if int(a.rank) > highest_rank else highest_rank
+			
+			for b in frappe.db.sql(""" SELECT name, did, final_point, DENSE_RANK() OVER (order by final_point desc) as rank
+									from `tabTraining Selection Item` 
+									where status not in ("Withdrawn","Disqualified","Barred") 
+									and (course_pre_requisite != "Yes" or course_pre_requisite is NULL)
+									and parent = '{0}'
+									""".format(self.name), as_dict=True):
+					idx += 1
+					status = "Standby" if idx > self.slot else "Shortlisted"
+					frappe.db.sql("""update `tabTraining Selection Item` 
+									set selection_rank = '{0}', status = '{1}', idx = "{2}"
+									where name= '{3}'""".format(int(b.rank) + highest_rank, status, idx, b.name))
 		
-		for a in frappe.db.sql(""" SELECT name, did, final_point, DENSE_RANK() OVER (order by final_point desc) as rank
-								from `tabTraining Selection Item` 
-								where status not in ("Withdrawn","Disqualified","Barred") 
-								and (course_pre_requisite != "Yes" or course_pre_requisite is NULL)
-								and parent = '{0}'
-								""".format(self.name), as_dict=True):
-				idx += 1
-				status = "Standby" if idx > self.slot else "Shortlisted"
-				frappe.db.sql("""update `tabTraining Selection Item` 
-								set selection_rank = '{0}', status = '{1}', idx = "{2}"
-								where name= '{3}'""".format(int(a.rank), status, idx, a.name))
-		
-		for a in frappe.db.sql(""" SELECT name, did
+		for c in frappe.db.sql(""" SELECT name, did
 								from `tabTraining Selection Item` 
 								where status in ("Withdrawn","Disqualified","Barred") 
 								and parent = '{0}'
@@ -79,7 +119,7 @@ class TrainingSelection(Document):
 				idx += 1
 				frappe.db.sql("""update `tabTraining Selection Item` 
 								set idx = "{0}"
-								where name= '{1}'""".format(idx, a.name))		
+								where name= '{1}'""".format(idx, c.name))		
 		frappe.db.commit()
 		frappe.msgprint("Shortlisting and Ranking completed successfully")
 
@@ -109,8 +149,11 @@ class TrainingSelection(Document):
 								from `tabDeployment`
 								where desuung_id = '{}'
 								""".format(desuup_id), as_dict=True):
-				if not a.deployment_category:
-					frappe.throw(" <b>{0}</b> not mapped to Deployment Category. Please map to proceed further {1} and {2}".format(frappe.get_desk_link("Deployment Title",a.deployment_title), desuup_id, a.name))
+				deployment_category = a.deployment_category
+				if not deployment_category:
+					deployment_category = frappe.db.get_value("Deployment Title", a.deployment_title)
+					if not deployment_category:
+						frappe.throw("{0} not mapped to Deployment Category. Please map to proceed further {1} and {2}".format(frappe.get_desk_link("Deployment Title",a.deployment_title), desuup_id, a.name))
 				else:
 					actual_point = flt(a.days_attended) * flt(frappe.db.get_value("Deployment Category", a.deployment_category, "point"))
 					detail += "'" + str(a.deployment_title) + " (" + str(a.deployment_category) + ")' : " + str(actual_point) + "<br/>"
@@ -224,7 +267,7 @@ class TrainingSelection(Document):
 								doc.start_date = d['startDate']
 								doc.end_date = d['endDate']
 								doc.days_attended = d['daysAttended']
-								title = d['deploymentTitle']
+								title = d['deploymentTitle'].lstrip()
 								deployment_title = title.replace('"','')
 								if not frappe.db.exists("Deployment Title", deployment_title):
 									dep_doc = frappe.new_doc("Deployment Title")
@@ -245,8 +288,8 @@ class TrainingSelection(Document):
 		for a in frappe.db.sql(""" select did, cid, profile_id, desuup_name,  gender, mobile, email, date_of_birth,
 									employment_type
 									from `tabCohort Applicant`
-									where cohort_id = '{cohort}'
-									and course_id = '{course}'
+									where cohort_id = "{cohort}"
+									and course_id = "{course}"
 						""".format(cohort=self.cohort_id, course=self.course_id), as_dict=True):
 			if frappe.db.exists("Desuup", a.did):
 				row = self.append('item', {})
@@ -271,6 +314,19 @@ class TrainingSelection(Document):
 				row.update(a)
 			else:
 				frappe.msgprint("Desuup ID <b>{}</b> details are missing from Desuung database".format(a.did))
+	
+	@frappe.whitelist()
+	def send_offer_letter(self):
+		for a in self.get("item"):
+			if a.confirmation_status ==  "Selected"  and not a.offer_letter_sent:
+				frappe.db.sql("update `tabTraining Selection Item` set offer_letter_sent = 1 where name = '{}'".format(a.name))
+		frappe.db.sql("update `tabTraining Selection` set offer_letter_sent = 1 where name = '{}'".format(self.name))
+		frappe.db.commit()
+		frappe.msgprint("<b>DSP Offer Letter </b> sent successfully for selected applicants via respective email address")
+
+	@frappe.whitelist()
+	def create_training(self):
+		frappe.msgprint("<b>DSP Training created successfully for selected applicants</b>")
 			
 @frappe.whitelist()
 def get_courses(doctype, txt, searchfield, start, page_len, filters):

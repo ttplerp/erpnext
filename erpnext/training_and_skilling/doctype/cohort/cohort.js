@@ -12,6 +12,7 @@ frappe.ui.form.on('Cohort', {
 			callback: function(r, rt) {
 				frm.refresh_field("applicant");
 				frm.refresh_fields();
+				frappe.msgprint("Applicants fetched Successfully. Please Click <b>Save</b> by writing some remarks")
 			},
 			freeze: true,
 			freeze_message: "Fetching Data and Updating..... Please Wait"

@@ -1,5 +1,5 @@
 {
- "add_total_row": 1,
+ "add_total_row": 0,
  "columns": [],
  "creation": "2022-09-23 22:07:29.433763",
  "disable_prepared_report": 0,
@@ -9,7 +9,7 @@
  "filters": [],
  "idx": 0,
  "is_standard": "Yes",
- "modified": "2022-09-23 22:07:29.433763",
+ "modified": "2023-01-08 17:56:50.364894",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "TDS Certificate",

@@ -79,7 +79,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Status",
-   "options": "\nReported\nWithdrawn\nPassed\nTerminated\nSuspended"
+   "options": "\nReported\nWithdrawn\nPassed\nTerminated\nSuspended\nAttendance Shortage"
   },
   {
    "fetch_from": "desuup_id.gender",
@@ -93,7 +93,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-12-29 14:10:34.975270",
+ "modified": "2023-01-05 15:47:47.056851",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Trainee Details",

@@ -11,6 +11,9 @@
   },
   {
    "card": "Total Outgoing Payment"
+  },
+  {
+   "card": "Sum of Debit"
   }
  ],
  "charts": [
@@ -43,16 +46,16 @@
    "width": "Full"
   }
  ],
- "creation": "2020-07-17 11:25:34.796608",
+ "creation": "2022-11-10 15:37:15.472616",
  "dashboard_name": "Accounts",
  "docstatus": 0,
  "doctype": "Dashboard",
  "idx": 0,
  "is_default": 0,
  "is_standard": 1,
- "modified": "2020-07-22 13:07:34.540574",
- "modified_by": "Administrator",
+ "modified": "2023-01-06 15:06:00.884664",
+ "modified_by": "pema.dhendup@thimphutechpark.bt",
  "module": "Accounts",
  "name": "Accounts",
- "owner": "Administrator"
+ "owner": "schophel@thimphutechpark.bt"
 }

@@ -204,7 +204,7 @@ def fetch_data(name, param):
 									"agency": emp['agency'],
 									"agency_type": emp['agency_type']['name'],
 									"designation": emp['designation'],
-									"profession": emp['profession']['name'],
+									"profession": emp['profession']['name'] if emp['profession'] else '',
 								})
 					
 				if v['profile_qualification']:

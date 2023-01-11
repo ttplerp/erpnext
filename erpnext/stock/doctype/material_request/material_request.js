@@ -7,6 +7,11 @@ frappe.provide("erpnext.accounts.dimensions");
 
 frappe.ui.form.on('Material Request', {
 	setup: function (frm) {
+		frm.get_field("items").grid.editable_fields = [
+			{ fieldname: "item_code", columns: 4 },
+			{ fieldname: "qty", columns: 3 },
+			{ fieldname: "uom", columns: 3 },
+		];
 		frm.custom_make_buttons = {
 			'Stock Entry': 'Issue Material',
 			'Pick List': 'Pick List',

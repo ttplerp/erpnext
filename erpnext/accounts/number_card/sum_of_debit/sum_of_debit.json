@@ -1,0 +1,22 @@
+{
+ "creation": "2023-01-06 15:06:00.809216",
+ "docstatus": 0,
+ "doctype": "Number Card",
+ "filters_json": "{\"company\":\"De-suung\",\"from_date\":\"2023-01-06\",\"to_date\":\"2023-01-06\",\"account\":[],\"voucher_no\":\"JEBP230100013\",\"party\":[],\"cost_center\":[],\"project\":[],\"include_dimensions\":1}",
+ "function": "Count",
+ "idx": 0,
+ "is_public": 0,
+ "is_standard": 1,
+ "label": "Sum of Debit",
+ "modified": "2023-01-06 15:06:00.871403",
+ "modified_by": "pema.dhendup@thimphutechpark.bt",
+ "module": "Accounts",
+ "name": "Sum of Debit",
+ "owner": "pema.dhendup@thimphutechpark.bt",
+ "report_field": "debit",
+ "report_function": "Sum",
+ "report_name": "General Ledger",
+ "show_percentage_stats": 1,
+ "stats_time_interval": "Daily",
+ "type": "Report"
+}

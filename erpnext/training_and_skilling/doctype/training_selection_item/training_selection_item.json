@@ -9,11 +9,22 @@
   "did",
   "column_break_2",
   "desuup_name",
+  "column_break_4",
+  "mobile",
+  "confirmation_detail_section",
+  "confirmation_status",
+  "offer_letter_sent",
+  "send_offer_letter",
+  "column_break_9",
+  "current_location",
+  "pick_up_point",
+  "transportation_mode",
+  "column_break_45",
+  "confirmation_remark",
   "desuup_details_section",
   "cid",
   "profile_id",
   "gender",
-  "mobile",
   "email",
   "date_of_birth",
   "column_break_5",
@@ -47,11 +58,7 @@
   "column_break_38",
   "final_point",
   "section_break_40",
-  "point_remark",
-  "confirmation_detail_section",
-  "confirmation_status",
-  "column_break_45",
-  "confirmation_remark"
+  "point_remark"
  ],
  "fields": [
   {
@@ -80,6 +87,7 @@
    "fetch_from": "did.gender",
    "fieldname": "gender",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Gender",
    "read_only": 1
   },
@@ -270,6 +278,7 @@
   {
    "fieldname": "total_point",
    "fieldtype": "Float",
+   "in_list_view": 1,
    "label": "Total Point",
    "read_only": 1
   },
@@ -333,12 +342,54 @@
    "fieldname": "confirmation_remark",
    "fieldtype": "Small Text",
    "label": "Confirmation Remarks"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "current_location",
+   "fieldtype": "Link",
+   "label": "Current Location",
+   "options": "Dzongkhag"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "pick_up_point",
+   "fieldtype": "Data",
+   "label": "Pick Up Point"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "transportation_mode",
+   "fieldtype": "Data",
+   "label": "Mode Of Transportation"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "depends_on": "eval:doc.confirmation_status == \"Selected\"",
+   "fieldname": "offer_letter_sent",
+   "fieldtype": "Check",
+   "label": "Offer Letter Sent",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.confirmation_status == \"Selected\"",
+   "fieldname": "send_offer_letter",
+   "fieldtype": "Button",
+   "label": "Click to send Offer Letter "
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-01-04 10:18:42.061772",
+ "modified": "2023-01-09 10:02:41.650273",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Selection Item",

@@ -7,315 +7,311 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-    "direct_payment",
-    "branch",
-    "col_break_2",
-    "cost_center",
-    "column_break_5",
-    "posting_date",
-    "column_break_7",
-    "is_advance",
-    "invoice_details",
-    "invoice_no",
-    "column_break_2",
-    "invoice_date",
-    "column_break_6",
-    "payment_type",
-    "tds_percent",
-    "column_break_15",
-    "business_activity",
-    "tds_account",
-    "payment_details",
-    "item",
-    "account_details",
-    "credit_account",
-    "debit_account",
-    "party_type",
-    "party",
-    "column_break_24",
-    "section_break_29",
-    "amount",
-    "taxable_amount",
-    "column_break_12",
-    "tds_amount",
-    "net_amount",
-    "sc12",
-    "remarks",
-    "column_break_39",
-    "use_check_lot",
-    "select_cheque_lot",
-    "cheque_no",
-    "cheque_date",
-    "pay_to_recd_from",
-    "clearance_date",
-    "sb1",
-    "company",
-    "amended_from"
+  "direct_payment",
+  "branch",
+  "col_break_2",
+  "cost_center",
+  "column_break_5",
+  "posting_date",
+  "column_break_7",
+  "is_advance",
+  "invoice_details",
+  "invoice_no",
+  "column_break_2",
+  "invoice_date",
+  "column_break_6",
+  "payment_type",
+  "tds_percent",
+  "column_break_15",
+  "business_activity",
+  "tds_account",
+  "payment_details",
+  "item",
+  "account_details",
+  "currency",
+  "credit_account",
+  "debit_account",
+  "party_type",
+  "party",
+  "column_break_24",
+  "section_break_29",
+  "amount",
+  "taxable_amount",
+  "column_break_12",
+  "tds_amount",
+  "net_amount",
+  "sc12",
+  "remarks",
+  "column_break_39",
+  "use_check_lot",
+  "select_cheque_lot",
+  "cheque_no",
+  "cheque_date",
+  "pay_to_recd_from",
+  "clearance_date",
+  "sb1",
+  "company"
  ],
  "fields": [
-    {
-    "fieldname": "direct_payment",
-    "fieldtype": "Section Break",
-    "label": "Direct Payment"
-    },
-    {
-    "default": "DSP Head Office - Thimphu",
-    "fieldname": "branch",
-    "fieldtype": "Link",
-    "label": "Branch",
-    "options": "Branch",
-    "reqd": 1
-    },
-    {
-    "fieldname": "col_break_2",
-    "fieldtype": "Column Break"
-    },
-    {
-    "fieldname": "cost_center",
-    "fieldtype": "Link",
-    "label": "Cost Center",
-    "options": "Cost Center",
-    "read_only": 1,
-    "reqd": 1
-    },
-    {
-    "fieldname": "column_break_5",
-    "fieldtype": "Column Break"
-    },
-    {
-    "columns": 2,
-    "fieldname": "posting_date",
-    "fieldtype": "Date",
-    "in_list_view": 1,
-    "label": "Posting Date",
-    "reqd": 1
-    },
-    {
-    "fieldname": "column_break_7",
-    "fieldtype": "Column Break"
-    },
-    {
-    "default": "0",
-    "fieldname": "is_advance",
-    "fieldtype": "Check",
-    "label": "Is Advance?"
-    },
-    {
-    "fieldname": "invoice_details",
-    "fieldtype": "Section Break",
-    "label": "INVOICE DETAILS"
-    },
-    {
-    "fieldname": "invoice_no",
-    "fieldtype": "Data",
-    "label": "Invoice No"
-    },
-    {
-    "fieldname": "column_break_2",
-    "fieldtype": "Column Break"
-    },
-    {
-    "fieldname": "invoice_date",
-    "fieldtype": "Date",
-    "label": "Invoice Date"
-    },
-    {
-    "fieldname": "column_break_6",
-    "fieldtype": "Column Break"
-    },
-    {
-    "default": "Payment",
-    "fieldname": "payment_type",
-    "fieldtype": "Select",
-    "label": "Payment Type",
-    "options": "\nReceive\nPayment",
-    "reqd": 1
-    },
-    {
-    "fieldname": "column_break_15",
-    "fieldtype": "Column Break"
-    },
-    {
-    "default": "Common",
-    "fieldname": "business_activity",
-    "fieldtype": "Link",
-    "label": "Business Activity",
-    "options": "Business Activity",
-    "read_only": 1,
-    "reqd": 1
-    },
-    {
-    "fieldname": "account_details",
-    "fieldtype": "Section Break",
-    "label": "Account Details"
-    },
-    {
-    "depends_on": "eval:doc.payment_type==\"Payment\"",
-    "fieldname": "credit_account",
-    "fieldtype": "Link",
-    "label": "Credit Account",
-    "options": "Account"
-    },
-    {
-    "fieldname": "column_break_24",
-    "fieldtype": "Column Break",
-    "hidden": 1
-    },
-    {
-    "fieldname": "tds_percent",
-    "fieldtype": "Select",
-    "label": "TDS Percent",
-    "options": "\n2\n3\n5\n10"
-    },
-    {
-    "fieldname": "tds_account",
-    "fieldtype": "Link",
-    "label": "TDS Account",
-    "options": "Account",
-    "read_only": 1
-    },
-    {
-    "fieldname": "payment_details",
-    "fieldtype": "Section Break",
-    "label": "Payment Details"
-    },
-    {
-    "allow_in_quick_entry": 1,
-    "fieldname": "item",
-    "fieldtype": "Table",
-    "options": "Direct Payment Item",
-    "reqd": 1
-    },
-    {
-    "fieldname": "section_break_29",
-    "fieldtype": "Section Break"
-    },
-    {
-    "fieldname": "amount",
-    "fieldtype": "Currency",
-    "in_list_view": 1,
-    "label": "Gross Amount",
-    "read_only": 1
-    },
-    {
-    "fieldname": "taxable_amount",
-    "fieldtype": "Currency",
-    "label": "Total Taxable Amount",
-    "read_only": 1
-    },
-    {
-    "fieldname": "column_break_12",
-    "fieldtype": "Column Break"
-    },
-    {
-    "fieldname": "tds_amount",
-    "fieldtype": "Currency",
-    "label": "TDS Amount",
-    "read_only": 1
-    },
-    {
-    "fieldname": "net_amount",
-    "fieldtype": "Currency",
-    "in_list_view": 1,
-    "label": "Net Amount",
-    "read_only": 1
-    },
-    {
-    "fieldname": "sc12",
-    "fieldtype": "Section Break"
-    },
-    {
-    "fieldname": "remarks",
-    "fieldtype": "Small Text",
-    "in_list_view": 1,
-    "label": "Remarks/Narration",
-    "reqd": 1
-    },
-    {
-    "fieldname": "column_break_39",
-    "fieldtype": "Column Break"
-    },
-    {
-    "default": "0",
-    "fieldname": "use_check_lot",
-    "fieldtype": "Check",
-    "label": "Assign Using Cheque Lot"
-    },
-    {
-    "depends_on": "eval:doc.use_check_lot==1",
-    "fieldname": "select_cheque_lot",
-    "fieldtype": "Link",
-    "label": "Select Cheque Lot",
-    "options": "Cheque Lot"
-    },
-    {
-    "fieldname": "cheque_no",
-    "fieldtype": "Data",
-    "label": "Cheque Number"
-    },
-    {
-    "fieldname": "cheque_date",
-    "fieldtype": "Date",
-    "label": "Cheque Date"
-    },
-    {
-    "fieldname": "pay_to_recd_from",
-    "fieldtype": "Data",
-    "label": "Pay To / Recd From"
-    },
-    {
-    "fieldname": "clearance_date",
-    "fieldtype": "Date",
-    "label": "Clearance Date",
-    "read_only": 1
-    },
-    {
-    "fieldname": "sb1",
-    "fieldtype": "Section Break"
-    },
-    {
-    "fieldname": "company",
-    "fieldtype": "Link",
-    "label": "Company",
-    "options": "Company",
-    "read_only": 1,
-    "reqd": 1
-    },
-    {
-    "fieldname": "amended_from",
-    "fieldtype": "Data",
-    "label": "Amended From",
-    "no_copy": 1,
-    "options": "Direct Payment",
-    "print_hide": 1,
-    "read_only": 1,
-    "unique": 1
-    },
-    {
-    "depends_on": "eval:doc.payment_type==\"Receive\"",
-    "fieldname": "debit_account",
-    "fieldtype": "Link",
-    "label": "Debit Account",
-    "options": "Account"
-    },
-    {
-    "fieldname": "party_type",
-    "fieldtype": "Select",
-    "label": "Party Type",
-    "options": "\nEmployee\nSupplier\nCustomer"
-    },
-    {
-    "fieldname": "party",
-    "fieldtype": "Dynamic Link",
-    "ignore_user_permissions": 1,
-    "label": "Party",
-    "options": "party_type"
-    }
+  {
+   "fieldname": "direct_payment",
+   "fieldtype": "Section Break",
+   "label": "Direct Payment"
+  },
+  {
+   "default": "DSP Head Office - Thimphu",
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fieldname": "col_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 2,
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_advance",
+   "fieldtype": "Check",
+   "label": "Is Advance?"
+  },
+  {
+   "fieldname": "invoice_details",
+   "fieldtype": "Section Break",
+   "label": "INVOICE DETAILS"
+  },
+  {
+   "fieldname": "invoice_no",
+   "fieldtype": "Data",
+   "label": "Invoice No"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "invoice_date",
+   "fieldtype": "Date",
+   "label": "Invoice Date"
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Payment",
+   "fieldname": "payment_type",
+   "fieldtype": "Select",
+   "label": "Payment Type",
+   "options": "\nReceive\nPayment",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_15",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Common",
+   "fieldname": "business_activity",
+   "fieldtype": "Link",
+   "label": "Business Activity",
+   "options": "Business Activity",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "account_details",
+   "fieldtype": "Section Break",
+   "label": "Account Details"
+  },
+  {
+   "depends_on": "eval:doc.payment_type==\"Payment\"",
+   "fieldname": "credit_account",
+   "fieldtype": "Link",
+   "label": "Credit Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "column_break_24",
+   "fieldtype": "Column Break",
+   "hidden": 1
+  },
+  {
+   "fieldname": "tds_percent",
+   "fieldtype": "Select",
+   "label": "TDS Percent",
+   "options": "\n2\n3\n5\n10"
+  },
+  {
+   "fieldname": "tds_account",
+   "fieldtype": "Link",
+   "label": "TDS Account",
+   "options": "Account",
+   "read_only": 1
+  },
+  {
+   "fieldname": "payment_details",
+   "fieldtype": "Section Break",
+   "label": "Payment Details"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "item",
+   "fieldtype": "Table",
+   "options": "Direct Payment Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_29",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Gross Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "taxable_amount",
+   "fieldtype": "Currency",
+   "label": "Total Taxable Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_12",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tds_amount",
+   "fieldtype": "Currency",
+   "label": "TDS Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "net_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Net Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sc12",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Remarks/Narration",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_39",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "use_check_lot",
+   "fieldtype": "Check",
+   "label": "Assign Using Cheque Lot"
+  },
+  {
+   "depends_on": "eval:doc.use_check_lot==1",
+   "fieldname": "select_cheque_lot",
+   "fieldtype": "Link",
+   "label": "Select Cheque Lot",
+   "options": "Cheque Lot"
+  },
+  {
+   "fieldname": "cheque_no",
+   "fieldtype": "Data",
+   "label": "Cheque Number"
+  },
+  {
+   "fieldname": "cheque_date",
+   "fieldtype": "Date",
+   "label": "Cheque Date"
+  },
+  {
+   "fieldname": "pay_to_recd_from",
+   "fieldtype": "Data",
+   "label": "Pay To / Recd From"
+  },
+  {
+   "fieldname": "clearance_date",
+   "fieldtype": "Date",
+   "label": "Clearance Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb1",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.payment_type==\"Receive\"",
+   "fieldname": "debit_account",
+   "fieldtype": "Link",
+   "label": "Debit Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "party_type",
+   "fieldtype": "Select",
+   "label": "Party Type",
+   "options": "\nEmployee\nSupplier\nCustomer"
+  },
+  {
+   "fieldname": "party",
+   "fieldtype": "Dynamic Link",
+   "ignore_user_permissions": 1,
+   "label": "Party",
+   "options": "party_type"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency"
+  }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-11-24 15:06:43.840910",
+ "modified": "2023-01-06 18:05:21.953332",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Direct Payment",

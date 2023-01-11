@@ -16,6 +16,7 @@ class AssetMovement(Document):
 		self.validate_cost_center()
 		# self.validate_employee()
 		self.validate_asset()
+		self.posting_date = getdate(self.transaction_date) #required of transfer_gl
 
 	def validate_asset(self):
 		for d in self.assets:

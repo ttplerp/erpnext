@@ -351,7 +351,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Buying",
-   "link_count": 13,
+   "link_count": 14,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -496,9 +496,19 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Item Sub Group",
+   "link_count": 0,
+   "link_to": "Item Sub Group",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-01-04 15:07:24.196898",
+ "modified": "2023-01-09 15:41:29.743398",
  "modified_by": "pema.dhendup@thimphutechpark.bt",
  "module": "Buying",
  "name": "Buying",

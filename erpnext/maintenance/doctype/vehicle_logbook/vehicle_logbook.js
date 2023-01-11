@@ -1,7 +1,7 @@
 // Copyright (c) 2016, Frappe Technologies Pvt. Ltd. and contributors
 // For license information, please see license.txt
 
-cur_frm.add_fetch("cost_center", "branch", "branch")
+// cur_frm.add_fetch("cost_center", "branch", "branch")
 frappe.ui.form.on('Vehicle Logbook', {
 	refresh: function (frm) {
 		total_ro = 1
@@ -52,26 +52,26 @@ frappe.ui.form.on('Vehicle Logbook', {
 		}
 	},
 
-	branch: function (frm) {
-		if (frm.doc.branch) {
-			frappe.call({
-				method: 'frappe.client.get_value',
-				args: {
-					doctype: 'Cost Center',
-					filters: {
-						'branch': frm.doc.branch
-					},
-					fieldname: ['name']
-				},
-				callback: function (r) {
-					if (r.message) {
-						cur_frm.set_value("cost_center", r.message.name);
-						refresh_field('cost_center');
-					}
-				}
-			});
-		}
-	},
+	// branch: function (frm) {
+	// 	if (frm.doc.branch) {
+	// 		frappe.call({
+	// 			method: 'frappe.client.get_value',
+	// 			args: {
+	// 				doctype: 'Branch',
+	// 				filters: {
+	// 					'branch': frm.doc.branch
+	// 				},
+	// 				fieldname: ['cost_center']
+	// 			},
+	// 			callback: function (r) {
+	// 				if (r.message) {
+	// 					frm.set_value("cost_center", r.message.name);
+	// 					refresh_field('cost_center');
+	// 				}
+	// 			}
+	// 		});
+	// 	}
+	// },
 	"final_km": function (frm) {
 		if (!frm.doc.docstatus == 1) {
 			calculate_distance_km(frm)

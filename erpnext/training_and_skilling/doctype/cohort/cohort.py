@@ -29,7 +29,7 @@ class Cohort(Document):
 	def get_applicants(self):
 		if not self.cohort_id:
 			frappe.throw("Cohort ID is mandatory to fetch applicants")
-	
+		
 		doc = frappe.get_doc("API Setting Item", {"api_name":"Fetch Applicants by Cohort"})
 		parent_doc = frappe.get_doc("API Setting", doc.parent)
 		bearer_token = 'Bearer '+str(parent_doc.bearer_token)
@@ -60,4 +60,3 @@ class Cohort(Document):
 			row.course_id = a['course']['id']
 			row.course_name = a['course']['name']
 			row.course = frappe.db.get_value("Course", {"course_id":a['course']['id']})
-			#row.update()

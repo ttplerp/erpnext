@@ -6,19 +6,44 @@ frappe.ui.form.on('Training Selection', {
 	},
 	refresh: function(frm) {
 		if(frm.doc.workflow_state == "Selection Completed") {
-			frm.page.set_primary_action(__('Create Training'), () => {
-				return frappe.call({
-					method: "",
-					doc: cur_frm.doc,
-					callback: function(r, rt) {
-						frm.refresh_field("item");
-						frm.refresh();
-						frm.reload_doc();
-					},
-					freeze: true,
-					freeze_message: "Fetching Deplpoyment and Updating..... Please Wait"
-				});
+			var flag = 0
+			$.each(frm.doc.item || [], function(i, row) {
+				if(!row.offer_letter_sent && row.confirmation_status == "Selected"){
+					flag = 1;
+					console.log("Dessup ID : " + row.did);
+					return;
+				}
 			});
+			if(flag || !frm.doc.offer_letter_sent){
+				frm.page.set_primary_action(__('Send Offer Letter'), () => {
+					return frappe.call({
+						method: "send_offer_letter",
+						doc: cur_frm.doc,
+						callback: function(r, rt) {
+							frm.refresh_field("item");
+							frm.refresh();
+							frm.reload_doc();
+						},
+						freeze: true,
+						freeze_message: "Sending DSP Offer Letter..... Please Wait"
+					});
+				});
+			}
+			else{
+				frm.page.set_primary_action(__('Create Training'), () => {
+					return frappe.call({
+						method: "create_training",
+						doc: cur_frm.doc,
+						callback: function(r, rt) {
+							frm.refresh_field("item");
+							frm.refresh();
+							frm.reload_doc();
+						},
+						freeze: true,
+						freeze_message: "Creating Training Records..... Please Wait"
+					});
+				});
+			}
 		}
 		if(frm.doc.workflow_state == "Pending") {
 			frm.add_custom_button(__('Update Deployment'), function(){
@@ -136,6 +161,7 @@ frappe.ui.form.on('Training Selection', {
 			freeze_message: "Fetching Data and Updating..... Please Wait"
 		});
 	},
+	
 });
 
 var create_custom_buttons = function(frm){

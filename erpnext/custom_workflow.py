@@ -619,13 +619,15 @@ class NotifyCustomWorkflow:
 
 	def notify_material_request(self):
 		owner_designation = frappe.db.get_value("Employee", {"user_id":self.doc.owner}, "designation")
+		domain_name = frappe.db.get_value("Cost Center", self.doc.cost_center, "parent_cost_center")
+		link_html = "<a href=" + frappe.utils.get_url_to_form(self.doc.doctype, self.doc.name) + ">" + self.doc.name + "</a>"
 		if self.new_state == "Waiting For Verifier":
 			pmt = frappe.get_list("Program Management Team", filters={"parent":self.doc.cost_center}, fields=['pmt_user_id'])
 			if pmt:
 				receipients = [a['pmt_user_id'] for a in pmt if frappe.db.get_value("User", a['pmt_user_id'], "enabled") == 1]
 				parent_doc = frappe.get_doc(self.doc.doctype, self.doc.name)
 				args = parent_doc.as_dict()
-				args.update({'owner_designation': owner_designation, 'employee_name':self.login_user[1],'employee_designation':self.login_user[2]})
+				args.update({'domain_name': domain_name,'link_html': link_html,'owner_designation': owner_designation, 'employee_name':self.login_user[1],'employee_designation':self.login_user[2]})
 				email_template = frappe.get_doc("Email Template", "MR PMT Email")
 				message = frappe.render_template(email_template.response, args)
 				
@@ -635,7 +637,7 @@ class NotifyCustomWorkflow:
 				receipients = [a['domain_lead_user_id'] for a in dl if frappe.db.get_value("User", a['domain_lead_user_id'], "enabled") == 1]
 				parent_doc = frappe.get_doc(self.doc.doctype, self.doc.name)
 				args = parent_doc.as_dict()
-				args.update({'owner_designation': owner_designation, 'employee_name':self.login_user[1],'employee_designation':self.login_user[2]})
+				args.update({'domain_name': domain_name,'link_html': link_html,'owner_designation': owner_designation, 'employee_name':self.login_user[1],'employee_designation':self.login_user[2]})
 				email_template = frappe.get_doc("Email Template", "Domain Lead Approve")
 				message = frappe.render_template(email_template.response, args)
 
@@ -674,10 +676,11 @@ class NotifyCustomWorkflow:
 		# for d in users:
 		#     if d.user not in receipients:
 		#         receipients.append(d.user)
-		
+		domain_name = frappe.db.get_value("Cost Center", self.doc.cost_center, "parent_cost_center")
+		link_html = "<a href=" + frappe.utils.get_url_to_form(self.doc.doctype, self.doc.name) + ">" + self.doc.name + "</a>"
 		parent_doc = frappe.get_doc(self.doc.doctype, self.doc.name)
 		args = parent_doc.as_dict()
-		args.update({'owner_designation': owner_designation, 'employee_name':self.login_user[1],'employee_designation':self.login_user[2]})
+		args.update({'domain_name': domain_name,'link_html': link_html,'owner_designation': owner_designation, 'employee_name':self.login_user[1],'employee_designation':self.login_user[2]})
 		email_template = frappe.get_doc("Email Template", "FD Head MR Notice")
 		message = frappe.render_template(email_template.response, args)
 		self.notify({
@@ -690,6 +693,7 @@ class NotifyCustomWorkflow:
 	
 	def notify_rejected_state(self):
 		owner_designation = frappe.db.get_value("Employee", {"user_id":self.doc.owner}, "designation")
+		domain_name = frappe.db.get_value("Cost Center", self.doc.cost_center, "parent_cost_center")
 		if self.new_state in ("Rejected"):
 			receipients = self.doc.owner
 		else:
@@ -702,7 +706,7 @@ class NotifyCustomWorkflow:
 
 		parent_doc = frappe.get_doc(self.doc.doctype, self.doc.name)
 		args = parent_doc.as_dict()
-		args.update({'owner_designation': owner_designation, 'employee_name':self.login_user[1],'employee_designation':self.login_user[2]})
+		args.update({'domain_name': domain_name,'owner_designation': owner_designation, 'employee_name':self.login_user[1],'employee_designation':self.login_user[2]})
 		email_template = frappe.get_doc("Email Template", "Rejected MR Notice")
 		message = frappe.render_template(email_template.response, args)
 		self.notify({

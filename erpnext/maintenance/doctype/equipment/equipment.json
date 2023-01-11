@@ -13,7 +13,7 @@
   "business_activity",
   "disabled_date",
   "col_break_5",
-  "not_cdcl",
+  "not_dsp",
   "col_break_4",
   "asset_code",
   "owner_name",
@@ -84,13 +84,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "default": "0",
-   "description": "Check if the Equipment is Not Company's Property",
-   "fieldname": "not_cdcl",
-   "fieldtype": "Check",
-   "label": "Other's Equipment"
-  },
-  {
    "fieldname": "col_break_4",
    "fieldtype": "Column Break"
   },
@@ -103,7 +96,7 @@
    "options": "Asset"
   },
   {
-   "depends_on": "eval:doc.not_cdcl ==1",
+   "depends_on": "eval:doc.not_dsp == 1",
    "fieldname": "owner_name",
    "fieldtype": "Link",
    "label": "Owner Name",
@@ -275,10 +268,17 @@
    "options": "Equipment",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "description": "Check if the Equipment is Not Company's Property",
+   "fieldname": "not_dsp",
+   "fieldtype": "Check",
+   "label": "Other's Equipment"
   }
  ],
  "links": [],
- "modified": "2022-12-08 11:18:01.212546",
+ "modified": "2023-01-05 17:23:41.259871",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Equipment",

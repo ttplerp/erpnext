@@ -3,7 +3,7 @@
  "allow_guest_to_view": 1,
  "allow_import": 1,
  "allow_rename": 1,
- "autoname": "field:item_code",
+ "autoname": "naming_series:",
  "creation": "2013-05-03 10:45:46",
  "description": "A Product or a Service that is bought, sold or kept in stock.",
  "doctype": "DocType",
@@ -956,11 +956,10 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-11-28 11:57:00.138881",
+ "modified": "2023-01-11 13:10:19.846029",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",
- "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
