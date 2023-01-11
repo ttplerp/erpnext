@@ -351,15 +351,13 @@
    "fieldname": "mr_status_notification_template",
    "fieldtype": "Link",
    "label": "MR Status Notification Template",
-   "options": "Email Template",
-   "reqd": 1
+   "options": "Email Template"
   },
   {
    "fieldname": "mr_approval_notification_template",
    "fieldtype": "Link",
    "label": "MR Approvel Notification",
-   "options": "Email Template",
-   "reqd": 1
+   "options": "Email Template"
   }
  ],
  "icon": "icon-cog",
@@ -367,7 +365,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2022-11-21 09:59:09.652385",
+ "modified": "2023-01-11 22:15:59.979502",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Settings",
