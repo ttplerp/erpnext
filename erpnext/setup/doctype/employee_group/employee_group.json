@@ -217,7 +217,7 @@
   }
  ],
  "links": [],
- "modified": "2022-12-02 17:02:16.409916",
+ "modified": "2023-01-12 14:11:36.376805",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee Group",
@@ -243,6 +243,7 @@
    "read": 1,
    "report": 1,
    "role": "Employee",
+   "select": 1,
    "share": 1
   }
  ],

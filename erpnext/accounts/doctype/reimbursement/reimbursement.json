@@ -69,13 +69,11 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "branch.cost_center",
    "fieldname": "cost_center",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Cost Center",
    "options": "Cost Center",
-   "read_only": 1,
    "reqd": 1
   },
   {
@@ -157,7 +155,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-12-28 14:42:26.502573",
+ "modified": "2023-01-17 10:28:35.736114",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Reimbursement",
