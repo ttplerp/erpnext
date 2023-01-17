@@ -19,6 +19,7 @@
   "column_break1",
   "company",
   "posting_date",
+  "actual_receipt_date",
   "posting_time",
   "set_posting_time",
   "apply_putaway_rule",
@@ -1151,13 +1152,18 @@
    "hidden": 1,
    "label": "Is Old Subcontracting Flow",
    "read_only": 1
+  },
+  {
+   "fieldname": "actual_receipt_date",
+   "fieldtype": "Date",
+   "label": "Actual Receipt Date"
   }
  ],
  "icon": "fa fa-truck",
  "idx": 261,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-09-16 17:45:58.430132",
+ "modified": "2023-01-17 15:33:16.558085",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Purchase Receipt",
