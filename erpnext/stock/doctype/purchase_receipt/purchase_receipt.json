@@ -1138,6 +1138,7 @@
    "label": "Accounting Dimensions"
   },
   {
+   "default": "Stores & Inventories - RCPL",
    "fieldname": "cost_center",
    "fieldtype": "Link",
    "label": "Cost Center",
@@ -1171,7 +1172,7 @@
  "idx": 261,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-18 10:14:12.029124",
+ "modified": "2023-01-18 12:37:29.851700",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Purchase Receipt",
