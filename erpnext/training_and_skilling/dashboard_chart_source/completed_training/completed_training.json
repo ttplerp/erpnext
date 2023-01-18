@@ -1,0 +1,13 @@
+{
+ "creation": "2023-01-17 17:32:56.543314",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart Source",
+ "idx": 0,
+ "modified": "2023-01-17 17:32:56.543314",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Completed Training",
+ "owner": "Administrator",
+ "source_name": "Completed Training",
+ "timeseries": 0
+}

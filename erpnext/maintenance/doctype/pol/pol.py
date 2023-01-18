@@ -17,7 +17,7 @@ class POL(StockController):
 	def validate(self):
 		check_future_date(self.posting_date)
 		self.check_on_dry_hire()
-		self.validate_warehouse()
+		# self.validate_warehouse()
 		self.validate_data()
 		self.validate_posting_time()
 		self.validate_uom_is_integer("stock_uom", "qty")

@@ -345,31 +345,31 @@ frappe.ui.form.on('Material Request', {
 	},
 
 	make_purchase_order: function (frm) {
-		frappe.prompt(
-			{
-				label: __('For Default Supplier (Optional)'),
-				fieldname: 'default_supplier',
-				fieldtype: 'Link',
-				options: 'Supplier',
-				description: __('Select a Supplier from the Default Suppliers of the items below. On selection, a Purchase Order will be made against items belonging to the selected Supplier only.'),
-				get_query: () => {
-					return {
-						query: "erpnext.stock.doctype.material_request.material_request.get_default_supplier_query",
-						filters: { 'doc': frm.doc.name }
-					}
-				}
-			},
-			(values) => {
-				frappe.model.open_mapped_doc({
-					method: "erpnext.stock.doctype.material_request.material_request.make_purchase_order",
-					frm: frm,
-					args: { default_supplier: values.default_supplier },
-					run_link_triggers: true
-				});
-			},
-			__('Enter Supplier'),
-			__('Create')
-		)
+		// frappe.prompt(
+		// 	{
+		// 		label: __('For Default Supplier (Optional)'),
+		// 		fieldname: 'default_supplier',
+		// 		fieldtype: 'Link',
+		// 		options: 'Supplier',
+		// 		description: __('Select a Supplier from the Default Suppliers of the items below. On selection, a Purchase Order will be made against items belonging to the selected Supplier only.'),
+		// 		get_query: () => {
+		// 			return {
+		// 				query: "erpnext.stock.doctype.material_request.material_request.get_default_supplier_query",
+		// 				filters: { 'doc': frm.doc.name }
+		// 			}
+		// 		}
+		// 	},
+		// 	(values) => {
+		frappe.model.open_mapped_doc({
+			method: "erpnext.stock.doctype.material_request.material_request.make_purchase_order",
+			frm: frm,
+			// args: { default_supplier: values.default_supplier },
+			run_link_triggers: true
+		});
+		// 	},
+		// 	__('Enter Supplier'),
+		// 	__('Create')
+		// )
 	},
 
 	make_request_for_quotation: function (frm) {
@@ -432,8 +432,8 @@ frappe.ui.form.on("Material Request Item", {
 			frappe.msgprint(__("Warning: Material Requested Qty is less than Minimum Order Qty"));
 		}
 
-		const item = locals[doctype][name];
-		frm.events.get_item_data(frm, item, false);
+		// const item = locals[doctype][name];
+		// frm.events.get_item_data(frm, item, false);
 	},
 
 	from_warehouse: function (frm, doctype, name) {
@@ -446,10 +446,10 @@ frappe.ui.form.on("Material Request Item", {
 		frm.events.get_item_data(frm, item, false);
 	},
 
-	rate: function (frm, doctype, name) {
-		const item = locals[doctype][name];
-		frm.events.get_item_data(frm, item, false);
-	},
+	// rate: function (frm, doctype, name) {
+	// 	const item = locals[doctype][name];
+	// 	frm.events.get_item_data(frm, item, false);
+	// },
 
 	item_code: function (frm, doctype, name) {
 		const item = locals[doctype][name];

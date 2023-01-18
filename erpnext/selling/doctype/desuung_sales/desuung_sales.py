@@ -12,6 +12,7 @@ from erpnext.accounts.utils import get_fiscal_year
 
 class DesuungSales(Document):
 	#code to fetch selling price for items after selecting item_code
+	@frappe.whitelist()
 	def get_selling_price(self, item_code = None, branch = None, posting_date = None):
 		if not item_code:
 			return
@@ -24,7 +25,7 @@ class DesuungSales(Document):
 					spr.selling_price as selling_price, sp.name as name 
 				FROM `tabSelling Price Rate` spr, `tabSelling Price` sp, `tabSelling Price Branch` spb 
 				WHERE spr.parent = spb.parent 
-				AND spr.particular = {0} 
+				AND spr.particular = '{0}' 
 				AND spb.branch = '{1}' 
 				AND '{2}' BETWEEN sp.from_date 
 				AND sp.to_date""".format(item_code, branch, posting_date), as_dict = True)
@@ -128,6 +129,6 @@ class DesuungSales(Document):
 	def make_sl_entries(self, sl_entries, is_amended=None, allow_negative_stock=False,
 			via_landed_cost_voucher=False):
 		from erpnext.stock.stock_ledger import make_sl_entries
-		make_sl_entries(sl_entries, is_amended, allow_negative_stock, via_landed_cost_voucher)
+		make_sl_entries(sl_entries, allow_negative_stock, via_landed_cost_voucher)
 
 	

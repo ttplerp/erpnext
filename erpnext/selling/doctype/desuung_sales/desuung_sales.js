@@ -34,7 +34,7 @@ frappe.ui.form.on("Desuung Sales", "onload", function (frm) {
 	frm.set_query("item_code", "items", function () {
 		return {
 			"filters": {
-				"item_group": "Sales Product"
+				"item_group": "Consumables"
 			}
 		};
 	});
@@ -42,7 +42,7 @@ frappe.ui.form.on("Desuung Sales", "onload", function (frm) {
 
 frappe.ui.form.on('Sales Order Item', {
 	item_code: function (frm, cdt, cdn) {
-		row = locals[cdt][cdn];
+		var row = locals[cdt][cdn];
 		get_selling_price(frm, row);
 	},
 	qty: function (frm, cdt, cdn) {

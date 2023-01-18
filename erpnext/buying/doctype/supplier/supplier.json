@@ -121,6 +121,7 @@
   {
    "fieldname": "default_bank_account",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Default Company Bank Account",
    "options": "Bank Account"
   },
@@ -193,7 +194,7 @@
    "fieldname": "supplier_type",
    "fieldtype": "Select",
    "label": "Supplier Type",
-   "options": "Company\nIndividua\nInternational Vendor\nDomestic Vendor",
+   "options": "Company\nIndividual\nInternational Vendor\nDomestic Vendor",
    "reqd": 1
   },
   {
@@ -555,7 +556,7 @@
    "link_fieldname": "party"
   }
  ],
- "modified": "2023-01-10 14:08:42.413627",
+ "modified": "2023-01-13 12:56:50.883155",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Supplier",

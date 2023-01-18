@@ -56,12 +56,24 @@ class Item(Document):
 		self.set_onload("asset_naming_series", get_asset_naming_series())
 
 	def autoname(self):
-		if self.item_old_code:
-			self.item_code = self.name = self.item_old_code
+		if self.item_code:
+			self.name = self.item_code
 			return
 		elif not self.item_group:
 			frappe.msgprint('Item Group is required to generate item code',raise_exception=1)
-		self.item_code = self.name = make_autoname('ABC{}.#####'.format(frappe.db.get_value('Item Group',self.item_group,'item_code_base')))[3:]
+		
+		base = frappe.db.get_value(
+			"Item Group", self.item_group, "item_code_base")
+		if not base:
+			frappe.throw("Item Code Base missing in Item Group: {}".format(self.item_group))
+		
+		item_prefix = base[:-5].upper()
+		
+		item_prefix = strip(item_prefix)
+		self.name = make_autoname(str(item_prefix) + ".#####")
+
+		self.item_code = self.name
+		# self.item_code = self.name = make_autoname('ABC{}.#####'.format(frappe.db.get_value('Item Group',self.item_group,'item_code_base')))[3:]
 
 	def after_insert(self):
 		"""set opening stock and item price"""

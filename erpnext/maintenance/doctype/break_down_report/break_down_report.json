@@ -27,7 +27,7 @@
   "equipment_type",
   "equipment_model",
   "equipment_number",
-  "currrent_km",
+  "current_km",
   "km_difference",
   "parts_to_be_change_section",
   "items",
@@ -294,6 +294,7 @@
    "read_only": 1
   },
   {
+   "default": "Own Branch",
    "fieldname": "owned_by",
    "fieldtype": "Select",
    "label": "Equipment Owned By",
@@ -319,23 +320,23 @@
    "read_only": 1
   },
   {
-   "depends_on": "eval:doc.equipment",
-   "fieldname": "currrent_km",
-   "fieldtype": "Float",
-   "hidden": 1,
-   "label": "Current KM"
-  },
-  {
    "fieldname": "km_difference",
    "fieldtype": "Float",
    "hidden": 1,
    "label": "KM Difference",
    "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.equipment",
+   "fieldname": "current_km",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Current KM"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2022-12-19 13:14:57.167317",
+ "modified": "2023-01-12 13:03:20.013360",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Break Down Report",

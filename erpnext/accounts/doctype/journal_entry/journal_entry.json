@@ -25,6 +25,7 @@
   "tax_withholding_category",
   "2_add_edit_gl_entries",
   "accounts",
+  "tds_table",
   "section_break99",
   "use_cheque_lot",
   "cheque_lot",
@@ -563,13 +564,19 @@
    "hidden": 1,
    "label": "Business Activity",
    "options": "Business Activity"
+  },
+  {
+   "fieldname": "tds_table",
+   "fieldtype": "HTML",
+   "label": "TDS Table",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 176,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-10 15:34:23.470063",
+ "modified": "2023-01-16 10:21:07.047338",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",

@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h3\\\">Masters &amp; Reports</span><br>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Training\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Deployment Record\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Training Selection\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Report\",\"col\":4}}]",
+ "content": "[{\"type\":\"paragraph\",\"data\":{\"text\":\"<span class=\\\"h3\\\">Shortcuts</span>\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":3}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h3\\\">Masters &amp; Reports</span><br>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Training\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Deployment Record\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Training Selection\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Report\",\"col\":4}}]",
  "creation": "2022-11-23 17:23:56.647037",
  "docstatus": 0,
  "doctype": "Workspace",
@@ -173,7 +173,7 @@
    "type": "Link"
   }
  ],
- "modified": "2023-01-04 08:27:30.468659",
+ "modified": "2023-01-17 17:51:48.842500",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training And Skilling",
@@ -182,7 +182,15 @@
  "public": 1,
  "quick_lists": [],
  "roles": [],
- "sequence_id": 17.0,
- "shortcuts": [],
+ "sequence_id": 18.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Dashboard",
+   "link_to": "Training and Skilling",
+   "type": "Dashboard"
+  }
+ ],
  "title": "Training And Skilling"
 }

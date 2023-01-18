@@ -109,7 +109,7 @@ frappe.ui.form.on('Job Card Item', {
 			})
 			if (frm.doc.equipment){
 				frappe.call({
-					method:'erpnext.maintenance.doctype.break_down.break_down.fetch_previous_date',
+					method:'erpnext.maintenance.doctype.break_down_report.break_down_report.fetch_previous_date',
 					args:{
 						equipment:frm.doc.equipment,
 						item_code:items.job

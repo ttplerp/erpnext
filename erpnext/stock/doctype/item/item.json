@@ -956,10 +956,11 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-11 13:10:19.846029",
+ "modified": "2023-01-12 16:49:23.476284",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {

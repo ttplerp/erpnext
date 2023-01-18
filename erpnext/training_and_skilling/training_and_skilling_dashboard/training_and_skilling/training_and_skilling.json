@@ -1,0 +1,21 @@
+{
+ "cards": [],
+ "charts": [
+  {
+   "chart": "Completed Training",
+   "width": "Full"
+  }
+ ],
+ "creation": "2023-01-13 15:10:41.180921",
+ "dashboard_name": "Training and Skilling",
+ "docstatus": 0,
+ "doctype": "Dashboard",
+ "idx": 0,
+ "is_default": 0,
+ "is_standard": 1,
+ "modified": "2023-01-17 17:49:09.272236",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Training and Skilling",
+ "owner": "Administrator"
+}
