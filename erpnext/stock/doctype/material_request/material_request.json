@@ -8,6 +8,7 @@
  "engine": "InnoDB",
  "field_order": [
   "type_section",
+  "workflow_state",
   "branch",
   "item_group",
   "title",
@@ -397,13 +398,20 @@
    "fieldtype": "Data",
    "label": "Creator Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Workflow State",
+   "options": "Workflow State"
   }
  ],
  "icon": "fa fa-ticket",
  "idx": 70,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-05 17:14:16.377594",
+ "modified": "2023-01-20 14:26:38.426906",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Material Request",
