@@ -1,0 +1,118 @@
+{
+ "actions": [],
+ "autoname": "DPMT-.#####",
+ "creation": "2023-01-20 17:22:30.089635",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break",
+  "employee",
+  "employee_name",
+  "column_break",
+  "user_id",
+  "active",
+  "section_break1",
+  "get_cc_list",
+  "domain_item",
+  "section_break2",
+  "get_cc_pmt_list",
+  "pmt_item"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break",
+   "fieldtype": "Section Break",
+   "label": "Domain Lead OR PMT Details"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name"
+  },
+  {
+   "fieldname": "column_break",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "employee.user_id",
+   "fieldname": "user_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "User ID"
+  },
+  {
+   "fieldname": "section_break1",
+   "fieldtype": "Section Break",
+   "label": "Domain List Details"
+  },
+  {
+   "fieldname": "domain_item",
+   "fieldtype": "Table",
+   "label": "Domain List",
+   "options": "MR Domain List"
+  },
+  {
+   "fieldname": "section_break2",
+   "fieldtype": "Section Break",
+   "label": "PMT List Details"
+  },
+  {
+   "fieldname": "pmt_item",
+   "fieldtype": "Table",
+   "label": "PMT List",
+   "options": "MR PMT List"
+  },
+  {
+   "fieldname": "get_cc_list",
+   "fieldtype": "Button",
+   "label": "Get List By Domain"
+  },
+  {
+   "fieldname": "get_cc_pmt_list",
+   "fieldtype": "Button",
+   "label": "Get List By Domain"
+  },
+  {
+   "default": "1",
+   "fieldname": "active",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Active"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-01-22 16:51:29.779680",
+ "modified_by": "Administrator",
+ "module": "Buying",
+ "name": "MR PMT And Domain Lead",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "employee_name",
+ "track_changes": 1
+}

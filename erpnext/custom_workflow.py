@@ -622,9 +622,9 @@ class NotifyCustomWorkflow:
 		domain_name = frappe.db.get_value("Cost Center", self.doc.cost_center, "parent_cost_center")
 		link_html = "<a href=" + frappe.utils.get_url_to_form(self.doc.doctype, self.doc.name) + ">" + self.doc.name + "</a>"
 		if self.new_state == "Waiting For Verifier":
-			pmt = frappe.get_list("Program Management Team", filters={"parent":self.doc.cost_center}, fields=['pmt_user_id'])
+			pmt = frappe.db.sql("select p.user_id from `tabMR PMT And Domain Lead` p, `tabMR PMT List` a where a.parent=p.name and p.active = 1 and a.cost_center='{}'".format(self.doc.cost_center), as_dict=1)
 			if pmt:
-				receipients = [a['pmt_user_id'] for a in pmt if frappe.db.get_value("User", a['pmt_user_id'], "enabled") == 1]
+				receipients = [a['user_id'] for a in pmt if frappe.db.get_value("User", a['user_id'], "enabled") == 1]
 				parent_doc = frappe.get_doc(self.doc.doctype, self.doc.name)
 				args = parent_doc.as_dict()
 				args.update({'domain_name': domain_name,'link_html': link_html,'owner_designation': owner_designation, 'employee_name':self.login_user[1],'employee_designation':self.login_user[2]})
@@ -632,9 +632,9 @@ class NotifyCustomWorkflow:
 				message = frappe.render_template(email_template.response, args)
 				
 		elif self.new_state == "Waiting For Approver":
-			dl = frappe.get_list("Domain Lead", filters={"parent":self.doc.cost_center}, fields=['domain_lead_user_id'])
+			dl = frappe.db.sql("select p.user_id from `tabMR PMT And Domain Lead` p, `tabMR Domain List` a where a.parent=p.name and p.active = 1 and a.cost_center='{}'".format(self.doc.cost_center), as_dict=1)
 			if dl:
-				receipients = [a['domain_lead_user_id'] for a in dl if frappe.db.get_value("User", a['domain_lead_user_id'], "enabled") == 1]
+				receipients = [a['user_id'] for a in dl if frappe.db.get_value("User", a['user_id'], "enabled") == 1]
 				parent_doc = frappe.get_doc(self.doc.doctype, self.doc.name)
 				args = parent_doc.as_dict()
 				args.update({'domain_name': domain_name,'link_html': link_html,'owner_designation': owner_designation, 'employee_name':self.login_user[1],'employee_designation':self.login_user[2]})
@@ -699,10 +699,10 @@ class NotifyCustomWorkflow:
 		else:
 			receipients = []
 			receipients.append(self.doc.owner)
-			pmt = frappe.get_list("Program Management Team", filters={"parent":self.doc.cost_center}, fields=['pmt_user_id'])
+			pmt = frappe.db.sql("select p.user_id from `tabMR PMT And Domain Lead` p, `tabMR PMT List` a where a.parent=p.name and p.active = 1 and a.cost_center='{}'".format(self.doc.cost_center), as_dict=1)
 			if pmt:
 				for a in pmt:
-					receipients.append(a['pmt_user_id'])
+					receipients.append(a['user_id'])
 
 		parent_doc = frappe.get_doc(self.doc.doctype, self.doc.name)
 		args = parent_doc.as_dict()

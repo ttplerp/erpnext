@@ -285,35 +285,51 @@ class TrainingSelection(Document):
 	@frappe.whitelist()
 	def get_applicants(self):
 		self.set('item', [])
-		for a in frappe.db.sql(""" select did, cid, profile_id, desuup_name,  gender, mobile, email, date_of_birth,
-									employment_type
-									from `tabCohort Applicant`
-									where cohort_id = "{cohort}"
-									and course_id = "{course}"
-						""".format(cohort=self.cohort_id, course=self.course_id), as_dict=True):
-			if frappe.db.exists("Desuup", a.did):
-				row = self.append('item', {})
-				if frappe.db.exists("Desuup Qualification", {"parent":a.did}):
-					edu_doc = frappe.get_doc("Desuup Qualification", {"parent":a.did})
-					row.qualification =  edu_doc.qualification
-					row.level = edu_doc.level
-					row.year_of_completion = edu_doc.year_of_completion
-					row.course_name = edu_doc.course_name
-				if frappe.db.exists("Desuup Employment History", {"parent":a.did}):
-					emp_doc = frappe.get_doc("Desuup Employment History", {"parent":a.did})
-					row.agency_type = emp_doc.agency_type
-					row.agency = emp_doc.agency
-					row.profession = emp_doc.profession
-				desuup_doc = frappe.get_doc("Desuup", a.did)
-				row.country = desuup_doc.present_country 
-				row.present_address = desuup_doc.present_address
-				row.dzongkhag = desuup_doc.dzongkhag
-				row.gewog = desuup_doc.gewog
-				row.village = desuup_doc.village
-				row.status = "Registered"
-				row.update(a)
-			else:
-				frappe.msgprint("Desuup ID <b>{}</b> details are missing from Desuung database".format(a.did))
+		if not self.cohort_id:
+			frappe.throw("Cohort ID is mandatory to fetch applicants")
+		
+		doc = frappe.get_doc("API Setting Item", {"api_name":"Fetch Applicants by Cohort and Course"})
+		parent_doc = frappe.get_doc("API Setting", doc.parent)
+		bearer_token = 'Bearer '+str(parent_doc.bearer_token)
+
+		url = doc.api_url + "cohortId=" + str(self.cohort_id) + "&courseId=" + str(self.course_id)
+		payload={}
+		headers = {
+			'Authorization': bearer_token
+		}
+		response = requests.request(doc.request_method, url, headers=headers, data=payload)
+		data = response.json()
+		self.set('applicant', [])
+		for d in data:
+			did = d['profile']['did']
+			for a in frappe.db.sql(""" select desuung_id did, cid_number cid, profile_id, desuup_name, 
+									gender, mobile_number mobile, email_id email, date_of_birth, employment_type
+									from `tabDesuup`
+									where name = "{did}"
+						""".format(did = did), as_dict=True):
+				if frappe.db.exists("Desuup", a.did):
+					row = self.append('item', {})
+					if frappe.db.exists("Desuup Qualification", {"parent":a.did}):
+						edu_doc = frappe.get_doc("Desuup Qualification", {"parent":a.did})
+						row.qualification =  edu_doc.qualification
+						row.level = edu_doc.level
+						row.year_of_completion = edu_doc.year_of_completion
+						row.course_name = edu_doc.course_name
+					if frappe.db.exists("Desuup Employment History", {"parent":a.did}):
+						emp_doc = frappe.get_doc("Desuup Employment History", {"parent":a.did})
+						row.agency_type = emp_doc.agency_type
+						row.agency = emp_doc.agency
+						row.profession = emp_doc.profession
+					desuup_doc = frappe.get_doc("Desuup", a.did)
+					row.country = desuup_doc.present_country 
+					row.present_address = desuup_doc.present_address
+					row.dzongkhag = desuup_doc.dzongkhag
+					row.gewog = desuup_doc.gewog
+					row.village = desuup_doc.village
+					row.status = "Registered"
+					row.update(a)
+				else:
+					frappe.msgprint("Desuup ID <b>{}</b> details are missing from Desuung database".format(a.did))
 	
 	@frappe.whitelist()
 	def send_offer_letter(self):
