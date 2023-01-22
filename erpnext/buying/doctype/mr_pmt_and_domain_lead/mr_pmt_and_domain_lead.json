@@ -90,7 +90,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-22 16:51:29.779680",
+ "modified": "2023-01-22 19:09:53.112549",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "MR PMT And Domain Lead",
@@ -106,6 +106,18 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "MR User",
    "share": 1,
    "write": 1
   }

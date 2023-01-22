@@ -16,6 +16,7 @@ class MRPMTAndDomainLead(Document):
 				data.append(d.cost_center)
 			else:
 				frappe.throw("#row {}, duplicate data in Domain List!".format(d.idx))
+	
 	def pmt_item_duplicate(self):
 		data = []
 		for d in self.get("pmt_item"):
