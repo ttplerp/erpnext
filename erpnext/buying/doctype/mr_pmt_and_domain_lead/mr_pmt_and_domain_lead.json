@@ -73,24 +73,24 @@
   {
    "fieldname": "get_cc_list",
    "fieldtype": "Button",
-   "label": "Get List By Domains"
+   "label": "Get List By Domain"
   },
   {
    "fieldname": "get_cc_pmt_list",
    "fieldtype": "Button",
-   "label": "Get List By Domains"
+   "label": "Get List By Domain"
   },
   {
    "default": "1",
    "fieldname": "active",
    "fieldtype": "Check",
    "in_list_view": 1,
-   "label": "Actives"
+   "label": "Active"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-23 10:16:01.589544",
+ "modified": "2023-01-23 10:35:29.918793",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "MR PMT And Domain Lead",

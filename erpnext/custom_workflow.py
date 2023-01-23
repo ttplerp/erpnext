@@ -632,6 +632,8 @@ class NotifyCustomWorkflow:
 				args.update({'domain_name': domain_name,'link_html': link_html,'owner_designation': owner_designation, 'employee_name':self.login_user[1],'employee_designation':self.login_user[2]})
 				email_template = frappe.get_doc("Email Template", "MR PMT Email")
 				message = frappe.render_template(email_template.response, args)
+			else:
+				frappe.throw("No Program Management Team to verify")
 				
 		elif self.new_state == "Waiting For Approver":
 			dl = frappe.db.sql("select p.user_id from `tabMR PMT And Domain Lead` p, `tabMR Domain List` a where a.parent=p.name and p.active = 1 and a.cost_center='{}'".format(self.doc.cost_center), as_dict=1)
@@ -642,6 +644,8 @@ class NotifyCustomWorkflow:
 				args.update({'domain_name': domain_name,'link_html': link_html,'owner_designation': owner_designation, 'employee_name':self.login_user[1],'employee_designation':self.login_user[2]})
 				email_template = frappe.get_doc("Email Template", "Domain Lead Approve")
 				message = frappe.render_template(email_template.response, args)
+			else:
+				frappe.throw("No Domain Lead to Approve")
 
 		# frappe.throw(self.doc.get(self.doc_approver[0]))
 		self.notify({

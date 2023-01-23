@@ -51,7 +51,9 @@
   "terms",
   "reference",
   "job_card",
-  "work_order"
+  "work_order",
+  "remark_details",
+  "remarks"
  ],
  "fields": [
   {
@@ -405,13 +407,23 @@
    "hidden": 1,
    "label": "Workflow State",
    "options": "Workflow State"
+  },
+  {
+   "fieldname": "remark_details",
+   "fieldtype": "Section Break",
+   "label": "Remark Details"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
   }
  ],
  "icon": "fa fa-ticket",
  "idx": 70,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-20 14:26:38.426906",
+ "modified": "2023-01-23 11:37:46.241415",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Material Request",

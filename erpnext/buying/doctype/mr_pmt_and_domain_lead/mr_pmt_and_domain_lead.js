@@ -2,6 +2,9 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('MR PMT And Domain Lead', {
+	// refresh: function(frm) {
+
+	// }
 	setup: function(frm){
 		frm.set_query("cost_center", "domain_item", function() {
 			return {

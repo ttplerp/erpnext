@@ -79,7 +79,8 @@ class MaterialRequest(BuyingController):
 
 	def validate(self):
 		super(MaterialRequest, self).validate()
-		validate_workflow_states(self)
+		if frappe.db.get_value("Cost Center", self.cost_center, "cost_center_for") == "DSP":
+			validate_workflow_states(self)
 		self.validate_schedule_date()
 		self.check_for_on_hold_or_closed_status("Sales Order", "sales_order")
 		self.validate_uom_is_integer("uom", "qty")
@@ -115,8 +116,35 @@ class MaterialRequest(BuyingController):
 		self.reset_default_field_value("set_warehouse", "items", "warehouse")
 		self.reset_default_field_value("set_from_warehouse", "items", "from_warehouse")
 		self.set_actual_qty()
-		if self.workflow_state != "Approved":
+		if self.workflow_state != "Approved" and frappe.db.get_value("Cost Center", self.cost_center, "cost_center_for") == "DSP":
 			notify_workflow_states(self)
+
+		# **** To record the details of Material Requester **** #
+		if self.workflow_state == "Draft":
+			creator_user_id, creator_employee_name, creator_name = frappe.db.get_value(
+				"Employee", {"user_id": frappe.session.user}, ["user_id", "employee_name", "name"]) or None
+			if creator_user_id:
+				self.creator = creator_name
+				self.creator_name = creator_employee_name
+
+		# **** To record the details of Verifier **** #
+		if self.workflow_state == "Waiting For Approver" and frappe.db.get_value("Cost Center", self.cost_center, "cost_center_for") == "DSP":
+			verifier_user_id, verifier_employee_name = frappe.db.get_value(
+				"Employee", {"user_id": frappe.session.user}, ["user_id", "employee_name"]) or None
+			
+			if verifier_user_id:
+				self.verifier = verifier_user_id
+				self.verified_by = verifier_employee_name
+		
+		# **** To record the details of Approver **** #
+		if self.workflow_state == "Approved" and frappe.db.get_value("Cost Center", self.cost_center, "cost_center_for") == "DSP":
+			approver_user_id, approver_employee_name = frappe.db.get_value(
+				"Employee", {"user_id": frappe.session.user}, ["user_id", "employee_name"]) or None
+			
+			if approver_user_id:
+				self.approver = approver_user_id
+				self.approver_name = approver_employee_name
+
 	def before_update_after_submit(self):
 		self.validate_schedule_date()
 
@@ -138,7 +166,8 @@ class MaterialRequest(BuyingController):
 		self.update_requested_qty_in_production_plan()
 		if self.material_request_type == "Purchase":
 			self.validate_budget()
-		notify_workflow_states(self)
+		if frappe.db.get_value("Cost Center", self.cost_center, "cost_center_for") == "DSP":
+			notify_workflow_states(self)
 		
 	def before_save(self):
 		self.set_status(update=True)
@@ -788,49 +817,49 @@ def create_pick_list(source_name, target_doc=None):
 	return doc
 
 def get_permission_query_conditions(user):
-    if not user: user = frappe.session.user
-    user_roles = frappe.get_roles(user)
-    # roles = "('{}')".format(user_roles[0]) if len(user_roles) == 1 else "{}".format(tuple(user_roles))
-    if "Administrator" in user_roles or "System Manager" in user_roles or "Purchase User" in user_roles: 
-        return
+	if not user: user = frappe.session.user
+	user_roles = frappe.get_roles(user)
+	# roles = "('{}')".format(user_roles[0]) if len(user_roles) == 1 else "{}".format(tuple(user_roles))
+	if "Administrator" in user_roles or "System Manager" in user_roles or "Purchase User" in user_roles: 
+		return
 
-    ceo_or_general_manager = 1 if 'General Manager' in user_roles or 'CEO' in user_roles else 0
-    
-    return """(
-            `tabMaterial Request`.owner = '{user}'
-            or
-            (`tabMaterial Request`.approver = '{user}' and `tabMaterial Request`.workflow_state not in  ('Draft','Approved','Rejected','Cancelled'))
-            or 
-            (
-                {ceo_or_general_manager} = 0
-                and
-                exists (
-                    select 1 
-                    from `tabEmployee` as e, `tabWarehouse` w, `tabWarehouse Branch` wb
-                    where e.user_id = '{user}'
-                    and wb.branch = e.branch
-                    and w.name = wb.parent
-                    and (`tabMaterial Request`.set_from_warehouse = w.name or `tabMaterial Request`.set_warehouse = w.name) 
-                    and `tabMaterial Request`.workflow_state not in  ('Draft','Rejected','Cancelled')
-                )
-            )
-    )""".format(user = user, ceo_or_general_manager = ceo_or_general_manager)
+	ceo_or_general_manager = 1 if 'General Manager' in user_roles or 'CEO' in user_roles else 0
+	
+	return """(
+			`tabMaterial Request`.owner = '{user}'
+			or
+			(`tabMaterial Request`.approver = '{user}' and `tabMaterial Request`.workflow_state not in  ('Draft','Approved','Rejected','Cancelled'))
+			or 
+			(
+				{ceo_or_general_manager} = 0
+				and
+				exists (
+					select 1 
+					from `tabEmployee` as e, `tabWarehouse` w, `tabWarehouse Branch` wb
+					where e.user_id = '{user}'
+					and wb.branch = e.branch
+					and w.name = wb.parent
+					and (`tabMaterial Request`.set_from_warehouse = w.name or `tabMaterial Request`.set_warehouse = w.name) 
+					and `tabMaterial Request`.workflow_state not in  ('Draft','Rejected','Cancelled')
+				)
+			)
+	)""".format(user = user, ceo_or_general_manager = ceo_or_general_manager)
 
 
-    # '''
-    # return """(
-    #         exists(select 1
-    #             from `tabEmployee` as e
-    #             where e.user_id = `tabMaterial Request`.owner
-    #             and e.user_id = '{user}')
-    #         or
-    #         exists (
-    #             select 1 from `tabEmployee` as e, `tabWarehouse Branch` wb, `tabWarehouse` w, `tabHas Role` hr where w.name = wb.parent
-    #             and (`tabMaterial Request`.source_warehouse = w.name or `tabMaterial Request`.requesting_warehouse = w.name) and e.branch = wb.branch
-    #             and `tabMaterial Request`.workflow_state not in  ('Draft','Rejected','Cancelled')
-    #             and hr.parent = e.user_id and (hr.role = 'Stock User' or hr.role = 'Purchase User') and hr.role != 'General Manager' and e.user_id = '{user}'
-    #         )
-    #         or
+	# '''
+	# return """(
+	#         exists(select 1
+	#             from `tabEmployee` as e
+	#             where e.user_id = `tabMaterial Request`.owner
+	#             and e.user_id = '{user}')
+	#         or
+	#         exists (
+	#             select 1 from `tabEmployee` as e, `tabWarehouse Branch` wb, `tabWarehouse` w, `tabHas Role` hr where w.name = wb.parent
+	#             and (`tabMaterial Request`.source_warehouse = w.name or `tabMaterial Request`.requesting_warehouse = w.name) and e.branch = wb.branch
+	#             and `tabMaterial Request`.workflow_state not in  ('Draft','Rejected','Cancelled')
+	#             and hr.parent = e.user_id and (hr.role = 'Stock User' or hr.role = 'Purchase User') and hr.role != 'General Manager' and e.user_id = '{user}'
+	#         )
+	#         or
 	#     	(`tabMaterial Request`.approver = '{user}' and `tabMaterial Request`.workflow_state not in  ('Draft','Approved','Rejected','Cancelled'))
-    # )""".format(user=user)
-    # '''
+	# )""".format(user=user)
+	# '''
