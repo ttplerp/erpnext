@@ -322,15 +322,17 @@ class CustomWorkflow:
 			# if pmt:
 			#     receipients = [a['pmt_user_id'] for a in pmt]
 			#     frappe.throw(str(receipients))
-			pmt_user_id = frappe.db.sql("select pmt_user_id from `tabProgram Management Team` where parent='{}'".format(self.doc.cost_center), as_dict=1)
-			receipients = [a['pmt_user_id'] for a in pmt_user_id if frappe.db.get_value("User", a['pmt_user_id'], "enabled") == 1]
+			# pmt_user_id = frappe.db.sql("select pmt_user_id from `tabProgram Management Team` where parent='{}'".format(self.doc.cost_center), as_dict=1)
+			pmt_user_id = frappe.db.sql("select p.user_id from `tabMR PMT And Domain Lead` p, `tabMR PMT List` a where a.parent=p.name and p.active = 1 and a.cost_center='{}'".format(self.doc.cost_center), as_dict=1)
+			receipients = [a['user_id'] for a in pmt_user_id if frappe.db.get_value("User", a['user_id'], "enabled") == 1]
 			# frappe.throw(str(receipients))
 			if frappe.session.user not in receipients:
 				frappe.throw("Only PMT Verifier for <b>{}</b> can Verify".format(self.doc.cost_center))
 
 		elif workflow_state == "Approved".lower() and workflow_state != self.old_state.lower():
-			domain_lead = frappe.db.sql("select domain_lead_user_id from `tabDomain Lead` where parent='{}'".format(self.doc.cost_center), as_dict=1)
-			receipients = [a['domain_lead_user_id'] for a in domain_lead if frappe.db.get_value("User", a['domain_lead_user_id'], "enabled") == 1]
+			# domain_lead = frappe.db.sql("select domain_lead_user_id from `tabDomain Lead` where parent='{}'".format(self.doc.cost_center), as_dict=1)
+			domain_lead = frappe.db.sql("select p.user_id from `tabMR PMT And Domain Lead` p, `tabMR Domain List` a where a.parent=p.name and p.active = 1 and a.cost_center='{}'".format(self.doc.cost_center), as_dict=1)
+			receipients = [a['user_id'] for a in domain_lead if frappe.db.get_value("User", a['user_id'], "enabled") == 1]
 			if frappe.session.user not in receipients:
 				frappe.throw("Only Domain Lead Approver for {} can Approve".format(self.doc.cost_center))
 
