@@ -296,6 +296,7 @@ erpnext.stock.PurchaseReceiptController = class PurchaseReceiptController extend
 	
 						var new_doc = frappe.model.get_new_doc('Asset Issue Details');
 						new_doc.branch = cur_frm.doc.branch;
+						new_doc.purchase_date = cur_frm.doc.date;
 						new_doc.business_activity = business_activity;
 						new_doc.entry_date = new Date().toJSON().slice(0,10).replace(/-/g,'-');
 						new_doc.item_code = item_code;
