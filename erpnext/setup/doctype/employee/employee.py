@@ -45,6 +45,8 @@ class Employee(NestedSet):
 				series_seq = 'VOL'
 			elif self.employee_group == "Employees Under DSP Payroll - DSP":
 				series_seq = 'EMP'
+			elif self.employee_group == "Volunteer - De-suung Headquarter":
+				series_seq = 'DID'
 			else:
 				series_seq = 'EID'
 
@@ -486,7 +488,7 @@ def has_upload_permission(doc, ptype="read", user=None):
 def get_permission_query_conditions(user):
 	if not user: user = frappe.session.user
 	user_roles = frappe.get_roles(user)
-	if "HR User" in user_roles or "HR Manager" in user_roles or "Accounts User" in user_roles:
+	if "HR User" in user_roles or "HR Manager" in user_roles or "Accounts User" in user_roles or "System Manager" in user_roles:
 		return
 	else:
 		return """(
@@ -500,7 +502,7 @@ def has_record_permission(doc, user):
 	if not user: user = frappe.session.user
 	user_roles = frappe.get_roles(user)
 
-	if "HR User" in user_roles or "HR Manager" in user_roles:
+	if "HR User" in user_roles or "HR Manager" in user_roles or "System Manager" in user_roles:
 		return True
 	else:			
 		if frappe.db.exists("Employee", {"name":doc.name, "user_id": user}):
