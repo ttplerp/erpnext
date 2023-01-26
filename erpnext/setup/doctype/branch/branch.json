@@ -11,6 +11,7 @@
   "branch",
   "abbr",
   "cost_center",
+  "cost_center_for",
   "region",
   "disabled",
   "cb_3",
@@ -102,12 +103,20 @@
    "fieldname": "disabled",
    "fieldtype": "Check",
    "label": "Disabled"
+  },
+  {
+   "fetch_from": "cost_center.cost_center_for",
+   "fieldname": "cost_center_for",
+   "fieldtype": "Select",
+   "label": "For DSP/DHQ",
+   "options": "\nDSP\nDHQ",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-code-fork",
  "idx": 1,
  "links": [],
- "modified": "2022-12-28 15:03:40.274522",
+ "modified": "2023-01-26 22:53:11.930261",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Branch",
