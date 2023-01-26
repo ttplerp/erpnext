@@ -161,7 +161,7 @@
    "label": "Salutation",
    "oldfieldname": "salutation",
    "oldfieldtype": "Select",
-   "options": "\nMr\nMs\nMrs\nMiss\nDr\nProf"
+   "options": "\nMr\nMs\nMrs\nMiss\nDr\nProf\nDasho"
   },
   {
    "fieldname": "first_name",
@@ -212,7 +212,6 @@
    "fieldtype": "Data",
    "hidden": 1,
    "in_global_search": 1,
-   "in_list_view": 1,
    "label": "Employee Number",
    "oldfieldname": "employee_number",
    "oldfieldtype": "Data"
@@ -348,7 +347,6 @@
    "fieldname": "designation",
    "fieldtype": "Link",
    "in_global_search": 1,
-   "in_list_view": 1,
    "label": "Designation",
    "oldfieldname": "designation",
    "oldfieldtype": "Link",
@@ -505,7 +503,8 @@
   {
    "fieldname": "passport_number",
    "fieldtype": "Data",
-   "label": "Passport Number"
+   "in_list_view": 1,
+   "label": "Passport Number/CID/Work Permit"
   },
   {
    "fieldname": "date_of_issue",
@@ -966,7 +965,7 @@
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-01-13 10:28:41.025698",
+ "modified": "2023-01-26 15:32:37.350697",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",

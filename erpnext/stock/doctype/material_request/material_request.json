@@ -8,7 +8,6 @@
  "engine": "InnoDB",
  "field_order": [
   "type_section",
-  "workflow_state",
   "branch",
   "item_group",
   "title",
@@ -402,13 +401,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "workflow_state",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Workflow State",
-   "options": "Workflow State"
-  },
-  {
    "fieldname": "remark_details",
    "fieldtype": "Section Break",
    "label": "Remark Details"
@@ -423,7 +415,7 @@
  "idx": 70,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-23 11:37:46.241415",
+ "modified": "2023-01-26 15:53:49.645019",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Material Request",

@@ -508,6 +508,17 @@ def get_additional_conditions(from_date, ignore_closing_entries, filters):
 					additional_conditions.append("{0} in %({0})s".format(dimension.fieldname))
 				else:
 					additional_conditions.append("{0} in %({0})s".format(dimension.fieldname))
+	""" Below add_conditions added by Shiv sir. on 24 Jan, 2023 """
+	add_conditions = []
+	if 'System Manager' not in frappe.get_roles(frappe.session.user):
+		add_conditions = """exists(select 1
+			from `tabAssign Branch` ab, `tabBranch Item` bi, `tabBranch` b
+			where ab.user = "{}"
+			and bi.parent = ab.name
+			and b.name = bi.branch
+			and b.cost_center = `tabGL Entry`.cost_center)
+		""".format(frappe.session.user)
+		additional_conditions.append(add_conditions)
 
 	return " and {}".format(" and ".join(additional_conditions)) if additional_conditions else ""
 

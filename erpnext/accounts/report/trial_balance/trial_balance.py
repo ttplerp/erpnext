@@ -192,6 +192,18 @@ def get_rootwise_opening_balances(filters, report_type):
 
 				query_filters.update({dimension.fieldname: filters.get(dimension.fieldname)})
 
+	""" Below add_conditions added by Shiv sir. on 24 Jan, 2023 """
+	add_conditions = []
+	if 'System Manager' not in frappe.get_roles(frappe.session.user):
+		add_conditions = """ and exists(select 1
+			from `tabAssign Branch` ab, `tabBranch Item` bi, `tabBranch` b
+			where ab.user = "{}"
+			and bi.parent = ab.name
+			and b.name = bi.branch
+			and b.cost_center = `tabGL Entry`.cost_center)
+		""".format(frappe.session.user)
+		additional_conditions += add_conditions
+
 	gle = frappe.db.sql(
 		"""
 		select

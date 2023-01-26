@@ -181,8 +181,9 @@ def committed_consumed_budget(reference=None, reference_no=None):
 						""".format(reference_type=reference, reference_no=reference_no))
 
 def validate_expense_against_budget(args):
-	return
 	args = frappe._dict(args)
+	if frappe.db.get_value("Account", args.account, "budget_check"):
+		return
 	if args.is_cancelled:
 		committed_consumed_budget(args.voucher_type, args.voucher_no)
 		return

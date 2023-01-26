@@ -447,6 +447,17 @@ def set_gl_entries_by_account(
 		else:
 			additional_conditions.append(" and posting_date BETWEEN %(from_date)s AND %(to_date)s and docstatus = 1 ")
 	
+	""" Below add_conditions added by Shiv sir. on 24 Jan, 2023 """
+	add_conditions = []
+	if 'System Manager' not in frappe.get_roles(frappe.session.user):
+		add_conditions = """exists(select 1
+			from `tabAssign Branch` ab, `tabBranch Item` bi, `tabBranch` b
+			where ab.user = "{}"
+			and bi.parent = ab.name
+			and b.name = bi.branch
+			and b.cost_center = `tabGL Entry`.cost_center)
+		""".format(frappe.session.user)
+		additional_conditions.append(add_conditions)
 	# accounts = frappe.db.sql_list(
 	# 	"""select name from `tabAccount`
 	# 	where lft >= %s and rgt <= %s and company = %s""",

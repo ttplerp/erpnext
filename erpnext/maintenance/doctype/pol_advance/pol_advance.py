@@ -28,8 +28,8 @@ class PolAdvance(AccountsController):
 				frappe.throw(_('Journal Entry {} for this transaction needs to be cancelled first').format(frappe.get_desk_link(self.doctype,self.journal_entry)),title='Not permitted')
 
 	def on_submit(self):
-		# advance_account = frappe.db.get_single_value("Maintenance Accounts Settings", "default_pol_advance_account")
-		# check_budget_available(self.cost_center,advance_account,self.entry_date,self.amount,self.business_activity)
+		advance_account = frappe.db.get_single_value("Maintenance Accounts Settings", "default_pol_advance_account")
+		check_budget_available(self.cost_center,advance_account,self.entry_date,self.amount,self.business_activity)
 		self.update_od_balance()
 		self.post_journal_entry()
 

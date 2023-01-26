@@ -240,8 +240,8 @@ def check_budget_available_for_reappropiation(cost_center, budget_account, trans
 # Check budget availability in the budget head
 ##
 def check_budget_available(cost_center, budget_account, transaction_date, amount, business_activity, project = None):
-	return
-	
+	if frappe.db.get_value("Account", budget_account, "budget_check"):
+		return
 	consumed=committed= None
 	# budget_against = frappe.db.get_single_value("Accounts Settings", "budget_level")
 	# if not budget_against:
