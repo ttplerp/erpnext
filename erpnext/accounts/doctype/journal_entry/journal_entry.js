@@ -133,8 +133,10 @@ frappe.ui.form.on("Journal Entry", {
 	},
 
 	voucher_type: function(frm){
-
+		
 		if(!frm.doc.company) return null;
+
+		frm.trigger("naming_series_value_update");/* Added by Jai */
 
 		if((!(frm.doc.accounts || []).length) || ((frm.doc.accounts || []).length === 1 && !frm.doc.accounts[0].account)) {
 			if(in_list(["Bank Entry", "Cash Entry"], frm.doc.voucher_type)) {
@@ -156,6 +158,19 @@ frappe.ui.form.on("Journal Entry", {
 					}
 				});
 			}
+		}
+
+	},
+
+	naming_series_value_update: function(frm){
+		if (frm.doc.voucher_type == 'Journal Entry' || frm.doc.voucher_type == 'Opening Entry' || frm.doc.voucher_type == 'Depreciation Entry') {
+			cur_frm.set_value("naming_series", "Journal Voucher");
+		} else if (frm.doc.voucher_type == 'Bank Entry' && !in_list(['Bank Payment Voucher','Bank Receipt Voucher'], frm.doc.naming_series)) {
+			cur_frm.set_value("naming_series", "");
+		} else if (frm.doc.voucher_type == 'Cash Entry' && !in_list(['Cash Payment Voucher','Cash Receipt Voucher'], frm.doc.naming_series)) {
+			cur_frm.set_value("naming_series", "");
+		} else if (frm.doc.voucher_type == 'Contra Entry') {
+			cur_frm.set_value("naming_series", "Contra Entry");
 		}
 	},
 

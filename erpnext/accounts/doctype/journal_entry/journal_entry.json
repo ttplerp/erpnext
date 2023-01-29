@@ -98,13 +98,14 @@
    "search_index": 1
   },
   {
+   "default": "Journal Voucher",
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "label": "Series",
    "no_copy": 1,
    "oldfieldname": "naming_series",
    "oldfieldtype": "Select",
-   "options": "Journal Voucher\nBank Payment Voucher\nBank Receipt Voucher\nCash Receipt Voucher\nCash Payment Voucher\nContra Entry",
+   "options": "\nJournal Voucher\nBank Payment Voucher\nBank Receipt Voucher\nCash Receipt Voucher\nCash Payment Voucher\nContra Entry",
    "reqd": 1,
    "set_only_once": 1
   },
@@ -576,7 +577,7 @@
  "idx": 176,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-26 11:30:06.334182",
+ "modified": "2023-01-28 21:49:15.945919",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",
