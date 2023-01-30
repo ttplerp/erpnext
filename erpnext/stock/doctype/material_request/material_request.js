@@ -9,8 +9,9 @@ frappe.ui.form.on('Material Request', {
 	setup: function (frm) {
 		frm.get_field("items").grid.editable_fields = [
 			{ fieldname: "item_code", columns: 4 },
-			{ fieldname: "qty", columns: 3 },
-			{ fieldname: "uom", columns: 3 },
+			{ fieldname: "qty", columns: 2 },
+			{ fieldname: "rate", columns: 2 },
+			{ fieldname: "uom", columns: 2 },
 		];
 		frm.custom_make_buttons = {
 			'Stock Entry': 'Issue Material',
@@ -63,7 +64,9 @@ frappe.ui.form.on('Material Request', {
 
 		frm.set_query("set_warehouse", function (doc) {
 			return {
-				filters: { 'company': doc.company }
+				// filters: { 'company': doc.company }
+				query: "erpnext.controllers.queries.filter_branch_warehouse",
+				filters: { 'company': frm.doc.company, "branch": frm.doc.branch}
 			};
 		});
 

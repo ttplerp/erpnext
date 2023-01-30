@@ -561,7 +561,7 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Desuung Sales Report",
    "link_count": 0,
    "link_to": "Desuung Sales Report",
@@ -570,7 +570,7 @@
    "type": "Link"
   }
  ],
- "modified": "2023-01-13 10:59:15.585060",
+ "modified": "2023-01-29 22:01:09.309042",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Selling",
