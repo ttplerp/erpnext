@@ -274,19 +274,19 @@ def check_budget_available(cost_center, budget_account, transaction_date, amount
 	# 		consumed = frappe.db.sql("select SUM(cb.amount) as total from `tabConsumed Budget` cb where cb.cost_center=%s and cb.reference_date between %s and %s", (cost_center, fiscal_year[0]["year_start_date"], fiscal_year[0]["year_end_date"]), as_dict=True)
 	# 	msg = "Cost Center :  <b>" + str(cost_center) + "</b> level for <b>" + fiscal_year[0]["name"] + "</b>"
 	else:
-		bud_acc_dtl = frappe.get_doc("Account", budget_account)
-		if bud_acc_dtl.has_linked_budget == 1:
-			budget_account = bud_acc_dtl.linked_budget
-		#Check for Ignore Budget
-		if bud_acc_dtl.budget_check:
-			return
-		#Check if Budget Account is Centralized
-		if bud_acc_dtl.centralized_budget:
-			cost_center = bud_acc_dtl.cost_center
-		else:
-			cc_doc = frappe.get_doc("Cost Center", cost_center)
-			if cc_doc.use_budget_from_parent:
-				cost_center = cc_doc.parent_cost_center
+		# bud_acc_dtl = frappe.get_doc("Account", budget_account)
+		# if bud_acc_dtl.has_linked_budget == 1:
+		# 	budget_account = bud_acc_dtl.linked_budget
+		# #Check for Ignore Budget
+		# if bud_acc_dtl.budget_check:
+		# 	return
+		# #Check if Budget Account is Centralized
+		# if bud_acc_dtl.centralized_budget:
+		# 	cost_center = bud_acc_dtl.cost_center
+		# else:
+		# 	cc_doc = frappe.get_doc("Cost Center", cost_center)
+		# 	if cc_doc.use_budget_from_parent:
+		# 		cost_center = cc_doc.parent_cost_center
 
 		# cond = ""
 		# if budget_against == "Cost Center":
