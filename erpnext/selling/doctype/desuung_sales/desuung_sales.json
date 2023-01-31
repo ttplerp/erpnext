@@ -280,6 +280,7 @@
    "reqd": 1
   },
   {
+   "default": "Income from Sale of Gifts/Free Items - DS",
    "fieldname": "credit_account",
    "fieldtype": "Link",
    "label": "Credit Account",
@@ -287,6 +288,7 @@
    "reqd": 1
   },
   {
+   "default": "BOB-A/C: 202921909 - DS",
    "fieldname": "debit_account",
    "fieldtype": "Link",
    "label": "Debit Account",
@@ -1323,7 +1325,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-12 23:39:38.328639",
+ "modified": "2023-01-31 21:51:30.547814",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Desuung Sales",
