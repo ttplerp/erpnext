@@ -31,6 +31,7 @@
   "from_bom",
   "apply_putaway_rule",
   "in_transit",
+  "entry_type",
   "sb1",
   "bom_no",
   "fg_completed_qty",
@@ -678,6 +679,14 @@
    "label": "Cost Center",
    "options": "Cost Center",
    "read_only": 1
+  },
+  {
+   "default": "Regular",
+   "description": "Use by Desuung Headquarter",
+   "fieldname": "entry_type",
+   "fieldtype": "Select",
+   "label": "Entry Type",
+   "options": "\nRegular\nSoelra\nSales\nAwards"
   }
  ],
  "icon": "fa fa-file-text",
@@ -685,7 +694,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-03 11:23:16.113389",
+ "modified": "2023-01-31 23:40:18.543649",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Entry",

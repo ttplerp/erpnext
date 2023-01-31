@@ -124,6 +124,7 @@ class StockEntry(StockController):
 
 		self.validate_posting_time()
 		self.validate_purpose()
+		self.validate_issue_to()
 		self.validate_item()
 		self.validate_customer_provided_item()
 		self.validate_qty()
@@ -178,7 +179,8 @@ class StockEntry(StockController):
 		self.update_subcontract_order_supplied_items()
 		self.update_subcontracting_order_status()
 
-		self.make_gl_entries()
+		if self.entry_type != 'Soelra':
+			self.make_gl_entries()
 
 		self.repost_future_sle_and_gle()
 		self.update_cost_in_project()
@@ -324,6 +326,11 @@ class StockEntry(StockController):
 
 			amount += additional_cost_amt
 			frappe.db.set_value("Project", self.project, "total_consumed_material_cost", amount)
+
+	def validate_issue_to(self):
+		for d in self.get("items"):
+			if d.issue_to_employee and (d.issue_to_desuup or d.issue_to_others) or (d.issue_to_desuup and d.issue_to_others):
+				frappe.throw("#Row: {}, item issued to multiple person.".format(d.idx))
 
 	def validate_item(self):
 		stock_items = self.get_stock_items()

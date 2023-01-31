@@ -37,8 +37,9 @@ class PolAdvance(AccountsController):
 			self.post_journal_entry()
 
 	def on_cancel(self):
-		self.cancel_budget_entry()
-		self.update_od_balance()
+		if not self.is_opening:
+			self.cancel_budget_entry()
+			self.update_od_balance()
 
 	def update_od_balance(self):
 		if self.is_opening:

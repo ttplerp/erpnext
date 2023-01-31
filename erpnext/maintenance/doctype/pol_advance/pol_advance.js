@@ -26,10 +26,14 @@ frappe.ui.form.on('Pol Advance', {
 		fetch_cheque_lot(frm)
 	},
 	is_opening: (frm)=>{
-		if(frm.doc.is_opening == 1){
+		if(frm.doc.is_opening == 1 && frm.doc.docstatus == 0){
 			frm.set_df_property('od_outstanding_amount', 'read_only', 0);
+			frm.set_df_property('od_amount', 'read_only', 0);
+			frm.set_df_property('od_adjusted_amount', 'read_only', 0);
 		}else{
 			frm.set_df_property('od_outstanding_amount', 'read_only', 1);
+			frm.set_df_property('od_amount', 'read_only', 1);
+			frm.set_df_property('od_adjusted_amount', 'read_only', 1);
 		}
 	}
 });

@@ -15,12 +15,15 @@
   "sec_break1",
   "item_code",
   "issue_to_employee",
+  "issue_to_desuup",
+  "issue_to_others",
   "issue_to_equipment",
   "subcontracted_item",
   "quality_inspection",
   "col_break2",
   "item_name",
   "issued_employee_name",
+  "issued_desuup_name",
   "issued_equipment_name",
   "is_finished_item",
   "is_scrap_item",
@@ -739,10 +742,30 @@
    "options": "Equipment"
   },
   {
-   "fetch_from": "issue_to_equipment.equipment_name",
+   "fetch_from": "issue_to_equipment.equipment_number",
    "fieldname": "issued_equipment_name",
    "fieldtype": "Data",
    "label": "Issued Equipment Name",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:parent.stock_entry_type == \"Material Issue\" ",
+   "fieldname": "issue_to_others",
+   "fieldtype": "Data",
+   "label": "Issue To Others"
+  },
+  {
+   "depends_on": "eval:parent.stock_entry_type == \"Material Issue\" ",
+   "fieldname": "issue_to_desuup",
+   "fieldtype": "Link",
+   "label": "Issue To Desuup",
+   "options": "Desuup"
+  },
+  {
+   "fetch_from": "issue_to_desuup.desuup_name",
+   "fieldname": "issued_desuup_name",
+   "fieldtype": "Data",
+   "label": "Issued Desuup Name",
    "read_only": 1
   }
  ],
@@ -750,7 +773,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-12-30 11:49:27.160196",
+ "modified": "2023-02-01 00:11:14.137398",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Entry Detail",
