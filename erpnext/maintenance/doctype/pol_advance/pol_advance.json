@@ -13,6 +13,7 @@
   "fuelbook",
   "fuelbook_branch",
   "cost_center",
+  "is_opening",
   "payment_details",
   "party_type",
   "payment_type",
@@ -322,11 +323,17 @@
    "label": "JE Status",
    "options": "\nSubmitted",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_opening",
+   "fieldtype": "Check",
+   "label": " Is Opening"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2022-12-26 10:03:33.700869",
+ "modified": "2023-01-31 11:41:20.619947",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Pol Advance",

@@ -23,21 +23,26 @@ class PolAdvance(AccountsController):
 		self.od_adjustment()
 
 	def before_cancel(self):
+		if self.is_opening:
+			return
 		if self.journal_entry:
 			for t in frappe.get_all("Journal Entry", ["name"], {"name": self.journal_entry, "docstatus": ("<",2)}):
 				frappe.throw(_('Journal Entry {} for this transaction needs to be cancelled first').format(frappe.get_desk_link(self.doctype,self.journal_entry)),title='Not permitted')
 
 	def on_submit(self):
 		advance_account = frappe.db.get_single_value("Maintenance Accounts Settings", "default_pol_advance_account")
-		check_budget_available(self.cost_center,advance_account,self.entry_date,self.amount,self.business_activity)
-		self.update_od_balance()
-		self.post_journal_entry()
+		if not self.is_opening:
+			check_budget_available(self.cost_center,advance_account,self.entry_date,self.amount,self.business_activity)
+			self.update_od_balance()
+			self.post_journal_entry()
 
 	def on_cancel(self):
 		self.cancel_budget_entry()
 		self.update_od_balance()
 
 	def update_od_balance(self):
+		if self.is_opening:
+			return
 		for d in self.items:
 			doc = frappe.get_doc('Pol Advance',d.reference)
 			if self.docstatus == 2:
@@ -98,6 +103,9 @@ class PolAdvance(AccountsController):
 	def post_journal_entry(self):
 		if not self.amount:
 			frappe.throw(_("Amount should be greater than zero"))
+		if self.is_opening:
+			return
+
 		self.posting_date = self.entry_date
 		ba = self.business_activity
 

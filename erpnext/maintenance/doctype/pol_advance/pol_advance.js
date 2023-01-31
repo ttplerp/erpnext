@@ -25,6 +25,13 @@ frappe.ui.form.on('Pol Advance', {
 	select_cheque_lot: (frm)=>{
 		fetch_cheque_lot(frm)
 	},
+	is_opening: (frm)=>{
+		if(frm.doc.is_opening == 1){
+			frm.set_df_property('od_outstanding_amount', 'read_only', 0);
+		}else{
+			frm.set_df_property('od_outstanding_amount', 'read_only', 1);
+		}
+	}
 });
 
 var set_party_type = (frm)=>{
@@ -64,16 +71,17 @@ var calculate_balance=(frm)=>{
    }
 }
 var open_ledger = (frm)=>{
-   if (frm.doc.docstatus === 1) {
-	   frm.add_custom_button(
-		 __("Journal Entry"),
-		 function () {
-		   frappe.route_options = {
-			 name: frm.doc.journal_entry
-		   };
-		   frappe.set_route("List", "Journal Entry");
-		 },
-		 __("View")
-	   );
-   }
+	// if (cint(frm.doc.is_opening) == 1) return
+	if (frm.doc.docstatus === 1) {
+		frm.add_custom_button(
+			__("Journal Entry"),
+			function () {
+			frappe.route_options = {
+				name: frm.doc.journal_entry
+			};
+			frappe.set_route("List", "Journal Entry");
+			},
+			__("View")
+		);
+	}
 }
