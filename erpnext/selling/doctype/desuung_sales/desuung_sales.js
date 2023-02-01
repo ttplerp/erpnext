@@ -34,7 +34,7 @@ frappe.ui.form.on("Desuung Sales", "onload", function (frm) {
 	frm.set_query("item_code", "items", function () {
 		return {
 			"filters": {
-				"item_group": "Consumables"
+				"item_group": "Sales Product"
 			}
 		};
 	});
