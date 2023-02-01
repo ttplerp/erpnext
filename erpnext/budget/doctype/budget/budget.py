@@ -246,7 +246,7 @@ def validate_expense_against_budget(args):
 				from
 					`tabBudget` b, `tabBudget Account` ba
 				where
-					b.name=ba.parent and b.fiscal_year={fiscal_year}
+					b.name=ba.parent and b.fiscal_year='{fiscal_year}'
 					and ba.account='{account}' and b.docstatus=1
 					{condition}
 			""".format(
