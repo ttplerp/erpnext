@@ -79,8 +79,8 @@ class MaterialRequest(BuyingController):
 
 	def validate(self):
 		super(MaterialRequest, self).validate()
-		if frappe.db.get_value("Cost Center", self.cost_center, "cost_center_for") == "DSP":
-			validate_workflow_states(self)
+		# if frappe.db.get_value("Cost Center", self.cost_center, "cost_center_for") == "DSP":
+		# 	validate_workflow_states(self)
 		self.validate_schedule_date()
 		self.check_for_on_hold_or_closed_status("Sales Order", "sales_order")
 		self.validate_uom_is_integer("uom", "qty")
@@ -116,8 +116,8 @@ class MaterialRequest(BuyingController):
 		self.reset_default_field_value("set_warehouse", "items", "warehouse")
 		self.reset_default_field_value("set_from_warehouse", "items", "from_warehouse")
 		self.set_actual_qty()
-		if self.workflow_state != "Approved" and frappe.db.get_value("Cost Center", self.cost_center, "cost_center_for") == "DSP":
-			notify_workflow_states(self)
+		# if self.workflow_state != "Approved" and frappe.db.get_value("Cost Center", self.cost_center, "cost_center_for") == "DSP":
+		# 	notify_workflow_states(self)
 
 		# **** To record the details of Material Requester **** #
 		if self.workflow_state == "Draft":
@@ -166,8 +166,8 @@ class MaterialRequest(BuyingController):
 		self.update_requested_qty_in_production_plan()
 		if self.material_request_type == "Purchase":
 			self.validate_budget()
-		if frappe.db.get_value("Cost Center", self.cost_center, "cost_center_for") == "DSP":
-			notify_workflow_states(self)
+		# if frappe.db.get_value("Cost Center", self.cost_center, "cost_center_for") == "DSP":
+		# 	notify_workflow_states(self)
 		
 	def before_save(self):
 		self.set_status(update=True)
