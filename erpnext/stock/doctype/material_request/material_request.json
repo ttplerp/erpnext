@@ -7,6 +7,7 @@
  "document_type": "Document",
  "engine": "InnoDB",
  "field_order": [
+  "workflow_state",
   "type_section",
   "branch",
   "item_group",
@@ -409,13 +410,21 @@
    "fieldname": "remarks",
    "fieldtype": "Small Text",
    "label": "Remarks"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Workflow State",
+   "options": "Workflow State"
   }
  ],
  "icon": "fa fa-ticket",
  "idx": 70,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-26 15:53:49.645019",
+ "modified": "2023-02-01 10:19:42.136186",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Material Request",
