@@ -154,6 +154,7 @@
    "options": "\nDomain\nCourse"
   },
   {
+   "allow_in_quick_entry": 1,
    "fieldname": "cost_center_for",
    "fieldtype": "Select",
    "label": "For DSP/DHQ",
@@ -164,7 +165,7 @@
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2023-01-10 14:22:02.223986",
+ "modified": "2023-02-01 12:28:06.596910",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Cost Center",
