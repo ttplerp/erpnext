@@ -158,14 +158,15 @@
    "fieldname": "cost_center_for",
    "fieldtype": "Select",
    "label": "For DSP/DHQ",
-   "options": "\nDHQ\nDSP"
+   "options": "\nDHQ\nDSP",
+   "reqd": 1
   }
  ],
  "icon": "fa fa-money",
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2023-02-01 12:28:06.596910",
+ "modified": "2023-02-01 12:36:55.778045",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Cost Center",
