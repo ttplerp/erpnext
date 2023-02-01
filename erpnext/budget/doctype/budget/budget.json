@@ -14,6 +14,7 @@
   "project_name",
   "column_break_3",
   "fiscal_year",
+  "business_activity",
   "deviation",
   "budget_type",
   "monthly_distribution",
@@ -253,12 +254,18 @@
    "hidden": 1,
    "label": "Allow Deviation (%)",
    "precision": "2"
+  },
+  {
+   "fieldname": "business_activity",
+   "fieldtype": "Link",
+   "label": "Business Activity",
+   "options": "Business Activity"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-31 14:57:13.107765",
+ "modified": "2023-02-01 10:39:38.293890",
  "modified_by": "Administrator",
  "module": "Budget",
  "name": "Budget",
