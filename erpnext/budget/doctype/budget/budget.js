@@ -10,6 +10,15 @@ frappe.ui.form.on('Budget', {
 		// 			frm.set_value("budget_against", d.budget_level);
 		// 	});
 		// }	
+		frm.set_query("cost_center", function() {
+			return {
+				filters: {
+					company: frm.doc.company,
+					disabled: 0,
+					use_budget_from_parent: 0
+				}
+			}
+		});
 
 		frm.set_query("account", "accounts", function() {
 			return {
