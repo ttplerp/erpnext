@@ -148,7 +148,7 @@ class Budget(Document):
 								on b.name = i.parent
 								where  b.docstatus != 2
 								and i.account = a.name
-								and b.cost_center = "{cost_center}"
+								and b.cost_center = '{cost_center}'
 								and b.fiscal_year = '{fiscal_year}'
 								and b.name != '{name}'
 							)
