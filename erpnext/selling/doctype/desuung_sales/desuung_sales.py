@@ -90,16 +90,22 @@ class DesuungSales(Document):
 	def update_stock_ledger(self):
 			sl_entries = []
 			for d in self.items:
-					if d.warehouse and self.docstatus==1:
+					if d.warehouse:
 							sl_entries.append(self.get_sl_entries(d, {
-								"actual_qty": -1*flt(d.qty),
+								"warehouse": cstr(d.warehouse),
+								"actual_qty": -flt(d.qty),
 								"incoming_rate": d.rate
 							}))
-					if d.warehouse and self.docstatus==2:
-							sl_entries.append(self.get_sl_entries(d, {
-								"actual_qty": -1*flt(d.qty),
-								"incoming_rate": d.rate
-							}))
+					# if d.warehouse and self.docstatus==2:
+					# 		sl_entries.append(self.get_sl_entries(d, {
+					# 			"warehouse": cstr(d.warehouse),
+					# 			"actual_qty": -flt(d.qty),
+					# 			"incoming_rate": d.rate
+					# 		}))
+
+			# # reverse sl entries if cancel
+			if self.docstatus == 2:
+				sl_entries.reverse()
 	
 			self.make_sl_entries(sl_entries)
 
@@ -120,7 +126,7 @@ class DesuungSales(Document):
 			"batch_no": cstr(d.get("batch_no")).strip(),
 			"serial_no": d.get("serial_no"),
 			"project": d.get("project"),
-			"is_cancelled": self.docstatus==2 and "Yes" or "No"
+			"is_cancelled": 1 if self.docstatus == 2 else 0
 		})
 
 		sl_dict.update(args)
