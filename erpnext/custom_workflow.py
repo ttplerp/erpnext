@@ -456,8 +456,9 @@ class NotifyCustomWorkflow:
 		if not employee.user_id:
 			return
 
-		parent_doc = frappe.get_doc(self.doc.doctype, self.doc.name)
-		args = parent_doc.as_dict()
+		# parent_doc = frappe.get_doc(self.doc.doctype, self.doc.name)
+		# args = parent_doc.as_dict()
+		args = self.doc.as_dict()
 
 		if self.doc.doctype == "Leave Application":
 			template = frappe.db.get_single_value('HR Settings', 'leave_status_notification_template')
@@ -540,8 +541,9 @@ class NotifyCustomWorkflow:
 
 	def notify_approver(self):
 		if self.doc.get(self.doc_approver[0]):
-			parent_doc = frappe.get_doc(self.doc.doctype, self.doc.name)
-			args = parent_doc.as_dict()
+			# parent_doc = frappe.get_doc(self.doc.doctype, self.doc.name)
+			# args = parent_doc.as_dict()
+			args = self.doc.as_dict()
 
 			if self.doc.doctype == "Leave Application":
 				template = frappe.db.get_single_value('HR Settings', 'leave_approval_notification_template')
@@ -627,8 +629,9 @@ class NotifyCustomWorkflow:
 			pmt = frappe.db.sql("select p.user_id from `tabMR PMT And Domain Lead` p, `tabMR PMT List` a where a.parent=p.name and p.active = 1 and a.cost_center='{}'".format(self.doc.cost_center), as_dict=1)
 			if pmt:
 				receipients = [a['user_id'] for a in pmt if frappe.db.get_value("User", a['user_id'], "enabled") == 1]
-				parent_doc = frappe.get_doc(self.doc.doctype, self.doc.name)
-				args = parent_doc.as_dict()
+				# parent_doc = frappe.get_doc(self.doc.doctype, self.doc.name)
+				# args = parent_doc.as_dict()
+				args = self.doc.as_dict()
 				args.update({'domain_name': domain_name,'link_html': link_html,'owner_designation': owner_designation, 'employee_name':self.login_user[1],'employee_designation':self.login_user[2]})
 				email_template = frappe.get_doc("Email Template", "MR PMT Email")
 				message = frappe.render_template(email_template.response, args)
@@ -639,8 +642,9 @@ class NotifyCustomWorkflow:
 			dl = frappe.db.sql("select p.user_id from `tabMR PMT And Domain Lead` p, `tabMR Domain List` a where a.parent=p.name and p.active = 1 and a.cost_center='{}'".format(self.doc.cost_center), as_dict=1)
 			if dl:
 				receipients = [a['user_id'] for a in dl if frappe.db.get_value("User", a['user_id'], "enabled") == 1]
-				parent_doc = frappe.get_doc(self.doc.doctype, self.doc.name)
-				args = parent_doc.as_dict()
+				# parent_doc = frappe.get_doc(self.doc.doctype, self.doc.name)
+				# args = parent_doc.as_dict()
+				args = self.doc.as_dict()
 				args.update({'domain_name': domain_name,'link_html': link_html,'owner_designation': owner_designation, 'employee_name':self.login_user[1],'employee_designation':self.login_user[2]})
 				email_template = frappe.get_doc("Email Template", "Domain Lead Approve")
 				message = frappe.render_template(email_template.response, args)
@@ -684,8 +688,9 @@ class NotifyCustomWorkflow:
 		#         receipients.append(d.user)
 		domain_name = frappe.db.get_value("Cost Center", self.doc.cost_center, "parent_cost_center")
 		link_html = "<a href=" + frappe.utils.get_url_to_form(self.doc.doctype, self.doc.name) + ">" + self.doc.name + "</a>"
-		parent_doc = frappe.get_doc(self.doc.doctype, self.doc.name)
-		args = parent_doc.as_dict()
+		# parent_doc = frappe.get_doc(self.doc.doctype, self.doc.name)
+		# args = parent_doc.as_dict()
+		args = self.doc.as_dict()
 		args.update({'domain_name': domain_name,'link_html': link_html,'owner_designation': owner_designation, 'employee_name':self.login_user[1],'employee_designation':self.login_user[2]})
 		email_template = frappe.get_doc("Email Template", "FD Head MR Notice")
 		message = frappe.render_template(email_template.response, args)
@@ -710,8 +715,9 @@ class NotifyCustomWorkflow:
 				for a in pmt:
 					receipients.append(a['user_id'])
 
-		parent_doc = frappe.get_doc(self.doc.doctype, self.doc.name)
-		args = parent_doc.as_dict()
+		# parent_doc = frappe.get_doc(self.doc.doctype, self.doc.name)
+		# args = parent_doc.as_dict()
+		args = self.doc.as_dict()
 		args.update({'domain_name': domain_name,'owner_designation': owner_designation, 'employee_name':self.login_user[1],'employee_designation':self.login_user[2]})
 		email_template = frappe.get_doc("Email Template", "Rejected MR Notice")
 		message = frappe.render_template(email_template.response, args)

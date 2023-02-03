@@ -70,7 +70,7 @@
    "no_copy": 1
   },
   {
-   "default": "Material Issue",
+   "default": "Purchase",
    "fieldname": "material_request_type",
    "fieldtype": "Select",
    "in_list_view": 1,
@@ -424,7 +424,7 @@
  "idx": 70,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-01 10:19:42.136186",
+ "modified": "2023-02-03 16:59:18.209316",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Material Request",
