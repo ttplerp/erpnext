@@ -1186,7 +1186,7 @@
    "collapsible": 1,
    "fieldname": "order_header_and_footer_section",
    "fieldtype": "Section Break",
-   "label": "Purchase Order Header and Footer DSP"
+   "label": "DSP Purchase Order Header and Footer"
   },
   {
    "default": "DSP is please to place purchase order for the supply of following items:",
@@ -1220,7 +1220,7 @@
    "collapsible": 1,
    "fieldname": "dhq_header_and_footer_section",
    "fieldtype": "Section Break",
-   "label": "Purchase Order Header and Footer DHQ"
+   "label": "DHQ Purchase Order Header and Footer"
   },
   {
    "fieldname": "dhq_po_header",
@@ -1242,7 +1242,7 @@
  "idx": 105,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-29 20:59:09.379670",
+ "modified": "2023-02-03 16:44:45.237156",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Purchase Order",
