@@ -16,6 +16,8 @@
   "employer_pf",
   "column_break_9",
   "health_contribution",
+  "calc_sal_tax",
+  "tax_percent",
   "sb_salary_advance",
   "salary_advance_type",
   "salary_advance_max_months",
@@ -214,10 +216,23 @@
    "fieldtype": "Table",
    "label": "Leave Credits",
    "options": "Employee Group Item"
+  },
+  {
+   "depends_on": "eval:doc.calc_sal_tax == 1;",
+   "fieldname": "tax_percent",
+   "fieldtype": "Float",
+   "label": "Tax Percent",
+   "mandatory_depends_on": "eval:doc.calc_sal_tax == 1;"
+  },
+  {
+   "default": "0",
+   "fieldname": "calc_sal_tax",
+   "fieldtype": "Check",
+   "label": "Calculate Salary Tax Separately"
   }
  ],
  "links": [],
- "modified": "2023-01-12 14:11:36.376805",
+ "modified": "2023-02-03 12:58:28.288652",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee Group",
