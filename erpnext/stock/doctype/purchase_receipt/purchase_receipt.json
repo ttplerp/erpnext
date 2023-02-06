@@ -1073,6 +1073,7 @@
   {
    "fieldname": "scan_barcode",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Scan Barcode",
    "options": "Barcode"
   },
@@ -1183,7 +1184,7 @@
  "idx": 261,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-06 15:51:02.705662",
+ "modified": "2023-02-06 16:17:53.468112",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Purchase Receipt",
