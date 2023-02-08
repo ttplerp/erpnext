@@ -186,8 +186,10 @@
    "print_hide": 1
   },
   {
+   "default": "ACC-PINV-.YYYY.-",
    "fieldname": "naming_series",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Series",
    "no_copy": 1,
    "oldfieldname": "naming_series",
@@ -569,6 +571,7 @@
   {
    "fieldname": "scan_barcode",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Scan Barcode",
    "options": "Barcode"
   },
@@ -1448,7 +1451,7 @@
  "idx": 204,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-09-22 17:06:41.073662",
+ "modified": "2023-02-08 21:59:35.670644",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Purchase Invoice",
