@@ -817,7 +817,6 @@ def create_pick_list(source_name, target_doc=None):
 	return doc
 
 def get_permission_query_conditions(user):
-	return
 	if not user: user = frappe.session.user
 	user_roles = frappe.get_roles(user)
 	# roles = "('{}')".format(user_roles[0]) if len(user_roles) == 1 else "{}".format(tuple(user_roles))
@@ -844,6 +843,13 @@ def get_permission_query_conditions(user):
 					and `tabMaterial Request`.workflow_state not in  ('Draft','Rejected','Cancelled')
 				)
 			)
+			or 
+			exists(select 1
+				from `tabEmployee` e, `tabAssign Branch` ab, `tabBranch Item` bi
+				where e.user_id = '{user}'
+				and ab.employee = e.name
+				and bi.parent = ab.name
+				and bi.branch = `tabMaterial Request`.branch)
 	)""".format(user = user, ceo_or_general_manager = ceo_or_general_manager)
 
 
