@@ -27,7 +27,7 @@ frappe.ui.form.on('Reimbursement', {
 				},
 				callback: function (r) {
 					if (r.message) {
-						cur_frm.set_value("expense_account", r.message.pol_advance_account);
+						cur_frm.set_value("expense_account", r.message.default_pol_advance_account);
 						refresh_field('expense_account');
 					}
 				}
