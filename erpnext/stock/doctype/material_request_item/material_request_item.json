@@ -8,7 +8,6 @@
  "engine": "InnoDB",
  "field_order": [
   "item_code",
-  "issue_to_employee",
   "issue_to_equipment",
   "col_break1",
   "item_name",
@@ -483,19 +482,10 @@
    "options": "issue_type"
   },
   {
-   "fetch_from": "issue_to_employee.employee_name",
    "fieldname": "issued_employee_name",
    "fieldtype": "Data",
    "label": "Issued Employee Name",
    "read_only": 1
-  },
-  {
-   "depends_on": "eval:(parent.material_request_type != \"Purchase\") && (parent.material_request_type != \"Material Transfer\") ",
-   "fieldname": "issue_to_employee",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Issue To Employee",
-   "options": "Employee"
   },
   {
    "depends_on": "eval:(parent.material_request_type != \"Purchase\") && (parent.material_request_type != \"Material Transfer\") ",
@@ -533,7 +523,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-02-03 12:40:30.244863",
+ "modified": "2023-02-10 00:24:39.896708",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Material Request Item",
