@@ -6,6 +6,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "workflow_state",
   "equipment",
   "equipment_number",
   "entry_date",
@@ -329,11 +330,18 @@
    "fieldname": "is_opening",
    "fieldtype": "Check",
    "label": " Is Opening"
+  },
+  {
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Workflow State",
+   "options": "Workflow State"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-31 11:41:20.619947",
+ "modified": "2023-02-09 15:40:03.658869",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Pol Advance",
