@@ -817,6 +817,7 @@ def create_pick_list(source_name, target_doc=None):
 	return doc
 
 def get_permission_query_conditions(user):
+	return
 	if not user: user = frappe.session.user
 	user_roles = frappe.get_roles(user)
 	# roles = "('{}')".format(user_roles[0]) if len(user_roles) == 1 else "{}".format(tuple(user_roles))
