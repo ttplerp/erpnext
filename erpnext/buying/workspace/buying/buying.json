@@ -513,7 +513,7 @@
    "type": "Link"
   }
  ],
- "modified": "2023-01-13 15:08:23.598481",
+ "modified": "2023-02-11 12:46:08.952141",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Buying",
@@ -538,7 +538,6 @@
    "format": "{} Pending",
    "label": "Material Request",
    "link_to": "Material Request",
-   "stats_filter": "{\n    \"company\": [\"like\", '%' + frappe.defaults.get_global_default(\"company\") + '%'],\n    \"status\": \"Pending\"\n}",
    "type": "DocType"
   },
   {
