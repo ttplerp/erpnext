@@ -1054,8 +1054,8 @@ def update_purchase_receipt_status(docname, status):
 @frappe.whitelist()
 def make_stock_entry(source_name, target_doc=None):
 	def set_missing_values(source, target):
-		target.stock_entry_type = "Material Transfer"
-		target.purpose = "Material Transfer"
+		target.stock_entry_type = "Material Issue"
+		target.purpose = "Material Issue"
 		target.set_missing_values()
 
 	doclist = get_mapped_doc(
@@ -1072,6 +1072,7 @@ def make_stock_entry(source_name, target_doc=None):
 					"parent": "reference_purchase_receipt",
 					"batch_no": "batch_no",
 				},
+				"condition": lambda doc: not frappe.db.get_value("Item", doc.item_code, "is_fixed_asset")
 			},
 		},
 		target_doc,
