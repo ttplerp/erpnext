@@ -1872,7 +1872,8 @@ class AccountsController(TransactionBase):
 			or not self.conversion_rate
 			or (self.currency != default_currency and flt(self.conversion_rate) == 1.00)
 		):
-			throw(_("Conversion rate cannot be 0 or 1"))
+			if self.currency != 'INR':
+				throw(_("Conversion rate cannot be 0 or 1"))
 
 
 @frappe.whitelist()
