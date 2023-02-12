@@ -212,7 +212,7 @@
    "type": "Link"
   }
  ],
- "modified": "2023-01-13 10:59:15.636331",
+ "modified": "2023-02-12 23:14:18.006879",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Assets",
@@ -222,7 +222,7 @@
  "quick_lists": [],
  "restrict_to_domain": "",
  "roles": [],
- "sequence_id": 14.0,
+ "sequence_id": 15.0,
  "shortcuts": [
   {
    "label": "Asset",

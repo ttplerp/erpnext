@@ -5,7 +5,7 @@
    "label": "Sales Order Trends"
   }
  ],
- "content": "[{\"type\":\"chart\",\"data\":{\"chart_name\":\"Sales Order Trends\",\"col\":12}},{\"type\":\"spacer\",\"data\":{\"col\":12}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Quick Access</b></span>\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Item\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Order\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Analytics\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Order Analysis\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":3}},{\"type\":\"spacer\",\"data\":{\"col\":12}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Custom Transactions\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Selling\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Items and Pricing\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Key Reports\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Other Reports\",\"col\":4}}]",
+ "content": "[{\"type\":\"chart\",\"data\":{\"chart_name\":\"Sales Order Trends\",\"col\":12}},{\"type\":\"spacer\",\"data\":{\"col\":12}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Quick Access</b></span>\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Item\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Order\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Analytics\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Order Analysis\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":3}},{\"type\":\"spacer\",\"data\":{\"col\":12}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Custom Transactions\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Selling\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Items and Pricing\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Key Reports\",\"col\":4}}]",
  "creation": "2020-01-28 11:49:12.092882",
  "docstatus": 0,
  "doctype": "Workspace",
@@ -18,264 +18,36 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Settings",
-   "link_count": 0,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Selling Settings",
-   "link_count": 0,
-   "link_to": "Selling Settings",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Terms and Conditions Template",
-   "link_count": 0,
-   "link_to": "Terms and Conditions",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Sales Taxes and Charges Template",
-   "link_count": 0,
-   "link_to": "Sales Taxes and Charges Template",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Lead Source",
-   "link_count": 0,
-   "link_to": "Lead Source",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Customer Group",
-   "link_count": 0,
-   "link_to": "Customer Group",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Contact",
-   "link_count": 0,
-   "link_to": "Contact",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Address",
-   "link_count": 0,
-   "link_to": "Address",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Territory",
-   "link_count": 0,
-   "link_to": "Territory",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Campaign",
-   "link_count": 0,
-   "link_to": "Campaign",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Key Reports",
-   "link_count": 13,
+   "label": "Custom Transactions",
+   "link_count": 2,
    "onboard": 0,
    "type": "Card Break"
   },
   {
    "hidden": 0,
-   "is_query_report": 1,
-   "label": "Sales History Report",
+   "is_query_report": 0,
+   "label": "Desuung Sales",
    "link_count": 0,
-   "link_to": "Sales History Report",
-   "link_type": "Report",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "dependencies": "Item",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Item-wise Sales History",
-   "link_count": 0,
-   "link_to": "Item-wise Sales History",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "Address",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Customer Addresses And Contacts",
-   "link_count": 0,
-   "link_to": "Address And Contacts",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "Delivery Note",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Delivery Note Trends",
-   "link_count": 0,
-   "link_to": "Delivery Note Trends",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "Sales Invoice",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Sales Invoice Trends",
-   "link_count": 0,
-   "link_to": "Sales Invoice Trends",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "Customer",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Customer Credit Balance",
-   "link_count": 0,
-   "link_to": "Customer Credit Balance",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "Customer",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Customers Without Any Sales Transactions",
-   "link_count": 0,
-   "link_to": "Customers Without Any Sales Transactions",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "Sales Order",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Territory Target Variance Based On Item Group",
-   "link_count": 0,
-   "link_to": "Territory Target Variance Based On Item Group",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Sales Analytics",
-   "link_count": 0,
-   "link_to": "Sales Analytics",
-   "link_type": "Report",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "dependencies": "Quotation",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Quotation Trends",
-   "link_count": 0,
-   "link_to": "Quotation Trends",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "Customer",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Customer Acquisition and Loyalty",
-   "link_count": 0,
-   "link_to": "Customer Acquisition and Loyalty",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "Sales Order",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Inactive Customers",
-   "link_count": 0,
-   "link_to": "Inactive Customers",
-   "link_type": "Report",
+   "link_to": "Desuung Sales",
+   "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
   },
   {
    "hidden": 0,
    "is_query_report": 1,
-   "label": "Delivered Items To Be Billed",
+   "label": "Desuung Sales Report",
    "link_count": 0,
-   "link_to": "Delivered Items To Be Billed",
+   "link_to": "Desuung Sales Report",
    "link_type": "Report",
-   "onboard": 1,
+   "onboard": 0,
    "type": "Link"
   },
   {
    "hidden": 0,
    "is_query_report": 0,
    "label": "Selling",
-   "link_count": 9,
+   "link_count": 6,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -324,17 +96,6 @@
    "type": "Link"
   },
   {
-   "dependencies": "Item, Customer",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Blanket Order",
-   "link_count": 0,
-   "link_to": "Blanket Order",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
    "hidden": 0,
    "is_query_report": 0,
    "label": "Delivery Note",
@@ -357,28 +118,8 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Payment Terms Template",
-   "link_count": 0,
-   "link_to": "Payment Terms Template",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Consolidated Invoice",
-   "link_count": 0,
-   "link_to": "Consolidated Invoice",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Items and Pricing",
-   "link_count": 6,
+   "link_count": 7,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -450,39 +191,101 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Other Reports",
-   "link_count": 8,
+   "label": "selling Price",
+   "link_count": 0,
+   "link_to": "Selling Price",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Settings",
+   "link_count": 5,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Selling Settings",
+   "link_count": 0,
+   "link_to": "Selling Settings",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Lead Source",
+   "link_count": 0,
+   "link_to": "Lead Source",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Customer Group",
+   "link_count": 0,
+   "link_to": "Customer Group",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Contact",
+   "link_count": 0,
+   "link_to": "Contact",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Address",
+   "link_count": 0,
+   "link_to": "Address",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Key Reports",
+   "link_count": 4,
    "onboard": 0,
    "type": "Card Break"
   },
   {
    "hidden": 0,
    "is_query_report": 1,
-   "label": "Payment Terms Status for Sales Order",
+   "label": "Sales History Report",
    "link_count": 0,
-   "link_to": "Payment Terms Status for Sales Order",
+   "link_to": "Sales History Report",
    "link_type": "Report",
-   "onboard": 0,
+   "onboard": 1,
    "type": "Link"
   },
   {
-   "dependencies": "Address",
+   "dependencies": "Item",
    "hidden": 0,
    "is_query_report": 1,
-   "label": "Customer Addresses And Contacts",
+   "label": "Item-wise Sales History",
    "link_count": 0,
-   "link_to": "Address And Contacts",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "Delivery Note",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Delivery Note Trends",
-   "link_count": 0,
-   "link_to": "Delivery Note Trends",
+   "link_to": "Item-wise Sales History",
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
@@ -508,69 +311,9 @@
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
-  },
-  {
-   "dependencies": "Customer",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Customers Without Any Sales Transactions",
-   "link_count": 0,
-   "link_to": "Customers Without Any Sales Transactions",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "Sales Order",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Territory Target Variance Based On Item Group",
-   "link_count": 0,
-   "link_to": "Territory Target Variance Based On Item Group",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Customer Summary Report",
-   "link_count": 0,
-   "link_to": "Customer Summary Report",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Custom Transactions",
-   "link_count": 2,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Desuung Sales",
-   "link_count": 0,
-   "link_to": "Desuung Sales",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Desuung Sales Report",
-   "link_count": 0,
-   "link_to": "Desuung Sales Report",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
   }
  ],
- "modified": "2023-01-29 22:01:09.309042",
+ "modified": "2023-02-12 23:14:17.963599",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Selling",
@@ -580,7 +323,7 @@
  "quick_lists": [],
  "restrict_to_domain": "",
  "roles": [],
- "sequence_id": 13.0,
+ "sequence_id": 14.0,
  "shortcuts": [
   {
    "color": "Grey",
