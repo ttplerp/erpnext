@@ -98,6 +98,7 @@ def get_data(query, filters):
 	return data
 
 def construct_query(filters=None):
+	condition = ''
 	if filters.budget_against == "Project" and filters.project:
 		condition += " and b.project = \'" + str(filters.project) + "\' "
 	else:
