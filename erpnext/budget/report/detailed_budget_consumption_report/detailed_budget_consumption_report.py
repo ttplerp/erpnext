@@ -141,7 +141,7 @@ def construct_query(filters=None):
                 ba.supplementary_budget as supplement
             from `tabBudget` b, `tabBudget Account` ba 
             where b.docstatus = 1 and b.name = ba.parent
-            and ba.initial_budget != 0 and b.fiscal_year = """ + str(filters.fiscal_year)
+            and ba.initial_budget != 0 and b.fiscal_year = \'""" + str(filters.fiscal_year) + "\' "
             
     if filters.cost_center:
         lft, rgt = frappe.db.get_value("Cost Center", filters.cost_center, ["lft", "rgt"])
