@@ -69,7 +69,8 @@ class POL(StockController):
 			self.make_gl_entry()
 
 	def on_cancel(self):
-		self.update_stock_ledger()
+		if not self.direct_consumption:
+			self.update_stock_ledger()
 		docstatus = frappe.db.get_value("Journal Entry", self.jv, "docstatus")
 		if docstatus and docstatus != 2:
 			frappe.throw("Cancel the Journal Entry " + str(self.jv) + " and proceed.")
