@@ -60,6 +60,12 @@
   "column_break_35",
   "letter_head",
   "select_print_heading",
+  "section_break_53",
+  "verified_by",
+  "column_break_55",
+  "approved_by",
+  "column_break_57",
+  "received_by",
   "addtional_info",
   "mode_of_payment",
   "payment_order",
@@ -571,6 +577,39 @@
    "fieldtype": "HTML",
    "label": "TDS Table",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_53",
+   "fieldtype": "Section Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "verified_by",
+   "fieldtype": "Link",
+   "label": "Verified By",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "column_break_55",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "approved_by",
+   "fieldtype": "Link",
+   "label": "Approved By",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "column_break_57",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "received_by",
+   "fieldtype": "Link",
+   "label": "Received By",
+   "options": "Employee"
   }
  ],
  "icon": "fa fa-file-text",
@@ -582,7 +621,7 @@
    "link_fieldname": "journal_entry"
   }
  ],
- "modified": "2022-11-18 12:05:10.610995",
+ "modified": "2023-02-14 15:32:35.671473",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",
