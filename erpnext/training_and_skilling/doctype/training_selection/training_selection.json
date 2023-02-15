@@ -40,7 +40,8 @@
   "get_applicants",
   "item",
   "amended_from",
-  "training_management"
+  "training_management",
+  "workflow_state"
  ],
  "fields": [
   {
@@ -255,12 +256,19 @@
    "label": "Training Management",
    "options": "Training Management",
    "read_only": 1
+  },
+  {
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "label": "Workflow State",
+   "options": "Workflow State",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-15 15:45:35.703263",
+ "modified": "2023-02-15 16:15:07.381304",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Selection",
