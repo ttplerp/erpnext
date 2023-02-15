@@ -260,6 +260,7 @@
   {
    "fieldname": "workflow_state",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Workflow State",
    "options": "Workflow State",
    "read_only": 1
@@ -268,7 +269,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-15 16:15:07.381304",
+ "modified": "2023-02-15 16:20:13.286546",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Selection",
