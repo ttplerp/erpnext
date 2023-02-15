@@ -133,7 +133,7 @@ class AssetMovement(Document):
 		frappe.db.sql("delete from `tabGL Entry` where voucher_no = %s", self.name)
 
 	def set_latest_cost_center_in_asset(self):
-		current_cost_center, current_employee, current_employee_name = "", "", ""
+		current_cost_center, current_employee, current_employee_name, current_custodian_type = "", "", "", ""
 		cond = "1=1"
 
 		for d in self.assets:
