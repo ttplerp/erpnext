@@ -6,5 +6,8 @@ from frappe.model.document import Document
 
 class Course(Document):
 	def validate(self):
+		pass
+		'''
 		if frappe.db.exists("Course", self.course_name):
 			self.course_name = str(self.course_name) + " - " +str("1")
+		'''

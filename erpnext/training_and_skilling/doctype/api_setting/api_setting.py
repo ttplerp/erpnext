@@ -58,23 +58,13 @@ def fetch_data(name, param):
 	elif doc.api_name == "Fetch Course Details":	
 		i=1
 		for a in data['courses']['data']:
-			if frappe.db.exists("Course",{"course_name":str(a['name'])}):
-				course_name = a['name'] + " - " + str(i)
-			else:
-				course_name = a['name']
+			course_name = a['name']
 			course_id = a['id']
 			description = a['description']
 			created_at = a['created_at']
 			updated_at = a['updated_at']
 			
-			if frappe.db.exists("Course",{"course_id":course_id}):
-				docs = frappe.get_doc("Course",{"course_id":course_id})
-				docs.course_name = course_name
-				docs.description = description
-				docs.last_update = updated_at
-				docs.save()
-				i+=1
-			else:
+			if not frappe.db.exists("Course",{"course_id":course_id}):
 				course = frappe.get_doc(
 					{
 						"doctype": "Course",
