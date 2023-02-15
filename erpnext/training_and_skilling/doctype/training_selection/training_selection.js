@@ -29,7 +29,7 @@ frappe.ui.form.on('Training Selection', {
 					});
 				});
 			}
-			else{
+			else if(frm.doc.training_managment == ""){
 				frm.page.set_primary_action(__('Create Training'), () => {
 					return frappe.call({
 						method: "create_training",

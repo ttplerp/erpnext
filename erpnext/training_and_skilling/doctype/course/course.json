@@ -15,11 +15,14 @@
   "course",
   "location",
   "column_break_6",
-  "course_level",
-  "pre_requisite",
-  "pre_requisite_course",
+  "up_skilling",
+  "exclude_from_point_calculation",
+  "training_category",
   "description",
-  "last_update"
+  "last_update",
+  "prerequisite_details_section",
+  "pre_requisite",
+  "prerequisite_courses"
  ],
  "fields": [
   {
@@ -55,24 +58,11 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "course_level",
-   "fieldtype": "Link",
-   "label": "Course Level",
-   "options": "Course Level"
-  },
-  {
    "default": "0",
+   "description": "<b>If no courses are selected in the course table and applicant has attended any one course, prerequisite will be considered</b>",
    "fieldname": "pre_requisite",
    "fieldtype": "Check",
    "label": "Prerequisites Required"
-  },
-  {
-   "depends_on": "eval:doc.pre_requisite",
-   "description": "<b>If no course is selected, we will qualify the pre-requisite as any course attended</b>",
-   "fieldname": "pre_requisite_course",
-   "fieldtype": "Link",
-   "label": "Prerequisite Course",
-   "options": "Course"
   },
   {
    "fieldname": "description",
@@ -98,11 +88,42 @@
    "in_list_view": 1,
    "label": "Course Cost Center",
    "options": "Cost Center"
+  },
+  {
+   "fieldname": "prerequisite_details_section",
+   "fieldtype": "Section Break",
+   "label": "Prerequisite Details"
+  },
+  {
+   "depends_on": "eval:doc.pre_requisite",
+   "fieldname": "prerequisite_courses",
+   "fieldtype": "Table",
+   "options": "Prerequisite Course"
+  },
+  {
+   "fieldname": "training_category",
+   "fieldtype": "Link",
+   "label": "Training Category",
+   "options": "Training Category"
+  },
+  {
+   "default": "0",
+   "description": "[<i>Please check to exclude this course from Point Calculation during DSP Training Selection</i>]",
+   "fieldname": "exclude_from_point_calculation",
+   "fieldtype": "Check",
+   "label": "Exclude From Point Calculation"
+  },
+  {
+   "default": "0",
+   "description": "[<i>If checked, this course will be exclude from Point Calculation during DSP Training Selection</i>]",
+   "fieldname": "up_skilling",
+   "fieldtype": "Check",
+   "label": "Up Skilling Course"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-12-14 12:47:04.121104",
+ "modified": "2023-02-15 10:56:39.356531",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Course",

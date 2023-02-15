@@ -15,6 +15,69 @@ class TrainingSelection(Document):
 			self.slot = int(self.male_slot) + int(self.female_slot)
 		self.check_duplicate_cohort_course()
 		self.workflow_process()
+	
+	def notification(self):
+		receipients = []
+		args = self.as_dict()
+		users = frappe.db.sql("""select email
+						from `tabTraining Selection Item` 
+						where confirmation_status = "Selected"
+						and parent = '{}'
+					""".format(self.name), as_dict=True)
+		if users:
+			receipients = [a['email'] for a in users]
+		
+		email_template = frappe.get_doc("Email Template", "DSP offer Letter")
+		message = frappe.render_template(email_template.response_html, args)
+		subject = frappe.render_template(email_template.subject, args)
+		
+		if receipients:
+			self.notify({
+					# for post in messages
+					"message": message,
+					"message_to": receipients,
+					# for email
+					"subject": subject,
+				})
+
+	def notify(self, args):
+		args = frappe._dict(args)
+		contact = args.message_to
+		if not isinstance(contact, list):
+			if not args.notify == "employee":
+				contact = frappe.get_doc('User', contact).email or contact
+
+		sender      	    = dict()
+		sender['email']     = frappe.get_doc('User', frappe.session.user).email
+		sender['full_name'] = frappe.utils.get_fullname(sender['email'])
+
+		attachments = self.get_attachment()
+
+		try:
+			frappe.sendmail(
+				recipients = contact,
+				sender = sender['email'],
+				subject = args.subject,
+				message = args.message,
+				attachments=attachments,
+			)
+			frappe.msgprint(_("Notification Email sent to {0}").format(contact))
+		except frappe.OutgoingEmailError:
+			pass
+	
+	def get_attachment(self):
+		"""check print settings are attach the pdf"""
+		print_settings = frappe.get_doc("Print Settings", "Print Settings")
+		return [
+			{
+				"print_format_attachment": 1,
+				"doctype": self.doctype,
+				"name": self.name,
+				"print_format": "Training Offer Letter",
+				"print_letterhead": print_settings.with_letterhead,
+				"lang": "en",
+			}
+		]
 
 	def check_duplicate_cohort_course(self):
 		for a in frappe.db.sql("""select name, posting_date
@@ -136,27 +199,40 @@ class TrainingSelection(Document):
 			desuup_id = a.did
 			total_points = 0.00
 			detail = ""
+			training_attended_count = 0
 			count_dtl = frappe.db.sql(""" Select count(*) as training_attended_count
 										from `tabTraining Management` m
 										inner join `tabTrainee Details` d
 										on m.name = d.parent
 										where m.docstatus != 2
 										and d.desuup_id = '{}'
+										and not exists(
+											select 1 
+											from `tabCourse` c
+											where c.name = m.course
+											and 
+											(c.exclude_from_point_calculation=1 
+												or
+											 c.up_skilling=1
+											)
+										)
 								""".format(desuup_id), as_dict=True)
 			training_attended_count = count_dtl[0].training_attended_count
-								
+			
+			deployment_check = True
 			for a in frappe.db.sql(""" select  name, deployment_title, deployment_category, days_attended
 								from `tabDeployment`
 								where desuung_id = '{}'
 								""".format(desuup_id), as_dict=True):
 				deployment_category = a.deployment_category
 				if not deployment_category:
-					deployment_category = frappe.db.get_value("Deployment Title", a.deployment_title)
+					deployment_category = frappe.db.get_value("Deployment Title", a.deployment_title, "deployment_category")
 					if not deployment_category:
+						deployment_check = False
 						frappe.throw("{0} not mapped to Deployment Category. Please map to proceed further {1} and {2}".format(frappe.get_desk_link("Deployment Title",a.deployment_title), desuup_id, a.name))
-				else:
-					actual_point = flt(a.days_attended) * flt(frappe.db.get_value("Deployment Category", a.deployment_category, "point"))
-					detail += "'" + str(a.deployment_title) + " (" + str(a.deployment_category) + ")' : " + str(actual_point) + "<br/>"
+
+				actual_point = flt(a.days_attended) * flt(frappe.db.get_value("Deployment Category", a.deployment_category, "point"))
+				detail += "'" + str(a.deployment_title) + " (" + str(a.deployment_category) + ")' : " + str(actual_point) + "<br/>"
 				total_points += flt(actual_point)
 			
 			final_point = flt(total_points/(training_attended_count+1),2)
@@ -194,8 +270,9 @@ class TrainingSelection(Document):
 	def check_pre_requisites(self):
 		if self.pre_requisite:
 			cond = ""
-			if self.pre_requisite_course:
-				cond = " and m.course = '{}'".format(self.pre_requisite_course)
+			course_doc = frappe.get_doc("Course", self.course)
+			if course_doc.prerequisite_courses:
+				cond = " and m.course in (selection course from `tabPrerequisite Course` where parent = '{}')".format(self.course)
 			
 			for a in self.get("item"):
 				status = a.status
@@ -333,17 +410,44 @@ class TrainingSelection(Document):
 	
 	@frappe.whitelist()
 	def send_offer_letter(self):
+		self.notification()
+		flag = 0
 		for a in self.get("item"):
-			if a.confirmation_status ==  "Selected"  and not a.offer_letter_sent:
-				frappe.db.sql("update `tabTraining Selection Item` set offer_letter_sent = 1 where name = '{}'".format(a.name))
-		frappe.db.sql("update `tabTraining Selection` set offer_letter_sent = 1 where name = '{}'".format(self.name))
+			if a.confirmation_status ==  "Selected":
+				if not a.offer_letter_sent:
+					frappe.db.sql("update `tabTraining Selection Item` set offer_letter_sent = 1 where name = '{}'".format(a.name))
+				flag = 1
+		if flag:
+			frappe.db.sql("update `tabTraining Selection` set offer_letter_sent = 1 where name = '{}'".format(self.name))
+		else:
+			frappe.throw("Please Do confirmation call and update confirmation status to <b>Selected</b> to send offer letter")
 		frappe.db.commit()
 		frappe.msgprint("<b>DSP Offer Letter </b> sent successfully for selected applicants via respective email address")
 
 	@frappe.whitelist()
 	def create_training(self):
-		frappe.msgprint("<b>DSP Training created successfully for selected applicants</b>")
-			
+		tm = frappe.new_doc("Training Management")
+		tm.course = self.course
+		tm.course_name = self.course_name
+		tm.domain = frappe.db.get_value("Course", self.course, "domain")
+		tm.course_cost_center = frappe.db.get_value("Course", self.course, "course")
+		tm.cohort = self.cohort
+		tm.cohort_name = self.cohort_name
+		tm.slot = self.slot
+		tm.training_start_date = self.course_start_date
+		tm.training_end_date = self.course_end_date
+		tm.training_selection = self.name
+
+		for a in frappe.db.sql("select did from `tabTraining Selection Item` where parent='{}' and confirmation_status = 'Selected'".format(self.name), as_dict=True):
+			tm.append("trainee_details",{
+					"desuup_id": a.did,
+				})
+		tm.flags.ignore_validate = True
+		tm.flags.ignore_mandatory = True
+		tm.save()
+		frappe.db.sql("Update `tabTraining Selection` set training_management='{}' where name='{}'".format(tm.name, self.name))		
+		frappe.msgprint("<b>DSP Training created successfully for selected applicants {}</b>".format(tm.name))
+	
 @frappe.whitelist()
 def get_courses(doctype, txt, searchfield, start, page_len, filters):
 	return frappe.db.sql("""

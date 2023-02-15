@@ -27,7 +27,8 @@
   "trainer_details",
   "trainee_details_section",
   "trainee_details",
-  "amended_from"
+  "amended_from",
+  "training_selection"
  ],
  "fields": [
   {
@@ -38,6 +39,7 @@
   {
    "fieldname": "course",
    "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "Course",
    "options": "Course"
   },
@@ -94,6 +96,7 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Status",
    "options": "\nCreated\nOn Going\nCompleted\nCancelled"
   },
@@ -121,6 +124,7 @@
   {
    "fieldname": "cohort",
    "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "Cohort Announcement",
    "options": "Cohort"
   },
@@ -159,12 +163,19 @@
    "fieldname": "cohort_no",
    "fieldtype": "Data",
    "label": "Cohort No"
+  },
+  {
+   "fieldname": "training_selection",
+   "fieldtype": "Link",
+   "label": "Training Selection",
+   "options": "Training Selection",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-10 15:13:33.424728",
+ "modified": "2023-02-15 15:36:55.899840",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Management",
@@ -185,13 +196,23 @@
   },
   {
    "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
    "role": "HR Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Training Manager",
    "share": 1,
    "write": 1
   }

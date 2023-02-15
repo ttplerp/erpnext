@@ -18,16 +18,16 @@
   "course",
   "course_id",
   "course_name",
-  "course_level",
   "course_description",
   "slot",
+  "branch",
   "column_break_12",
   "domain",
   "course_course_center",
+  "reporting_date",
   "course_start_date",
   "course_end_date",
   "pre_requisite",
-  "pre_requisite_course",
   "offer_letter_sent",
   "gender_base_selection_and_prerequisites_section",
   "gender_base_selection",
@@ -39,7 +39,8 @@
   "applicants_section",
   "get_applicants",
   "item",
-  "amended_from"
+  "amended_from",
+  "training_management"
  ],
  "fields": [
   {
@@ -99,13 +100,6 @@
    "fieldname": "course_name",
    "fieldtype": "Small Text",
    "label": "Course Name",
-   "read_only": 1
-  },
-  {
-   "fetch_from": "course.course_level",
-   "fieldname": "course_level",
-   "fieldtype": "Data",
-   "label": "Course Level",
    "read_only": 1
   },
   {
@@ -183,16 +177,6 @@
    "label": "Prerequisites Required"
   },
   {
-   "depends_on": "eval:doc.pre_requisite",
-   "description": "<b>If no course is selected, the pre-requisite will be qualified as any one course attended</b>",
-   "fetch_from": "course.pre_requisite_course",
-   "fieldname": "pre_requisite_course",
-   "fieldtype": "Link",
-   "label": "Prerequisite Course",
-   "options": "Course",
-   "read_only": 1
-  },
-  {
    "fieldname": "course_start_date",
    "fieldtype": "Date",
    "label": "Course Start Date"
@@ -247,19 +231,36 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "depends_on": "eval:doc.workflow_state == \"Selection Completed\"",
    "fieldname": "offer_letter_sent",
    "fieldtype": "Check",
-   "label": "Offer Letter Sent via email",
+   "label": "Offer Letter Sent via email"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Training Center",
+   "options": "Branch"
+  },
+  {
+   "fieldname": "reporting_date",
+   "fieldtype": "Date",
+   "label": "Reporting Date"
+  },
+  {
+   "fieldname": "training_management",
+   "fieldtype": "Link",
+   "label": "Training Management",
+   "options": "Training Management",
    "read_only": 1
   }
  ],
- "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-19 16:38:38.830924",
+ "modified": "2023-02-15 15:45:35.703263",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Selection",
