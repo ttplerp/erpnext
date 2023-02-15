@@ -472,8 +472,10 @@
   {
    "fieldname": "scan_barcode",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Scan Barcode",
-   "options": "Barcode"
+   "options": "Barcode",
+   "read_only": 1
   },
   {
    "allow_bulk_edit": 1,
@@ -708,7 +710,6 @@
    "collapsible_depends_on": "apply_discount_on",
    "fieldname": "discount_section",
    "fieldtype": "Section Break",
-   "hidden": 1,
    "label": "Additional Discount"
   },
   {
@@ -1242,7 +1243,7 @@
  "idx": 105,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-03 16:44:45.237156",
+ "modified": "2023-02-15 11:26:55.268444",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Purchase Order",
