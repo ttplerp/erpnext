@@ -271,7 +271,8 @@ erpnext.stock.PurchaseReceiptController = class PurchaseReceiptController extend
 					'doctype':'Item',
 					fieldname:"is_fixed_asset",
 					filters: {
-						"item_name": itemName.trim()
+						"item_name": itemName.trim(),
+						"is_fixed_asset": 1
 					}
 				},
 				callback:(r)=>{
