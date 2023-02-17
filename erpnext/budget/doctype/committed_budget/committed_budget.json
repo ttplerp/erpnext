@@ -18,7 +18,8 @@
   "closed",
   "unconsumed_amount",
   "company",
-  "amended_from"
+  "amended_from",
+  "business_activity"
  ],
  "fields": [
   {
@@ -103,13 +104,19 @@
    "fieldtype": "Link",
    "label": "Item Code",
    "options": "Item"
+  },
+  {
+   "fieldname": "business_activity",
+   "fieldtype": "Link",
+   "label": "Business Activity",
+   "options": "Business Activity"
   }
  ],
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-09-15 16:28:33.710705",
+ "modified": "2023-02-17 14:17:44.100369",
  "modified_by": "Administrator",
  "module": "Budget",
  "name": "Committed Budget",
