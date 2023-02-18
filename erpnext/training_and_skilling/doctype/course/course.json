@@ -11,18 +11,20 @@
   "course_information_section",
   "course_name",
   "course_id",
-  "domain",
-  "course",
   "location",
-  "column_break_6",
-  "up_skilling",
-  "exclude_from_point_calculation",
-  "training_category",
   "description",
+  "column_break_6",
+  "programme",
+  "domain",
+  "course_level",
+  "training_category",
   "last_update",
   "prerequisite_details_section",
   "pre_requisite",
-  "prerequisite_courses"
+  "prerequisite_courses",
+  "column_break_14",
+  "up_skilling",
+  "exclude_from_point_calculation"
  ],
  "fields": [
   {
@@ -31,11 +33,12 @@
    "label": "Course Information"
   },
   {
+   "fetch_from": "programme.domain",
    "fieldname": "domain",
    "fieldtype": "Link",
-   "in_list_view": 1,
    "label": "Domain",
-   "options": "Cost Center"
+   "options": "DSP Domain",
+   "read_only": 1
   },
   {
    "fieldname": "location",
@@ -83,13 +86,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "course",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Course Cost Center",
-   "options": "Cost Center"
-  },
-  {
    "fieldname": "prerequisite_details_section",
    "fieldtype": "Section Break",
    "label": "Prerequisite Details"
@@ -119,11 +115,28 @@
    "fieldname": "up_skilling",
    "fieldtype": "Check",
    "label": "Up Skilling Course"
+  },
+  {
+   "fieldname": "programme",
+   "fieldtype": "Link",
+   "label": "Programme",
+   "options": "Programme"
+  },
+  {
+   "fetch_from": "programme.course_level",
+   "fieldname": "course_level",
+   "fieldtype": "Data",
+   "label": "Course Level",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_14",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-02-15 10:56:39.356531",
+ "modified": "2023-02-18 15:32:41.571424",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Course",
@@ -143,7 +156,7 @@
    "write": 1
   }
  ],
- "search_fields": "course_name, domain, course",
+ "search_fields": "course_name, domain, programme",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

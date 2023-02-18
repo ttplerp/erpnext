@@ -429,7 +429,7 @@ class TrainingSelection(Document):
 		tm = frappe.new_doc("Training Management")
 		tm.course = self.course
 		tm.course_name = self.course_name
-		tm.domain = frappe.db.get_value("Course", self.course, "domain")
+		tm.domain = self.domain
 		tm.course_cost_center = frappe.db.get_value("Course", self.course, "course")
 		tm.cohort = self.cohort
 		tm.cohort_name = self.cohort_name
@@ -437,6 +437,11 @@ class TrainingSelection(Document):
 		tm.training_start_date = self.course_start_date
 		tm.training_end_date = self.course_end_date
 		tm.training_selection = self.name
+		tm.training_center = self.training_center
+		tm.location = self.location
+		tm.dzongkhag = self.dzongkhag
+		tm.programme = self.programme
+		tm.course_level = self.course_level
 
 		for a in frappe.db.sql("select did from `tabTraining Selection Item` where parent='{}' and confirmation_status = 'Selected'".format(self.name), as_dict=True):
 			tm.append("trainee_details",{

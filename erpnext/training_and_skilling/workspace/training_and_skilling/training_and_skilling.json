@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"type\":\"paragraph\",\"data\":{\"text\":\"<span class=\\\"h3\\\">Shortcuts</span>\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":3}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h3\\\">Masters &amp; Reports</span><br>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Training\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Deployment Record\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Training Selection\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Report\",\"col\":4}}]",
+ "content": "[{\"type\":\"paragraph\",\"data\":{\"text\":\"<span class=\\\"h3\\\">Shortcuts</span>\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":3}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h3\\\">Masters &amp; Reports</span><br>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Training\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Master Record\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Deployment Record\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Training Selection\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Report\",\"col\":4}}]",
  "creation": "2022-11-23 17:23:56.647037",
  "docstatus": 0,
  "doctype": "Workspace",
@@ -171,9 +171,47 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Master Record",
+   "link_count": 3,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Dzongkhag",
+   "link_count": 0,
+   "link_to": "Dzongkhags",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "DSP Programme",
+   "link_count": 0,
+   "link_to": "Programme",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "DSP Training Centers",
+   "link_count": 0,
+   "link_to": "Training Center",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-02-12 23:14:18.184959",
+ "modified": "2023-02-18 15:14:45.298591",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training And Skilling",

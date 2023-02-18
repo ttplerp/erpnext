@@ -1,0 +1,87 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{programme}-{course_level}",
+ "creation": "2023-02-17 17:38:43.640739",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "programme",
+  "domain",
+  "course_level"
+ ],
+ "fields": [
+  {
+   "fieldname": "programme",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Programme",
+   "reqd": 1
+  },
+  {
+   "fieldname": "domain",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Domain",
+   "options": "DSP Domain",
+   "reqd": 1
+  },
+  {
+   "fieldname": "course_level",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Course Level",
+   "options": "\nBasic\nIntermediate\nAdvanced\nAdd On",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-02-17 18:04:03.651649",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Programme",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Training Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Training User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

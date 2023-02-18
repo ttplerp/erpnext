@@ -130,14 +130,14 @@ frappe.ui.form.on('Training Selection', {
 				});
 			}, __("Utilities"));
 		}
-
+		/*
 		cur_frm.set_query("cohort", function() {
 			return {
 				"filters": {
 					"status": "ACTIVE"
 				}
 			}
-		 });
+		 }); */
 	},
 	cohort: function(frm){
 		cur_frm.set_query("course", function() {

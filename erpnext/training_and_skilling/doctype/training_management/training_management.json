@@ -10,19 +10,27 @@
   "course_info_section",
   "course",
   "course_name",
-  "domain",
-  "course_cost_center",
+  "course_level",
   "col_brk_1",
+  "course_cost_center",
+  "programme",
+  "domain",
+  "col_break_01",
   "cohort",
   "cohort_name",
-  "status",
-  "monthly_stipend",
   "cohort_no",
-  "col_break_01",
-  "slot",
+  "training_center_and_details_section",
+  "training_center",
+  "location",
+  "dzongkhag",
+  "column_break_19",
   "training_start_date",
   "training_end_date",
+  "status",
+  "column_break_22",
+  "slot",
   "course_duration",
+  "monthly_stipend",
   "trainer_details_section",
   "trainer_details",
   "trainee_details_section",
@@ -41,7 +49,8 @@
    "fieldtype": "Link",
    "in_standard_filter": 1,
    "label": "Course",
-   "options": "Course"
+   "options": "Course",
+   "reqd": 1
   },
   {
    "fieldname": "training_start_date",
@@ -135,11 +144,10 @@
    "label": "Cohort Announcement Name"
   },
   {
-   "fetch_from": "course.domain",
    "fieldname": "domain",
    "fieldtype": "Link",
    "label": "Domain",
-   "options": "Cost Center",
+   "options": "DSP Domain",
    "reqd": 1
   },
   {
@@ -170,12 +178,57 @@
    "label": "Training Selection",
    "options": "Training Selection",
    "read_only": 1
+  },
+  {
+   "fieldname": "programme",
+   "fieldtype": "Link",
+   "label": "Programme",
+   "options": "Programme"
+  },
+  {
+   "fetch_from": "programme.course_level",
+   "fieldname": "course_level",
+   "fieldtype": "Data",
+   "label": "Course Level"
+  },
+  {
+   "fieldname": "training_center",
+   "fieldtype": "Link",
+   "label": "Training Center",
+   "options": "Training Center"
+  },
+  {
+   "fetch_from": "training_center.location",
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Location"
+  },
+  {
+   "fetch_from": "training_center.dzongkhag",
+   "fieldname": "dzongkhag",
+   "fieldtype": "Data",
+   "label": "Dzongkhag"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "training_center_and_details_section",
+   "fieldtype": "Section Break",
+   "hide_border": 1,
+   "label": "Training Center and Details"
+  },
+  {
+   "fieldname": "column_break_19",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_22",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-15 15:36:55.899840",
+ "modified": "2023-02-18 21:42:30.878752",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Management",

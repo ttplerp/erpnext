@@ -19,14 +19,20 @@
   "course_id",
   "course_name",
   "course_description",
-  "slot",
-  "branch",
   "column_break_12",
+  "programme",
   "domain",
-  "course_course_center",
+  "course_level",
+  "section_break_21",
+  "training_center",
+  "location",
+  "dzongkhag",
+  "column_break_21",
   "reporting_date",
   "course_start_date",
   "course_end_date",
+  "column_break_25",
+  "slot",
   "pre_requisite",
   "offer_letter_sent",
   "gender_base_selection_and_prerequisites_section",
@@ -72,6 +78,7 @@
    "fetch_from": "cohort.description",
    "fieldname": "description",
    "fieldtype": "Small Text",
+   "hidden": 1,
    "label": "Description",
    "read_only": 1
   },
@@ -107,6 +114,7 @@
    "fetch_from": "course.description",
    "fieldname": "course_description",
    "fieldtype": "Small Text",
+   "hidden": 1,
    "label": "Course Description",
    "read_only": 1
   },
@@ -121,11 +129,10 @@
    "options": "Training Selection Item"
   },
   {
-   "fetch_from": "course.domain",
    "fieldname": "domain",
    "fieldtype": "Link",
-   "label": "Domain Cost Center",
-   "options": "Cost Center",
+   "label": "DSP Domain",
+   "options": "DSP Domain",
    "read_only": 1
   },
   {
@@ -144,7 +151,8 @@
    "fieldname": "slot",
    "fieldtype": "Int",
    "in_list_view": 1,
-   "label": "Total Slot"
+   "label": "Total Slot",
+   "reqd": 1
   },
   {
    "default": "Today",
@@ -156,14 +164,6 @@
   {
    "fieldname": "column_break_12",
    "fieldtype": "Column Break"
-  },
-  {
-   "fetch_from": "course.course",
-   "fieldname": "course_course_center",
-   "fieldtype": "Link",
-   "label": "Course Cost Center",
-   "options": "Cost Center",
-   "read_only": 1
   },
   {
    "fieldname": "training_selection_section",
@@ -240,15 +240,10 @@
    "label": "Offer Letter Sent via email"
   },
   {
-   "fieldname": "branch",
-   "fieldtype": "Link",
-   "label": "Training Center",
-   "options": "Branch"
-  },
-  {
    "fieldname": "reporting_date",
    "fieldtype": "Date",
-   "label": "Reporting Date"
+   "label": "Reporting Date",
+   "reqd": 1
   },
   {
    "fieldname": "training_management",
@@ -264,12 +259,62 @@
    "label": "Workflow State",
    "options": "Workflow State",
    "read_only": 1
+  },
+  {
+   "fieldname": "training_center",
+   "fieldtype": "Link",
+   "label": "Training Center",
+   "options": "Training Center",
+   "reqd": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_21",
+   "fieldtype": "Section Break",
+   "label": "Training Center and Details"
+  },
+  {
+   "fetch_from": "course.programme",
+   "fieldname": "programme",
+   "fieldtype": "Link",
+   "label": "Programme",
+   "options": "Programme",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "programme.course_level",
+   "fieldname": "course_level",
+   "fieldtype": "Data",
+   "label": "Course Level",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "training_center.location",
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Location",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "training_center.dzongkhag",
+   "fieldname": "dzongkhag",
+   "fieldtype": "Data",
+   "label": "Dzongkhag",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_21",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_25",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-15 16:20:13.286546",
+ "modified": "2023-02-18 16:07:15.876182",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Selection",
