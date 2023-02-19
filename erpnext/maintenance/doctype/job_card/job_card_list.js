@@ -3,18 +3,10 @@
 
 // render
 frappe.listview_settings['Job Card'] = {
-    add_fields: ["payment_jv", "docstatus", "assigned_to", "outstanding_amount", "owned_by"],
+    add_fields: ["payment_jv", "docstatus", "outstanding_amount", "owned_by"],
     has_indicator_for_draft: 1,
     get_indicator: function (doc) {
-        if (doc.docstatus == 0) {
-            if (doc.assigned_to) {
-                return ["Job Assigned", "orange", "docstatus,=,0|assigned_to,not like, "];
-            }
-            else {
-                return ["Job Created", "grey", "docstatus,=,0|assigned_to,like, "];
-            }
-        }
-
+        
         if (doc.docstatus == 1) {
             if (doc.out_source == 1) {
                 // {
