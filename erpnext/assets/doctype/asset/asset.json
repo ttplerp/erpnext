@@ -45,8 +45,9 @@
   "purchase_receipt",
   "purchase_invoice",
   "available_for_use_date",
-  "column_break_23",
   "gross_purchase_amount",
+  "column_break_23",
+  "asset_rate",
   "asset_quantity",
   "purchase_date",
   "accounting_details_section",
@@ -645,6 +646,12 @@
    "label": "AID Reference",
    "options": "Asset Issue Details",
    "read_only": 1
+  },
+  {
+   "fieldname": "asset_rate",
+   "fieldtype": "Currency",
+   "label": "Asset Rate",
+   "reqd": 1
   }
  ],
  "idx": 72,
@@ -667,7 +674,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2023-01-25 14:29:35.325637",
+ "modified": "2023-02-24 14:36:00.517807",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",

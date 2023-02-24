@@ -78,6 +78,7 @@ class AssetIssueDetails(Document):
 					"company": self.company,
 					"purchase_date": self.purchase_date,
 					"calculate_depreciation": 1,
+					"asset_rate": self.asset_rate,
 					"purchase_receipt_amount": self.asset_rate,
 					"gross_purchase_amount": self.asset_rate,
 					"asset_quantity": 1,
