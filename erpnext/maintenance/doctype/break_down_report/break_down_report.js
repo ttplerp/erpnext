@@ -38,7 +38,6 @@ frappe.ui.form.on('Break Down Report', {
 				callback(r) {
 					cur_frm.set_value("cost_center", r.message.cost_center);
 					cur_frm.set_value("branch", r.message.branch);
-					cur_frm.set_value("customer", r.message.customer);
 				}
 			});
 		}
@@ -52,8 +51,6 @@ frappe.ui.form.on('Break Down Report', {
 });
 
 cur_frm.add_fetch("customer", "customer_group", "client");
-cur_frm.add_fetch("customer", "cost_center", "customer_cost_center");
-cur_frm.add_fetch("customer", "branch", "customer_branch");
 
 frappe.ui.form.on("Break Down Report", "refresh", function(frm) {
     cur_frm.set_query("equipment", function() {

@@ -97,13 +97,13 @@ def get_user_info(user=None, employee=None, cost_center=None):
 			cost_center = frappe.db.get_value("Muster Roll Employee", {"user_id": user}, "cost_center")
 			branch      = frappe.db.get_value("Muster Roll Employee", {"user_id": user}, "branch")
 		
-	warehouse   = frappe.db.get_value("Cost Center", cost_center, "warehouse")
+	# warehouse   = frappe.db.get_value("Cost Center", cost_center, "warehouse")
 	# approver    = frappe.db.get_value("Approver Item", {"cost_center": cost_center}, "approver")
 	# customer    = frappe.db.get_value("Customer", {"cost_center": cost_center}, "name")
 
 	info.setdefault('cost_center', cost_center)
 	info.setdefault('branch', branch)
-	info.setdefault('warehouse', warehouse)
+	# info.setdefault('warehouse', warehouse)
 	# info.setdefault('approver',approver)
 	# info.setdefault('customer', customer)
 	
