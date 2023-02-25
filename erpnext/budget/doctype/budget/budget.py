@@ -217,7 +217,8 @@ def validate_expense_against_budget(args):
 			doctype = frappe.unscrub(budget_against)
 			args.budget_against_field = budget_against
 			args.budget_against_doctype = doctype
-
+			budget_cost_center = ''
+			
 			if args.project:
 				condition = " and b.project = '{}'".format(args.project)
 			else:
