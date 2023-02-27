@@ -67,7 +67,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-02-17 21:10:11.527203",
+ "modified": "2023-02-26 14:28:33.617759",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Center",
@@ -109,6 +109,7 @@
    "write": 1
   }
  ],
+ "search_fields": "location, dzongkhag",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
