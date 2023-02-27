@@ -218,17 +218,20 @@ def validate_expense_against_budget(args):
 			args.budget_against_field = budget_against
 			args.budget_against_doctype = doctype
 			budget_cost_center = ''
+			#Check Budget Cost for child cost centers
+			cc_doc = frappe.get_doc("Cost Center", args.cost_center)
+			budget_cost_center = cc_doc.budget_cost_center if cc_doc.use_budget_from_parent else args.cost_center
 			
 			if args.project:
 				condition = " and b.project = '{}'".format(args.project)
 			else:
-				bud_acc_dtl = frappe.get_doc("Account", args.account)
-				if bud_acc_dtl.centralized_budget:
-					budget_cost_center = bud_acc_dtl.cost_center
-				else:
-					#Check Budget Cost for child cost centers
-					cc_doc = frappe.get_doc("Cost Center", args.cost_center)
-					budget_cost_center = cc_doc.budget_cost_center if cc_doc.use_budget_from_parent else args.cost_center
+				# bud_acc_dtl = frappe.get_doc("Account", args.account)
+				# if bud_acc_dtl.centralized_budget:
+				# 	budget_cost_center = bud_acc_dtl.cost_center
+				# else:
+				# 	#Check Budget Cost for child cost centers
+				# 	cc_doc = frappe.get_doc("Cost Center", args.cost_center)
+				# 	budget_cost_center = cc_doc.budget_cost_center if cc_doc.use_budget_from_parent else args.cost_center
 				condition = " and b.cost_center='{}'".format(budget_cost_center)
 				
 			args.is_tree = False
