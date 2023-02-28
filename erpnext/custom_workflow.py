@@ -664,7 +664,8 @@ class NotifyCustomWorkflow:
 		owner_designation = frappe.db.get_value("Employee", {"user_id":self.doc.owner}, "designation")
 		receipients = [frappe.db.get_single_value("HR Settings", "fd_head_user_id")]
 		receipients.append(self.doc.owner)
-		receipients.append("p.lhazin1631@drukgreen.bt")
+		if self.doc.item_group != 'Services':
+			receipients.append("p.lhazin1631@drukgreen.bt")
 		# notify pmt's, domain leads, MR creator and FD Head
 		# pmt = frappe.get_list("Program Management Team", filters={"parent":self.doc.cost_center}, fields=['pmt_user_id'])
 		# if pmt:
