@@ -192,6 +192,7 @@
    "reqd": 1
   },
   {
+   "fetch_from": "course.course_level",
    "fieldname": "course_level",
    "fieldtype": "Data",
    "label": "Course Level",
@@ -237,7 +238,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-02 09:36:27.675539",
+ "modified": "2023-03-02 09:51:20.564910",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Management",
