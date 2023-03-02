@@ -6,27 +6,7 @@ frappe.ui.form.on('Training Management', {
 	// 	console.log("hihih");
 	// },
 	onload: function(frm){
-		frm.set_query('domain', function() {
-			return {
-				filters: {
-					"center_category": 'Domain',
-					'disabled': 0,
-					'cost_center_for': 'DSP'
-				}
-			};
-		});
-
-		frm.set_query('course_cost_center', function() {
-			return {
-				filters: {
-					"center_category": 'Course',
-					"parent_cost_center":  frm.doc.domain,
-					'disabled': 0
-				}
-			};
-		});
-
-		frm.set_df_property("course_cost_center", "read_only", 0);
+	
 	},
 });
 

@@ -116,7 +116,8 @@
   {
    "fieldname": "slot",
    "fieldtype": "Int",
-   "label": "Slots"
+   "label": "Slots",
+   "reqd": 1
   },
   {
    "fieldname": "monthly_stipend",
@@ -148,6 +149,7 @@
    "fieldtype": "Link",
    "label": "Domain",
    "options": "DSP Domain",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -183,31 +185,37 @@
    "fieldname": "programme",
    "fieldtype": "Link",
    "label": "Programme",
-   "options": "Programme"
+   "options": "Programme",
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "fetch_from": "programme.course_level",
    "fieldname": "course_level",
    "fieldtype": "Data",
-   "label": "Course Level"
+   "label": "Course Level",
+   "read_only": 1
   },
   {
    "fieldname": "training_center",
    "fieldtype": "Link",
    "label": "Training Center",
-   "options": "Training Center"
+   "options": "Training Center",
+   "reqd": 1
   },
   {
    "fetch_from": "training_center.location",
    "fieldname": "location",
    "fieldtype": "Data",
-   "label": "Location"
+   "label": "Location",
+   "read_only": 1
   },
   {
    "fetch_from": "training_center.dzongkhag",
    "fieldname": "dzongkhag",
    "fieldtype": "Data",
-   "label": "Dzongkhag"
+   "label": "Dzongkhag",
+   "read_only": 1
   },
   {
    "collapsible": 1,
@@ -228,7 +236,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-18 21:42:30.878752",
+ "modified": "2023-03-01 18:14:29.162960",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Management",

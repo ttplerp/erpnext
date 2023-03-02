@@ -61,44 +61,6 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Training",
-   "link_count": 3,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Training Management",
-   "link_count": 0,
-   "link_to": "Training Management",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Barred Desuups For Training",
-   "link_count": 0,
-   "link_to": "Barred Desuup",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Desuup List",
-   "link_count": 0,
-   "link_to": "Desuup",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Report",
    "link_count": 2,
    "onboard": 0,
@@ -176,7 +138,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Master Record",
-   "link_count": 3,
+   "link_count": 4,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -209,9 +171,57 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "DSP Domain",
+   "link_count": 0,
+   "link_to": "DSP Domain",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Training",
+   "link_count": 3,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Training Management",
+   "link_count": 0,
+   "link_to": "Training Management",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Barred Desuups For DSP",
+   "link_count": 0,
+   "link_to": "Barred Desuup",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Desuup List",
+   "link_count": 0,
+   "link_to": "Desuup",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-02-18 15:14:45.298591",
+ "modified": "2023-02-28 11:52:46.402655",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training And Skilling",

@@ -32,6 +32,7 @@
    "in_list_view": 1,
    "label": "Desuung ID",
    "options": "Desuup",
+   "reqd": 1,
    "set_only_once": 1
   },
   {
@@ -76,13 +77,15 @@
    "fieldname": "from_date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "From Date"
+   "label": "From Date",
+   "reqd": 1
   },
   {
    "fieldname": "to_date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "To Date"
+   "label": "To Date",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_11",
@@ -96,7 +99,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-12-23 10:03:37.877610",
+ "modified": "2023-02-28 10:28:40.301667",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Barred Desuup",
