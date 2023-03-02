@@ -145,6 +145,7 @@
    "label": "Cohort Announcement Name"
   },
   {
+   "fetch_from": "course.domain",
    "fieldname": "domain",
    "fieldtype": "Link",
    "label": "Domain",
@@ -182,6 +183,7 @@
    "read_only": 1
   },
   {
+   "fetch_from": "course.programme",
    "fieldname": "programme",
    "fieldtype": "Link",
    "label": "Programme",
@@ -190,7 +192,6 @@
    "reqd": 1
   },
   {
-   "fetch_from": "programme.course_level",
    "fieldname": "course_level",
    "fieldtype": "Data",
    "label": "Course Level",
@@ -236,7 +237,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-01 18:14:29.162960",
+ "modified": "2023-03-02 09:36:27.675539",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Management",
