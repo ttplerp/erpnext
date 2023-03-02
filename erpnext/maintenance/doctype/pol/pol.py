@@ -19,7 +19,7 @@ class POL(StockController):
 		self.check_on_dry_hire()
 		# self.validate_warehouse()
 		self.validate_data()
-		self.validate_posting_time()
+		# self.validate_posting_time() #Jai commanted it. 02 March 2023
 		self.validate_uom_is_integer("stock_uom", "qty")
 		self.validate_item()
 		self.calculate_km_diff()
