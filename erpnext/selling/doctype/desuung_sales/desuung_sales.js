@@ -11,7 +11,7 @@ frappe.ui.form.on('Desuung Sales', {
 					to_date: frm.doc.posting_date,
 					company: frm.doc.company
 				};
-				frappe.set_route("query-report", "Stock Ledger Report");
+				frappe.set_route("query-report", "Stock Ledger");
 			}, __("View"));
 
 			cur_frm.add_custom_button(__('Accounting Ledger'), function () {
@@ -26,6 +26,15 @@ frappe.ui.form.on('Desuung Sales', {
 			}, __("View"));
 
 		}
+	},
+	onload: function(frm) {
+		frm.set_query("from_warehouse", function (doc) {
+			return {
+				// filters: { 'company': doc.company }
+				query: "erpnext.controllers.queries.filter_branch_warehouse",
+				filters: { 'company': frm.doc.company, "branch": frm.doc.branch}
+			};
+		});
 	}
 });
 
