@@ -2,6 +2,7 @@
  "actions": [],
  "allow_guest_to_view": 1,
  "allow_import": 1,
+ "allow_rename": 1,
  "autoname": "naming_series:",
  "creation": "2013-05-03 10:45:46",
  "description": "A Product or a Service that is bought, sold or kept in stock.",
@@ -166,9 +167,7 @@
    "label": "Item Name",
    "oldfieldname": "item_name",
    "oldfieldtype": "Data",
-   "reqd": 1,
-   "set_only_once": 1,
-   "unique": 1
+   "reqd": 1
   },
   {
    "fieldname": "item_group",
@@ -956,7 +955,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-02 11:48:38.761955",
+ "modified": "2023-03-02 13:27:19.148521",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",
