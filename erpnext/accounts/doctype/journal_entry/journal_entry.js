@@ -599,7 +599,8 @@ $.extend(erpnext.journal_entry, {
 		frappe.call({
 			method: "erpnext.accounts.doctype.journal_entry.journal_entry.get_tds_account",
 			args: {
-				tax_withholding_category: frm.doc.tax_withholding_category || null
+				tax_withholding_category: frm.doc.tax_withholding_category || null,
+				company: frm.doc.company,
 			},
 			callback: function(r){
 				if(r.message){
