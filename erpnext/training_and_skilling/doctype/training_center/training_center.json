@@ -9,12 +9,8 @@
  "field_order": [
   "location",
   "dzongkhag",
-  "center",
   "column_break_4",
-  "lo_user",
-  "lo_name",
-  "lo_mobile",
-  "lo_email",
+  "center",
   "section_break_9",
   "item"
  ],
@@ -36,35 +32,14 @@
    "reqd": 1
   },
   {
-   "fieldname": "lo_user",
-   "fieldtype": "Link",
-   "label": "LO User",
-   "options": "User"
-  },
-  {
-   "fieldname": "lo_name",
-   "fieldtype": "Data",
-   "label": "LO Name"
-  },
-  {
    "fieldname": "center",
    "fieldtype": "Data",
-   "label": "Center",
+   "label": "Training Center",
    "unique": 1
   },
   {
    "fieldname": "column_break_4",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "lo_mobile",
-   "fieldtype": "Int",
-   "label": "LO Mobile No"
-  },
-  {
-   "fieldname": "lo_email",
-   "fieldtype": "Data",
-   "label": "LO Email"
   },
   {
    "fieldname": "section_break_9",
@@ -78,7 +53,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-03 21:30:34.546915",
+ "modified": "2023-03-03 21:47:07.242499",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Center",
