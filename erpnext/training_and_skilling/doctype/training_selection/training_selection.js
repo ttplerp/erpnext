@@ -74,9 +74,9 @@ frappe.ui.form.on('Training Selection', {
 				});
 			}, __("Utilities"));
 		
-			frm.add_custom_button(__('Eligibility Check For Maximum of 3 Domains'), function(){
+			frm.add_custom_button(__('Eligibility Check For Maximum of 3 Programmes'), function(){
 				return frappe.call({
-					method: "eligibility_for_domain",
+					method: "eligibility_for_programme",
 					doc: cur_frm.doc,
 					callback: function(r, rt) {
 						frm.refresh_field("item");

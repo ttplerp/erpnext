@@ -302,20 +302,30 @@ class TrainingSelection(Document):
 			frappe.db.commit()
 
 	@frappe.whitelist()
-	def eligibility_for_domain(self):
+	def eligibility_for_programme(self):
 		for a in self.get("item"):
 			if a.status == "Registered":
 				domain_count = 0
-				domain_count = frappe.db.sql(""" Select count(distinct(domain)) as domain_count
+				domain_count = frappe.db.sql(""" Select count(*) as programme_count
 												from `tabTraining Management` m
 												inner join `tabTrainee Details` d
 												on m.name = d.parent
 												where m.docstatus != 2
 												and d.desuup_id = '{}'
+												and not exists(
+														select 1 
+														from `tabCourse` c
+														where c.name = m.course
+														and 
+														(c.exclude_from_point_calculation=1 
+															or
+														 c.up_skilling=1
+														)
+													)
 										""".format(a.did), as_dict=True)
 				status = a.status
 				remark = a.remark
-				if domain_count[0].domain_count > 3:
+				if domain_count[0].programme_count > 3:
 					status = "Disqualified"
 					remark = str(remark) + " Applicant is disqualified as he has already availed training in 3 different domains"
 				frappe.db.sql("Update `tabTraining Selection Item` set maximum_three_core_skill_check = 1, status = '{0}', remark = '{1}' \
