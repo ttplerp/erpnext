@@ -14,7 +14,9 @@
   "lo_user",
   "lo_name",
   "lo_mobile",
-  "lo_email"
+  "lo_email",
+  "section_break_9",
+  "item"
  ],
  "fields": [
   {
@@ -63,11 +65,20 @@
    "fieldname": "lo_email",
    "fieldtype": "Data",
    "label": "LO Email"
+  },
+  {
+   "fieldname": "section_break_9",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Table",
+   "options": "Laison Officer"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-02-26 14:28:33.617759",
+ "modified": "2023-03-03 21:30:34.546915",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Center",
