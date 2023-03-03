@@ -126,7 +126,7 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 	# Purchase Invoice
 	if not party_type or party_type == "Supplier":
 		pi_entries = frappe.db.sql("""select t.posting_date, 'Purchase Invoice' as invoice_type, t.name as invoice_no,  
-				'Supplier' as party_type, t.supplier as party, s.tax_id as tpn, t.business_activity,t.cost_center,
+				'Supplier' as party_type, t.supplier as party, s.vendor_tpn_no as tpn, t.business_activity,t.cost_center,
 				t1.base_total+t1.base_tax_amount as bill_amount, 
 				case when t1.base_tax_amount > 0 then t1.base_tax_amount else t1.tax_amount end as tds_amount,
 				t1.account_head as tax_account, tre.tds_remittance, tre.tds_receipt_update,
@@ -180,7 +180,7 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 	je_entries = frappe.db.sql("""select t.posting_date, t.name as invoice_no, 'Journal Entry' as invoice_type,
 		t1.party_type, t1.party, 
 		(case when t1.party_type = 'Customer' then c.tax_id 
-			when t1.party_type =  'Supplier' then s.tax_id else null end) as tpn, 
+			when t1.party_type =  'Supplier' then s.vendor_tpn_no else null end) as tpn, 
 		t.business_activity, t1.cost_center,
 		(case when t1.tax_amount > 0 and t1.debit > 0 and ifnull(t1.apply_tds) = 1 
 				then t1.taxable_amount 
