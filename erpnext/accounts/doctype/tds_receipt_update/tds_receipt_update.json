@@ -201,6 +201,7 @@
    "label": "Tax Withholding Category",
    "mandatory_depends_on": "eval:doc.purpose != 'Employee Salary';",
    "options": "Tax Withholding Category",
+   "read_only_depends_on": "eval:doc.purpose == 'Employee Salary';",
    "reqd": 1
   },
   {
@@ -220,7 +221,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-03 17:33:28.163340",
+ "modified": "2023-03-03 17:37:24.167159",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "TDS Receipt Update",
