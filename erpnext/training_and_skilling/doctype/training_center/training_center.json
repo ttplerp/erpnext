@@ -7,10 +7,10 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "location",
-  "dzongkhag",
-  "column_break_4",
   "center",
+  "location",
+  "column_break_4",
+  "dzongkhag",
   "section_break_9",
   "item"
  ],
@@ -43,7 +43,8 @@
   },
   {
    "fieldname": "section_break_9",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Laison Officer Detail"
   },
   {
    "fieldname": "item",
@@ -53,7 +54,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-03 21:47:07.242499",
+ "modified": "2023-03-03 21:48:59.242826",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Center",
