@@ -508,7 +508,7 @@ def get_permission_query_conditions(user):
 		if assign_branch:
 			branches = []
 			ab = frappe.get_doc("Assign Branch",assign_branch)
-			for a in ab:
+			for a in ab.items:
 				branches.append(a.branch)
 				return """(
 					exists(select 1
