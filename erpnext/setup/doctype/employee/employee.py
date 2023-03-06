@@ -513,7 +513,8 @@ def get_permission_query_conditions(user):
 			return """(
 				exists(select 1
 					from `tabEmployee` as e
-					where e.branch in ({})
+					where e.name = `tabEmployee`.name
+					and e.branch in ({}))
 			)""".format(", ".join("'"+b+"'" for b in branches))	
 		else:
 			return """(
