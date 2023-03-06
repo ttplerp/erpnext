@@ -848,7 +848,7 @@ def filter_branch_warehouse(doctype, txt, searchfield, start, page_len, filters)
 		# frappe.throw("here")
 		return frappe.db.sql("""
 		select a.name from `tabWarehouse` a, `tabWarehouse Branch` b where a.name = b.parent and b.branch = "{}"
-		""".format(frappe.db.escape(filters.get('branch'))))
+		""".format(filters.get('branch')))
 
 #filtering warehouse based on branch
 @frappe.whitelist()
