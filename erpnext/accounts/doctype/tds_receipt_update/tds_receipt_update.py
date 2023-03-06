@@ -173,11 +173,11 @@ class TDSReceiptUpdate(Document):
 								""".format(self.from_date, self.to_date, cond)
 				'''
 			else:
-				entries = frappe.db.sql("""SELECT posting_date, party_type, party, invoice_type, invoice_no, bill_amount, 
-						tax_account, tds_amount, party_name, tpn, cost_center, business_activity, parent as tds_remittance
-					FROM `tabTDS Remittance Item` t1
-					WHERE t1.posting_date BETWEEN '{from_date}' AND '{to_date}'
-					AND t1.docstatus = 1
+				entries = frappe.db.sql("""SELECT t1.posting_date, t1.party_type, t1.party, t1.invoice_type, t1.invoice_no, t1.bill_amount, 
+						t1.tax_account, t1.tds_amount, t1.party_name, t1.tpn, t1.cost_center, t1.business_activity, t1.parent as tds_remittance
+					FROM `tabTDS Remittance Item` t1, `tabTDS Remittance` t
+					WHERE t.name=t1.parent and t1.posting_date BETWEEN '{from_date}' AND '{to_date}'
+					AND t1.docstatus = 1 AND t.branch = '{branch}'
 					{accounts_cond}
 					AND t1.parenttype = 'TDS Remittance'
 					AND NOT EXISTS(SELECT 1
@@ -190,7 +190,7 @@ class TDSReceiptUpdate(Document):
 						AND t3.parent != "{name}"
 						AND t3.docstatus != 2)
 				""".format(name = self.name, accounts_cond = accounts_cond, \
-					from_date = self.from_date, to_date = self.to_date),as_dict=True)
+					from_date = self.from_date, to_date = self.to_date, branch = self.branch),as_dict=True)
 
 			if not len(entries):
 				frappe.msgprint(_("No Records Found"))

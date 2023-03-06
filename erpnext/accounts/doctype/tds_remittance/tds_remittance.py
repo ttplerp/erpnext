@@ -28,7 +28,7 @@ class TDSRemittance(AccountsController):
 			return total_tds_amount, total_bill_amount
 
 		entries = get_tds_invoices(self.tax_withholding_category, self.from_date, self.to_date, \
-			self.name, filter_existing=True)
+			self.name, filter_existing=True, branch=self.branch)
 		if not entries:
 			frappe.msgprint(_("No Records Found"))
 
@@ -91,7 +91,7 @@ class TDSRemittance(AccountsController):
 			frappe.throw("Total TDS Amount is Zero.")
 
 
-def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_existing = False, party_type = None):
+def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_existing = False, party_type = None, branch = None):
 	cond = accounts_cond = existing_cond = party_cond = "" 
 	entries = pi_entries = pe_entries = je_entries = []
 
@@ -123,6 +123,9 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 	if filter_existing:
 		existing_cond = _get_existing_cond()
 	
+	cost_center_for = frappe.db.get_value("Branch", branch, "cost_center_for")
+	existing_cond += " and t.branch in (select name as branch from tabBranch where disabled != 1 and cost_center_for = '{}')".format(cost_center_for) 
+
 	# Purchase Invoice
 	if not party_type or party_type == "Supplier":
 		pi_entries = frappe.db.sql("""select t.posting_date, 'Purchase Invoice' as invoice_type, t.name as invoice_no,  
@@ -147,7 +150,7 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 		party_cond = "and t.party_type = '{}'".format(party_type)
 	pe_entries = frappe.db.sql("""select t.posting_date, t.name as invoice_no, 'Payment Entry' as invoice_type,
 			t.party_type, t.party, 
-			(case when t.party_type = 'Customer' then c.tax_id when t.party_type =  'Supplier' then s.tax_id else null end) as tpn, 
+			(case when t.party_type = 'Customer' then c.tax_id when t.party_type =  'Supplier' then s.vendor_tpn_no else null end) as tpn, 
 			t.business_activity, t.cost_center,
 			case when t1.base_total > 0 then (t1.base_tax_amount + t1.base_total) else (t1.tax_amount + t1.total) end as bill_amount, 
 			case when t1.base_tax_amount > 0 then t1.base_tax_amount else t1.tax_amount end as tds_amount,
