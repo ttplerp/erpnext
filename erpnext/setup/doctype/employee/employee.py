@@ -510,11 +510,11 @@ def get_permission_query_conditions(user):
 			ab = frappe.get_doc("Assign Branch",assign_branch)
 			for a in ab.items:
 				branches.append(a.branch)
-				return """(
-					exists(select 1
-						from `tabEmployee` as e
-						where e.branch in ({})
-				)""".format(", ".join("'"+b+"'" for b in branches))	
+			return """(
+				exists(select 1
+					from `tabEmployee` as e
+					where e.branch in ({})
+			)""".format(", ".join("'"+b+"'" for b in branches))	
 		else:
 			return """(
 				exists(select 1
