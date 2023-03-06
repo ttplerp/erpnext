@@ -504,7 +504,7 @@ def get_permission_query_conditions(user):
 	if "HR Manager" in user_roles:
 		return
 	else:
-		assign_branch = frappe.db.get_value("Assign Branch",{"employee":doc.name},"name")
+		assign_branch = frappe.db.get_value("Assign Branch",{"employee":frappe.db.get_value("Employee",{"user_id": user},"name")},"name")
 		if assign_branch:
 			branches = []
 			ab = frappe.get_doc("Assign Branch",assign_branch)
