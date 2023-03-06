@@ -504,12 +504,24 @@ def get_permission_query_conditions(user):
 	if "HR User" in user_roles or "HR Manager" in user_roles or "Accounts User" in user_roles or "Attendance Marker" in user_roles:
 		return
 	else:
-		return """(
-			exists(select 1
-				from `tabEmployee` as e
-				where e.name = `tabEmployee`.name
-				and e.user_id = '{user}')
-		)""".format(user=user)
+		assign_branch = frappe.db.get_value("Assign Branch",{"employee":doc.name},"name")
+		if assign_branch:
+			branches = []
+			ab = frappe.get_doc("Assign Branch",assign_branch)
+			for a in ab:
+				branches.append(a.branch)
+				return """(
+					exists(select 1
+						from `tabEmployee` as e
+						where e.branch in ({})
+				)""".format(", ".join("'"+b+"'" for b in branches))	
+		else:
+			return """(
+				exists(select 1
+					from `tabEmployee` as e
+					where e.name = `tabEmployee`.name
+					and e.user_id = '{user}')
+			)""".format(user=user)
 
 def has_record_permission(doc, user):
 	if not user: user = frappe.session.user
