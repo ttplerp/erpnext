@@ -466,7 +466,8 @@
   {
    "fieldname": "vendor_tpn_no",
    "fieldtype": "Data",
-   "label": "Vendor TPN No/PAN"
+   "label": "Vendor TPN No/PAN",
+   "reqd": 1
   },
   {
    "fieldname": "license_validity",
@@ -556,7 +557,7 @@
    "link_fieldname": "party"
   }
  ],
- "modified": "2023-01-13 12:56:50.883155",
+ "modified": "2023-03-07 12:16:20.198350",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Supplier",
