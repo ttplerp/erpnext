@@ -11,7 +11,7 @@ from datetime import datetime
 class TrainingManagement(Document):
 	def validate(self):
 		# self.set_status()
-		if self.workflow_state == "Submitted" and self.docstatus == 0:
+		if self.workflow_state == "Waiting for Verification" and self.docstatus == 0:
 			self.notify_lo()
 		if self.workflow_state == "Completed" and self.docstatus == 1:
 			self.update_trainees_status()
