@@ -42,6 +42,30 @@ class TrainingManagement(Document):
 				"subject": email_template.subject
 			})
 
+	def notify(self, args):
+		args = frappe._dict(args)
+		# args -> message, message_to, subject
+
+		contact = args.message_to
+		if not isinstance(contact, list):
+			if not args.notify == "employee":
+				contact = frappe.get_doc('User', contact).email or contact
+
+		sender      	    = dict()
+		sender['email']     = frappe.get_doc('User', frappe.session.user).email
+		sender['full_name'] = frappe.utils.get_fullname(sender['email'])
+
+		try:
+			frappe.sendmail(
+				recipients = contact,
+				sender = sender['email'],
+				subject = args.subject,
+				message = args.message,
+			)
+			frappe.msgprint(_("Email sent to {0}").format(contact))
+		except frappe.OutgoingEmailError:
+			pass
+
 	def set_status(self):
 		self.docstatus = {
 			"Draft": 0,

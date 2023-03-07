@@ -105,7 +105,8 @@
    "in_standard_filter": 1,
    "label": "Training Status",
    "options": "Draft\nCreated\nOn Going\nCompleted\nCancelled",
-   "permlevel": 1
+   "permlevel": 1,
+   "read_only": 1
   },
   {
    "fieldname": "col_break_01",
@@ -232,7 +233,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-07 16:09:07.490881",
+ "modified": "2023-03-07 18:36:40.851579",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Management",
