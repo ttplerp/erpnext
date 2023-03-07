@@ -10,21 +10,41 @@ from datetime import datetime
 
 class TrainingManagement(Document):
 	def validate(self):
-		self.set_status()
-		pass
+		# self.set_status()
+		if self.workflow_state == "Submitted" and self.docstatus == 0:
+			self.notify_lo()
 		# self.check_date()
 		# self.validate_trainer_course()
 		# self.validate_desuup_course()
 		# self.count_duration()
 		# self.check_cohort_batch()
 
+	def notify_lo():
+		receipients = []
+		args = self.as_dict()
+		lo_emails = frappe.get_list("Laison Officer", filters={"parent":self.training_center}, fields=['email'])
+		if lo_emails:
+			receipients = [a['email'] for a in lo_emails]
+		
+		email_template = frappe.get_doc("Email Template", "Notify Laison Officer")
+		message = frappe.render_template(email_template.response, args)
+		if receipients:
+			self.notify({
+				# for post in messages
+				"message": message,
+				"message_to": receipients,
+				# for email
+				"subject": email_template.subject
+			})
+
 	def set_status(self):
 		self.docstatus = {
+			"Draft": 0,
 			"Created": 0,
 			"On Going": 0,
 			"Completed": 1,
 			"Cancelled": 2
-		}[str(self.status) or 'Created']
+		}[str(self.status) or 'Draft']
 
 	def check_date(self):
 		if(datetime.strptime(str(self.training_start_date),"%Y-%m-%d") > datetime.strptime(str(self.training_end_date),"%Y-%m-%d")):
@@ -122,3 +142,29 @@ def set_status():
 			doc.save(ignore_permissions = 1)
 			doc.submit()
 			frappe.db.set_value("Training Management", t.name, "docstatus","1")
+
+def get_permission_query_conditions(user):
+	if not user: user = frappe.session.user
+	user_roles = frappe.get_roles(user)
+	if "Training User" in user_roles or "Training Manager" in user_roles or "System Manager" in user_roles:
+		return
+	else:
+		return """(
+			exists(select 1
+				from `tabTraining Center` as t, `tabLaison Officer` as l
+				where t.name = l.parent 
+				and t.name = `tabTraining Management`.training_center
+				and l.user = '{user}')
+		)""".format(user=user)
+
+def has_record_permission(doc, user):
+	if not user: user = frappe.session.user
+	user_roles = frappe.get_roles(user)
+
+	if "Training User" in user_roles or "Training Manager" in user_roles or "System Manager" in user_roles:
+		return True
+	else:
+		if frappe.db.exists("Laison Officer", {"parent":doc.training_center, "user": user}):
+			return True
+		else:
+			return False 

@@ -55,7 +55,6 @@
   {
    "fieldname": "training_start_date",
    "fieldtype": "Date",
-   "in_list_view": 1,
    "label": "Training Start Date",
    "reqd": 1
   },
@@ -71,7 +70,6 @@
   {
    "fieldname": "training_end_date",
    "fieldtype": "Date",
-   "in_list_view": 1,
    "label": "Training End Date",
    "reqd": 1
   },
@@ -101,13 +99,13 @@
    "options": "Trainer Information"
   },
   {
-   "default": "Created",
    "fieldname": "status",
    "fieldtype": "Select",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Status",
-   "options": "\nCreated\nOn Going\nCompleted\nCancelled"
+   "label": "Training Status",
+   "options": "Draft\nCreated\nOn Going\nCompleted\nCancelled",
+   "permlevel": 1
   },
   {
    "fieldname": "col_break_01",
@@ -150,8 +148,7 @@
    "fieldtype": "Link",
    "label": "Domain",
    "options": "DSP Domain",
-   "read_only": 1,
-   "reqd": 1
+   "read_only": 1
   },
   {
    "fieldname": "course_cost_center",
@@ -177,9 +174,8 @@
   },
   {
    "fieldname": "training_selection",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "label": "Training Selection",
-   "options": "Training Selection",
    "read_only": 1
   },
   {
@@ -188,8 +184,7 @@
    "fieldtype": "Link",
    "label": "Programme",
    "options": "Programme",
-   "read_only": 1,
-   "reqd": 1
+   "read_only": 1
   },
   {
    "fetch_from": "course.course_level",
@@ -220,7 +215,6 @@
    "read_only": 1
   },
   {
-   "collapsible": 1,
    "fieldname": "training_center_and_details_section",
    "fieldtype": "Section Break",
    "hide_border": 1,
@@ -238,7 +232,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-02 09:51:20.564910",
+ "modified": "2023-03-07 16:09:07.490881",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Management",
