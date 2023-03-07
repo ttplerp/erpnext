@@ -13,13 +13,18 @@ class TrainingManagement(Document):
 		# self.set_status()
 		if self.workflow_state == "Submitted" and self.docstatus == 0:
 			self.notify_lo()
+		if self.workflow_state == "Completed" and self.docstatus == 1:
+			self.update_trainees_status()
 		# self.check_date()
 		# self.validate_trainer_course()
 		# self.validate_desuup_course()
 		# self.count_duration()
 		# self.check_cohort_batch()
 
-	def notify_lo():
+	def update_trainees_status(self):
+		frappe.db.sql("update `tabTrainee Details` set status='Passed' where parent='{}' and status='Reported'".format(self.name))
+
+	def notify_lo(self):
 		receipients = []
 		args = self.as_dict()
 		lo_emails = frappe.get_list("Laison Officer", filters={"parent":self.training_center}, fields=['email'])
