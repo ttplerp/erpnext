@@ -199,29 +199,7 @@ class TrainingSelection(Document):
 			desuup_id = a.did
 			total_points = 0.00
 			detail = ""
-			training_attended_detail = ""
-			training_attended_count = 0
-			for b in frappe.db.sql(""" Select m.name, m.course, m.cohort, m.programme, m.training_center, m.location,
-										m.domain, m.training_start_date, m.training_end_date
-										from `tabTraining Management` m
-										inner join `tabTrainee Details` d
-										on m.name = d.parent
-										where m.docstatus != 2
-										and d.desuup_id = '{}'
-										and not exists(
-											select 1 
-											from `tabCourse` c
-											where c.name = m.course
-											and 
-											(c.exclude_from_point_calculation=1 
-												or
-											 c.up_skilling=1
-											)
-										)
-								""".format(desuup_id), as_dict=True):
-				training_attended_count += 1
-				training_attended_detail += str(training_attended_count) + ": Programme : " + str(b.programme) + ", Domain : " + str(b.domain) + ", Training Center :" + str(b.training_center) + "(" + str(b.location) + "), Reference : " + str(b.name) + "<br/>"
-			
+			training_attended_count = a.training_attended			
 			deployment_check = True
 			for a in frappe.db.sql(""" select  name, deployment_title, deployment_category, days_attended
 								from `tabDeployment`
@@ -241,33 +219,45 @@ class TrainingSelection(Document):
 			final_point = flt(total_points/(training_attended_count+1),2)
 			frappe.db.sql("""Update `tabTraining Selection Item` 
 							set point_remark="{}", 
-								total_point="{}", 
-								training_attended="{}",
-								final_point ="{}",
-								training_attended_detail = "{}"
+								total_point="{}",
+								final_point ="{}"
 							where did = "{}"
 								and parent = "{}"
-						""".format(detail, total_points, training_attended_count, final_point, training_attended_detail, desuup_id, self.name))
+						""".format(detail, total_points, final_point, desuup_id, self.name))
 			frappe.db.commit()
 
 	@frappe.whitelist()
 	def check_barred(self):
 		if self.get("item"):
 			for a in self.get("item"):
-				barred_dtl = frappe.db.sql(""" select name, reason, from_date, to_date
-									from `tabBarred Desuup`
+				barred_dtl = frappe.db.sql(""" SELECT name, reason, from_date, to_date
+									FROM `tabBarred Desuup`
 									where docstatus != 2 
-									and '{}' between from_date and to_date
-									and desuung_id = '{}'
-							""".format(self.posting_date , a.did), as_dict=True)
+									AND (
+										('{}' < to_date AND (to_date IS NOT NULL OR to_date!=""))
+										OR 
+										to_date IS NULL 
+										OR 
+										to_date=""
+										)
+									AND desuung_id = '{}'
+							""".format(self.posting_date, a.did), as_dict=True)
 				status = a.status
-				remark = a.remark
+				remark = a.remark					
 				if barred_dtl:
+					if barred_dtl[0].from_date and barred_dtl[0].to_date:
+						from_date = barred_dtl[0].from_date
+						to_date = barred_dtl[0].to_date
+					else:
+						from_date = "Not Provided"
+						to_date = "Not Provided"
 					status = "Barred"
-					remark = "Barred reason: " + str(barred_dtl[0].reason) + ". Dessuup barred from " + str(barred_dtl[0].from_date) + \
-									" till " + str(barred_dtl[0].to_date) + " in Document " + str(barred_dtl[0].name)
-				frappe.db.sql("Update `tabTraining Selection Item` set barred_list = '1', status = '{0}', remark = '{1}' \
-							where name= '{2}'".format(status, remark, a.name))
+					remark = "Barred reason: " + str(barred_dtl[0].reason) + ". Dessuup barred from " + str(from_date) + \
+									" till " + str(to_date) + " in Document " + str(barred_dtl[0].name)
+				frappe.db.sql("""Update `tabTraining Selection Item` 
+								set barred_list = "1", status = "{0}", remark = "{1}"
+								where name= "{2}"
+							""".format(status, remark, a.name))
 			frappe.db.commit()
 
 	@frappe.whitelist()
@@ -305,8 +295,10 @@ class TrainingSelection(Document):
 	def eligibility_for_programme(self):
 		for a in self.get("item"):
 			if a.status == "Registered":
-				domain_count = 0
-				domain_count = frappe.db.sql(""" Select count(*) as programme_count
+				training_attended_count = 0
+				training_attended_detail = ""
+				for b in frappe.db.sql(""" Select m.name, m.course, m.cohort, m.programme, m.training_center, m.location,
+												m.domain, m.training_start_date, m.training_end_date
 												from `tabTraining Management` m
 												inner join `tabTrainee Details` d
 												on m.name = d.parent
@@ -322,14 +314,16 @@ class TrainingSelection(Document):
 														 c.up_skilling=1
 														)
 													)
-										""".format(a.did), as_dict=True)
+										""".format(a.did), as_dict=True):
+					training_attended_count += 1
+					training_attended_detail += str(training_attended_count) + ": Programme : " + str(b.programme) + ", Domain : " + str(b.domain) + ", Training Center :" + str(b.training_center) + "(" + str(b.location) + "), Reference : " + str(b.name) + "<br/>"
 				status = a.status
 				remark = a.remark
-				if domain_count[0].programme_count > 3:
+				if training_attended_count > 3:
 					status = "Disqualified"
 					remark = str(remark) + " Applicant is disqualified as he has already availed training in 3 different domains"
-				frappe.db.sql("Update `tabTraining Selection Item` set maximum_three_core_skill_check = 1, status = '{0}', remark = '{1}' \
-								where name= '{2}'".format(status, remark, a.name))
+				frappe.db.sql("Update `tabTraining Selection Item` set maximum_three_core_skill_check = 1, status = '{0}', remark = '{1}', training_attended_detail = '{2}', training_attended = '{3}' \
+								where name= '{4}'".format(status, remark, training_attended_detail, training_attended_count, a.name))
 		frappe.db.commit()
 
 	@frappe.whitelist()
@@ -460,6 +454,7 @@ class TrainingSelection(Document):
 		for a in frappe.db.sql("select did from `tabTraining Selection Item` where parent='{}' and confirmation_status = 'Selected'".format(self.name), as_dict=True):
 			tm.append("trainee_details",{
 					"desuup_id": a.did,
+					"reporting_date": self.reporting_date,
 				})
 		tm.flags.ignore_validate = True
 		tm.flags.ignore_mandatory = True

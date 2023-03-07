@@ -77,15 +77,13 @@
    "fieldname": "from_date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "From Date",
-   "reqd": 1
+   "label": "From Date"
   },
   {
    "fieldname": "to_date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "To Date",
-   "reqd": 1
+   "label": "To Date"
   },
   {
    "fieldname": "column_break_11",
@@ -99,7 +97,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-02-28 10:28:40.301667",
+ "modified": "2023-03-07 16:57:52.058739",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Barred Desuup",
