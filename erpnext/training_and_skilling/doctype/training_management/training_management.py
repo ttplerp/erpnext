@@ -11,9 +11,11 @@ from datetime import datetime
 class TrainingManagement(Document):
 	def validate(self):
 		# self.set_status()
-		if self.workflow_state == "Waiting for Verification":
+		self.old_state = self.get_db_value("workflow_state")
+		self.new_state = self.workflow_state
+		if self.new_state == "Waiting for Verification" and self.old_state == "Draft":
 			self.notify_lo()
-		if self.workflow_state == "Completed":
+		if self.new_state == "Completed" and self.old_state == "On Going":
 			self.update_trainees_status()
 		# self.check_date()
 		# self.validate_trainer_course()
@@ -21,9 +23,12 @@ class TrainingManagement(Document):
 		# self.count_duration()
 		# self.check_cohort_batch()
 
-	def update_trainees_status(self): #use loop to update
-		frappe.db.sql("update `tabTrainee Details` set status='Passed' where parent='{}' and status='Reported'".format(self.name))
-
+	def update_trainees_status(self):
+		for d in self.get("trainee_details"):
+			if d.status == 'Reported':
+				d.status = 'Passed'
+		frappe.db.commit()
+	
 	def notify_lo(self):
 		receipients = []
 		args = self.as_dict()
