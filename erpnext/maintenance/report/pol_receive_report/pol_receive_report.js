@@ -19,42 +19,31 @@ frappe.query_reports["POL Receive Report"] = {
 			"width": "100",
 			"on_change": function(query_report) {
 				var equip = query_report.get_values().equipment;
-				// frappe.query_report.set_filter_value('equipment_no', null)
-				query_report.filters_by_name.equipment_no.set_input(null)
-				query_report.trigger_refresh();
+				frappe.query_report.set_filter_value('equipment_no', "")
+				
 				if (!equip) {
 					return;
 				}
-				frappe.call({
-					method: 'frappe.client.get_value',
-					args: {
-						doctype: 'Equipment',
-						filters: {
-							'name': equip
-						},
-						fieldname: ['equipment_number']
-					},
-					callback: function(r) {
-						query_report.filters_by_name.equipment_no.set_input(r.message.equipment_number)
-						query_report.trigger_refresh();
-					}
-				})
-				frappe.call({
-					method:'erpnext.maintenance.report.pol_receive_report.pol_receive_report.get_previous_km',
-					args:{
-						'from_date':query_report.get_values().from_date,
-						'branch':query_report.get_values().branch,
-						'equipment':query_report.get_values().equipment,
-						'direct_consumption':query_report.get_values().direct
-						},
-					callback: function(r) {
-						if (r.message)
-							query_report.filters_by_name.prev_km_reading.set_input(r.message)
-						else
-							query_report.filters_by_name.prev_km_reading.set_input(0)
-						query_report.trigger_refresh();
-					}
-				})
+				frappe.db.get_value("Equipment", equip, "equipment_number", function(value) {
+					frappe.query_report.set_filter_value('equipment_no', value["equipment_number"]);
+				});
+				if (query_report.get_values().branch && query_report.get_values().equipment){
+					frappe.call({
+						method:'erpnext.maintenance.report.pol_receive_report.pol_receive_report.get_previous_km',
+						args:{
+							'from_date':query_report.get_values().from_date,
+							'branch':query_report.get_values().branch,
+							'equipment':query_report.get_values().equipment,
+							},
+						callback: function(r) {
+							if (r.message) {
+								frappe.query_report.set_filter_value("prev_km_reading", r.message);
+							}else{
+								frappe.query_report.set_filter_value("prev_km_reading",0);
+							}
+						}
+					});
+				}
 			},
 			"reqd": 1,
 		},
@@ -72,24 +61,22 @@ frappe.query_reports["POL Receive Report"] = {
 			"reqd": 1,
 			"default":frappe.datetime.month_start(),
 			"on_change":function(query_report){
-				if (query_report.get_values().branch){
+				if (query_report.get_values().branch && query_report.get_values().equipment){
 					frappe.call({
 						method:'erpnext.maintenance.report.pol_receive_report.pol_receive_report.get_previous_km',
 						args:{
 							'from_date':query_report.get_values().from_date,
 							'branch':query_report.get_values().branch,
 							'equipment':query_report.get_values().equipment,
-							'direct_consumption':query_report.get_values().direct
 							},
 						callback: function(r) {
-							// console.log(r.message)
-							if (r.message)
-								query_report.filters_by_name.prev_km_reading.set_input(r.message)
-							else
-								query_report.filters_by_name.prev_km_reading.set_input(0)
-							query_report.trigger_refresh();
+							if (r.message) {
+								frappe.query_report.set_filter_value("prev_km_reading", r.message);
+							} else{
+								frappe.query_report.set_filter_value("prev_km_reading",0);
+							}
 						}
-					})
+					});
 				}
 			}
 		},
@@ -100,30 +87,6 @@ frappe.query_reports["POL Receive Report"] = {
 			"width": "80",
 			"reqd": 1,
 			"default":frappe.datetime.month_end()
-		},
-		{
-			"fieldname": "direct",
-			"label": ("Show Only Direct Consumption"),
-			"fieldtype": "Check",
-			"default": 1,
-			"on_change":function(query_report){
-				frappe.call({
-					method:'erpnext.maintenance.report.pol_receive_report.pol_receive_report.get_previous_km',
-					args:{
-						'from_date':query_report.get_values().from_date,
-						'branch':query_report.get_values().branch,
-						'equipment':query_report.get_values().equipment,
-						'direct_consumption':query_report.get_values().direct
-						},
-					callback: function(r) {
-						if (r.message)
-							query_report.filters_by_name.prev_km_reading.set_input(r.message)
-						else
-							query_report.filters_by_name.prev_km_reading.set_input(0)
-						query_report.trigger_refresh();
-					}
-				})
-			}
 		},
 		{
 			'fieldname':'prev_km_reading',

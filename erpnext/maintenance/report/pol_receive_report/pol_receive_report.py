@@ -137,10 +137,6 @@ def get_data(filters):
     if filters.get("from_date") and filters.get("to_date"):
         query += " and p.posting_date between '{}' and '{}'".format(filters.from_date,filters.to_date)
 
-    if filters.get("direct"):
-        query += " and p.direct_consumption = 1"
-    else:
-        query += " and p.direct_consumption =  0"
     if filters.equipment:
         query += " and p.equipment='{}'".format(filters.equipment)
 
@@ -149,7 +145,7 @@ def get_data(filters):
     
 @frappe.whitelist()
 # this method will fetch the previous km reading to show in print format
-def get_previous_km(from_date,branch,equipment,direct_consumption):
+def get_previous_km(from_date,branch,equipment):
     query = """
             SELECT
                 current_km_reading
@@ -161,10 +157,6 @@ def get_previous_km(from_date,branch,equipment,direct_consumption):
     
     if branch:
         query += " and branch = '{}'".format(branch) 
-    if direct_consumption:
-        query += " and direct_consumption = 1"
-    else:
-        query += " and direct_consumption =  0"
     if equipment:
         query += " and equipment='{}'".format(equipment)
     query += " order by posting_date desc limit 1 "
@@ -172,5 +164,5 @@ def get_previous_km(from_date,branch,equipment,direct_consumption):
     if not data:
         cur_km_reading = 0
     else:
-        cur_km_reading = data[0].cur_km_reading
+        cur_km_reading = data[0].current_km_reading
     return cur_km_reading
