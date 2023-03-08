@@ -154,7 +154,6 @@
   {
    "fieldname": "course_cost_center",
    "fieldtype": "Link",
-   "in_list_view": 1,
    "label": "Course Cost Center",
    "options": "Cost Center"
   },
@@ -183,6 +182,7 @@
    "fetch_from": "course.programme",
    "fieldname": "programme",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Programme",
    "options": "Programme",
    "read_only": 1
@@ -197,6 +197,7 @@
   {
    "fieldname": "training_center",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Training Center",
    "options": "Training Center",
    "reqd": 1
@@ -233,7 +234,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-07 18:36:40.851579",
+ "modified": "2023-03-08 10:07:58.137016",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Management",
@@ -280,5 +281,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
+ "title_field": "programme",
  "track_changes": 1
 }

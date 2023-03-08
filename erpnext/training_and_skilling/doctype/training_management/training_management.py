@@ -21,7 +21,7 @@ class TrainingManagement(Document):
 		# self.count_duration()
 		# self.check_cohort_batch()
 
-	def update_trainees_status(self):
+	def update_trainees_status(self): #use loop to update
 		frappe.db.sql("update `tabTrainee Details` set status='Passed' where parent='{}' and status='Reported'".format(self.name))
 
 	def notify_lo(self):
