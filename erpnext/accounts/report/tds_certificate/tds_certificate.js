@@ -33,10 +33,13 @@ frappe.query_reports["TDS Certificate"] = {
 				if (!customer) {
 					return;
 				}
-				frappe.model.with_doc("Customer", customer, function(r) {
-					var customer = frappe.model.get_doc("Customer", customer);
-					query_report.set_filter_value("vendor_tpn_no", customer.tax_id);
-					query_report.refresh("vendor_tpn_no");
+				// frappe.model.with_doc("Customer", customer, function(r) {
+				// 	var customer = frappe.model.get_doc("Customer", customer);
+				// 	query_report.set_filter_value("vendor_tpn_no", customer.tax_id);
+				// 	query_report.refresh("vendor_tpn_no");
+				// });
+				frappe.db.get_value("Customer", customer, "tax_id", function(value) {
+					frappe.query_report.set_filter_value('vendor_tpn_no', value["tax_id"]);
 				});
 			}
 		},
@@ -51,10 +54,13 @@ frappe.query_reports["TDS Certificate"] = {
 				if (!supplier) {
 					return;
 				}
-				frappe.model.with_doc("Supplier", supplier, function(r) {
-					var supplier = frappe.model.get_doc("Supplier", supplier);
-					query_report.set_filter_value("vendor_tpn_no", supplier.vendor_tpn_no);
-					query_report.refresh("vendor_tpn_no");
+				// frappe.model.with_doc("Supplier", supplier, function(r) {
+				// 	var supplier = frappe.model.get_doc("Supplier", supplier);
+				// 	query_report.set_filter_value("vendor_tpn_no", supplier.vendor_tpn_no);
+				// 	query_report.refresh("vendor_tpn_no");
+				// });
+				frappe.db.get_value("Supplier", supplier, "vendor_tpn_no", function(value) {
+					frappe.query_report.set_filter_value('vendor_tpn_no', value["vendor_tpn_no"]);
 				});
 			}
 		},

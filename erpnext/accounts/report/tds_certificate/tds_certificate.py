@@ -179,8 +179,8 @@ def get_data(filters):
 		# 			AND rr.supplier = '{2}'
 		# 			AND i.customer = '{2}'
 		# """.format(str(filters.from_date), str(filters.to_date), filters.customer)
-	# if not query:
-	# 	return []
+	if not query:
+		return []
 	# return frappe.db.sql(query,as_dict=1) + frappe.db.sql(query1,as_dict=1) + je_entries
 	return frappe.db.sql(query,as_dict=1) + je_entries
 
