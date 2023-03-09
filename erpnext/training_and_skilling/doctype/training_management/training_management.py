@@ -10,7 +10,8 @@ from datetime import datetime
 
 class TrainingManagement(Document):
 	def validate(self):
-		# self.set_status()
+		self.set_status() #allowed to add data manually
+
 		self.old_state = self.get_db_value("workflow_state")
 		self.new_state = self.workflow_state
 		if self.new_state == "Waiting for Verification" and self.old_state == "Draft":
@@ -72,6 +73,9 @@ class TrainingManagement(Document):
 			pass
 
 	def set_status(self):
+		if self.status == "Completed":
+			self.workflow_state = "Completed"
+
 		self.docstatus = {
 			"Draft": 0,
 			"Created": 0,
