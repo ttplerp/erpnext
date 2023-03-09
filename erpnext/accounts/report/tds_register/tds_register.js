@@ -5,6 +5,13 @@
 frappe.query_reports["TDS Register"] = {
 	"filters": [
 		{
+			"fieldname": "branch",
+			"label": __("Branch"),
+			"fieldtype": "Link",
+			"options": "Branch",
+			"reqd": 1
+		},
+		{
 			"fieldname": "from_date",
 			"label": __("From Date"),
 			"fieldtype": "Date",

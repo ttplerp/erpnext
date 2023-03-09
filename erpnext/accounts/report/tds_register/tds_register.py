@@ -16,7 +16,7 @@ def get_data(filters):
 	validate_filters(filters)
 	data = []
 	entries = get_tds_invoices(filters.tax_withholding_category, filters.from_date, filters.to_date,
-		name = None, filter_existing = False, party_type = filters.party_type)
+		name = None, filter_existing = False, party_type = filters.party_type, branch = filters.branch)
 	for d in entries:
 		row = [d.party_type, d.party, d.tpn, d.invoice_type, d.invoice_no, d.posting_date, d.bill_amount, filters.tax_withholding_category, 
 			d.tds_amount, d.cost_center, d.remittance_status, d.tds_remittance, d.tds_receipt_update]
