@@ -73,11 +73,6 @@ class TrainingManagement(Document):
 			pass
 
 	def set_status(self):
-		if self.status == "Completed":
-			self.workflow_state = "Completed"
-		if self.status == "On Going":
-			self.workflow_state = "On Going"
-
 		self.docstatus = {
 			"Draft": 0,
 			"Created": 0,
