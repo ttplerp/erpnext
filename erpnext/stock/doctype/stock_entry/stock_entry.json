@@ -9,7 +9,9 @@
  "field_order": [
   "items_section",
   "naming_series",
+  "company",
   "stock_entry_type",
+  "entry_type_detail",
   "outgoing_stock_entry",
   "purpose",
   "add_to_transit",
@@ -21,7 +23,7 @@
   "pick_list",
   "purchase_receipt_no",
   "col2",
-  "company",
+  "abbr",
   "posting_date",
   "posting_time",
   "set_posting_time",
@@ -31,6 +33,7 @@
   "sb1",
   "bom_no",
   "fg_completed_qty",
+  "sb0",
   "cb1",
   "use_multi_level_bom",
   "get_items",
@@ -42,7 +45,36 @@
   "to_warehouse",
   "target_warehouse_address",
   "target_address_display",
-  "sb0",
+  "sbc2",
+  "project_name",
+  "employee",
+  "mess_name",
+  "asset_dis",
+  "vehicle_no",
+  "hire_vehicle_number",
+  "issued_from",
+  "cbc2",
+  "issue_handed_to",
+  "asset_detail",
+  "issued_till",
+  "memo",
+  "current_odometer_reading",
+  "employee_name",
+  "handed_over_to_name",
+  "fuel_issue_analysis_section",
+  "bench_mark_lkm",
+  "equipment_type",
+  "equipment_make",
+  "current_issue_quantity",
+  "cbc1",
+  "previous_reading",
+  "previous_issue_reference",
+  "previous_issued_quantity",
+  "cbc3",
+  "calculated_fuel_balance",
+  "next_recommended_issue",
+  "tank_accumulation_estimate",
+  "sbc3",
   "scan_barcode",
   "items",
   "get_stock_and_rate",
@@ -75,7 +107,9 @@
   "job_card",
   "amended_from",
   "credit_note",
-  "is_return"
+  "is_return",
+  "signature",
+  "sb5"
  ],
  "fields": [
   {
@@ -84,15 +118,18 @@
    "oldfieldtype": "Section Break"
   },
   {
+   "bold": 1,
+   "default": "abbr./STE/.YYYY.-",
    "fieldname": "naming_series",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Series",
    "no_copy": 1,
    "oldfieldname": "naming_series",
    "oldfieldtype": "Select",
-   "options": "MAT-STE-.YYYY.-",
+   "options": "abbr./STE/.YYYY.-",
    "print_hide": 1,
-   "reqd": 1,
+   "read_only": 1,
    "set_only_once": 1
   },
   {
@@ -148,19 +185,19 @@
    "search_index": 1
   },
   {
-    "depends_on": "eval:doc.purpose==\"Send to Subcontractor\"",
-    "fieldname": "purchase_order",
-    "fieldtype": "Link",
-    "label": "Purchase Order",
-    "options": "Purchase Order"
+   "depends_on": "eval:doc.purpose==\"Send to Subcontractor\"",
+   "fieldname": "purchase_order",
+   "fieldtype": "Link",
+   "label": "Purchase Order",
+   "options": "Purchase Order"
   },
   {
-    "depends_on": "eval:doc.purpose==\"Send to Subcontractor\"",
-    "fieldname": "subcontracting_order",
-    "fieldtype": "Link",
-    "label": "Subcontracting Order",
-    "options": "Subcontracting Order"
-   },
+   "depends_on": "eval:doc.purpose==\"Send to Subcontractor\"",
+   "fieldname": "subcontracting_order",
+   "fieldtype": "Link",
+   "label": "Subcontracting Order",
+   "options": "Subcontracting Order"
+  },
   {
    "depends_on": "eval:doc.purpose==\"Sales Return\"",
    "fieldname": "delivery_note_no",
@@ -243,7 +280,8 @@
    "print_hide": 1
   },
   {
-   "depends_on": "eval: doc.from_bom && (doc.purpose!==\"Sales Return\" && doc.purpose!==\"Purchase Return\")",
+   "depends_on": "eval: doc.from_bom && (doc.purpose!==\"Sales Return\" && doc.purpose!==\"Purchase Return\")\t",
+   "description": "eval: doc.from_bom && (doc.purpose!==\"Sales Return\" && doc.purpose!==\"Purchase Return\")",
    "fieldname": "sb1",
    "fieldtype": "Section Break"
   },
@@ -620,6 +658,217 @@
    "no_copy": 1,
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fetch_from": "company.abbr",
+   "fieldname": "abbr",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Abbr"
+  },
+  {
+   "fetch_from": "stock_entry_type.entry_name",
+   "fieldname": "entry_type_detail",
+   "fieldtype": "HTML",
+   "options": "<p><span style=\"color: #993300;\"><strong>{{doc.entry_type_detail}}</strong></span></p>",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:in_list([\"100\", \"102\", \"105\"], doc.stock_entry_type)",
+   "fieldname": "vehicle_no",
+   "fieldtype": "Link",
+   "label": "Vehicle No",
+   "mandatory_depends_on": "eval:in_list([\"100\", \"102\", \"105\"], doc.stock_entry_type)",
+   "options": "Vehicle"
+  },
+  {
+   "fieldname": "sbc2",
+   "fieldtype": "Section Break",
+   "label": "Entry Specific Detail "
+  },
+  {
+   "depends_on": "eval:in_list([\"100\", \"102\", \"105\"], doc.stock_entry_type)",
+   "fieldname": "current_odometer_reading",
+   "fieldtype": "Data",
+   "label": "Current Odometer Reading"
+  },
+  {
+   "fieldname": "previous_issue_reference",
+   "fieldtype": "Data",
+   "label": "Previous Issue reference"
+  },
+  {
+   "fieldname": "previous_reading",
+   "fieldtype": "Data",
+   "label": "Previous Reading"
+  },
+  {
+   "fetch_from": "vehicle_no.equipment_type",
+   "fieldname": "equipment_type",
+   "fieldtype": "Data",
+   "label": "Equipment type",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "vehicle_no.make",
+   "fieldname": "equipment_make",
+   "fieldtype": "Data",
+   "label": "Equipment Make",
+   "read_only": 1
+  },
+  {
+   "bold": 1,
+   "fetch_from": "vehicle_no.ref_benchmart",
+   "fieldname": "bench_mark_lkm",
+   "fieldtype": "Data",
+   "label": "Bench Mark L/KM",
+   "read_only": 1
+  },
+  {
+   "fieldname": "previous_issued_quantity",
+   "fieldtype": "Data",
+   "label": "Previous Issued Quantity"
+  },
+  {
+   "fieldname": "current_issue_quantity",
+   "fieldtype": "Data",
+   "label": "Current Issue Quantity"
+  },
+  {
+   "fieldname": "calculated_fuel_balance",
+   "fieldtype": "Data",
+   "label": "Calculated Fuel Balance "
+  },
+  {
+   "fieldname": "next_recommended_issue",
+   "fieldtype": "Data",
+   "label": "Next Recommended issue"
+  },
+  {
+   "fieldname": "cbc1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "collapsible": 1,
+   "collapsible_depends_on": "eval:in_list([\"100\", \"Manufacture\", \"Material Consumption for Manufacture\"], doc.stock_entry_type)",
+   "depends_on": "eval:in_list([\"100\", \"Manufacture\", \"Material Consumption for Manufacture\"], doc.stock_entry_type)",
+   "fieldname": "fuel_issue_analysis_section",
+   "fieldtype": "Section Break",
+   "label": "FUEL ISSUE ANALYSIS"
+  },
+  {
+   "fieldname": "cbc2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "cbc3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tank_accumulation_estimate",
+   "fieldtype": "Data",
+   "label": "Tank Accumulation Estimate "
+  },
+  {
+   "fieldname": "sbc3",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:in_list([\"101\",\"106\",], doc.stock_entry_type)",
+   "fieldname": "asset_detail",
+   "fieldtype": "Link",
+   "label": "Asset Detail",
+   "mandatory_depends_on": "eval:in_list([\"101\",\"106\",], doc.stock_entry_type)",
+   "options": "Asset"
+  },
+  {
+   "fetch_from": "asset_detail.item_name",
+   "fieldname": "asset_dis",
+   "fieldtype": "Data",
+   "hidden": 1
+  },
+  {
+   "depends_on": "eval:in_list([\"101\", \"102\", \"105\",\"106\",\"110\",\"111\", \"112\", \"120\"], doc.stock_entry_type)",
+   "fieldname": "issue_handed_to",
+   "fieldtype": "Link",
+   "label": "Issue handed to",
+   "mandatory_depends_on": "eval:in_list([\"101\", \"102\", \"105\",\"106\",\"110\",\"111\", \"112\", \"120\"], doc.stock_entry_type)",
+   "options": "Employee"
+  },
+  {
+   "depends_on": "eval:in_list([\"104\",\"107\",\"111\", \"112\", \"120\"], doc.stock_entry_type)",
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "mandatory_depends_on": "eval:in_list([\"104\",\"107\",\"111\", \"112\", \"120\"], doc.stock_entry_type)",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "issue_handed_to.employee_name",
+   "fieldname": "handed_over_to_name",
+   "fieldtype": "Data",
+   "label": "Handed over to Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "memo",
+   "fieldtype": "Small Text",
+   "label": "Memo"
+  },
+  {
+   "depends_on": "eval:in_list([\"110\",], doc.stock_entry_type)",
+   "fieldname": "mess_name",
+   "fieldtype": "Link",
+   "label": "Mess Name",
+   "mandatory_depends_on": "eval:in_list([\"110\",], doc.stock_entry_type)",
+   "options": "PMM_Mess Management"
+  },
+  {
+   "default": "Today",
+   "depends_on": "eval:in_list([\"120\",\"104\",\"107\",\"110\",\"303\",], doc.stock_entry_type)",
+   "fieldname": "issued_from",
+   "fieldtype": "Date",
+   "label": "Issued On",
+   "mandatory_depends_on": "eval:in_list([\"120\",\"104\",\"107\",\"110\",\"303\",], doc.stock_entry_type)"
+  },
+  {
+   "depends_on": "eval:in_list([\"120\",\"110\",\"303\",], doc.stock_entry_type)",
+   "fieldname": "issued_till",
+   "fieldtype": "Date",
+   "label": "Issued Till",
+   "mandatory_depends_on": "eval:in_list([\"120\",\"110\",\"303\",], doc.stock_entry_type)"
+  },
+  {
+   "depends_on": "eval:in_list([\"200\", \"201\",], doc.stock_entry_type)",
+   "fieldname": "hire_vehicle_number",
+   "fieldtype": "Link",
+   "label": "Hire Vehicle Number",
+   "mandatory_depends_on": "eval:in_list([\"200\", \"201\",], doc.stock_entry_type)",
+   "options": "Hire Equipments"
+  },
+  {
+   "depends_on": "eval:in_list([\"300\",\"302\",\"301\",\"303\",], doc.stock_entry_type)",
+   "fieldname": "project_name",
+   "fieldtype": "Link",
+   "label": "Project Name",
+   "mandatory_depends_on": "eval:in_list([\"300\",\"302\",\"301\",\"303\",], doc.stock_entry_type)",
+   "options": "Project"
+  },
+  {
+   "fieldname": "signature",
+   "fieldtype": "Signature",
+   "label": "Received By "
+  },
+  {
+   "fieldname": "sb5",
+   "fieldtype": "Section Break"
   }
  ],
  "icon": "fa fa-file-text",
@@ -627,7 +876,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-05-02 05:21:39.060501",
+ "modified": "2023-03-12 22:54:19.909682",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Entry",

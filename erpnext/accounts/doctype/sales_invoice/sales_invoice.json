@@ -9,6 +9,7 @@
   "customer_section",
   "business_activity",
   "branch",
+  "invoicing_type",
   "title",
   "naming_series",
   "customer",
@@ -22,6 +23,7 @@
   "update_billed_amount_in_sales_order",
   "column_break1",
   "company",
+  "abbr",
   "company_tax_id",
   "posting_date",
   "posting_time",
@@ -218,6 +220,7 @@
   },
   {
    "bold": 1,
+   "default": "abbr./SINV/.YYYY.-",
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "hide_days": 1,
@@ -226,7 +229,7 @@
    "no_copy": 1,
    "oldfieldname": "naming_series",
    "oldfieldtype": "Select",
-   "options": "ACC-SINV-.YYYY.-\nACC-SINV-RET-.YYYY.-",
+   "options": "\nabbr./SINV/.YYYY.-\nabbr./EXP-SINV/.YYYY.-",
    "print_hide": 1,
    "reqd": 1,
    "set_only_once": 1
@@ -2026,6 +2029,21 @@
    "hidden": 1,
    "label": "Business Activity",
    "options": "Business Activity"
+  },
+  {
+   "fetch_from": "company.abbr",
+   "fieldname": "abbr",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Abbr"
+  },
+  {
+   "default": "Normal Invoice",
+   "fieldname": "invoicing_type",
+   "fieldtype": "Select",
+   "label": "Invoicing Type",
+   "options": "Normal Invoice\nLC Invoicing",
+   "reqd": 1
   }
  ],
  "icon": "fa fa-file-text",
@@ -2038,7 +2056,7 @@
    "link_fieldname": "consolidated_invoice"
   }
  ],
- "modified": "2022-09-21 00:25:08.779635",
+ "modified": "2023-03-10 00:51:44.276755",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Sales Invoice",
