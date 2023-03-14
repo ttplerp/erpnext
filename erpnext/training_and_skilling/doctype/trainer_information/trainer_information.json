@@ -1,6 +1,6 @@
 {
  "actions": [],
- "autoname": "autoincrement",
+ "autoname": "hash",
  "creation": "2022-11-23 14:25:30.213698",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -14,6 +14,7 @@
   {
    "fieldname": "trainer_id",
    "fieldtype": "Link",
+   "ignore_user_permissions": 1,
    "in_list_view": 1,
    "label": "Trainer ID",
    "options": "Employee"
@@ -34,11 +35,11 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-12-27 20:20:05.404474",
+ "modified": "2023-03-14 14:28:52.181322",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Trainer Information",
- "naming_rule": "Autoincrement",
+ "naming_rule": "Random",
  "owner": "Administrator",
  "permissions": [],
  "sort_field": "modified",

@@ -87,6 +87,7 @@
    "allow_bulk_edit": 1,
    "fieldname": "trainee_details",
    "fieldtype": "Table",
+   "ignore_user_permissions": 1,
    "label": "Trainee Details",
    "options": "Trainee Details",
    "reqd": 1
@@ -95,6 +96,7 @@
    "allow_bulk_edit": 1,
    "fieldname": "trainer_details",
    "fieldtype": "Table",
+   "ignore_user_permissions": 1,
    "label": "Trainer Information",
    "options": "Trainer Information"
   },
@@ -232,7 +234,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-09 14:51:04.663633",
+ "modified": "2023-03-14 14:27:44.822669",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Management",
