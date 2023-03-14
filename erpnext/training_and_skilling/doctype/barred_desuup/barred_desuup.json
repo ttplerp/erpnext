@@ -10,6 +10,7 @@
   "desuup_detail_section",
   "desuung_id",
   "desuup_name",
+  "barred",
   "column_break_4",
   "gender",
   "cid",
@@ -93,11 +94,17 @@
    "fieldname": "reason",
    "fieldtype": "Small Text",
    "label": "Reason"
+  },
+  {
+   "default": "1",
+   "fieldname": "barred",
+   "fieldtype": "Check",
+   "label": "Barred"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-07 16:57:52.058739",
+ "modified": "2023-03-14 15:48:48.192255",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Barred Desuup",

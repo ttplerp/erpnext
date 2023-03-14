@@ -428,6 +428,7 @@ scheduler_events = {
 		"erpnext.selling.doctype.quotation.quotation.set_expired_status",
 		"erpnext.buying.doctype.supplier_quotation.supplier_quotation.set_expired_status",
 		"erpnext.accounts.doctype.process_statement_of_accounts.process_statement_of_accounts.send_auto_email",
+		"erpnext.training_and_skilling.doctype.barred_desuup.barred_desuup.remove_from_barred",
 	],
 	"daily_long": [
 		"erpnext.setup.doctype.email_digest.email_digest.send",
