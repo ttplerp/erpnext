@@ -560,7 +560,7 @@ has_permission = {
 	"Salary Structure": "hrms.payroll.doctype.salary_structure.salary_structure.has_record_permission",
 	"Salary Slip": "hrms.payroll.doctype.salary_slip.salary_slip.has_record_permission",
 	"Employee Promotion": "hrms.hr.doctype.employee_promotion.employee_promotion.has_record_permission",
-
+	"Training Management": "erpnext.training_and_skilling.doctype.training_management.training_management.has_record_permission",
 }
 
 permission_query_conditions = {
@@ -577,6 +577,7 @@ permission_query_conditions = {
 	"Employee Promotion": "hrms.hr.doctype.employee_promotion.employee_promotion.get_permission_query_conditions",
 	"Leave Application": "hrms.hr.doctype.leave_application.leave_application.get_permission_query_conditions",
 	"Leave Encashment": "hrms.hr.doctype.leave_encashment.leave_encashment.get_permission_query_conditions",
+	"Training Management": "erpnext.training_and_skilling.doctype.training_management.training_management.get_permission_query_conditions",
 }
 
 user_privacy_documents = [
