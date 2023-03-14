@@ -80,6 +80,8 @@ class TrainingSelection(Document):
 		]
 
 	def check_duplicate_cohort_course(self):
+		if not self.programme:
+			frappe.throw("This Course <b>{}</b> is not map to Programme. Please map the programme to continue".format(self.course_name))
 		for a in frappe.db.sql("""select name, posting_date
 								from `tabTraining Selection`
 								where cohort = '{0}' and course = '{1}'
