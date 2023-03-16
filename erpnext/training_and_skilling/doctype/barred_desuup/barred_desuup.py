@@ -10,7 +10,8 @@ from frappe.utils import (
 
 class BarredDesuup(Document):
 	def validate(self):
-		self.validate_duplicate()
+		#self.validate_duplicate()
+		pass
 
 	def validate_duplicate(self):
 		dtl = frappe.db.sql("""select name, from_date, to_date
