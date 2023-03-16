@@ -696,7 +696,9 @@ frappe.ui.form.on('Payment Entry', {
 					return {
 						"filters": {"company": frm.doc.company}
 					}
-				}
+				},
+				default: frm.doc.cost_center,
+				read_only:1
 			},
 			{fieldtype:"Column Break"},
 			{fieldtype:"Section Break"},
