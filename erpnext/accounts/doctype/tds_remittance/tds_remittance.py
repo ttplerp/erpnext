@@ -94,7 +94,7 @@ class TDSRemittance(AccountsController):
 def get_tds_invoices(self, tax_withholding_category, from_date, to_date, name, filter_existing = False, party_type = None):
 	cond = accounts_cond = existing_cond = party_cond = "" 
 	entries = pi_entries = pe_entries = je_entries = []
-
+	
 	if not tax_withholding_category:
 		frappe.msgprint(_("<b>Tax Withholding Category</b> is mandatory"))
 		return entries
@@ -112,7 +112,7 @@ def get_tds_invoices(self, tax_withholding_category, from_date, to_date, name, f
 
 	accounts = [i.account for i in frappe.db.get_all("Tax Withholding Account", \
 		{"parent": tax_withholding_category}, "account")]
-
+	
 	if not len(accounts):
 		return entries
 	elif len(accounts) == 1:
@@ -171,30 +171,36 @@ def get_tds_invoices(self, tax_withholding_category, from_date, to_date, name, f
 	# Journal Entry
 	if len(accounts) == 1:
 		accounts_cond = """and (t1.account = "{0}" or 
-			(t1.tax_account = "{0}" and ifnull(t1.apply_tds,0) = 1)""".format(accounts[0])
+			(t1.tax_account = "{0}" and ifnull(t1.apply_tds,0) = 1))""".format(accounts[0])
 	else:
 		accounts_cond = """and (t1.account in ({0}) or 
 			t1.tax_account in ({0}) and ifnull(t1.apply_tds,0) = 1)""".format('"' + '","'.join(accounts) + '"')
 	
 	if party_type:
 		party_cond = "and t1.party_type = '{}'".format(party_type)
+	
+	je_entries = frappe.db.sql("""
+	select  t.posting_date, 
+			t.name as invoice_no, 
+			'Journal Entry' as invoice_type,
+			t1.party_type, 
+			t1.party, 
 
-	je_entries = frappe.db.sql("""select t.posting_date, t.name as invoice_no, 'Journal Entry' as invoice_type,
-		t1.party_type, t1.party, 
-		(case when t1.party_type = 'Customer' then c.tax_id 
-			when t1.party_type =  'Supplier' then s.tax_id else null end) as tpn, 
-		t.business_activity, t1.cost_center,
-		(case when t1.tax_amount > 0 and t1.debit > 0 and ifnull(t1.apply_tds) = 1 
-				then t1.taxable_amount 
-			else 0 end) as bill_amount, 
-		(case when t1.tax_amount > 0 and t1.debit > 0 and ifnull(t1.apply_tds) = 1 
-				then t1.tax_amount
-			when t1.tax_amount = 0 and t1.credit > 0 then t1.credit
-			else 0 end) as tds_amount,
-		(case when t1.tax_amount > 0 and t1.debit > 0 and ifnull(t1.apply_tds) = 1 
-				then t1.tax_account
-			else t1.account end) as tax_account, tre.tds_remittance, tre.tds_receipt_update,
-		(case when tre.tds_receipt_update is not null then 'Paid' else 'Unpaid' end) remittance_status
+			(case when t1.party_type = 'Customer' then c.tax_id when t1.party_type =  'Supplier' then s.tax_id else null end) as tpn,
+
+			t.business_activity, 
+			t1.cost_center,
+
+			(case when t1.tax_amount > 0 and t1.debit > 0 and ifnull(t1.apply_tds) = 1 then t1.taxable_amount else 0 end) as bill_amount, 
+
+			(case when t1.tax_amount > 0 and t1.debit > 0 and ifnull(t1.apply_tds) = 1 then t1.tax_amount when t1.tax_amount = 0 and t1.credit > 0 then t1.credit else 0 end) as tds_amount,
+
+			(case when t1.tax_amount > 0 and ifnull(t1.apply_tds) = 1 then t1.tax_account else t1.account end) as tax_account,
+
+			tre.tds_remittance, 
+			tre.tds_receipt_update,
+
+			(case when tre.tds_receipt_update is not null then 'Paid' else 'Unpaid' end) as remittance_status
 		from `tabJournal Entry` as t
 			inner join `tabJournal Entry Account` t1 on t.name = t1.parent
 			left join `tabCustomer` c on t1.party_type = 'Customer' and c.name = t1.party
@@ -208,7 +214,6 @@ def get_tds_invoices(self, tax_withholding_category, from_date, to_date, name, f
 		{party_cond}
 		{cond}""".format(accounts_cond = accounts_cond, cond = cond, existing_cond = existing_cond,\
 			party_cond = party_cond, from_date=from_date, to_date=to_date, company = self.company), as_dict=True)
-		
 	entries = pi_entries + pe_entries + je_entries
 	entries = sorted(entries, key=lambda d: (d['posting_date'], d['invoice_no']))
 	return entries
@@ -261,3 +266,4 @@ def get_permission_query_conditions(user):
 			and bi.parent = ab.name
 			and bi.branch = `tabTDS Remittance`.branch)
 	)""".format(user=user)
+
