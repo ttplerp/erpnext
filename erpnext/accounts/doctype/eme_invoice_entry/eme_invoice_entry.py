@@ -241,6 +241,7 @@ def create_eme_invoice_for_owner(owner_list, args, publish_progress = True):
 			try:
 				emi = frappe.get_doc(args)
 				emi.get_logbooks()
+				emi.flags.ignore_mandatory = True
 				emi.set("deduct_items",[])
 				for d in doc.deductions:
 					if d.supplier == owner:
