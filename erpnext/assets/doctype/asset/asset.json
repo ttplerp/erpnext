@@ -284,8 +284,7 @@
   },
   {
    "fieldname": "section_break_33",
-   "fieldtype": "Section Break",
-   "hidden": 1
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "depreciation_method",
@@ -673,7 +672,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2023-03-20 15:50:34.111455",
+ "modified": "2023-03-20 17:00:56.033443",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",
