@@ -284,7 +284,8 @@
   },
   {
    "fieldname": "section_break_33",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "hidden": 1
   },
   {
    "fieldname": "depreciation_method",
@@ -295,6 +296,7 @@
   {
    "fieldname": "value_after_depreciation",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Value After Depreciation",
    "options": "Company:company:default_currency",
    "read_only": 1
@@ -672,7 +674,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2023-03-20 17:00:56.033443",
+ "modified": "2023-03-20 17:15:43.139627",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",
