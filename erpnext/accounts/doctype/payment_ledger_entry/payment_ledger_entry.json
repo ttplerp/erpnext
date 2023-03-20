@@ -147,7 +147,7 @@
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-28 20:43:12.275801",
+ "modified": "2023-03-20 18:22:47.168696",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Payment Ledger Entry",
@@ -164,13 +164,17 @@
    "share": 1
   },
   {
+   "create": 1,
+   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
    "role": "Accounts Manager",
-   "share": 1
+   "select": 1,
+   "share": 1,
+   "write": 1
   },
   {
    "email": 1,
@@ -179,6 +183,16 @@
    "read": 1,
    "report": 1,
    "role": "Auditor",
+   "share": 1
+  },
+  {
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
    "share": 1
   }
  ],
