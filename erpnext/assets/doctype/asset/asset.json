@@ -296,7 +296,6 @@
   {
    "fieldname": "value_after_depreciation",
    "fieldtype": "Currency",
-   "hidden": 1,
    "label": "Value After Depreciation",
    "options": "Company:company:default_currency",
    "read_only": 1
@@ -674,7 +673,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2023-02-24 14:36:00.517807",
+ "modified": "2023-03-20 15:50:34.111455",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",
