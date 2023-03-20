@@ -1,0 +1,241 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-02-07 09:53:21.844443",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "vehicle_number",
+  "equipment_type",
+  "dealing_person",
+  "dealing_person_phone",
+  "driver_name",
+  "driver_phone_no",
+  "cb1",
+  "date",
+  "status",
+  "hire_type",
+  "hire_by",
+  "hire_rate_per_month",
+  "equipment_ownership_information_section",
+  "owner_name",
+  "owner_contact_number",
+  "ownership_type",
+  "owner_cid_no",
+  "business_tpn",
+  "cb2",
+  "hire_in_from",
+  "hire_end_date",
+  "owner_address",
+  "equipment_informaiton_section",
+  "equipment_registration",
+  "equipment_make",
+  "equipment_model_year",
+  "referance_fuel_issue_ltrskm_ltrshr",
+  "equipment_additional_info",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "description": "Vehicle Number must be in format: BP-2-A0000",
+   "fieldname": "vehicle_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Vehicle Number/Equipment Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "equipment_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Equipment Type",
+   "options": "Equipment Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "dealing_person",
+   "fieldtype": "Data",
+   "label": "Dealing Person"
+  },
+  {
+   "fieldname": "dealing_person_phone",
+   "fieldtype": "Data",
+   "label": "Dealing Person Phone"
+  },
+  {
+   "fieldname": "driver_name",
+   "fieldtype": "Data",
+   "label": "Driver Name"
+  },
+  {
+   "fieldname": "driver_phone_no",
+   "fieldtype": "Data",
+   "label": "Driver Phone No"
+  },
+  {
+   "fieldname": "cb1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "date",
+   "fieldtype": "Data",
+   "label": "Date"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Active Deployment\nRelease and Closed\nBreakdown",
+   "reqd": 1
+  },
+  {
+   "fieldname": "hire_type",
+   "fieldtype": "Select",
+   "label": "Hire Type",
+   "options": "Hired In\nHired Out"
+  },
+  {
+   "fieldname": "hire_by",
+   "fieldtype": "Link",
+   "label": "Hire By",
+   "options": "Company"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "bold": 1,
+   "description": "Monthly rental per month at agreed below conditions ",
+   "fieldname": "hire_rate_per_month",
+   "fieldtype": "Currency",
+   "label": "Hire Rate per Month",
+   "non_negative": 1,
+   "reqd": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "equipment_ownership_information_section",
+   "fieldtype": "Section Break",
+   "label": "Equipment Ownership Information"
+  },
+  {
+   "fieldname": "owner_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Owner Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "owner_contact_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Owner Contact Number",
+   "reqd": 1
+  },
+  {
+   "fieldname": "ownership_type",
+   "fieldtype": "Select",
+   "label": "Ownership Type",
+   "options": "Enterprise\nIndividual"
+  },
+  {
+   "fieldname": "owner_cid_no",
+   "fieldtype": "Data",
+   "label": "Owner CID No."
+  },
+  {
+   "fieldname": "business_tpn",
+   "fieldtype": "Data",
+   "label": "Business TPN"
+  },
+  {
+   "fieldname": "cb2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "hire_in_from",
+   "fieldtype": "Data",
+   "label": "Hire in from"
+  },
+  {
+   "fieldname": "hire_end_date",
+   "fieldtype": "Data",
+   "label": "Hiring End Date"
+  },
+  {
+   "fieldname": "owner_address",
+   "fieldtype": "Small Text",
+   "label": "Owner Address"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "equipment_informaiton_section",
+   "fieldtype": "Section Break",
+   "label": "Equipment Informaiton"
+  },
+  {
+   "fieldname": "equipment_registration",
+   "fieldtype": "Data",
+   "label": "Equipment Registration "
+  },
+  {
+   "fieldname": "equipment_make",
+   "fieldtype": "Data",
+   "label": "Equipment Make"
+  },
+  {
+   "fieldname": "equipment_model_year",
+   "fieldtype": "Data",
+   "label": "Equipment Model Year"
+  },
+  {
+   "fieldname": "referance_fuel_issue_ltrskm_ltrshr",
+   "fieldtype": "Data",
+   "label": "Referance Fuel issue Ltrs/KM ltrs/Hr "
+  },
+  {
+   "fieldname": "equipment_additional_info",
+   "fieldtype": "Small Text",
+   "label": "Equipment additional Info"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Hire Equipments",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-03-20 12:41:24.700673",
+ "modified_by": "Administrator",
+ "module": "Buying",
+ "name": "Hire Equipments",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1
+}
