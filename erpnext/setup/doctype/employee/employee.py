@@ -82,19 +82,20 @@ class Employee(NestedSet):
 			self.update_user_permissions()
 		self.reset_employee_emails_cache()
 		self.post_casual_leave()
+
 	def post_casual_leave(self):
 		from_date = getdate(self.date_of_joining)
 		to_date = get_year_end_date(from_date)
 
 		if not cint(self.casual_leave_allocated):
 			if frappe.db.exists("Leave Allocation", {"leave_type": "Casual Leave", "employee": self.name, "from_date": ("<=",str(to_date)), "to_date": (">=", str(from_date))}):
-				self.add_comments("Auto allocation of CL is skipped as an allocation already exists for the period {} - {}".format(from_date, to_date))
+				# self.add_comments("Auto allocation of CL is skipped as an allocation already exists for the period {} - {}".format(from_date, to_date))
 				self.db_set("casual_leave_allocated", 1)
 				return
 				
 			if not frappe.db.sql("""select count(*) as counts from `tabFiscal Year` where now() between year_start_date and year_end_date
 				and '{}' <= year_end_date and '{}' >= year_start_date""".format(from_date, to_date))[0][0]:
-				self.add_comments("Auto allocation of CL is skipped as the Employee's Date of Joing is not in current Fiscal Year")
+				# self.add_comments("Auto allocation of CL is skipped as the Employee's Date of Joing is not in current Fiscal Year")
 				self.db_set("casual_leave_allocated", 1)
 				return
 
