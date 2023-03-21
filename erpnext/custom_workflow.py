@@ -1501,7 +1501,7 @@ class NotifyCustomWorkflow:
 			return
 		email_template = frappe.get_doc("Email Template", template)
 		message = frappe.render_template(email_template.response, args)
-		if employee and "Driver" not in employee.designation and "Elementary Service Personnel" not in employee.designation and "Home Based Caretaker" not in employee.designation and employee.user_id not in ('dawa486@bt.bt','sonam.tobgye274@bt.bt'):
+		if employee :
 			self.notify({
 				# for post in messages
 				"message": message,
