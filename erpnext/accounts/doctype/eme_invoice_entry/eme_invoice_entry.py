@@ -36,7 +36,6 @@ class EMEInvoiceEntry(Document):
 				"currency":self.currency,
 				"status":"Draft"
 			})
-			# frappe.enqueue(create_eme_invoice_for_owner, owner_list = owner_list, args = args)
 			create_eme_invoice_for_owner(owner_list = owner_list, args = args)
 	def get_owner_list(self):
 		owner = []
