@@ -67,11 +67,10 @@
   },
   {
    "fieldname": "voucher_no",
-   "fieldtype": "Dynamic Link",
+   "fieldtype": "Data",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Voucher No",
-   "options": "voucher_type"
+   "label": "Voucher No"
   },
   {
    "fieldname": "against_voucher_type",
@@ -82,11 +81,10 @@
   },
   {
    "fieldname": "against_voucher_no",
-   "fieldtype": "Dynamic Link",
+   "fieldtype": "Data",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Against Voucher No",
-   "options": "against_voucher_type"
+   "label": "Against Voucher No"
   },
   {
    "fieldname": "amount",
@@ -147,7 +145,7 @@
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-20 18:22:47.168696",
+ "modified": "2023-03-21 11:05:23.221146",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Payment Ledger Entry",
