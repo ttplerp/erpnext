@@ -531,7 +531,7 @@ class PurchaseInvoice(BuyingController):
 		self.process_common_party_accounting()
 		self.consume_budget(cancel=False)
 		self.update_tds_receipt_entry()
-		# self.update_project_transaction_details() #added by Jai
+		self.update_project_transaction_details() #added by Jai
 
 	def update_tds_receipt_entry(self):
 		if self.amended_from: 
@@ -1549,7 +1549,7 @@ class PurchaseInvoice(BuyingController):
 		)
 		self.update_advance_tax_references(cancel=1)
 		self.consume_budget(cancel=True)
-		# self.update_project_transaction_details() #added by Jai
+		self.update_project_transaction_details() #added by Jai
 
 	def update_project(self):
 		project_list = []

@@ -183,7 +183,8 @@ class StockEntry(StockController):
 			self.make_gl_entries()
 
 		self.repost_future_sle_and_gle()
-		self.update_cost_in_project()
+		# self.update_cost_in_project()
+		self.update_project_transaction_details() # Jai,
 		self.validate_reserved_serial_no_consumption()
 		self.update_transferred_qty()
 		self.update_quality_inspection()
@@ -214,7 +215,8 @@ class StockEntry(StockController):
 
 		self.make_gl_entries_on_cancel()
 		self.repost_future_sle_and_gle()
-		self.update_cost_in_project()
+		# self.update_cost_in_project()
+		self.update_project_transaction_details() # Jai,
 		self.update_transferred_qty()
 		self.update_quality_inspection()
 		self.delete_auto_created_batches()
@@ -327,6 +329,42 @@ class StockEntry(StockController):
 			amount += additional_cost_amt
 			frappe.db.set_value("Project", self.project, "total_consumed_material_cost", amount)
 
+	def update_project_transaction_details(self):
+		if self.project:
+			amount = frappe.db.sql(""" select ifnull(sum(sed.amount), 0)
+				from
+					`tabStock Entry` se, `tabStock Entry Detail` sed
+				where
+					se.docstatus = 1 and se.project = %s and sed.parent = se.name and se.name = %s""", (self.project, self.name), as_list=1)
+
+			amount = amount[0][0] if amount else 0
+			
+			total_overall_project_cost = frappe.db.get_value("Project", self.project, "total_overall_project_cost")
+			doc = frappe.get_doc("Project", self.project)
+			
+			if not self.docstatus == 2:
+				doc.append("transaction_details", {
+					"posting_date": self.posting_date,
+					"invoice_no": self.name,
+					"amount": amount
+				})
+				total_overall_project_cost += amount
+				doc.total_overall_project_cost = total_overall_project_cost
+				doc.save(ignore_permissions = True)
+			elif self.docstatus == 2:
+				doc.append("transaction_details", {
+					"posting_date": self.posting_date,
+					"invoice_no": self.name,
+					"amount": amount
+				})
+				total_overall_project_cost -= amount
+				doc.total_overall_project_cost = total_overall_project_cost
+				doc.save(ignore_permissions = True)
+
+				frappe.db.sql(""" delete from `tabTransaction Details` where invoice_no = %s """, self.name)
+
+			# frappe.db.set_value('Project', self.project, 'total_consumed_material_cost', amount)
+			
 	def validate_issue_to(self):
 		for d in self.get("items"):
 			if d.issue_to_employee and (d.issue_to_desuup or d.issue_to_others) or (d.issue_to_desuup and d.issue_to_others):
@@ -2302,7 +2340,23 @@ class StockEntry(StockController):
 		self.set_transfer_qty()
 		self.set_actual_qty()
 		self.calculate_rate_and_amount()
-
+	
+	@frappe.whitelist()
+	def get_details(self):
+		# from erpnext.stock.stock_ledger import get_valuation_rate
+		for d in self.get('items'):
+			item_det = frappe.get_doc("Item", d.item_code)
+			d.issued_desuup_name = frappe.get_value("Desuup", d.issue_to_desuup, "desuup_name")
+			d.item_name = item_det.item_name
+			# d.warehouse = cstr(d.s_warehouse) or cstr(d.t_warehouse)
+			d.uom = item_det.stock_uom
+			d.transfer_qty = d.qty
+			d.basic_rate = get_valuation_rate(d.item_code, d.s_warehouse, self.doctype, self.name, allow_zero_rate=False) if get_valuation_rate(d.item_code, d.s_warehouse, self.doctype, self.name, allow_zero_rate=False) else 1
+			d.valuation_rate = d.basic_rate
+			d.basic_amount = flt(d.basic_rate) * flt(d.transfer_qty)
+			d.amount = flt(d.valuation_rate) * flt(d.transfer_qty)
+			if not d.expense_account:
+				d.expense_account = frappe.db.get_value("Item Default", {"parent": item_det.name}, ["expense_account"])
 
 @frappe.whitelist()
 def move_sample_to_retention_warehouse(company, items):
