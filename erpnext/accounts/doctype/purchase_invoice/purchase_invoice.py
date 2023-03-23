@@ -353,18 +353,18 @@ class PurchaseInvoice(BuyingController):
 							frappe.msgprint(msg, title=_("Expense Head Changed"))
 
 						item.expense_account = stock_not_billed_account
-
-			elif item.is_fixed_asset and not is_cwip_accounting_enabled(asset_category):
-				asset_category_account = get_asset_category_account(
-					"fixed_asset_account", item=item.item_code, company=self.company
-				)
-				if not asset_category_account:
-					form_link = get_link_to_form("Asset Category", asset_category)
-					throw(
-						_("Please set Fixed Asset Account in {} against {}.").format(form_link, self.company),
-						title=_("Missing Account"),
-					)
-				item.expense_account = asset_category_account
+			""" Biren. below code commented as it was picking expense account from asset category but it should use asset received not billed account """
+			# elif item.is_fixed_asset and not is_cwip_accounting_enabled(asset_category):
+			# 	asset_category_account = get_asset_category_account(
+			# 		"fixed_asset_account", item=item.item_code, company=self.company
+			# 	)
+			# 	if not asset_category_account:
+			# 		form_link = get_link_to_form("Asset Category", asset_category)
+			# 		throw(
+			# 			_("Please set Fixed Asset Account in {} against {}.").format(form_link, self.company),
+			# 			title=_("Missing Account"),
+			# 		)
+			# 	item.expense_account = asset_category_account
 			elif item.is_fixed_asset and item.pr_detail:
 				item.expense_account = asset_received_but_not_billed
 			elif not item.expense_account and for_validate:
