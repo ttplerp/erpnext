@@ -18,7 +18,7 @@ frappe.query_reports["Stock Issue Report"] = {
 			"label": __("From Date"),
 			"fieldtype": "Date",
 			"width": "80",
-			"default": sys_defaults.year_start_date,
+			"default": frappe.defaults.get_user_default("year_start_date"),
 		},
 
 		{
