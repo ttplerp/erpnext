@@ -1,13 +1,19 @@
 {
  "actions": [],
- "autoname": "Prompt",
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "field:entry_code",
  "creation": "2019-03-13 16:23:46.636769",
  "doctype": "DocType",
+ "document_type": "System",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "entry_code",
+  "entry_name",
   "purpose",
-  "add_to_transit"
+  "add_to_transit",
+  "description"
  ],
  "fields": [
   {
@@ -26,13 +32,33 @@
    "fieldname": "add_to_transit",
    "fieldtype": "Check",
    "label": "Add to Transit"
+  },
+  {
+   "fieldname": "entry_code",
+   "fieldtype": "Data",
+   "label": "Entry code",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "entry_name",
+   "fieldtype": "Data",
+   "label": "Entry Name",
+   "reqd": 1
   }
  ],
  "links": [],
- "modified": "2021-05-21 11:27:01.144110",
+ "modified": "2023-02-08 08:16:55.906672",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Entry Type",
+ "name_case": "UPPER CASE",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
@@ -48,8 +74,6 @@
    "write": 1
   },
   {
-   "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
@@ -60,8 +84,6 @@
    "write": 1
   },
   {
-   "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
@@ -72,8 +94,6 @@
    "write": 1
   },
   {
-   "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
@@ -84,8 +104,9 @@
    "write": 1
   }
  ],
- "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "ASC",
+ "states": [],
+ "title_field": "entry_name",
  "track_changes": 1
 }
