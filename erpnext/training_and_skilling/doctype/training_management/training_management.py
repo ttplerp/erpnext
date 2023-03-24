@@ -33,7 +33,7 @@ class TrainingManagement(Document):
 	def notify_lo(self):
 		receipients = []
 		args = self.as_dict()
-		lo_emails = frappe.get_list("Laison Officer", filters={"parent":self.training_center}, fields=['email'])
+		lo_emails = frappe.db.sql(""" select email from `tabLaison Officer` where parent='{}' """.format(self.training_center), as_dict=1)
 		if lo_emails:
 			receipients = [a['email'] for a in lo_emails]
 		
