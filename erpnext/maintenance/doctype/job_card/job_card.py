@@ -123,8 +123,8 @@ class JobCard(AccountsController):
 
 		je.update({
 			"doctype": "Journal Entry",
-			"voucher_type": "Journal Entry",
-			"naming_series": "Journal Voucher",
+			"voucher_type": "Bank Entry",
+			"naming_series": "Bank Payment Voucher",
 			"title": "Job Card - " + self.name,
 			"user_remark": remarks if remarks else "Note: " + "Job Card - " + self.name,
 			"posting_date": self.posting_date,
