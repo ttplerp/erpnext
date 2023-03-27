@@ -12,12 +12,14 @@
   "cost_center",
   "repair_and_services_type",
   "out_source",
-  "credit_account",
   "status",
+  "bill_no",
+  "bill_date",
   "column_break_7",
   "posting_date",
   "party_type",
   "party",
+  "credit_account",
   "section_break_2",
   "items",
   "checked_by",
@@ -267,12 +269,22 @@
   {
    "fieldname": "column_break_33",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "bill_no",
+   "fieldtype": "Data",
+   "label": "Bill No"
+  },
+  {
+   "fieldname": "bill_date",
+   "fieldtype": "Date",
+   "label": "Bill Date"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-08 20:23:12.508090",
+ "modified": "2023-03-27 08:37:48.671281",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Repair And Service Invoice",
