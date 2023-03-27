@@ -61,7 +61,7 @@ class JobCard(AccountsController):
 		self.update_breakdownreport()
 
 	def before_cancel(self):
-		check_uncancelled_linked_doc(self.doctype, self.name)
+		# check_uncancelled_linked_doc(self.doctype, self.name)
 		cl_status = frappe.db.get_value("Journal Entry", self.journal_entry, "docstatus")
 		if cl_status and cl_status != 2:
 			frappe.throw("You need to cancel the journal entry related to this job card first!")
@@ -277,8 +277,8 @@ class JobCard(AccountsController):
 		consume.submit()
 
 	def cancel_budget_entry(self):
-		frappe.db.sql("delete from `tabCommitted Budget` where po_no = %s", self.name)
-		frappe.db.sql("delete from `tabConsumed Budget` where po_no = %s", self.name)
+		frappe.db.sql("delete from `tabCommitted Budget` where reference_no = %s", self.name)
+		frappe.db.sql("delete from `tabConsumed Budget` where reference_no = %s", self.name)
 			
 	def update_reservation(self):
 		frappe.db.sql("update `tabEquipment Reservation Entry` set to_date = %s, to_time = %s where docstatus = 1 and ehf_name = %s", (self.finish_date, self.job_out_time, self.break_down_report))
