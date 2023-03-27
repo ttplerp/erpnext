@@ -3,86 +3,143 @@
 
 from __future__ import unicode_literals
 import frappe
-from erpnext.accounts.accounts_custom_functions import get_child_cost_centers,get_period_date
-from frappe.utils import flt, rounded, cint
+from frappe import _
+from frappe.utils import flt, rounded, cint,getdate, nowdate
 from erpnext.custom_utils import get_production_groups
-from erpnext.accounts.doctype.sales_target.sales_target import get_target_value
+from erpnext.accounts.report.financial_statements import get_columns,get_period_list
 
 def execute(filters=None):
-	build_filters(filters)
-	columns = get_columns(filters)
-	data = get_data(filters)
+	data = []
+	period_list = get_period_list(
+					from_fiscal_year    = filters.fiscal_year,
+					to_fiscal_year      = filters.fiscal_year,
+					period_start_date   = getdate(str(filters.fiscal_year + '-01-01')),
+					period_end_date     = getdate(str(filters.fiscal_year + '-12-31')),
+					filter_based_on     = filters.filter_based_on,
+					periodicity         = filters.periodicity,
+					company             = filters.company)
+	columns = get_columns(filters, period_list)
+	data 	= get_data(filters, period_list)
+	# chart removed as it not required by cilent
+	# chart 	= get_chart_data(filters, columns,data,period_list)
 	return columns, data
 
-def build_filters(filters):
-	filters.is_company = frappe.db.get_value("Cost Center", filters.cost_center, "is_company")
-	filters.from_date, filters.to_date = get_period_date(filters.fiscal_year, filters.report_period, filters.cumulative)
-		
-def get_data(filters):
-	data = []
-	cc_condition = get_cc_conditions(filters)
-	# conditions = get_filter_conditions(filters)
-	group_by = get_group_by(filters)
-	order_by = get_order_by(filters)
-	abbr = " - " + str(frappe.db.get_value("Company", filters.company, "abbr"))
+def get_chart_data(filters, columns, data, period_list):
+	labels = []
+	values = []
+	for d in data:
+		if d.get("particulars") == filters.chart_base_on:
+			for p in period_list:
+				values.append(flt(d[str(p.key)],2))
+				labels.append(p.label)
+	chart = {"data": {"labels": labels, 
+			"datasets":[{"name": _(filters.chart_base_on), "values": values}]},
+			"type":"bar",
+			"height": 150,
+			"barOptions": { "spaceRatio": 0.1}
+			}
+	return chart
 
-	query = """select pe.cost_center, 
-				pe.branch, pe.item, 
-				cc.parent_cost_center as region 
-			from `tabSales Target` pe, 
-			`tabCost Center` cc 
-			where cc.name = pe.cost_center 
-			and pe.fiscal_year = {0} {1} {2} {3}""".format(filters.fiscal_year, cc_condition, group_by, order_by)
-	for a in frappe.db.sql(query, as_dict=1):
-		if filters.branch:
-			target = get_target_value("Sales", a.item,filters.fiscal_year, filters.from_date, filters.to_date, a.region)
-			row = [a.item, target]
-			cond = " and item = '{0}'".format(a.item)
-	
-		total = 0
-		qty = frappe.db.sql("select sum(pe.qty) from `tabSales Invoice Item` pe, `tabSales Invoice` si where pe.parent = si.name and si.docstatus = 1 and pe.item_code = '{0}' and si.posting_date between '{1}' and '{2}'".format(filters.item, filters.from_date, filters.to_date))
-		qty = qty and qty[0][0] or 0
-		row.append(rounded(qty, 2))
-		total += flt(qty)
-		row.insert(2, rounded(total, 2))
-		if target == 0:
-			target = 1
-		row.insert(3, rounded(100 * total/target, 2))
-		data.append(row)
+def get_data(filters, period_list):
+	data = []
+	items = get_items(filters)
+	if not items:
+		frappe.throw("No Sales Target found for {} in Fiscal Year {}".format(frappe.bold(filters.item_sub_group),frappe.bold(filters.fiscal_year)))
+	target_qty_row = frappe._dict({
+		"particulars":"Target Qty(MT)", "total":0})
+	achieved_qty_row = frappe._dict({
+		"particulars":"Achieved Qty (MT)","total":0})
+	progress = frappe._dict({
+		"particulars":"Progress(%)","total":0
+	})
+	cumulative_sale_row=frappe._dict({
+		"particulars":"Cumulative (Sales)", "total":0
+	})
+	cumulative_progress_row=frappe._dict({
+		"particulars":"Cumulative Sales Progress(%)", "total":0
+	})
+	for p in period_list:
+		# get targeted qty
+		target_qty = frappe.db.sql('''
+			SELECT SUM(IFNULL(si.target_qty,0)), s.total_target_qty FROM `tabSales Target` s INNER JOIN `tabSales Target Item` si
+			ON si.parent = s.name
+			WHERE s.item_sub_group = '{item_sub_group}' AND s.fiscal_year = '{fiscal_year}' 
+			AND si.from_date >= '{from_date}' AND si.to_date <= '{to_date}' AND s.docstatus = 1
+			'''.format(item_sub_group = filters.item_sub_group, fiscal_year = filters.fiscal_year, from_date = p.from_date, to_date=p.to_date ))
+		
+		if target_qty[0][0]:
+			target_qty_row[str(p.key)] = target_qty[0][0]
+			target_qty_row["total"] = target_qty[0][1]
+		else:
+			target_qty_row[str(p.key)] = 0
+
+		# get achieved qty
+		achieved_qty = frappe.db.sql('''
+			SELECT SUM(si.accepted_qty) FROM `tabSales Invoice` s INNER JOIN `tabSales Invoice Item` si ON s.name = si.parent
+			WHERE posting_date BETWEEN '{from_date}' AND '{to_date}'
+			AND s.docstatus = 1 AND s.is_return = 0
+			AND si.item_code IN {items}
+		'''.format(from_date = p.from_date, to_date=p.to_date, items = tuple(items)))
+
+		if achieved_qty[0][0]:
+			# acieved qty
+			achieved_qty_row[str(p.key)] = achieved_qty[0][0]
+			achieved_qty_row["total"] += flt(achieved_qty_row[str(p.key)] )
+
+			# calculate cumulative sale 
+			cumulative_sale_row[str(p.key)] = achieved_qty_row["total"]
+			cumulative_sale_row['total'] = cumulative_sale_row[str(p.key)]
+
+			# calculate cumulative progress 
+			cumulative_progress_row[str(p.key)] = flt(cumulative_sale_row[str(p.key)]) / flt(target_qty_row["total"]) * 100
+			cumulative_progress_row["total"] += flt(cumulative_progress_row[str(p.key)])
+		else:
+			achieved_qty_row[str(p.key)] = 0
+			cumulative_sale_row[str(p.key)] = cumulative_sale_row["total"]
+			cumulative_progress_row[str(p.key)] = 0
+
+		# calculate progress
+		if target_qty[0][0]:
+			progress[str(p.key)] = flt(achieved_qty_row[str(p.key)])/flt(target_qty[0][0]) * 100
+			progress["total"] += flt(progress[str(p.key)])
+		else:
+			progress[str(p.key)] = 0
+
+	data.append(target_qty_row)
+	data.append(achieved_qty_row)
+	data.append(progress)
+	data.append(cumulative_sale_row)
+	data.append(cumulative_progress_row)
 
 	return data
+def get_items(filters):
+	items = []
+	for i in frappe.db.sql('''select s.item_code from `tabSubgroup Item` s, `tabSales Target` t 
+			where t.item_sub_group = '{}' and t.fiscal_year = '{}' and t.docstatus=1'''.format(filters.item_sub_group,filters.fiscal_year), as_dict=True):
+		items.append(i.item_code)
+	return items
 
-def get_group_by(filters):
-	if filters.branch:
-		group_by = " group by branch, item"
-	else:
-		if filters.is_company:
-			group_by = " group by region"
-		else:
-			group_by = " group by branch, item"
-	return group_by
+def get_columns(filters , period_list):
+	columns = [
+		{
+			"fieldname": "particulars",
+			"label": _("{}".format(filters.item_sub_group)),
+			"fieldtype": "Data",
+			"width": 230
+		}
+	]
 
-def get_order_by(filters):
-	return " order by branch, item"
-
-def get_cc_conditions(filters):
-	if not filters.cost_center:
-		return " and pe.docstatus = 1"
-	if filters.item:
-		condition = " and pe.item = {}".format(filters.item)
-	return condition
-	
-
-def get_columns(filters):
-	if filters.branch:
-		columns = ["Item:Link/Item:150", "Target Qty:Float:120", "Achieved Qty:Float:120", "Ach. Percent:Percent:100"]
-	else:
-		if filters.is_company:
-			columns = ["Region:150", "Target Qty:Float:120", "Achieved Qty:Float:120", "Ach. Percent:Percent:100"]
-		else:
-			columns = ["Branch:Link/Branch:150", "Target Qty:Float:120", "Achieved Qty:Float:120", "Ach. Percent:Percent:100"]
-
-	if filters.production_group:
-		columns.append(str(str(frappe.db.get_value("Item", filters.production_group, "item_name")) + ":Float:100"))
-	
+	for period in period_list:
+		columns.append({
+			"fieldname": period.key,
+			"label": period.label,
+			"fieldtype": "Float",
+			"width": 130
+		})
+	columns.append({
+			"fieldname": "total",
+			"label": "Total",
+			"fieldtype": "Float",
+			"width": 100
+		})
 	return columns

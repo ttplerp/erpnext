@@ -13,78 +13,58 @@ frappe.query_reports["Sales Progress Report"] = {
 			"reqd": 1
 		},
 		{
-			"fieldname": "cost_center",
-			"label": ("Cost Center"),
+			"fieldname": "item_sub_group",
+			"label": ("Item Sub Group"),
 			"fieldtype": "Link",
- 			"options": "Cost Center",
-			"get_query": function() {
-				var company = frappe.query_report.get_filter_value("company");
-				return {
-					'doctype': "Cost Center",
-					'filters': [
-						['disabled', '!=', '1'], 
-						['company', '=', company]
-					]
-				}
-			},
-			"on_change": function(query_report) {
-				var cost_center = query_report.get_filter_value("cost_center");
-				if (!cost_center) {
-					query_report.set_filter_value("branch","");
-					query_report.refresh();
-					return;
-				}
-				frappe.call({
-					method: "erpnext.custom_utils.get_branch_from_cost_center",
-					args: {
-						"cost_center": cost_center,
-					},
-					callback: function(r) {
-						query_report.set_filter_value("branch",r.message);
-						query_report.refresh();
-					}
-				})
-			},
+ 			"options": "Item Group",
 			"reqd": 1,
-		},
-		{
-			"fieldname": "branch",
-			"label": ("Branch"),
-			"fieldtype": "Link",
- 			"options": "Branch",
-			"read_only": 1,
-			"get_query": function() {
-				var company = frappe.query_report.get_filter_value("company");
-				return {"doctype": "Branch", "filters": {"company": company, "is_disabled": 0}}
-			}
+			"get_query": function () {
+				return {
+					filters: {
+						"parent_item_group": "Mines Product",
+						"is_sub_group":1
+					}
+				};
+			},
 		},
 		{
 			"fieldname": "fiscal_year",
 			"label": ("Fiscal Year"),
 			"fieldtype": "Link",
  			"options": "Fiscal Year",
-			"reqd": 1
-		},
-		{
-			"fieldname": "report_period",
-			"label": ("Report Period"),
-			"fieldtype": "Link",
- 			"options": "Report Period",
-			"reqd": 1
-		},
-		{
-			"fieldname": "item",
-			"label": ("Material Code"),
-			"fieldtype": "Link",
- 			"options": "Item",
 			"reqd": 1,
-			"is_sales_item": 1
+			"default": frappe.defaults.get_user_default("fiscal_year"),
 		},
 		{
-			"fieldname": "cumulative",
-			"label": "Cumulative",
-			"fieldtype": "Check",
-			"default": 0
-		}
-	]
+			"fieldname": "periodicity",
+			"label": ("Periodicity"),
+			"fieldtype": "Select",
+ 			"options": ["Monthly","Quarterly","Half-Yearly","Yearly"],
+			"reqd": 1,
+			"default":"Monthly"
+		},
+		{
+			"fieldname": "filter_based_on",
+			"label": __("Filter Base On"),
+			"fieldtype": "Select",
+			"options": ["Fiscal Year","Date Range"],
+			"default":"Fiscal Year",
+			"hidden":1
+		},
+		// {
+		// 	"fieldname": "chart_base_on",
+		// 	"label": __("Chart Base On"),
+		// 	"fieldtype": "Select",
+		// 	"options": ["Target Qty(MT)","Achieved Qty (MT)","Progress(%)","Cumulative (Sales)","Cumulative Sales Progress(%)"],
+		// 	"default":"Progress(%)",
+		// },
+		
+	],
+	"formatter": function(value, row, column, data, default_formatter) {
+		value = default_formatter(value, row, column, data);
+		if (data && column.id == "particulars" ) {
+			value = "<span style='font-weight:bold'; font-style: italic !important;'>" + value + "</span>";
+			}
+		return value;
+	},
 };

@@ -3,86 +3,71 @@
 
 frappe.ui.form.on('Sales Target', {
 	refresh: function(frm) {
-		cur_frm.set_query("item", function() {
+		cur_frm.set_query("item_sub_group", function() {
 			return {
 				"filters": {
-					"item_group": "Mines Product",
+					"parent_item_group": "Mines Product",
+					"is_sub_group":1
 				}
 			};
 		});
+	},
+	item_sub_group:function(frm){
+		frm.events.get_months(frm)
+		frm.clear_table("items");
+		frm.refresh_field("items")
+	},
+	fiscal_year:function(frm){
+		frm.events.get_months(frm)
+	},
+	get_months:function(frm){
+		frappe.call({
+			method:"get_months",
+			doc:frm.doc,
+			callback:function(r){
+				frm.doc.targets = []
+				$.each(r.message, function(_i, e){
+					let target 			= frm.add_child("targets");
+					target.month 		= e.month;
+					target.month_no 	= e.month_no;
+					target.target_qty 	= e.target_qty
+					target.uom 			= e.uom
+					target.from_date 	= e.from_date
+					target.to_date 		= e.to_date
+				})
+				frm.refresh_field("targets")
+			}
+		})
+	},
+	get_item:function(frm){
+		frappe.call({
+			method:"get_item",
+			doc:frm.doc,
+			callback:function(r){
+				frm.doc.items = []
+				$.each(r.message, function(_i, e){
+					let item = frm.add_child("items");
+					item.item_code = e.item_code
+					item.item_name = e.item_name
+					item.item_sub_group = e.item_sub_group
+					item.item_group = e.item_group
+				})
+				frm.refresh_field("items")
+			}
+		})
 	}
 });
 
-frappe.ui.form.on("Sales Target Item", {
-	refresh: function(frm, cdt, cdn) {
-		cur_frm.set_query("production_group", function() {
-			return {
-				"filters": {
-					"item_group": "Mines Product",
-				}
-			};
-		});
-	},
-	"jan": function(frm, cdt, cdn) {
-		calculate_total(frm, cdt, cdn)
-	},
-	"feb": function(frm, cdt, cdn) {
-		calculate_total(frm, cdt, cdn)
-	},
-	"march": function(frm, cdt, cdn) {
-		calculate_total(frm, cdt, cdn)
-	},
-	"april": function(frm, cdt, cdn){
-		calculate_total(frm, cdt, cdn)
-	},
-	"may": function(frm, cdt, cdn) {
-                calculate_total(frm, cdt, cdn)
-	},
-	"june": function(frm, cdt, cdn) {
-			calculate_total(frm, cdt, cdn)
-	},
-	"july": function(frm, cdt, cdn) {
-			calculate_total(frm, cdt, cdn)
-	},
-	"august": function(frm, cdt, cdn){
-			calculate_total(frm, cdt, cdn)
-	},
-	"september": function(frm, cdt, cdn) {
-			calculate_total(frm, cdt, cdn)
-	},
-	"october": function(frm, cdt, cdn) {
-			calculate_total(frm, cdt, cdn)
-	},
-	"november": function(frm, cdt, cdn) {
-			calculate_total(frm, cdt, cdn)
-	},
-	"december": function(frm, cdt, cdn){
-			calculate_total(frm, cdt, cdn)
+frappe.ui.form.on('Sales Target Item', {
+	target_qty:function(frm){
+		calculate_total_qty(frm)
 	}
-});
-function calculate_total(frm, cdt, cdn){
-	var item = locals[cdt][cdn];
-	frappe.call({
-		method: "erpnext.accounts.doctype.sales_target.sales_target.calculate_qty",
-		args: {
-			"jan": item.jan,
-			"feb": item.feb,
-			"march": item.march,
-			"april": item.april,
-			"may": item.may,
-			"june": item.june,
-			"july": item.july,
-			"august": item.august,
-			"september": item.september,
-			"october": item.october,
-			"november": item.november,
-			"december": item.december
-		},
-		callback: function(r) {
-			if(r.message) {
-				frappe.model.set_value(cdt, cdn, "quantity", flt(r.message))
-				refresh_field('quantity');
-			}
-		} 
+})
+var calculate_total_qty = function(frm){
+	let total_qty = 0
+	$.each(frm.doc.targets, function(_i,e){
+		total_qty += flt(e.target_qty)
 	})
+	frm.set_value("total_target_qty",total_qty)
+	frm.refresh_field("total_target_qty")
 }

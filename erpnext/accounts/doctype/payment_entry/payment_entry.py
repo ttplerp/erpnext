@@ -1293,7 +1293,6 @@ def get_outstanding_reference_documents(args):
 				)
 		if d.voucher_type in ("Purchase Invoice"):
 			d["bill_no"] = frappe.db.get_value(d.voucher_type, d.voucher_no, "bill_no")
-
 	# Get all SO / PO which are not fully billed or against which full advance not paid
 	orders_to_be_billed = []
 	orders_to_be_billed = get_orders_to_be_billed(
@@ -1307,16 +1306,16 @@ def get_outstanding_reference_documents(args):
 	)
 
 	# Get negative outstanding sales /purchase invoices
-	negative_outstanding_invoices = []
-	if args.get("party_type") != "Employee" and not args.get("voucher_no"):
-		negative_outstanding_invoices = get_negative_outstanding_invoices(
-			args.get("party_type"),
-			args.get("party"),
-			args.get("party_account"),
-			party_account_currency,
-			company_currency,
-			condition=condition,
-		)
+	# negative_outstanding_invoices = []
+	# if args.get("party_type") != "Employee" and not args.get("voucher_no"):
+	# 	negative_outstanding_invoices = get_negative_outstanding_invoices(
+	# 		args.get("party_type"),
+	# 		args.get("party"),
+	# 		args.get("party_account"),
+	# 		party_account_currency,
+	# 		company_currency,
+	# 		condition=condition,
+	# 	)
 	# commented as -ve outstanding was not required
 	# data = negative_outstanding_invoices + outstanding_invoices + orders_to_be_billed
 	data = outstanding_invoices + orders_to_be_billed

@@ -1413,7 +1413,7 @@ frappe.ui.form.on('Payment Entry', {
 var create_custom_buttons = function(frm){
 	var status = ["Failed", "Upload Failed", "Cancelled", "Payment Failed", "Payment Cancelled"];
 
-	if(frm.doc.docstatus == 1 && frm.doc.payment_type == "Pay" && frm.doc.party_type == 'Supplier' /*&& !frm.doc.cheque_no*/){
+	if(frm.doc.docstatus == 1 && frm.doc.payment_type == "Pay" && (frm.doc.party_type == 'Supplier' || frm.doc.party_type == 'Employee') ){
 		if(!frm.doc.bank_payment || status.includes(frm.doc.payment_status) ){
 			frm.page.set_primary_action(__('Process Payment'), () => {
 				frappe.model.open_mapped_doc({
