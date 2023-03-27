@@ -82,6 +82,8 @@ class JobCard(AccountsController):
 		bdr = frappe.get_doc("Break Down Report", self.break_down_report)
 		if bdr.job_card == self.name:
 			bdr.db_set("job_card", None)
+			bdr.db_set("job_card_status", None)
+			frappe.db.commit()
 	
 	def get_default_settings(self):
 		goods_account = frappe.db.get_single_value("Maintenance Accounts Settings", "default_goods_account")
