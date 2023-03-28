@@ -144,12 +144,14 @@ def get_columns(filters , period_list):
 			"fieldname": period.key,
 			"label": period.label,
 			"fieldtype": "Float",
-			"width": 130
+			"width": 130,
+			"precision":2
 		})
 	columns.append({
 			"fieldname": "total",
 			"label": "Total",
 			"fieldtype": "Float",
-			"width": 100
+			"width": 100,
+			"precision":2
 		})
 	return columns
