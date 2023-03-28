@@ -47,7 +47,7 @@ def get_data(filters, period_list):
 	if len(items) > 1:
 		item_cond = " AND si.item_code IN {items}".format(items = tuple(items))
 	else :
-		item_cond = " AND si.item_code = '{item}'".format(item = items[0][0])
+		item_cond = " AND si.item_code = '{item}'".format(item = items[0])
 
 	if not items:
 		frappe.throw("No Sales Target found for {} in Fiscal Year {}".format(frappe.bold(filters.item_sub_group),frappe.bold(filters.fiscal_year)))
