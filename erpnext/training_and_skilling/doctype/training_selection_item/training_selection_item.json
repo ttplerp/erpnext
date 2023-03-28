@@ -215,6 +215,7 @@
    "fieldname": "update_deployment",
    "fieldtype": "Check",
    "label": "Update Deployment",
+   "no_copy": 1,
    "read_only": 1
   },
   {
@@ -238,6 +239,7 @@
    "fieldtype": "Select",
    "in_standard_filter": 1,
    "label": "Status",
+   "no_copy": 1,
    "options": "Registered\nWithdrawn\nDisqualified\nBarred\nShortlisted\nStandby",
    "read_only": 1
   },
@@ -256,12 +258,14 @@
    "fieldname": "barred_list",
    "fieldtype": "Check",
    "label": "Checked If Desuup is in Barred List",
+   "no_copy": 1,
    "read_only": 1
   },
   {
    "fieldname": "course_pre_requisite",
    "fieldtype": "Select",
    "label": "Meeting of Prerequisites",
+   "no_copy": 1,
    "options": "\nYes\nNo",
    "read_only": 1
   },
@@ -270,6 +274,7 @@
    "fieldname": "maximum_three_core_skill_check",
    "fieldtype": "Check",
    "label": "Eligibility check to avail a maximum of three core skills",
+   "no_copy": 1,
    "read_only": 1
   },
   {
@@ -282,12 +287,14 @@
    "fieldtype": "Float",
    "in_list_view": 1,
    "label": "Total Point",
+   "no_copy": 1,
    "read_only": 1
   },
   {
    "fieldname": "training_attended",
    "fieldtype": "Int",
    "label": "No of Training Attended",
+   "no_copy": 1,
    "read_only": 1
   },
   {
@@ -298,6 +305,7 @@
    "fieldname": "point_remark",
    "fieldtype": "Small Text",
    "label": "Deployment Point Remark",
+   "no_copy": 1,
    "read_only": 1
   },
   {
@@ -320,6 +328,7 @@
    "fieldname": "selection_rank",
    "fieldtype": "Int",
    "label": "Rank",
+   "no_copy": 1,
    "read_only": 1
   },
   {
@@ -348,9 +357,8 @@
   {
    "allow_on_submit": 1,
    "fieldname": "current_location",
-   "fieldtype": "Link",
-   "label": "Current Location",
-   "options": "Dzongkhag"
+   "fieldtype": "Data",
+   "label": "Current Location"
   },
   {
    "allow_on_submit": 1,
@@ -391,6 +399,7 @@
    "fieldname": "training_attended_detail",
    "fieldtype": "Small Text",
    "label": "Training Attended Detail",
+   "no_copy": 1,
    "read_only": 1
   },
   {
@@ -401,7 +410,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-02-26 14:55:29.592212",
+ "modified": "2023-03-28 15:39:05.152776",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Selection Item",
