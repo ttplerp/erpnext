@@ -268,7 +268,7 @@ class TrainingSelection(Document):
 			cond = ""
 			course_doc = frappe.get_doc("Course", self.course)
 			if course_doc.prerequisite_courses:
-				cond = " and m.course in (selection course from `tabPrerequisite Course` where parent = '{}')".format(self.course)
+				cond = " and m.course in (select course from `tabPrerequisite Course` where parent = '{}')".format(self.course)
 			
 			for a in self.get("item"):
 				status = a.status
