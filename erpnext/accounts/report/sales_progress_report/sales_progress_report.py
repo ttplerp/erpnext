@@ -42,7 +42,13 @@ def get_chart_data(filters, columns, data, period_list):
 
 def get_data(filters, period_list):
 	data = []
+	item_cond = ''
 	items = get_items(filters)
+	if len(items) > 1:
+		item_cond = " AND si.item_code IN {items}".format(items = tuple(items))
+	else :
+		item_cond = " AND si.item_code = '{item}'".format(item = items[0][0])
+
 	if not items:
 		frappe.throw("No Sales Target found for {} in Fiscal Year {}".format(frappe.bold(filters.item_sub_group),frappe.bold(filters.fiscal_year)))
 	target_qty_row = frappe._dict({
@@ -78,8 +84,8 @@ def get_data(filters, period_list):
 			SELECT SUM(si.accepted_qty) FROM `tabSales Invoice` s INNER JOIN `tabSales Invoice Item` si ON s.name = si.parent
 			WHERE posting_date BETWEEN '{from_date}' AND '{to_date}'
 			AND s.docstatus = 1 AND s.is_return = 0
-			AND si.item_code IN {items}
-		'''.format(from_date = p.from_date, to_date=p.to_date, items = tuple(items)))
+			{item_cond}
+		'''.format(from_date = p.from_date, to_date=p.to_date, item_cond = item_cond))
 			
 		if achieved_qty[0][0]:
 			# acieved qty
