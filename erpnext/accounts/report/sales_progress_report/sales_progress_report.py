@@ -74,8 +74,8 @@ def get_data(filters, period_list):
 			'''.format(item_sub_group = filters.item_sub_group, fiscal_year = filters.fiscal_year, from_date = p.from_date, to_date=p.to_date ))
 		
 		if target_qty[0][0]:
-			target_qty_row[str(p.key)] = target_qty[0][0]
-			target_qty_row["total"] = target_qty[0][1]
+			target_qty_row[str(p.key)] = flt(target_qty[0][0],2)
+			target_qty_row["total"] = flt(target_qty[0][1],2)
 		else:
 			target_qty_row[str(p.key)] = 0
 
@@ -89,25 +89,25 @@ def get_data(filters, period_list):
 			
 		if achieved_qty[0][0]:
 			# acieved qty
-			achieved_qty_row[str(p.key)] = achieved_qty[0][0]
-			achieved_qty_row["total"] += flt(achieved_qty_row[str(p.key)] )
+			achieved_qty_row[str(p.key)] = flt(achieved_qty[0][0],2)
+			achieved_qty_row["total"] += flt(achieved_qty_row[str(p.key)],2)
 
 			# calculate cumulative sale 
-			cumulative_sale_row[str(p.key)] = achieved_qty_row["total"]
-			cumulative_sale_row['total'] = cumulative_sale_row[str(p.key)]
+			cumulative_sale_row[str(p.key)] = flt(achieved_qty_row["total"],2)
+			cumulative_sale_row['total'] = flt(cumulative_sale_row[str(p.key)],2)
 
 			# calculate cumulative progress 
-			cumulative_progress_row[str(p.key)] = flt(cumulative_sale_row[str(p.key)]) / flt(target_qty_row["total"]) * 100
-			cumulative_progress_row["total"] += flt(cumulative_progress_row[str(p.key)])
+			cumulative_progress_row[str(p.key)] = flt(flt(cumulative_sale_row[str(p.key)]) / flt(target_qty_row["total"]) * 100,2)
+			cumulative_progress_row["total"] += flt(cumulative_progress_row[str(p.key)],2)
 		else:
 			achieved_qty_row[str(p.key)] = 0
-			cumulative_sale_row[str(p.key)] = cumulative_sale_row["total"]
+			cumulative_sale_row[str(p.key)] = flt(cumulative_sale_row["total"],2)
 			cumulative_progress_row[str(p.key)] = 0
 
 		# calculate progress
 		if target_qty[0][0]:
-			progress[str(p.key)] = flt(achieved_qty_row[str(p.key)])/flt(target_qty[0][0]) * 100
-			progress["total"] += flt(progress[str(p.key)])
+			progress[str(p.key)] = flt(flt(achieved_qty_row[str(p.key)])/flt(target_qty[0][0]) * 100,2)
+			progress["total"] += flt(progress[str(p.key)],2)
 		else:
 			progress[str(p.key)] = 0
 
