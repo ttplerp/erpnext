@@ -80,7 +80,7 @@ def get_data(filters, period_list):
 			AND s.docstatus = 1 AND s.is_return = 0
 			AND si.item_code IN {items}
 		'''.format(from_date = p.from_date, to_date=p.to_date, items = tuple(items)))
-
+			
 		if achieved_qty[0][0]:
 			# acieved qty
 			achieved_qty_row[str(p.key)] = achieved_qty[0][0]
@@ -114,8 +114,12 @@ def get_data(filters, period_list):
 	return data
 def get_items(filters):
 	items = []
-	for i in frappe.db.sql('''select s.item_code from `tabSubgroup Item` s, `tabSales Target` t 
-			where t.item_sub_group = '{}' and t.fiscal_year = '{}' and t.docstatus=1'''.format(filters.item_sub_group,filters.fiscal_year), as_dict=True):
+	for i in frappe.db.sql('''select s.item_code, s.item_name, t.name 
+						from `tabSales Target` t inner join `tabSubgroup Item` s 
+						on t.name = s.parent  
+						where t.item_sub_group = '{}' 
+						and t.fiscal_year = '{}' 
+						and t.docstatus=1'''.format(filters.item_sub_group,filters.fiscal_year), as_dict=True):
 		items.append(i.item_code)
 	return items
 
