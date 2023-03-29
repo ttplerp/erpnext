@@ -50,7 +50,7 @@ class TDSRemittance(AccountsController):
 
 	def make_gl_entries(self):
 		gl_entries   = []
-		tds_account  = get_tds_account(self.tax_withholding_category)
+		tds_account  = get_tds_account(self.tax_withholding_category, self.company)
 		default_business_activity = frappe.db.get_value("Business Activity", {"is_default": 1})
 
 		if flt(self.total_tds) > 0:
