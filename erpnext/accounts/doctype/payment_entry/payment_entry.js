@@ -16,6 +16,8 @@ frappe.ui.form.on('Payment Entry', {
 		}
 
 		erpnext.accounts.dimensions.setup_dimension_filters(frm, frm.doctype);
+
+		create_custom_buttons(frm);
 	},
 
 	setup: function(frm) {
@@ -160,6 +162,7 @@ frappe.ui.form.on('Payment Entry', {
 		frm.events.hide_unhide_fields(frm);
 		frm.events.set_dynamic_labels(frm);
 		frm.events.show_general_ledger(frm);
+		create_custom_buttons(frm);
 	},
 
 	validate_company: (frm) => {
@@ -1403,3 +1406,20 @@ frappe.ui.form.on('Payment Entry', {
 		}
 	},
 })
+
+/* ePayment Begins */
+var create_custom_buttons = function(frm){
+	var status = ["Failed", "Upload Failed", "Cancelled", "Payment Failed", "Payment Cancelled"];
+
+	if(frm.doc.docstatus == 1 && frm.doc.payment_type == "Pay" && (frm.doc.party_type == 'Supplier' || frm.doc.party_type == 'Employee') ){
+		if(!frm.doc.bank_payment || status.includes(frm.doc.payment_status) ){
+			frm.page.set_primary_action(__('Process Payment'), () => {
+				frappe.model.open_mapped_doc({
+					method: "erpnext.accounts.doctype.payment_entry.payment_entry.make_bank_payment",
+					frm: cur_frm
+				})
+			});
+		}
+	}
+}
+/* ePayment Ends */
