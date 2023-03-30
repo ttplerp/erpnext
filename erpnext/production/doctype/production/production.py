@@ -33,6 +33,7 @@ class Production(StockController):
 		frappe.enqueue(make_auto_production(self), queue="long")
 
 	def on_cancel(self):
+		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
 		self.assign_default_dummy()
 		self.delete_production_entry()
 		self.update_stock_ledger()

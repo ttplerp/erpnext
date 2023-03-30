@@ -29,6 +29,7 @@ class TransporterInvoice(AccountsController):
 		self.make_gl_entries()
 
 	def on_cancel(self):
+		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
 		self.make_gl_entries()
 
 	def before_cancel(self):

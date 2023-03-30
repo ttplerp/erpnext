@@ -50,6 +50,7 @@ class POLExpense(AccountsController):
 				frappe.throw("Journal Entry exists for this transaction {}".format(frappe.get_desk_link("Journal Entry",self.journal_entry)))
 				
 	def on_cancel(self):
+		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
 		if cint(self.use_common_fuelbook) == 0:
 			self.make_gl_entries()
 

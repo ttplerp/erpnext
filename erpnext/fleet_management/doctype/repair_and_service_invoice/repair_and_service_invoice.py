@@ -24,6 +24,7 @@ class RepairAndServiceInvoice(AccountsController):
 		# self.post_journal_entry()
 
 	def on_cancel(self):
+		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
 		self.make_gl_entry()
 		self.update_repair_and_service()
 
