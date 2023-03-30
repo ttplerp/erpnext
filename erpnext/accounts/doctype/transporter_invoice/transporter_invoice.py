@@ -77,6 +77,7 @@ class TransporterInvoice(AccountsController):
 		self.make_pol_gl_entry(gl_entries)
 		gl_entries = merge_similar_entries(gl_entries)
 		make_gl_entries(gl_entries,update_outstanding="No",cancel=self.docstatus == 2)
+		
 	def make_supplier_gl_entry(self, gl_entries):
 		if flt(self.amount_payable) > 0:
 			# Did not use base_grand_total to book rounding loss gle
@@ -166,38 +167,6 @@ class TransporterInvoice(AccountsController):
 					"voucher_no":self.name
 				}, self.currency)
 			)
-
-	def get_expense_gl(self):
-		items = {}
-		total_transportation_amount = 0
-		expense_account = None
-		for i in self.get("items"): 
-			if str(i.expense_account) in items:
-				items[str(i.expense_account)] = flt(items[str(i.expense_account)],2) + flt(i.transportation_amount,2)
-			else:
-				items.setdefault(str(i.expense_account),flt(i.transportation_amount,2))
-			total_transportation_amount += flt(i.transportation_amount,2)
-		# pro-rate POL expenses against each expense GL
-		if flt(total_transportation_amount) and flt(self.pol_amount):
-			deduct_pct  = 0
-			deduct_amt  = 0
-			balance_amt = flt(self.pol_amount)
-			counter     = 0
-			for k,v in sorted(items.items(), key=operator.itemgetter(1)):
-				expense_account = k
-				counter += 1
-				if counter == len(items):
-					deduct_amt = balance_amt
-					balance_amt = 0
-				else:
-					deduct_pct = math.floor((flt(v,2)/flt(total_transportation_amount,2))*0.01)
-					deduct_amt = math.floor(flt(self.pol_amount)*deduct_pct*0.01)
-					balance_amt= balance_amt - deduct_amt
-
-				items[k] -= flt(deduct_amt,2)
-			items[expense_account] -= flt(balance_amt,2)
-			
-		return items
 
 	@frappe.whitelist()
 	def get_payment_details(self):
