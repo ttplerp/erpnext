@@ -13,7 +13,8 @@ frappe.ui.form.on("Journal Entry", {
 		draw_tds_table(frm)
 	},
 	onload:function(frm){
-		draw_tds_table(frm)
+		draw_tds_table(frm);
+		create_custom_buttons(frm);
 	},
 	refresh: function(frm) {
 		erpnext.toggle_naming_series();
@@ -54,7 +55,8 @@ frappe.ui.form.on("Journal Entry", {
 					frm.trigger("make_inter_company_journal_entry");
 				}, __('Make'));
 		}
-		draw_tds_table(frm)
+		draw_tds_table(frm);
+		create_custom_buttons(frm);
 	},
 
 	make_inter_company_journal_entry: function(frm) {
@@ -757,3 +759,18 @@ $.extend(erpnext.journal_entry, {
 		}
 	},
 });
+
+/* ePayment Begins */
+var create_custom_buttons = function(frm){
+	if(frm.doc.docstatus == 1 && (frm.doc.voucher_type == "Bank Entry" || frm.doc.voucher_type == "Contra Entry")){
+		if(!frm.doc.bank_payment || frm.doc.payment_status == 'Failed' || frm.doc.payment_status == 'Payment Failed'){
+			frm.page.set_primary_action(__('Process Payment'), () => {
+				frappe.model.open_mapped_doc({
+					method: "erpnext.accounts.doctype.journal_entry.journal_entry.make_bank_payment",
+					frm: cur_frm
+				});
+			});
+		}
+	}
+}
+/* ePayment Ends */

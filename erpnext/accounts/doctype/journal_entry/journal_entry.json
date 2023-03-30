@@ -76,7 +76,8 @@
   "auto_repeat",
   "amended_from",
   "utility_bill",
-  "payment_status"
+  "payment_status",
+  "bank_payment"
  ],
  "fields": [
   {
@@ -628,6 +629,13 @@
    "label": "Payment Status",
    "options": "\nPayment Under Process\nPayment Successful\nPayment Failed\nPartial Payment\nPayment Cancelled",
    "read_only": 1
+  },
+  {
+   "fieldname": "bank_payment",
+   "fieldtype": "Link",
+   "label": "Bank Payment",
+   "options": "Bank Payment",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-file-text",
@@ -639,7 +647,7 @@
    "link_fieldname": "journal_entry"
   }
  ],
- "modified": "2023-03-29 18:04:15.036274",
+ "modified": "2023-03-30 18:05:34.005980",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",
