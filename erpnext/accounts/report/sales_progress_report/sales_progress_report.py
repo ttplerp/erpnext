@@ -39,18 +39,14 @@ def get_chart_data(filters, columns, data, period_list):
 			"barOptions": { "spaceRatio": 0.1}
 			}
 	return chart
-
-def get_data(filters, period_list):
+def get_data(filters, period_list): 
 	data = []
-	item_cond = ''
 	items = get_items(filters)
-	if len(items) > 1:
-		item_cond = " AND si.item_code IN {items}".format(items = tuple(items))
-	else :
-		item_cond = " AND si.item_code = '{item}'".format(item = items[0])
-
 	if not items:
 		frappe.throw("No Sales Target found for {} in Fiscal Year {}".format(frappe.bold(filters.item_sub_group),frappe.bold(filters.fiscal_year)))
+
+	item_cond = " AND si.item_code {}".format("IN {}".format(tuple(items)) if len(items) > 1 else "= '{}'".format(items[0])) 
+
 	target_qty_row = frappe._dict({
 		"particulars":"Target Qty(MT)", "total":0})
 	achieved_qty_row = frappe._dict({
@@ -119,16 +115,12 @@ def get_data(filters, period_list):
 
 	return data
 def get_items(filters):
-	items = []
-	for i in frappe.db.sql('''select s.item_code, s.item_name, t.name 
+	return [ i.item_code for i in frappe.db.sql('''select s.item_code
 						from `tabSales Target` t inner join `tabSubgroup Item` s 
 						on t.name = s.parent  
 						where t.item_sub_group = '{}' 
 						and t.fiscal_year = '{}' 
-						and t.docstatus=1'''.format(filters.item_sub_group,filters.fiscal_year), as_dict=True):
-		items.append(i.item_code)
-	return items
-
+						and t.docstatus=1'''.format(filters.item_sub_group,filters.fiscal_year), as_dict=True)]
 def get_columns(filters , period_list):
 	columns = [
 		{
