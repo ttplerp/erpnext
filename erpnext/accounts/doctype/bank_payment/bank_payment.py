@@ -674,8 +674,8 @@ class BankPayment(Document):
             cond = 'AND pe.name = "{}"'.format(self.transaction_no)
         elif not self.transaction_no and self.from_date and self.to_date:
             cond = 'AND pe.posting_date BETWEEN "{}" AND "{}"'.format(str(self.from_date), str(self.to_date))
-    
-        return frappe.db.sql("""SELECT "Payment Entry" transaction_type, pe.name transaction_id, 
+        # party type supplier 
+        data = frappe.db.sql("""SELECT "Payment Entry" transaction_type, pe.name transaction_id, 
                         pe.name transaction_reference, pe.posting_date transaction_date, 
                         pe.party as supplier, pe.party as beneficiary_name, 
                         s.bank_name as bank_name, s.bank_branch, fib.financial_system_code, s.bank_account_type, s.account_number as bank_account_no,
@@ -708,6 +708,39 @@ class BankPayment(Document):
             bank_payment = self.name,
             branch = self.branch,
             cond = cond), as_dict=True)
+        # party type employee since payment is done for employee via payment entry
+        data += frappe.db.sql("""SELECT "Payment Entry" transaction_type, pe.name transaction_id, 
+                        pe.name transaction_reference, pe.posting_date transaction_date, 
+                        pe.party as employee, pe.party as beneficiary_name, 
+                        e.bank_name as bank_name, e.bank_branch, fib.financial_system_code, e.bank_account_type, e.bank_ac_no as bank_account_no,
+                        round(( pe.paid_amount_after_tax + (select ifnull(sum(ped.amount),0)
+                                            from `tabPayment Entry Deduction` ped
+                                            where ped.parent = pe.name
+                                            )
+                        ),2) amount,
+                        "Draft" status
+                    FROM `tabPayment Entry` pe
+                    JOIN `tabEmployee` e ON e.name = pe.party
+                    LEFT JOIN `tabFinancial Institution Branch` fib ON fib.name = e.bank_branch
+                    WHERE pe.branch = "{branch}" 
+                    {cond}
+                    AND pe.docstatus = 1
+                    AND pe.party_type = 'Employee'
+                    AND pe.party IS NOT NULL
+                    AND IFNULL(pe.paid_amount,0) > 0
+                    AND NOT EXISTS(select 1
+                        FROM `tabBank Payment Item` bpi
+                        WHERE bpi.transaction_type = 'Payment Entry'
+                        AND bpi.transaction_id = pe.name
+                        AND bpi.parent != '{bank_payment}'
+                        AND bpi.docstatus != 2
+                        AND bpi.status NOT IN ('Cancelled', 'Failed')
+                    )
+        ORDER BY pe.posting_date, pe.name """.format( 
+            bank_payment = self.name,
+            branch = self.branch,
+            cond = cond), as_dict=True)
+        return data
 
     def get_month_id(self, month_abbr):
         return {"January": "01", "February": "02", "March": "03", "April": "04", "May": "05", "June": "06",
