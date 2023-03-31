@@ -31,6 +31,7 @@ class POLReceive(StockController):
 		self.delete_pol_entry()
 
 	def on_cancel(self):
+		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
 		self.update_pol_expense()
 		self.delete_pol_entry()
 		self.make_gl_entries()
