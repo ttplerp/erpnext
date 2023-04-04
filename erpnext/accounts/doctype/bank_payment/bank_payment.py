@@ -185,7 +185,9 @@ class BankPayment(Document):
 
     def update_transaction_status(self, cancel=False):
         ''' update respective transactions status '''
-        for i in self.get("items"):		
+        docs_updated = frappe._dict()
+        for i in self.get("items"):
+            doc = None
             if cancel:
                 status = 'Payment Cancelled'
             elif i.status == 'Completed':
@@ -196,24 +198,35 @@ class BankPayment(Document):
                 status = 'Payment Under Process'
 
             if self.transaction_type == 'Direct Payment':
-                doc = frappe.get_doc('Direct Payment', i.transaction_id)
-                doc.payment_status = status
+                if i.transaction_id in docs_updated:
+                    doc = docs_updated[i.transaction_id]
+                else:
+                    doc = frappe.get_doc('Direct Payment', i.transaction_id)
+                    doc.payment_status = status
+                    docs_updated[i.transaction_id] = doc
+
                 for rec in doc.item:
                     if rec.name == i.transaction_reference:
                         rec.payment_status = status
                         rec.bank_payment = self.name
-                doc.save(ignore_permissions=True)
-
+                # doc.save(ignore_permissions=True)
             elif self.transaction_type == 'Payment Entry':
+                if i.transaction_id in docs_updated: continue
                 doc = frappe.get_doc('Payment Entry', i.transaction_id)
                 doc.payment_status = status
                 doc.bank_payment = self.name
-                doc.save(ignore_permissions=True)
+                # doc.save(ignore_permissions=True)
+                docs_updated[i.transaction_id] = doc
             elif self.transaction_type == 'Journal Entry':
+                if i.transaction_id in docs_updated: continue
                 doc = frappe.get_doc('Journal Entry', i.transaction_id)
                 doc.payment_status = status
                 doc.bank_payment = self.name
-                doc.save(ignore_permissions=True)
+                # doc.save(ignore_permissions=True)
+                docs_updated[i.transaction_id] = doc
+
+        for transaction_id, doc in docs_updated.items():
+            doc.save(ignore_permissions=True)
 
     def set_defaults(self):
         self.posting_date = now()
