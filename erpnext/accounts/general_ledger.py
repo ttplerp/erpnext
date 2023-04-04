@@ -550,7 +550,7 @@ def make_reverse_gl_entries(
 			new_gle["is_cancelled"] = 1
 
 			if new_gle["debit"] or new_gle["credit"]:
-				make_entry(new_gle, adv_adj, "Yes")
+				make_entry(new_gle, adv_adj, update_outstanding)
 
 
 def check_freezing_date(posting_date, adv_adj=False):
