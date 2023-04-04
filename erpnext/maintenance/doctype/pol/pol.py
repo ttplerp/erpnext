@@ -80,6 +80,7 @@ class POL(StockController):
 		self.delete_pol_entry()
 		self.update_advance()
 		if self.settled_using_imprest:
+			self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
 			self.make_gl_entry()
 
 	def validate_warehouse(self):
