@@ -18,7 +18,8 @@ def get_data(filters):
 	cond=""
 	if filters.get("cost_center"):
 		cond=" and cost_center='{}'".format(filters.get("cost_center"))
-	gl_entries = frappe.db.sql("""Select * from `tabGL Entry` where account='{0}' and posting_date <= '{1}' {cond} """.format(filters.get("account"), filters.get("to_date"), cond=cond), as_dict=True)
+	gl_entries = frappe.db.sql("""Select * from `tabGL Entry` where account='{0}' and posting_date <= '{1}' {cond} 
+		""".format(filters.get("account"), filters.get("to_date"), cond=cond), as_dict=True)
 	
 	def update_value_in_dict(data, key, gle):
 		data[key].debit += gle.debit
@@ -28,7 +29,6 @@ def get_data(filters):
 		data[key].credit_in_account_currency += gle.credit_in_account_currency
 	
 	totals = get_totals_dict()
-	# frappe.throw("<pre>{}</pre>".format(frappe.as_json(totals)))
 	from_date, to_date = getdate(filters.from_date), getdate(filters.to_date)
 	entries = []
 	data = []
