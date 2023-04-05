@@ -80,8 +80,8 @@ class BankPayment(Document):
         get_transaction = frappe.db.sql("""select count(transaction_id) from `tabBank Payment Item` where parent='{}'""".format(self.name))
         if self.payment_type == "One-One Payment":
             if get_transaction[0][0] > get_max_transaction:
-                self.payment_type = "Bulk Payment"
-                # frappe.throw("For transaction more than 10 records, Please select Payment Type to Bulk Payment!")
+                #self.payment_type = "Bulk Payment"
+                frappe.throw("For transaction more than 10 records, Please select Payment Type to Bulk Payment!")
     #added by cety on 15/09/2021 to not allow transaction after office hour.
     #Modified by Thukten to restrict timing only for Inter Bank Transaction
     def validate_timing(self):
