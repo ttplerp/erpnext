@@ -868,31 +868,58 @@ def get_outstanding_invoices(
 	)
 
 	for d in invoice_list:
-		payment_amount = d.invoice_amount_in_account_currency - d.outstanding_in_account_currency
-		outstanding_amount = d.outstanding_in_account_currency
-		if outstanding_amount > 0.5 / (10**precision):
-			if (
-				min_outstanding
-				and max_outstanding
-				and not (outstanding_amount >= min_outstanding and outstanding_amount <= max_outstanding)
-			):
-				continue
+		if frappe.db.exists(d.voucher_type,{'name':d.voucher_no, 'outstanding_amount':('>',0)}):
+			payment_amount = d.invoice_amount_in_account_currency - d.outstanding_in_account_currency
+			outstanding_amount = d.outstanding_in_account_currency
+			if outstanding_amount > 0.5 / (10**precision):
+				if (
+					min_outstanding
+					and max_outstanding
+					and not (outstanding_amount >= min_outstanding and outstanding_amount <= max_outstanding)
+				):
+					continue
 
-			if not d.voucher_type == "Purchase Invoice" or d.voucher_no not in held_invoices:
-				outstanding_invoices.append(
-					frappe._dict(
-						{
-							"voucher_no": d.voucher_no,
-							"voucher_type": d.voucher_type,
-							"posting_date": d.posting_date,
-							"invoice_amount": flt(d.invoice_amount_in_account_currency),
-							"payment_amount": payment_amount,
-							"outstanding_amount": outstanding_amount,
-							"due_date": d.due_date,
-							"currency": d.currency,
-						}
+				if not d.voucher_type == "Purchase Invoice" or d.voucher_no not in held_invoices:
+					outstanding_invoices.append(
+						frappe._dict(
+							{
+								"voucher_no": d.voucher_no,
+								"voucher_type": d.voucher_type,
+								"posting_date": d.posting_date,
+								"invoice_amount": flt(d.invoice_amount_in_account_currency),
+								"payment_amount": payment_amount,
+								"outstanding_amount": outstanding_amount,
+								"due_date": d.due_date,
+								"currency": d.currency,
+							}
+						)
 					)
-				)
+		# below code commented as it is picking invoices with 0 outstanding amount 
+		# payment_amount = d.invoice_amount_in_account_currency - d.outstanding_in_account_currency
+		# outstanding_amount = d.outstanding_in_account_currency
+		# if outstanding_amount > 0.5 / (10**precision):
+		# 	if (
+		# 		min_outstanding
+		# 		and max_outstanding
+		# 		and not (outstanding_amount >= min_outstanding and outstanding_amount <= max_outstanding)
+		# 	):
+		# 		continue
+
+		# 	if not d.voucher_type == "Purchase Invoice" or d.voucher_no not in held_invoices:
+		# 		outstanding_invoices.append(
+		# 			frappe._dict(
+		# 				{
+		# 					"voucher_no": d.voucher_no,
+		# 					"voucher_type": d.voucher_type,
+		# 					"posting_date": d.posting_date,
+		# 					"invoice_amount": flt(d.invoice_amount_in_account_currency),
+		# 					"payment_amount": payment_amount,
+		# 					"outstanding_amount": outstanding_amount,
+		# 					"due_date": d.due_date,
+		# 					"currency": d.currency,
+		# 				}
+		# 			)
+		# 		)
 
 	outstanding_invoices = sorted(
 		outstanding_invoices, key=lambda k: k["due_date"] or getdate(nowdate())
