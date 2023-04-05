@@ -917,6 +917,7 @@ def process_one_to_one_payment(doc, publish_progress=True):
     processing = completed = failed = doc_modified = 0
     PromoCode = frappe.db.get_value("Bank Payment Settings", "BOBL", "promo_code")
     for i in doc.get("items"):
+        if i.status == "Completed": continue
         PEMSRefNum = i.pi_number
         bpi = frappe.get_doc('Bank Payment Item', i.name)
         if i.bank_name == "BOBL":
