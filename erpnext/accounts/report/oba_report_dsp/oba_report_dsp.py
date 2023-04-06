@@ -5,7 +5,7 @@ import frappe
 from frappe import _, _dict
 from frappe.utils import cstr, getdate
 
-value_fields = ("opening_debit", "opening_credit", "debit", "credit", "closing_debit", "closing_credit")
+# value_fields = ("opening_debit", "opening_credit", "debit", "credit", "closing_debit", "closing_credit")
 def execute(filters=None):
 	columns= get_columns(filters)
 	data = get_data(filters)
@@ -14,16 +14,18 @@ def execute(filters=None):
 def get_data(filters):
 	row = []
 	data = frappe._dict()
-	gl_entries = frappe.db.sql("""select posting_date,debit,credit,is_opening,party_type,party,cost_center,voucher_no from `tabGL Entry` where party_type='{0}' and cost_center='{1}' and posting_date <= '{2}'
-		""".format(filters.get("party_type"), filters.get("cost_center"),filters.get("to_date")), as_dict=True)
+	cond=''
+	if filters.get("account"):
+		cond=" and account in %(account)s"
+	
+	gl_entries = frappe.db.sql("""select posting_date,debit,credit,is_opening,party_type,party,cost_center,voucher_no from `tabGL Entry` where party_type='{0}' 
+		and cost_center in (select name from `tabCost Center` where cost_center_for='{1}') and posting_date <= '{2}' {cond}""".format(filters.get("party_type"), filters.get('cost_center_for'), filters.get("to_date"), cond=cond),filters, as_dict=True)
 	
 	for gle in gl_entries:
 		data.setdefault(gle.get("party"), []).append(gle)
 	
 	from_date, to_date = getdate(filters.from_date), getdate(filters.to_date)
 	for key, value in data.items():
-		# frappe.msgprint(str(key))
-		# frappe.throw("<pre>{}</pre>".format(frappe.as_json(value)))
 		if filters.get("party_type") == "Employee":
 			filter_data = frappe._dict({
 					"employee": key,
@@ -43,8 +45,7 @@ def get_data(filters):
 			"closing_debit": 0.0,
 			"closing_credit": 0.0
 		})
-		# frappe.throw(str(filter_data['employee_name']))
-		# frappe.throw("<pre>{}</pre>".format(frappe.as_json(filter_data)))
+		
 		for d in value:
 			if d.posting_date < from_date or (cstr(d.is_opening) == "Yes"):
 				filter_data['opening_debit'] += d.debit
@@ -66,7 +67,6 @@ def get_data(filters):
 			filter_data['closing_debit'] = 0
 			filter_data['closing_credit'] = filter_data['closing_credit'] - filter_data['closing_debit']
 		
-		# frappe.throw("<pre>{}</pre>".format(frappe.as_json(filter_data)))
 		row.append(filter_data)
 
 	return row

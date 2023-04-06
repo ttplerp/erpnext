@@ -11,7 +11,10 @@ frappe.query_reports["FS Receipt And Payment DSP"] = {
 			"options": "Account",
 			"get_query": function() {
 				return {
-					filters: { 'account_type': 'Bank' }
+					filters: [
+						['is_group', '=', 0],
+						['account_type', 'in', ['Bank', 'Cash']]
+					]
 				}
 			}
 		},
@@ -25,7 +28,6 @@ frappe.query_reports["FS Receipt And Payment DSP"] = {
 					filters: { 'is_group': 0, 'cost_center_for': 'DSP' }
 				}
 			},
-			"reqd": 1
 		},
 		{
 			"fieldname":"from_date",
