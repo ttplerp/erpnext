@@ -409,9 +409,8 @@ class PaymentEntry(AccountsController):
 				)
 				if outstanding_amount <= 0 and not is_return:
 					no_oustanding_refs.setdefault(d.reference_doctype, []).append(d)
-
 		for k, v in no_oustanding_refs.items():
-			frappe.msgprint(
+			frappe.throw(
 				_(
 					"{} - {} now have {} as they had no outstanding amount left before submitting the Payment Entry."
 				).format(
@@ -424,6 +423,21 @@ class PaymentEntry(AccountsController):
 				title=_("Warning"),
 				indicator="orange",
 			)
+		# msgprint changed to throw to prevent negative outstanding_amount
+		# for k, v in no_oustanding_refs.items():
+		# 	frappe.msgprint(
+		# 		_(
+		# 			"{} - {} now have {} as they had no outstanding amount left before submitting the Payment Entry."
+		# 		).format(
+		# 			_(k),
+		# 			frappe.bold(", ".join(d.reference_name for d in v)),
+		# 			frappe.bold(_("negative outstanding amount")),
+		# 		)
+		# 		+ "<br><br>"
+		# 		+ _("If this is undesirable please cancel the corresponding Payment Entry."),
+		# 		title=_("Warning"),
+		# 		indicator="orange",
+		# 	)
 
 	def validate_journal_entry(self):
 		for d in self.get("references"):
@@ -1251,7 +1265,7 @@ def get_outstanding_reference_documents(args):
 		common_filter.append(ple.voucher_type == args["voucher_type"])
 		common_filter.append(ple.voucher_no == args["voucher_no"])
 	# Add cost center condition
-	if args.get("cost_center"):
+	if args.get("cost_center") and flt(args.get('avoid_cost_center_filter')) == 0:
 		condition += " and cost_center='%s'" % args.get("cost_center")
 		common_filter.append(ple.cost_center == args.get("cost_center"))
 	date_fields_dict = {

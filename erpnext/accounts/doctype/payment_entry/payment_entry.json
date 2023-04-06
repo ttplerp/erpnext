@@ -12,6 +12,7 @@
   "branch",
   "payment_type",
   "payment_order_status",
+  "avoid_cost_center_filter",
   "column_break_5",
   "posting_date",
   "company",
@@ -778,12 +779,18 @@
    "label": "Payment Status",
    "options": "\nPayment Under Process\nPayment Successful\nPayment Failed\nPartial Payment\nPayment Cancelled",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "avoid_cost_center_filter",
+   "fieldtype": "Check",
+   "label": "Avoid Cost Center Filter"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-10 10:52:13.898945",
+ "modified": "2023-04-05 11:52:30.870662",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Payment Entry",

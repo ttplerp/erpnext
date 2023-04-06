@@ -704,7 +704,8 @@ frappe.ui.form.on('Payment Entry', {
 			"payment_type": frm.doc.payment_type,
 			"party": frm.doc.party,
 			"party_account": frm.doc.payment_type=="Receive" ? frm.doc.paid_from : frm.doc.paid_to,
-			"cost_center": frm.doc.cost_center
+			"cost_center": frm.doc.cost_center,
+			"avoid_cost_center_filter":frm.doc.avoid_cost_center_filter
 		}
 		for (let key in filters) {
 			args[key] = filters[key];
