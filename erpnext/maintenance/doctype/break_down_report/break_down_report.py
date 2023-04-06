@@ -134,7 +134,7 @@ def get_job_card_entry(doc_name):
 	
 	job_card_entry = frappe.db.sql(job_card_entry, as_dict=1)
 	
-	if job_card_entry[0].job_card == None:
+	if job_card_entry[0].job_card == None or job_card_entry[0].job_card == "":
 		frappe.db.set_value("Break Down Report", doc_name, "job_card_status", "Job Card Not Created")
 		return ("Job Card Not Created")
 	else:
