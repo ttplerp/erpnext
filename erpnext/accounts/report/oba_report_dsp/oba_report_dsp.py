@@ -3,9 +3,9 @@
 
 import frappe
 from frappe import _, _dict
-from frappe.utils import cstr, getdate
+from frappe.utils import cstr, getdate, flt
 
-# value_fields = ("opening_debit", "opening_credit", "debit", "credit", "closing_debit", "closing_credit")
+
 def execute(filters=None):
 	columns= get_columns(filters)
 	data = get_data(filters)
@@ -48,24 +48,24 @@ def get_data(filters):
 		
 		for d in value:
 			if d.posting_date < from_date or (cstr(d.is_opening) == "Yes"):
-				filter_data['opening_debit'] += d.debit
-				filter_data['opening_credit'] += d.credit
+				filter_data['opening_debit'] += flt(d.debit,2)
+				filter_data['opening_credit'] += flt(d.credit,2)
 
-				filter_data['closing_debit'] += d.debit
-				filter_data['closing_credit'] += d.credit
+				filter_data['closing_debit'] += flt(d.debit,2)
+				filter_data['closing_credit'] += flt(d.credit,2)
 			elif gle.posting_date <= to_date or (cstr(gle.is_opening) == "Yes"):
-				filter_data['debit'] += d.debit
-				filter_data['credit'] += d.credit
+				filter_data['debit'] += flt(d.debit,2)
+				filter_data['credit'] += flt(d.credit,2)
 
-				filter_data['closing_debit'] += d.debit
-				filter_data['closing_credit'] += d.credit
+				filter_data['closing_debit'] += flt(d.debit,2)
+				filter_data['closing_credit'] += flt(d.credit,2)
 
 		if filter_data['closing_debit'] > filter_data['closing_credit']:
-			filter_data['closing_debit'] = filter_data['closing_debit'] - filter_data['closing_credit']
+			filter_data['closing_debit'] = flt(filter_data['closing_debit'],2) - flt(filter_data['closing_credit'],2)
 			filter_data['closing_credit'] = 0
 		else:
 			filter_data['closing_debit'] = 0
-			filter_data['closing_credit'] = filter_data['closing_credit'] - filter_data['closing_debit']
+			filter_data['closing_credit'] = flt(filter_data['closing_credit'],2) - flt(filter_data['closing_debit'],2)
 		
 		row.append(filter_data)
 
