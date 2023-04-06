@@ -48,24 +48,24 @@ def get_data(filters):
 		
 		for d in value:
 			if d.posting_date < from_date or (cstr(d.is_opening) == "Yes"):
-				filter_data['opening_debit'] += flt(d.debit,2)
-				filter_data['opening_credit'] += flt(d.credit,2)
+				filter_data['opening_debit'] = flt(filter_data['opening_debit'] + d.debit,2)
+				filter_data['opening_credit'] = flt(filter_data['opening_credit'] + d.credit,2)
 
-				filter_data['closing_debit'] += flt(d.debit,2)
-				filter_data['closing_credit'] += flt(d.credit,2)
+				filter_data['closing_debit'] = flt(filter_data['closing_debit'] + d.debit,2)
+				filter_data['closing_credit'] = flt(filter_data['closing_credit'] + d.credit,2)
 			elif gle.posting_date <= to_date or (cstr(gle.is_opening) == "Yes"):
-				filter_data['debit'] += flt(d.debit,2)
-				filter_data['credit'] += flt(d.credit,2)
+				filter_data['debit'] = flt(filter_data['debit'] + d.debit,2)
+				filter_data['credit'] = flt(filter_data['credit'] + d.credit,2)
 
-				filter_data['closing_debit'] += flt(d.debit,2)
-				filter_data['closing_credit'] += flt(d.credit,2)
+				filter_data['closing_debit'] = flt(filter_data['closing_debit'] + d.debit,2)
+				filter_data['closing_credit'] = flt(filter_data['closing_credit'] + d.credit,2)
 
 		if filter_data['closing_debit'] > filter_data['closing_credit']:
-			filter_data['closing_debit'] = flt(filter_data['closing_debit'],2) - flt(filter_data['closing_credit'],2)
+			filter_data['closing_debit'] = flt(filter_data['closing_debit'] - filter_data['closing_credit'],2)
 			filter_data['closing_credit'] = 0
 		else:
 			filter_data['closing_debit'] = 0
-			filter_data['closing_credit'] = flt(filter_data['closing_credit'],2) - flt(filter_data['closing_debit'],2)
+			filter_data['closing_credit'] = flt(filter_data['closing_credit'] - filter_data['closing_debit'],2)
 		
 		row.append(filter_data)
 
