@@ -78,7 +78,32 @@ class BankClearance(Document):
 			},
 			as_dict=1,
 		)
-
+		
+		tds_remittance = frappe.db.sql(
+			"""
+			select
+				"TDS Remittance" as payment_document, name as payment_entry,
+				cheque_no as cheque_number, cheque_date,
+				0 as credit, total_tds as debit,
+				posting_date
+			from `tabTDS Remittance`
+			where
+				credit_account = %(account)s and docstatus=1
+				and posting_date >= %(from)s and posting_date <= %(to)s
+				{condition}
+			order by
+				posting_date ASC, name DESC
+		""".format(
+				condition=condition
+			),
+			{
+				"account": self.account,
+				"from": self.from_date,
+				"to": self.to_date,
+				"bank_account": self.bank_account,
+			},
+			as_dict=1,
+		)
 		loan_disbursement = frappe.qb.DocType("Loan Disbursement")
 
 		loan_disbursements = (
@@ -172,7 +197,8 @@ class BankClearance(Document):
 			+ list(pos_sales_invoices)
 			+ list(pos_purchase_invoices)
 			+ list(loan_disbursements)
-			+ list(loan_repayments),
+			+ list(loan_repayments)
+			+ list(tds_remittance),
 			key=lambda k: getdate(k["posting_date"]),
 		)
 
