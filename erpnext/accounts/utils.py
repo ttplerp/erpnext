@@ -867,12 +867,14 @@ def get_outstanding_invoices(
 		get_invoices=True,
 	)
 	for d in invoice_list:
-		if d.voucher_type not in ("Journal Entry"):
-			outstanding_amount = d.outstanding_in_account_currency
-		else:
+		if d.voucher_type in ("Sales Invoice", "Purchase Invoice","Repair And Service Invoice"):
 			outstanding_amount = frappe.db.get_value(d.voucher_type,d.voucher_no,'outstanding_amount')
-		if flt(outstanding_amount) > 0:
+			payment_amount = outstanding_amount
+		else:
+			outstanding_amount = d.outstanding_in_account_currency
 			payment_amount = d.invoice_amount_in_account_currency - d.outstanding_in_account_currency
+
+		if flt(outstanding_amount) > 0:
 			if outstanding_amount > 0.5 / (10**precision):
 				if (
 					min_outstanding
