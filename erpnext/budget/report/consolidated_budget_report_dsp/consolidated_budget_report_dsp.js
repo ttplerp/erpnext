@@ -57,7 +57,8 @@ frappe.query_reports["Consolidated Budget Report DSP"] = {
 						['parent_cost_center', '=', 'De-suung - DS']
 					]
 				}
-			}
+			},
+			"reqd":1
 		},
 	]
 };
