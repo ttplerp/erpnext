@@ -83,6 +83,13 @@ var show_custom_buttons = function(frm){
 		frappe.set_route("query-report", "General Ledger");
 	}, __("View"));
 	cur_frm.page.set_inner_btn_group_as_primary(__('View'));
+	frm.add_custom_button(__('Post Journal Entry'), ()=>{
+		frappe.call({
+			method: "post_journal_entry",	
+			doc: frm.doc,
+			callback:(r)=>{}
+		});
+	},__("Create"))
 }
 
 var get_details = function(frm){

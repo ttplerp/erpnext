@@ -3,22 +3,27 @@
 
 import frappe
 from frappe.model.document import Document
-from frappe.utils import flt, cint
+from frappe.utils import flt, cint, money_in_words
 from erpnext.accounts.general_ledger import make_gl_entries
 from frappe import _
 from erpnext.controllers.accounts_controller import AccountsController
 from erpnext.accounts.doctype.journal_entry.journal_entry import get_tds_account
 from frappe.model.mapper import get_mapped_doc
+from collections import defaultdict
 
 class TDSRemittance(AccountsController):
 	def validate(self):
 		self.calculate_total()
 
 	def on_submit(self):
-		self.make_gl_entries()
+		self.post_journal_entry()
 
-	def on_cancel(self):
-		self.make_gl_entries()
+	def before_cancel(self):
+		je = frappe.db.sql("Select parent from `tabJournal Entry Account` where reference_type = '{}' and reference_name = '{}' limit 1".format(self.doctype,self.name))
+		if je:
+			doc = frappe.get_doc("Journal Entry",je[0][0])
+			if doc.docstatus != 2:
+				frappe.throw("Cannot cancel this document as there exists journal entry against this document")
 
 	def get_condition(self):
 		if self.branch:
@@ -53,44 +58,51 @@ class TDSRemittance(AccountsController):
 			self.total_tds 		+= flt(d.tds_amount)
 			self.total_amount 	+= flt(d.bill_amount)
 
-	def make_gl_entries(self):
-		gl_entries   = []
-		tds_account  = get_tds_account(self.tax_withholding_category)
-		default_business_activity = frappe.db.get_value("Business Activity", {"is_default": 1})
+	@frappe.whitelist()
+	def post_journal_entry(self):
+		sort_cc_wise = defaultdict(list)
+		cc_amount = defaultdict(lambda: {"tds_amount":0})
+		for a in self.items:
+			sort_cc_wise[a.cost_center].append(a)
+		
+		for cc, items in sort_cc_wise.items():
+			for item in items:
+				cc_amount[cc]["tds_amount"] += flt(item.tds_amount,2)
 
-		if flt(self.total_tds) > 0:
-			for item in self.items:
-				gl_entries.append(
-					self.get_gl_dict({
-						"account": str(item.tax_account),
-						"debit": item.tds_amount,
-						"debit_in_account_currency": item.tds_amount,
-						"voucher_type": self.doctype,
-						"voucher_no": self.name,
-						"cost_center": item.cost_center,
-						"business_activity": item.business_activity,
-						"against_voucher_type":	item.invoice_type,
-						"against_voucher": item.invoice_no
-					},
-					account_currency= "BTN"))
-			
-			gl_entries.append(
-				self.get_gl_dict({
-					"account": str(self.credit_account),
-					"credit": self.total_tds,
-					"credit_in_account_currency": self.total_tds,
-					"voucher_type": self.doctype,					
-					"voucher_no": self.name,
-					"cost_center": self.cost_center,
-					"against_voucher_type":	self.doctype,
-					"against_voucher": self.name,
-					"business_activity": default_business_activity
-				},
-				account_currency="BTN"))
-			make_gl_entries(gl_entries, cancel=(self.docstatus == 2),update_outstanding="No", merge_entries=False)
-		else:
-			frappe.throw("Total TDS Amount is Zero.")
-
+		tds_account  = get_tds_account(self.tax_withholding_category).get("tax_withholding_account")
+		je = frappe.new_doc("Journal Entry")
+		je.flags.ignore_permissions=1
+		accounts = []
+		
+		for key, item in cc_amount.items():
+			accounts.append({
+				"account": str(tds_account),
+				"debit_in_account_currency": item.get('tds_amount'),
+				"cost_center": key,
+				"reference_type": self.doctype,
+				"reference_name": self.name
+			})
+		
+		accounts.append({
+			"account": str(self.credit_account),
+			"credit_in_account_currency": flt(self.total_tds,2),
+			"cost_center": self.cost_center,
+			"reference_type": self.doctype,
+			"reference_name": self.name
+		})
+		je.update({
+			"doctype": "Journal Entry",
+			"voucher_type": "Bank Entry",
+			"title": "TDS Remittance",
+			"user_remark": "Note: TDS Remittance\n"+str(self.remarks),
+			"posting_date": self.posting_date,
+			"company": self.company,
+			"total_amount_in_words": money_in_words(self.total_tds),
+			"branch": self.branch,
+			"accounts":accounts
+		})
+		je.insert()
+		frappe.msgprint(_('Journal Entry {0} posted to accounts').format(frappe.get_desk_link("Journal Entry",je.name)))
 
 def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_existing = False, cond='', party_type = None):
 	accounts_cond = accounts_cond_ti = accounts_cond_eme = existing_cond = party_cond = "" 
