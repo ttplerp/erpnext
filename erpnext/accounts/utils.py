@@ -866,10 +866,11 @@ def get_outstanding_invoices(
 		max_outstanding=max_outstanding,
 		get_invoices=True,
 	)
-	if frappe.session.user == "Administrator":
-		frappe.msgprint(str(invoice_list))
 	for d in invoice_list:
-		outstanding_amount = frappe.db.get_value(d.voucher_type,d.voucher_no,'outstanding_amount')
+		if d.voucher_type not in ("Journal Entry"):
+			outstanding_amount = d.outstanding_in_account_currency
+		else:
+			outstanding_amount = frappe.db.get_value(d.voucher_type,d.voucher_no,'outstanding_amount')
 		if flt(outstanding_amount) > 0:
 			payment_amount = d.invoice_amount_in_account_currency - d.outstanding_in_account_currency
 			if outstanding_amount > 0.5 / (10**precision):
