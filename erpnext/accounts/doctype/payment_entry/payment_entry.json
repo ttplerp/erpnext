@@ -795,6 +795,8 @@
    "allow_on_submit": 1,
    "fieldname": "payment_status",
    "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Payment Status",
    "options": "\nPayment Under Process\nPayment Successful\nPayment Failed\nPartial Payment\nPayment Cancelled",
    "read_only": 1
@@ -803,7 +805,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-29 11:15:22.689325",
+ "modified": "2023-04-11 11:37:18.611805",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Payment Entry",
