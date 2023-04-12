@@ -9,6 +9,7 @@ from frappe import _
 from erpnext.controllers.accounts_controller import AccountsController
 from erpnext.accounts.doctype.journal_entry.journal_entry import get_tds_account
 from frappe.model.mapper import get_mapped_doc
+from erpnext.accounts.utils import check_clearance_date
 
 class TDSRemittance(AccountsController):
 	def validate(self):
@@ -19,6 +20,7 @@ class TDSRemittance(AccountsController):
 
 	def on_cancel(self):
 		self.make_gl_entries()
+		check_clearance_date(self.doctype, self.name)
 	
 	@frappe.whitelist()
 	def get_details(self):

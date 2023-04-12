@@ -16,7 +16,7 @@ from erpnext.accounts.doctype.invoice_discounting.invoice_discounting import (
 from erpnext.accounts.doctype.tax_withholding_category.tax_withholding_category import (
 	get_party_tax_withholding_details,
 )
-from erpnext.accounts.utils import get_tds_account,get_account_type
+from erpnext.accounts.utils import get_tds_account,get_account_type, check_clearance_date
 from erpnext.accounts.party import get_party_account
 from erpnext.accounts.utils import (
 	get_account_currency,
@@ -141,6 +141,7 @@ class JournalEntry(AccountsController):
 		self.unlink_inter_company_jv()
 		self.unlink_asset_adjustment_entry()
 		self.update_invoice_discounting()
+		check_clearance_date(self.doctype, self.name)
 
 	def get_title(self):
 		return self.pay_to_recd_from or self.accounts[0].account

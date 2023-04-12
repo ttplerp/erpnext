@@ -41,6 +41,7 @@
   "reference_date",
   "cheque_no",
   "cheque_date",
+  "clearance_date",
   "amended_from"
  ],
  "fields": [
@@ -257,12 +258,18 @@
    "fieldname": "reference_number",
    "fieldtype": "Data",
    "label": "Reference Number"
+  },
+  {
+   "fieldname": "clearance_date",
+   "fieldtype": "Date",
+   "label": "Clearance Date",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-09-24 14:29:44.868211",
+ "modified": "2023-04-12 17:48:16.617986",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "TDS Remittance",
