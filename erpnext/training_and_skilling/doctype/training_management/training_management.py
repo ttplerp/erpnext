@@ -131,7 +131,7 @@ class TrainingManagement(Document):
 			if self.cohort_batch == a.cohort_batch:
 				frappe.throw(_("Cohort Batch " + "{} " + "is being used in Domain: '{}' under Course: '{}'").format(a.cohort, a.domain, a.course_cost_center))
 
-	def on_submit(self):
+	# def on_submit(self):
 
 		# for item in self.trainer_details:
 		# 	trainer = frappe.get_doc("Employee", item.trainer_id)
@@ -145,23 +145,23 @@ class TrainingManagement(Document):
 		# 	trainer.append("trainer_history", trainer_history)
 		# 	trainer.save()
 	
-		for item in self.trainee_details:
-			trainee = frappe.get_doc("Desuup", item.desuup_id)
-			training_history = {}
-			training_history['training_attended'] = self.course_cost_center
-			training_history['course_duration'] = self.course_duration
-			training_history['start_date'] = self.training_start_date
-			training_history['end_date'] = self.training_end_date
-			training_history['cohort_batch'] = self.cohort
-			training_history['training_ref'] = self.name
-			training_history['joining_date'] = item.reporting_date
-			trainee.append("training_history", training_history)
-			trainee.save() 
+		# for item in self.trainee_details:
+		# 	trainee = frappe.get_doc("Desuup", item.desuup_id)
+		# 	training_history = {}
+		# 	training_history['training_attended'] = self.course_cost_center
+		# 	training_history['course_duration'] = self.course_duration
+		# 	training_history['start_date'] = self.training_start_date
+		# 	training_history['end_date'] = self.training_end_date
+		# 	training_history['cohort_batch'] = self.cohort
+		# 	training_history['training_ref'] = self.name
+		# 	training_history['joining_date'] = item.reporting_date
+		# 	trainee.append("training_history", training_history)
+		# 	trainee.save() 
 
-	def on_cancel(self):
+	# def on_cancel(self):
 		# frappe.db.sql("delete from `tabTrainer History` where training_ref = '{}'".format(self.name))
-		frappe.db.sql("delete from `tabTrainee History` where training_ref = '{}'".format(self.name))
-		frappe.db.sql("update `tabTraining Management` set status = 'Cancelled' where name = '{}'".format(self.name))
+		# frappe.db.sql("delete from `tabTrainee History` where training_ref = '{}'".format(self.name))
+		# frappe.db.sql("update `tabTraining Management` set status = 'Cancelled' where name = '{}'".format(self.name))
 
 @frappe.whitelist()
 def set_status():
