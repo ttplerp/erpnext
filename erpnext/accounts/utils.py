@@ -145,7 +145,12 @@ def get_fiscal_year_filter_field(company=None):
 		)
 	return field
 
-
+@frappe.whitelist()
+def check_clearance_date(dt, dn):
+	doc = frappe.get_doc(dt, dn)
+	if doc.clearance_date:
+		frappe.msgprint("Cannot cancel this document as <b>Bank Reconciliation</b> has already done on {}".format(doc.clearance_date), raise_exception= True)
+		
 def validate_fiscal_year(date, fiscal_year, company, label="Date", doc=None):
 	years = [f[0] for f in get_fiscal_years(date, label=_(label), company=company)]
 	if fiscal_year not in years:
