@@ -133,17 +133,17 @@ class TrainingManagement(Document):
 
 	def on_submit(self):
 
-		for item in self.trainer_details:
-			trainer = frappe.get_doc("Employee", item.trainer_id)
-			trainer_history = {}
-			trainer_history['course'] = self.course_cost_center
-			trainer_history['course_duration'] = self.course_duration
-			trainer_history['start_date'] = self.training_start_date
-			trainer_history['end_date'] = self.training_end_date
-			trainer_history['cohort_batch'] = self.cohort
-			trainer_history['training_ref'] = self.name
-			trainer.append("trainer_history", trainer_history)
-			trainer.save()
+		# for item in self.trainer_details:
+		# 	trainer = frappe.get_doc("Employee", item.trainer_id)
+		# 	trainer_history = {}
+		# 	trainer_history['course'] = self.course_cost_center
+		# 	trainer_history['course_duration'] = self.course_duration
+		# 	trainer_history['start_date'] = self.training_start_date
+		# 	trainer_history['end_date'] = self.training_end_date
+		# 	trainer_history['cohort_batch'] = self.cohort
+		# 	trainer_history['training_ref'] = self.name
+		# 	trainer.append("trainer_history", trainer_history)
+		# 	trainer.save()
 	
 		for item in self.trainee_details:
 			trainee = frappe.get_doc("Desuup", item.desuup_id)
@@ -159,7 +159,7 @@ class TrainingManagement(Document):
 			trainee.save() 
 
 	def on_cancel(self):
-		frappe.db.sql("delete from `tabTrainer History` where training_ref = '{}'".format(self.name))
+		# frappe.db.sql("delete from `tabTrainer History` where training_ref = '{}'".format(self.name))
 		frappe.db.sql("delete from `tabTrainee History` where training_ref = '{}'".format(self.name))
 		frappe.db.sql("update `tabTraining Management` set status = 'Cancelled' where name = '{}'".format(self.name))
 
