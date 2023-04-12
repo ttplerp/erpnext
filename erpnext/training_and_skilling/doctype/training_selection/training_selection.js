@@ -165,24 +165,3 @@ frappe.ui.form.on('Training Selection', {
 	},
 	
 });
-
-var create_custom_buttons = function(frm){
-	console.log("Hi");
-	if(frm.doc.workflow_state == "Pending"){
-		frm.page.set_primary_action(__('Update Deployment'), () => {
-			process_payment(frm);
-		});
-	}
-	// Option to re-process for failed and transactions from bank's end
-	frm.add_custom_button(__("Reset Status to Pending"), function () {
-		frappe.call({
-			"method": "reset_to_pending",
-			"doc": cur_frm.doc,
-			callback: function(r, rt) {
-					cur_frm.reload_doc();
-			},
-			freeze: true,
-			freeze_message: "Status Resetting.... Please Wait",
-		});
-		}).addClass("btn-warning");
-	}
