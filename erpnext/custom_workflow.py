@@ -1051,7 +1051,7 @@ class CustomWorkflow:
 	
 	def travel_request(self):
 		''' Travel Request Workflow
-			1. Employee -> Supervisor
+			1. Employee -> Supervisor -> HR Manager
 		'''
 		if self.new_state and self.old_state and self.new_state.lower() == self.old_state.lower():
 			return
@@ -1061,11 +1061,11 @@ class CustomWorkflow:
 			self.doc.check_date()
 			self.set_approver("Supervisor")
 			self.doc.document_status = "Draft"
-		elif self.new_state == "Verified By Supervisor":
+		elif self.new_state == "Waiting Hr Approval":
 			if self.doc.supervisor != frappe.session.user:
-				frappe.throw("Only {} can Approve this request".format(self.doc.supervisor_name))
-			self.set_approver("Supervisors Supervisor")	
-			self.doc.document_status = "Verified by Supervisor"
+				frappe.throw("Only {} can Forware this request".format(self.doc.supervisor_name))
+			self.set_approver("HR")	
+			# self.doc.document_status = "Verified by Supervisor"
 		elif self.new_state.lower() == "Approved".lower():
 			if self.doc.supervisor != frappe.session.user:
 				frappe.throw("Only {} can Approve this request".format(self.doc.supervisor_name))
