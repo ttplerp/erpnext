@@ -74,18 +74,20 @@ frappe.ui.form.on('Training Selection', {
 				});
 			}, __("Utilities"));
 		
-			frm.add_custom_button(__('Eligibility Check For Maximum of 3 Programmes'), function(){
-				return frappe.call({
-					method: "eligibility_for_programme",
-					doc: cur_frm.doc,
-					callback: function(r, rt) {
-						frm.refresh_field("item");
-						frm.reload_doc();
-					},
-					freeze: true,
-					freeze_message: "Eligibility Check and Updating..... Please Wait"
-				});
-			}, __("Utilities"));
+			if(!frm.doc.disable_eligibility_for_programme) {
+				frm.add_custom_button(__('Eligibility Check For Maximum of 3 Programmes'), function(){
+					return frappe.call({
+						method: "eligibility_for_programme",
+						doc: cur_frm.doc,
+						callback: function(r, rt) {
+							frm.refresh_field("item");
+							frm.reload_doc();
+						},
+						freeze: true,
+						freeze_message: "Eligibility Check and Updating..... Please Wait"
+					});
+				}, __("Utilities"));
+			}
 
 			frm.add_custom_button(__('Calculate Deployment Points'), function(){
 				return frappe.call({

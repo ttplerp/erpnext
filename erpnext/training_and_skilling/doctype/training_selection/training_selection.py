@@ -196,8 +196,9 @@ class TrainingSelection(Document):
 					frappe.throw("Deployment data is not fetch and updated from dashboard database for Desuup <b>{}</b>".format(a.did))
 				if not a.barred_list:
 					frappe.throw("Dessup {} has not gone through validation check with Desuup Barred list".format(a.did))
-				if not a.maximum_three_core_skill_check:
-					frappe.throw("Dessup {} has not gone through validation check for Eligibility for Maximum of 3 core skill training".format(a.did))
+				if not self.disable_eligibility_for_programme:
+					if not a.maximum_three_core_skill_check:
+						frappe.throw("Dessup {} has not gone through validation check for Eligibility for Maximum of 3 core skill training".format(a.did))
 			desuup_id = a.did
 			total_points = 0.00
 			detail = ""

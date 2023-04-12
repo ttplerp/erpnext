@@ -20,6 +20,7 @@
   "training_category",
   "last_update",
   "prerequisite_details_section",
+  "disable_eligibility_for_programme",
   "pre_requisite",
   "prerequisite_courses",
   "column_break_14",
@@ -132,11 +133,17 @@
   {
    "fieldname": "column_break_14",
    "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "disable_eligibility_for_programme",
+   "fieldtype": "Check",
+   "label": "Disable Eligibility Check For Maximum of 3 Programmes"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-02-18 15:32:41.571424",
+ "modified": "2023-04-12 16:16:39.986069",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Course",

@@ -34,6 +34,7 @@
   "column_break_25",
   "slot",
   "pre_requisite",
+  "disable_eligibility_for_programme",
   "offer_letter_sent",
   "gender_base_selection_and_prerequisites_section",
   "gender_base_selection",
@@ -309,12 +310,19 @@
   {
    "fieldname": "column_break_25",
    "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fetch_from": "course.disable_eligibility_for_programme",
+   "fieldname": "disable_eligibility_for_programme",
+   "fieldtype": "Check",
+   "label": "Disable Eligibility Check For Maximum of 3 Programmes"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-18 16:07:15.876182",
+ "modified": "2023-04-12 16:19:54.329189",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Selection",
