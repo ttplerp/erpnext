@@ -181,7 +181,7 @@ def set_status():
 def get_permission_query_conditions(user):
 	if not user: user = frappe.session.user
 	user_roles = frappe.get_roles(user)
-	if "Training User" in user_roles or "Training Manager" in user_roles or "System Manager" in user_roles:
+	if "Training User" in user_roles or "Training Manager" in user_roles or "System Manager" in user_roles or "Dashboard Manager" in user_roles:
 		return
 	else:
 		return """(
@@ -196,7 +196,7 @@ def has_record_permission(doc, user):
 	if not user: user = frappe.session.user
 	user_roles = frappe.get_roles(user)
 
-	if "Training User" in user_roles or "Training Manager" in user_roles or "System Manager" in user_roles:
+	if "Training User" in user_roles or "Training Manager" in user_roles or "System Manager" in user_roles or "Dashboard Manager" in user_roles:
 		return True
 	else:
 		if frappe.db.exists("Laison Officer", {"parent":doc.training_center, "user": user}):
