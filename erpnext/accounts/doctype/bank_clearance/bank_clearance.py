@@ -84,8 +84,7 @@ class BankClearance(Document):
 			select
 				"TDS Remittance" as payment_document, name as payment_entry,
 				cheque_no as cheque_number, cheque_date,
-				0 as credit, total_tds as debit,
-				posting_date
+				total_tds as credit, 0 as debit, posting_date
 			from `tabTDS Remittance`
 			where
 				credit_account = %(account)s and docstatus=1
