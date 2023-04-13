@@ -84,25 +84,20 @@ class BankPayment(Document):
     #added by cety on 15/09/2021 to not allow transaction after office hour.
     #Modified by Thukten to restrict timing only for Inter Bank Transaction
     def validate_timing(self):
-        inter_transaction = frappe.db.sql("""select count(*) as transaction
-                                            from `tabBank Payment` bp, `tabBank Payment Item` bpi 
-                                            where bp.name=bpi.parent 
-                                            and bp.name='{}'
-                                            and bpi.bank_name!='BOBL'""".format(self.name), as_dict=True)
-        if inter_transaction[0].transaction > 0:
-            hms = '%H:%M:%S'
-            now = datetime.now()
-            now_time = now.strftime(hms)
-            now_time = datetime.strptime(now_time, hms)
-            start_time = str(frappe.db.get_value("Bank Payment Settings", "BOBL", "from_time"))
-            end_time = str(frappe.db.get_value("Bank Payment Settings", "BOBL", "to_time"))
-            from_time = datetime.strptime(start_time, hms)
-            to_time = datetime.strptime(end_time, hms)
-            if now_time >= from_time and now_time <= to_time:
-                pass
-            else:
-                frappe.throw("<b>Inter Bank Transaction</b> are only allowed between from <b>{}</b> till <b>{} </b>!".format(start_time, end_time), title="Transaction Restricted!")
-
+		inter_transaction = frappe.db.sql("""select count(*) as transaction
+											from `tabBank Payment` bp, `tabBank Payment Item` bpi 
+											where bp.name=bpi.parent 
+											and bp.name='{}'
+											and bpi.bank_name!='BOBL'""".format(self.name), as_dict=True)
+		if inter_transaction[0].transaction > 0:
+			hms = '%H:%M:%S'
+			now_time = nowtime()
+			from_time = str(frappe.db.get_value("Bank Payment Settings", "BOBL", "from_time"))
+			to_time = str(frappe.db.get_value("Bank Payment Settings", "BOBL", "to_time"))
+			if now_time >= from_time and now_time <= to_time:
+				pass
+			else:
+				frappe.throw("<b>Inter Bank Transaction</b> are only allowed between from <b>{}</b> till <b>{} </b>!".format(from_time, to_time), title="Transaction Restricted!")
     #added by kinley on 2021-12-16
     def validate_je(self):
         doc = frappe.get_doc("Leave Travel Concession", self.transaction_no)
