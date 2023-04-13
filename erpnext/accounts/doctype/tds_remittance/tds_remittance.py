@@ -253,7 +253,7 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 				{cond}
 				""".format(accounts_cond = accounts_cond_eme, cond = cond, existing_cond = existing_cond,\
 						party_cond = party_cond, from_date=from_date, to_date=to_date), as_dict=True)
-	'''# repair and service invoice 
+	# repair and service invoice 
 	r_and_s_entries = frappe.db.sql("""select t.posting_date, t.name as invoice_no, 
 				'Repair And Service Invoice' as invoice_type,t.party_type, t.party, 
 				(CASE WHEN t.party_type = 'Supplier' THEN (select supplier_tpn_no from `tabSupplier` where name = t.party) ELSE '' END)tpn, t.cost_center, t.bill_no, t.bill_date,
@@ -271,8 +271,8 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 				{existing_cond}
 				{cond}
 				""".format(accounts_cond = accounts_cond_eme, cond = cond, existing_cond = existing_cond,\
-						party_cond = party_cond, from_date=from_date, to_date=to_date), as_dict=True)'''
-	entries = pi_entries + pe_entries + je_entries + ti_entries + eme_entries 
+						party_cond = party_cond, from_date=from_date, to_date=to_date), as_dict=True)
+	entries = pi_entries + pe_entries + je_entries + ti_entries + eme_entries + r_and_s_entries
 	entries = sorted(entries, key=lambda d: (d['posting_date'], d['invoice_no']))
 	return entries
 

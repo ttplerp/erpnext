@@ -9,6 +9,7 @@ from erpnext.controllers.accounts_controller import AccountsController
 from frappe import _, qb, throw, msgprint
 from frappe.utils import flt, cint, money_in_words
 from erpnext.accounts.party import get_party_account
+from erpnext.accounts.utils import get_tds_account,get_account_type
 
 class RepairAndServiceInvoice(AccountsController):
 	def validate(self):
@@ -17,7 +18,8 @@ class RepairAndServiceInvoice(AccountsController):
 		self.set_status()
 		if not self.credit_account:
 			self.credit_account = get_party_account(self.party_type,self.party,self.company)
-
+		if not self.tds_account and flt(self.tds_percent) > 0:
+			self.tds_account = get_tds_account(self.tds_percent, self.company)
 	def on_submit(self):
 		self.make_gl_entry()
 		self.update_repair_and_service()
@@ -62,12 +64,14 @@ class RepairAndServiceInvoice(AccountsController):
 			self.db_set("status", self.status, update_modified=update_modified)
 
 	def calculate_total(self):
-		self.total_amount = self.grand_total = self.outstanding_amount = 0
+		self.total_amount = self.grand_total = self.outstanding_amount = self.tds_amount = 0
 		for a in self.items:
 			a.charge_amount = flt(flt(a.rate) * flt(a.qty),2)
-			self.total_amount += flt(a.charge_amount,2)
 			self.grand_total += flt(a.charge_amount,2)
-			self.outstanding_amount += flt(a.charge_amount,2)
+		if flt(self.tds_percent) > 0:
+			self.tds_amount = flt(self.grand_total) * flt(self.tds_percent) / 100
+		self.total_amount =	self.outstanding_amount = flt(self.grand_total) - flt(self.tds_amount)
+
 	def make_gl_entry(self):
 		from erpnext.accounts.general_ledger import make_gl_entries
 		gl_entries = []
@@ -82,8 +86,8 @@ class RepairAndServiceInvoice(AccountsController):
 		gl_entries.append(
 			self.get_gl_dict({
 				"account": expense_account,
-				"debit": self.total_amount,
-				"debit_in_account_currency": self.total_amount,
+				"debit": self.grand_total,
+				"debit_in_account_currency": self.grand_total,
 				"voucher_no": self.name,
 				"voucher_type": self.doctype,
 				"cost_center": self.cost_center,
@@ -103,6 +107,19 @@ class RepairAndServiceInvoice(AccountsController):
 				"against_voucher_type":self.doctype
 			}, self.currency)
 		)
+		if flt(self.tds_percent) > 0:
+			gl_entries.append(
+				self.get_gl_dict({
+					"account": self.tds_account,
+					"credit": self.tds_amount,
+					"credit_in_account_currency": self.tds_amount,
+					"cost_center": self.cost_center,
+					"voucher_no":self.name,
+					"voucher_type":self.doctype,
+					"against_voucher":self.name,
+					"against_voucher_type":self.doctype
+				}, self.currency)
+			)
 		make_gl_entries(gl_entries, update_outstanding="No", cancel=(self.docstatus == 2), merge_entries=False)
 
 	@frappe.whitelist()
