@@ -751,13 +751,18 @@ class BankPayment(Document):
             frappe.throw(_("Please select Month"))
 
         cond = self.get_conditions()
-        return frappe.db.sql("""SELECT "Salary Slip" transaction_type, t1.name transaction_id, 
-                        t1.name transaction_reference, t1.modified transaction_date,
-                        t1.employee, t1.employee_name beneficiary_name, 
-                        IFNULL(t1.bank_name, e.bank_name) bank_name, 
-                        IFNULL(t1.bank_branch, e.bank_branch) bank_branch, fib.financial_system_code,
+        return frappe.db.sql("""
+                    SELECT "Salary Slip" transaction_type, 
+                        t1.name transaction_id, 
+                        t1.name transaction_reference, 
+                        t1.modified transaction_date,
+                        t1.employee, 
+                        t1.employee_name beneficiary_name, 
+                        e.bank_name bank_name, 
+                        e.bank_branch bank_branch, 
+                        fib.financial_system_code,
                         e.bank_account_type,
-                        IFNULL(t1.bank_account_no, e.bank_ac_no) bank_account_no, 
+                        e.bank_ac_no bank_account_no, 
                         round(t1.net_pay,2) amount,
                         'Salary for {month}-{salary_year}' remarks, "Draft" status						
                     FROM `tabSalary Slip` t1
