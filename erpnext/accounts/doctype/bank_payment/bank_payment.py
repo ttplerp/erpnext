@@ -5,7 +5,7 @@
 from __future__ import unicode_literals
 import frappe
 from frappe import _
-from frappe.utils import cint, flt, now, get_bench_path,get_site_path, touch_file, getdate, get_datetime
+from frappe.utils import cint, flt, now, get_bench_path,get_site_path, touch_file, getdate, get_datetime, nowtime
 from frappe.model.document import Document
 from erpnext.integrations.bps import SftpClient
 from erpnext.integrations.bank_api import intra_payment, inter_payment, inr_remittance, fetch_balance
