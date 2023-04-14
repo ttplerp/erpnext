@@ -14,7 +14,7 @@ frappe.ui.form.on('EME Invoice', {
 				};
 				frappe.set_route("query-report", "General Ledger");
 			}, __("View"));
-			if ( !frm.doc.post_journal_entry){
+			if ( !frm.doc.post_journal_entry && !frm.doc.eme_invoice_entry){
 				cur_frm.add_custom_button(__('Make Journal Entry'), function(doc) {
 					frm.events.post_journal_entry(frm)
 				},__("Create"))
