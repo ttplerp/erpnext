@@ -89,6 +89,7 @@ def post_accounting_entries(doc,  publish_progress = True):
 	failed = 0
 	refresh_interval = 25
 	total_count = cint(doc.successful)
+	eme_invoice = []
 	if not doc.payable_amount:
 		frappe.throw(_("Payable Amount should be greater than zero"))
 	r = []
@@ -113,7 +114,11 @@ def post_accounting_entries(doc,  publish_progress = True):
 		"company":doc.company,
 		"branch": doc.branch,
 	})
-	for e in frappe.db.sql("select name as reference from `tabEME Invoice` where docstatus = 1 and workflow_state = 'Approved' and eme_invoice_entry = '{}'".format(doc.name), as_dict=1):
+	for e in frappe.db.sql("""select name as reference 
+								from `tabEME Invoice` where docstatus = 1 
+								and workflow_state = 'Approved' 
+								and eme_invoice_entry = '{}' 
+								and cost_center = '{}'""".format(doc.name,doc.cost_center), as_dict=1):
 		if e.reference:
 			error = None
 			eme_invoice = frappe.get_doc("EME Invoice", e.reference)
@@ -124,7 +129,7 @@ def post_accounting_entries(doc,  publish_progress = True):
 				je.append("accounts",{
 					"account": credit_account,
 					"debit_in_account_currency": flt(eme_invoice.payable_amount,2),
-					"cost_center": doc.cost_center,
+					"cost_center": eme_invoice.cost_center,
 					"party_check": 1,
 					"party_type": "Supplier",
 					"party": eme_invoice.supplier,
@@ -132,6 +137,7 @@ def post_accounting_entries(doc,  publish_progress = True):
 					"reference_name": eme_invoice.name,
 				})
 				payable_amount += flt(eme_invoice.payable_amount,2)
+				eme_invoice.append(je.name)
 				#Set a reference to the claim journal entry
 				successful += 1
 			except Exception as er:
@@ -169,10 +175,10 @@ def post_accounting_entries(doc,  publish_progress = True):
 	})
 	je.insert()
 	# update je reference in invoice
-	for e in doc.successful_transaction:
-		if e.eme_invoice:
+	for ei in eme_invoice:
+		if ei:
 			error = None
-			eme_invoice = frappe.get_doc("EME Invoice",e.eme_invoice)
+			eme_invoice = frappe.get_doc("EME Invoice",ei)
 			eme_invoice.db_set("journal_entry",je.name)
 			
 	doc.db_set("posted_to_account",1 if successful else 0)
