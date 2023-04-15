@@ -11,6 +11,17 @@ frappe.ui.form.on("Journal Entry", {
 		frm.add_fetch("bank_account", "account", "account");
 		frm.ignore_doctypes_on_cancel_all = ['Sales Invoice', 'Purchase Invoice'];
 		draw_tds_table(frm)
+
+		frm.set_query("naming_series", function() {
+			var entry_type = in_list(["Journal Entry", "Opening Entry", "Depreciation Entry"], frm.doc.voucher_type) ?
+				"Journal Entry" : frm.doc.voucher_type;
+			
+			return {
+				filters: {
+					"entry_type": entry_type,
+				}
+			}
+		});
 	},
 
 	onload:function(frm){
@@ -136,7 +147,10 @@ frappe.ui.form.on("Journal Entry", {
 		
 		if(!frm.doc.company) return null;
 
-		frm.trigger("naming_series_value_update");/* Added by Jai */
+		if (frm.doc.__islocal){/* Added by Jai */
+			cur_frm.set_value("naming_series", "");
+			// frm.trigger("naming_series_value_update");
+		}
 
 		if((!(frm.doc.accounts || []).length) || ((frm.doc.accounts || []).length === 1 && !frm.doc.accounts[0].account)) {
 			if(in_list(["Bank Entry", "Cash Entry"], frm.doc.voucher_type)) {
@@ -162,17 +176,17 @@ frappe.ui.form.on("Journal Entry", {
 
 	},
 
-	naming_series_value_update: function(frm){
-		if (frm.doc.voucher_type == 'Journal Entry' || frm.doc.voucher_type == 'Opening Entry' || frm.doc.voucher_type == 'Depreciation Entry') {
-			cur_frm.set_value("naming_series", "Journal Voucher");
-		} else if (frm.doc.voucher_type == 'Bank Entry' && !in_list(['Bank Payment Voucher','Bank Receipt Voucher'], frm.doc.naming_series)) {
-			cur_frm.set_value("naming_series", "");
-		} else if (frm.doc.voucher_type == 'Cash Entry' && !in_list(['Cash Payment Voucher','Cash Receipt Voucher'], frm.doc.naming_series)) {
-			cur_frm.set_value("naming_series", "");
-		} else if (frm.doc.voucher_type == 'Contra Entry') {
-			cur_frm.set_value("naming_series", "Contra Entry");
-		}
-	},
+	// naming_series_value_update: function(frm){
+	// 	if (frm.doc.voucher_type == 'Journal Entry' || frm.doc.voucher_type == 'Opening Entry' || frm.doc.voucher_type == 'Depreciation Entry') {
+	// 		cur_frm.set_value("naming_series", "Journal Voucher");
+	// 	} else if (frm.doc.voucher_type == 'Bank Entry' && !in_list(['Bank Payment Voucher','Bank Receipt Voucher'], frm.doc.naming_series)) {
+	// 		cur_frm.set_value("naming_series", "");
+	// 	} else if (frm.doc.voucher_type == 'Cash Entry' && !in_list(['Cash Payment Voucher','Cash Receipt Voucher'], frm.doc.naming_series)) {
+	// 		cur_frm.set_value("naming_series", "");
+	// 	} else if (frm.doc.voucher_type == 'Contra Entry') {
+	// 		cur_frm.set_value("naming_series", "Contra Entry");
+	// 	}
+	// },
 
 	from_template: function(frm){
 		if (frm.doc.from_template){

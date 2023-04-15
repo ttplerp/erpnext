@@ -838,7 +838,10 @@ class PaymentEntry(AccountsController):
 
 			for d in self.get("references"):
 				cost_center = self.cost_center
-				if d.reference_doctype == "Sales Invoice" and not cost_center:
+				""" below commented by Jai, and added new lines """
+				# if d.reference_doctype == "Sales Invoice" and not cost_center:
+				# 	cost_center = frappe.db.get_value(d.reference_doctype, d.reference_name, "cost_center")
+				if d.reference_doctype:
 					cost_center = frappe.db.get_value(d.reference_doctype, d.reference_name, "cost_center")
 				gle = party_gl_dict.copy()
 				gle.update(
@@ -1228,6 +1231,11 @@ def get_outstanding_reference_documents(args):
 	if args.get("cost_center"):
 		condition += " and cost_center='%s'" % args.get("cost_center")
 		common_filter.append(ple.cost_center == args.get("cost_center"))
+	else: #added by Jai
+		cost_center_for = frappe.db.get_value("Branch", args.get("doc_branch"), "cost_center_for")
+		# condition += " and cost_center in (select name from `tabCost Center` where disabled=0 and cost_center_for = '{}')".format(cost_center_for)
+		cost_center_nos = set([x.name for x in frappe.db.sql("select name from `tabCost Center` where disabled=0 and cost_center_for = '{}'".format(cost_center_for),as_dict=True)])
+		common_filter.append(ple.cost_center.isin(cost_center_nos))
 
 	date_fields_dict = {
 		"posting_date": ["from_posting_date", "to_posting_date"],

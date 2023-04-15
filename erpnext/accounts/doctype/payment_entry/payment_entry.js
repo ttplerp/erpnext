@@ -696,10 +696,9 @@ frappe.ui.form.on('Payment Entry', {
 					return {
 						"filters": {"company": frm.doc.company}
 					}
-				},
-				default: frm.doc.cost_center,
-				read_only:1
+				}
 			},
+			{fieldtype:"Data", label:__("Doc Branch"), fieldname:"doc_branch", hidden: 1, default: frm.doc.branch},
 			{fieldtype:"Column Break"},
 			{fieldtype:"Section Break"},
 			{fieldtype:"Check", label: __("Allocate Payment Amount"), fieldname:"allocate_payment_amount", default:1},
@@ -753,7 +752,8 @@ frappe.ui.form.on('Payment Entry', {
 			"payment_type": frm.doc.payment_type,
 			"party": frm.doc.party,
 			"party_account": frm.doc.payment_type=="Receive" ? frm.doc.paid_from : frm.doc.paid_to,
-			"cost_center": frm.doc.cost_center
+			"cost_center": frm.doc.cost_center,
+			"doc_branch": frm.doc.doc_branch
 		}
 
 		for (let key in filters) {
