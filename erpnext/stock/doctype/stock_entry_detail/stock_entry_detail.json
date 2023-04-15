@@ -25,6 +25,7 @@
   "issued_employee_name",
   "issued_desuup_name",
   "issued_equipment_name",
+  "phone_no",
   "is_finished_item",
   "is_scrap_item",
   "is_process_loss",
@@ -767,13 +768,19 @@
    "fieldtype": "Data",
    "label": "Issued Desuup Name",
    "read_only": 1
+  },
+  {
+   "depends_on": "eval: parent.stock_entry_type == \"Material Issue\"",
+   "fieldname": "phone_no",
+   "fieldtype": "Data",
+   "label": "Phone No"
   }
  ],
  "idx": 1,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-02-01 00:11:14.137398",
+ "modified": "2023-03-21 14:49:40.086984",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Entry Detail",

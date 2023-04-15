@@ -1216,3 +1216,17 @@ function check_should_not_attach_bom_items(bom_no) {
 }
 
 extend_cscript(cur_frm.cscript, new erpnext.stock.StockEntry({ frm: cur_frm }));
+
+cur_frm.cscript.pull_item_details = function (doc, cdt, cdn) {
+	var d = locals[cdt][cdn]
+	var c = d.items || [];
+	return frappe.call({
+			method: "get_details",
+			doc: cur_frm.doc,
+			callback: function(r, rt) {
+					cur_frm.refresh_field("items");
+					cur_frm.refresh_fields();
+			},
+			freeze: true
+	});
+}
