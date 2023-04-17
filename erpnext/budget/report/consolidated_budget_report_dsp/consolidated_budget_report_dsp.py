@@ -13,7 +13,7 @@ def execute(filters=None):
 
 def get_data(filters):
 	condition = ""
-	if filters.cost_center and not filters.group_by_account:
+	if filters.cost_center:
 		lft, rgt = frappe.db.get_value("Cost Center", filters.cost_center, ["lft", "rgt"])
 		condition += """ and (b.cost_center in (select a.name 
 											from `tabCost Center` a 
@@ -61,8 +61,9 @@ def get_data(filters):
 		# current    = flt(d.initial_budget) + flt(d.supplement) +flt(adjustment)
 		
 		if committed > 0:
-			committed -= consumed
-			committed = 0 if committed < 0 else committed
+			# committed -= consumed
+			committed = flt(committed - consumed, 2)
+			committed = 0 if committed < 0 else flt(committed, 2)
 
 		available = flt(d.initial_budget) + flt(adjustment) + flt(d.supplement) - flt(consumed) - flt(committed)
 		if d.budget_amount > 0:
@@ -72,9 +73,9 @@ def get_data(filters):
 				"supplementary": supplement,
 				"adjustment": adjustment,
 				# "current": current,
-				"committed": committed,
-				"consumed": consumed,
-				"available": available
+				"committed": flt(committed, 2),
+				"consumed": flt(consumed, 2),
+				"available": flt(available, 2)
 			}
 
 			final_data.append(row)
