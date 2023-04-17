@@ -7,43 +7,20 @@ from frappe.utils import cstr, getdate, flt
 
 def execute(filters=None):
 	columns = get_columns(filters)
-	data = get_data(filters)
+	queries = construct_query(filters)
+	data = get_data(queries, filters)
 
 	return columns, data
 
-def get_data(filters):
-	condition = ""
-	if filters.cost_center:
-		lft, rgt = frappe.db.get_value("Cost Center", filters.cost_center, ["lft", "rgt"])
-		condition += """ and (b.cost_center in (select a.name 
-											from `tabCost Center` a 
-											where a.lft >= {1} and a.rgt <= {2} and center_category = 'Domain'
-											) 
-					 or b.cost_center = '{0}')
-				""".format(filters.cost_center, lft, rgt)
-	
-	datas = frappe.db.sql("""select b.cost_center, b.project,
-			SUM(ba.budget_amount) as budget_amount, 
-			SUM(ba.initial_budget) as initial_budget, 
-			SUM(ba.budget_received) as added, 
-			SUM(ba.budget_sent) as deducted, 
-			SUM(ba.supplementary_budget) as supplement
-		from `tabBudget` b, `tabBudget Account` ba 
-		where b.docstatus = 1 
-			and b.name = ba.parent 
-			and b.fiscal_year = '{fiscal_year}'
-		{condition}
-		group by b.cost_center
-		""".format(fiscal_year=filters.fiscal_year, condition=condition), as_dict=True)
-
+def get_data(query, filters):
 	final_data = []
+	datas = frappe.db.sql(query, as_dict=True)
 	ini = su = cur = cm = co = ad = av = 0
-	cond=""
 	for d in datas:
 		lft, rgt = frappe.db.get_value("Cost Center", d.cost_center, ["lft", "rgt"])
-		cond += """ and (cost_center in (select a.name 
-											from `tabCost Center` a 
-											where a.lft >= {1} and a.rgt <= {2}
+		cond = """ and (cost_center in (select name 
+											from `tabCost Center`
+											where lft >= {1} and rgt <= {2}
 											) 
 					 or cost_center = '{0}')
 				""".format(d.cost_center, lft, rgt)
@@ -66,7 +43,7 @@ def get_data(filters):
 			committed = 0 if committed < 0 else flt(committed, 2)
 
 		available = flt(d.initial_budget) + flt(adjustment) + flt(d.supplement) - flt(consumed) - flt(committed)
-		if d.budget_amount > 0:
+		if d.initial_budget > 0:
 			row = {
 				"cost_center": d.cost_center,
 				"initial": flt(d.initial_budget),
@@ -85,7 +62,7 @@ def get_data(filters):
 			# cur+=current
 			co+=consumed
 			ad+=adjustment
-			av+=available
+			av+=flt(available)
 	row = {
 		"cost_center": "Total",
 		"initial": ini,
@@ -98,6 +75,33 @@ def get_data(filters):
 	final_data.append(row)
 	return final_data
 		
+def construct_query(filters):
+	condition = ""
+	if filters.cost_center:
+		lft, rgt = frappe.db.get_value("Cost Center", filters.cost_center, ["lft", "rgt"])
+		condition += """ and (b.cost_center in (select a.name 
+											from `tabCost Center` a 
+											where a.lft >= {1} and a.rgt <= {2} and center_category = 'Domain'
+											) 
+					 or b.cost_center = '{0}')
+				""".format(filters.cost_center, lft, rgt)
+	
+	query = """select b.cost_center, b.project,
+			SUM(ba.budget_amount) as budget_amount, 
+			SUM(ba.initial_budget) as initial_budget, 
+			SUM(ba.budget_received) as added, 
+			SUM(ba.budget_sent) as deducted, 
+			SUM(ba.supplementary_budget) as supplement
+		from `tabBudget` b, `tabBudget Account` ba 
+		where b.docstatus = 1 
+			and b.name = ba.parent 
+			and b.fiscal_year = '{fiscal_year}'
+		{condition}
+		group by b.cost_center
+		""".format(fiscal_year=filters.fiscal_year, condition=condition)
+	
+	return query
+
 def get_columns(filters):
 	return [
 		{
