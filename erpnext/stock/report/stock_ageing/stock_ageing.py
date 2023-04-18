@@ -4,7 +4,7 @@
 
 from operator import itemgetter
 from typing import Dict, List, Tuple, Union
-
+from erpnext.stock.get_item_details import get_valuation_rate
 import frappe
 from frappe import _
 from frappe.utils import cint, date_diff, flt
@@ -39,32 +39,31 @@ def format_report_data(filters: Filters, item_details: Dict, to_date: str) -> Li
 
 		earliest_age, latest_age = 0, 0
 		details = item_dict["details"]
-		# frappe.msgprint(str(item_dict['details']))
-
 		fifo_queue = sorted(filter(_func, item_dict["fifo_queue"]), key=_func)
-
 		if not fifo_queue:
 			continue
 
 		average_age = get_average_age(fifo_queue, to_date)
 		earliest_age = date_diff(to_date, fifo_queue[0][1])
 		latest_age = date_diff(to_date, fifo_queue[-1][1])
+
+		valuation_rate = get_valuation_rate(details.name, filters.company, details.warehouse).get("valuation_rate")
+
 		range1, range2, range3, range4, above_range4 = get_range_age(filters, fifo_queue, to_date, item_dict)
-		range1_val = flt(range1) * flt(details.valuatIon_rate)
-		range2_val = flt(range2) * flt(details.valuatIon_rate)
-		range3_val = flt(range3) * flt(details.valuatIon_rate)
-		range4_val = flt(range4) * flt(details.valuatIon_rate)
-		above_range4_val = flt(above_range4) * flt(details.valuatIon_rate)
+		range1_val = flt(range1) * flt(valuation_rate)
+		range2_val = flt(range2) * flt(valuation_rate)
+		range3_val = flt(range3) * flt(valuation_rate)
+		range4_val = flt(range4) * flt(valuation_rate)
+		above_range4_val = flt(above_range4) * flt(valuation_rate)
 
 		row = [details.name, details.item_name, details.item_group, frappe.db.get_value("Item", details.name, "item_sub_group")]
-
 		if filters.get("show_warehouse_wise_stock"):
 			row.append(details.warehouse)
 
 		row.extend(
 			[
 				flt(item_dict.get("total_qty"), precision),
-				flt(item_dict.get("total_qty"), precision)*flt(details.valuatIon_rate),
+				flt(item_dict.get("total_qty"), precision)*flt(valuation_rate),
 				average_age,
 				range1,
 				range1_val,
@@ -110,7 +109,6 @@ def get_range_age(filters: Filters, fifo_queue: List, to_date: str, item_dict: D
 	for item in fifo_queue:
 		age = date_diff(to_date, item[1])
 		qty = flt(item[0]) if not item_dict["has_serial_no"] else 1.0
-
 		if age <= filters.range1:
 			range1 = flt(range1 + qty, precision)
 		elif age <= filters.range2:
