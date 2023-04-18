@@ -30,7 +30,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-12-14 16:37:03.596486",
+ "modified": "2023-04-17 12:12:51.480110",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "DHI Company",
@@ -96,5 +96,6 @@
  "sort_order": "DESC",
  "states": [],
  "title_field": "company_code",
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

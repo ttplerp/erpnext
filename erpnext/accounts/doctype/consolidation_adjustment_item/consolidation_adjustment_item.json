@@ -94,8 +94,8 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-12-15 10:56:14.929089",
- "modified_by": "Administrator",
+ "modified": "2023-04-17 12:12:51.307264",
+ "modified_by": "dechen.lhaden@thimphutechpark.bt",
  "module": "Accounts",
  "name": "Consolidation Adjustment Item",
  "naming_rule": "Autoincrement",
@@ -103,5 +103,6 @@
  "permissions": [],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

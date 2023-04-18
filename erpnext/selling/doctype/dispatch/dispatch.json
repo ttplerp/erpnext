@@ -28,7 +28,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-12-21 10:35:23.808353",
+ "modified": "2023-04-17 12:12:49.597813",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Dispatch",
@@ -72,5 +72,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

@@ -17,7 +17,7 @@ class POSClosingEntry(StatusUpdater):
 	def validate(self):
 		self.posting_date = self.posting_date or frappe.utils.nowdate()
 		self.posting_time = self.posting_time or frappe.utils.nowtime()
-
+		self.set_payment_status()
 		if frappe.db.get_value("POS Opening Entry", self.pos_opening_entry, "status") != "Open":
 			frappe.throw(_("Selected POS Opening Entry should be open."), title=_("Invalid Opening Entry"))
 
@@ -78,6 +78,16 @@ class POSClosingEntry(StatusUpdater):
 
 	def on_cancel(self):
 		unconsolidate_pos_invoices(closing_entry=self)
+	
+	def set_payment_status(self):
+		flg = 0
+		for m in self.payment_reconciliation:
+			if m.mode_of_payment == 'Cash':
+				flg = 1
+		if not flg:
+			self.payment_status = 'Deposited'
+		else:
+			self.payment_status = 'Not Deposited'
 
 	@frappe.whitelist()
 	def retry(self):

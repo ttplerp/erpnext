@@ -73,7 +73,7 @@
  "icon": "fa fa-exchange",
  "idx": 1,
  "links": [],
- "modified": "2023-03-23 15:04:25.235431",
+ "modified": "2023-04-17 12:12:20.688129",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Currency Exchange",
@@ -117,5 +117,6 @@
  "quick_entry": 1,
  "sort_field": "name",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

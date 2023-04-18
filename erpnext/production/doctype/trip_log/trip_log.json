@@ -104,7 +104,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-10-31 16:34:50.411027",
+ "modified": "2023-04-17 12:13:11.893385",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Trip Log",
@@ -154,5 +154,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

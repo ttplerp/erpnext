@@ -16,10 +16,12 @@
   "item_group",
   "customer",
   "customer_name",
+  "order_type",
   "column_break1",
   "company",
   "posting_date",
   "posting_time",
+  "invoice_no",
   "set_posting_time",
   "is_return",
   "dispatch",
@@ -110,6 +112,21 @@
   "rounded_total",
   "in_words",
   "disable_rounded_total",
+  "vehicle_details_section",
+  "type",
+  "tvo_no",
+  "current_readingkm",
+  "date_time_in",
+  "date_time_out",
+  "completed_service",
+  "column_break_112",
+  "vehicle_reg_no",
+  "chasses_no",
+  "model_name",
+  "make",
+  "engine_no",
+  "employee",
+  "technician_name",
   "terms_section_break",
   "tc_name",
   "terms",
@@ -481,8 +498,7 @@
    "fieldtype": "Link",
    "label": "Set Source Warehouse",
    "options": "Warehouse",
-   "print_hide": 1,
-   "read_only": 1
+   "print_hide": 1
   },
   {
    "fieldname": "col_break_warehouse",
@@ -701,7 +717,6 @@
    "collapsible_depends_on": "discount_amount",
    "fieldname": "section_break_49",
    "fieldtype": "Section Break",
-   "hidden": 1,
    "label": "Additional Discount"
   },
   {
@@ -944,6 +959,7 @@
   },
   {
    "allow_on_submit": 1,
+   "fetch_from": "branch.letter_head",
    "fieldname": "letter_head",
    "fieldtype": "Link",
    "label": "Letter Head",
@@ -1282,13 +1298,115 @@
    "fieldtype": "Data",
    "label": "Rate Quoted",
    "read_only": 1
+  },
+  {
+   "fieldname": "invoice_no",
+   "fieldtype": "Data",
+   "label": "Invoice No"
+  },
+  {
+   "depends_on": "eval:doc.order_type == \"Vehicle Repairing\"",
+   "fieldname": "vehicle_details_section",
+   "fieldtype": "Section Break",
+   "label": "Vehicle Details"
+  },
+  {
+   "default": "Sales",
+   "fieldname": "order_type",
+   "fieldtype": "Select",
+   "hide_days": 1,
+   "hide_seconds": 1,
+   "label": "Order Type",
+   "oldfieldname": "order_type",
+   "oldfieldtype": "Select",
+   "options": "Sales\nMaintenance\nVehicle Repairing\nShopping Cart",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "mandatory_depends_on": "eval:doc.order_type == \"Vehicle Repairing\"",
+   "options": "\nPaid Service\nFree Service"
+  },
+  {
+   "fieldname": "vehicle_reg_no",
+   "fieldtype": "Data",
+   "label": "Vehicle Reg No.",
+   "mandatory_depends_on": "eval:doc.order_type == \"Vehicle Repairing\""
+  },
+  {
+   "fieldname": "current_readingkm",
+   "fieldtype": "Data",
+   "label": "Current Reading(KM)"
+  },
+  {
+   "fieldname": "tvo_no",
+   "fieldtype": "Data",
+   "label": "TVO No."
+  },
+  {
+   "fieldname": "chasses_no",
+   "fieldtype": "Data",
+   "label": "Chasses No",
+   "mandatory_depends_on": "eval:doc.order_type == \"Vehicle Repairing\""
+  },
+  {
+   "depends_on": "eval:doc.order_type == \"Vehicle Repairing\"",
+   "fieldname": "model_name",
+   "fieldtype": "Data",
+   "label": "Model Name"
+  },
+  {
+   "fieldname": "make",
+   "fieldtype": "Data",
+   "label": "Make"
+  },
+  {
+   "fieldname": "engine_no",
+   "fieldtype": "Data",
+   "label": "Engine No"
+  },
+  {
+   "fieldname": "date_time_in",
+   "fieldtype": "Datetime",
+   "label": "Date & Time(IN) "
+  },
+  {
+   "fieldname": "date_time_out",
+   "fieldtype": "Datetime",
+   "label": "Date & Time(OUT)"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Attended By",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "technician_name",
+   "fieldtype": "Data",
+   "label": "Technician Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_112",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "completed_service",
+   "fieldtype": "Check",
+   "label": "Completed"
   }
  ],
  "icon": "fa fa-truck",
  "idx": 146,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-24 12:53:09.882285",
+ "modified": "2023-04-18 20:45:53.092067",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Delivery Note",
@@ -1356,5 +1474,6 @@
  "states": [],
  "timeline_field": "customer",
  "track_changes": 1,
- "track_seen": 1
+ "track_seen": 1,
+ "track_views": 1
 }

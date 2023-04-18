@@ -99,7 +99,7 @@
  "icon": "fa fa-calendar",
  "idx": 1,
  "links": [],
- "modified": "2022-09-13 08:34:06.667549",
+ "modified": "2023-04-17 12:13:26.814487",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Fiscal Year",
@@ -141,5 +141,6 @@
  "show_name_in_global_search": 1,
  "sort_field": "name",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

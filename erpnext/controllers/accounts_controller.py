@@ -1902,7 +1902,7 @@ def get_default_taxes_and_charges(master_doctype, tax_template=None, company=Non
 
 
 @frappe.whitelist()
-def get_taxes_and_charges(master_doctype, master_name):
+def get_taxes_and_charges(master_doctype, master_name, cost_center=None):
 	if not master_name:
 		return
 	from frappe.model import child_table_fields, default_fields
@@ -1912,11 +1912,11 @@ def get_taxes_and_charges(master_doctype, master_name):
 	taxes_and_charges = []
 	for i, tax in enumerate(tax_master.get("taxes")):
 		tax = tax.as_dict()
-
+		tax["cost_center"] = cost_center
 		for fieldname in default_fields + child_table_fields:
 			if fieldname in tax:
 				del tax[fieldname]
-
+		
 		taxes_and_charges.append(tax)
 
 	return taxes_and_charges
@@ -2063,8 +2063,8 @@ def get_advance_journal_entries(
 
 	conditions = []
 	if include_unallocated:
-		conditions.append("ifnull(t2.reference_name, '')=''")
-
+		conditions.append("ifnull(t2.reference_name, '')='' or ifnull(t2.reference_type, '')='POL Expense'")
+	
 	if order_list:
 		order_condition = ", ".join(["%s"] * len(order_list))
 		conditions.append(
@@ -2072,9 +2072,9 @@ def get_advance_journal_entries(
 				order_doctype, order_condition
 			)
 		)
-
+	
 	reference_condition = " and (" + " or ".join(conditions) + ")" if conditions else ""
-
+	
 	# nosemgrep
 	journal_entries = frappe.db.sql(
 		"""

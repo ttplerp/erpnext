@@ -243,20 +243,21 @@ class POSInvoice(SalesInvoice):
 					frappe.bold(d.warehouse),
 					frappe.bold(d.qty),
 				)
-				if flt(available_stock) <= 0:
-					frappe.throw(
-						_("Row #{}: Item Code: {} is not available under warehouse {}.").format(
-							d.idx, item_code, warehouse
-						),
-						title=_("Item Unavailable"),
-					)
-				elif flt(available_stock) < flt(d.qty):
-					frappe.throw(
-						_(
-							"Row #{}: Stock quantity not enough for Item Code: {} under warehouse {}. Available quantity {}."
-						).format(d.idx, item_code, warehouse, available_stock),
-						title=_("Item Unavailable"),
-					)
+				if cint(is_stock_item) == 1:
+					if flt(available_stock) <= 0:
+						frappe.throw(
+							_("Row #{}: Item Code: {} is not available under warehouse {}.").format(
+								d.idx, item_code, warehouse
+							),
+							title=_("Item Unavailable"),
+						)
+					elif flt(available_stock) < flt(d.qty):
+						frappe.throw(
+							_(
+								"Row #{}: Stock quantity not enough for Item Code: {} under warehouse {}. Available quantity {}."
+							).format(d.idx, item_code, warehouse, available_stock),
+							title=_("Item Unavailable"),
+						)
 
 	def validate_serialised_or_batched_item(self):
 		error_msg = []

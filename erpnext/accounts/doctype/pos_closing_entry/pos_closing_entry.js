@@ -68,6 +68,19 @@ frappe.ui.form.on('POS Closing Entry', {
 				});
 			});
 		}
+		if (frm.doc.docstatus == 1 ){
+			frm.add_custom_button(__('General Ledger'), function(){
+				frappe.route_options = {
+					voucher_no: frm.doc.name,
+					company: frm.doc.company,
+					from_date:frappe.datetime.year_start(),
+					to_date:frappe.datetime.year_end(),
+				};
+				frappe.set_route("query-report", "General Ledger");
+			},
+			__("View"));
+			cur_frm.page.set_inner_btn_group_as_primary(__('View'))
+		}
 	},
 
 	pos_opening_entry(frm) {

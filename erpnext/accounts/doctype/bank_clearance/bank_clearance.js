@@ -26,6 +26,9 @@ frappe.ui.form.on("Bank Clearance", {
 	},
 
 	refresh: function(frm) {
+		frm.add_custom_button(__('Get Payment Entris'), function(){
+			frm.events.get_payment_entries(frm)
+		});
 		frm.disable_save();
 	},
 

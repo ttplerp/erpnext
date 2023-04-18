@@ -345,7 +345,7 @@
  "image_field": "website_image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-06-28 17:10:30.613251",
+ "modified": "2023-04-17 12:13:43.604235",
  "modified_by": "Administrator",
  "module": "E-commerce",
  "name": "Website Item",
@@ -407,5 +407,6 @@
  "sort_order": "DESC",
  "states": [],
  "title_field": "web_item_name",
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

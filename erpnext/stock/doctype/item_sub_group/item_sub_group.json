@@ -61,7 +61,7 @@
   }
  ],
  "links": [],
- "modified": "2022-11-08 16:45:02.862966",
+ "modified": "2023-04-17 12:13:07.944300",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item Sub Group",
@@ -117,5 +117,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

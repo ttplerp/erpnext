@@ -699,7 +699,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Selling Transaction",
-   "link_count": 10,
+   "link_count": 11,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -809,10 +809,20 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Deposit Entry",
+   "link_count": 0,
+   "link_to": "Deposit Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-03-27 15:50:54.979687",
- "modified_by": "pema.dhendup@thimphutechpark.bt",
+ "modified": "2023-04-11 14:10:17.963083",
+ "modified_by": "Administrator",
  "module": "Selling",
  "name": "Selling",
  "owner": "Administrator",

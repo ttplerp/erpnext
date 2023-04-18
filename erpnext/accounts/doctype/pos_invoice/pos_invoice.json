@@ -140,9 +140,12 @@
   "walk_in_customer_details_section",
   "walk_in_customer_name",
   "cid_ph_no",
-  "column_break_134",
   "bank",
   "jnrl_no",
+  "column_break_134",
+  "vehicle_no",
+  "chassis_no",
+  "km_run",
   "column_break4",
   "write_off_amount",
   "base_write_off_amount",
@@ -1591,12 +1594,27 @@
    "fieldname": "cid_ph_no",
    "fieldtype": "Data",
    "label": "CID/Ph No"
+  },
+  {
+   "fieldname": "vehicle_no",
+   "fieldtype": "Data",
+   "label": "Vehicle No"
+  },
+  {
+   "fieldname": "chassis_no",
+   "fieldtype": "Data",
+   "label": "Chassis No"
+  },
+  {
+   "fieldname": "km_run",
+   "fieldtype": "Data",
+   "label": "KM Run"
   }
  ],
  "icon": "fa fa-file-text",
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-30 14:30:05.431338",
+ "modified": "2023-04-17 12:11:52.953229",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "POS Invoice",
@@ -1650,5 +1668,6 @@
  "timeline_field": "customer",
  "title_field": "title",
  "track_changes": 1,
- "track_seen": 1
+ "track_seen": 1,
+ "track_views": 1
 }

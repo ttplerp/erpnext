@@ -218,7 +218,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-08-09 18:26:56.950185",
+ "modified": "2023-04-17 12:13:34.264360",
  "modified_by": "Administrator",
  "module": "CRM",
  "name": "Prospect",
@@ -262,5 +262,6 @@
  "sort_order": "DESC",
  "states": [],
  "title_field": "company_name",
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

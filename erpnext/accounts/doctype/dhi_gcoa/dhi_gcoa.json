@@ -59,7 +59,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-16 10:28:07.869530",
+ "modified": "2023-04-17 12:12:26.405730",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "DHI GCOA",
@@ -103,5 +103,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

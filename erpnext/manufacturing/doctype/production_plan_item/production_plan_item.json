@@ -216,7 +216,7 @@
  "idx": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-03-24 04:54:09.940224",
+ "modified": "2023-04-17 12:14:04.095259",
  "modified_by": "Administrator",
  "module": "Manufacturing",
  "name": "Production Plan Item",
@@ -225,5 +225,6 @@
  "permissions": [],
  "sort_field": "modified",
  "sort_order": "ASC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

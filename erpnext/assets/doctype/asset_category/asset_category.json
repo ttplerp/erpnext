@@ -74,7 +74,7 @@
   }
  ],
  "links": [],
- "modified": "2022-10-27 15:25:15.127250",
+ "modified": "2023-04-17 12:13:13.038857",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset Category",
@@ -124,5 +124,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

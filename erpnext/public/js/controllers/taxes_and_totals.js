@@ -317,7 +317,13 @@ erpnext.taxes_and_totals = class TaxesAndTotals extends erpnext.payments {
 
 		// maintain actual tax rate based on idx
 		$.each(this.frm.doc["taxes"] || [], function(i, tax) {
+			var new_tax_amount = 0.0;
 			if (tax.charge_type == "Actual") {
+				actual_tax_dict[tax.idx] = flt(tax.tax_amount, precision("tax_amount", tax));
+			}
+			if (tax.payable_to_different_vendor === 1 && tax.amount_paid_to_different_vendors){
+				new_tax_amount = flt(tax.amount_paid_to_different_vendors) / flt(me.frm.doc.conversion_rate);
+				tax.tax_amount = flt(new_tax_amount)
 				actual_tax_dict[tax.idx] = flt(tax.tax_amount, precision("tax_amount", tax));
 			}
 		});
@@ -327,7 +333,7 @@ erpnext.taxes_and_totals = class TaxesAndTotals extends erpnext.payments {
 			$.each(me.frm.doc["taxes"] || [], function(i, tax) {
 				// tax_amount represents the amount of tax for the current step
 				var current_tax_amount = me.get_current_tax_amount(item, tax, item_tax_map);
-
+				
 				// Adjust divisional loss to the last item
 				if (tax.charge_type == "Actual") {
 					actual_tax_dict[tax.idx] -= current_tax_amount;
@@ -446,6 +452,10 @@ erpnext.taxes_and_totals = class TaxesAndTotals extends erpnext.payments {
 		if (!tax.dont_recompute_tax) {
 			this.set_item_wise_tax(item, tax, tax_rate, current_tax_amount);
 		}
+
+		// if (tax.payable_to_different_vendor === 1 && tax.amount_paid_to_different_vendors){
+		// 	current_tax_amount = tax.amount_paid_to_different_vendors / this.frm.doc.conversion_rate
+		// }
 
 		return current_tax_amount;
 	}

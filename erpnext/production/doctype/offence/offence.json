@@ -28,7 +28,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-10-31 10:38:44.280509",
+ "modified": "2023-04-17 12:13:12.546242",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Offence",
@@ -52,5 +52,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

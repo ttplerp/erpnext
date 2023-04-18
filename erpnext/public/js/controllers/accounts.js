@@ -246,6 +246,21 @@ if(!erpnext.taxes.flags[cur_frm.cscript.tax_table]) {
 		cur_frm.cscript.validate_taxes_and_charges(cdt, cdn);
 	});
 
+	frappe.ui.form.on(cur_frm.cscript.tax_table, "amount_paid_to_different_vendors", function(frm, cdt, cdn) {
+		cur_frm.cscript.validate_taxes_and_charges(cdt, cdn);
+	});
+
+	frappe.ui.form.on(cur_frm.cscript.tax_table, "payable_to_different_vendor", function(frm, cdt, cdn) {
+		frm.cscript.validate_taxes_and_charges(cdt, cdn);
+		var open_form = frm.open_grid_row();
+		if(open_form) {
+			erpnext.taxes.set_conditional_mandatory_rate_or_amount(open_form);
+		} else {
+			// apply in current row
+			erpnext.taxes.set_conditional_mandatory_rate_or_amount(frm.get_field('taxes').grid.get_row(cdn));
+		}
+	});
+
 	frappe.ui.form.on(cur_frm.cscript.tax_table, "charge_type", function(frm, cdt, cdn) {
 		frm.cscript.validate_taxes_and_charges(cdt, cdn);
 		var open_form = frm.open_grid_row();
@@ -272,16 +287,23 @@ if(!erpnext.taxes.flags[cur_frm.cscript.tax_table]) {
 
 erpnext.taxes.set_conditional_mandatory_rate_or_amount = function(grid_row) {
 	if(grid_row) {
-		if(grid_row.doc.charge_type==="Actual") {
-			grid_row.toggle_editable("tax_amount", true);
-			grid_row.toggle_reqd("tax_amount", true);
-			grid_row.toggle_editable("rate", false);
-			grid_row.toggle_reqd("rate", false);
-		} else {
-			grid_row.toggle_editable("rate", true);
-			grid_row.toggle_reqd("rate", true);
+		if (grid_row.doc.payable_to_different_vendor === 1){
 			grid_row.toggle_editable("tax_amount", false);
 			grid_row.toggle_reqd("tax_amount", false);
+			grid_row.toggle_editable("rate", false);
+			grid_row.toggle_reqd("rate", false);
+		}else{
+			if(grid_row.doc.charge_type==="Actual") {
+				grid_row.toggle_editable("tax_amount", true);
+				grid_row.toggle_reqd("tax_amount", true);
+				grid_row.toggle_editable("rate", false);
+				grid_row.toggle_reqd("rate", false);
+			} else {
+				grid_row.toggle_editable("rate", true);
+				grid_row.toggle_reqd("rate", true);
+				grid_row.toggle_editable("tax_amount", false);
+				grid_row.toggle_reqd("tax_amount", false);
+			}
 		}
 	}
 }

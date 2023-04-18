@@ -308,7 +308,7 @@
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2023-03-22 10:35:07.705706",
+ "modified": "2023-04-17 12:12:20.954736",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Account",
@@ -389,5 +389,6 @@
  "sort_field": "modified",
  "sort_order": "ASC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

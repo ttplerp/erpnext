@@ -68,7 +68,7 @@
  "idx": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-06-27 05:30:18.475150",
+ "modified": "2023-04-17 12:13:45.605795",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Product Bundle Item",
@@ -77,5 +77,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

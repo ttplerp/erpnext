@@ -36,7 +36,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-11-26 15:41:34.542099",
+ "modified": "2023-04-17 12:13:02.094850",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Downtime Reason",
@@ -81,5 +81,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

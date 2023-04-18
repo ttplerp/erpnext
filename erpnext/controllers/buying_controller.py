@@ -448,7 +448,7 @@ class BuyingController(SubcontractingController):
 						sl_entries.append(from_warehouse_sle)
 
 					sle = self.get_sl_entries(
-						d, {"actual_qty": flt(pr_qty), "serial_no": cstr(d.serial_no).strip()}
+						d, {"actual_qty": flt(pr_qty), "serial_no": cstr(d.serial_no).strip(),"tvo_no":d.tvo_no,"engine_no":d.engine_no,"valuation_rate":d.valuation_rate}
 					)
 
 					if self.is_return:

@@ -147,7 +147,7 @@
   }
  ],
  "links": [],
- "modified": "2023-03-30 13:22:28.386579",
+ "modified": "2023-04-17 12:12:13.388562",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Loyalty Program",
@@ -193,5 +193,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

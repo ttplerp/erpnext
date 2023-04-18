@@ -687,7 +687,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-30 15:14:53.583662",
+ "modified": "2023-04-17 12:12:02.329306",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Entry",
@@ -758,5 +758,6 @@
  "sort_order": "DESC",
  "states": [],
  "title_field": "title",
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

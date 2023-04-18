@@ -285,7 +285,7 @@ def get_incoming_rate(args, raise_error_if_no_rate=True):
 	else:
 		valuation_method = get_valuation_method(args.get("item_code"))
 		previous_sle = get_previous_sle(args)
-		if valuation_method in ("FIFO", "LIFO"):
+		if valuation_method in ("FIFO", "LIFO","SPECIFIC"):
 			if previous_sle:
 				previous_stock_queue = json.loads(previous_sle.get("stock_queue", "[]") or "[]")
 				in_rate = (

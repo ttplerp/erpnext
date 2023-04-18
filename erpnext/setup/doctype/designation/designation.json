@@ -44,7 +44,7 @@
  "icon": "fa fa-bookmark",
  "idx": 1,
  "links": [],
- "modified": "2022-09-14 09:58:55.569513",
+ "modified": "2023-04-17 12:13:25.898251",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Designation",
@@ -95,5 +95,6 @@
  "show_name_in_global_search": 1,
  "sort_field": "modified",
  "sort_order": "ASC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

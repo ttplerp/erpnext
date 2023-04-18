@@ -72,7 +72,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-04 10:20:06.916615",
+ "modified": "2023-04-17 12:12:44.977338",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment Type",
@@ -126,5 +126,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

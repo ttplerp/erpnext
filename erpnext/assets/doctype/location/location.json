@@ -178,7 +178,7 @@
  ],
  "is_tree": 1,
  "links": [],
- "modified": "2022-12-21 11:34:08.432858",
+ "modified": "2023-04-17 12:12:48.947143",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Location",
@@ -270,5 +270,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

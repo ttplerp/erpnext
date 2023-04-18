@@ -180,7 +180,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-11-29 22:38:01.419358",
+ "modified": "2023-04-17 12:12:57.138932",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Coal Raising Payment",
@@ -230,5 +230,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

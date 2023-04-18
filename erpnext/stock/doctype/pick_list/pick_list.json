@@ -172,7 +172,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2022-07-19 11:03:04.442174",
+ "modified": "2023-04-17 12:13:38.922899",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Pick List",
@@ -243,5 +243,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

@@ -171,7 +171,7 @@
  "idx": 1,
  "in_create": 1,
  "links": [],
- "modified": "2022-03-30 07:22:23.868602",
+ "modified": "2023-04-17 12:14:02.765310",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Bin",
@@ -204,5 +204,6 @@
  "search_fields": "item_code,warehouse",
  "sort_field": "modified",
  "sort_order": "ASC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

@@ -9,11 +9,13 @@
  "engine": "InnoDB",
  "field_order": [
   "details",
-  "column_break0",
   "serial_no",
   "item_code",
   "warehouse",
   "batch_no",
+  "tvo_no",
+  "engine_no",
+  "valuation_rate",
   "column_break1",
   "item_name",
   "description",
@@ -21,7 +23,6 @@
   "brand",
   "sales_order",
   "purchase_details",
-  "column_break2",
   "purchase_document_type",
   "purchase_document_no",
   "purchase_date",
@@ -64,10 +65,6 @@
    "fieldname": "details",
    "fieldtype": "Section Break",
    "oldfieldtype": "Section Break"
-  },
-  {
-   "fieldname": "column_break0",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "serial_no",
@@ -160,11 +157,6 @@
    "fieldname": "purchase_details",
    "fieldtype": "Section Break",
    "label": "Purchase / Manufacture Details"
-  },
-  {
-   "fieldname": "column_break2",
-   "fieldtype": "Column Break",
-   "width": "50%"
   },
   {
    "fieldname": "purchase_document_type",
@@ -428,12 +420,30 @@
    "fieldtype": "Link",
    "label": "Work Order",
    "options": "Work Order"
+  },
+  {
+   "fieldname": "tvo_no",
+   "fieldtype": "Data",
+   "label": "Tvo No.",
+   "read_only": 1
+  },
+  {
+   "fieldname": "engine_no",
+   "fieldtype": "Data",
+   "label": "Engine No.",
+   "read_only": 1
+  },
+  {
+   "fieldname": "valuation_rate",
+   "fieldtype": "Currency",
+   "label": "Valuation Rate",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-barcode",
  "idx": 1,
  "links": [],
- "modified": "2021-12-23 10:44:30.299450",
+ "modified": "2023-04-17 12:11:58.644643",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Serial No",
@@ -477,5 +487,7 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "title_field": "serial_no",
+ "track_changes": 1,
+ "track_views": 1
 }

@@ -32,7 +32,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-12-07 11:39:01.032975",
+ "modified": "2023-04-17 12:12:52.508113",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Activity Master",
@@ -54,5 +54,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

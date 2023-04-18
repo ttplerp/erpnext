@@ -193,7 +193,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-09 16:34:41.141992",
+ "modified": "2023-04-17 12:12:31.224382",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Insurance and Registration",
@@ -263,5 +263,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

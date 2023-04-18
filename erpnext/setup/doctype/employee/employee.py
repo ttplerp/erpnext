@@ -15,6 +15,8 @@ from frappe.utils.nestedset import NestedSet
 from frappe.model.naming import make_autoname
 from erpnext.utilities.transaction_base import delete_events
 from erpnext.custom_utils import get_year_start_date, get_year_end_date, round5, check_future_date
+from datetime import datetime, timedelta
+from frappe.utils.data import get_first_day, get_last_day, add_years
 
 class EmployeeUserDisabledError(frappe.ValidationError):
 	pass
@@ -419,17 +421,20 @@ def create_user(employee, user=None, email=None):
 	return user.name
 
 @frappe.whitelist()
-def get_overtime_rate(employee, posting_date ):
+def get_overtime_rate(employee, posting_date):
 	basic = frappe.db.sql("select b.eligible_for_overtime_and_payment, a.amount as basic_pay from `tabSalary Detail` a, `tabSalary Structure` b where a.parent = b.name and a.salary_component = 'Basic Pay' and b.is_active = 'Yes' and b.employee = \'" + str(employee) + "\'", as_dict=True)
 	if basic:
 		if not cint(basic[0].eligible_for_overtime_and_payment):
 			if not frappe.db.get_value("Employee Grade", frappe.db.get_value("Employee", employee, "grade"), "eligible_for_overtime"):
 				frappe.throw(_("Employee is not eligible for Overtime"))
 		
-		# if is_holiday(employee=employee, date=posting_date):
-		return ((flt(basic[0].basic_pay) * 1.5) / (30 * 8))
-		# else:
-		# 	return (flt(basic[0].basic_pay) / (30 * 8))
+		no_of_days_in_month = date_diff(get_last_day(getdate(posting_date)),get_first_day(getdate(posting_date)))+1
+
+		# hourly_rate: basic pay / number of days in month * 7.5 (*1.5 on holidays)
+		if is_holiday(employee=employee, date=posting_date):
+			return ((flt(basic[0].basic_pay) * 1.5) / (no_of_days_in_month * 7.5))
+		else:
+			return (flt(basic[0].basic_pay) / (no_of_days_in_month * 7.5))
 	else:
 		frappe.throw("No Salary Structure found for the employee")
 

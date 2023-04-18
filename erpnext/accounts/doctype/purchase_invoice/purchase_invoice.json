@@ -12,6 +12,7 @@
   "supplier",
   "supplier_name",
   "bill_no",
+  "dv_no",
   "tax_id",
   "tax_withholding_category",
   "column_break1",
@@ -20,6 +21,7 @@
   "posting_date",
   "due_date",
   "bill_date",
+  "invoice_no",
   "posting_time",
   "delay_by",
   "set_posting_time",
@@ -1120,6 +1122,7 @@
   },
   {
    "allow_on_submit": 1,
+   "fetch_from": "branch.letter_head",
    "fieldname": "letter_head",
    "fieldtype": "Link",
    "label": "Letter Head",
@@ -1443,13 +1446,23 @@
    "fieldname": "write_off_description",
    "fieldtype": "Text",
    "label": "Write Off Description"
+  },
+  {
+   "fieldname": "invoice_no",
+   "fieldtype": "Data",
+   "label": "Supplier Invoice No"
+  },
+  {
+   "fieldname": "dv_no",
+   "fieldtype": "Data",
+   "label": "DRC No."
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 204,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-29 15:59:33.418723",
+ "modified": "2023-04-18 09:24:24.246956",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Purchase Invoice",
@@ -1516,5 +1529,6 @@
  "states": [],
  "timeline_field": "supplier",
  "title_field": "title",
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

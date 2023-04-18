@@ -152,7 +152,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-02 13:29:04.098469",
+ "modified": "2023-04-17 12:13:28.396963",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Inventory Dimension",
@@ -198,5 +198,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

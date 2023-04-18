@@ -28,7 +28,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-10-26 12:20:23.480256",
+ "modified": "2023-04-17 12:13:13.497674",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Fuel Type",
@@ -73,5 +73,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

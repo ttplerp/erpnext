@@ -24,10 +24,7 @@ class POLExpense(AccountsController):
 		self.posting_date = self.entry_date
 		self.validate_amount()
 		self.calculate_pol()
-		if cint(self.use_common_fuelbook) == 1:
-			self.credit_account = get_party_account(self.party_type, self.party, self.company, is_advance = True)
-		else:
-			self.credit_account = get_party_account(self.party_type, self.party, self.company)
+		self.credit_account = get_party_account(self.party_type, self.party, self.company, is_advance = True if self.party_type == "Customer" else False)
 
 		if flt(self.is_opening) == 0 and self.workflow_state != "Approved" :
 			notify_workflow_states(self)
@@ -54,9 +51,8 @@ class POLExpense(AccountsController):
 			self.make_gl_entries()
 
 	def make_gl_entries(self):
-		if self.is_opening:
+		if self.is_opening or self.party_type == "Customer":
 			return
-
 		gl_entries = []
 		self.make_supplier_gl_entry(gl_entries)
 		self.make_expense_gl_entry(gl_entries)
@@ -172,7 +168,10 @@ class POLExpense(AccountsController):
 		default_ba = get_default_ba()
 		
 		credit_account = self.credit_account
-		expense_account = frappe.db.get_value("Branch",self.fuelbook_branch,"expense_bank_account")
+		if self.party_type == "Customer":
+			expense_account = frappe.db.get_value("Equipment Category", self.equipment_category,'pol_expense_account')
+		else:
+			expense_account = frappe.db.get_value("Branch",self.fuelbook_branch,"expense_bank_account")
 		if not expense_account:
 			expense_account = frappe.db.get_value("Company",self.company,"default_bank_account")
 		if not credit_account:
@@ -193,6 +192,40 @@ class POLExpense(AccountsController):
 		# Posting Journal Entry
 		je = frappe.new_doc("Journal Entry")
 		je.flags.ignore_permissions=1
+		accounts = []
+		if self.party_type == "Customer":
+			accounts.append({
+				"account": self.credit_account,
+				"credit_in_account_currency": flt(self.amount,2),
+				"cost_center": frappe.db.get_value('Branch',self.fuelbook_branch,'cost_center'),
+				"party_check": 0,
+				"party_type": self.party_type,
+				"party": self.party,
+				"reference_type": "POL Expense",
+				"reference_name": self.name,
+				"is_advance":'Yes'
+			})
+			accounts.append({
+				"account": expense_account,
+				"debit_in_account_currency": flt(self.amount,2),
+				"cost_center": frappe.db.get_value('Branch',self.fuelbook_branch,'cost_center'),
+			})
+		else:
+			accounts.append({
+				"account": self.credit_account,
+				"debit_in_account_currency": flt(self.amount,2),
+				"cost_center": frappe.db.get_value('Branch',self.fuelbook_branch,'cost_center'),
+				"party_check": 0,
+				"party_type": self.party_type,
+				"party": self.party,
+				"reference_type": "POL Expense",
+				"reference_name": self.name,
+			})
+			accounts.append({
+				"account": expense_account,
+				"credit_in_account_currency": flt(self.amount,2),
+				"cost_center": frappe.db.get_value('Branch',self.fuelbook_branch,'cost_center'),
+			})
 		je.update({
 			"doctype": "Journal Entry",
 			"voucher_type": "Bank Entry",
@@ -203,29 +236,12 @@ class POLExpense(AccountsController):
 			"company": self.company,
 			"total_amount_in_words": money_in_words(self.amount),
 			"branch": self.fuelbook_branch,
+			"accounts":accounts
 		})
-		je.append("accounts",{
-			"account": self.credit_account,
-			"debit_in_account_currency": flt(self.amount,2),
-			"cost_center": frappe.db.get_value('Branch',self.fuelbook_branch,'cost_center'),
-			"party_check": 0,
-			"party_type": "Supplier",
-			"party": self.party,
-			"reference_type": "POL Expense",
-			"reference_name": self.name,
-			"business_activity": default_ba
-		})
-		je.append("accounts",{
-			"account": expense_account,
-			"credit_in_account_currency": flt(self.amount,2),
-			"cost_center": frappe.db.get_value('Branch',self.fuelbook_branch,'cost_center'),
-			"business_activity": default_ba
-		})
-
 		je.insert()
 		#Set a reference to the claim journal entry
 		self.db_set("journal_entry",je.name)
-		frappe.msgprint(_('Journal Entry <a href="#Form/Journal Entry/{0}">{0}</a> posted to accounts').format(je.name))
+		frappe.msgprint(_('{} posted to accounts').format(frappe.get_desk_link('Journal Entry',je.name)))
 	@frappe.whitelist()
 	def get_pol_received(self):
 		if self.is_opening:

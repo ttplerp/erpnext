@@ -81,7 +81,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-17 10:37:29.193884",
+ "modified": "2023-04-17 12:12:22.784264",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Fuelbook",
@@ -127,5 +127,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

@@ -90,7 +90,7 @@
   }
  ],
  "links": [],
- "modified": "2022-11-10 15:40:16.434308",
+ "modified": "2023-04-17 12:13:06.441743",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Coal Raising Master",
@@ -133,5 +133,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

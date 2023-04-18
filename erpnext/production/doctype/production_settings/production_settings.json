@@ -135,7 +135,7 @@
   }
  ],
  "links": [],
- "modified": "2023-02-03 12:51:16.532162",
+ "modified": "2023-04-17 12:12:38.051187",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Production Settings",
@@ -182,5 +182,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "branch"
+ "title_field": "branch",
+ "track_views": 1
 }

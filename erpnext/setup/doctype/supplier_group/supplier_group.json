@@ -120,7 +120,7 @@
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2022-09-15 14:42:13.256819",
+ "modified": "2023-04-17 12:13:25.002406",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Supplier Group",
@@ -176,5 +176,6 @@
  "show_name_in_global_search": 1,
  "sort_field": "modified",
  "sort_order": "ASC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

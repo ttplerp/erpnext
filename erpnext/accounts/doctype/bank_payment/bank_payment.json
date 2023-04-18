@@ -332,7 +332,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-04 16:08:29.322078",
+ "modified": "2023-04-17 12:12:28.021436",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Bank Payment",
@@ -430,5 +430,6 @@
  "sort_order": "DESC",
  "states": [],
  "title_field": "remarks",
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

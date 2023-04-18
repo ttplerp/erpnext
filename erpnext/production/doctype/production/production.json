@@ -418,7 +418,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2022-12-31 10:41:19.944367",
+ "modified": "2023-04-17 12:12:46.916483",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Production",
@@ -484,5 +484,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

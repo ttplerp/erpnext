@@ -389,7 +389,7 @@
  "is_tree": 1,
  "links": [],
  "max_attachments": 5,
- "modified": "2022-06-23 16:58:47.005241",
+ "modified": "2023-04-17 12:13:45.893433",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Task",
@@ -417,5 +417,6 @@
  "states": [],
  "timeline_field": "project",
  "title_field": "subject",
- "track_seen": 1
+ "track_seen": 1,
+ "track_views": 1
 }

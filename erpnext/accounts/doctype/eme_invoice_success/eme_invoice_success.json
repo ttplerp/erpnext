@@ -72,7 +72,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-01-18 11:46:13.998915",
+ "modified": "2023-04-17 12:12:39.802168",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "EME Invoice Success",
@@ -81,5 +81,6 @@
  "permissions": [],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

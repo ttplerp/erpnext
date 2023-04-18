@@ -339,7 +339,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-12-16 15:19:39.278831",
+ "modified": "2023-04-17 12:12:50.037108",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Mine",
@@ -363,5 +363,6 @@
  "sort_order": "DESC",
  "states": [],
  "track_changes": 1,
- "track_seen": 1
+ "track_seen": 1,
+ "track_views": 1
 }

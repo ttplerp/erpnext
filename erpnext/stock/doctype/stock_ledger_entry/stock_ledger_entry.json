@@ -11,6 +11,8 @@
   "warehouse",
   "posting_date",
   "posting_time",
+  "tvo_no",
+  "engine_no",
   "column_break_6",
   "voucher_type",
   "voucher_no",
@@ -308,6 +310,16 @@
    "label": "Recalculate Incoming/Outgoing Rate",
    "no_copy": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "tvo_no",
+   "fieldtype": "Data",
+   "label": "Tvo No."
+  },
+  {
+   "fieldname": "engine_no",
+   "fieldtype": "Data",
+   "label": "Engine No."
   }
  ],
  "hide_toolbar": 1,
@@ -316,7 +328,7 @@
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-12-02 12:07:52.282672",
+ "modified": "2023-04-17 12:12:05.408768",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Ledger Entry",
@@ -357,5 +369,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

@@ -264,7 +264,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-08-16 15:55:25.023471",
+ "modified": "2023-04-17 12:13:32.962079",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset Repair",
@@ -307,5 +307,6 @@
  "states": [],
  "title_field": "asset_name",
  "track_changes": 1,
- "track_seen": 1
+ "track_seen": 1,
+ "track_views": 1
 }

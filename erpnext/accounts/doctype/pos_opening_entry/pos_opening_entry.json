@@ -18,6 +18,7 @@
   "pos_closing_entry",
   "column_break_7",
   "user",
+  "branch",
   "opening_balance_details_section",
   "balance_details",
   "section_break_9",
@@ -127,11 +128,19 @@
    "label": "Opening Balance Details",
    "options": "POS Opening Entry Detail",
    "reqd": 1
+  },
+  {
+   "fetch_from": "pos_profile.branch",
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-29 16:32:56.354057",
+ "modified": "2023-04-17 12:11:56.716338",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "POS Opening Entry",
@@ -206,5 +215,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

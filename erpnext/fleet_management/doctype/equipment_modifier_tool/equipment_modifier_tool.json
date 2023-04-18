@@ -98,7 +98,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-10-25 15:51:44.457398",
+ "modified": "2023-04-17 12:13:13.911683",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment Modifier Tool",
@@ -146,5 +146,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

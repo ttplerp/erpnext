@@ -98,7 +98,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-12-06 21:15:58.787216",
+ "modified": "2023-04-17 12:12:53.353934",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Fuel Price",
@@ -145,5 +145,6 @@
  "sort_order": "DESC",
  "states": [],
  "title_field": "item_code",
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

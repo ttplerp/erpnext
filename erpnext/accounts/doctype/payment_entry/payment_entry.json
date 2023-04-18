@@ -783,7 +783,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-10 10:52:13.898945",
+ "modified": "2023-04-17 12:12:41.717479",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Payment Entry",
@@ -828,5 +828,6 @@
  "sort_order": "DESC",
  "states": [],
  "title_field": "title",
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

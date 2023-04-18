@@ -45,7 +45,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-11-10 14:13:16.391070",
+ "modified": "2023-04-17 12:13:06.709221",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Tier",
@@ -85,5 +85,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

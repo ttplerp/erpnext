@@ -243,6 +243,7 @@ erpnext.buying.PurchaseOrderController = class PurchaseOrderController extends e
 							}
 						}
 					}
+
 					if(flt(doc.per_billed) < 100)
 						cur_frm.add_custom_button(__('Purchase Invoice'),
 							this.make_purchase_invoice, __('Create'));
@@ -262,6 +263,11 @@ erpnext.buying.PurchaseOrderController = class PurchaseOrderController extends e
 						}, __('Create'))
 					}
 
+					if(doc.order_tracking === 0) {
+						cur_frm.add_custom_button(__('Track Order'),
+							this.create_order_tracking, __('Create'))
+					}
+
 					if (doc.docstatus === 1 && !doc.inter_company_order_reference) {
 						let me = this;
 						let internal = me.frm.doc.is_internal_supplier;
@@ -275,6 +281,7 @@ erpnext.buying.PurchaseOrderController = class PurchaseOrderController extends e
 						}
 
 					}
+
 				}
 
 				cur_frm.page.set_inner_btn_group_as_primary(__('Create'));
@@ -458,6 +465,17 @@ erpnext.buying.PurchaseOrderController = class PurchaseOrderController extends e
 			frm: cur_frm,
 			freeze_message: __("Creating Purchase Receipt ...")
 		})
+	}
+
+	create_order_tracking(){
+		frappe.call({
+			method: "create_purchase_order_tracking",
+			doc:cur_frm.doc,
+			callback: function(r) {
+				const doclist = frappe.model.sync(r.message);
+				frappe.set_route('Form', doclist[0].doctype, doclist[0].name);
+			}
+		});
 	}
 
 	make_purchase_invoice() {

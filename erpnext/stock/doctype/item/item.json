@@ -22,7 +22,6 @@
   "hsn_code",
   "parts_no",
   "part_name",
-  "model",
   "column_break0",
   "item_type",
   "disabled",
@@ -168,6 +167,7 @@
    "fieldname": "item_name",
    "fieldtype": "Data",
    "in_global_search": 1,
+   "in_list_view": 1,
    "label": "Item Name",
    "oldfieldname": "item_name",
    "oldfieldtype": "Data",
@@ -355,7 +355,7 @@
    "fieldname": "valuation_method",
    "fieldtype": "Select",
    "label": "Valuation Method",
-   "options": "\nFIFO\nMoving Average\nLIFO"
+   "options": "\nFIFO\nMoving Average\nLIFO\nSPECIFIC"
   },
   {
    "depends_on": "is_stock_item",
@@ -966,14 +966,8 @@
   {
    "fieldname": "parts_no",
    "fieldtype": "Link",
-   "label": "Part No",
+   "label": "Part No / Model No",
    "options": "Part No"
-  },
-  {
-   "fieldname": "model",
-   "fieldtype": "Link",
-   "label": "Model",
-   "options": "Model"
   },
   {
    "fetch_from": "parts_no.part_name",
@@ -994,7 +988,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-28 12:09:03.921876",
+ "modified": "2023-04-17 12:11:55.784198",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",
@@ -1064,6 +1058,7 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "item_name",
- "track_changes": 1
+ "title_field": "item_code",
+ "track_changes": 1,
+ "track_views": 1
 }

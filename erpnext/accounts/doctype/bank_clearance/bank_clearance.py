@@ -22,9 +22,15 @@ class BankClearance(Document):
 		if not self.account:
 			frappe.throw(_("Account is mandatory to get payment entries"))
 
-		condition = ""
+		condition = debit_or_credit_pe = debit_or_credit_je = ""
 		if not self.include_reconciled_entries:
 			condition = "and (clearance_date IS NULL or clearance_date='0000-00-00')"
+		if self.type == "Debit":
+			debit_or_credit_je = " and t2.debit_in_account_currency > 0"
+			debit_or_credit_pe = " and received_amount > 0 "
+		else:
+			debit_or_credit_je = " and t2.credit_in_account_currency > 0 "
+			debit_or_credit_pe = " and paid_amount > 0 "
 
 		journal_entries = frappe.db.sql(
 			"""
@@ -38,11 +44,11 @@ class BankClearance(Document):
 			where
 				t2.parent = t1.name and t2.account = %(account)s and t1.docstatus=1
 				and t1.posting_date >= %(from)s and t1.posting_date <= %(to)s
-				and ifnull(t1.is_opening, 'No') = 'No' {condition}
+				and ifnull(t1.is_opening, 'No') = 'No' {condition} {debit_or_credit_je}
 			group by t2.account, t1.name
 			order by t1.posting_date ASC, t1.name DESC
 		""".format(
-				condition=condition
+				condition=condition, debit_or_credit_je = debit_or_credit_je
 			),
 			{"account": self.account, "from": self.from_date, "to": self.to_date},
 			as_dict=1,
@@ -64,11 +70,11 @@ class BankClearance(Document):
 			where
 				(paid_from=%(account)s or paid_to=%(account)s) and docstatus=1
 				and posting_date >= %(from)s and posting_date <= %(to)s
-				{condition}
+				{condition} {debit_or_credit_pe}
 			order by
 				posting_date ASC, name DESC
 		""".format(
-				condition=condition
+				condition=condition, debit_or_credit_pe = debit_or_credit_pe
 			),
 			{
 				"account": self.account,

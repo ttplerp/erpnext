@@ -16,7 +16,7 @@
   "posting_time",
   "direct_consumption",
   "section_break_6",
-  "use_common_fuelbook",
+  "out_sourced",
   "equipment",
   "equipment_type",
   "uom",
@@ -119,12 +119,11 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "fuelbook.supplier",
    "fieldname": "supplier",
    "fieldtype": "Link",
    "label": "Supplier",
-   "options": "Supplier",
-   "reqd": 1
+   "mandatory_depends_on": "eval:doc.out_sourced == 1",
+   "options": "Supplier"
   },
   {
    "fieldname": "section_break_4",
@@ -271,6 +270,7 @@
    "read_only": 1
   },
   {
+   "fetch_from": "equipment.fuelbook",
    "fieldname": "fuelbook",
    "fieldtype": "Link",
    "label": "Fuelbook",
@@ -332,23 +332,23 @@
    "label": "POL Slip No."
   },
   {
-   "default": "0",
-   "fieldname": "use_common_fuelbook",
-   "fieldtype": "Check",
-   "label": "Use Common Fuelbook"
-  },
-  {
    "fieldname": "currency",
    "fieldtype": "Link",
    "label": "Currency",
    "options": "Currency",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "out_sourced",
+   "fieldtype": "Check",
+   "label": "Out Sourced"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-02 13:59:28.926579",
+ "modified": "2023-04-17 12:12:10.280369",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Receive",
@@ -399,5 +399,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

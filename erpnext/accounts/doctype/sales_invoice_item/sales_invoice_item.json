@@ -11,7 +11,6 @@
   "item_code",
   "parts_no",
   "part_name",
-  "model",
   "col_break1",
   "item_name",
   "customer_item_code",
@@ -157,7 +156,6 @@
    "oldfieldname": "description",
    "oldfieldtype": "Text",
    "print_width": "200px",
-   "reqd": 1,
    "width": "200px"
   },
   {
@@ -771,6 +769,7 @@
    "report_hide": 1
   },
   {
+   "collapsible": 1,
    "fieldname": "description_section",
    "fieldtype": "Section Break",
    "label": "Description"
@@ -850,7 +849,7 @@
    "fetch_from": "item_code.parts_no",
    "fieldname": "parts_no",
    "fieldtype": "Link",
-   "label": "Parts No",
+   "label": "Parts No/Model",
    "options": "Part No",
    "read_only": 1
   },
@@ -859,14 +858,6 @@
    "fieldname": "part_name",
    "fieldtype": "Data",
    "label": "Part Name",
-   "read_only": 1
-  },
-  {
-   "fetch_from": "item_code.model",
-   "fieldname": "model",
-   "fieldtype": "Link",
-   "label": "Model",
-   "options": "Model",
    "read_only": 1
   },
   {
@@ -887,7 +878,7 @@
  "idx": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-03-29 14:35:00.774740",
+ "modified": "2023-04-17 12:11:58.221899",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Sales Invoice Item",
@@ -896,5 +887,6 @@
  "permissions": [],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

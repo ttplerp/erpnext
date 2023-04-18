@@ -950,6 +950,7 @@
   },
   {
    "allow_on_submit": 1,
+   "fetch_from": "branch.letter_head",
    "fieldname": "letter_head",
    "fieldtype": "Link",
    "label": "Letter Head",
@@ -1181,7 +1182,7 @@
  "idx": 261,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-22 13:00:26.001626",
+ "modified": "2023-04-17 12:12:00.097981",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Purchase Receipt",
@@ -1249,5 +1250,6 @@
  "states": [],
  "timeline_field": "supplier",
  "title_field": "title",
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

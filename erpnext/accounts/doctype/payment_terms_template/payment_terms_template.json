@@ -35,7 +35,7 @@
   }
  ],
  "links": [],
- "modified": "2022-11-24 11:32:59.079955",
+ "modified": "2023-04-17 12:13:03.317730",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Payment Terms Template",
@@ -94,5 +94,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

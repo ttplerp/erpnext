@@ -19,6 +19,7 @@
   "last_name",
   "employee_name",
   "user_id",
+  "location_code",
   "column_break_9",
   "status",
   "gender",
@@ -963,13 +964,19 @@
    "fieldtype": "Check",
    "label": "Causal Leave Allocated",
    "read_only": 1
+  },
+  {
+   "fieldname": "location_code",
+   "fieldtype": "Link",
+   "label": "Location Code",
+   "options": "Location"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-03-14 14:10:11.354378",
+ "modified": "2023-04-17 12:12:24.125757",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
@@ -1016,5 +1023,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "employee_name"
+ "title_field": "employee_name",
+ "track_views": 1
 }

@@ -21,13 +21,17 @@ class TDSRemittance(AccountsController):
 		self.make_gl_entries()
 
 	def get_condition(self):
-		if self.branch:
-			return ' AND t.branch ="{}" '.format(self.branch)
+		branch =[b.branch for b in frappe.db.sql('''select branch from `tabRegion Item` where parent = '{}' '''.format(self.region), as_dict=1)]
+		if len(branch) > 1:
+			return ' AND t.branch in {} '.format(tuple(branch))
+		elif len(branch) == 1 :
+			return " AND t.branch = '{}'".format(branch[0])
 		return ''
 	@frappe.whitelist()
 	def get_details(self):
 		total_tds_amount = total_bill_amount = 0
-
+		if not self.region:
+			frappe.throw("Region is required")
 		if self.purpose != 'Other Invoice':
 			return total_tds_amount, total_bill_amount
 		cond = self.get_condition()
@@ -93,7 +97,7 @@ class TDSRemittance(AccountsController):
 
 
 def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_existing = False, cond='', party_type = None):
-	accounts_cond = accounts_cond_ti = accounts_cond_eme = existing_cond = party_cond = "" 
+	accounts_cond = existing_cond = party_cond = "" 
 	entries = pi_entries = pe_entries = je_entries = []
 
 	if not tax_withholding_category:
@@ -118,12 +122,8 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 		return entries
 	elif len(accounts) == 1:
 		accounts_cond = 'and t1.account_head = "{}"'.format(accounts[0])
-		accounts_cond_ti = 'and t1.account = "{}"'.format(accounts[0])
-		accounts_cond_eme = 'and t.tds_account = "{}"'.format(accounts[0])
 	else:
 		accounts_cond = 'and t1.account_head in ({})'.format('"' + '","'.join(accounts) + '"')
-		accounts_cond_ti = 'and t1.account in ({})'.format('"' + '","'.join(accounts) + '"')
-		accounts_cond_eme = 'and t.tds_account in ({})'.format('"' + '","'.join(accounts) + '"')
 
 	if filter_existing:
 		existing_cond = _get_existing_cond()
@@ -211,47 +211,8 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 		{party_cond}
 		{cond}""".format(accounts_cond = accounts_cond, cond = cond, existing_cond = existing_cond,\
 			party_cond = party_cond, from_date=from_date, to_date=to_date), as_dict=True)
-	# Transporter Invoice
-	ti_entries = frappe.db.sql("""select t.posting_date, t.name as invoice_no, 'Transporter Invoice' as invoice_type,
-				'Supplier' as party_type, t.supplier as party, 
-				(select supplier_tpn_no from `tabSupplier` where name = t.supplier) as tpn, 
-				t.cost_center,
-				t.gross_amount as bill_amount, 
-				t.tds_amount,
-				t1.account as tax_account, tre.tds_remittance, tre.tds_receipt_update,
-				(case when tre.tds_receipt_update is not null then 'Paid' else 'Unpaid' end) remittance_status
-				from `tabTransporter Invoice` t 
-					inner join `tabTransporter Invoice Deduction` t1 on t1.parent = t.name
-					left join `tabTDS Receipt Entry` tre on tre.invoice_no = t.name 
-				where t.posting_date between '{from_date}' and '{to_date}'
-				and t.tds_amount > 0
-				{accounts_cond}
-				and t.docstatus = 1
-				{existing_cond}
-				{cond}
-				""".format(accounts_cond = accounts_cond_ti, cond = cond, existing_cond = existing_cond,\
-						party_cond = party_cond, from_date=from_date, to_date=to_date), as_dict=True)
-	# EME Invoice
-	eme_entries = frappe.db.sql("""select t.posting_date, t.name as invoice_no, 'EME Invoice' as invoice_type,
-				'Supplier' as party_type, t.supplier as party, 
-				(select supplier_tpn_no from `tabSupplier` where name = t.supplier) as tpn, 
-				t.cost_center, t.bill_no, t.bill_date,
-				t.grand_total as bill_amount, 
-				t.tds_amount,
-				t.tds_account as tax_account, tre.tds_remittance, tre.tds_receipt_update,
-				(case when tre.tds_receipt_update is not null then 'Paid' else 'Unpaid' end) remittance_status
-				from `tabEME Invoice` t 
-					left join `tabTDS Receipt Entry` tre on tre.invoice_no = t.name 
-				where t.posting_date between '{from_date}' and '{to_date}'
-				and t.tds_amount > 0
-				{accounts_cond}
-				and t.docstatus = 1
-				{existing_cond}
-				{cond}
-				""".format(accounts_cond = accounts_cond_eme, cond = cond, existing_cond = existing_cond,\
-						party_cond = party_cond, from_date=from_date, to_date=to_date), as_dict=True)
 				
-	entries = pi_entries + pe_entries + je_entries + ti_entries + eme_entries
+	entries = pi_entries + pe_entries + je_entries
 	entries = sorted(entries, key=lambda d: (d['posting_date'], d['invoice_no']))
 	return entries
 

@@ -4,14 +4,6 @@
 frappe.ui.form.on('POL Expense', {
 	onload: (frm)=>{
 		set_party_type(frm);
-		frm.set_query("party", function() {
-			return {
-				"filters": {
-					"is_pol_supplier": 1
-				}
-			};
-		});
-
 		frm.set_query("select_cheque_lot", function(){
 			return 	{
 				"filters":[

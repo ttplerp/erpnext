@@ -43,7 +43,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-09 15:27:17.311540",
+ "modified": "2023-04-17 12:12:42.409499",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Bank Branch",
@@ -99,5 +99,6 @@
  "sort_order": "DESC",
  "states": [],
  "title_field": "branch_name",
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

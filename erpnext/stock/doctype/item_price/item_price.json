@@ -219,7 +219,7 @@
  "idx": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-02 16:12:24.866902",
+ "modified": "2023-04-17 12:12:46.038541",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item Price",
@@ -269,5 +269,6 @@
  "sort_order": "ASC",
  "states": [],
  "title_field": "item_name",
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

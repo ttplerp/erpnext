@@ -106,7 +106,7 @@
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-12-02 15:19:33.287935",
+ "modified": "2023-04-17 12:12:54.080379",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset Transfer",
@@ -130,5 +130,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

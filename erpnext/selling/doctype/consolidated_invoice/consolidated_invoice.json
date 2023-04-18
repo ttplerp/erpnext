@@ -234,7 +234,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-15 12:16:57.401106",
+ "modified": "2023-04-17 12:12:35.667282",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Consolidated Invoice",
@@ -283,5 +283,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

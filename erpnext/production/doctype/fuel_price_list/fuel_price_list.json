@@ -36,7 +36,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-12-06 13:45:52.115343",
+ "modified": "2023-04-17 12:12:53.825034",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Fuel Price List",
@@ -82,5 +82,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_seen": 1
+ "track_seen": 1,
+ "track_views": 1
 }

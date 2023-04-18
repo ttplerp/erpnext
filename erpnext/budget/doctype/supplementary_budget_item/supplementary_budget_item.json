@@ -51,7 +51,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-01-03 16:12:28.833087",
+ "modified": "2023-04-17 12:12:45.623480",
  "modified_by": "Administrator",
  "module": "Budget",
  "name": "Supplementary Budget Item",
@@ -60,5 +60,6 @@
  "permissions": [],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

@@ -3,7 +3,7 @@
 
 frappe.ui.form.on('POL Receive', {
 	refresh: function(frm) {
-		if (frm.doc.docstatus === 1 && frm.doc.use_common_fuelbook == 1) {
+		if (frm.doc.docstatus === 1 && frm.doc.out_sourced == 1) {
 			frm.add_custom_button(
 				__("Ledger"),
 				function () {
@@ -54,37 +54,6 @@ frappe.ui.form.on('POL Receive', {
 				}
 			}
 		})
-	},
-	use_common_fuelbook:function(frm){
-		frm.set_query("fuelbook",function(){
-			return {
-				filters:{
-					"type":"Common",
-					"branch":frm.doc.branch
-				}
-			}
-		})
-		if(frm.doc.use_common_fuelbook){
-			frm.set_query("equipment",function(){
-				return {
-					filters:{
-						"branch":frm.doc.branch,
-						"enabled":1,
-						"hired_equipment":1
-					}
-				}
-			})
-		}
-		else{
-			frm.set_query("equipment",function(){
-				return {
-					filters:{
-						"branch":frm.doc.branch,
-						"enabled":1
-					}
-				}
-			})
-		}
 	},
 	reset_items:function(frm){
 		cur_frm.clear_table("items");

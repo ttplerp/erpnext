@@ -166,6 +166,10 @@ frappe.ui.form.on("Customer", {
 		});
 
 	},
+	customer_group: function(frm){
+		frm.set_df_property('cid_no', 'reqd',  frm.doc.customer_group=='Individual')
+		frm.set_df_property('tpn_no', 'reqd',  frm.doc.customer_group=='Corporate')
+	},
 	show_party_link_dialog: function(frm) {
 		const dialog = new frappe.ui.Dialog({
 			title: __('Select a Supplier'),

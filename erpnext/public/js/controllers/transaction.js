@@ -51,6 +51,14 @@ erpnext.TransactionController = class TransactionController extends erpnext.taxe
 			cur_frm.cscript.calculate_taxes_and_totals();
 		});
 
+		frappe.ui.form.on(this.frm.cscript.tax_table, "amount_paid_to_different_vendors", function(frm, cdt, cdn) {
+			cur_frm.cscript.calculate_taxes_and_totals();
+		});
+
+		frappe.ui.form.on(this.frm.cscript.tax_table, "base_tax_amount", function(frm, cdt, cdn) {
+			cur_frm.cscript.calculate_taxes_and_totals();
+		});
+
 		frappe.ui.form.on(this.frm.cscript.tax_table, "row_id", function(frm, cdt, cdn) {
 			cur_frm.cscript.calculate_taxes_and_totals();
 		});
@@ -1687,25 +1695,23 @@ erpnext.TransactionController = class TransactionController extends erpnext.taxe
 	taxes_and_charges() {
 		var me = this;
 		if(this.frm.doc.taxes_and_charges) {
-			// console.log(this.frm.doc.taxes_and_charges)
 			return this.frm.call({
 				method: "erpnext.controllers.accounts_controller.get_taxes_and_charges",
 				args: {
 					"master_doctype": frappe.meta.get_docfield(this.frm.doc.doctype, "taxes_and_charges",
 						this.frm.doc.name).options,
-					"master_name": this.frm.doc.taxes_and_charges
+					"master_name": this.frm.doc.taxes_and_charges,
+					"cost_center": this.frm.doc.cost_center
 				},
 				callback: function(r) {
 					if(!r.exc) {
 						if(me.frm.doc.shipping_rule && me.frm.doc.taxes) {
-							console.log('ghg')
 							for (let tax of r.message) {
 								me.frm.add_child("taxes", tax);
 							}
 
 							refresh_field("taxes");
 						} else {
-							console.log('hereee')
 							me.frm.set_value("taxes", r.message);
 							me.calculate_taxes_and_totals();
 						}

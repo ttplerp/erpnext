@@ -28,6 +28,8 @@
   "order_confirmation_no",
   "order_confirmation_date",
   "amended_from",
+  "order_tracking",
+  "order_tracking_id",
   "accounting_dimensions_section",
   "cost_center",
   "dimension_col_break",
@@ -976,6 +978,7 @@
   },
   {
    "allow_on_submit": 1,
+   "fetch_from": "branch.letter_head",
    "fieldname": "letter_head",
    "fieldtype": "Link",
    "label": "Letter Head",
@@ -1208,15 +1211,30 @@
   {
    "fieldname": "deliver_to",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Deliver To",
    "options": "Cost Center"
+  },
+  {
+   "default": "0",
+   "fieldname": "order_tracking",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Order Tracking ",
+   "read_only": 1
+  },
+  {
+   "fieldname": "order_tracking_id",
+   "fieldtype": "Data",
+   "label": "Order Tracking ID",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 105,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-20 10:26:58.132879",
+ "modified": "2023-04-18 12:46:28.395117",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Purchase Order",
@@ -1270,5 +1288,6 @@
  "states": [],
  "timeline_field": "supplier",
  "title_field": "title",
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

@@ -33,7 +33,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2022-12-06 16:58:39.442526",
+ "modified": "2023-04-17 12:12:53.611253",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Hiring Rate Setting",
@@ -62,5 +62,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

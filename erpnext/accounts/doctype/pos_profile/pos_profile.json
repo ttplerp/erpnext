@@ -432,7 +432,7 @@
    "link_fieldname": "pos_profile"
   }
  ],
- "modified": "2023-03-30 14:33:10.495596",
+ "modified": "2023-04-17 12:12:11.856102",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "POS Profile",
@@ -460,5 +460,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

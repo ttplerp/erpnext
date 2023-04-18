@@ -234,7 +234,7 @@ class PurchaseReceipt(BuyingController):
 		self.update_stock_ledger()
 
 		from erpnext.stock.doctype.serial_no.serial_no import update_serial_nos_after_submit
-\
+
 		update_serial_nos_after_submit(self, "items")
 
 		self.make_gl_entries()
@@ -1088,29 +1088,52 @@ def make_inter_company_delivery_note(source_name, target_doc=None):
 # tax amount payment to different vendors
 @frappe.whitelist()
 def make_charges_advance_payment(source_name, target_doc=None):
-	po = frappe.get_doc("Purchase Invoice", source_name)
-	doc = frappe.new_doc("Direct Payment")
-	doc.branch = po.branch
-	doc.cost_center = frappe.db.get_value("Branch", po.branch, "cost_center")
-	doc.reference_type = "Purchase Invoice"
-	doc.reference_no = po.name
-	doc.remarks = "Payment for Taxes and Charges from Purchase Invoice no. " + po.name
-	for a in po.taxes:
-		if a.payable_to_different_vendor and not a.reference_no and not a.advance_payment_applicable:    
-			doc.append("item", {
-						"party_type": "Supplier",
-						"party": a.party,
-						"account": po.credit_to,
-						"amount": a.tax_amount,
-						"tds_applicable": 0,
-						"invoice_no": po.name,
-						"invoice_date": po.posting_date,
-						"taxable_amount": a.tax_amount,
-						"tds_amount": 0.00,
-						"net_amount": a.tax_amount,
-					})
-	return doc
+	pr = frappe.get_doc("Purchase Receipt", source_name)
+	expense_bank_account = frappe.db.get_value("Branch", pr.branch, "expense_bank_account")
+	if not expense_bank_account:
+		expense_bank_account = frappe.db.get_value("Company", {'name': pr.company}, "default_bank_account")
+		if not expense_bank_account:
+			frappe.throw("Setup Expense Bank Account in Branch or Default Expense Bank Account in Company Accounts Settings")
+	
+	jeb = frappe.new_doc("Journal Entry")
+	jeb.flags.ignore_permissions = 1
+	jeb.title = "PR Tax Payment to Different Vendors(" + pr.name + ")"
+	jeb.voucher_type = "Bank Entry"
+	jeb.naming_series = "Bank Payment Voucher"
+	jeb.remark = 'Tax Payment to Different Vendors for Purchase Receipt: ' + pr.name
+	jeb.user_remark = 'Tax Payment to Different Vendors for Purchase Receipt: ' + pr.name
+	jeb.posting_date = nowdate()
+	jeb.branch = pr.branch
+	jeb_cost_center = pr.cost_center
+	tax_tot = 0
+	for a in pr.taxes:
+		if a.payable_to_different_vendor and not a.reference_no:    
+			jeb.append("accounts", {
+				"account": a.account_head,
+				"reference_type": "Purchase Receipt",
+				"reference_name": pr.name,
+				"cost_center": pr.cost_center,
+				"debit_in_account_currency": a.base_tax_amount,
+				"debit": a.base_tax_amount,
+				"business_activity": "Common",
+				"party_type": "Supplier",
+				"user_remark": 'Tax Payment to Different Vendors for Purchase Receipt: ' + pr.name,
+				"party": a.party
+			})
+			tax_tot += a.base_tax_amount
 
+	jeb.append("accounts", {
+		"account": expense_bank_account,
+		"cost_center": pr.cost_center,
+		# "reference_type": "Purchase Receipt",
+		# "reference_name": pr.name,
+		"credit_in_account_currency": tax_tot,
+		"credit": tax_tot,
+		"user_remark": 'Tax Payment to Different Vendors for Purchase Receipt: ' + pr.name,
+		"business_activity": "Common"
+	})
+	
+	return jeb
 
 def get_item_account_wise_additional_cost(purchase_document):
 	landed_cost_vouchers = frappe.get_all(

@@ -161,7 +161,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-11-09 16:42:41.627456",
+ "modified": "2023-04-17 12:13:07.425865",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset Value Adjustment",
@@ -218,5 +218,6 @@
  "sort_order": "DESC",
  "states": [],
  "title_field": "asset",
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

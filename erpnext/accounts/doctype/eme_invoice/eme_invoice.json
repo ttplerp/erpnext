@@ -297,7 +297,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-09 14:46:28.362688",
+ "modified": "2023-04-17 12:12:28.512194",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "EME Invoice",
@@ -388,5 +388,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

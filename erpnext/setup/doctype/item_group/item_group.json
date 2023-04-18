@@ -252,7 +252,7 @@
  "is_tree": 1,
  "links": [],
  "max_attachments": 3,
- "modified": "2023-03-28 14:50:20.277434",
+ "modified": "2023-04-17 12:12:16.028690",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Item Group",
@@ -324,5 +324,6 @@
  "show_name_in_global_search": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

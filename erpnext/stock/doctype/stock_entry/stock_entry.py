@@ -1120,7 +1120,10 @@ class StockEntry(StockController):
 				sle = self.get_sl_entries(
 					d, {"warehouse": cstr(d.s_warehouse),
 						"actual_qty": -flt(d.transfer_qty),
-						"incoming_rate": 0
+						"incoming_rate": 0,
+						"valuation_rate":d.basic_rate,
+						"tvo_no":d.tvo_no,
+						"engine_no":d.engine_no
 						})
 				if cstr(d.t_warehouse):
 					sle.dependant_sle_voucher_detail_no = d.name
@@ -1141,6 +1144,9 @@ class StockEntry(StockController):
 							"warehouse": cstr(d.t_warehouse),
 							"actual_qty": flt(d.transfer_qty) + flt(d.difference_qty),
 							"incoming_rate": flt(d.valuation_rate),
+							"valuation_rate":d.basic_rate,
+							"tvo_no":d.tvo_no,
+							"engine_no":d.engine_no
 						},
 					)
 				else:
@@ -1150,6 +1156,9 @@ class StockEntry(StockController):
 							"warehouse": cstr(d.t_warehouse),
 							"actual_qty": flt(d.transfer_qty),
 							"incoming_rate": flt(d.valuation_rate),
+							"valuation_rate":d.basic_rate,
+							"tvo_no":d.tvo_no,
+							"engine_no":d.engine_no
 						},
 					)
 				if cstr(d.s_warehouse) or (finished_item_row and d.name == finished_item_row.name):

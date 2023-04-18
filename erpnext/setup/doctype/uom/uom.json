@@ -40,7 +40,7 @@
  "icon": "fa fa-compass",
  "idx": 1,
  "links": [],
- "modified": "2022-11-29 14:47:30.476975",
+ "modified": "2023-04-17 12:12:57.677324",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "UOM",
@@ -88,5 +88,6 @@
  "show_name_in_global_search": 1,
  "sort_field": "modified",
  "sort_order": "ASC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

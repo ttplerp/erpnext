@@ -30,7 +30,7 @@
  ],
  "in_create": 1,
  "links": [],
- "modified": "2022-12-21 16:24:09.636400",
+ "modified": "2023-04-17 12:12:48.679550",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Party Type",
@@ -87,5 +87,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

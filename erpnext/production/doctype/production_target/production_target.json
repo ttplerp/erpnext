@@ -94,7 +94,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-11-16 13:20:22.313955",
+ "modified": "2023-04-17 12:13:05.145417",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Production Target",
@@ -140,5 +140,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

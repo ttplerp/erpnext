@@ -141,7 +141,7 @@
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2022-11-26 12:53:18.399996",
+ "modified": "2023-04-17 12:13:02.599017",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Department",
@@ -198,5 +198,6 @@
  "show_name_in_global_search": 1,
  "sort_field": "modified",
  "sort_order": "ASC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

@@ -1,0 +1,67 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2023-04-11 12:31:38.964906",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "cash_amount",
+  "column_break_4",
+  "posting_date",
+  "cashier",
+  "pos_closing_entry"
+ ],
+ "fields": [
+  {
+   "fieldname": "pos_closing_entry",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "POS Closing Entry Ref",
+   "options": "POS Closing Entry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Posting Date",
+   "read_only": 1
+  },
+  {
+   "columns": 4,
+   "fieldname": "cashier",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Cashier",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fieldname": "cash_amount",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Cash Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-04-17 12:12:09.313439",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Deposit Entry Item",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_views": 1
+}

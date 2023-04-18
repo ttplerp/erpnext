@@ -162,7 +162,7 @@
  "icon": "fa fa-shield",
  "idx": 1,
  "links": [],
- "modified": "2022-07-01 11:19:45.643991",
+ "modified": "2023-04-17 12:13:42.487167",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Authorization Rule",
@@ -185,5 +185,6 @@
  "show_name_in_global_search": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

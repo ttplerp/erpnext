@@ -810,7 +810,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-03-14 16:13:20.284572",
+ "modified": "2023-04-17 12:12:01.338986",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Supplier Quotation",
@@ -877,5 +877,6 @@
  "sort_order": "DESC",
  "states": [],
  "timeline_field": "supplier",
- "title_field": "title"
+ "title_field": "title",
+ "track_views": 1
 }

@@ -564,7 +564,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-07 10:27:30.363870",
+ "modified": "2023-04-17 12:12:37.366192",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Transporter Invoice",
@@ -641,5 +641,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

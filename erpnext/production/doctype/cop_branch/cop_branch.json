@@ -20,7 +20,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-10-31 11:29:13.302465",
+ "modified": "2023-04-17 12:13:12.166147",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Cop Branch",
@@ -28,5 +28,6 @@
  "permissions": [],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

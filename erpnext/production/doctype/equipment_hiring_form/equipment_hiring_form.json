@@ -254,7 +254,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-18 16:28:11.517378",
+ "modified": "2023-04-17 12:12:38.907386",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Equipment Hiring Form",
@@ -318,5 +318,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

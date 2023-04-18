@@ -615,7 +615,7 @@
    "link_fieldname": "journal_entry"
   }
  ],
- "modified": "2023-03-09 15:25:01.428448",
+ "modified": "2023-04-17 12:12:13.998279",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",
@@ -684,5 +684,6 @@
  "sort_order": "DESC",
  "states": [],
  "title_field": "title",
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

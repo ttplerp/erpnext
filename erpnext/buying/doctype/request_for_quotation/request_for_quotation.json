@@ -277,7 +277,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-04-06 17:47:49.909000",
+ "modified": "2023-04-17 12:14:01.321086",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Request for Quotation",
@@ -345,5 +345,7 @@
  "search_fields": "status, transaction_date",
  "show_name_in_global_search": 1,
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "states": [],
+ "track_views": 1
 }

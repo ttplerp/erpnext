@@ -223,7 +223,6 @@
    "default": "0",
    "fieldname": "is_internal_customer",
    "fieldtype": "Check",
-   "hidden": 1,
    "label": "Is Internal Customer"
   },
   {
@@ -628,7 +627,7 @@
    "link_fieldname": "party"
   }
  ],
- "modified": "2023-03-22 09:50:39.127846",
+ "modified": "2023-04-17 12:12:11.042299",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Customer",
@@ -712,5 +711,6 @@
  "sort_field": "modified",
  "sort_order": "ASC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

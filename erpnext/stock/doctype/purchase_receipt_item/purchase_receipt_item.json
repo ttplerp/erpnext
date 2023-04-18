@@ -13,13 +13,15 @@
   "item_name",
   "product_bundle",
   "supplier_part_no",
-  "tvo_no",
-  "engine_no",
   "column_break_2",
   "item_group",
   "part_no",
   "part_name",
-  "model",
+  "section_break_13",
+  "serial_no",
+  "column_break_13",
+  "tvo_no",
+  "engine_no",
   "section_break_4",
   "description",
   "image_column",
@@ -98,7 +100,6 @@
   "section_break_45",
   "allow_zero_valuation_rate",
   "bom",
-  "serial_no",
   "col_break5",
   "include_exploded_items",
   "batch_no",
@@ -582,7 +583,6 @@
    "depends_on": "eval:!doc.is_fixed_asset",
    "fieldname": "serial_no",
    "fieldtype": "Small Text",
-   "in_list_view": 1,
    "label": "Serial No/Chassis No",
    "no_copy": 1,
    "oldfieldname": "serial_no",
@@ -1048,7 +1048,7 @@
    "fetch_from": "item_code.parts_no",
    "fieldname": "part_no",
    "fieldtype": "Link",
-   "label": "Part No",
+   "label": "Part No/Model",
    "options": "Part No",
    "read_only": 1
   },
@@ -1060,18 +1060,18 @@
    "read_only": 1
   },
   {
-   "fetch_from": "item_code.model",
-   "fieldname": "model",
-   "fieldtype": "Link",
-   "label": "Model",
-   "options": "Model",
-   "read_only": 1
+   "fieldname": "section_break_13",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_13",
+   "fieldtype": "Column Break"
   }
  ],
  "idx": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-03-29 11:14:16.174995",
+ "modified": "2023-04-17 12:12:04.945062",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Purchase Receipt Item",
@@ -1081,5 +1081,6 @@
  "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

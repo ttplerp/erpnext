@@ -174,6 +174,16 @@ frappe.ui.form.on("Item", {
 		// if(frm.doc.item_group == 'Fixed Asset'){
 		// 	frm.set_value("is_stock_item", frm.doc.is_fixed_asset ? 0 : 1);
 		// }
+		// if (frm.doc.item_group == "Tata Vehicles"){
+		if(in_list(["Tata Vehicles", "Toyota Vehicle", "Eicher Vehicle", "SML Vehicle"], frm.doc.item_group)) {
+			frm.set_value("valuation_method", "SPECIFIC");
+			frm.set_value("has_serial_no", 1);
+		}
+		if(in_list(["Fixed Asset", "Consumable", "Service", "Export"], frm.doc.item_group)){
+			frm.toggle_reqd("parts_no", 0);
+		}else{
+			frm.toggle_reqd("parts_no", 1);
+		}
 	},
 	asset_category:function(frm){
 		frm.events.apply_filter(frm)

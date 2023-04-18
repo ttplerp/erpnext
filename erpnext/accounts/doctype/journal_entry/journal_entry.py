@@ -124,6 +124,7 @@ class JournalEntry(AccountsController):
 		self.update_advance_paid()
 		self.update_inter_company_jv()
 		self.update_invoice_discounting()
+		self.update_reference_document()
 
 	def on_cancel(self):
 		from erpnext.accounts.utils import unlink_ref_doc_from_payment_entries
@@ -139,11 +140,35 @@ class JournalEntry(AccountsController):
 		self.update_invoice_discounting()
 		self.unlink_transporter_invoice()
 		check_clearance_date(self.doctype, self.name)
+		self.update_reference_document(cancel=1)
+
 	def on_trash(self):
 		self.unlink_transporter_invoice()
 
 	def get_title(self):
 		return self.pay_to_recd_from or self.accounts[0].account
+
+	def update_reference_document(self, cancel=0):
+		if cint(cancel) == 0:
+			for a in self.get('accounts'):
+				if a.reference_type == "Purchase Receipt" and a.reference_name:
+					taxes_doc = frappe.get_doc("Purchase Taxes and Charges", {"parenttype": a.reference_type, "parent": a.reference_name, "account_head": a.account})
+					if taxes_doc:
+						if not taxes_doc.reference_type and not taxes_doc.reference_no:
+							taxes_doc.db_set("reference_type", self.doctype)
+							taxes_doc.db_set("reference_no", self.name)
+							if taxes_doc.party != a.party:
+								taxes_doc.party = a.party
+						else:
+							frappe.throw("References are already set under Taxes child table of Purchase Receipt with {} and {}".format(taxes_doc.reference_type, taxes_doc.reference_no))
+		else:
+			for a in self.get('accounts'):
+				if frappe.db.exists("Purchase Taxes and Charges", {"reference_type": self.doctype, "reference_no": self.name}):
+					frappe.db.sql("""Update `tabPurchase Taxes and Charges` 
+									set reference_type = '', reference_no = '' 
+									where reference_type = '{}' and reference_no = '{}'
+									""".format(self.doctype, self.name))
+					frappe.db.commit()
 
 	def update_transporter_invoice(self):
 		frappe.db.sql("""update `tabTransporter Invoice` ti

@@ -26,7 +26,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-06 13:49:05.176612",
+ "modified": "2023-04-17 12:12:33.471847",
  "modified_by": "Administrator",
  "module": "Budget",
  "name": "Budget Type",
@@ -70,5 +70,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

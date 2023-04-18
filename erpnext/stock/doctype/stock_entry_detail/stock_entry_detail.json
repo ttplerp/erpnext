@@ -27,6 +27,11 @@
   "is_process_loss",
   "issue_type",
   "issue_to",
+  "section_break_21",
+  "serial_no",
+  "column_break_23",
+  "tvo_no",
+  "engine_no",
   "section_break_8",
   "description",
   "column_break_10",
@@ -55,8 +60,6 @@
   "difference_amount",
   "amount",
   "serial_no_batch",
-  "serial_no",
-  "col_break4",
   "batch_no",
   "transporter_info_section",
   "equipment",
@@ -318,10 +321,6 @@
    "no_copy": 1,
    "oldfieldname": "serial_no",
    "oldfieldtype": "Text"
-  },
-  {
-   "fieldname": "col_break4",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "batch_no",
@@ -745,13 +744,31 @@
    "fieldtype": "Data",
    "label": "Issued Equipment Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_21",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_23",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tvo_no",
+   "fieldtype": "Data",
+   "label": "Tvo No."
+  },
+  {
+   "fieldname": "engine_no",
+   "fieldtype": "Data",
+   "label": "Engine No."
   }
  ],
  "idx": 1,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-03-30 13:35:44.891035",
+ "modified": "2023-04-17 12:12:02.785849",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Entry Detail",
@@ -760,5 +777,6 @@
  "permissions": [],
  "sort_field": "modified",
  "sort_order": "ASC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

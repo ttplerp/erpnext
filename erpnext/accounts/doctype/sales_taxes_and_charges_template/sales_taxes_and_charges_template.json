@@ -79,7 +79,7 @@
  "icon": "fa fa-money",
  "idx": 1,
  "links": [],
- "modified": "2022-05-16 16:14:52.061672",
+ "modified": "2023-04-17 12:13:54.724647",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Sales Taxes and Charges Template",
@@ -120,5 +120,6 @@
  "sort_order": "ASC",
  "states": [],
  "title_field": "title",
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

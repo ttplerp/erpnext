@@ -20,7 +20,6 @@
   "expected_delivery_date",
   "part_no",
   "part_name",
-  "model",
   "section_break_5",
   "description",
   "col_break1",
@@ -494,7 +493,6 @@
   {
    "fieldname": "sales_order",
    "fieldtype": "Link",
-   "hidden": 1,
    "label": "Sales Order",
    "no_copy": 1,
    "options": "Sales Order",
@@ -892,7 +890,7 @@
    "fetch_from": "item_code.parts_no",
    "fieldname": "part_no",
    "fieldtype": "Link",
-   "label": "Part No",
+   "label": "Part No/Model",
    "options": "Part No",
    "read_only": 1
   },
@@ -902,21 +900,13 @@
    "fieldtype": "Data",
    "label": "Part Name",
    "read_only": 1
-  },
-  {
-   "fetch_from": "item_code.model",
-   "fieldname": "model",
-   "fieldtype": "Link",
-   "label": "Model",
-   "options": "Model",
-   "read_only": 1
   }
  ],
  "idx": 1,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-03-29 11:06:03.771323",
+ "modified": "2023-04-17 12:12:06.170742",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Purchase Order Item",
@@ -928,5 +918,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

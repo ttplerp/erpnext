@@ -22,12 +22,12 @@
   "party",
   "credit_account",
   "expense_limit",
-  "outstanding_amount",
   "column_break_11",
   "currency",
   "amount",
   "adjusted_amount",
   "balance_amount",
+  "outstanding_amount",
   "cheque_details_section",
   "use_cheque_lot",
   "select_cheque_lot",
@@ -99,23 +99,21 @@
    "fieldtype": "Column Break"
   },
   {
-   "default": "Supplier",
+   "description": "<b>Select Customer for STCBL Depot</b>",
    "fieldname": "party_type",
-   "fieldtype": "Link",
-   "hidden": 1,
+   "fieldtype": "Select",
    "ignore_user_permissions": 1,
    "label": "Party Type",
-   "options": "Party Type",
+   "options": "\nCustomer\nSupplier",
    "reqd": 1
   },
   {
-   "fetch_from": "fuel_book.supplier",
    "fieldname": "party",
-   "fieldtype": "Link",
+   "fieldtype": "Dynamic Link",
    "ignore_user_permissions": 1,
    "in_list_view": 1,
-   "label": "Supplier",
-   "options": "Supplier",
+   "label": "Party",
+   "options": "party_type",
    "reqd": 1
   },
   {
@@ -155,6 +153,7 @@
    "read_only": 1
   },
   {
+   "fetch_from": "equipment.fuelbook",
    "fieldname": "fuel_book",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -499,13 +498,14 @@
    "default": "0",
    "fieldname": "use_common_fuelbook",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Use Common Fuelbook"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-10 16:16:34.751838",
+ "modified": "2023-04-17 12:12:10.632322",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Expense",
@@ -555,5 +555,6 @@
  "sort_order": "DESC",
  "states": [],
  "title_field": "equipment",
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

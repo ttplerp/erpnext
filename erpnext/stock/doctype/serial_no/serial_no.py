@@ -642,7 +642,8 @@ def clean_serial_no_string(serial_no: str) -> str:
 
 
 def update_args_for_serial_no(serial_no_doc, serial_no, args, is_new=False):
-	for field in ["item_code", "work_order", "company", "batch_no", "supplier", "location"]:
+	# frappe.throw(str(args))
+	for field in ["item_code", "work_order", "company", "batch_no", "supplier", "location", "tvo_no", "engine_no", "valuation_rate"]:
 		if args.get(field):
 			serial_no_doc.set(field, args.get(field))
 

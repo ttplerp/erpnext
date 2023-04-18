@@ -12,8 +12,8 @@
   "column_break_3",
   "posting_date",
   "posting_time",
-  "pos_opening_entry",
   "status",
+  "payment_status",
   "section_break_5",
   "company",
   "branch",
@@ -21,6 +21,7 @@
   "column_break_7",
   "pos_profile",
   "user",
+  "pos_opening_entry",
   "section_break_12",
   "pos_transactions",
   "section_break_9",
@@ -157,8 +158,7 @@
    "fieldname": "taxes",
    "fieldtype": "Table",
    "label": "Taxes",
-   "options": "POS Closing Entry Taxes",
-   "read_only": 1
+   "options": "POS Closing Entry Taxes"
   },
   {
    "fieldname": "section_break_12",
@@ -243,6 +243,16 @@
    "label": "Cost Center",
    "options": "Cost Center",
    "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "Draft",
+   "fieldname": "payment_status",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Payment Status",
+   "options": "\nDraft\nDeposited\nNot Deposited\nCancelled",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
@@ -252,7 +262,7 @@
    "link_fieldname": "pos_closing_entry"
   }
  ],
- "modified": "2023-03-20 12:48:08.130530",
+ "modified": "2023-04-17 12:11:53.711316",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "POS Closing Entry",
@@ -304,5 +314,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

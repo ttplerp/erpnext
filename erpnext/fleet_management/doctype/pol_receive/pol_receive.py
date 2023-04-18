@@ -39,9 +39,9 @@ class POLReceive(StockController):
 		for row in self.items:
 			total_balance = flt(total_balance) + flt(row.balance_amount)
 		if total_balance < self.total_amount :
-			frappe.throw("<b>Payable Amount</b> cannot be greater than <b>Total Advance Balance</b>")
+			frappe.throw("<b>Payable Amount({})</b> cannot be greater than <b>Total Advance Balance({})</b>".format(self.total_amount,total_balance))
 	def make_gl_entries(self):
-		if cint(self.use_common_fuelbook) == 0:
+		if cint(self.out_sourced) == 0:
 			return
 
 		gl_entries = []
@@ -52,7 +52,7 @@ class POLReceive(StockController):
 
 	def make_supplier_gl_entry(self, gl_entries):
 		if flt(self.total_amount) > 0:
-			credit_account = get_party_account("Supplier", self.supplier, self.company, is_advance = self.use_common_fuelbook)
+			credit_account = get_party_account("Supplier", self.supplier, self.company)
 			gl_entries.append(
 				self.get_gl_dict({
 					"account": credit_account,
@@ -157,30 +157,17 @@ class POLReceive(StockController):
 		pol_exp = qb.DocType("POL Expense")
 		je 		= qb.DocType("Journal Entry")
 		data = []
-		if not self.equipment or not self.supplier:
-			frappe.throw("Either equipment or Supplier is missing")
-
-		if cint(self.use_common_fuelbook) == 0:
-			data = (
-					qb.from_(pol_exp)
-					.select(pol_exp.name,pol_exp.amount,pol_exp.balance_amount)
-					.where((pol_exp.docstatus == 1) & (pol_exp.balance_amount > 0) 
-						& (pol_exp.equipment == self.equipment) & (pol_exp.party == self.supplier)
-						& (pol_exp.fuel_book == self.fuelbook))
-					.orderby( pol_exp.entry_date,order=qb.desc)
-					).run(as_dict=True)
-		else:
-			data = (
-					qb.from_(pol_exp)
-					.select(pol_exp.name,pol_exp.amount,pol_exp.balance_amount)
-					.where((pol_exp.docstatus == 1)  & (pol_exp.balance_amount > 0) 
-						& (pol_exp.party == self.supplier)
-						& (pol_exp.fuel_book == self.fuelbook) 
-						& (pol_exp.use_common_fuelbook == 1))
-					.orderby( pol_exp.entry_date,order=qb.desc)
-					).run(as_dict=True)
+		if not self.equipment:
+			frappe.throw("Either equipment is missing")
+		data = (
+				qb.from_(pol_exp)
+				.select(pol_exp.name,pol_exp.amount,pol_exp.balance_amount)
+				.where((pol_exp.docstatus == 1)  & (pol_exp.balance_amount > 0) 
+					& (pol_exp.fuel_book == self.fuelbook))
+				.orderby( pol_exp.entry_date,order=qb.desc)
+				).run(as_dict=True)
 		if not data:
-			frappe.throw("NO POL Expense Found against Equipment {}.Make sure Journal  Entry are submitted".format(self.equipment))
+			frappe.throw("NO POL Expense Found against Equipment {}".format(self.equipment))
 		self.set('items',[])
 		allocated_amount = self.total_amount
 		total_amount_adjusted = 0

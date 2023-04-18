@@ -115,7 +115,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-09-21 23:52:00.702843",
+ "modified": "2023-04-17 12:13:22.940317",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "TDS Receipt Detail",
@@ -138,5 +138,6 @@
  "read_only": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_views": 1
 }

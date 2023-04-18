@@ -54,8 +54,8 @@ frappe.ui.form.on("Purchase Receipt", {
 
 		var other_vendor_payment = false;
 
-		for (var i in cur_frm.doc.taxes) {
-			var tax = cur_frm.doc.taxes[i];
+		for (var i in frm.doc.taxes) {
+			var tax = frm.doc.taxes[i];
 			if (tax.payable_to_different_vendor === 1 && !tax.reference_no){
 				other_vendor_payment = true;
 			}
@@ -80,8 +80,8 @@ frappe.ui.form.on("Purchase Receipt", {
 			}, __('Create'));
 		}
 
-		if (doc.docstatus == 1 && other_vendor_payment) {
-			cur_frm.add_custom_button( __('Payment for Charges'), () => {
+		if (frm.doc.docstatus == 1 && other_vendor_payment) {
+			frm.add_custom_button( __('Payment for Charges'), () => {
 				frappe.model.open_mapped_doc({
 					method: "erpnext.stock.doctype.purchase_receipt.purchase_receipt.make_charges_advance_payment",
 					frm: cur_frm

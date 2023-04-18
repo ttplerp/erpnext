@@ -29,8 +29,7 @@
    "fieldname": "item_code",
    "fieldtype": "Link",
    "label": "Item",
-   "options": "Item",
-   "reqd": 1
+   "options": "Item"
   },
   {
    "fieldname": "column_break_3",
@@ -62,7 +61,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-28 12:07:39.058970",
+ "modified": "2023-04-17 12:12:08.221441",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item Type",
@@ -116,5 +115,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

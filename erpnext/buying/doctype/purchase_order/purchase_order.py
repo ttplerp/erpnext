@@ -452,6 +452,10 @@ class PurchaseOrder(BuyingController):
 			self.db_set("per_received", flt(received_qty / total_qty) * 100, update_modified=False)
 		else:
 			self.db_set("per_received", 0, update_modified=False)
+	
+	# function to create PO tracking
+	def create_purchase_order_tracking(self):
+		pass
 
 
 def item_last_purchase_rate(name, conversion_rate, item_code, conversion_factor=1.0):
@@ -500,6 +504,7 @@ def set_missing_values(source, target):
 def make_purchase_receipt(source_name, target_doc=None):
 	def update_item(obj, target, source_parent):
 		target.qty = flt(obj.qty) - flt(obj.received_qty)
+		target.received_qty = flt(obj.qty) - flt(obj.received_qty)
 		target.stock_qty = (flt(obj.qty) - flt(obj.received_qty)) * flt(obj.conversion_factor)
 		target.amount = (flt(obj.qty) - flt(obj.received_qty)) * flt(obj.rate)
 		target.base_amount = (
@@ -539,12 +544,6 @@ def make_purchase_receipt(source_name, target_doc=None):
 	doc.set_onload("ignore_price_list", True)
 
 	return doc
-
-
-@frappe.whitelist()
-def make_purchase_invoice(source_name, target_doc=None):
-	return get_mapped_purchase_invoice(source_name, target_doc)
-
 
 @frappe.whitelist()
 def make_purchase_invoice_from_portal(purchase_order_name):

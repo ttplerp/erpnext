@@ -408,7 +408,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-17 13:55:10.628205",
+ "modified": "2023-04-17 12:12:22.413423",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Repair And Services",
@@ -458,5 +458,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

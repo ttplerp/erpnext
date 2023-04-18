@@ -303,6 +303,12 @@ erpnext.SerialNoBatchSelector = class SerialNoBatchSelector {
 	map_row_values(row, values, number, qty_field, warehouse) {
 		row.qty = values[qty_field];
 		row.transfer_qty = flt(values[qty_field]) * flt(row.conversion_factor);
+		row.tvo_no = values['tvo_no']
+		row.engine_no = values['engine_no']
+		if(this.frm.doctype == "Stock Entry")
+			row.basic_rate = row.valuation_rate = values['valuation_rate']
+		else
+			row.incoming = values['valuation_rate']
 		row[number] = values[number];
 		if(this.warehouse_details.type === 'Source Warehouse') {
 			row.s_warehouse = values.warehouse || warehouse;
@@ -503,9 +509,27 @@ erpnext.SerialNoBatchSelector = class SerialNoBatchSelector {
 
 					let serial_no_list_field = this.layout.fields_dict.serial_no;
 					let qty_field = this.layout.fields_dict.qty;
-
 					let new_number = this.get_value();
 					let list_value = serial_no_list_field.get_value();
+					let tvo_no = this.layout.fields_dict.tvo_no;
+					let engine_no = this.layout.fields_dict.engine_no;
+					let valuation_rate = this.layout.fields_dict.valuation_rate;
+
+					frappe.call({
+						method: "frappe.client.get_value",
+						args: {
+							doctype: "Serial No",
+							filters: {"name": new_number},
+							fieldname: ["tvo_no","engine_no","valuation_rate"]
+						},
+						callback: function(r){
+							if(r.message){
+								tvo_no.set_input(r.message.tvo_no)
+								engine_no.set_input(r.message.engine_no)
+								valuation_rate.set_input(r.message.valuation_rate)
+							}
+						}
+					});
 					let new_line = '\n';
 					if(!list_value) {
 						new_line = '';
@@ -525,6 +549,21 @@ erpnext.SerialNoBatchSelector = class SerialNoBatchSelector {
 					this.$input.val("");
 					this.in_local_change = 0;
 				}
+			},
+			{
+				fieldname: 'tvo_no',
+				fieldtype: 'Data',
+				label: __('Tvo No'),
+			},
+			{
+				fieldname: 'engine_no',
+				fieldtype: 'Data',
+				label: __('Engine No'),
+			},
+			{
+				fieldname: 'valuation_rate',
+				fieldtype: 'Data',
+				label: __('Valuation Rate'),
 			},
 			{fieldtype: 'Column Break'},
 			{

@@ -191,7 +191,7 @@
  "icon": "icon-resize-horizontal",
  "issingle": 1,
  "links": [],
- "modified": "2022-04-29 15:37:10.246831",
+ "modified": "2023-04-17 12:13:56.666623",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Payment Reconciliation",
@@ -217,5 +217,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }

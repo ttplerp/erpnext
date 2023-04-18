@@ -28,7 +28,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-11-28 14:07:21.064403",
+ "modified": "2023-04-17 12:12:59.909929",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Production Group",
@@ -72,5 +72,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "track_views": 1
 }
