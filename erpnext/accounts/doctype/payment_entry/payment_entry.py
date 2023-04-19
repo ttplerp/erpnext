@@ -382,7 +382,7 @@ class PaymentEntry(AccountsController):
 					no_oustanding_refs.setdefault(d.reference_doctype, []).append(d)
 
 		for k, v in no_oustanding_refs.items():
-			frappe.msgprint(
+			frappe.throw(
 				_(
 					"{} - {} now have {} as they had no outstanding amount left before submitting the Payment Entry."
 				).format(
