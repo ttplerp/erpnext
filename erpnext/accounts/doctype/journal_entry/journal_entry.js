@@ -137,7 +137,7 @@ frappe.ui.form.on("Journal Entry", {
 		if(!frm.doc.company) return null;
 
 		if((!(frm.doc.accounts || []).length) || ((frm.doc.accounts || []).length === 1 && !frm.doc.accounts[0].account)) {
-			if(in_list(["Bank Entry", "Cash Entry"], frm.doc.voucher_type)) {
+			if(in_list(["Cash Entry"], frm.doc.voucher_type)) {
 				return frappe.call({
 					type: "GET",
 					method: "erpnext.accounts.doctype.journal_entry.journal_entry.get_default_bank_cash_account",
