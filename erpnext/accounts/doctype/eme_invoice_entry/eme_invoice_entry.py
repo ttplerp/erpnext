@@ -114,7 +114,7 @@ def post_accounting_entries(doc,  publish_progress = True):
 		"company":doc.company,
 		"branch": doc.branch,
 	})
-	for e in frappe.db.sql("""select name as reference 
+	for e in frappe.db.sql("""select name as reference, supplier 
 								from `tabEME Invoice` where docstatus = 1 
 								and workflow_state = 'Approved' 
 								and eme_invoice_entry = '{}' 
@@ -145,7 +145,7 @@ def post_accounting_entries(doc,  publish_progress = True):
 				failed += 1
 			if error:
 				doc.append("failed_transaction",{
-						"owner":eme_invoice.supplier,
+						"owner":e.supplier,
 						"error_message":error
 					})
 			count+=1
