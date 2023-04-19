@@ -725,7 +725,7 @@ class BankPayment(Document):
         # party type employee since payment is done for employee via payment entry
         data += frappe.db.sql("""SELECT "Payment Entry" transaction_type, pe.name transaction_id, 
                         pe.name transaction_reference, pe.posting_date transaction_date, 
-                        pe.party as employee, pe.party as beneficiary_name, 
+                        pe.party as employee, pe.party_name as beneficiary_name, 
                         e.bank_name as bank_name, e.bank_branch, fib.financial_system_code, e.bank_account_type, e.bank_ac_no as bank_account_no,
                         round(( pe.paid_amount_after_tax + (select ifnull(sum(ped.amount),0)
                                             from `tabPayment Entry Deduction` ped
