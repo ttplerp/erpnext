@@ -25,7 +25,7 @@ def get_data(filters):
 						SUM(CASE WHEN posting_date < '{from_date}' AND type = 'Issue' THEN qty ELSE 0 END) AS opening_out_qty,
 						SUM(CASE WHEN posting_date BETWEEN '{from_date}' AND '{to_date}' AND type = 'Stock' THEN qty ELSE 0 END) AS in_qty,
 						SUM(CASE WHEN posting_date BETWEEN '{from_date}' AND '{to_date}' AND type = 'Issue' THEN qty ELSE 0 END) AS out_qty
-				FROM `tabPOL Entry` WHERE docstatus = 1 {conditions} AND '{equipment}'
+				FROM `tabPOL Entry` WHERE docstatus = 1 {conditions} AND equipment = '{equipment}'
 			'''.format(from_date=filters.get("from_date"), to_date=filters.get("to_date"), conditions= conditions, equipment = t.name), as_dict=1):
 			opening_in_qty 	+= flt(d.opening_in_qty)
 			opening_out_qty += flt(d.opening_out_qty)
