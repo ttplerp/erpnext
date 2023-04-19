@@ -6,7 +6,7 @@ from frappe.model.document import Document
 from erpnext.custom_utils import check_future_date
 from frappe.utils import flt, cint
 from erpnext.controllers.stock_controller import StockController
-from erpnext.fleet_management.fleet_utils import get_pol_till, get_pol_till, get_previous_km
+from erpnext.fleet_management.fleet_utils import get_pol_till, get_previous_km
 
 class POLIssue(StockController):
 	def __init__(self, *args, **kwargs):
