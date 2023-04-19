@@ -145,7 +145,7 @@ def post_accounting_entries(doc,  publish_progress = True):
 				failed += 1
 			if error:
 				doc.append("failed_transaction",{
-						"owner":owner,
+						"owner":eme_invoice.supplier,
 						"error_message":error
 					})
 			count+=1
