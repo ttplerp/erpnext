@@ -89,7 +89,7 @@ def post_accounting_entries(doc,  publish_progress = True):
 	failed = 0
 	refresh_interval = 25
 	total_count = cint(doc.successful)
-	eme_invoice = []
+	eme_invoice_que = []
 	if not doc.payable_amount:
 		frappe.throw(_("Payable Amount should be greater than zero"))
 	r = []
@@ -137,7 +137,7 @@ def post_accounting_entries(doc,  publish_progress = True):
 					"reference_name": eme_invoice.name,
 				})
 				payable_amount += flt(eme_invoice.payable_amount,2)
-				eme_invoice.append(je.name)
+				eme_invoice_que.append(eme_invoice.name)
 				#Set a reference to the claim journal entry
 				successful += 1
 			except Exception as er:
@@ -175,7 +175,7 @@ def post_accounting_entries(doc,  publish_progress = True):
 	})
 	je.insert()
 	# update je reference in invoice
-	for ei in eme_invoice:
+	for ei in eme_invoice_que:
 		if ei:
 			error = None
 			eme_invoice = frappe.get_doc("EME Invoice",ei)
