@@ -19,6 +19,17 @@ frappe.ui.form.on('POL Receive', {
 				__("View")
 			  );
 		}
+		if (frm.doc.docstatus === 1 && frm.doc.direct_consumption == 0) {
+			cur_frm.add_custom_button(__('POL Ledger'), function() {
+				frappe.route_options = {
+					branch: frm.doc.branch,
+					from_date: frm.doc.posting_date,
+					to_date: frm.doc.posting_date,
+					equipment: frm.doc.equipment
+				};
+				frappe.set_route("query-report", "POL Ledger");
+			}, __("View"));
+		}
 	},
 	qty: function(frm) {
 		calculate_total(frm)

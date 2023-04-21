@@ -24,18 +24,21 @@ class POLReceive(StockController):
 		self.balance_check()
 
 	def on_submit(self):
-		self.update_pol_expense()
+		if cint(self.is_opening) == 0:
+			self.update_pol_expense()
+			self.make_gl_entries()
 		self.make_pol_entry()
-		self.make_gl_entries()
-	def before_cancel(self):
-		self.delete_pol_entry()
-
+		
 	def on_cancel(self):
 		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
-		self.update_pol_expense()
+		if cint(self.is_opening) == 0:
+			self.update_pol_expense()
+			self.make_gl_entries()
 		self.delete_pol_entry()
-		self.make_gl_entries()
+
 	def balance_check(self):
+		if cint(self.is_opening) == 1:
+			return
 		total_balance = 0
 		for row in self.items:
 			total_balance = flt(total_balance) + flt(row.balance_amount)
@@ -154,6 +157,8 @@ class POLReceive(StockController):
 
 	@frappe.whitelist()
 	def populate_child_table(self):
+		if cint(self.is_opening) == 1:
+			return
 		self.calculate_km_diff()
 		pol_exp = qb.DocType("POL Expense")
 		je 		= qb.DocType("Journal Entry")
