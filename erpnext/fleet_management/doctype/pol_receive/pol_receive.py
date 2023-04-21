@@ -30,7 +30,7 @@ class POLReceive(StockController):
 		self.make_pol_entry()
 		
 	def on_cancel(self):
-		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
+		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry", "POL Entry")
 		if cint(self.is_opening) == 0:
 			self.update_pol_expense()
 			self.make_gl_entries()
@@ -232,6 +232,7 @@ class POLReceive(StockController):
 			con1.equipment = self.equipment
 			con1.pol_type = self.pol_type
 			con1.branch = self.branch
+			con1.cost_center = self.cost_center
 			con1.posting_date = self.posting_date
 			con1.posting_time = self.posting_time
 			con1.qty = self.qty
@@ -242,11 +243,17 @@ class POLReceive(StockController):
 			con1.cost_center = self.cost_center
 			con1.current_km = self.cur_km_reading
 			con1.mileage = self.mileage
+			con1.rate = self.rate
+			con1.amount = self.total_amount
 			con1.uom = self.uom
+			con1.memo_number = self.memo_number
+			con1.pol_slip_no = self.pol_slip_no
+			con1.km_difference = self.km_difference
 			con1.submit()
 		elif container:
 			con = frappe.new_doc("POL Entry")
 			con.flags.ignore_permissions = 1	
+			con.cost_center = self.cost_center
 			con.equipment = self.equipment
 			con.pol_type = self.pol_type
 			con.branch = self.branch
@@ -257,26 +264,14 @@ class POLReceive(StockController):
 			con.reference = self.name
 			con.is_opening = 0
 			con.uom = self.uom
+			con.rate = self.rate
+			con.amount = self.total_amount
 			con.cost_center = self.cost_center
 			con.type = "Stock"
+			con.memo_number = self.memo_number
+			con.pol_slip_no = self.pol_slip_no
+			con.km_difference = self.km_difference
 			con.submit()
-
-			# if container:
-			# 	con2 = frappe.new_doc("POL Entry")
-			# 	con2.flags.ignore_permissions = 1	
-			# 	con2.equipment = self.equipment
-			# 	con2.pol_type = self.pol_type
-			# 	con2.branch = self.branch
-			# 	con2.date = self.posting_date
-			# 	con2.posting_time = self.posting_time
-			# 	con2.qty = self.qty
-			# 	con2.reference_type = self.doctype
-			# 	con2.reference_name = self.name
-			# 	con2.type = "Issue"
-			# 	con2.is_opening = 0
-			# 	con2.cost_center = self.cost_center
-			# 	con2.submit()
-
 
 	def delete_pol_entry(self):
 		frappe.db.sql("delete from `tabPOL Entry` where reference = %s", self.name)

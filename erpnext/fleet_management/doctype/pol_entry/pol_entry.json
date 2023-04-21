@@ -18,8 +18,13 @@
   "amended_from",
   "posting_time",
   "current_km",
+  "km_difference",
   "mileage",
-  "uom"
+  "uom",
+  "rate",
+  "amount",
+  "memo_number",
+  "pol_slip_no"
  ],
  "fields": [
   {
@@ -115,13 +120,38 @@
    "fieldtype": "Select",
    "label": "Reading UOM",
    "options": "\nHour\nKM"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "label": "Rate"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount"
+  },
+  {
+   "fieldname": "memo_number",
+   "fieldtype": "Data",
+   "label": "Cash Memo"
+  },
+  {
+   "fieldname": "pol_slip_no",
+   "fieldtype": "Data",
+   "label": "POL Slip No"
+  },
+  {
+   "fieldname": "km_difference",
+   "fieldtype": "Float",
+   "label": "KM Difference"
   }
  ],
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-01 15:55:08.050568",
+ "modified": "2023-04-21 16:55:02.274017",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Entry",

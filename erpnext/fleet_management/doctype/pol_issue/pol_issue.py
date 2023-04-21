@@ -66,6 +66,7 @@ class POLIssue(StockController):
 		self.make_pol_entry()
 
 	def on_cancel(self):
+		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry", "POL Entry")
 		self.delete_pol_entry()
 	
 	def check_tanker_hsd_balance(self):
@@ -99,6 +100,7 @@ class POLIssue(StockController):
 			con.equipment = item.equipment
 			con.pol_type = self.pol_type
 			con.branch = self.branch
+			con.cost_center = item.cost_center
 			con.posting_date = self.posting_date
 			con.posting_time = self.posting_time
 			con.qty = item.qty
@@ -107,10 +109,13 @@ class POLIssue(StockController):
 			con.is_opening = 0
 			con.uom = item.uom
 			con.cost_center = self.cost_center
-			con1.current_km = item.cur_km_reading
-			con1.mileage = item.mileage
+			con.current_km = item.cur_km_reading
+			con.mileage = item.mileage
+			con.km_difference = item.km_difference
 			con.type = "Receive"
-			con.submit()
+			con.rate = item.rate
+			con.amount = item.amount
+			con.submit() 
 
 	def delete_pol_entry(self):
 		frappe.db.sql("delete from `tabPOL Entry` where reference = %s", self.name)

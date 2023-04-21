@@ -551,6 +551,26 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "Repair and Services",
+   "link_count": 0,
+   "link_to": "Repair And Services",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Repair And Services Invoice",
+   "link_count": 0,
+   "link_to": "Repair And Services Invoice Item",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "Fleet Report",
    "link_count": 7,
    "onboard": 0,
@@ -619,43 +639,15 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Repair and Services",
-   "link_count": 6,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
    "label": "POL Ledger",
    "link_count": 0,
    "link_to": "POL Ledger",
    "link_type": "Report",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Repair and Services",
-   "link_count": 0,
-   "link_to": "Repair And Services",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Repair And Services Invoice",
-   "link_count": 0,
-   "link_to": "Repair And Services Invoice Item",
-   "link_type": "DocType",
-   "onboard": 1,
+   "onboard": 0,
    "type": "Link"
   }
  ],
- "modified": "2023-04-20 00:05:08.948647",
+ "modified": "2023-04-20 11:43:09.897034",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Fleet Management",
