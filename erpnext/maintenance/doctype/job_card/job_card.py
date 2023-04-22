@@ -69,6 +69,7 @@ class JobCard(AccountsController):
 		self.db_set('journal_entry', None)
 
 	def on_cancel(self):
+		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
 		bdr = frappe.get_doc("Break Down Report", self.break_down_report)
 		if bdr.job_card == self.name:
 			bdr.db_set("job_card", "")
@@ -78,8 +79,6 @@ class JobCard(AccountsController):
 		if self.supplier and self.out_source:
 			self.make_gl_entry()	
 			self.cancel_budget_entry()
-
-		self.cancel_budget_entry()
 	
 	def get_default_settings(self):
 		goods_account = frappe.db.get_single_value("Maintenance Accounts Settings", "default_goods_account")
@@ -128,7 +127,8 @@ class JobCard(AccountsController):
 			"posting_date": self.posting_date,
 			"company": self.company,
 			"total_amount_in_words": money_in_words(self.total_amount),
-			"branch": self.branch
+			"branch": self.branch,
+			"business_activity": ba,
 		})
 
 		je.append("accounts",{
@@ -136,8 +136,7 @@ class JobCard(AccountsController):
 			"debit_in_account_currency": self.total_amount,
 			"cost_center": self.cost_center,
 			"reference_type": "Job Card",
-			"reference_name": self.name,
-			"business_activity": ba
+			"reference_name": self.name
 		})
 
 		je.append("accounts",{
@@ -146,8 +145,7 @@ class JobCard(AccountsController):
 			"cost_center": self.cost_center,
 			"party_check": 0,
 			"party_type": "Supplier",
-			"party": self.supplier,
-			"business_activity": ba
+			"party": self.supplier
 		})
 
 		je.insert()
@@ -194,62 +192,6 @@ class JobCard(AccountsController):
 				)
 			make_gl_entries(gl_entries, cancel=(self.docstatus == 2),update_outstanding="Yes", merge_entries=False)
 
-	def make_gl_entries(self):
-		if self.total_amount:
-			from erpnext.accounts.general_ledger import make_gl_entries
-			gl_entries = []
-			self.posting_date = self.finish_date
-			ba = get_default_ba()
-
-			goods_account = frappe.db.get_single_value("Maintenance Accounts Settings", "default_goods_account")
-			services_account = frappe.db.get_single_value("Maintenance Accounts Settings", "default_services_account")
-			receivable_account = frappe.db.get_single_value("Maintenance Accounts Settings", "default_receivable_account")
-			if not goods_account:
-				frappe.throw("Setup Default Goods Account in Maintenance Setting")
-			if not services_account:
-				frappe.throw("Setup Default Services Account in Maintenance Setting")
-			if not receivable_account:
-				frappe.throw("Setup Default Receivable Account in Maintenance Setting")
-						
-			gl_entries.append(
-				self.get_gl_dict({
-					"account":  receivable_account,
-					"party_type": "Customer",
-					"party": self.customer,
-					"against": receivable_account,
-					"debit": self.total_amount,
-					"debit_in_account_currency": self.total_amount,
-					"against_voucher": self.name,
-					"against_voucher_type": self.doctype,
-					"cost_center": self.cost_center,
-					"business_activity": ba
-					}, self.currency)
-			)
-
-			if self.goods_amount:
-				gl_entries.append(
-					self.get_gl_dict({
-						"account": goods_account,
-						"against": self.customer,
-						"credit": self.goods_amount,
-						"credit_in_account_currency": self.goods_amount,
-						"business_activity": ba,
-						"cost_center": self.cost_center
-					}, self.currency)
-				)
-			if self.services_amount:
-				gl_entries.append(
-					self.get_gl_dict({
-						"account": services_account,
-						"against": self.customer,
-						"credit": self.services_amount,
-						"credit_in_account_currency": self.services_amount,
-						"business_activity": ba,
-						"cost_center": self.cost_center
-					}, self.currency)
-				)
-			make_gl_entries(gl_entries, cancel=(self.docstatus == 2),update_outstanding="No", merge_entries=False)
-
 	def commit_budget(self, maintenance_account):
 		commit_bud = frappe.get_doc({
 			"doctype": "Committed Budget",
@@ -258,7 +200,8 @@ class JobCard(AccountsController):
 			"reference_type": "Job Card",
 			"reference_no": self.name,
 			"reference_date": self.finish_date,
-			"amount": self.total_amount
+			"amount": self.total_amount,
+			"business_activity": self.business_activity,
 		})
 		commit_bud.flags.ignore_permissions=1
 		commit_bud.submit()
@@ -271,7 +214,8 @@ class JobCard(AccountsController):
 			"reference_type": "Job Card",
 			"reference_no": self.name,
 			"reference_date": self.finish_date,
-			"amount": self.total_amount
+			"amount": self.total_amount,
+			"business_activity": self.business_activity,
 		})
 		consume.flags.ignore_permissions = 1
 		consume.submit()

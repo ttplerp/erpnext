@@ -828,6 +828,7 @@ class PaymentEntry(AccountsController):
 					"against": against_account,
 					"account_currency": self.party_account_currency,
 					"cost_center": self.cost_center,
+					"business_activity": self.business_activity,
 				},
 				item=self,
 			)
@@ -849,6 +850,7 @@ class PaymentEntry(AccountsController):
 						"against_voucher_type": d.reference_doctype,
 						"against_voucher": d.reference_name,
 						"cost_center": cost_center,
+						"business_activity": self.business_activity,
 					}
 				)
 
@@ -894,6 +896,7 @@ class PaymentEntry(AccountsController):
 						"post_net_value": True,
 						"party_type": '' if not self.from_party else self.from_party_type, #jai added
 						"party": '' if not self.from_party else self.from_party, #jai added
+						"business_activity": self.business_activity,
 					},
 					item=self,
 				)
@@ -908,6 +911,7 @@ class PaymentEntry(AccountsController):
 						"debit_in_account_currency": self.received_amount,
 						"debit": self.base_received_amount,
 						"cost_center": self.cost_center,
+						"business_activity": self.business_activity,
 					},
 					item=self,
 				)
@@ -943,6 +947,7 @@ class PaymentEntry(AccountsController):
 						else d.tax_amount,
 						"cost_center": d.cost_center,
 						"post_net_value": True,
+						"business_activity": self.business_activity,
 					},
 					account_currency,
 					item=d,
@@ -961,6 +966,7 @@ class PaymentEntry(AccountsController):
 							else d.tax_amount,
 							"cost_center": self.cost_center,
 							"post_net_value": True,
+							"business_activity": self.business_activity,
 						},
 						account_currency,
 						item=d,
@@ -983,6 +989,7 @@ class PaymentEntry(AccountsController):
 							"debit_in_account_currency": d.amount,
 							"debit": d.amount,
 							"cost_center": d.cost_center,
+							"business_activity": self.business_activity,
 						},
 						item=d,
 					)
