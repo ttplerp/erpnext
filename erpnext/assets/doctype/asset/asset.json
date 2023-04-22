@@ -56,6 +56,7 @@
   "credit_account",
   "column_break_39",
   "accumulated_depreciation_account",
+  "business_activity",
   "section_break_23",
   "calculate_depreciation",
   "column_break_33",
@@ -652,6 +653,13 @@
    "fieldtype": "Currency",
    "label": "Asset Rate",
    "reqd": 1
+  },
+  {
+   "default": "Common",
+   "fieldname": "business_activity",
+   "fieldtype": "Link",
+   "label": "Business Activity",
+   "options": "Business Activity"
   }
  ],
  "idx": 72,
@@ -674,7 +682,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2023-03-20 17:15:43.139627",
+ "modified": "2023-04-23 00:31:31.944360",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",

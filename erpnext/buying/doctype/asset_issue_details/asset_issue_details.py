@@ -88,6 +88,7 @@ class AssetIssueDetails(Document):
 					"credit_account": credit_account,
 					"asset_account": fixed_asset_account,
 					"aid_reference": self.name,
+					"business_activity": self.business_activity,
 					"issued_to": self.issued_to,
 					"issue_to_employee": self.issue_to_employee if self.issued_to == 'Employee' else None,
 					"employee_name": self.employee_name if self.issued_to == 'Employee' else None,

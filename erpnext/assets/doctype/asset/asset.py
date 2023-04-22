@@ -227,6 +227,7 @@ class Asset(AccountsController):
 				"transaction_date": transaction_date,
 				"reference_doctype": reference_doctype,
 				"reference_name": reference_docname,
+				"business_activity": self.business_activity,
 			}
 		).insert()
 		asset_movement.submit()
@@ -901,7 +902,8 @@ class Asset(AccountsController):
 				"remark": self.name + " (" + self.asset_name + ") Asset Issued",
 				"user_remark": self.name + " (" + self.asset_name + ") Asset Issued",
 				"posting_date": self.posting_date if self.posting_date else self.purchase_date,
-				"branch": self.branch
+				"branch": self.branch,
+				"business_activity": self.business_activity,
 				})
 
 			#credit account update
@@ -931,7 +933,8 @@ class Asset(AccountsController):
 				"remark": self.name + " (" + self.asset_name + ") Asset Issued",
 				"user_remark": self.name + " (" + self.asset_name + ") Asset Issued",
 				"posting_date": self.posting_date if self.posting_date else self.purchase_date,
-				"branch": self.branch
+				"branch": self.branch,
+				"business_activity": self.business_activity,
 				})
 
 			#credit account update
