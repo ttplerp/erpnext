@@ -52,6 +52,14 @@
   "total_amount",
   "column_break_34",
   "outstanding_amount",
+  "tax_details_section_break",
+  "tax_withholding_category",
+  "column_break_49",
+  "tds_account",
+  "column_break_51",
+  "tds_amount",
+  "column_break_53",
+  "net_amount",
   "section_break_25",
   "assigned_to",
   "section_break_13",
@@ -453,11 +461,49 @@
    "fieldtype": "Table",
    "label": "Assigned To (Mechanic)",
    "options": "Mechanic Assigned"
+  },
+  {
+   "fieldname": "tax_details_section_break",
+   "fieldtype": "Section Break",
+   "label": "Tax Details"
+  },
+  {
+   "fieldname": "tax_withholding_category",
+   "fieldtype": "Link",
+   "label": "Tax Withholding Category",
+   "options": "Tax Withholding Category"
+  },
+  {
+   "fieldname": "column_break_49",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tds_account",
+   "fieldtype": "Data",
+   "label": "TDS Account"
+  },
+  {
+   "fieldname": "column_break_51",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tds_amount",
+   "fieldtype": "Currency",
+   "label": "TDS Amount"
+  },
+  {
+   "fieldname": "column_break_53",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "net_amount",
+   "fieldtype": "Currency",
+   "label": "Net Amount"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2022-12-26 09:32:56.114656",
+ "modified": "2023-04-16 23:43:18.843742",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Job Card",

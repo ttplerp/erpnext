@@ -98,6 +98,20 @@ frappe.ui.form.on("Job Card", {
 
 	settled_using_imprest: function(frm) {
 		frm.toggle_reqd(["expense_account"], (frm.doc.settled_using_imprest ? 1 : 0));
+	},
+
+	tax_withholding_category: function(frm) {
+		frappe.call({
+			method: "get_tax_details",
+			doc: frm.doc,
+			callback: function(r) {
+				console.log(r.message.account);
+				frm.set_value("tds_account", r.message.account);
+				frm.set_value("tds_amount", flt(cur_frm.doc.total_amount * flt(r.message.rate / 100)));
+				frm.set_value("net_amount", cur_frm.doc.total_amount - flt(cur_frm.doc.total_amount * flt(r.message.rate / 100)));
+				frm.refresh();
+			}
+		});
 	}
 });
 
