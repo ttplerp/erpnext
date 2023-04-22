@@ -52,11 +52,11 @@
   "purchase_date",
   "accounting_details_section",
   "asset_account",
+  "business_activity",
   "column_break_36",
   "credit_account",
   "column_break_39",
   "accumulated_depreciation_account",
-  "business_activity",
   "section_break_23",
   "calculate_depreciation",
   "column_break_33",
@@ -682,7 +682,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2023-04-23 00:31:31.944360",
+ "modified": "2023-04-23 00:51:30.287999",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",
