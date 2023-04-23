@@ -25,7 +25,7 @@ class Reimbursement(Document):
 				frappe.throw(_('Journal Entry {} for this transaction needs to be cancelled first').format(frappe.get_desk_link(self.doctype,self.journal_entry)),title='Not permitted')
 
 	def on_submit(self):
-		check_budget_available(self.cost_center,self.expense_account,self.posting_date,self.amount,self.business_activity)
+		# check_budget_available(self.cost_center,self.expense_account,self.posting_date,self.amount,self.business_activity)
 		self.post_journal_entry()
 
 	def post_journal_entry(self):

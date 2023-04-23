@@ -184,7 +184,7 @@ def validate_expense_against_budget(args):
 	args = frappe._dict(args)
 	if frappe.db.get_value("Account", args.account, "budget_check"):
 		return
-	if args.is_cancelled:
+	if args.is_cancelled: #on cancel this will remove commit consumed budget, and terminate the process
 		committed_consumed_budget(args.voucher_type, args.voucher_no)
 		return
 	if args.get("company") and not args.fiscal_year:
@@ -222,8 +222,9 @@ def validate_expense_against_budget(args):
 			cc_doc = frappe.get_doc("Cost Center", args.cost_center)
 			budget_cost_center = cc_doc.budget_cost_center if cc_doc.use_budget_from_parent else args.cost_center
 			
+			condition = " and b.business_activity = '{}'".format(args.business_activity) #added by Jai 23 April, 2023
 			if args.project:
-				condition = " and b.project = '{}'".format(args.project)
+				condition += " and b.project = '{}'".format(args.project)
 			else:
 				# bud_acc_dtl = frappe.get_doc("Account", args.account)
 				# if bud_acc_dtl.centralized_budget:
@@ -232,7 +233,7 @@ def validate_expense_against_budget(args):
 				# 	#Check Budget Cost for child cost centers
 				# 	cc_doc = frappe.get_doc("Cost Center", args.cost_center)
 				# 	budget_cost_center = cc_doc.budget_cost_center if cc_doc.use_budget_from_parent else args.cost_center
-				condition = " and b.cost_center='{}'".format(budget_cost_center)
+				condition += " and b.cost_center='{}'".format(budget_cost_center)
 				
 			args.is_tree = False
 			args.cost_center = budget_cost_center
@@ -297,20 +298,24 @@ def compare_expense_with_budget(args, budget_amount, action_for, action, budget_
 	else:
 		condition = " and cb.cost_center = '{}'".format(budget_against)
 	args.fiscal_year = args.fiscal_year if args.fiscal_year else str(args.posting_date)[0:4]
+	""" jai added 23 April, 2023 """
+	condition += " and cb.business_activity = '{}'".format(args.business_activity)
+	fiscal_year = frappe.db.sql("select name, year_start_date, year_end_date from `tabFiscal Year` where '{}' between year_start_date and year_end_date and disabled = 0".format(str(args.posting_date)), as_dict=True)
+	
 	committed = frappe.db.sql("""select SUM(cb.amount) as total 
 								from `tabCommitted Budget` cb 
 								where cb.account='{account}' 
 								{condition} 
 								and cb.reference_date between '{start_date}' and '{end_date}'""".format(condition=condition, 
-							account=args.account, cost_center=args.cost_center, start_date=str(args.fiscal_year) + "-01-01", 
-							end_date=str(args.fiscal_year)[0:4] + "-12-31"), as_dict=True)
+							account=args.account, cost_center=args.cost_center, start_date=fiscal_year[0]["year_start_date"], 
+							end_date=fiscal_year[0]["year_end_date"]), as_dict=True)
 	consumed = frappe.db.sql("""select SUM(cb.amount) as total 
 								from `tabConsumed Budget` cb 
 								where cb.account='{account}'
 								{condition} 
 								and cb.reference_date between '{start_date}' and '{end_date}'""".format(condition=condition, 
-							account=args.account, cost_center=args.cost_center, start_date=str(args.fiscal_year) + "-01-01", 
-							end_date=str(args.fiscal_year)[0:4] + "-12-31"), as_dict=True)
+							account=args.account, cost_center=args.cost_center, start_date=fiscal_year[0]["year_start_date"], 
+							end_date=fiscal_year[0]["year_end_date"]), as_dict=True)
 	if consumed and committed:
 		if flt(consumed[0].total) > flt(committed[0].total):
 			committed = consumed
@@ -357,7 +362,8 @@ def commit_budget(args):
 				"reference_id": args.name,
 				"amount": flt(args.amount,2),
 				"item_code": args.item_code,
-				"company": args.company
+				"company": args.company,
+				"business_activity": self.business_activity,
 			}
 		)
 		doc.submit()

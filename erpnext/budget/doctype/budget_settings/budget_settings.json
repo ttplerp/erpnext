@@ -11,7 +11,9 @@
   "allow_budget_deviation",
   "deviation",
   "allowed_account_types_for_budget_allocation",
-  "allowed_account_types"
+  "allowed_account_types",
+  "column_break_3",
+  "allowed_transactions"
  ],
  "fields": [
   {
@@ -47,12 +49,23 @@
   {
    "fieldname": "column_break_2",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Do Not include Material Request, Purchase Order, Purchase Invoice and Payment Entry",
+   "fieldname": "allowed_transactions",
+   "fieldtype": "Table",
+   "label": "Transaction for Budget Check and Consumption",
+   "options": "Budget Transaction"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2022-09-14 17:03:32.387248",
+ "modified": "2023-04-23 14:41:34.606862",
  "modified_by": "Administrator",
  "module": "Budget",
  "name": "Budget Settings",

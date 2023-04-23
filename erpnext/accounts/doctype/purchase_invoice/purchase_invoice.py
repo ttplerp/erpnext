@@ -578,6 +578,7 @@ class PurchaseInvoice(BuyingController):
 							"posting_date": self.posting_date,
 							"company": self.company,
 							"amount": flt(amount,2),
+							"business_activity": self.business_activity,
 						})
 					if not commited_budget_id:					
 						validate_expense_against_budget(args)
@@ -595,7 +596,8 @@ class PurchaseInvoice(BuyingController):
 							"reference_id": item.name,
 							"item_code": item.item_code,
 							"company": self.company,
-							"closed":1
+							"closed":1,
+							"business_activity": self.business_activity,
 						})
 						bud_obj.flags.ignore_permissions=1
 						bud_obj.submit()
@@ -614,6 +616,7 @@ class PurchaseInvoice(BuyingController):
 						"reference_id": item.name,
 						"item_code": item.item_code,
 						"com_ref": commited_budget_id,
+						"business_activity": self.business_activity,
 					})
 					consume.flags.ignore_permissions=1
 					consume.submit()
@@ -709,6 +712,7 @@ class PurchaseInvoice(BuyingController):
 					"credit": allocated_amount,
 					"credit_in_account_currency": allocated_amount, 
 					"cost_center": a.cost_center,
+					"business_activity": self.business_activity,
 				},advance_account_currency)
 			)
 			
@@ -754,6 +758,7 @@ class PurchaseInvoice(BuyingController):
 						"against_voucher_type": self.doctype,
 						"project": self.project,
 						"cost_center": self.cost_center,
+						"business_activity": self.business_activity,
 					},
 					self.party_account_currency,
 					item=self,
@@ -822,6 +827,7 @@ class PurchaseInvoice(BuyingController):
 									"project": item.project or self.project,
 									"remarks": self.get("remarks") or _("Accounting Entry for Stock"),
 									"debit": warehouse_debit_amount,
+									"business_activity": self.business_activity,
 								},
 								warehouse_account[item.warehouse]["account_currency"],
 								item=item,
@@ -838,6 +844,7 @@ class PurchaseInvoice(BuyingController):
 									"project": item.project or self.project,
 									"remarks": self.get("remarks") or _("Accounting Entry for Stock"),
 									"debit": -1 * flt(item.base_net_amount, item.precision("base_net_amount")),
+									"business_activity": self.business_activity,
 								},
 								warehouse_account[item.from_warehouse]["account_currency"],
 								item=item,
@@ -855,6 +862,7 @@ class PurchaseInvoice(BuyingController):
 										"remarks": self.get("remarks") or _("Accounting Entry for Stock"),
 										"cost_center": item.cost_center,
 										"project": item.project,
+										"business_activity": self.business_activity,
 									},
 									account_currency,
 									item=item,
@@ -872,6 +880,7 @@ class PurchaseInvoice(BuyingController):
 										"remarks": self.get("remarks") or _("Accounting Entry for Stock"),
 										"cost_center": item.cost_center,
 										"project": item.project or self.project,
+										"business_activity": self.business_activity,
 									},
 									account_currency,
 									item=item,
@@ -891,6 +900,7 @@ class PurchaseInvoice(BuyingController):
 										"credit": flt(amount["base_amount"]),
 										"credit_in_account_currency": flt(amount["amount"]),
 										"project": item.project or self.project,
+										"business_activity": self.business_activity,
 									},
 									item=item,
 								)
@@ -910,6 +920,7 @@ class PurchaseInvoice(BuyingController):
 									"project": item.project or self.project,
 									"remarks": self.get("remarks") or _("Accounting Entry for Stock"),
 									"credit": flt(item.rm_supp_cost),
+									"business_activity": self.business_activity,
 								},
 								warehouse_account[self.supplier_warehouse]["account_currency"],
 								item=item,
@@ -996,6 +1007,7 @@ class PurchaseInvoice(BuyingController):
 											"debit": discrepancy_caused_by_exchange_rate_difference,
 											"cost_center": item.cost_center,
 											"project": item.project or self.project,
+											"business_activity": self.business_activity,
 										},
 										account_currency,
 										item=item,
@@ -1009,6 +1021,7 @@ class PurchaseInvoice(BuyingController):
 											"credit": discrepancy_caused_by_exchange_rate_difference,
 											"cost_center": item.cost_center,
 											"project": item.project or self.project,
+											"business_activity": self.business_activity,
 										},
 										account_currency,
 										item=item,
@@ -1030,6 +1043,7 @@ class PurchaseInvoice(BuyingController):
 									"remarks": self.get("remarks") or _("Accounting Entry for Stock"),
 									"credit": flt(item.landed_cost_voucher_amount),
 									"project": item.project or self.project,
+									"business_activity": self.business_activity,
 								},
 								item=item,
 							)
@@ -1044,6 +1058,7 @@ class PurchaseInvoice(BuyingController):
 									"remarks": self.get("remarks") or _("Accounting Entry for Stock"),
 									"debit": flt(item.landed_cost_voucher_amount),
 									"project": item.project or self.project,
+									"business_activity": self.business_activity,
 								},
 								item=item,
 							)
@@ -1122,6 +1137,7 @@ class PurchaseInvoice(BuyingController):
 								),
 								"cost_center": item.cost_center,
 								"project": item.project or self.project,
+								"business_activity": self.business_activity,
 							},
 							item=item,
 						)
@@ -1143,6 +1159,7 @@ class PurchaseInvoice(BuyingController):
 										if asset_eiiav_currency == self.company_currency
 										else item.item_tax_amount / self.conversion_rate
 									),
+									"business_activity": self.business_activity,
 								},
 								item=item,
 							)
@@ -1165,6 +1182,7 @@ class PurchaseInvoice(BuyingController):
 								),
 								"cost_center": self.cost_center,
 								"project": item.project or self.project,
+								"business_activity": self.business_activity,
 							},
 							item=item,
 						)
@@ -1186,6 +1204,7 @@ class PurchaseInvoice(BuyingController):
 										if asset_eiiav_currency == self.company_currency
 										else item.item_tax_amount / self.conversion_rate
 									),
+									"business_activity": self.business_activity,
 								},
 								item=item,
 							)
@@ -1204,6 +1223,7 @@ class PurchaseInvoice(BuyingController):
 										"remarks": self.get("remarks") or _("Accounting Entry for Stock"),
 										"credit": flt(item.landed_cost_voucher_amount),
 										"project": item.project or self.project,
+										"business_activity": self.business_activity,
 									},
 									item=item,
 								)
@@ -1218,6 +1238,7 @@ class PurchaseInvoice(BuyingController):
 										"remarks": self.get("remarks") or _("Accounting Entry for Stock"),
 										"debit": flt(item.landed_cost_voucher_amount),
 										"project": item.project or self.project,
+										"business_activity": self.business_activity,
 									},
 									item=item,
 								)
@@ -1301,6 +1322,7 @@ class PurchaseInvoice(BuyingController):
 							if account_currency == self.company_currency
 							else amount,
 							"cost_center": tax.cost_center,
+							"business_activity": self.business_activity,
 						},
 						account_currency,
 						item=tax,
@@ -1347,6 +1369,7 @@ class PurchaseInvoice(BuyingController):
 								"against": self.supplier,
 								"credit": applicable_amount,
 								"remarks": self.remarks or _("Accounting Entry for Stock"),
+								"business_activity": self.business_activity,
 							},
 							item=tax,
 						)
@@ -1365,6 +1388,7 @@ class PurchaseInvoice(BuyingController):
 								"against": self.supplier,
 								"credit": valuation_tax[tax.name],
 								"remarks": self.remarks or _("Accounting Entry for Stock"),
+								"business_activity": self.business_activity,
 							},
 							item=tax,
 						)
@@ -1390,6 +1414,7 @@ class PurchaseInvoice(BuyingController):
 						"credit": flt(self.total_taxes_and_charges),
 						"credit_in_account_currency": flt(self.base_total_taxes_and_charges),
 						"cost_center": self.cost_center,
+						"business_activity": self.business_activity,
 					},
 					account_currency,
 					item=self,

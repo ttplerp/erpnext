@@ -8,7 +8,6 @@
  "engine": "InnoDB",
  "field_order": [
   "title",
-  "business_activity",
   "branch",
   "naming_series",
   "supplier",
@@ -16,6 +15,7 @@
   "tax_id",
   "due_date",
   "tax_withholding_category",
+  "business_activity",
   "column_break1",
   "company",
   "posting_date",
@@ -1442,9 +1442,9 @@
    "reqd": 1
   },
   {
+   "default": "Common",
    "fieldname": "business_activity",
    "fieldtype": "Link",
-   "hidden": 1,
    "label": "Business Activity",
    "options": "Business Activity"
   }
@@ -1453,7 +1453,7 @@
  "idx": 204,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-31 10:03:21.313861",
+ "modified": "2023-04-23 12:34:00.231034",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Purchase Invoice",

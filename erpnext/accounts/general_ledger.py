@@ -305,14 +305,19 @@ def make_entry(args, adv_adj, update_outstanding, from_repost=False):
 
 	if not from_repost and gle.voucher_type != "Period Closing Voucher":
 		#Commit and Consume budget
-		if args.voucher_type in ['Journal Entry'] and args.against_voucher_type != 'Asset':
+		transactions = [d.transaction for d in frappe.get_all("Budget Transaction", fields='transaction')]
+		if args.voucher_type in transactions and args.against_voucher_type != 'Asset':
 			validate_expense_against_budget(args)
-			if frappe.db.get_value("Account", args.account, "account_type") in ["Expense Account","Fixed Asset","Temporary"]:
+			account_types = [d.account_type for d in frappe.get_all("Budget Settings Account Types", fields='account_type')]
+			if frappe.db.get_value("Account", args.account, "account_type") in account_types:
 				#Commit Budget
+				cc_doc = frappe.get_doc("Cost Center", args.cost_center)
+				budget_cost_center = cc_doc.budget_cost_center if cc_doc.use_budget_from_parent else args.cost_center
+				
 				bud_obj = frappe.get_doc({
 					"doctype": "Committed Budget",
 					"account": args.account,
-					"cost_center": args.cost_center,
+					"cost_center": budget_cost_center,
 					"project": args.project,
 					"reference_type": args.voucher_type,
 					"reference_no": args.voucher_no,
@@ -329,7 +334,7 @@ def make_entry(args, adv_adj, update_outstanding, from_repost=False):
 				con_obj = frappe.get_doc({
 					"doctype": "Consumed Budget",
 					"account": args.account,
-					"cost_center": args.cost_center,
+					"cost_center": budget_cost_center,
 					"project": args.project,
 					"reference_type": args.voucher_type,
 					"reference_no": args.voucher_no,

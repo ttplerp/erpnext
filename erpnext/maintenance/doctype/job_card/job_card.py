@@ -50,10 +50,10 @@ class JobCard(AccountsController):
 			self.db_set("outstanding_amount", 0)
 
 		if self.supplier and self.out_source and not self.settled_using_imprest:
-			maintenance_account = frappe.db.get_single_value("Maintenance Accounts Settings", "maintenance_expense_account")
-			check_budget_available(self.cost_center,maintenance_account,self.finish_date,self.total_amount,self.business_activity)
-			self.commit_budget(maintenance_account)
-			self.consume_budget(maintenance_account)
+			# maintenance_account = frappe.db.get_single_value("Maintenance Accounts Settings", "maintenance_expense_account")
+			# check_budget_available(self.cost_center,maintenance_account,self.finish_date,self.total_amount,self.business_activity)
+			# self.commit_budget(maintenance_account)
+			# self.consume_budget(maintenance_account)
 			self.make_gl_entry()
 		else:
 			self.post_journal_entry()
@@ -78,7 +78,7 @@ class JobCard(AccountsController):
 
 		if self.supplier and self.out_source:
 			self.make_gl_entry()	
-			self.cancel_budget_entry()
+			# self.cancel_budget_entry()
 	
 	def get_default_settings(self):
 		goods_account = frappe.db.get_single_value("Maintenance Accounts Settings", "default_goods_account")
@@ -192,37 +192,53 @@ class JobCard(AccountsController):
 				)
 			make_gl_entries(gl_entries, cancel=(self.docstatus == 2),update_outstanding="Yes", merge_entries=False)
 
-	def commit_budget(self, maintenance_account):
-		commit_bud = frappe.get_doc({
-			"doctype": "Committed Budget",
-			"account": maintenance_account,
-			"cost_center": self.cost_center,
-			"reference_type": "Job Card",
-			"reference_no": self.name,
-			"reference_date": self.finish_date,
-			"amount": self.total_amount,
-			"business_activity": self.business_activity,
-		})
-		commit_bud.flags.ignore_permissions=1
-		commit_bud.submit()
+	# def commit_budget(self, maintenance_account):
+	# 	commit_bud = frappe.get_doc({
+	# 		"doctype": "Committed Budget",
+	# 		"account": maintenance_account,
+	# 		"cost_center": self.cost_center,
+	# 		"reference_type": "Job Card",
+	# 		"reference_no": self.name,
+	# 		"reference_date": self.finish_date,
+	# 		"amount": self.total_amount,
+	# 		"business_activity": self.business_activity,
+	# 		"closed":1,
+	# 	})
+	# 	commit_bud.flags.ignore_permissions=1
+	# 	commit_bud.submit()
 
-	def consume_budget(self,maintenance_account):
-		consume = frappe.get_doc({
-			"doctype": "Consumed Budget",
-			"account": maintenance_account,
-			"cost_center": self.cost_center,
-			"reference_type": "Job Card",
-			"reference_no": self.name,
-			"reference_date": self.finish_date,
-			"amount": self.total_amount,
-			"business_activity": self.business_activity,
-		})
-		consume.flags.ignore_permissions = 1
-		consume.submit()
+	# def consume_budget(self,maintenance_account):
+	# 	commit_bud = frappe.get_doc({
+	# 		"doctype": "Committed Budget",
+	# 		"account": maintenance_account,
+	# 		"cost_center": self.cost_center,
+	# 		"reference_type": "Job Card",
+	# 		"reference_no": self.name,
+	# 		"reference_date": self.finish_date,
+	# 		"amount": self.total_amount,
+	# 		"business_activity": self.business_activity,
+	# 		"closed":1,
+	# 	})
+	# 	commit_bud.flags.ignore_permissions=1
+	# 	commit_bud.submit()
 
-	def cancel_budget_entry(self):
-		frappe.db.sql("delete from `tabCommitted Budget` where reference_no = %s", self.name)
-		frappe.db.sql("delete from `tabConsumed Budget` where reference_no = %s", self.name)
+	# 	consume = frappe.get_doc({
+	# 		"doctype": "Consumed Budget",
+	# 		"account": maintenance_account,
+	# 		"cost_center": self.cost_center,
+	# 		"reference_type": "Job Card",
+	# 		"reference_no": self.name,
+	# 		"reference_date": self.finish_date,
+	# 		"amount": self.total_amount,
+	# 		"business_activity": self.business_activity,
+	# 		"com_ref": commit_bud.name,
+	# 	})
+	# 	consume.flags.ignore_permissions = 1
+	# 	consume.submit()
+
+	# def cancel_budget_entry(self):
+	# 	frappe.db.sql("delete from `tabCommitted Budget` where reference_no = %s", self.name)
+	# 	frappe.db.sql("delete from `tabConsumed Budget` where reference_no = %s", self.name)
 			
 	def update_reservation(self):
 		frappe.db.sql("update `tabEquipment Reservation Entry` set to_date = %s, to_time = %s where docstatus = 1 and ehf_name = %s", (self.finish_date, self.job_out_time, self.break_down_report))

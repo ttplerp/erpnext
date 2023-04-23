@@ -1158,6 +1158,7 @@
    "width": "50%"
   },
   {
+   "default": "Common",
    "fieldname": "business_activity",
    "fieldtype": "Link",
    "label": "Business Activity",
@@ -1185,7 +1186,7 @@
  "idx": 261,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-31 10:01:50.973856",
+ "modified": "2023-04-23 12:31:44.067680",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Purchase Receipt",

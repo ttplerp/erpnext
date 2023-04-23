@@ -16,6 +16,7 @@
   "transfer_status",
   "customer",
   "status",
+  "business_activity",
   "column_break_2",
   "cost_center",
   "transaction_date",
@@ -419,13 +420,20 @@
    "in_list_view": 1,
    "label": "Workflow State",
    "options": "Workflow State"
+  },
+  {
+   "default": "Common",
+   "fieldname": "business_activity",
+   "fieldtype": "Link",
+   "label": "Business Activity",
+   "options": "Business Activity"
   }
  ],
  "icon": "fa fa-ticket",
  "idx": 70,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-12 22:04:34.943597",
+ "modified": "2023-04-23 12:29:01.181281",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Material Request",

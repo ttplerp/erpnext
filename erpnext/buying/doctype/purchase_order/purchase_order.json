@@ -9,13 +9,13 @@
  "engine": "InnoDB",
  "field_order": [
   "supplier_section",
-  "business_activity",
   "title",
   "branch",
   "item_group",
   "supplier",
   "get_items_from_open_material_requests",
   "supplier_name",
+  "business_activity",
   "apply_tds",
   "tax_withholding_category",
   "is_subcontracted",
@@ -1177,9 +1177,9 @@
    "reqd": 1
   },
   {
+   "default": "Common",
    "fieldname": "business_activity",
    "fieldtype": "Link",
-   "hidden": 1,
    "label": "Business Activity",
    "options": "Business Activity"
   },
@@ -1243,7 +1243,7 @@
  "idx": 105,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-15 11:26:55.268444",
+ "modified": "2023-04-23 12:32:51.053076",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Purchase Order",

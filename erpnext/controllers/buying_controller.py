@@ -565,6 +565,7 @@ class BuyingController(SubcontractingController):
 						"posting_date": (
 							self.schedule_date if self.doctype == "Material Request" else self.transaction_date
 						),
+						"business_activity": self.business_activity
 					}
 				)
 
