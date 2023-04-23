@@ -17,6 +17,7 @@
   "to_cost_center",
   "to_project",
   "remark",
+  "business_activity",
   "section_break_10",
   "items",
   "amended_from"
@@ -115,12 +116,19 @@
    "fieldtype": "Date",
    "label": "Appropriation Date",
    "reqd": 1
+  },
+  {
+   "default": "Common",
+   "fieldname": "business_activity",
+   "fieldtype": "Link",
+   "label": "Business Activity",
+   "options": "Business Activity"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-10-13 17:54:13.719231",
+ "modified": "2023-04-23 15:42:18.832447",
  "modified_by": "Administrator",
  "module": "Budget",
  "name": "Budget Reappropiation",

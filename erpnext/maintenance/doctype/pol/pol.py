@@ -65,23 +65,23 @@ class POL(StockController):
 			self.update_stock_ledger()
 		self.update_advance()
 		self.make_pol_entry()
-		if self.settled_using_imprest:
-			self.make_gl_entry()
+		# if self.settled_using_imprest:
+		# 	self.make_gl_entry()
 
 	def on_cancel(self):
 		if not self.direct_consumption:
 			self.update_stock_ledger()
-		docstatus = frappe.db.get_value("Journal Entry", self.jv, "docstatus")
-		if docstatus and docstatus != 2:
-			frappe.throw("Cancel the Journal Entry " + str(self.jv) + " and proceed.")
+		# docstatus = frappe.db.get_value("Journal Entry", self.jv, "docstatus")
+		# if docstatus and docstatus != 2:
+		# 	frappe.throw("Cancel the Journal Entry " + str(self.jv) + " and proceed.")
 
-		self.db_set("jv", "")
+		# self.db_set("jv", "")
 		# self.cancel_budget_entry()
 		self.delete_pol_entry()
 		self.update_advance()
-		if self.settled_using_imprest:
-			self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
-			self.make_gl_entry()
+		# if self.settled_using_imprest:
+		# 	self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
+		# 	self.make_gl_entry()
 
 	def validate_warehouse(self):
 		self.validate_warehouse_branch(self.warehouse, self.branch)
@@ -125,48 +125,48 @@ class POL(StockController):
 		if not is_pol:
 			frappe.throw(str(self.item_name) + " is not a POL item")
 	
-	def check_budget(self):
-		if self.hiring_cost_center:
-			cc = self.hiring_cost_center
-		else:
-			cc = get_branch_cc(self.equipment_branch)
-		account = frappe.db.get_value("Equipment Category", self.equipment_category, "budget_account")
-		if not self.is_hsd_item:
-			account = frappe.db.get_value("Item", self.pol_type, "expense_account")
+	# def check_budget(self):
+	# 	if self.hiring_cost_center:
+	# 		cc = self.hiring_cost_center
+	# 	else:
+	# 		cc = get_branch_cc(self.equipment_branch)
+	# 	account = frappe.db.get_value("Equipment Category", self.equipment_category, "budget_account")
+	# 	if not self.is_hsd_item:
+	# 		account = frappe.db.get_value("Item", self.pol_type, "expense_account")
 		
-		check_budget_available(cc, account, self.posting_date, self.total_amount, self.business_activity)
-		self.consume_budget(cc, account)
+	# 	check_budget_available(cc, account, self.posting_date, self.total_amount, self.business_activity)
+	# 	self.consume_budget(cc, account)
 
-	def consume_budget(self, cc, account):
-		bud_obj = frappe.get_doc({
-			"doctype": "Committed Budget",
-			"account": account,
-			"cost_center": cc,
-			"po_no": self.name,
-			"po_date": self.posting_date,
-			"amount": self.total_amount,
-			"item_code": self.pol_type,
-			"poi_name": self.name,
-			"business_activity": self.business_activity,
-			"date": frappe.utils.nowdate()
-			})
-		bud_obj.flags.ignore_permissions = 1
-		bud_obj.submit()
+	# def consume_budget(self, cc, account):
+	# 	bud_obj = frappe.get_doc({
+	# 		"doctype": "Committed Budget",
+	# 		"account": account,
+	# 		"cost_center": cc,
+	# 		"po_no": self.name,
+	# 		"po_date": self.posting_date,
+	# 		"amount": self.total_amount,
+	# 		"item_code": self.pol_type,
+	# 		"poi_name": self.name,
+	# 		"business_activity": self.business_activity,
+	# 		"date": frappe.utils.nowdate()
+	# 		})
+	# 	bud_obj.flags.ignore_permissions = 1
+	# 	bud_obj.submit()
 
-		consume = frappe.get_doc({
-			"doctype": "Consumed Budget",
-			"account": account,
-			"cost_center": cc,
-			"po_no": self.name,
-			"po_date": self.posting_date,
-			"amount": self.total_amount,
-			"pii_name": self.name,
-			"item_code": self.pol_type,
-			"com_ref": bud_obj.name,
-			"business_activity": self.business_activity,
-			"date": frappe.utils.nowdate()})
-		consume.flags.ignore_permissions=1
-		consume.submit()
+	# 	consume = frappe.get_doc({
+	# 		"doctype": "Consumed Budget",
+	# 		"account": account,
+	# 		"cost_center": cc,
+	# 		"po_no": self.name,
+	# 		"po_date": self.posting_date,
+	# 		"amount": self.total_amount,
+	# 		"pii_name": self.name,
+	# 		"item_code": self.pol_type,
+	# 		"com_ref": bud_obj.name,
+	# 		"business_activity": self.business_activity,
+	# 		"date": frappe.utils.nowdate()})
+	# 	consume.flags.ignore_permissions=1
+	# 	consume.submit()
 
 	def update_stock_ledger(self):
 		if self.hiring_warehouse:
@@ -187,154 +187,154 @@ class POL(StockController):
 
 		self.make_sl_entries(sl_entries, self.amended_from and 'Yes' or 'No')
 
-	def get_gl_entries(self, warehouse_account):
-		gl_entries = []
+	# def get_gl_entries(self, warehouse_account):
+	# 	gl_entries = []
 		
-		creditor_account = frappe.db.get_value("Company", self.company, "default_payable_account")
-		if not creditor_account:
-			frappe.throw("Set Default Payable Account in Company")
+	# 	creditor_account = frappe.db.get_value("Company", self.company, "default_payable_account")
+	# 	if not creditor_account:
+	# 		frappe.throw("Set Default Payable Account in Company")
 
-		expense_account = self.get_expense_account()
+	# 	expense_account = self.get_expense_account()
 
-		if self.hiring_cost_center:
-			cost_center = self.hiring_cost_center
-		else:
-			cost_center = get_branch_cc(self.equipment_branch)
+	# 	if self.hiring_cost_center:
+	# 		cost_center = self.hiring_cost_center
+	# 	else:
+	# 		cost_center = get_branch_cc(self.equipment_branch)
 
-		ba = get_equipment_ba(self.equipment)
-		default_ba = get_default_ba()
+	# 	ba = get_equipment_ba(self.equipment)
+	# 	default_ba = get_default_ba()
 
-		gl_entries.append(
-			prepare_gl(self, {"account": expense_account,
-					 "debit": flt(self.total_amount),
-					 "debit_in_account_currency": flt(self.total_amount),
-					 "cost_center": cost_center,
-					 "business_activity": ba
-					})
-			)
+	# 	gl_entries.append(
+	# 		prepare_gl(self, {"account": expense_account,
+	# 				 "debit": flt(self.total_amount),
+	# 				 "debit_in_account_currency": flt(self.total_amount),
+	# 				 "cost_center": cost_center,
+	# 				 "business_activity": ba
+	# 				})
+	# 		)
 
-		gl_entries.append(
-			prepare_gl(self, {"account": creditor_account,
-					 "credit": flt(self.total_amount),
-					 "credit_in_account_currency": flt(self.total_amount),
-					 "cost_center": self.cost_center,
-					 "party_type": "Supplier",
-					 "party": self.supplier,
-					 "against_voucher": self.name,
-										 "against_voucher_type": self.doctype,
-					 "business_activity": default_ba
-					})
-			)
+	# 	gl_entries.append(
+	# 		prepare_gl(self, {"account": creditor_account,
+	# 				 "credit": flt(self.total_amount),
+	# 				 "credit_in_account_currency": flt(self.total_amount),
+	# 				 "cost_center": self.cost_center,
+	# 				 "party_type": "Supplier",
+	# 				 "party": self.supplier,
+	# 				 "against_voucher": self.name,
+	# 									 "against_voucher_type": self.doctype,
+	# 				 "business_activity": default_ba
+	# 				})
+	# 		)
 
-		if self.hiring_branch:
-			comparing_branch = self.hiring_branch
-		else:
-			comparing_branch = self.equipment_branch
+	# 	if self.hiring_branch:
+	# 		comparing_branch = self.hiring_branch
+	# 	else:
+	# 		comparing_branch = self.equipment_branch
 
-		if comparing_branch != self.fuelbook_branch:
-			allow_inter_company_transaction = frappe.db.get_single_value("Accounts Settings", "auto_accounting_for_inter_company")
-			if allow_inter_company_transaction:
-				ic_account = frappe.db.get_single_value("Accounts Settings", "intra_company_account")
-				if not ic_account:
-					frappe.throw("Setup Intra-Company Account in Accounts Settings")
+	# 	if comparing_branch != self.fuelbook_branch:
+	# 		allow_inter_company_transaction = frappe.db.get_single_value("Accounts Settings", "auto_accounting_for_inter_company")
+	# 		if allow_inter_company_transaction:
+	# 			ic_account = frappe.db.get_single_value("Accounts Settings", "intra_company_account")
+	# 			if not ic_account:
+	# 				frappe.throw("Setup Intra-Company Account in Accounts Settings")
 
-				customer_cc = get_branch_cc(comparing_branch)
+	# 			customer_cc = get_branch_cc(comparing_branch)
 
-				gl_entries.append(
-					prepare_gl(self, {"account": ic_account,
-							 "credit": flt(self.total_amount),
-							 "credit_in_account_currency": flt(self.total_amount),
-							 "cost_center": customer_cc,
-							 "business_activity": default_ba
-							})
-					)
+	# 			gl_entries.append(
+	# 				prepare_gl(self, {"account": ic_account,
+	# 						 "credit": flt(self.total_amount),
+	# 						 "credit_in_account_currency": flt(self.total_amount),
+	# 						 "cost_center": customer_cc,
+	# 						 "business_activity": default_ba
+	# 						})
+	# 				)
 
-				gl_entries.append(
-					prepare_gl(self, {"account": ic_account,
-							 "debit": flt(self.total_amount),
-							 "debit_in_account_currency": flt(self.total_amount),
-							 "cost_center": self.cost_center,
-							 "business_activity": default_ba
-							})
-					)
+	# 			gl_entries.append(
+	# 				prepare_gl(self, {"account": ic_account,
+	# 						 "debit": flt(self.total_amount),
+	# 						 "debit_in_account_currency": flt(self.total_amount),
+	# 						 "cost_center": self.cost_center,
+	# 						 "business_activity": default_ba
+	# 						})
+	# 				)
 
-		return gl_entries
+	# 	return gl_entries
 
-	def get_expense_account(self):
-		if self.direct_consumption or getdate(self.posting_date) <= getdate("2018-03-31"):
-			if self.is_hsd_item:
-				expense_account = frappe.db.get_value("Equipment Category", self.equipment_category, "budget_account")
-			else:
-				expense_account = frappe.db.get_value("Item", self.pol_type, "expense_account")
+	# def get_expense_account(self):
+	# 	if self.direct_consumption or getdate(self.posting_date) <= getdate("2018-03-31"):
+	# 		if self.is_hsd_item:
+	# 			expense_account = frappe.db.get_value("Equipment Category", self.equipment_category, "budget_account")
+	# 		else:
+	# 			expense_account = frappe.db.get_value("Item", self.pol_type, "expense_account")
 
-			if not expense_account:
-				frappe.throw("Set Budget Account in Equipment Category or Item Master")		
-		else:
-			if self.hiring_warehouse:
-				wh = self.hiring_warehouse
-			else:
-				wh = self.equipment_warehouse
-			expense_account = frappe.db.get_value("Account", {"account_type": "Stock", "warehouse": wh}, "name")
-			if not expense_account:
-					frappe.throw(str(wh) + " is not linked to any account.")
-		return expense_account
+	# 		if not expense_account:
+	# 			frappe.throw("Set Budget Account in Equipment Category or Item Master")		
+	# 	else:
+	# 		if self.hiring_warehouse:
+	# 			wh = self.hiring_warehouse
+	# 		else:
+	# 			wh = self.equipment_warehouse
+	# 		expense_account = frappe.db.get_value("Account", {"account_type": "Stock", "warehouse": wh}, "name")
+	# 		if not expense_account:
+	# 				frappe.throw(str(wh) + " is not linked to any account.")
+	# 	return expense_account
 
-	def cancel_budget_entry(self):
-		frappe.db.sql("delete from `tabCommitted Budget` where reference_no = %s", self.name)
-		frappe.db.sql("delete from `tabConsumed Budget` where reference_no = %s", self.name)
+	# def cancel_budget_entry(self):
+	# 	frappe.db.sql("delete from `tabCommitted Budget` where reference_no = %s", self.name)
+	# 	frappe.db.sql("delete from `tabConsumed Budget` where reference_no = %s", self.name)
 
-	def post_journal_entry(self):
-		veh_cat = frappe.db.get_value("Equipment", self.equipment, "equipment_category")
-		if veh_cat:
-			if veh_cat == "Pool Vehicle":
-				pol_account = frappe.db.get_single_value("Maintenance Accounts Settings", "pool_vehicle_pol_expenses")
-			else:
-				pol_account = frappe.db.get_single_value("Maintenance Accounts Settings", "default_pol_expense_account")
-		else:
-			frappe.throw("Can not determine machine category")
+	# def post_journal_entry(self):
+	# 	veh_cat = frappe.db.get_value("Equipment", self.equipment, "equipment_category")
+	# 	if veh_cat:
+	# 		if veh_cat == "Pool Vehicle":
+	# 			pol_account = frappe.db.get_single_value("Maintenance Accounts Settings", "pool_vehicle_pol_expenses")
+	# 		else:
+	# 			pol_account = frappe.db.get_single_value("Maintenance Accounts Settings", "default_pol_expense_account")
+	# 	else:
+	# 		frappe.throw("Can not determine machine category")
 
-		expense_bank_account = frappe.db.get_value("Company", frappe.defaults.get_user_default("Company"), "default_payable_account")
-		if not expense_bank_account:
- 			frappe.throw("No Default Payable Account set in Company")
+	# 	expense_bank_account = frappe.db.get_value("Company", frappe.defaults.get_user_default("Company"), "default_payable_account")
+	# 	if not expense_bank_account:
+ 	# 		frappe.throw("No Default Payable Account set in Company")
 
-		ba = get_equipment_ba(a.equipment) 
+	# 	ba = get_equipment_ba(a.equipment) 
 
-		if expense_bank_account and pol_account:
-			je = frappe.new_doc("Journal Entry")
-			je.flags.ignore_permissions = 1 
-			je.title = "POL (" + self.pol_type + " for " + self.equipment_number + ")"
-			je.voucher_type = 'Bank Entry'
-			je.naming_series = 'Bank Payment Voucher'
-			je.remark = 'Payment against : ' + self.name;
-			je.posting_date = self.posting_date
-			je.branch = self.branch
+	# 	if expense_bank_account and pol_account:
+	# 		je = frappe.new_doc("Journal Entry")
+	# 		je.flags.ignore_permissions = 1 
+	# 		je.title = "POL (" + self.pol_type + " for " + self.equipment_number + ")"
+	# 		je.voucher_type = 'Bank Entry'
+	# 		je.naming_series = 'Bank Payment Voucher'
+	# 		je.remark = 'Payment against : ' + self.name;
+	# 		je.posting_date = self.posting_date
+	# 		je.branch = self.branch
 
-			je.append("accounts", {
-					"account": pol_account,
-					"cost_center": self.cost_center,
-					"reference_type": "POL",
-					"reference_name": self.name,
-					"debit_in_account_currency": flt(self.total_amount),
-					"debit": flt(self.total_amount),
-					"business_activity": ba
-				})
+	# 		je.append("accounts", {
+	# 				"account": pol_account,
+	# 				"cost_center": self.cost_center,
+	# 				"reference_type": "POL",
+	# 				"reference_name": self.name,
+	# 				"debit_in_account_currency": flt(self.total_amount),
+	# 				"debit": flt(self.total_amount),
+	# 				"business_activity": ba
+	# 			})
 
-			je.append("accounts", {
-					"account": expense_bank_account,
-					"cost_center": self.cost_center,
-					"party_type": "Supplier",
-					"party": self.supplier,
-					"credit_in_account_currency": flt(self.total_amount),
-					"credit": flt(self.total_amount),
-					"business_activity": ba
-				})
+	# 		je.append("accounts", {
+	# 				"account": expense_bank_account,
+	# 				"cost_center": self.cost_center,
+	# 				"party_type": "Supplier",
+	# 				"party": self.supplier,
+	# 				"credit_in_account_currency": flt(self.total_amount),
+	# 				"credit": flt(self.total_amount),
+	# 				"business_activity": ba
+	# 			})
 
-			je.insert()
-			self.db_set("jv", je.name)
-			frappe.msgprint(_('Journal Entry {} posted to accounts').format(frappe.get_desk_link(je.doctype,je.name)))
+	# 		je.insert()
+	# 		self.db_set("jv", je.name)
+	# 		frappe.msgprint(_('Journal Entry {} posted to accounts').format(frappe.get_desk_link(je.doctype,je.name)))
 
-		else:
-			frappe.throw("Define POL expense account in Maintenance Setting or Expense Bank in Branch")
+	# 	else:
+	# 		frappe.throw("Define POL expense account in Maintenance Setting or Expense Bank in Branch")
 		
 	def make_pol_entry(self):
 		if getdate(self.posting_date) <= getdate("2018-03-31"):
@@ -491,63 +491,63 @@ class POL(StockController):
 			self.od_amount = flt(self.total_amount) - total_amount_adjusted 
 			self.items[len(self.items)-1].has_od = 1
 			
-	def make_gl_entry(self):
-		from erpnext.accounts.general_ledger import make_gl_entries
-		debit_account= frappe.db.get_value("Item", self.pol_type, "expense_account")
-		creditor_account= frappe.get_doc("Company", self.company).default_payable_account
-		if not creditor_account:
-			frappe.throw("Setup Default Payable Account in Company")
+	# def make_gl_entry(self):
+	# 	from erpnext.accounts.general_ledger import make_gl_entries
+	# 	debit_account= frappe.db.get_value("Item", self.pol_type, "expense_account")
+	# 	creditor_account= frappe.get_doc("Company", self.company).default_payable_account
+	# 	if not creditor_account:
+	# 		frappe.throw("Setup Default Payable Account in Company")
 		
-		gl_entries = []
-		gl_entries.append(
-			self.get_gl_dict({"account": debit_account,
-						"debit": flt(self.total_amount),
-						"debit_in_account_currency": flt(self.total_amount),
-						"cost_center": self.cost_center,
-						"reference_type": self.doctype,
-						"reference_name": self.name,
-						"business_activity": self.business_activity,
-						"remarks": self.remarks
-					})
-			)
-		gl_entries.append(
-			self.get_gl_dict({"account": creditor_account,
-						"debit": flt(self.total_amount),
-						"debit_in_account_currency": flt(self.total_amount),
-						"cost_center": self.cost_center,
-						"reference_type": self.doctype,
-						"party_type": "Supplier",
-						"party": self.supplier,
-						"reference_name": self.name,
-						"business_activity": self.business_activity,
-						"remarks": self.remarks
-					})
-			)
-		gl_entries.append(
-			self.get_gl_dict({"account": creditor_account,
-						"credit": flt(self.total_amount),
-						"credit_in_account_currency": flt(self.total_amount),
-						"cost_center": self.cost_center,
-						"reference_type": self.doctype,
-						"party_type": "Supplier",
-						"party": self.supplier,
-						"reference_name": self.name,
-						"business_activity": self.business_activity,
-						"remarks": self.remarks
-					})
-			)
-		gl_entries.append(
-			self.get_gl_dict({"account": self.credit_account,
-						"credit": flt(self.total_amount),
-						"credit_in_account_currency": flt(self.total_amount),
-						"cost_center": self.cost_center,
-						"party_type": self.party_type,
-						"party": self.party,
-						"reference_type": self.doctype,
-						"reference_name": self.name,
-						"business_activity": self.business_activity,
-						"remarks": self.remarks
-					})
-			)
+	# 	gl_entries = []
+	# 	gl_entries.append(
+	# 		self.get_gl_dict({"account": debit_account,
+	# 					"debit": flt(self.total_amount),
+	# 					"debit_in_account_currency": flt(self.total_amount),
+	# 					"cost_center": self.cost_center,
+	# 					"reference_type": self.doctype,
+	# 					"reference_name": self.name,
+	# 					"business_activity": self.business_activity,
+	# 					"remarks": self.remarks
+	# 				})
+	# 		)
+	# 	gl_entries.append(
+	# 		self.get_gl_dict({"account": creditor_account,
+	# 					"debit": flt(self.total_amount),
+	# 					"debit_in_account_currency": flt(self.total_amount),
+	# 					"cost_center": self.cost_center,
+	# 					"reference_type": self.doctype,
+	# 					"party_type": "Supplier",
+	# 					"party": self.supplier,
+	# 					"reference_name": self.name,
+	# 					"business_activity": self.business_activity,
+	# 					"remarks": self.remarks
+	# 				})
+	# 		)
+	# 	gl_entries.append(
+	# 		self.get_gl_dict({"account": creditor_account,
+	# 					"credit": flt(self.total_amount),
+	# 					"credit_in_account_currency": flt(self.total_amount),
+	# 					"cost_center": self.cost_center,
+	# 					"reference_type": self.doctype,
+	# 					"party_type": "Supplier",
+	# 					"party": self.supplier,
+	# 					"reference_name": self.name,
+	# 					"business_activity": self.business_activity,
+	# 					"remarks": self.remarks
+	# 				})
+	# 		)
+	# 	gl_entries.append(
+	# 		self.get_gl_dict({"account": self.credit_account,
+	# 					"credit": flt(self.total_amount),
+	# 					"credit_in_account_currency": flt(self.total_amount),
+	# 					"cost_center": self.cost_center,
+	# 					"party_type": self.party_type,
+	# 					"party": self.party,
+	# 					"reference_type": self.doctype,
+	# 					"reference_name": self.name,
+	# 					"business_activity": self.business_activity,
+	# 					"remarks": self.remarks
+	# 				})
+	# 		)
 		
-		make_gl_entries(gl_entries, cancel=(self.docstatus == 2), update_outstanding="No", merge_entries=False)
+	# 	make_gl_entries(gl_entries, cancel=(self.docstatus == 2), update_outstanding="No", merge_entries=False)

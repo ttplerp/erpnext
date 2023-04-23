@@ -76,7 +76,7 @@ class BudgetReappropiation(Document):
 			cost_center = from_budget_against
 			project = from_budget_against
 			from_account = a.from_account
-			check_budget_available(cost_center, a.from_account, str(self.fiscal_year) + "-01-01", a.amount, project)
+			check_budget_available(cost_center, a.from_account, str(self.fiscal_year) + "-01-01", a.amount, self.business_activity, project)
 
 	# Added by Thukten on 13th September, 2022
 	def budget_appropriate(self, cancel=False):

@@ -32,13 +32,13 @@ class PolAdvance(AccountsController):
 	def on_submit(self):
 		advance_account = frappe.db.get_single_value("Maintenance Accounts Settings", "default_pol_advance_account")
 		if not self.is_opening:
-			check_budget_available(self.cost_center,advance_account,self.entry_date,self.amount,self.business_activity)
+			# check_budget_available(self.cost_center,advance_account,self.entry_date,self.amount,self.business_activity)
 			self.update_od_balance()
 			self.post_journal_entry()
 
 	def on_cancel(self):
 		if not self.is_opening:
-			self.cancel_budget_entry()
+			# self.cancel_budget_entry()
 			self.update_od_balance()
 
 	def update_od_balance(self):
@@ -98,8 +98,8 @@ class PolAdvance(AccountsController):
 		if self.cheque_date and not self.cheque_no:
 			frappe.msgprint(_("Cheque No is mandatory if you entered Cheque Date"), raise_exception=1)
   
-	def cancel_budget_entry(self):
-		frappe.db.sql("delete from `tabConsumed Budget` where reference_no = %s", self.name) 
+	# def cancel_budget_entry(self):
+	# 	frappe.db.sql("delete from `tabConsumed Budget` where reference_no = %s", self.name) 
    
 	def post_journal_entry(self):
 		if not self.amount:
@@ -152,7 +152,8 @@ class PolAdvance(AccountsController):
 			"posting_date": self.posting_date,
 			"company": self.company,
 			"total_amount_in_words": money_in_words(self.amount),
-			"branch": self.fuelbook_branch
+			"branch": self.fuelbook_branch,
+			"business_activity": ba
 		})
 
 		je.append("accounts",{
@@ -163,7 +164,6 @@ class PolAdvance(AccountsController):
 			"reference_name": self.name,
 			"party_type": party_type,
 			"party": party,
-			"business_activity": ba
 		})
 
 
@@ -172,7 +172,6 @@ class PolAdvance(AccountsController):
 			"debit_in_account_currency": self.amount,
 			"cost_center": self.cost_center,
 			"party_check": 0,
-			"business_activity": ba
 		})
 
 		je.insert()
