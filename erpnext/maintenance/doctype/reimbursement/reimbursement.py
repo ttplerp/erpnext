@@ -73,7 +73,6 @@ class Reimbursement(Document):
 			"company": self.company,
 			"total_amount_in_words": money_in_words(self.amount),
 			"branch": self.branch,
-			"business_activity": self.business_activity,
 		})
 
 		je.append("accounts",{
@@ -83,14 +82,16 @@ class Reimbursement(Document):
 			"reference_type": "Reimbursement",
 			"reference_name": self.name,
 			"party_type": party_type,
-			"party": party
+			"party": party,
+			"business_activity": self.business_activity,
 		})
 
 
 		je.append("accounts",{
 			"account": debit_account,
 			"debit_in_account_currency": self.amount,
-			"cost_center": self.cost_center
+			"cost_center": self.cost_center,
+			"business_activity": self.business_activity,
 		})
 
 		je.insert()

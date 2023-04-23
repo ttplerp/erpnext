@@ -128,7 +128,6 @@ class JobCard(AccountsController):
 			"company": self.company,
 			"total_amount_in_words": money_in_words(self.total_amount),
 			"branch": self.branch,
-			"business_activity": ba,
 		})
 
 		je.append("accounts",{
@@ -136,7 +135,8 @@ class JobCard(AccountsController):
 			"debit_in_account_currency": self.total_amount,
 			"cost_center": self.cost_center,
 			"reference_type": "Job Card",
-			"reference_name": self.name
+			"reference_name": self.name,
+			"business_activity": ba,
 		})
 
 		je.append("accounts",{
@@ -145,7 +145,8 @@ class JobCard(AccountsController):
 			"cost_center": self.cost_center,
 			"party_check": 0,
 			"party_type": "Supplier",
-			"party": self.supplier
+			"party": self.supplier,
+			"business_activity": ba,
 		})
 
 		je.insert()

@@ -911,7 +911,7 @@ class JournalEntry(AccountsController):
 								"cost_center": d.cost_center,
 								"project": d.project,
 								"finance_book": self.finance_book,
-								"business_activity": self.business_activity,
+								"business_activity": d.business_activity,
 							},
 							item=d,
 						)

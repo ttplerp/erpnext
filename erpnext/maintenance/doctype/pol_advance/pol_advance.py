@@ -153,7 +153,6 @@ class PolAdvance(AccountsController):
 			"company": self.company,
 			"total_amount_in_words": money_in_words(self.amount),
 			"branch": self.fuelbook_branch,
-			"business_activity": ba
 		})
 
 		je.append("accounts",{
@@ -164,6 +163,7 @@ class PolAdvance(AccountsController):
 			"reference_name": self.name,
 			"party_type": party_type,
 			"party": party,
+			"business_activity": ba
 		})
 
 
@@ -172,6 +172,7 @@ class PolAdvance(AccountsController):
 			"debit_in_account_currency": self.amount,
 			"cost_center": self.cost_center,
 			"party_check": 0,
+			"business_activity": ba
 		})
 
 		je.insert()

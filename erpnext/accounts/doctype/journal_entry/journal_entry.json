@@ -560,9 +560,9 @@
    "options": "Cheque Lot"
   },
   {
-   "default": "Common",
    "fieldname": "business_activity",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Business Activity",
    "options": "Business Activity"
   },
@@ -577,7 +577,7 @@
  "idx": 176,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-22 22:56:41.001803",
+ "modified": "2023-04-23 18:23:34.379648",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",
