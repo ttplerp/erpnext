@@ -78,6 +78,7 @@ def make_depreciation_entry(asset_name, date=None):
 				"reference_type": "Asset",
 				"reference_name": asset.name,
 				"cost_center": depreciation_cost_center,
+				"business_activity": asset.business_activity,
 			}
 
 			debit_entry = {
@@ -86,6 +87,7 @@ def make_depreciation_entry(asset_name, date=None):
 				"reference_type": "Asset",
 				"reference_name": asset.name,
 				"cost_center": depreciation_cost_center,
+				"business_activity": asset.business_activity,
 			}
 
 			for dimension in accounting_dimensions:
@@ -231,7 +233,7 @@ def reset_asset_value_for_scrap_sales(asset_name, posting_date):
 				"account" : accounts[0].depreciation_expense_account,
 				"credit_in_account_currency" : i.depreciation_amount,
 				"credit": i.depreciation_amount,
-				# "business_activity" : asset.business_activity,
+				"business_activity" : asset.business_activity,
 				"cost_center" : asset.cost_center
 			}
 			je.append("accounts", entry_cred)
@@ -241,7 +243,7 @@ def reset_asset_value_for_scrap_sales(asset_name, posting_date):
 				"account" : accounts[0].accumulated_depreciation_account,
 				"debit_in_account_currency" : i.depreciation_amount,
 				"debit": i.depreciation_amount,
-				# "business_activity" : asset.business_activity,
+				"business_activity" : asset.business_activity,
 				"cost_center" : asset.cost_center
 			}
 			je.append("accounts", entry_deb)
@@ -300,7 +302,7 @@ def reset_asset_value_for_scrap_sales(asset_name, posting_date):
 				"debit_in_account_currency": flt(pro_rate_depreciation_amount),
 				"reference_type": "Asset",
 				"reference_name": asset_name,
-				# "business_activity": asset.business_activity, 
+				"business_activity": asset.business_activity, 
 				"cost_center": asset.cost_center
 			})
 
