@@ -363,7 +363,7 @@ def commit_budget(args):
 				"amount": flt(args.amount,2),
 				"item_code": args.item_code,
 				"company": args.company,
-				"business_activity": self.business_activity,
+				"business_activity": args.business_activity,
 			}
 		)
 		doc.submit()
