@@ -115,9 +115,7 @@ def construct_query(filters=None):
 											) 
 					 or b.cost_center = '{0}')
 				""".format(filters.cost_center, lft, rgt)
-	if filters.budget_type:
-		condition += " and ba.budget_type = \'" + str(filters.budget_type) + "\' "
-
+	
 	query = """select b.cost_center, ba.account, b.project,
 			(select a.account_number from `tabAccount` a where a.name = ba.account) as account_number, 
 			ba.budget_type,
@@ -175,37 +173,37 @@ def validate_filters(filters):
 			.format(formatdate(filters.year_end_date)))
 		filters.to_date = filters.year_end_date
 
-def construct_query(filters=None):
-	query = """select 
-			b.cost_center, ba.account, b.project, b.project_name,
-			(select a.account_number from `tabAccount` a where a.name = ba.account) as account_number, 
-			ba.budget_type,
-			SUM(ba.budget_amount) as budget_amount, 
-			SUM(ba.initial_budget) as initial_budget, 
-			SUM(ba.budget_received) as added, 
-			SUM(ba.budget_sent) as deducted, 
-			SUM(ba.supplementary_budget) as supplement
-		from `tabBudget` b, `tabBudget Account` ba 
-		where b.docstatus = 1 
-		and b.name = ba.parent 
-		and b.fiscal_year = """ + str(filters.fiscal_year)
-	if filters.budget_against == "Cost Center" and filters.cost_center and not filters.group_by_account:
-		lft, rgt = frappe.db.get_value("Cost Center", filters.cost_center, ["lft", "rgt"])
-		query += " and (b.cost_center in (select a.name from `tabCost Center` a where a.lft >= {1} and a.rgt <= {2}) or b.cost_center = '{0}')".format(filters.cost_center, lft, rgt)
+# def construct_query(filters=None):
+# 	query = """select 
+# 			b.cost_center, ba.account, b.project, b.project_name,
+# 			(select a.account_number from `tabAccount` a where a.name = ba.account) as account_number, 
+# 			ba.budget_type,
+# 			SUM(ba.budget_amount) as budget_amount, 
+# 			SUM(ba.initial_budget) as initial_budget, 
+# 			SUM(ba.budget_received) as added, 
+# 			SUM(ba.budget_sent) as deducted, 
+# 			SUM(ba.supplementary_budget) as supplement
+# 		from `tabBudget` b, `tabBudget Account` ba 
+# 		where b.docstatus = 1 
+# 		and b.name = ba.parent 
+# 		and b.fiscal_year = """ + str(filters.fiscal_year)
+# 	if filters.budget_against == "Cost Center" and filters.cost_center and not filters.group_by_account:
+# 		lft, rgt = frappe.db.get_value("Cost Center", filters.cost_center, ["lft", "rgt"])
+# 		query += " and (b.cost_center in (select a.name from `tabCost Center` a where a.lft >= {1} and a.rgt <= {2}) or b.cost_center = '{0}')".format(filters.cost_center, lft, rgt)
 	
-	if filters.budget_against == "Project":
-		query += " and b.project = \'" + str(filters.project) + "\' "
+# 	if filters.budget_against == "Project":
+# 		query += " and b.project = \'" + str(filters.project) + "\' "
 
-	if filters.budget_type:
-		query += " and ba.budget_type = \'" + str(filters.budget_type) + "\' "
+# 	if filters.budget_type:
+# 		query += " and ba.budget_type = \'" + str(filters.budget_type) + "\' "
 
-	if filters.group_by_account:
-		query += " group by ba.account order by ba.account"
-	elif filters.budget_against == "Project":
-		query += " group by b.cost_center, b.project"
-	else:
-		query += " group by ba.account, b.cost_center order by b.cost_center"
-	return query
+# 	if filters.group_by_account:
+# 		query += " group by ba.account order by ba.account"
+# 	elif filters.budget_against == "Project":
+# 		query += " group by b.cost_center, b.project"
+# 	else:
+# 		query += " group by ba.account, b.cost_center order by b.cost_center"
+# 	return query
 
 def get_columns(filters):
 	if filters.budget_against == "Project":

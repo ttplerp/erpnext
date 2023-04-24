@@ -95,7 +95,8 @@
    "in_standard_filter": 1,
    "label": "Equipment/Vehicle Category",
    "options": "Equipment Category",
-   "reqd": 1
+   "reqd": 1,
+   "set_only_once": 1
   },
   {
    "fetch_from": "asset_issue_details.equipment_type",
@@ -106,7 +107,8 @@
    "in_standard_filter": 1,
    "label": "Equipment/Vehicle Type",
    "options": "Equipment Type",
-   "reqd": 1
+   "reqd": 1,
+   "set_only_once": 1
   },
   {
    "fieldname": "column_break_8",
@@ -120,7 +122,8 @@
    "in_list_view": 1,
    "label": "Equipment/Vehicle Model",
    "options": "Equipment Model",
-   "reqd": 1
+   "reqd": 1,
+   "set_only_once": 1
   },
   {
    "fetch_from": "asset_issue_details.reg_number",
@@ -346,7 +349,8 @@
    "fieldname": "wheeler",
    "fieldtype": "Select",
    "label": "Wheeler",
-   "options": "\n26\n10\n6\n4\n2"
+   "options": "\n26\n10\n6\n4\n2",
+   "set_only_once": 1
   },
   {
    "fieldname": "capacity",
@@ -363,7 +367,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-05 13:07:26.077045",
+ "modified": "2023-04-24 20:50:26.596939",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment",
