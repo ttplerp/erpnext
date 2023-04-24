@@ -44,7 +44,7 @@ def get_data(filters):
 									p.equipment_type,
 									SUM(p.qty) as qty,  
 									ROUND(SUM(p.rate * p.qty)/ SUM(p.qty),2) as rate, 
-									SUM(ifnull(p.amount,0)),
+									SUM(ifnull(p.amount,0)) as amount,
 									ROUND(AVG(p.mileage),2) as mileage
 								from 
 									`tabPOL Entry` p 
