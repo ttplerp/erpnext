@@ -49,7 +49,6 @@ def get_data(filters):
 								from 
 									`tabPOL Entry` p 
 								where docstatus = 1 {} 
-								and type = 'Receive'
 								group by p.equipment""".format(conditions), as_dict=True)
 	else:
 		query = frappe.db.sql("""select distinct 
@@ -72,7 +71,6 @@ def get_data(filters):
 					from 
 						`tabPOL Entry` p 
 					where docstatus = 1 {} 
-					and type = 'Receive'
 					ORDER BY p.posting_date DESC""".format(conditions),as_dict=True)
 	return query
 
