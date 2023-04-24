@@ -11,30 +11,29 @@ def execute(filters=None):
 
 def get_columns(filters):
 	if filters.aggregate:
-		return [
-				("Equipment") + ":Link/Equipment:130",
-				("Equipment Type") + ":Data:200",
-				("Quantity") + ":Float:100",
-				("Rate Per Unit") + ":Currency:130",
-				("Amount") + ":Currency:150",
-				("Mileage") + ":Float:100"
-				]
+		return [{"fieldname":"equipment","label":_("Equipment"),"fieldtype":"Link","options":"Equipment"},
+				{"fieldname":"equipment_type","label":_("Equipment Type"),"fieldtype":"Link","options":"Equipment Type"},
+				{"fieldname":"qty","label":_("Qty"),"fieldtype":"Float"},
+				{"fieldname":"rate","label":_("Rate"),"fieldtype":"Currency"},
+				{"fieldname":"amount","label":_("Amount"),"fieldtype":"Currency"},
+				{"fieldname":"mileage","label":_("Mileage"),"fieldtype":"Float"}]
 	return [
-		("POL Receive") + ":Link/POL Receive:120",
-		("Equipment") + ":Link/Equipment:120",
-		("Equipment Type") + ":Data:120",
-		("Fuelbook Branch") + ":Data:120",
-		("Fuelbook") + ":Data:120",
-		("Supplier") + ":Data:120",
-		("Fuel Type Item Code")+ ":Data:100",
-		("Item Name")+ ":Data:130",
-		("Posting Date") + ":Date:120",
-		("Quantity") + ":Data:100",
-		("Rate Per Unit") + ":Currency:100",
-		("Amount") + ":Currency:120",
-		("Mileage") + ":Float:100",
-		("Cash Memo Number") + ":Data:120",
-		("POL Slip No.") + ":Data:120",
+		{"fieldname":"reference_type","label":_("Reference Type"),"fieldtype":"Data"},
+		{"fieldname":"reference","label":_("Reference"),"fieldtype":"Dynamic Link","options":"reference_type"},
+		{"fieldname":"equipment","label":_("Equipment"),"fieldtype":"Link","options":"Equipment"},
+		{"fieldname":"equipment_type","label":_("Equipment Type"),"fieldtype":"Link","options":"Equipment Type"},
+		{"fieldname":"branch","label":_("Branch"),"fieldtype":"Link","options":"Branch"},
+		{"fieldname":"fuelbook","label":_("Fuelbook"),"fieldtype":"Link","options":"Fuelbook"},
+		{"fieldname":"supplier","label":_("Supplier"),"fieldtype":"Link","options":"Supplier"},
+		{"fieldname":"pol_type","label":_("Item Code"),"fieldtype":"Link","options":"Item"},
+		{"fieldname":"item_name","label":_("Item Name"),"fieldtype":"Data"},
+		{"fieldname":"posting_date","label":_("Posting Date"),"fieldtype":"Date"},
+		{"fieldname":"qty","label":_("Qty"),"fieldtype":"Float"},
+		{"fieldname":"rate","label":_("Rate"),"fieldtype":"Currency"},
+		{"fieldname":"amount","label":_("Amount"),"fieldtype":"Currency"},
+		{"fieldname":"mileage","label":_("Mileage"),"fieldtype":"Float"},
+		{"fieldname":"memo_number","label":_("Cash Memo Number"),"fieldtype":"Data"},
+		{"fieldname":"pol_slip_no","label":_("POL Slip No."),"fieldtype":"Data"}
 	]
 
 def get_data(filters):
@@ -51,9 +50,10 @@ def get_data(filters):
 									`tabPOL Entry` p 
 								where docstatus = 1 {} 
 								and type = 'Receive'
-								group by p.equipment""".format(conditions))
+								group by p.equipment""".format(conditions), as_dict=True)
 	else:
 		query = frappe.db.sql("""select distinct 
+						p.reference_type,
 						p.reference, 
 						p.equipment, 
 						p.equipment_type, 
@@ -73,7 +73,7 @@ def get_data(filters):
 						`tabPOL Entry` p 
 					where docstatus = 1 {} 
 					and type = 'Receive'
-					ORDER BY p.posting_date DESC""".format(conditions))
+					ORDER BY p.posting_date DESC""".format(conditions),as_dict=True)
 	return query
 
 def get_conditions(filters):
