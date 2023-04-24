@@ -7,7 +7,8 @@ frappe.ui.form.on('Supplementary Budget', {
 			return {
 				filters: {
 					company: frm.doc.company,
-					disabled: 0
+					disabled: 0,
+					use_budget_from_parent: 0
 				}
 			}
 		});
