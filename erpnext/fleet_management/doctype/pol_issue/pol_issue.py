@@ -115,6 +115,7 @@ class POLIssue(StockController):
 			con.type = "Receive"
 			con.rate = item.rate
 			con.amount = item.amount
+			con.fuelbook = item.fuelbook
 			con.submit() 
 
 	def delete_pol_entry(self):

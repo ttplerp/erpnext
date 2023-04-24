@@ -8,7 +8,11 @@
   "branch",
   "cost_center",
   "equipment",
+  "supplier",
+  "equipment_category",
+  "equipment_type",
   "pol_type",
+  "item_name",
   "posting_date",
   "qty",
   "reference_type",
@@ -24,7 +28,8 @@
   "rate",
   "amount",
   "memo_number",
-  "pol_slip_no"
+  "pol_slip_no",
+  "fuelbook"
  ],
  "fields": [
   {
@@ -145,13 +150,45 @@
    "fieldname": "km_difference",
    "fieldtype": "Float",
    "label": "KM Difference"
+  },
+  {
+   "fetch_from": "equipment.equipment_type",
+   "fieldname": "equipment_type",
+   "fieldtype": "Link",
+   "label": "Equipment Type",
+   "options": "Equipment Type"
+  },
+  {
+   "fetch_from": "equipment.equipment_category",
+   "fieldname": "equipment_category",
+   "fieldtype": "Link",
+   "label": "Equipment Category",
+   "options": "Equipment Category"
+  },
+  {
+   "fieldname": "fuelbook",
+   "fieldtype": "Link",
+   "label": "Fuelbook",
+   "options": "Fuelbook"
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier",
+   "options": "Supplier"
+  },
+  {
+   "fetch_from": "pol_type.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name"
   }
  ],
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-21 16:55:02.274017",
+ "modified": "2023-04-24 10:34:49.491284",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Entry",

@@ -249,6 +249,8 @@ class POLReceive(StockController):
 			con1.memo_number = self.memo_number
 			con1.pol_slip_no = self.pol_slip_no
 			con1.km_difference = self.km_difference
+			con1.fuelbook = self.fuelbook
+			con1.supplier = self.supplier
 			con1.submit()
 		elif container:
 			con = frappe.new_doc("POL Entry")
@@ -262,6 +264,8 @@ class POLReceive(StockController):
 			con.qty = self.qty
 			con.reference_type = self.doctype
 			con.reference = self.name
+			con.fuelbook = self.fuelbook
+			con.supplier = self.supplier
 			con.is_opening = 0
 			con.uom = self.uom
 			con.rate = self.rate

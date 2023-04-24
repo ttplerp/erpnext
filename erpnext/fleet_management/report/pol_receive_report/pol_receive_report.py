@@ -45,18 +45,19 @@ def get_data(filters):
 									p.equipment_type,
 									SUM(p.qty) as qty,  
 									ROUND(SUM(p.rate * p.qty)/ SUM(p.qty),2) as rate, 
-									SUM(ifnull(p.total_amount,0)),
+									SUM(ifnull(p.amount,0)),
 									ROUND(AVG(p.mileage),2) as mileage
 								from 
-									`tabPOL Receive` p 
+									`tabPOL Entry` p 
 								where docstatus = 1 {} 
+								and type = 'Receive'
 								group by p.equipment""".format(conditions))
 	else:
 		query = frappe.db.sql("""select distinct 
-						p.name, 
+						p.reference, 
 						p.equipment, 
 						p.equipment_type, 
-						p.fuelbook_branch, 
+						p.branch, 
 						p.fuelbook, 
 						p.supplier, 
 						p.pol_type, 
@@ -64,13 +65,14 @@ def get_data(filters):
 						p.posting_date, 
 						p.qty,  
 						p.rate, 
-						ifnull(p.total_amount,0),
+						ifnull(p.amount,0),
 						p.mileage,
 						p.memo_number,
 						p.pol_slip_no
 					from 
-						`tabPOL Receive` p 
+						`tabPOL Entry` p 
 					where docstatus = 1 {} 
+					and type = 'Receive'
 					ORDER BY p.posting_date DESC""".format(conditions))
 	return query
 

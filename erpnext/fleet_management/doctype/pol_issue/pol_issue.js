@@ -37,6 +37,14 @@ var set_equipment_filter=function(frm){
 			filters:{}
 		};
 	});
+	frm.set_query('equipment', 'items', function (doc, cdt, cdn) {
+		return {
+			filters: {
+				"enabled": 1,
+				"is_container":0
+			}
+		}
+	});
 }
 
 frappe.ui.form.on('POL Issue Items', {
