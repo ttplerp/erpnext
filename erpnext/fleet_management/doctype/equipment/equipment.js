@@ -26,15 +26,15 @@ frappe.ui.form.on('Equipment', {
 			};
 		});
 	},
-	equipment_type:function(frm){
-		frm.set_query('equipment_model', function(doc) {
-			return {
-				filters: {
-					"disabled": 0,
-				}
-			};
-		});
-	},
+	// equipment_type:function(frm){
+	// 	frm.set_query('equipment_model', function(doc) {
+	// 		return {
+	// 			filters: {
+	// 				"disabled": 0,
+	// 			}
+	// 		};
+	// 	});
+	// },
 	create_equipment_history:function(frm){
 		frappe.call({
 			method:"create_equipment_history",
