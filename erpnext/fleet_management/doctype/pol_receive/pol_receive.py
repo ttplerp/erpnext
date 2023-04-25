@@ -22,7 +22,7 @@ class POLReceive(StockController):
 		self.calculate_km_diff()
 		self.validate_data()
 		self.balance_check()
-
+		self.remove_unallocated_rows()
 	def on_submit(self):
 		if cint(self.is_opening) == 0:
 			self.update_pol_expense()
@@ -35,7 +35,12 @@ class POLReceive(StockController):
 			self.update_pol_expense()
 			self.make_gl_entries()
 		self.delete_pol_entry()
-
+	def remove_unallocated_rows(self):
+		items = []
+		items += [item for item in self.items if flt(item.allocated_amount) > 0]
+		self.set('items',[])
+		for item in items:
+			self.append('items',item)
 	def balance_check(self):
 		if cint(self.is_opening) == 1:
 			return
