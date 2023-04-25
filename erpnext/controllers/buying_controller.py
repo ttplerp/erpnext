@@ -69,7 +69,6 @@ class BuyingController(SubcontractingController):
 				"Buying Settings", "backflush_raw_materials_of_subcontract_based_on"
 			),
 		)
-
 	def set_missing_values(self, for_validate=False):
 		super(BuyingController, self).set_missing_values(for_validate)
 

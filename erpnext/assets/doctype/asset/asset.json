@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_import": 1,
- "autoname": "format:SMCL-{abbr}-{YY}-{####}",
+ "autoname": "format:NHDCL-{abbr}-{YY}-{#####}",
  "creation": "2022-01-18 02:26:55.975005",
  "doctype": "DocType",
  "document_type": "Document",
@@ -677,7 +677,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2022-12-13 12:01:05.252376",
+ "modified": "2023-04-19 14:49:40.878675",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",

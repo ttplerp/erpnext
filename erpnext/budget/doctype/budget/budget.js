@@ -70,3 +70,69 @@ frappe.ui.form.on("Budget Account", {
 		}
 	},
 });
+
+frappe.ui.form.on("Budget Account", {	
+	"january": function(frm, cdt, cdn) {
+		set_initial_budget(frm, cdt, cdn);
+	},
+	"february": function(frm, cdt, cdn) {
+		set_initial_budget(frm, cdt, cdn);
+	},
+	"march": function(frm, cdt, cdn) {
+		set_initial_budget(frm, cdt, cdn);
+	},
+	"april": function(frm, cdt, cdn) {
+		set_initial_budget(frm, cdt, cdn);
+	},
+	"may": function(frm, cdt, cdn) {
+		set_initial_budget(frm, cdt, cdn);
+	},
+	"june": function(frm, cdt, cdn) {
+		set_initial_budget(frm, cdt, cdn);
+	},
+	"july": function(frm, cdt, cdn) {
+		set_initial_budget(frm, cdt, cdn);
+	},
+	"august": function(frm, cdt, cdn) {
+		set_initial_budget(frm, cdt, cdn);
+	},
+	"september": function(frm, cdt, cdn) {
+		set_initial_budget(frm, cdt, cdn);
+	},
+	"october": function(frm, cdt, cdn) {
+		set_initial_budget(frm, cdt, cdn);
+	},
+	"november": function(frm, cdt, cdn) {
+		set_initial_budget(frm, cdt, cdn);
+	},
+	"december": function(frm, cdt, cdn) {
+		set_initial_budget(frm, cdt, cdn);
+	},
+}); 
+function set_initial_budget(frm, cdt, cdn){
+	var item = locals[cdt][cdn];
+	frappe.call({
+		method:"erpnext.budget.doctype.budget.budget.set_initial_budget",
+		// doc: frm.doc,
+		args: {
+			"january": item.january,
+			"february": item.february,
+			"march": item.march,
+			"april": item.april,
+			"may": item.may,
+			"june": item.june,
+			"july": item.july,
+			"august": item.august,
+			"september": item.september,
+			"october": item.october,
+			"november": item.november,
+			"december": item.december
+		},
+		callback: function(r) {
+			if(r.message) {
+				frappe.model.set_value(cdt, cdn, "initial_budget", flt(r.message))
+				refresh_field('initial_budget');
+			}
+		}
+	})
+}

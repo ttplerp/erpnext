@@ -1,6 +1,5 @@
 {
  "actions": [],
- "allow_rename": 1,
  "autoname": "field:model",
  "creation": "2022-10-17 14:01:59.176916",
  "doctype": "DocType",
@@ -9,20 +8,13 @@
  "field_order": [
   "equipment_type",
   "model",
-  "disabled",
-  "column_break_3",
-  "tank_capacity",
-  "section_break_5",
-  "reading_based_on",
-  "column_break_7",
-  "target_hour"
+  "description"
  ],
  "fields": [
   {
    "fieldname": "equipment_type",
    "fieldtype": "Link",
    "hidden": 1,
-   "in_list_view": 1,
    "label": "Equipment Type",
    "options": "Equipment Type"
   },
@@ -35,43 +27,15 @@
    "unique": 1
   },
   {
-   "fieldname": "column_break_3",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "tank_capacity",
+   "fieldname": "description",
    "fieldtype": "Data",
-   "label": "Tank Capacity"
-  },
-  {
-   "fieldname": "section_break_5",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "reading_based_on",
-   "fieldtype": "Select",
-   "label": "Reading Based On",
-   "options": "Meter\nTrip"
-  },
-  {
-   "fieldname": "column_break_7",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "target_hour",
-   "fieldtype": "Int",
-   "label": "Target Hour"
-  },
-  {
-   "default": "0",
-   "fieldname": "disabled",
-   "fieldtype": "Check",
-   "label": "Disabled"
+   "in_list_view": 1,
+   "label": "Description"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-11-28 17:45:02.871237",
+ "modified": "2023-04-24 15:50:36.559154",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment Model",

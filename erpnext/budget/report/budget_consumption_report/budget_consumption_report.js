@@ -3,6 +3,10 @@
 /* eslint-disable */
 
 frappe.query_reports["Budget Consumption Report"] = {
+	"onload": function(query_report) {
+		var month_filter = query_report.get_filter("month");
+		month_filter.toggle(false);
+    },
 	"filters": [
 		{
 			"fieldname": "fiscal_year",
@@ -61,12 +65,12 @@ frappe.query_reports["Budget Consumption Report"] = {
 			"reqd":1,
 			"default":"Cost Center"
 		},
-		{
-			"fieldname": "project",
-			"label": __("Project"),
-			"fieldtype": "Link",
-			"options": "Project",
-		},
+		// {
+		// 	"fieldname": "project",
+		// 	"label": __("Project"),
+		// 	"fieldtype": "Link",
+		// 	"options": "Project",
+		// },
 		{
 			"fieldname": "cost_center",
 			"label": __("Cost Center"),
@@ -80,6 +84,36 @@ frappe.query_reports["Budget Consumption Report"] = {
 			"fieldtype": "Link",
 			"options": "Budget Type",
 			"ignore_user_permissions":1
+		},
+		{
+			"fieldname": "monthly_budget",
+			"label": __("Monthly Budget"),
+			"fieldtype": "Check",
+			"default": 0,
+			"on_change": function (query_report) {
+				var monthly_budget = query_report.get_values().monthly_budget;
+				var month_filter = query_report.get_filter("month");
+				var from_date = query_report.get_filter("from_date");
+				var to_date =  query_report.get_filter("to_date");
+				if (monthly_budget) {
+					month_filter.toggle(true);
+					from_date.toggle(false);
+					to_date.toggle(false);
+				}
+				else {
+					month_filter.toggle(false);
+					from_date.toggle(true);
+					to_date.toggle(true);
+				}
+				query_report.refresh();
+			}
+		},
+		{
+			"fieldname": "month",
+			"label": __("Month"),
+			"fieldtype": "Select",
+			"width": "100",
+			"options": ["January","February","March","April","May","June","July","August","September","October","November","December"],
 		},
 		{
 			"fieldname": "group_by_account",

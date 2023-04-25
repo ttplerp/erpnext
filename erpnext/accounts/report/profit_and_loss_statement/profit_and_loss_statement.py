@@ -222,10 +222,10 @@ def get_profit_per_employee(income, expense, tax_expense, period_list, company, 
 		total_expense = flt(expense[-2][key], 3) if expense else 0
 		total_tax_expense = flt(tax_expense[-2][key], 3) if tax_expense else 0
 		profit_per_employee[key] = flt(total_income - total_expense - total_tax_expense,2)
-		active_emloyee_count = frappe.db.sql('select count(*) from `tabEmployee` where status = "Active" and ifnull(relieving_date,{0}) >= {0}'.format(period.to_date))
+		active_emloyee_count = frappe.db.sql('select ifnull(count(*), 0) from `tabEmployee` where status = "Active" and ifnull(relieving_date,{0}) >= {0}'.format(period.to_date))
 		if profit_per_employee[key]:
 			has_value = True
-		profit_per_employee[key] = flt(flt(profit_per_employee[key]) / flt(active_emloyee_count[0][0]) if active_emloyee_count else 1, 2)
+		profit_per_employee[key] = flt(flt(profit_per_employee[key]) / flt(active_emloyee_count[0][0]) if active_emloyee_count[0][0] > 0 else 1, 2)
 		total += flt(profit_per_employee[key])
 		profit_per_employee['total'] = total
 

@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "autoname": "hash",
  "creation": "2016-05-16 11:54:09.286135",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -10,7 +11,25 @@
   "account_number",
   "budget_type",
   "column_break_4",
+  "budget_check",
+  "monthly_budget_allocation_section",
+  "january",
+  "february",
+  "march",
+  "april",
+  "c_break_11",
+  "may",
+  "june",
+  "july",
+  "august",
+  "c_break_12",
+  "september",
+  "october",
+  "november",
+  "december",
+  "budget_detail_section_section",
   "initial_budget",
+  "column_break_24",
   "budget_amount",
   "reappropiation_budget_details",
   "supplementary_budget",
@@ -105,14 +124,116 @@
    "in_list_view": 1,
    "label": "Account Number",
    "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "budget_check",
+   "fieldtype": "Select",
+   "label": "Budget Check",
+   "options": "Stop\nIgnore"
+  },
+  {
+   "fieldname": "budget_detail_section_section",
+   "fieldtype": "Section Break",
+   "label": "Budget Detail Section"
+  },
+  {
+   "fieldname": "monthly_budget_allocation_section",
+   "fieldtype": "Section Break",
+   "label": "Monthly Budget Allocation"
+  },
+  {
+   "default": "0",
+   "fieldname": "january",
+   "fieldtype": "Currency",
+   "label": "January"
+  },
+  {
+   "default": "0",
+   "fieldname": "february",
+   "fieldtype": "Currency",
+   "label": "February"
+  },
+  {
+   "default": "0",
+   "fieldname": "march",
+   "fieldtype": "Currency",
+   "label": "March"
+  },
+  {
+   "default": "0",
+   "fieldname": "april",
+   "fieldtype": "Currency",
+   "label": "April"
+  },
+  {
+   "default": "0",
+   "fieldname": "may",
+   "fieldtype": "Currency",
+   "label": "May"
+  },
+  {
+   "default": "0",
+   "fieldname": "june",
+   "fieldtype": "Currency",
+   "label": "June"
+  },
+  {
+   "default": "0",
+   "fieldname": "july",
+   "fieldtype": "Currency",
+   "label": "July"
+  },
+  {
+   "default": "0",
+   "fieldname": "august",
+   "fieldtype": "Currency",
+   "label": "August"
+  },
+  {
+   "default": "0",
+   "fieldname": "september",
+   "fieldtype": "Currency",
+   "label": "September"
+  },
+  {
+   "default": "0",
+   "fieldname": "october",
+   "fieldtype": "Currency",
+   "label": "October"
+  },
+  {
+   "default": "0",
+   "fieldname": "november",
+   "fieldtype": "Currency",
+   "label": "November"
+  },
+  {
+   "default": "0",
+   "fieldname": "december",
+   "fieldtype": "Currency",
+   "label": "December"
+  },
+  {
+   "fieldname": "c_break_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "c_break_12",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_24",
+   "fieldtype": "Column Break"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2023-01-05 11:26:55.837330",
+ "modified": "2023-04-19 14:27:51.892097",
  "modified_by": "Administrator",
  "module": "Budget",
  "name": "Budget Account",
+ "naming_rule": "Random",
  "owner": "Administrator",
  "permissions": [],
  "quick_entry": 1,

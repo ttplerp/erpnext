@@ -7,9 +7,11 @@
  "engine": "InnoDB",
  "field_order": [
   "budget_commit_on",
+  "monthly_budget_check",
   "column_break_2",
   "allow_budget_deviation",
   "deviation",
+  "budget_against",
   "section_break_5",
   "allowed_account_types",
   "column_break_7",
@@ -59,12 +61,25 @@
   {
    "fieldname": "column_break_7",
    "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "monthly_budget_check",
+   "fieldtype": "Check",
+   "label": "Enable Monthly Budget Check"
+  },
+  {
+   "default": "Cost Center",
+   "fieldname": "budget_against",
+   "fieldtype": "Select",
+   "label": "Budget Level",
+   "options": "Cost Center\nProject"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2022-11-08 14:40:52.068873",
+ "modified": "2023-04-19 14:43:53.724679",
  "modified_by": "Administrator",
  "module": "Budget",
  "name": "Budget Settings",

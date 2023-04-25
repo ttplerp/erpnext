@@ -5,4 +5,6 @@
 from frappe.model.document import Document
 
 class EquipmentModel(Document):
-	pass
+	def validate(self):
+		if not self.description:
+			self.description = self.model

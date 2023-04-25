@@ -40,6 +40,7 @@
   "increment_cycle",
   "promotion_cycle",
   "promotion_due_date",
+  "employee_grade",
   "erpnext_user",
   "create_user_permission",
   "create_user",
@@ -76,9 +77,14 @@
   "column_break_46",
   "permanent_address",
   "permanent_accommodation_type",
-  "person_to_be_contacted",
+  "dzongkhag",
+  "geog",
+  "village",
   "column_break_55",
   "emergency_phone_number",
+  "person_to_be_contacted",
+  "house_number",
+  "thram_number",
   "column_break_19",
   "relation",
   "attendance_and_leave_details",
@@ -98,6 +104,7 @@
   "cb_50",
   "tpn_number",
   "pf_number",
+  "nppf_agency_code",
   "pf_tiers",
   "gis_number",
   "gis_policy_number",
@@ -963,13 +970,52 @@
    "fieldtype": "Check",
    "label": "Causal Leave Allocated",
    "read_only": 1
+  },
+  {
+   "fieldname": "nppf_agency_code",
+   "fieldtype": "Data",
+   "label": "NPPF Agency Code"
+  },
+  {
+   "fieldname": "dzongkhag",
+   "fieldtype": "Link",
+   "label": "Dzongkhag",
+   "options": "Dzongkhag"
+  },
+  {
+   "fieldname": "geog",
+   "fieldtype": "Link",
+   "label": "Geog",
+   "options": "Dzongkhag"
+  },
+  {
+   "fieldname": "village",
+   "fieldtype": "Link",
+   "label": "Village",
+   "options": "Dzongkhag"
+  },
+  {
+   "fieldname": "house_number",
+   "fieldtype": "Data",
+   "label": "House Number"
+  },
+  {
+   "fieldname": "thram_number",
+   "fieldtype": "Data",
+   "label": "Thram Number"
+  },
+  {
+   "fieldname": "employee_grade",
+   "fieldtype": "Link",
+   "label": "Employee Grade",
+   "options": "Employee Grade"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-03-14 14:10:11.354378",
+ "modified": "2023-04-21 15:40:31.089964",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",

@@ -1,6 +1,7 @@
 # Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and contributors
 # For license information, please see license.txt
 import frappe
+import datetime
 from frappe import _
 from frappe.model.document import Document
 from frappe.model.naming import make_autoname
@@ -14,7 +15,6 @@ from erpnext.accounts.utils import get_fiscal_year
 
 class BudgetError(frappe.ValidationError):
 	pass
-
 
 class DuplicateBudgetError(frappe.ValidationError):
 	pass
@@ -258,7 +258,6 @@ def validate_expense_against_budget(args):
 				fiscal_year=args.fiscal_year, account=args.account),
 				as_dict=True,
 			)  # nosec
-			
 			if budget_records:
 				validate_budget_records(args, budget_records)
 			else:
@@ -269,20 +268,24 @@ def validate_expense_against_budget(args):
 	commit_budget(args)
 
 def validate_budget_records(args, budget_records):
+	# frappe.throw(str(args))
 	for budget in budget_records:
 		amount = get_amount(args, budget)
 		yearly_action, monthly_action = get_actions(args, budget)
-		if frappe.db.exists("Monthly Distribution", {"fiscal_year":args.fiscal_year}):
-			if monthly_action in ["Stop", "Warn"]:
-				budget_amount = get_accumulated_monthly_budget(
-					budget.monthly_distribution, args.posting_date, args.fiscal_year, budget.budget_amount
-				)
+		monthly_budget_check = frappe.db.get_single_value("Budget Settings","monthly_budget_check")
 
-				args["month_end_date"] = get_last_day(args.posting_date)
+		if monthly_budget_check:
+			budget_account = args.expense_account
+			transaction_date = args.posting_date
+			budget_amount = get_accumulated_monthly_budget(
+				args.cost_center, budget_account, transaction_date, args.amount
+			)
 
-				compare_expense_with_budget(
-					args, budget_amount, _("Accumulated Monthly"), monthly_action, budget.budget_against, amount
-				)
+			args["month_end_date"] = get_last_day(args.posting_date)
+
+			compare_expense_with_budget(
+				args, budget_amount, _("Accumulated Monthly"), monthly_action, budget.budget_against, amount
+			)
 		else:
 			budget_amount = budget.budget_amount
 			if yearly_action in ("Stop", "Warn"):
@@ -345,8 +348,10 @@ def compare_expense_with_budget(args, budget_amount, action_for, action, budget_
 			action = "Warn"
 		if action == "Stop":
 			frappe.msgprint(msg, raise_exception=True)
+			frappe.throw(str(msg))
 		else:
 			frappe.msgprint(msg, indicator="orange")
+			frappe.throw(str(msg))
 
 def commit_budget(args):
 	amount = args.amount if args.amount else args.debit
@@ -498,30 +503,51 @@ def get_actual_expense(args):
 	return amount
 
 
-def get_accumulated_monthly_budget(monthly_distribution, posting_date, fiscal_year, annual_budget):
-	distribution = {}
-	if monthly_distribution:
-		for d in frappe.db.sql(
-			"""select mdp.month, mdp.percentage_allocation
-			from `tabMonthly Distribution Percentage` mdp, `tabMonthly Distribution` md
-			where mdp.parent=md.name and md.fiscal_year=%s""",
-			fiscal_year,
-			as_dict=1,
-		):
-			distribution.setdefault(d.month, d.percentage_allocation)
+def get_accumulated_monthly_budget(cost_center, budget_account, transaction_date, amount):
+	mydate = datetime.datetime.strptime(transaction_date, '%Y-%m-%d')
+	month = mydate.month
+	if frappe.db.get_value("Account", budget_account, "budget_check"):
+		return
+	budget_against = frappe.db.get_single_value("Budget Settings","budget_against")
+	cond = ""
+	if budget_against == "Cost Center":
+		cond += ''' and b.budget_against = "{}" and b.cost_center = "{}" '''.format(budget_against, cost_center)
+	else:
+		cond += ''' and b.budget_against = "{}" '''.format(budget_against)
+	budget_amount = frappe.db.sql('''select b.action_if_annual_budget_exceeded as annual_action, ba.budget_check,\
+					ba.budget_amount, b.deviation, \
+					ba.january, ba.february, ba.march, ba.april, ba.may, ba.june, ba.july, ba.august, ba.september, ba.october, ba.november, ba.december\
+					from `tabBudget` b, `tabBudget Account` ba \
+					where b.docstatus = 1 \
+					and ba.parent = b.name and ba.account= "{}" \
+					and b.fiscal_year = "{}" {} '''.format(budget_account, str(transaction_date)[0:4], cond), as_dict=True)
 
-	dt = frappe.db.get_value("Fiscal Year", fiscal_year, "year_start_date")
-	accumulated_percentage = 0.0
+	if month == 1:
+		monthly_amount = budget_amount[0].january
+	elif month == 2:
+		monthly_amount = budget_amount[0].february
+	elif month == 3:
+		monthly_amount = budget_amount[0].march
+	elif month == 4:
+		monthly_amount = budget_amount[0].april
+	elif month == 5:
+		monthly_amount = budget_amount[0].may
+	elif month == 6:
+		monthly_amount = budget_amount[0].june
+	elif month == 7:
+		monthly_amount = budget_amount[0].july
+	elif month == 8:
+		monthly_amount = budget_amount[0].august
+	elif month == 9:
+		monthly_amount = budget_amount[0].september
+	elif month == 10:
+		monthly_amount = budget_amount[0].october
+	elif month == 11:
+		monthly_amount = budget_amount[0].november
+	else:
+		monthly_amount = budget_amount[0].december
 
-	while dt <= getdate(posting_date):
-		if monthly_distribution:
-			accumulated_percentage += distribution.get(getdate(dt).strftime("%B"), 0)
-		else:
-			accumulated_percentage += 100.0 / 12
-
-		dt = add_months(dt, 1)
-
-	return annual_budget * accumulated_percentage / 100
+	return monthly_amount
 
 
 def get_item_details(args):
@@ -566,3 +592,8 @@ def get_expense_cost_center(doctype, args):
 		return frappe.db.get_value(
 			doctype, args.get(frappe.scrub(doctype)), ["cost_center", "default_expense_account"]
 		)
+
+@frappe.whitelist()
+def set_initial_budget(january, february, march, april, may, june, july, august, september, october, november, december):
+    initial_budget = flt(january)+ flt(february) + flt(march) + flt(april)+ flt(may) +flt(june) +flt(july) +flt(august) + flt(september) +flt(october) +flt(november) +flt(december)  
+    return initial_budget

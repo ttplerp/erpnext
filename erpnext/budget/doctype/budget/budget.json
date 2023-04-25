@@ -12,6 +12,7 @@
   "project",
   "project_name",
   "column_break_3",
+  "deviation",
   "fiscal_year",
   "budget_type",
   "monthly_distribution",
@@ -46,6 +47,7 @@
    "in_standard_filter": 1,
    "label": "Budget Against",
    "options": "\nCost Center\nProject",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -124,7 +126,7 @@
   },
   {
    "allow_on_submit": 1,
-   "default": "Warn",
+   "default": "Stop",
    "depends_on": "eval:doc.applicable_on_material_request == 1",
    "fieldname": "action_if_accumulated_monthly_budget_exceeded_on_mr",
    "fieldtype": "Select",
@@ -152,7 +154,7 @@
   },
   {
    "allow_on_submit": 1,
-   "default": "Warn",
+   "default": "Stop",
    "depends_on": "eval:doc.applicable_on_purchase_order == 1",
    "fieldname": "action_if_accumulated_monthly_budget_exceeded_on_po",
    "fieldtype": "Select",
@@ -180,7 +182,7 @@
   },
   {
    "allow_on_submit": 1,
-   "default": "Warn",
+   "default": "Stop",
    "depends_on": "eval:doc.applicable_on_booking_actual_expenses == 1",
    "fieldname": "action_if_accumulated_monthly_budget_exceeded",
    "fieldtype": "Select",
@@ -244,12 +246,18 @@
    "fieldtype": "Data",
    "label": "Project Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "deviation",
+   "fieldtype": "Percent",
+   "label": "Allow Deviation (%)",
+   "precision": "2"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-10-13 17:35:53.192499",
+ "modified": "2023-04-25 13:12:08.162374",
  "modified_by": "Administrator",
  "module": "Budget",
  "name": "Budget",
