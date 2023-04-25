@@ -116,6 +116,12 @@ class MaterialRequest(BuyingController):
 		self.reset_default_field_value("set_warehouse", "items", "warehouse")
 		self.reset_default_field_value("set_from_warehouse", "items", "from_warehouse")
 		self.set_actual_qty()
+
+		""" check if employee or not """
+		employee = frappe.db.get_value("Employee", {"user_id": frappe.session.user}, "name")
+		if not employee:
+			frappe.throw("Only Employee can crate the Material Request")
+
 		if self.workflow_state != "Approved" and frappe.db.get_value("Cost Center", self.cost_center, "cost_center_for") == "DSP":
 			notify_workflow_states(self)
 
