@@ -56,8 +56,8 @@ class EMEInvoiceEntry(Document):
 					from 
 						`tabEquipment Hiring Form` ehf
 					where 
-					'{0}' between start_date and end_date
-					and '{1}' between start_date and end_date 
+					('{0}' between start_date and end_date
+						or '{1}' between start_date and end_date) 
 					and docstatus = 1
 					and cost_center = '{2}'
 					and exists(select 1 from `tabSupplier` where name = ehf.supplier and supplier_group = '{3}')
@@ -70,7 +70,7 @@ class EMEInvoiceEntry(Document):
 
 	@frappe.whitelist()
 	def apply_eme_invice(self):
-		frappe.enqueue(apply_eme_invice_entries, doc = self, timeout=600)
+		apply_eme_invice_entries(doc = self)
 
 	@frappe.whitelist()
 	def post_to_account(self):
@@ -229,7 +229,7 @@ def create_eme_invoice_for_owner(owner_list, args, publish_progress = True):
 	successful = 0
 	failed = 0
 	refresh_interval = 25
-	total_count = len(set(owner_list))
+	total_count = len(owner_list)
 	doc = frappe.get_doc("EME Invoice Entry", args.get("eme_invoice_entry"))
 	doc.set("failed_transaction",[])
 	doc.set("successful_transaction",[])
