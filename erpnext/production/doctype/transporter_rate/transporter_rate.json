@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:{TR}-{YY}-{MM}-{###}",
+ "autoname": "TR.-.YY.-.MM.-.###",
  "creation": "2022-10-19 15:06:22.121458",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -102,11 +102,11 @@
   }
  ],
  "links": [],
- "modified": "2022-11-29 14:42:41.916576",
+ "modified": "2023-04-26 11:50:30.132628",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Transporter Rate",
- "naming_rule": "Expression",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {

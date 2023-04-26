@@ -308,7 +308,8 @@
    "fetch_from": "equipment_type.is_container",
    "fieldname": "is_container",
    "fieldtype": "Check",
-   "label": "Is Container?"
+   "label": "Is Container?",
+   "read_only": 1
   },
   {
    "fieldname": "company",
@@ -367,7 +368,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-04-24 20:50:26.596939",
+ "modified": "2023-04-24 21:32:24.186951",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment",

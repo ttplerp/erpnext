@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:LB-{YY}-{MM}-{DD}-{###}",
+ "autoname": "LB.-.YY.-.MM.-.DD.-.###",
  "creation": "2022-11-04 14:37:46.522032",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -241,11 +241,11 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-02 16:19:20.103267",
+ "modified": "2023-04-26 11:43:18.507704",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Logbook",
- "naming_rule": "Expression",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {

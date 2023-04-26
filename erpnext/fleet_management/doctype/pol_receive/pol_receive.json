@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:POLR-{YY}-{MM}-{DD}-{###}",
+ "autoname": "POLR.-.YY.-.MM.-.DD.-.###",
  "creation": "2022-10-20 14:46:05.098826",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -355,11 +355,11 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-21 12:49:46.972644",
+ "modified": "2023-04-26 11:31:47.850771",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Receive",
- "naming_rule": "Expression",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {

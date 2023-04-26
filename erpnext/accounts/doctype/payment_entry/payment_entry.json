@@ -2,7 +2,7 @@
  "actions": [],
  "allow_auto_repeat": 1,
  "allow_import": 1,
- "autoname": "format:PE-{YY}-{MM}-{DD}-{###}",
+ "autoname": "PE.-.YY.-.MM.-.DD.-.###",
  "creation": "2016-06-01 14:38:51.012597",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -12,7 +12,7 @@
   "branch",
   "payment_type",
   "payment_order_status",
-  "avoid_cost_center_filter",
+  "ignore_cost_center_filter",
   "column_break_5",
   "posting_date",
   "company",
@@ -782,19 +782,20 @@
   },
   {
    "default": "0",
-   "fieldname": "avoid_cost_center_filter",
+   "fieldname": "ignore_cost_center_filter",
    "fieldtype": "Check",
-   "label": "Avoid Cost Center Filter"
+   "hidden": 1,
+   "label": "Ignore Cost Center Filter"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-05 11:52:30.870662",
+ "modified": "2023-04-26 11:24:33.582494",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Payment Entry",
- "naming_rule": "Expression",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {

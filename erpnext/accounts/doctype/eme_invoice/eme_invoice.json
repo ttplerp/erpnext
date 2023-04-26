@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:EMEINV-{YY}-{MM}-{###}",
+ "autoname": "EMEINV.-.YY.-.MM.-.###",
  "creation": "2022-11-04 14:53:48.701109",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -295,11 +295,11 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-21 14:48:38.029487",
+ "modified": "2023-04-26 11:28:23.559759",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "EME Invoice",
- "naming_rule": "Expression",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {

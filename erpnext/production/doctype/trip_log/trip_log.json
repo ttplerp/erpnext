@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:TL-{YY}-{MM}-{DD}-{###}",
+ "autoname": "TL.-.YY.-.MM.-.DD.-.###",
  "creation": "2022-10-31 13:47:05.914771",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -104,11 +104,11 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-10-31 16:34:50.411027",
+ "modified": "2023-04-26 11:40:42.632572",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Trip Log",
- "naming_rule": "Expression",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {

@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_import": 1,
- "autoname": "format:SMCL-{abbr}-{YY}-{####}",
+ "autoname": "SMCL.-.{abbr}.-.YY.-.####",
  "creation": "2022-01-18 02:26:55.975005",
  "doctype": "DocType",
  "document_type": "Document",
@@ -677,11 +677,11 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2022-12-13 12:01:05.252376",
+ "modified": "2023-04-26 11:13:07.207134",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",
- "naming_rule": "Expression",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {

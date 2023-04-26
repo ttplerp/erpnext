@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:PRO-{YY}-{MM}-{DD}-{###}",
+ "autoname": "PRO.-.YY.-.MM.-.DD.-.###",
  "creation": "2022-10-19 15:40:25.115510",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -418,11 +418,11 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2022-12-31 10:41:19.944367",
+ "modified": "2023-04-26 11:09:09.027873",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Production",
- "naming_rule": "Expression",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
