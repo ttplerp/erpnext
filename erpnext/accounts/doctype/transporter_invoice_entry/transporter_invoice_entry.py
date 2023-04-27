@@ -237,41 +237,42 @@ def submit_invoice_entries(args,publish_progress=True):
 	refresh_interval = 25
 	total_count = cint(invoice_entry.successful)
 	for e in frappe.db.sql("select name as reference, equipment from `tabTransporter Invoice` where docstatus = 0 and transporter_invoice_entry = '{}'".format(args.get("transporter_invoice_entry")),as_dict=True):
-		if e.reference:
-			error = None
-			try:
-				transporter_invoice = frappe.get_doc("Transporter Invoice",e.reference)
-				if transporter_invoice.docstatus != 2:
-					transporter_invoice.submit()
-				successful += 1
-			except Exception as er:
-				error = str(er)
-				failed += 1
-			count+=1
-			invoice_entry_item = frappe.get_doc("Transporter Invoice Entry Item",{"parent":args.get("transporter_invoice_entry"), "equipment":transporter_invoice.equipment})
-			if error:
-				invoice_entry_item.db_set("error_msg", error)
-				invoice_entry_item.db_set("submission_status", "Failed")
-			else:
-				invoice_entry_item.db_set("submission_status", "Submitted")
-				
-			if publish_progress:
-					show_progress = 0
-					if count <= refresh_interval:
-						show_progress = 1
-					elif refresh_interval > total_count:
-						show_progress = 1
-					elif count%refresh_interval == 0:
-						show_progress = 1
-					elif count > total_count-refresh_interval:
-						show_progress = 1
+		if frappe.db.exists("Transporter Invoice Entry Item",{"parent":args.get("transporter_invoice_entry"),"reference":e.reference}):
+			if e.reference:
+				error = None
+				try:
+					transporter_invoice = frappe.get_doc("Transporter Invoice",e.reference)
+					if transporter_invoice.docstatus != 2:
+						transporter_invoice.submit()
+					successful += 1
+				except Exception as er:
+					error = str(er)
+					failed += 1
+				count+=1
+				invoice_entry_item = frappe.get_doc("Transporter Invoice Entry Item",{"parent":args.get("transporter_invoice_entry"), "equipment":transporter_invoice.equipment})
+				if error:
+					invoice_entry_item.db_set("error_msg", error)
+					invoice_entry_item.db_set("submission_status", "Failed")
+				else:
+					invoice_entry_item.db_set("submission_status", "Submitted")
 					
-					if show_progress:
-						description = " Processing {}: ".format(transporter_invoice.name if transporter_invoice else e.equipment) + "["+str(count)+"/"+str(total_count)+"]"
-						frappe.publish_progress(count*100/total_count,
-							title = _("Submitting Transporter Invoice..."),
-							description = description)
-						pass
+				if publish_progress:
+						show_progress = 0
+						if count <= refresh_interval:
+							show_progress = 1
+						elif refresh_interval > total_count:
+							show_progress = 1
+						elif count%refresh_interval == 0:
+							show_progress = 1
+						elif count > total_count-refresh_interval:
+							show_progress = 1
+						
+						if show_progress:
+							description = " Processing {}: ".format(transporter_invoice.name if transporter_invoice else e.equipment) + "["+str(count)+"/"+str(total_count)+"]"
+							frappe.publish_progress(count*100/total_count,
+								title = _("Submitting Transporter Invoice..."),
+								description = description)
+							pass
 
 	if failed > 0 and failed < successful :
 		invoice_entry.db_set("invoice_submitted",1)

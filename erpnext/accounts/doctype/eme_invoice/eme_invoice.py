@@ -26,12 +26,15 @@ class EMEInvoice(AccountsController):
 		self.calculate_totals()
 		self.set_status()
 	def on_submit(self):
+		self.validate_eme_invoice_entry()
 		self.update_logbook()
 		self.make_gl_entries()
+
 	def on_cancel(self):
 		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
 		self.update_logbook()
 		self.make_gl_entries()
+
 	def update_logbook(self):
 		for a in self.items:
 			value = 1
@@ -39,6 +42,12 @@ class EMEInvoice(AccountsController):
 				value = 0
 			logbook = frappe.get_doc("Logbook", a.logbook)
 			logbook.db_set("paid", value)
+
+	def validate_eme_invoice_entry(self):
+		if self.eme_invoice_entry:
+			if not frappe.db.exists("EME Invoice Success",{"parent":self.eme_invoice_entry,"eme_invoice":self.name}):
+				frappe.msgprint(_("Transaction {} does not exists in {}'s successful transaction".format(bold(self.name),bold(self.eme_invoice_entry))), raise_exception=True)
+				
 	def before_cancel(self):
 		if self.journal_entry and frappe.db.exists("Journal Entry",self.journal_entry):
 			doc = frappe.get_doc("Journal Entry", self.journal_entry)
