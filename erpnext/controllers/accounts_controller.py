@@ -212,6 +212,10 @@ class AccountsController(TransactionBase):
 				"delete from `tabStock Ledger Entry` where voucher_type=%s and voucher_no=%s",
 				(self.doctype, self.name),
 			)
+			frappe.db.sql(
+				"delete from `tabPayment Ledger Entry` where voucher_type=%s and voucher_no=%s", (self.doctype, self.name)
+			)
+			self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
 
 	def validate_deferred_income_expense_account(self):
 		field_map = {
@@ -967,9 +971,9 @@ class AccountsController(TransactionBase):
 	def update_against_document_in_jv(self):
 		"""
 		Links invoice and advance voucher:
-		        1. cancel advance voucher
-		        2. split into multiple rows if partially adjusted, assign against voucher
-		        3. submit advance voucher
+				1. cancel advance voucher
+				2. split into multiple rows if partially adjusted, assign against voucher
+				3. submit advance voucher
 		"""
 		update_outstanding = "Yes"
 		if self.doctype == "Sales Invoice":
@@ -2548,7 +2552,7 @@ def update_child_qty_rate(parent_doctype, trans_items, parent_doctype_name, chil
 
 		1. Change rate of subcontracting - regardless of other changes.
 		2. Change qty and/or add new items and/or remove items
-		        Exception: Transfer/Consumption is already made, qty change not allowed.
+				Exception: Transfer/Consumption is already made, qty change not allowed.
 		"""
 
 		supplied_items_processed = any(
