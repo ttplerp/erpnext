@@ -342,15 +342,6 @@ frappe.ui.form.on('Stock Entry', {
 
 		frm.trigger("setup_quality_inspection");
 		attach_bom_items(frm.doc.bom_no)
-        frm.set_query("expense_account", "items", function () {
-            return {
-                filters:{
-                    account_type : ["NOT IN",["Stock"]],
-                    is_group:0
-                }
-            };
-        });
-
 	},
 
 	create_custom_buttons: function (frm) {
@@ -944,7 +935,8 @@ erpnext.stock.StockEntry = class StockEntry extends erpnext.stock.StockControlle
 				return {
 					filters: {
 						"company": me.frm.doc.company,
-						"is_group": 0
+						"is_group": 0,
+                        account_type : ["not in",["Stock"]],
 					}
 				}
 			}
