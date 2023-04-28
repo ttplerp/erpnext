@@ -342,6 +342,14 @@ frappe.ui.form.on('Stock Entry', {
 
 		frm.trigger("setup_quality_inspection");
 		attach_bom_items(frm.doc.bom_no)
+        frm.set_query("expense_account", "items", function () {
+            return {
+                filters:{
+                    account_type : ["NOT IN",["Stock"]],
+                    is_group:0
+                }
+            };
+        });
 
 	},
 
