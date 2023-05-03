@@ -76,7 +76,6 @@ def get_data(filters):
 	data = []
 
 	conditions = get_conditions(filters)
-	frappe.throw(str(conditions))
 	depreciation_amount_map = get_finance_book_value_map(filters)
 	pr_supplier_map = get_purchase_receipt_supplier_map()
 	pi_supplier_map = get_purchase_invoice_supplier_map()
