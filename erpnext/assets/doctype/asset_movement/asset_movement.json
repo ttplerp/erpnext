@@ -8,6 +8,7 @@
  "field_order": [
   "company",
   "purpose",
+  "remarks",
   "column_break_4",
   "business_activity",
   "transaction_date",
@@ -131,12 +132,17 @@
    "hidden": 1,
    "label": "Business Activity",
    "options": "Business Activity"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-03 21:30:47.381102",
+ "modified": "2023-05-03 14:25:44.113071",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset Movement",
