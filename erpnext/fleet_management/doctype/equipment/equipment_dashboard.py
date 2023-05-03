@@ -6,6 +6,6 @@ def get_data():
 		"transactions": [
 			{"label": _("POL Transaction"), "items": ["POL Receive", "POL Expense", "POL Issue","Fleet Engagement"]},
 			{"label": _("Hiring Transaction"), "items": ["Transporter Invoice", "EME Invoice", "Equipment Hiring Form", "Logbook"]},
-			{"label": _("Repair & Services"), "items": ["Repair And Service", "Repair And Service Invoice", "Equipment Modifier Tool", "Insurance and Registration"]},
+			{"label": _("Repair & Services"), "items": ["Repair And Services", "Repair And Service Invoice", "Equipment Modifier Tool", "Insurance and Registration"]},
 		],
 	}
