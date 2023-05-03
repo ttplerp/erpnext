@@ -7,9 +7,9 @@
  "field_order": [
   "equipment",
   "supplier",
-  "equipment_type",
   "column_break_4",
   "equipment_hiring_form",
+  "equipment_type",
   "start_date",
   "end_date",
   "hiring_rate_details_section",
@@ -29,6 +29,7 @@
   {
    "fieldname": "supplier",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Owner",
    "options": "Supplier"
   },
@@ -36,7 +37,8 @@
    "fieldname": "equipment_type",
    "fieldtype": "Link",
    "label": "Equipment Type",
-   "options": "Equipment Type"
+   "options": "Equipment Type",
+   "print_hide": 1
   },
   {
    "fieldname": "column_break_4",
@@ -51,14 +53,18 @@
   {
    "fieldname": "start_date",
    "fieldtype": "Date",
+   "hidden": 1,
    "in_list_view": 1,
-   "label": "Start Date"
+   "label": "Start Date",
+   "print_hide": 1
   },
   {
    "fieldname": "end_date",
    "fieldtype": "Date",
+   "hidden": 1,
    "in_list_view": 1,
-   "label": "End Date"
+   "label": "End Date",
+   "print_hide": 1
   },
   {
    "fieldname": "hiring_rate_details_section",
@@ -75,7 +81,8 @@
   {
    "fieldname": "ref_row",
    "fieldtype": "Data",
-   "label": "Ref Row"
+   "label": "Ref Row",
+   "print_hide": 1
   },
   {
    "fieldname": "column_break_11",
@@ -92,7 +99,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-12-07 09:36:26.360856",
+ "modified": "2023-05-03 12:55:10.102268",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Hiring Rate Revision Item",
