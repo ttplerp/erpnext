@@ -24,7 +24,7 @@ frappe.query_reports["Fixed Asset Register"] = {
 			"label": __("Period Based On"),
 			"fieldtype": "Select",
 			"options": ["Fiscal Year", "Date Range"],
-			"default": ["Date Range"],
+			"default": ["Fiscal Year"],
 			"reqd": 1
 		},
 		{
@@ -74,7 +74,6 @@ frappe.query_reports["Fixed Asset Register"] = {
 			label: __("Asset Category"),
 			fieldtype: "Link",
 			options: "Asset Category",
-			reqd: 1
 		},
 		{
 			fieldname:"finance_book",
