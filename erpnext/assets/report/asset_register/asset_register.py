@@ -191,22 +191,22 @@ def get_data(filters):
     data = []
 
     if asset_data:
-        total_gross_opening = 0
-        total_gross_addition = 0
-        total_gross_adjustment = 0
-        total_gross_total = 0
-        total_dep_opening = 0
-        total_dep_addition = 0
-        total_dep_adjustment = 0
-        total_dep_total = 0
-        total_dep_total_next_year = 0
+        # total_gross_opening = 0
+        # total_gross_addition = 0
+        # total_gross_adjustment = 0
+        # total_gross_total = 0
+        # total_dep_opening = 0
+        # total_dep_addition = 0
+        # total_dep_adjustment = 0
+        # total_dep_total = 0
+        # total_dep_total_next_year = 0
 
-        total_actual_dep = 0	
-        total_net = 0
-        total_opening = 0
-        total_adjustment = 0
-        total_net_income = 0
-        total_income = 0
+        # total_actual_dep = 0	
+        # total_net = 0
+        # total_opening = 0
+        # total_adjustment = 0
+        # total_net_income = 0
+        # total_income = 0
 
         for a in asset_data:
             gross_opening  	= flt(a.gross_opening,2)
@@ -236,20 +236,7 @@ def get_data(filters):
             net_useful_life = gross_total - dep_total
             net_income_tax = flt(a.gross_purchase_amount) - flt(a.iopening) - flt(a.depreciation_income_tax) - flt(a.opening_income)
 
-            total_gross_opening 	+= gross_opening
-            total_gross_addition 	+= gross_addition
-            total_gross_adjustment 	+= gross_adjustment
-            total_gross_total	+= gross_total
-
-            total_dep_opening	+= dep_opening
-            total_dep_addition	+= dep_addition
-            total_dep_adjustment	+= dep_adjustment
-            total_dep_total_next_year += dep_total_next_year
-            total_dep_total		+= dep_total
-
-            total_net+= flt(net_useful_life, 2)
-            total_income 	 += flt(a.depreciation_income_tax, 2)
-            total_net_income += flt(net_income_tax, 2)
+           
             row = {
                 "asset_code": a.name,
                 "asset_name": a.asset_name,
@@ -287,20 +274,20 @@ def get_data(filters):
             }
             data.append(row)
         # total row
-        row = {
-            "gross_opening": total_gross_opening, 
-            "gross_addition": total_gross_addition, 
-            "gross_adjustment": total_gross_adjustment,
-            "gross_total": total_gross_total,
-            "dep_opening": total_dep_opening,
-            "dep_addition": total_dep_addition,
-            "dep_adjustment": total_dep_adjustment,
-            "dep_total_next_year": total_dep_total_next_year,
-            "dep_total": total_dep_total,
-            "net_useful_life": flt(total_net, 2), 
-            "net_income_tax": total_net_income, 
-            "dep_income_tax": total_income}
-        data.append(row)
+        # row = {
+        #     "gross_opening": total_gross_opening, 
+        #     "gross_addition": total_gross_addition, 
+        #     "gross_adjustment": total_gross_adjustment,
+        #     "gross_total": total_gross_total,
+        #     "dep_opening": total_dep_opening,
+        #     "dep_addition": total_dep_addition,
+        #     "dep_adjustment": total_dep_adjustment,
+        #     "dep_total_next_year": total_dep_total_next_year,
+        #     "dep_total": total_dep_total,
+        #     "net_useful_life": flt(total_net, 2), 
+        #     "net_income_tax": total_net_income, 
+        #     "dep_income_tax": total_income}
+        # data.append(row)
     return data
 
 def get_depreciation_details(filters):
