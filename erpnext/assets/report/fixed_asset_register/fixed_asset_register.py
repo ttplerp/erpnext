@@ -57,6 +57,17 @@ def get_conditions(filters):
 
 		conditions["status"] = (operand, ["Sold", "Scrapped"])
 
+	""" Below added by Jai. on 3 May, 2023 """
+	if 'System Manager' not in frappe.get_roles(frappe.session.user):
+		assign_branch_list = frappe.db.sql("""select bi.*
+			from `tabAssign Branch` ab, `tabBranch Item` bi
+			where ab.user = "{}"
+			and bi.parent = ab.name
+		""".format(frappe.session.user), as_dict=1)
+
+		branches = [d['branch'] for d in assign_branch_list]
+		conditions["branch"] = ("in", branches)
+
 	return conditions
 
 
@@ -65,6 +76,7 @@ def get_data(filters):
 	data = []
 
 	conditions = get_conditions(filters)
+	frappe.throw(str(conditions))
 	depreciation_amount_map = get_finance_book_value_map(filters)
 	pr_supplier_map = get_purchase_receipt_supplier_map()
 	pi_supplier_map = get_purchase_invoice_supplier_map()
