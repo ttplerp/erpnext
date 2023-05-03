@@ -95,23 +95,24 @@ def get_accounts(filters):
 		it_opening = opening_dep[0].it_opening if opening_dep[0].it_opening else 0.00
 		
 		row = [ 
-			a.name,
-			g_open,
-			g_addition,
-			g_adjustment,
-			g_total,
-			d_open,
-			dep_addition,
-			dep_adjust,
-			#adj_adjust,
-			d_total,
-			flt(g_total) - flt(d_total),
-			acc_it - depreciation_it + it_opening,
-			income_tax[0].total_income_tax
+			
 		]	
-		data.append(row)
+		data.append({
+			"asset_category": a.name,
+			"gross_opening":g_open,
+			"gross_addition":g_addition,
+			"gross_adjustment":g_adjustment,
+			"gross_total":g_total,
+			"dep_opening":d_open,
+			"dep_addition":dep_addition,
+			"dep_adjustment":dep_adjust,
+			#adj_adjust,
+			"dep_total":d_total,
+			"net_block":flt(g_total) - flt(d_total),
+			"opening_income_tax":acc_it - depreciation_it + it_opening,
+			"it_dep_addition":income_tax[0].total_income_tax
+		})
 
-	
 	#For CWIP Account
 	if flt(filters.include_cwip):
 		row = get_cwip(filters)
@@ -137,19 +138,35 @@ def get_cwip(filters):
 	c_open = flt(cwip_open.debit) - flt(cwip_open.credit)
 	c_total = c_open + flt(cwip.debit) - flt(cwip.credit)
 
-	row = [
-		"Capital Work in Progress",
-		c_open,
-		cwip.debit,
-		cwip.credit,
-		c_total,
-		0,
-		0,
-		0,
-		0,
-		0,
-		c_total 
-	]	
+	# row = [
+	# 	"Capital Work in Progress",
+	# 	c_open,
+	# 	cwip.debit,
+	# 	cwip.credit,
+	# 	c_total,
+	# 	0,
+	# 	0,
+	# 	0,
+	# 	0,
+	# 	0,
+	# 	c_total 
+	# ]	
+	row = dict()
+	row.update({
+			"asset_category": "Capital Work in Progress",
+			"gross_opening":c_open,
+			"gross_addition":cwip.debit,
+			"gross_adjustment":cwip.credit,
+			"gross_total":c_total,
+			"dep_opening":0,
+			"dep_addition":0,
+			"dep_adjustment":0,
+			#adj_adjust,
+			"dep_total":0,
+			"net_block":0,
+			"opening_income_tax":c_total,
+			"it_dep_addition":0
+		})
 	return row
 
 def get_values(account, to_date, from_date, cost_center=None, opening=False, cwip=False, adjustment=False):
@@ -228,11 +245,11 @@ def get_columns():
 			"width": 150
 		},
 		#{
-                #        "fieldname": "adjustment",
-                #        "label": _("Adjustment"),
-                #        "fieldtype": "Currency",
-                #        "width": 150
-                #},
+				#        "fieldname": "adjustment",
+				#        "label": _("Adjustment"),
+				#        "fieldtype": "Currency",
+				#        "width": 150
+				#},
 		{
 			"fieldname": "dep_total",
 			"label": _("Dep. Total"),
