@@ -44,9 +44,10 @@
   {
    "fetch_from": "employee.user_id",
    "fieldname": "user_id",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "User ID"
+   "label": "User ID",
+   "options": "User"
   },
   {
    "fieldname": "section_break1",
@@ -90,7 +91,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-23 10:35:29.918793",
+ "modified": "2023-04-26 10:53:12.414261",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "MR PMT And Domain Lead",
