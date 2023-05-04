@@ -116,7 +116,7 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 
 	accounts = [i.account for i in frappe.db.get_all("Tax Withholding Account", \
 		{"parent": tax_withholding_category}, "account")]
-
+	frappe.throw(str(accounts))
 	if not len(accounts):
 		return entries
 	elif len(accounts) == 1:

@@ -10,6 +10,7 @@ class EquipmentHiringForm(Document):
 	def validate(self):
 		self.validate_date()
 		self.check_duplicate()
+		
 	def on_update_after_submit(self):
 		self.validate_date()
 		for a in self.get('efh_extension'):

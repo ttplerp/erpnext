@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_import": 1,
- "autoname": "format:NHDCL-{abbr}-{YY}-{#####}",
+ "autoname": "NHDCL.-.{abbr}.-.YY.-.#####",
  "creation": "2022-01-18 02:26:55.975005",
  "doctype": "DocType",
  "document_type": "Document",
@@ -677,11 +677,11 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2023-04-19 14:49:40.878675",
+ "modified": "2023-04-26 17:58:24.084220",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",
- "naming_rule": "Expression",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {

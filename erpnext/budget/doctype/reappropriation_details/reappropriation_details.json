@@ -13,6 +13,8 @@
   "to_project",
   "from_account",
   "to_account",
+  "from_month",
+  "to_month",
   "amount",
   "posting_date",
   "reference",
@@ -91,13 +93,25 @@
    "options": "Reappropriation Details",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "from_month",
+   "fieldtype": "Link",
+   "label": "From Month",
+   "options": "Month"
+  },
+  {
+   "fieldname": "to_month",
+   "fieldtype": "Link",
+   "label": "To Month",
+   "options": "Month"
   }
  ],
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-06 14:31:34.341480",
+ "modified": "2023-04-27 15:11:15.047340",
  "modified_by": "Administrator",
  "module": "Budget",
  "name": "Reappropriation Details",

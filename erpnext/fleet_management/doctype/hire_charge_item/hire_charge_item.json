@@ -1,0 +1,150 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2017-09-29 17:47:20.098980",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "from_date",
+  "column_break_2",
+  "to_date",
+  "section_break_1",
+  "rate_fuel",
+  "rate_wofuel",
+  "column_break_7",
+  "cft_rate_bf",
+  "cft_rate_co",
+  "column_break_10",
+  "idle_rate",
+  "section_break_12",
+  "column_break_5",
+  "yard_hours",
+  "yard_distance",
+  "column_break_8",
+  "perf_bench",
+  "main_int"
+ ],
+ "fields": [
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "From Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_1",
+   "fieldtype": "Section Break",
+   "label": "Rate Details"
+  },
+  {
+   "fieldname": "rate_fuel",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "With Fuel",
+   "reqd": 1
+  },
+  {
+   "fieldname": "rate_wofuel",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Without Fuel",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "cft_rate_bf",
+   "fieldtype": "Currency",
+   "label": "Rate Per Cft (Broadleaf)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cft_rate_co",
+   "fieldtype": "Currency",
+   "label": "Rate Per Cft (Conifer)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "idle_rate",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Idle Rate",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_12",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break",
+   "label": "Yardstick Rates"
+  },
+  {
+   "fieldname": "yard_hours",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Based on Hours",
+   "precision": "2",
+   "reqd": 1
+  },
+  {
+   "fieldname": "yard_distance",
+   "fieldtype": "Float",
+   "label": "Based on Distance",
+   "precision": "2",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break",
+   "label": "Performance & Maintenance"
+  },
+  {
+   "fieldname": "perf_bench",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Performance Benchmark",
+   "reqd": 1
+  },
+  {
+   "fieldname": "main_int",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Maintenance Interval",
+   "precision": "1",
+   "reqd": 1
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2023-05-03 11:57:00.368872",
+ "modified_by": "Administrator",
+ "module": "Fleet Management",
+ "name": "Hire Charge Item",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

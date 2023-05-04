@@ -1,0 +1,86 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-05-01 11:04:40.999309",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "rental_term_year",
+  "percent_of_increment",
+  "business_activity",
+  "cb_1",
+  "no_of_year_for_increment",
+  "payment_due_on",
+  "penalty_rate"
+ ],
+ "fields": [
+  {
+   "fieldname": "rental_term_year",
+   "fieldtype": "Int",
+   "label": "Rental Term Year"
+  },
+  {
+   "fieldname": "percent_of_increment",
+   "fieldtype": "Percent",
+   "label": "Percent of Increment"
+  },
+  {
+   "fieldname": "business_activity",
+   "fieldtype": "Link",
+   "label": "Business Activity",
+   "options": "Business Activity"
+  },
+  {
+   "fieldname": "cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "no_of_year_for_increment",
+   "fieldtype": "Int",
+   "label": "No. of Year for Increment"
+  },
+  {
+   "fieldname": "payment_due_on",
+   "fieldtype": "Int",
+   "label": "Payment Due On"
+  },
+  {
+   "fieldname": "penalty_rate",
+   "fieldtype": "Percent",
+   "label": "Penalty Rate (in Percent)"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2023-05-01 11:21:59.860686",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Rental Setting",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Rental Master",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

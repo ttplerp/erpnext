@@ -33,10 +33,46 @@
   "budget_amount",
   "reappropiation_budget_details",
   "supplementary_budget",
-  "column_break_9",
-  "budget_received",
+  "sb_jan",
+  "sb_feb",
+  "sb_march",
+  "sb_april",
+  "sb_may",
+  "sb_june",
+  "sb_july",
+  "sb_aug",
+  "sb_sep",
+  "sb_oct",
+  "sb_nov",
+  "sb_dec",
   "column_break_11",
-  "budget_sent"
+  "budget_received",
+  "br_jan",
+  "br_feb",
+  "br_march",
+  "br_apr",
+  "br_may",
+  "br_june",
+  "br_july",
+  "br_aug",
+  "br_sep",
+  "br_oct",
+  "br_nov",
+  "br_dec",
+  "column_break_30",
+  "budget_sent",
+  "bs_jan",
+  "bs_feb",
+  "bs_march",
+  "bs_april",
+  "bs_may",
+  "bs_june",
+  "bs_july",
+  "bs_aug",
+  "bs_sep",
+  "bs_oct",
+  "bs_nov",
+  "bs_dec"
  ],
  "fields": [
   {
@@ -107,10 +143,6 @@
   },
   {
    "fieldname": "column_break_4",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_9",
    "fieldtype": "Column Break"
   },
   {
@@ -225,11 +257,231 @@
   {
    "fieldname": "column_break_24",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_30",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sb_jan",
+   "fieldtype": "Data",
+   "label": "Supplementary Budget January",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_feb",
+   "fieldtype": "Data",
+   "label": "Supplementary Budget February",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_march",
+   "fieldtype": "Data",
+   "label": "Supplementary Budget March",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_april",
+   "fieldtype": "Data",
+   "label": "Supplementary Budget April",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_may",
+   "fieldtype": "Data",
+   "label": "Supplementary Budget May",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_june",
+   "fieldtype": "Data",
+   "label": "Supplementary Budget June",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_july",
+   "fieldtype": "Data",
+   "label": "Supplementary Budget July",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_aug",
+   "fieldtype": "Data",
+   "label": "Supplementary Budget August",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_sep",
+   "fieldtype": "Data",
+   "label": "Supplementary Budget September",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_oct",
+   "fieldtype": "Data",
+   "label": "Supplementary Budget October",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_nov",
+   "fieldtype": "Data",
+   "label": "Supplementary Budget November",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_dec",
+   "fieldtype": "Data",
+   "label": "Supplementary Budget December",
+   "read_only": 1
+  },
+  {
+   "fieldname": "br_jan",
+   "fieldtype": "Data",
+   "label": "Budget Received January",
+   "read_only": 1
+  },
+  {
+   "fieldname": "br_feb",
+   "fieldtype": "Data",
+   "label": "Budget Received February",
+   "read_only": 1
+  },
+  {
+   "fieldname": "br_march",
+   "fieldtype": "Data",
+   "label": "Budget Received March",
+   "read_only": 1
+  },
+  {
+   "fieldname": "br_apr",
+   "fieldtype": "Data",
+   "label": "Budget Received April",
+   "read_only": 1
+  },
+  {
+   "fieldname": "br_may",
+   "fieldtype": "Data",
+   "label": "Budget Received May",
+   "read_only": 1
+  },
+  {
+   "fieldname": "br_june",
+   "fieldtype": "Data",
+   "label": "Budget Received June",
+   "read_only": 1
+  },
+  {
+   "fieldname": "br_july",
+   "fieldtype": "Data",
+   "label": "Budget Received July",
+   "read_only": 1
+  },
+  {
+   "fieldname": "br_aug",
+   "fieldtype": "Data",
+   "label": "Budget Received August",
+   "read_only": 1
+  },
+  {
+   "fieldname": "br_sep",
+   "fieldtype": "Data",
+   "label": "Budget Received September",
+   "read_only": 1
+  },
+  {
+   "fieldname": "br_oct",
+   "fieldtype": "Data",
+   "label": "Budget Received October",
+   "read_only": 1
+  },
+  {
+   "fieldname": "br_nov",
+   "fieldtype": "Data",
+   "label": "Budget Received November",
+   "read_only": 1
+  },
+  {
+   "fieldname": "br_dec",
+   "fieldtype": "Data",
+   "label": "Budget Received December",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bs_jan",
+   "fieldtype": "Data",
+   "label": "Budget Sent January",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bs_feb",
+   "fieldtype": "Data",
+   "label": "Budget Sent February",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bs_march",
+   "fieldtype": "Data",
+   "label": "Budget Sent March",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bs_april",
+   "fieldtype": "Data",
+   "label": "Budget Sent April",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bs_may",
+   "fieldtype": "Data",
+   "label": "Budget Sent May",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bs_june",
+   "fieldtype": "Data",
+   "label": "Budget Sent June",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bs_july",
+   "fieldtype": "Data",
+   "label": "Budget Sent July",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bs_aug",
+   "fieldtype": "Data",
+   "label": "Budget Sent August",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bs_sep",
+   "fieldtype": "Data",
+   "label": "Budget Sent September",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bs_oct",
+   "fieldtype": "Data",
+   "label": "Budget Sent October",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bs_nov",
+   "fieldtype": "Data",
+   "label": "Budget Sent November",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bs_dec",
+   "fieldtype": "Data",
+   "label": "Budget Sent December",
+   "read_only": 1
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2023-04-19 14:27:51.892097",
+ "modified": "2023-04-27 12:33:32.108924",
  "modified_by": "Administrator",
  "module": "Budget",
  "name": "Budget Account",

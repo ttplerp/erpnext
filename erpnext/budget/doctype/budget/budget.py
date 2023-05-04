@@ -5,7 +5,7 @@ import datetime
 from frappe import _
 from frappe.model.document import Document
 from frappe.model.naming import make_autoname
-from frappe.utils import add_months, flt, fmt_money, get_last_day, getdate
+from frappe.utils import add_months, flt, fmt_money, get_last_day, getdate, get_first_day
 
 from erpnext.accounts.doctype.accounting_dimension.accounting_dimension import (
 	get_accounting_dimensions,
@@ -110,14 +110,12 @@ class Budget(Document):
 		):
 			self.applicable_on_booking_actual_expenses = 1
 
-	# Added by Thukten on Sept 12th 2022
 	def calculate_budget(self):
 		if self.accounts:
 			for acc in self.accounts:
 				acc.budget_amount = flt(acc.initial_budget) + flt(acc.supplementary_budget) + flt(acc.budget_received) - flt(acc.budget_sent)
 				acc.db_set("budget_amount", acc.budget_amount)
 
-	# Added by Thukten on Sept 12th 2022
 	def calculate_totals(self): 
 		total_initial = 0
 		total_actual = 0
@@ -166,7 +164,7 @@ class Budget(Document):
 				p_account = d.parent_account
 			row = self.append('accounts', {})
 			row.update(d)
-
+	
 def delete_committed_consumed_budget(reference=None, reference_no=None):
 	if reference and reference_no:
 		frappe.db.sql("""Delete from `tabCommitted Budget` 
@@ -273,9 +271,11 @@ def validate_budget_records(args, budget_records):
 		amount = get_amount(args, budget)
 		yearly_action, monthly_action = get_actions(args, budget)
 		monthly_budget_check = frappe.db.get_single_value("Budget Settings","monthly_budget_check")
-
+		# frappe.throw(str(args))
 		if monthly_budget_check:
 			budget_account = args.expense_account
+			if not budget_account:
+				budget_account = args.account
 			transaction_date = args.posting_date
 			budget_amount = get_accumulated_monthly_budget(
 				args.cost_center, budget_account, transaction_date, args.amount
@@ -331,7 +331,7 @@ def compare_expense_with_budget(args, budget_amount, action_for, action, budget_
 		diff = total_expense_amount - budget_amount
 		currency = frappe.get_cached_value("Company", args.company, "default_currency")
 
-		msg = _("{0} Budget for Account {1} against {2} {3} is {4} and available budget is {5}. It exceed by {6}").format(
+		msg = _("{0} Budget for Account {1} against {2} {3} is {4} and available budget is {5} Including (Supplementary Budget,Budget Received,Budget Sent). It exceed by {6}").format(
 			_(action_for),
 			frappe.bold(args.account),
 			args.budget_against_field,
@@ -521,33 +521,77 @@ def get_accumulated_monthly_budget(cost_center, budget_account, transaction_date
 					where b.docstatus = 1 \
 					and ba.parent = b.name and ba.account= "{}" \
 					and b.fiscal_year = "{}" {} '''.format(budget_account, str(transaction_date)[0:4], cond), as_dict=True)
-
+	# frappe.throw(str(budget_amount))
 	if month == 1:
 		monthly_amount = budget_amount[0].january
+		month_name = "January"
 	elif month == 2:
 		monthly_amount = budget_amount[0].february
+		month_name = "Feburary"
 	elif month == 3:
 		monthly_amount = budget_amount[0].march
+		month_name = "March"
 	elif month == 4:
 		monthly_amount = budget_amount[0].april
+		month_name = "April"
 	elif month == 5:
 		monthly_amount = budget_amount[0].may
+		month_name = "May"
 	elif month == 6:
 		monthly_amount = budget_amount[0].june
+		month_name = "June"
 	elif month == 7:
 		monthly_amount = budget_amount[0].july
+		month_name = "July"
 	elif month == 8:
 		monthly_amount = budget_amount[0].august
+		month_name = "August"
 	elif month == 9:
 		monthly_amount = budget_amount[0].september
+		month_name = "September"
 	elif month == 10:
 		monthly_amount = budget_amount[0].october
+		month_name = "October"
 	elif month == 11:
 		monthly_amount = budget_amount[0].november
+		month_name = "November"
 	else:
 		monthly_amount = budget_amount[0].december
+		month_name = "December"
 
-	return monthly_amount
+	if transaction_date:
+		month_first_date = get_first_day(transaction_date)
+		month_last_date = get_last_day(transaction_date)
+		supplement = flt(frappe.db.sql("""
+				select sum(amount)
+				from `tabSupplementary Details`
+				where month = "{month}"
+				and posting_date between "{from_date}" and "{to_date}"
+				and account="{account}"
+				and cost_center="{cost_center}"
+			""".format(from_date=month_first_date, to_date=month_last_date,account = budget_account, month = month_name, cost_center=cost_center))[0][0],2)
+		monthly_received = frappe.db.sql("""
+				select sum(amount)
+				from `tabReappropriation Details`
+				where posting_date between "{from_date}" and "{to_date}"
+				and to_account="{account}"
+				and to_cost_center="{cost_center}"
+				and to_month = "{month}"
+			""".format(from_date=month_first_date, to_date=month_last_date, month = month_name, account = budget_account, cost_center=cost_center))[0][0]
+		monthly_sent = frappe.db.sql("""
+				select sum(amount)
+				from `tabReappropriation Details`
+				where posting_date between "{from_date}" and "{to_date}"
+				and from_account="{account}"
+				and from_cost_center="{cost_center}"
+				and from_month = "{month}"
+			""".format(from_date=month_first_date, to_date=month_last_date,month = month_name, account = budget_account, cost_center=cost_center))[0][0]
+		adjustment = flt(supplement,2) + flt(monthly_received,2) - flt(monthly_sent,2)
+	if adjustment:
+		sum =flt(adjustment) + flt(monthly_amount)
+		return sum
+	else:
+		return monthly_amount
 
 
 def get_item_details(args):

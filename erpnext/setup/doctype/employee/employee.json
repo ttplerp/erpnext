@@ -40,7 +40,7 @@
   "increment_cycle",
   "promotion_cycle",
   "promotion_due_date",
-  "employee_grade",
+  "grade",
   "erpnext_user",
   "create_user_permission",
   "create_user",
@@ -1005,7 +1005,7 @@
    "label": "Thram Number"
   },
   {
-   "fieldname": "employee_grade",
+   "fieldname": "grade",
    "fieldtype": "Link",
    "label": "Employee Grade",
    "options": "Employee Grade"
@@ -1015,7 +1015,7 @@
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-04-21 15:40:31.089964",
+ "modified": "2023-05-03 17:54:52.842753",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",

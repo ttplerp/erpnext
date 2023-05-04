@@ -111,6 +111,11 @@ frappe.ui.form.on("Journal Entry", {
 			erpnext.journal_entry.set_exchange_rate(frm, row.doctype, row.name);
 		})
 	},
+	item: function(frm) {
+		if(!frm.doc.branch){
+
+		}
+	},
 
 	company: function(frm) {
 		frappe.call({
@@ -771,5 +776,23 @@ var create_custom_buttons = function(frm){
 			});
 		}
 	}
+}
+frappe.ui.form.on("Journal Entry Account", {	
+	"account": function(frm, cdt, cdn) {
+		set_cost_center_in_item(frm, cdt, cdn);
+	},
+}); 
+function set_cost_center_in_item(frm, cdt, cdn){
+	var item = locals[cdt][cdn];
+	frappe.call({
+		method:"set_cost_center_in_item",
+		doc: frm.doc,
+		callback: function(r) {
+			if(r.message) {
+				frappe.model.set_value(cdt, cdn, "cost_center", r.message)
+				refresh_field('cost_center');
+			}
+		}
+	})
 }
 /* ePayment Ends */

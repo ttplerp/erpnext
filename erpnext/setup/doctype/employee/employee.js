@@ -67,7 +67,6 @@ frappe.ui.form.on("Employee", {
 		frm.set_query("unit", function() {
 			return {
 				"filters": {
-					"parent_department": frm.doc.section,
 					"company": frm.doc.company,
 					"disabled":0,
 					"is_division":0,

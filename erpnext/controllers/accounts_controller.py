@@ -212,6 +212,11 @@ class AccountsController(TransactionBase):
 				"delete from `tabStock Ledger Entry` where voucher_type=%s and voucher_no=%s",
 				(self.doctype, self.name),
 			)
+			frappe.db.sql(
+				"delete from `tabPayment Ledger Entry` where voucher_type=%s and voucher_no=%s",
+				(self.doctype, self.name),
+			)
+			self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
 
 	def validate_deferred_income_expense_account(self):
 		field_map = {

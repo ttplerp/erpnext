@@ -6,9 +6,11 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "from_month",
   "from_account",
   "from_account_number",
   "column_break_2",
+  "to_month",
   "to_account",
   "amount",
   "to_account_number"
@@ -55,12 +57,24 @@
    "fieldtype": "Data",
    "label": "To Account Number",
    "read_only": 1
+  },
+  {
+   "fieldname": "from_month",
+   "fieldtype": "Link",
+   "label": "From Month",
+   "options": "Month"
+  },
+  {
+   "fieldname": "to_month",
+   "fieldtype": "Link",
+   "label": "To Month",
+   "options": "Month"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-01-03 15:50:55.705507",
+ "modified": "2023-05-03 11:50:42.287575",
  "modified_by": "Administrator",
  "module": "Budget",
  "name": "Budget Reappropiation Detail",

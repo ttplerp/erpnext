@@ -945,17 +945,6 @@ class CustomWorkflow:
 				self.doc.workflow_state = "Waiting Chief, PCD Approval"
 
 	def leave_application(self):
-		''' Leave Application Workflow
-			1. Casual Leave, Earned Leave & Paternity Leave: 
-				* Employee -> Supervisor
-			2. Medical Leave:
-				* Employee -> Department Head (if the leave is within 5 days)
-				* Employee -> CEO (more than 5 days)
-			3. Bereavement & Maternity:
-				* Employee -> Department Head
-			4. Extraordinary Leave:
-				* Employee -> CEO 
-		'''
 		if self.new_state.lower() in ("Draft".lower(),"Waiting Supervisor Approval".lower()):
 			if "HR User" in frappe.get_roles(frappe.session.user):
 				pass

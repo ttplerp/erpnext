@@ -2,7 +2,7 @@
  "actions": [],
  "allow_import": 1,
  "allow_rename": 1,
- "autoname": "naming_series:",
+ "autoname": "PROJ.-.YY.-.MM.-.####",
  "creation": "2013-03-07 11:55:07",
  "doctype": "DocType",
  "document_type": "Setup",
@@ -10,21 +10,29 @@
  "field_order": [
   "naming_series",
   "project_name",
+  "branch",
   "status",
   "project_type",
   "is_active",
   "percent_complete_method",
   "percent_complete",
   "column_break_5",
+  "cost_center",
   "project_template",
   "expected_start_date",
   "expected_end_date",
   "priority",
   "department",
   "customer_details",
+  "party_type",
   "customer",
   "column_break_14",
+  "party",
   "sales_order",
+  "boq_section",
+  "project_boq_item",
+  "project_advance_section",
+  "project_advance_item",
   "users_section",
   "users",
   "copied_from",
@@ -45,7 +53,7 @@
   "total_billable_amount",
   "total_billed_amount",
   "total_consumed_material_cost",
-  "cost_center",
+  "boq_value",
   "margin",
   "gross_margin",
   "column_break_37",
@@ -162,16 +170,16 @@
    "options": "Department"
   },
   {
-   "collapsible": 1,
    "fieldname": "customer_details",
    "fieldtype": "Section Break",
-   "label": "Customer Details",
+   "label": "Party Details",
    "oldfieldtype": "Section Break",
    "options": "fa fa-user"
   },
   {
    "fieldname": "customer",
    "fieldtype": "Link",
+   "hidden": 1,
    "in_global_search": 1,
    "label": "Customer",
    "oldfieldname": "customer",
@@ -187,6 +195,7 @@
   {
    "fieldname": "sales_order",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Sales Order",
    "options": "Sales Order"
   },
@@ -320,10 +329,12 @@
    "read_only": 1
   },
   {
+   "fetch_from": "branch.cost_center",
    "fieldname": "cost_center",
    "fieldtype": "Link",
-   "label": "Default Cost Center",
-   "options": "Cost Center"
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
   },
   {
    "collapsible": 1,
@@ -438,12 +449,60 @@
   {
    "fieldname": "naming_series",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Series",
    "no_copy": 1,
    "options": "PROJ-.####",
    "print_hide": 1,
-   "reqd": 1,
    "set_only_once": 1
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fieldname": "party_type",
+   "fieldtype": "Link",
+   "label": "Party Type",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "party",
+   "fieldtype": "Dynamic Link",
+   "label": "Party",
+   "options": "party_type"
+  },
+  {
+   "fieldname": "boq_value",
+   "fieldtype": "Currency",
+   "label": "BOQ Value(via BOQ)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "boq_section",
+   "fieldtype": "Section Break",
+   "label": "BOQ"
+  },
+  {
+   "fieldname": "project_boq_item",
+   "fieldtype": "Table",
+   "label": "Project BOQ Item",
+   "options": "Project BOQ Item"
+  },
+  {
+   "fieldname": "project_advance_section",
+   "fieldtype": "Section Break",
+   "label": "Project Advance"
+  },
+  {
+   "fieldname": "project_advance_item",
+   "fieldtype": "Table",
+   "label": "Advance",
+   "options": "Project Advance Item",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-puzzle-piece",
@@ -451,11 +510,12 @@
  "index_web_pages_for_search": 1,
  "links": [],
  "max_attachments": 4,
- "modified": "2022-06-23 16:45:06.108499",
+ "modified": "2023-05-03 15:30:20.169543",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project",
- "naming_rule": "By \"Naming Series\" field",
+ "name_case": "UPPER CASE",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
@@ -488,7 +548,6 @@
    "write": 1
   }
  ],
- "quick_entry": 1,
  "search_fields": "project_name,customer, status, priority, is_active",
  "show_name_in_global_search": 1,
  "sort_field": "modified",

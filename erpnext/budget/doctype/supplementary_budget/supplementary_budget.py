@@ -50,6 +50,7 @@ class SupplementaryBudget(Document):
 			budget_against_field = frappe.scrub(self.budget_against)
 			budget_against = self.get(budget_against_field)
 			for d in self.items:
+				month = d.month
 				if d.amount <= 0:
 					frappe.throw("Budget Supplementary Amount should be greater than 0 for record " + str(a.idx))
 				to_account = frappe.db.sql(
@@ -66,11 +67,11 @@ class SupplementaryBudget(Document):
 				if to_account:
 					to_budget_account = frappe.get_doc("Budget Account", to_account[0].name)
 					if cancel:
-						supplement = flt(to_budget_account.supplementary_budget) - flt(d.amount)
 						total = flt(to_budget_account.budget_amount) - flt(d.amount)
+						sup_budget = flt(to_budget_account.supplementary_budget) - flt(d.amount)
 						frappe.db.sql("delete from `tabSupplementary Details` where reference = %s", self.name)
 					else:
-						supplement = flt(to_budget_account.supplementary_budget) + flt(d.amount)
+						sup_budget = flt(to_budget_account.supplementary_budget) + flt(d.amount)
 						total = flt(to_budget_account.budget_amount) + flt(d.amount)
 						# Added for easy reporting purpose
 						supp_details = frappe.new_doc("Supplementary Details")
@@ -80,11 +81,102 @@ class SupplementaryBudget(Document):
 						supp_details.account = d.account
 						supp_details.amount = flt(d.amount)
 						supp_details.company = self.company
+						supp_details.month = month
 						supp_details.reference = self.name
 						supp_details.posting_date = nowdate()
 						supp_details.submit()
+					#added by Rinzin for monthly Check
+					monthly_budget = frappe.db.get_single_value("Budget Settings","monthly_budget_check")
+					to_budget_account.db_set("supplementary_budget", flt(sup_budget,2))
+					if monthly_budget:
+						if month:
+							if month =="January":
+								if cancel:
+									supplement = flt(to_budget_account.sb_jan) - flt(d.amount)
+									to_budget_account.db_set("sb_jan", flt(supplement))
+								else:
+									supplement = flt(to_budget_account.sb_jan) + flt(d.amount)
+									to_budget_account.db_set("sb_jan", flt(supplement))
+							elif month =="Februery":
+								if cancel:
+									supplement = flt(to_budget_account.sb_feb) - flt(d.amount)
+									to_budget_account.db_set("sb_feb", flt(supplement))
+								else:
+									supplement = flt(to_budget_account.sb_feb) + flt(d.amount)
+									to_budget_account.db_set("sb_feb", flt(supplement))
+							elif month =="March":
+								if cancel:
+									supplement = flt(to_budget_account.sb_march) - flt(d.amount)
+									to_budget_account.db_set("sb_march", flt(supplement))
+								else:
+									supplement = flt(to_budget_account.sb_march) + flt(d.amount)
+									to_budget_account.db_set("sb_march", flt(supplement))
+							elif month =="April":
+								if cancel:
+									supplement = flt(to_budget_account.sb_april) - flt(d.amount)
+									to_budget_account.db_set("sb_april", flt(supplement))
+								else:
+									supplement = flt(to_budget_account.sb_april) + flt(d.amount)
+									to_budget_account.db_set("sb_april", flt(supplement))
+							elif month =="May":
+								if cancel:
+									supplement = flt(to_budget_account.sb_may) - flt(d.amount)
+									to_budget_account.db_set("sb_may", flt(supplement))
+								else:
+									supplement = flt(to_budget_account.sb_may) + flt(d.amount)
+									to_budget_account.db_set("sb_may", flt(supplement))
+							elif month =="June":
+								if cancel:
+									supplement = flt(to_budget_account.sb_june) - flt(d.amount)
+									to_budget_account.db_set("sb_june", flt(supplement))
+								else:
+									supplement = flt(to_budget_account.sb_june) + flt(d.amount)
+									to_budget_account.db_set("sb_june", flt(supplement))
+							elif month =="July":
+								if cancel:
+									supplement = flt(to_budget_account.sb_july) - flt(d.amount)
+									to_budget_account.db_set("sb_july", flt(supplement))
+								else:
+									supplement = flt(to_budget_account.sb_july) + flt(d.amount)
+									to_budget_account.db_set("sb_july", flt(supplement))
+							elif month =="August":
+								if cancel:
+									supplement = flt(to_budget_account.sb_aug) - flt(d.amount)
+									to_budget_account.db_set("sb_aug", flt(supplement))
+								else:
+									supplement = flt(to_budget_account.sb_aug) + flt(d.amount)
+									to_budget_account.db_set("sb_aug", flt(supplement))
+							elif month =="September":
+								if cancel:
+									supplement = flt(to_budget_account.sb_sep) - flt(d.amount)
+									to_budget_account.db_set("sb_sep", flt(supplement))
+								else:
+									supplement = flt(to_budget_account.sb_sep) + flt(d.amount)
+									to_budget_account.db_set("sb_sep", flt(supplement))
+							elif month =="October":
+								if cancel:
+									supplement = flt(to_budget_account.sb_oct) - flt(d.amount)
+									to_budget_account.db_set("sb_oct", flt(supplement))
+								else:
+									supplement = flt(to_budget_account.sb_oct) + flt(d.amount)
+									to_budget_account.db_set("sb_oct", flt(supplement))
+							elif month =="November":
+								if cancel:
+									supplement = flt(to_budget_account.sb_nov) - flt(d.amount)
+									to_budget_account.db_set("sb_nov", flt(supplement))
+								else:
+									supplement = flt(to_budget_account.sb_nov) + flt(d.amount)
+									to_budget_account.db_set("sb_nov", flt(supplement))
+							else:
+								if cancel:
+									supplement = flt(to_budget_account.sb_dec) - flt(d.amount)
+									to_budget_account.db_set("sb_dec", flt(supplement))
+								else:
+									supplement = flt(to_budget_account.sb_dec) + flt(d.amount)
+									to_budget_account.db_set("sb_dec", flt(supplement))
+						else:
+							frappe.throw("Please Enter Month")
 					
-					to_budget_account.db_set("supplementary_budget", flt(supplement))
 					to_budget_account.db_set("budget_amount", flt(total))
 				else:
 					frappe.throw(_(

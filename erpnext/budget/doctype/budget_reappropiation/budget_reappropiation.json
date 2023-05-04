@@ -8,15 +8,15 @@
  "engine": "InnoDB",
  "field_order": [
   "appropriation_on",
-  "budget_against",
   "budget_type",
   "from_cost_center",
   "from_project",
+  "fiscal_year",
   "column_break_4",
   "company",
+  "budget_against",
   "to_cost_center",
   "to_project",
-  "fiscal_year",
   "remark",
   "section_break_10",
   "items",
@@ -155,8 +155,7 @@
    "fieldname": "budget_type",
    "fieldtype": "Link",
    "label": "Budget Type",
-   "options": "Budget Type",
-   "reqd": 1
+   "options": "Budget Type"
   },
   {
    "fieldname": "total_reappropiation_amount",
@@ -168,7 +167,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-03 14:48:51.718251",
+ "modified": "2023-05-03 11:51:24.166703",
  "modified_by": "Administrator",
  "module": "Budget",
  "name": "Budget Reappropiation",
@@ -185,6 +184,7 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
@@ -196,6 +196,7 @@
    "report": 1,
    "role": "Accounts User",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
@@ -207,6 +208,7 @@
    "report": 1,
    "role": "Budget User",
    "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],

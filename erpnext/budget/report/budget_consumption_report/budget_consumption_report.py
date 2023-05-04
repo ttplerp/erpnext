@@ -58,18 +58,25 @@ def get_data(query,from_date, to_date, filters):
 									and from_cost_center="{cost_center}"
 								""".format(from_date=from_date, to_date=to_date, account = d.account, cost_center=d.cost_center))[0][0]
 			adjustment = flt(monthly_received,2) - flt(monthly_sent,2)
+
 		else:
 			initial_budget = d.initial_budget
 			adjustment = flt(d.added) - flt(d.deducted)
 			supplement = flt(d.supplement)
-		if filters.group_by_account and filters.budget_against != "Project":
+		if filters.monthly_budget:
+			cost_center = d.cost_center
+			committed = frappe.db.sql("select SUM(amount) from `tabCommitted Budget` where cost_center = %s and account = %s and reference_date BETWEEN %s and %s", (d.cost_center, d.account, from_date, to_date))[0][0]
+			consumed = frappe.db.sql("select SUM(amount) from `tabConsumed Budget` where cost_center = %s and account = %s and reference_date BETWEEN %s and %s", (d.cost_center, d.account, from_date, to_date))[0][0]
+		elif filters.group_by_account and filters.budget_against != "Project":
 			cost_center = ""
 			committed = frappe.db.sql("select SUM(amount) from `tabCommitted Budget` where account = %s and reference_date BETWEEN %s and %s", (d.account, filters.from_date, filters.to_date))[0][0]
 			consumed = frappe.db.sql("select SUM(amount) from `tabConsumed Budget` where account = %s and reference_date BETWEEN %s and %s", (d.account, filters.from_date, filters.to_date))[0][0]
+		
 		elif filters.budget_against == "Project":
 			project = filters.project
 			committed = frappe.db.sql("select SUM(amount) from `tabCommitted Budget` where cost_center = %s and project = %s and reference_date BETWEEN %s and %s", (d.cost_center, d.project, filters.from_date, filters.to_date))[0][0]
 			consumed = frappe.db.sql("select SUM(amount) from `tabConsumed Budget` where cost_center = %s and project = %s and reference_date BETWEEN %s and %s", (d.cost_center, d.project, filters.from_date, filters.to_date))[0][0]
+		
 		else:
 			cost_center = d.cost_center
 			committed = frappe.db.sql("select SUM(amount) from `tabCommitted Budget` where cost_center = %s and account = %s and reference_date BETWEEN %s and %s", (d.cost_center, d.account, filters.from_date, filters.to_date))[0][0]
@@ -84,8 +91,8 @@ def get_data(query,from_date, to_date, filters):
 			committed -= consumed
 			committed = 0 if committed < 0 else committed
 		if filters.monthly_budget and filters.month:
-			current    = flt(initial_budget) + flt(d.supplement) +flt(adjustment)
-			available = flt(initial_budget) + flt(adjustment) + flt(d.supplement) - flt(consumed) - flt(committed)
+			current    = flt(initial_budget) + flt(supplement) +flt(adjustment)
+			available = flt(initial_budget) + flt(adjustment) + flt(supplement) - flt(consumed) - flt(committed)
 		else:
 			current    = flt(d.initial_budget) + flt(d.supplement) +flt(adjustment)
 			available = flt(d.initial_budget) + flt(adjustment) + flt(d.supplement) - flt(consumed) - flt(committed)
@@ -120,25 +127,6 @@ def get_data(query,from_date, to_date, filters):
 				}
 
 			data.append(row)
-	# 		ini+=flt(d.initial_budget)
-	# 		su+=supplement
-	# 		cm+=committed
-	# 		cur+=current
-	# 		co+=consumed
-	# 		ad+=adjustment
-	# 		av+=available
-	# row = {
-	# 	"account": "Total",
-	# 	"cost_center": "",
-	# 	"initial": ini,
-	# 	"supplementary": su,
-	# 	"adjustment": ad,
-	# 	"curernt":cur,
-	# 	"committed": cm,
-	# 	"consumed": co,
-	# 	"available": av
-	# }
-	# data.append(row)
 	return data
 
 def construct_query(from_date,ot_date,filters=None):
@@ -147,7 +135,6 @@ def construct_query(from_date,ot_date,filters=None):
 		condition += " and b.project = \'" + str(filters.project) + "\' "
 	elif filters.budget_against == "Cost Center" and filters.cost_center:
 		condition += " and b.cost_center = \'" + str(filters.cost_center) + "\' "
-	
 	if filters.budget_type:
 		condition += " and ba.budget_type = \'" + str(filters.budget_type) + "\' "
 	
@@ -161,7 +148,9 @@ def construct_query(from_date,ot_date,filters=None):
 				""".format(filters.cost_center, lft, rgt)
 	if filters.budget_type:
 		condition += " and ba.budget_type = \'" + str(filters.budget_type) + "\' "
+
 	if filters.monthly_budget and filters.month:
+		# condition += " and ba.budget_type = \'" + str(filters.budget_type) + "\' "
 		month_field_name = filters.month
 		query = """select b.cost_center, ba.account, b.project,
 			(select a.account_number from `tabAccount` a where a.name = ba.account) as account_number, 

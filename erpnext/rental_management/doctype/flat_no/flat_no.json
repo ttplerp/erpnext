@@ -1,0 +1,96 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-04-27 17:47:10.116451",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "block_no",
+  "flat_no",
+  "cb_1",
+  "total_floor_area"
+ ],
+ "fields": [
+  {
+   "fieldname": "block_no",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Block No",
+   "options": "Block No",
+   "reqd": 1
+  },
+  {
+   "fieldname": "flat_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Flat No",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_floor_area",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Total Floor Area (Sqft)",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-04-27 18:06:21.694427",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Flat No",
+ "naming_rule": "By script",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Rental Master",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Rental Manager",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Rental User",
+   "share": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

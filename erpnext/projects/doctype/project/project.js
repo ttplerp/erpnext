@@ -61,7 +61,24 @@ frappe.ui.form.on("Project", {
 		}
 		frm.trigger("set_custom_buttons");
 	},
-
+	project_type:function(frm){
+		if (frm.doc.project_type == "External") {
+			frm.set_query("party_type", function() {
+				return {
+					//filters: {"name": ["in", ["Customer", "Supplier"]]}
+					filters: {"name": ["in", ["Supplier"]]}
+				}
+			});
+			//cur_frm.toggle_reqd("party", frm.doc.party_type);
+		} else {
+			frm.set_query("party_type", function() {
+				return {
+					//filters: {"name": ["in", ["Employee"]]}
+					filters: {"name": ["in", ["Customer"]]}
+				}
+			});
+		}
+	},
 	set_custom_buttons: function(frm) {
 		if (!frm.is_new()) {
 			frm.add_custom_button(__('Duplicate Project with Tasks'), () => {

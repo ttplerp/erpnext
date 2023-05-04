@@ -1,0 +1,120 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-05-01 11:20:42.758038",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "revenue_claim_account",
+  "penalty_account",
+  "pre_rent_account",
+  "rent_write_off_account",
+  "cb_1",
+  "security_deposit_account",
+  "discount_account",
+  "excess_payment_account",
+  "sb_1",
+  "items"
+ ],
+ "fields": [
+  {
+   "fieldname": "revenue_claim_account",
+   "fieldtype": "Link",
+   "label": "Revenue Claim Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "penalty_account",
+   "fieldtype": "Link",
+   "label": "Penalty Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "pre_rent_account",
+   "fieldtype": "Link",
+   "label": "Pre Rent Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "rent_write_off_account",
+   "fieldtype": "Link",
+   "label": "Rent Write-off Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "security_deposit_account",
+   "fieldtype": "Link",
+   "label": "Security Deposit Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "discount_account",
+   "fieldtype": "Link",
+   "label": "Discount Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "excess_payment_account",
+   "fieldtype": "Link",
+   "label": "Excess Payment Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "sb_1",
+   "fieldtype": "Section Break",
+   "label": "Building Category wise Revenue Accounts"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "options": "Rental Account Setting Item"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2023-05-03 15:06:39.376675",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Rental Account Setting",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Rental Master",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

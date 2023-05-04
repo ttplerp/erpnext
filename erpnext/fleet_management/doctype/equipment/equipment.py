@@ -35,12 +35,11 @@ class Equipment(Document):
 				"from_date": from_date,
 				"supplier": self.supplier if self.hired_equipment else '',
 				"reference_document": ref_doc,
-				"bank_name": self.bank_name,
-				"account_number": self.account_number,
-				"ifs_code": self.ifs_code
+				# "bank_name": self.bank_name,
+				# "account_number": self.account_number,
+				# "ifs_code": self.ifs_code
 			})
 		else:
-			#doc = frappe.get_doc(self.doctype,self.name)
 			ln = len(self.equipment_history)-1
 			if ln < 0:
 				self.append("equipment_history", {
@@ -48,9 +47,9 @@ class Equipment(Document):
 					"from_date": from_date,
 					"supplier": self.supplier if self.hired_equipment else '',
 					"reference_document": ref_doc,
-					"bank_name": self.bank_name,
-					"account_number": self.account_number,
-					"ifs_code": self.ifs_code
+					# "bank_name": self.bank_name,
+					# "account_number": self.account_number,
+					# "ifs_code": self.ifs_code
 				})
 			elif self.branch != self.equipment_history[ln].branch or self.supplier != self.equipment_history[ln].supplier:
 				self.append("equipment_history", {
@@ -58,9 +57,9 @@ class Equipment(Document):
 					"from_date": from_date,
 					"supplier": self.supplier if self.hired_equipment else '',
 					"reference_document": ref_doc,
-					"bank_name": self.bank_name,
-					"account_number": self.account_number,
-					"ifs_code": self.ifs_code
+					# "bank_name": self.bank_name,
+					# "account_number": self.account_number,
+					# "ifs_code": self.ifs_code
 				})
 			self.set_to_date()
 
