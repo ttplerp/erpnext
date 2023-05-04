@@ -20,7 +20,6 @@ frappe.ui.form.on('Equipment Modifier Tool', {
 			return {
 				filters: {
 					"disabled": 0,
-					"equipment_type": doc.new_equipment_type
 				}
 			};
 		});
