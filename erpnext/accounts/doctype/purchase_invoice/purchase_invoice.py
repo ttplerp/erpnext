@@ -542,6 +542,13 @@ class PurchaseInvoice(BuyingController):
 			expense, cost_center = item.expense_account, item.cost_center
 			if item.po_detail:
 				expense, cost_center = frappe.db.get_value("Purchase Order Item", item.po_detail, ["expense_account", "cost_center"])
+				if not expense:
+					expense = frappe.db.get_value(
+						"Item Default",
+							{"parent": item.item_code, "company": self.company},
+							["expense_account"])
+					if not expense_account:
+						frappe.throw("Expense Account not found for item {} at row {}".format(frappe.bold(item.item_code),frappe.bold(item.idx)))
 			else:
 				if frappe.db.get_value("Item", item.item_code, "is_fixed_asset"):
 					expense = get_asset_category_account('fixed_asset_account', item=item.item_code,
