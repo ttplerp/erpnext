@@ -547,7 +547,7 @@ class PurchaseInvoice(BuyingController):
 						"Item Default",
 							{"parent": item.item_code, "company": self.company},
 							["expense_account"])
-					if not expense_account:
+					if not expense:
 						frappe.throw("Expense Account not found for item {} at row {}".format(frappe.bold(item.item_code),frappe.bold(item.idx)))
 			else:
 				if frappe.db.get_value("Item", item.item_code, "is_fixed_asset"):
