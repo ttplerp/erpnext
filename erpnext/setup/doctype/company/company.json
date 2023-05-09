@@ -141,11 +141,12 @@
   "default_production_account",
   "column_break_124",
   "default_unloading_account",
-  "coal_raising_settings_section",
-  "coal_raising_credit_account",
-  "coal_raising_expense_account",
+  "project_account_settings_section",
+  "project_invoice_account",
+  "invoice_account_supplier",
   "column_break_131",
-  "coal_raising_penalty_account"
+  "invoice_account_internal",
+  "refundable_account_supplier"
  ],
  "fields": [
   {
@@ -975,29 +976,6 @@
    "label": "TDS Accounts"
   },
   {
-   "fieldname": "coal_raising_settings_section",
-   "fieldtype": "Section Break",
-   "label": "Coal Raising Settings"
-  },
-  {
-   "fieldname": "coal_raising_credit_account",
-   "fieldtype": "Link",
-   "label": "Coal Raising Credit Account",
-   "options": "Account"
-  },
-  {
-   "fieldname": "coal_raising_expense_account",
-   "fieldtype": "Link",
-   "label": "Coal Raising Expense Account",
-   "options": "Account"
-  },
-  {
-   "fieldname": "coal_raising_penalty_account",
-   "fieldtype": "Link",
-   "label": "Coal Raising Penalty Account",
-   "options": "Account"
-  },
-  {
    "fieldname": "column_break_131",
    "fieldtype": "Column Break"
   },
@@ -1029,6 +1007,35 @@
    "label": "POL Expense Account",
    "options": "Account",
    "reqd": 1
+  },
+  {
+   "fieldname": "project_account_settings_section",
+   "fieldtype": "Section Break",
+   "label": "Project Account Settings"
+  },
+  {
+   "fieldname": "project_invoice_account",
+   "fieldtype": "Link",
+   "label": "Project Invoice Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "invoice_account_supplier",
+   "fieldtype": "Link",
+   "label": "Invoice Account Supplier",
+   "options": "Account"
+  },
+  {
+   "fieldname": "invoice_account_internal",
+   "fieldtype": "Link",
+   "label": "Invoice Account Internal",
+   "options": "Account"
+  },
+  {
+   "fieldname": "refundable_account_supplier",
+   "fieldtype": "Link",
+   "label": "Refundable Account Supplier",
+   "options": "Account"
   }
  ],
  "icon": "fa fa-building",
@@ -1036,7 +1043,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2023-04-18 10:39:39.688893",
+ "modified": "2023-05-04 16:41:29.655963",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",

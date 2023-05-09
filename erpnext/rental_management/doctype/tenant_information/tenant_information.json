@@ -1,0 +1,339 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-05-05 15:11:05.783838",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sb_tenant_details",
+  "branch",
+  "tenant_name",
+  "tenant_cid",
+  "phone_no",
+  "email",
+  "cb_1",
+  "ministry_and_agency",
+  "tenant_department",
+  "tenant_department_name",
+  "cb_2",
+  "customer",
+  "customer_code",
+  "is_nhdcl_employee",
+  "employee_id",
+  "employee_name",
+  "sb_building_details",
+  "block_no",
+  "block",
+  "dzongkhag",
+  "cb_3",
+  "locations",
+  "location_name",
+  "rate_per_sqft",
+  "cb_4",
+  "flat_no",
+  "flat",
+  "total_floor_area",
+  "sb_rental_details",
+  "initial_rental_amount",
+  "security_deposit",
+  "security_deposit_received",
+  "cb_5",
+  "effective_date",
+  "status",
+  "cb_6",
+  "rental_term_year",
+  "percent_of_increment",
+  "no_of_year_for_increment",
+  "sb_tenant_rental_charges",
+  "calculate_rent_charges",
+  "rental_charges",
+  "sb_7",
+  "remarks",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch"
+  },
+  {
+   "fieldname": "cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "customer_code",
+   "fieldtype": "Data",
+   "label": "Customer Code",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_building_details",
+   "fieldtype": "Section Break",
+   "label": "Building Details"
+  },
+  {
+   "fieldname": "block_no",
+   "fieldtype": "Link",
+   "label": "Block No. ID",
+   "options": "Block No"
+  },
+  {
+   "fieldname": "cb_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "flat_no",
+   "fieldtype": "Link",
+   "label": "Flat No. ID",
+   "options": "Flat No"
+  },
+  {
+   "fieldname": "sb_tenant_details",
+   "fieldtype": "Section Break",
+   "label": "Tenant Details"
+  },
+  {
+   "fieldname": "tenant_name",
+   "fieldtype": "Data",
+   "label": "Tenant Name"
+  },
+  {
+   "fieldname": "tenant_cid",
+   "fieldtype": "Data",
+   "label": "Tenant CID"
+  },
+  {
+   "fieldname": "cb_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ministry_and_agency",
+   "fieldtype": "Link",
+   "label": "Ministry and Agency",
+   "options": "Ministry and Agency"
+  },
+  {
+   "fieldname": "sb_rental_details",
+   "fieldtype": "Section Break",
+   "label": "Rental Details"
+  },
+  {
+   "fieldname": "initial_rental_amount",
+   "fieldtype": "Currency",
+   "label": "Initial Rental Amount"
+  },
+  {
+   "fieldname": "security_deposit",
+   "fieldtype": "Currency",
+   "label": "Security Deposit"
+  },
+  {
+   "fieldname": "cb_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "effective_date",
+   "fieldtype": "Date",
+   "label": "Effective Date"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nA\nB\nC"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Tenant Information",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fetch_from": "block_no.block_no",
+   "fieldname": "block",
+   "fieldtype": "Data",
+   "label": "Block",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "block_no.location",
+   "fieldname": "locations",
+   "fieldtype": "Link",
+   "label": "Location ID",
+   "options": "Locations",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "block_no.dzongkhag",
+   "fieldname": "dzongkhag",
+   "fieldtype": "Link",
+   "label": "Dzongkhag",
+   "options": "Dzongkhag",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fetch_from": "block_no.rate",
+   "fieldname": "rate_per_sqft",
+   "fieldtype": "Currency",
+   "label": "Rate per Sqft",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "flat_no.flat_no",
+   "fieldname": "flat",
+   "fieldtype": "Data",
+   "label": "Flat",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "flat_no.total_floor_area",
+   "fieldname": "total_floor_area",
+   "fieldtype": "Float",
+   "label": "Total Floor Area",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "block_no.location_name",
+   "fieldname": "location_name",
+   "fieldtype": "Data",
+   "label": "Location Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "tenant_department",
+   "fieldtype": "Link",
+   "label": "Tenant Department ID",
+   "options": "Tenant Department"
+  },
+  {
+   "fetch_from": "tenant_department.department",
+   "fieldname": "tenant_department_name",
+   "fieldtype": "Data",
+   "label": "Tenant Department",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_nhdcl_employee",
+   "fieldtype": "Check",
+   "label": "Is NHDCL Employee"
+  },
+  {
+   "depends_on": "eval: doc.is_nhdcl_employee",
+   "fieldname": "employee_id",
+   "fieldtype": "Link",
+   "label": "Employee ID",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "employee_id.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "phone_no",
+   "fieldtype": "Data",
+   "label": "Phone No"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "default": "0",
+   "fieldname": "security_deposit_received",
+   "fieldtype": "Check",
+   "label": "Security Deposit Received"
+  },
+  {
+   "fieldname": "sb_tenant_rental_charges",
+   "fieldtype": "Section Break",
+   "label": "Tenant Rental Charges"
+  },
+  {
+   "fieldname": "calculate_rent_charges",
+   "fieldtype": "Button",
+   "label": "Calculate Rent Charges"
+  },
+  {
+   "fieldname": "cb_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "percent_of_increment",
+   "fieldtype": "Percent",
+   "label": "Percent of Increment"
+  },
+  {
+   "fieldname": "no_of_year_for_increment",
+   "fieldtype": "Int",
+   "label": "No. of Year for Increment"
+  },
+  {
+   "fieldname": "rental_charges",
+   "fieldtype": "Table",
+   "label": "Rental Charges",
+   "options": "Tenant Rental Charges"
+  },
+  {
+   "fieldname": "sb_7",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "rental_term_year",
+   "fieldtype": "Int",
+   "label": "Rental Term Years"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-05-08 12:08:52.905399",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Tenant Information",
+ "naming_rule": "By script",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

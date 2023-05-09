@@ -210,7 +210,7 @@ class PaymentEntry(AccountsController):
 				frappe.msgprint(_("Party Type is mandatory"), raise_exception=True)
 
 			if not self.party:
-				frappe.msgprint(_("Party is mandatory"), raise_exception)
+				frappe.msgprint(_("Party is mandatory"), raise_exception=True)
 
 			_party_name = "title" if self.party_type == "Shareholder" else self.party_type.lower() + "_name"
 
@@ -333,7 +333,6 @@ class PaymentEntry(AccountsController):
 
 	def validate_reference_documents(self):
 		valid_reference_doctypes = self.get_valid_reference_doctypes()
-
 		if not valid_reference_doctypes:
 			return
 		for d in self.get("references"):
@@ -388,9 +387,9 @@ class PaymentEntry(AccountsController):
 
 	def get_valid_reference_doctypes(self):
 		if self.party_type == "Customer":
-			return ("Sales Order", "Sales Invoice", "Journal Entry", "Dunning")
+			return ("Sales Order", "Sales Invoice", "Journal Entry", "Dunning", "Project Invoice")
 		elif self.party_type == "Supplier":
-			return ("Purchase Order", "Purchase Invoice", "Journal Entry","Repair And Service Invoice")
+			return ("Purchase Order", "Purchase Invoice", "Journal Entry","Repair And Service Invoice", "Project Invoice")
 		elif self.party_type == "Shareholder":
 			return ("Journal Entry",)
 		elif self.party_type == "Employee":
@@ -1717,7 +1716,7 @@ def get_payment_entry(
 	paid_amount, received_amount, discount_amount = apply_early_payment_discount(
 		paid_amount, received_amount, doc
 	)
-	if dt in ["Repair And Service Invoice"]:
+	if dt in ["Repair And Service Invoice","Project Invoice"]:
 		party = doc.party
 	else:
 		party = doc.get(scrub(party_type))
@@ -1875,6 +1874,8 @@ def set_payment_type(dt, doc):
 		dt == "Sales Order" or (dt in ("Sales Invoice", "Dunning") and doc.outstanding_amount > 0)
 	) or (dt == "Purchase Invoice" and doc.outstanding_amount < 0):
 		payment_type = "Receive"
+	elif dt == "Project Invoice":
+		payment_type = "Receive" if doc.party_type == "Customer" else "Pay"
 	else:
 		payment_type = "Pay"
 	return payment_type

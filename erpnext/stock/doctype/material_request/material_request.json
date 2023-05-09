@@ -19,6 +19,7 @@
   "transaction_date",
   "schedule_date",
   "company",
+  "site_name",
   "amended_from",
   "warehouse_section",
   "set_from_warehouse",
@@ -363,13 +364,19 @@
    "label": "Repair And Services",
    "options": "Repair And Services",
    "read_only": 1
+  },
+  {
+   "fieldname": "site_name",
+   "fieldtype": "Link",
+   "label": "Site Name",
+   "options": "Site Name"
   }
  ],
  "icon": "fa fa-ticket",
  "idx": 70,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-12-01 12:25:58.725607",
+ "modified": "2023-05-08 15:16:00.648502",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Material Request",

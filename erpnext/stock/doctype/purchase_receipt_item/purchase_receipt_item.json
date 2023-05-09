@@ -31,6 +31,11 @@
   "conversion_factor",
   "retain_sample",
   "sample_quantity",
+  "sb_void_deduction",
+  "void_deduction",
+  "cb_void_deduction",
+  "void_deduction_percent",
+  "void_deduction_qty",
   "tracking_section",
   "received_stock_qty",
   "stock_qty",
@@ -1034,12 +1039,39 @@
    "label": "Asset Received Entries",
    "options": "Asset Received Entries",
    "read_only": 1
+  },
+  {
+   "fieldname": "sb_void_deduction",
+   "fieldtype": "Section Break",
+   "label": "Void Deduction"
+  },
+  {
+   "default": "0",
+   "fieldname": "void_deduction",
+   "fieldtype": "Check",
+   "label": "Void Deduction"
+  },
+  {
+   "fieldname": "cb_void_deduction",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.void_deduction",
+   "fieldname": "void_deduction_percent",
+   "fieldtype": "Percent",
+   "label": "Void Deduction Percent(%)"
+  },
+  {
+   "depends_on": "eval: doc.void_deduction_percent && doc.void_deduction",
+   "fieldname": "void_deduction_qty",
+   "fieldtype": "Float",
+   "label": "Void Deduction Quantity"
   }
  ],
  "idx": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-11-29 10:11:51.734067",
+ "modified": "2023-05-08 16:00:38.060493",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Purchase Receipt Item",

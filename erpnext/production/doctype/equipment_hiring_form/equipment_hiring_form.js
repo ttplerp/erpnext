@@ -17,8 +17,7 @@ frappe.ui.form.on('Equipment Hiring Form', {
 			}
 		}
 	},
-	onload:function(frm){
-	},
+	
 	branch:function(frm){
 		frm.set_query("equipment", function() {
 			return {
@@ -36,3 +35,35 @@ frappe.ui.form.on('Equipment Hiring Form', {
 		})
 	}
 });
+
+frappe.ui.form.on('EHF Rate', {
+	"rate_type": function(frm, cdt, cdn) {
+		var child = locals[cdt][cdn]
+		if (frm.doc.equipment && child.rate_type && child.from_date) {
+			frappe.call({
+				method: "erpnext.maintenance.doctype.equipment_hiring_form.equipment_hiring_form.get_hire_rates",
+				args: {"e": doc.equipment, "from_date": doc.from_date},
+				callback: function(r) {
+					if(r.message) {
+						if(r.message) {
+							if(item.rate_type == "Without Fuel") {
+								frappe.model.set_value(cdt, cdn, "rate", r.message[0].without_fuel)
+							}
+							else if (item.rate_type == "With Fuel") {
+								frappe.model.set_value(cdt, cdn, "rate", r.message[0].with_fuel)
+							}
+							else if(item.rate_type == "Cft - Broadleaf") {
+								frappe.model.set_value(cdt, cdn, "rate", r.message[0].cft_rate_bf)
+							}
+							else if(item.rate_type == "Cft - Conifer") {
+								frappe.model.set_value(cdt, cdn, "rate", r.message[0].cft_rate_co)
+							}
+							frappe.model.set_value(cdt, cdn, "idle_rate", r.message[0].idle)
+						}				
+						frm.refresh_fields("ehf_rate")
+					}
+				}
+			})
+		}
+	},
+})

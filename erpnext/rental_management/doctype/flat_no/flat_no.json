@@ -9,7 +9,8 @@
   "block_no",
   "flat_no",
   "cb_1",
-  "total_floor_area"
+  "total_floor_area",
+  "status"
  ],
  "fields": [
   {
@@ -23,7 +24,6 @@
   {
    "fieldname": "flat_no",
    "fieldtype": "Data",
-   "in_list_view": 1,
    "label": "Flat No",
    "reqd": 1
   },
@@ -34,14 +34,20 @@
   {
    "fieldname": "total_floor_area",
    "fieldtype": "Float",
-   "in_list_view": 1,
    "label": "Total Floor Area (Sqft)",
    "reqd": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "\nAllocated\nSurrendered\nUnder Maintenance"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-04-27 18:06:21.694427",
+ "modified": "2023-05-04 10:05:35.786404",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Flat No",

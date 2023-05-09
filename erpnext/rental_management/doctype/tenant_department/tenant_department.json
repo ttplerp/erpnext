@@ -40,7 +40,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-03 14:45:33.914942",
+ "modified": "2023-05-05 15:43:25.562253",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Tenant Department",
@@ -71,6 +71,7 @@
    "write": 1
   }
  ],
+ "search_fields": "department,ministry_agency",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

@@ -407,7 +407,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Buying",
-   "link_count": 10,
+   "link_count": 11,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -520,9 +520,19 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Purchase Receipt",
+   "link_count": 0,
+   "link_to": "Purchase Receipt",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-04-24 11:02:28.586749",
+ "modified": "2023-05-08 14:26:22.001763",
  "modified_by": "sangay.dorji@thimphutechpark.bt",
  "module": "Buying",
  "name": "Buying",

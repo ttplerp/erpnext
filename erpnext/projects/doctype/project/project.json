@@ -33,6 +33,8 @@
   "project_boq_item",
   "project_advance_section",
   "project_advance_item",
+  "project_invoice_section",
+  "project_invoice_item",
   "users_section",
   "users",
   "copied_from",
@@ -503,6 +505,18 @@
    "label": "Advance",
    "options": "Project Advance Item",
    "read_only": 1
+  },
+  {
+   "fieldname": "project_invoice_section",
+   "fieldtype": "Section Break",
+   "label": "Project Invoice"
+  },
+  {
+   "fieldname": "project_invoice_item",
+   "fieldtype": "Table",
+   "label": "Project Invoice Item",
+   "options": "Project Invoice Item",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-puzzle-piece",
@@ -510,7 +524,7 @@
  "index_web_pages_for_search": 1,
  "links": [],
  "max_attachments": 4,
- "modified": "2023-05-03 15:30:20.169543",
+ "modified": "2023-05-04 17:03:33.173931",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project",

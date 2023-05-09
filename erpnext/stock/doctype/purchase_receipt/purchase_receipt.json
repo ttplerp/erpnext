@@ -27,6 +27,7 @@
   "apply_putaway_rule",
   "is_return",
   "return_against",
+  "site_name",
   "accounting_dimensions_section",
   "cost_center",
   "dimension_col_break",
@@ -1186,13 +1187,19 @@
    "fieldtype": "Date",
    "hidden": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "site_name",
+   "fieldtype": "Link",
+   "label": "Site Name",
+   "options": "Site Name"
   }
  ],
  "icon": "fa fa-truck",
  "idx": 261,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-11-28 18:30:17.677515",
+ "modified": "2023-05-08 15:19:44.775198",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Purchase Receipt",

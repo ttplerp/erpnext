@@ -23,6 +23,7 @@ class EquipmentHiringForm(Document):
 					frappe.throw("Equipment Hiring End date is already after the extension date {}".format(a.hiring_extended_till))
 
 		frappe.db.commit()
+
 	def check_duplicate(self):
 		if frappe.db.sql('''
 			select 1 from `tabEquipment Hiring Form` where name != '{0}' and ('{1}' between start_date and end_date
@@ -31,6 +32,7 @@ class EquipmentHiringForm(Document):
 			and equipment ='{3}' and disabled = 0
 			'''.format(self.name,self.start_date,self.end_date,self.equipment)):
 			frappe.throw("Equipment Hiring Form Already exists for Equipment {}".format(self.equipment))
+
 	def validate_date(self):
 		if getdate(self.start_date) > getdate(self.end_date):
 			frappe.throw("Start Date cannot be greater than End Date")
@@ -42,7 +44,7 @@ class EquipmentHiringForm(Document):
 			if d.to_date and getdate(d.from_date) > getdate(d.to_date):
 				throw("From Date cannot be greater than To Date at row {}".format(bold(d.idx)))
 
-			# validate date verlapping
+			# validate date overlapping
 			n = flt(d.idx)-1
 			i = 0
 			while i < n:
@@ -78,6 +80,20 @@ class EquipmentHiringForm(Document):
 
 		if rate_count < efh_rate_count[0][0]:
 			frappe.throw("You are not allowed to <b>remove the record in Rate table</b>. Please reload to load the record again")
+
+	@frappe.whitelist()
+	def get_hire_rates(self, from_date):
+		data = frappe.db.sql("""select a.rate_fuel as with_fuel, a.rate_wofuel as without_fuel, 
+						a.idle_rate as idle, a.cft_rate_bf, a.cft_rate_co 
+					from `tabHire Charge Item` a, `tabHire Charge Parameter` b 
+					where a.parent = b.name and b.equipment_type = '{0}' and b.equipment_model = '{1}' 
+					and '{2}' between a.from_date and ifnull(a.to_date, now()) LIMIT 1""".format(self.equipment_type, self.equipment_model, from_date), as_dict=True)
+
+		# data = frappe.db.sql(db_query.format(e.equipment_type, e.equipment_model, from_date), as_dict=True)
+		if not data:
+			frappe.throw(_("No Hire Rates has been assigned for equipment type <b>{0}</b> and model <b>{1}</b>").format(self.equipment_type, self.equipment_model), title="No Data Found!")
+		return data
+
 @frappe.whitelist()
 def make_logbook(source_name, target_doc=None):
 	from frappe.model.mapper import get_mapped_doc

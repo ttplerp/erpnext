@@ -1,0 +1,100 @@
+{
+ "actions": [],
+ "autoname": "RFA-.YYYY.-.##",
+ "creation": "2023-05-04 11:13:40.355413",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "rental_focal",
+  "is_active",
+  "cb_1",
+  "focal_name",
+  "user_id",
+  "sb_1",
+  "items"
+ ],
+ "fields": [
+  {
+   "fieldname": "rental_focal",
+   "fieldtype": "Link",
+   "label": "Rental Focal",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "rental_focal.employee_name",
+   "fieldname": "focal_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Focal Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Is Active"
+  },
+  {
+   "fetch_from": "rental_focal.user_id",
+   "fieldname": "user_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "User ID",
+   "options": "User",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "sb_1",
+   "fieldtype": "Section Break",
+   "label": "Dzongkhag and Agency Details"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "options": "Rental Focal and Agency Item"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-05-04 14:26:08.204800",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Rental Focal and Agency",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Rental Master",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

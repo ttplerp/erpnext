@@ -13,6 +13,11 @@
   "col_break_3",
   "request_date",
   "contact_number",
+  "is_hired",
+  "section_break_8",
+  "party_type",
+  "column_break_10",
+  "party",
   "section_break_3",
   "equipment",
   "equipment_model",
@@ -262,12 +267,42 @@
    "fieldname": "request_items",
    "fieldtype": "Table",
    "label": "Request Items",
-   "options": "Hiring Request Details"
+   "options": "Hiring Request Details",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_hired",
+   "fieldtype": "Check",
+   "label": "Is hired Equipment?",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_8",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "party_type",
+   "fieldtype": "Select",
+   "label": "Party Type",
+   "options": "\nSupplier\nCustomer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "party",
+   "fieldtype": "Dynamic Link",
+   "label": "Party",
+   "options": "party_type",
+   "reqd": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-03 16:52:20.899969",
+ "modified": "2023-05-08 16:50:45.799999",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment Hiring Form",

@@ -15,7 +15,8 @@
   "equipment_details_section",
   "equipment",
   "equipment_category",
-  "supplier",
+  "party_type",
+  "party",
   "column_break_4",
   "equipment_type",
   "equipment_model",
@@ -111,14 +112,6 @@
    "label": "Equipment Hiring Form",
    "options": "Equipment Hiring Form",
    "reqd": 1
-  },
-  {
-   "fetch_from": "equipment_hiring_form.supplier",
-   "fieldname": "supplier",
-   "fieldtype": "Link",
-   "label": "Supplier",
-   "options": "Supplier",
-   "read_only": 1
   },
   {
    "fieldname": "scheduled_working_hour",
@@ -237,11 +230,27 @@
    "fieldtype": "Check",
    "label": "Hired Equipment",
    "read_only": 1
+  },
+  {
+   "fetch_from": "equipment_hiring_form.party_type",
+   "fieldname": "party_type",
+   "fieldtype": "Select",
+   "label": "Party Type",
+   "options": "Supplier\nCustomer",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "equipment_hiring_form.party",
+   "fieldname": "party",
+   "fieldtype": "Dynamic Link",
+   "label": "Party",
+   "options": "party_type",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-02 16:19:20.103267",
+ "modified": "2023-05-08 17:30:47.349955",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Logbook",

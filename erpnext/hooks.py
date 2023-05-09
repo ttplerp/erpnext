@@ -586,9 +586,11 @@ permission_query_conditions = {
 	# "Asset Movement": "erpnext.asset.doctype.asset_movement.asset_movement.get_permission_query_conditions",
 	"Transporter Invoice": "erpnext.accounts.doctype.transporter_invoice.transporter_invoice.get_permission_query_conditions",
 	"EME Invoice": "erpnext.accounts.doctype.eme_invoice.eme_invoice.get_permission_query_conditions",
+	"Hire Charge Invoice": "erpnext.accounts.doctype.hire_charge_invoice.hire_charge_invoice.get_permission_query_conditions",
 	"Fleet Engagement": "erpnext.fleet_management.doctype.fleet_engagement.fleet_engagement.get_permission_query_conditions",
 	"Production":"erpnext.production.doctype.production.production.get_permission_query_conditions",
 	"Budget Reappropiation":"erpnext.budget.doctype.budget_reappropiation.budget_reappropiation.get_permission_query_conditions",
+	"Equipment Request":"erpnext.fleet_management.doctype.equipment_request.equipment_request.get_permission_query_conditions",
 }
 
 user_privacy_documents = [

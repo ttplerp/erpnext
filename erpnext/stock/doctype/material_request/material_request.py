@@ -80,7 +80,7 @@ class MaterialRequest(BuyingController):
 
 	def validate(self):
 		super(MaterialRequest, self).validate()
-		validate_workflow_states(self)
+		# validate_workflow_states(self)
 		# self.validate_transaction_date()
 		self.validate_schedule_date()
 		self.check_for_on_hold_or_closed_status("Sales Order", "sales_order")
@@ -116,8 +116,8 @@ class MaterialRequest(BuyingController):
 
 		self.reset_default_field_value("set_warehouse", "items", "warehouse")
 		self.reset_default_field_value("set_from_warehouse", "items", "from_warehouse")
-		if self.workflow_state != "Approved":
-			notify_workflow_states(self)
+		# if self.workflow_state != "Approved":
+			# notify_workflow_states(self)
 	def before_update_after_submit(self):
 		self.validate_schedule_date()
 
@@ -143,7 +143,7 @@ class MaterialRequest(BuyingController):
 		self.update_requested_qty_in_production_plan()
 		if self.material_request_type == "Purchase":
 			self.validate_budget()
-		notify_workflow_states(self)
+		# notify_workflow_states(self)
 		
 	def before_save(self):
 		self.set_status(update=True)

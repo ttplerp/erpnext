@@ -177,6 +177,7 @@ def delete_committed_consumed_budget(reference=None, reference_no=None):
 						""".format(reference_type=reference, reference_no=reference_no))
 
 def validate_expense_against_budget(args):
+	# frappe.throw(str(args))
 	args = frappe._dict(args)
 	if args.is_cancelled:
 		delete_committed_consumed_budget(args.voucher_type, args.voucher_no)

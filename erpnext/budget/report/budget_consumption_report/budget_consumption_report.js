@@ -65,12 +65,6 @@ frappe.query_reports["Budget Consumption Report"] = {
 			"reqd":1,
 			"default":"Cost Center"
 		},
-		// {
-		// 	"fieldname": "project",
-		// 	"label": __("Project"),
-		// 	"fieldtype": "Link",
-		// 	"options": "Project",
-		// },
 		{
 			"fieldname": "cost_center",
 			"label": __("Cost Center"),

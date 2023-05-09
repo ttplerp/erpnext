@@ -14,7 +14,19 @@ class EquipmentRequest(Document):
 	def validate(self):
 		self.calculate_percent()
 		self.check_rejection_msg()	
-		
+	
+	def on_cancel(self):
+		self.check_for_equipment_hiring()
+	
+	def check_for_equipment_hiring(self):
+		if self.ehf:
+			ehf_doc = frappe.get_doc("Equipment Hiring Form", {"name": self.ehf})
+			if ehf_doc.docstatus == 1:
+				frappe.throw("This Request has Equipment Hiring Form. Please cancel EHF <b>{}</b>".format(self.ehf))
+			else:
+				frappe.db.sql("delete from `tabEquipment Hiring Form` where name='{}'".format(self.ehf))
+				self.db_set("ehf", None)
+
 	def calculate_percent(self):
 		total_item = len(self.items)
 		per_item = flt(flt(100) / flt(total_item), 2)
@@ -85,5 +97,31 @@ class EquipmentRequest(Document):
 		ehf.save(ignore_permissions=True)
 		self.db_set("ehf", ehf.name)
 		return ehf.as_dict()
+
+def get_permission_query_conditions(user):
+	if not user: user = frappe.session.user
+	user_roles = frappe.get_roles(user)
+
+	if user == "Administrator":
+		return
+	if "System Manager" in user_roles:
+		return
+	
+	return """(
+		`tabEquipment Request`.owner = '{user}'
+		or
+		exists(select 1
+			from `tabEmployee` as e
+			where e.branch = `tabEquipment Request`.branch
+			and e.user_id = '{user}')
+		or
+		exists(select 1
+			from `tabEmployee` e, `tabAssign Branch` ab, `tabBranch Item` bi
+			where e.user_id = '{user}'
+			and ab.employee = e.name
+			and bi.parent = ab.name
+			and bi.branch = `tabEquipment Request`.branch)
+	)""".format(user=user)
+
 
 

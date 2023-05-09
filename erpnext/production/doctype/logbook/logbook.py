@@ -9,7 +9,7 @@ from frappe.model.mapper import get_mapped_doc
 
 class Logbook(Document):
 	def validate(self):
-		check_future_date(self.posting_date)
+		# check_future_date(self.posting_date)
 		self.check_duplicate_entry()
 		self.check_date_validity()
 		self.calculate_hours()

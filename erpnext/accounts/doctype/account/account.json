@@ -308,7 +308,7 @@
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2023-03-22 09:50:54.794145",
+ "modified": "2023-05-08 10:21:37.917791",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Account",
@@ -362,6 +362,15 @@
    "set_user_permissions": 1,
    "share": 1,
    "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 1
   }
  ],
  "search_fields": "account_number, account_name",

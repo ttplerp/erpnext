@@ -180,6 +180,39 @@ erpnext.buying.BuyingController = class BuyingController extends erpnext.Transac
 		super.qty(doc, cdt, cdn);
 	}
 
+	void_deduction(doc, cdt, cdn){
+		if (doc.doctype == "Purchase Receipt"){
+			var item = frappe.get_doc(cdt, cdn);
+			frappe.model.round_floats_in(item, ["qty", "received_qty", "void_deduction_qty"]);
+
+			if(!item.void_deduction) {
+				item.qty = flt(item.received_qty - item.rejected_qty, precision("qty", item));
+				item.void_deduction_percent = item.void_deduction_qty = 0.0;
+			}
+	
+			this.qty(doc, cdt, cdn);
+		}
+	}
+
+	void_deduction_percent(doc, cdt, cdn) {
+		if (doc.doctype == "Purchase Receipt"){
+			var item = frappe.get_doc(cdt, cdn);
+			frappe.model.round_floats_in(item, ["qty", "received_qty", "void_deduction_qty"]);
+
+			if((item.rejected_qty + item.void_deduction_qty) > item.received_qty) {
+				msgprint(__("Error: {0} + {1} > {2}", [__(frappe.meta.get_label(item.doctype, "rejected_qty", item.name)),
+							__(frappe.meta.get_label(item.doctype, "void_deduction_qty", item.name)),
+							__(frappe.meta.get_label(item.doctype, "received_qty", item.name))]));
+				item.void_deduction_percent = item.void_deduction_qty = 0.0;
+			} else {
+				item.void_deduction_qty = item.received_qty * (item.void_deduction_percent / 100);
+				item.qty = flt(item.received_qty - item.rejected_qty - item.void_deduction_qty, precision("qty", item));
+			}
+	
+			this.qty(doc, cdt, cdn);
+		}
+	}
+
 	rejected_qty(doc, cdt, cdn) {
 		this.calculate_received_qty(doc, cdt, cdn)
 	}
@@ -190,7 +223,11 @@ erpnext.buying.BuyingController = class BuyingController extends erpnext.Transac
 
 		if(!doc.is_return && this.validate_negative_quantity(cdt, cdn, item, ["qty", "rejected_qty"])){ return }
 
-		let received_qty = flt(item.qty + item.rejected_qty, precision("received_qty", item));
+		if(item.void_deduction && item.void_deduction_percent){
+			var received_qty = flt(item.qty + item.rejected_qty + item.void_deduction_qty, precision("received_qty", item));
+		}else{
+			var received_qty = flt(item.qty + item.rejected_qty, precision("received_qty", item));
+		}
 		let received_stock_qty = flt(item.conversion_factor, precision("conversion_factor", item)) * flt(received_qty);
 
 		frappe.model.set_value(cdt, cdn, "received_qty", received_qty);

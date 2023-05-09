@@ -30,6 +30,7 @@
   "from_bom",
   "apply_putaway_rule",
   "in_transit",
+  "site_name",
   "sb1",
   "bom_no",
   "fg_completed_qty",
@@ -664,6 +665,12 @@
   {
    "fieldname": "column_break_55",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "site_name",
+   "fieldtype": "Link",
+   "label": "Site Name",
+   "options": "Site Name"
   }
  ],
  "icon": "fa fa-file-text",
@@ -671,7 +678,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-12-22 15:09:34.211394",
+ "modified": "2023-05-08 15:42:15.376529",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Entry",

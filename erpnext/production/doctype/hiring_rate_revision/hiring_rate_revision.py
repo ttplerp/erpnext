@@ -13,10 +13,13 @@ class HiringRateRevision(Document):
 		if flt(self.previous_price) <= 0 or flt(self.current_price) <= 0:
 			frappe.throw("Either Prevous or Cureent fuel price is Zero")
 		self.calculate_variance()
+
 	def on_submit(self):
 		self.update_equipment_hiring_form()
+
 	def on_cancel(self):
 		self.update_equipment_hiring_form()
+
 	def check_duplicates(self):
 		rate = frappe.db.sql('''
 				SELECT name FROM `tabHiring Rate Revision` 
@@ -32,6 +35,7 @@ class HiringRateRevision(Document):
 					"Hiring Rate Revision appears multiple times base on Branch, fuel price list, item and dates.Close following transaction {}".format(frappe.bold(msg))
 				),
 			)
+
 	def calculate_variance(self):
 		self.variance = flt((flt(self.current_price) - flt(self.previous_price))/ flt(self.previous_price)) * 100
 		hrs = frappe.get_doc("Hiring Rate Setting")
@@ -39,7 +43,6 @@ class HiringRateRevision(Document):
 			self.rate_applicable = "Applicable"
 		else:
 			self.rate_applicable = "Not Applicable"
-
 
 	def update_equipment_hiring_form(self):
 		if self.rate_applicable == "Applicable":

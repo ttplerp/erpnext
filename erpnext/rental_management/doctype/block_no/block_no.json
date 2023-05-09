@@ -8,6 +8,7 @@
  "field_order": [
   "town_category",
   "location",
+  "location_name",
   "building_classification",
   "building_category",
   "cb_1",
@@ -30,7 +31,7 @@
    "fieldname": "location",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Location",
+   "label": "Locations ID",
    "options": "Locations",
    "reqd": 1
   },
@@ -57,13 +58,15 @@
    "fieldname": "dzongkhag",
    "fieldtype": "Link",
    "label": "Dzongkhag",
-   "options": "Dzongkhag"
+   "options": "Dzongkhag",
+   "read_only": 1
   },
   {
    "fieldname": "block_no",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Block No"
+   "label": "Block No",
+   "reqd": 1
   },
   {
    "fieldname": "rate",
@@ -78,11 +81,18 @@
    "fieldname": "description",
    "fieldtype": "Small Text",
    "label": "Description"
+  },
+  {
+   "fetch_from": "location.location",
+   "fieldname": "location_name",
+   "fieldtype": "Data",
+   "label": "Location Name",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-04-27 18:07:09.903374",
+ "modified": "2023-05-05 15:51:17.542115",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Block No",
@@ -131,6 +141,7 @@
    "share": 1
   }
  ],
+ "search_fields": "block_no,dzongkhag,location_name,location,town_category",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

@@ -599,54 +599,6 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "EME Transaction",
-   "link_count": 4,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Equipment Hiring Form",
-   "link_count": 0,
-   "link_to": "Equipment Hiring Form",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Logbook",
-   "link_count": 0,
-   "link_to": "Logbook",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "EME Invoice",
-   "link_count": 0,
-   "link_to": "EME Invoice",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Hire Charge Parameter",
-   "link_count": 0,
-   "link_to": "Hire Charge Parameter",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Repair and Services",
    "link_count": 6,
    "onboard": 0,
@@ -711,9 +663,57 @@
    "link_type": "DocType",
    "onboard": 1,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "EME Transaction",
+   "link_count": 4,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Equipment Hiring Form",
+   "link_count": 0,
+   "link_to": "Equipment Hiring Form",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Logbook",
+   "link_count": 0,
+   "link_to": "Logbook",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Hire Charge Invoice",
+   "link_count": 0,
+   "link_to": "Hire Charge Invoice",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Hire Charge Parameter",
+   "link_count": 0,
+   "link_to": "Hire Charge Parameter",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
   }
  ],
- "modified": "2023-05-03 11:08:35.172562",
+ "modified": "2023-05-08 17:11:16.470558",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Fleet Management",

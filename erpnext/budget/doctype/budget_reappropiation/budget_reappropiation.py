@@ -249,7 +249,7 @@ class BudgetReappropiation(Document):
 					if cancel:
 						total = flt(to_budget_account.budget_amount) - flt(d.amount)
 						budget_received = flt(from_budget_account.budget_received) - flt(d.amount)
-					from_budget_account.db_set("budget_received", flt(budget_received,2))
+					to_budget_account.db_set("budget_received", flt(budget_received,2))
 					if monthly_budget_check:
 						if to_month:
 							if to_month =="January":
