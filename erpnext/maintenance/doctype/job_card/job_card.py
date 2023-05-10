@@ -110,6 +110,12 @@ class JobCard(AccountsController):
 		if not payable_account:
 			frappe.throw("Payable Account in mandatory")
 
+		tds_rate, tds_account = 0, ""
+		if self.tds_amount > 0:
+			tds_dtls = self.get_tax_details()
+			tds_rate = tds_dtls['rate']
+			tds_account = tds_dtls['account']
+
 		r = []
 		if self.remarks:
 			r.append(_("Note: {0}").format(self.remarks))
@@ -128,6 +134,8 @@ class JobCard(AccountsController):
 			"company": self.company,
 			"total_amount_in_words": money_in_words(self.total_amount),
 			"branch": self.branch,
+			"apply_tds": 1 if self.tds_amount > 0 else 0,
+			"tax_withholding_category": self.tax_withholding_category
 		})
 
 		je.append("accounts",{
@@ -137,11 +145,17 @@ class JobCard(AccountsController):
 			"reference_type": "Job Card",
 			"reference_name": self.name,
 			"business_activity": ba,
+			"apply_tds": 1 if self.tds_amount > 0 else 0,
+			"add_deduct_tax": "Deduct" if self.tds_amount > 0 else "",
+			"tax_account": tds_account,
+			"rate": tds_rate,
+			"tax_amount_in_account_currency": self.tds_amount,
+			"tax_amount": self.tds_amount
 		})
 
 		je.append("accounts",{
 			"account": payable_account,
-			"credit_in_account_currency": self.total_amount,
+			"credit_in_account_currency": self.net_amount if self.tds_amount > 0 else self.total_amount,
 			"cost_center": self.cost_center,
 			"party_check": 0,
 			"party_type": "Supplier",
