@@ -233,7 +233,7 @@ def validate_expense_against_budget(args):
 				# 	#Check Budget Cost for child cost centers
 				# 	cc_doc = frappe.get_doc("Cost Center", args.cost_center)
 				# 	budget_cost_center = cc_doc.budget_cost_center if cc_doc.use_budget_from_parent else args.cost_center
-				condition += " and b.cost_center='{}'".format(frappe.db.escape(budget_cost_center))
+				condition += " and b.cost_center={}".format(frappe.db.escape(budget_cost_center))
 				
 			args.is_tree = False
 			args.cost_center = budget_cost_center
