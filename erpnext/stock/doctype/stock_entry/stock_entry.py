@@ -800,13 +800,16 @@ class StockEntry(StockController):
 				d.valuation_rate = flt(d.basic_rate) + (flt(d.additional_cost) / flt(d.transfer_qty))
 
 	def set_total_incoming_outgoing_value(self):
-		self.total_incoming_value = self.total_outgoing_value = 0.0
+		self.total_incoming_value = self.total_outgoing_value = self.total_qty = 0.0
 		for d in self.get("items"):
 			if d.t_warehouse:
 				self.total_incoming_value += flt(d.amount)
 			if d.s_warehouse:
 				self.total_outgoing_value += flt(d.amount)
-
+			if self.stock_entry_type in ("Material Transfer"):
+				self.total_qty += flt(d.received_qty)
+			else:
+				self.total_qty += flt(d.qty)
 		self.value_difference = self.total_incoming_value - self.total_outgoing_value
 
 	def set_total_amount(self):

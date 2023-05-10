@@ -52,6 +52,7 @@
   "get_stock_and_rate",
   "section_break_19",
   "total_outgoing_value",
+  "total_qty",
   "column_break_22",
   "total_incoming_value",
   "value_difference",
@@ -664,6 +665,12 @@
   {
    "fieldname": "column_break_55",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_qty",
+   "fieldtype": "Float",
+   "label": "Total Qty(Transfer/Receipt/Issued)",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-file-text",
@@ -671,7 +678,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-12-22 15:09:34.211394",
+ "modified": "2023-05-10 12:43:55.270900",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Entry",
