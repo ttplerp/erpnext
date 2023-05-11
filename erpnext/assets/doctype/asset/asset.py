@@ -785,9 +785,10 @@ class Asset(AccountsController):
 					where reference_name = '{0}'\
 					and not exists(select 1 from `tabDepreciation Schedule` where parent = '{0}'\
 					and journal_entry = jea.parent)".format(self.name), as_dict=1):
-					je_doc = frappe.get_doc("Journal Entry",je.name)
-					if je_doc.docstatus == 1:
-						je_doc.cancel()
+					if je.name:
+						je_doc = frappe.get_doc("Journal Entry",je.name)
+						if je_doc.docstatus == 1:
+							je_doc.cancel()
 		self.db_set(
 			"value_after_depreciation",
 			(flt(self.gross_purchase_amount) - flt(self.opening_accumulated_depreciation)),
