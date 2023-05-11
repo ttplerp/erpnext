@@ -782,8 +782,8 @@ class Asset(AccountsController):
 			if cint(self.is_existing_asset) == 1:
 				# cancel je which are not inside depreciation schedule
 				for je in frappe.db.sql("select distinct(parent) from `tabJournal Entry Account` jea \
-					where reference_name = '{}'\
-					and not exists(select 1 from `tabDepreciation Schedule` where parent = '{}'\
+					where reference_name = '{0}'\
+					and not exists(select 1 from `tabDepreciation Schedule` where parent = '{0}'\
 					and journal_entry = jea.parent)".format(self.name), as_dict=1):
 					je_doc = frappe.get_doc("Journal Entry",je.name)
 					if je_doc.docstatus == 1:
