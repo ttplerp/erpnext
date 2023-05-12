@@ -1153,7 +1153,9 @@ class CustomWorkflow:
 				frappe.throw("Only {} or CEO can approve this document".format(self.doc.approver))
 
 		if self.new_state.lower() in ("Rejected".lower()):
-			if "Budget Manager" not in user_roles or "CEO" not in user_roles or self.doc.approver != frappe.session.user:
+			if "Budget Manager" in user_roles or "CEO" in user_roles or self.doc.approver == frappe.session.user:
+				return
+			else:
 				frappe.throw("Only Budget Manager or {} Can reject this document".format(self.doc.approver))
 	def repair_services(self):
 		if self.new_state.lower() in ("Draft".lower()):
