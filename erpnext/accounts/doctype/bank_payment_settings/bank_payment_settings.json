@@ -1,4 +1,5 @@
 {
+ "actions": [],
  "autoname": "field:financial_institution",
  "creation": "2020-05-07 09:56:40.201778",
  "doctype": "DocType",
@@ -23,6 +24,7 @@
   "upload_path",
   "acknowledgement_path",
   "report_path",
+  "day_txn_file_name",
   "upload_path_html",
   "transaction_time_settings_section",
   "from_time",
@@ -160,12 +162,19 @@
    "fieldname": "to_time",
    "fieldtype": "Time",
    "label": "To Time"
+  },
+  {
+   "fieldname": "day_txn_file_name",
+   "fieldtype": "Data",
+   "label": "Day Transaction File Name(Bank Statement)"
   }
  ],
- "modified": "2022-03-26 22:36:01.826998",
+ "links": [],
+ "modified": "2023-05-12 15:27:54.298956",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Bank Payment Settings",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
@@ -207,5 +216,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }
