@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_rename": 1,
  "autoname": "field:license_plate",
  "creation": "2016-09-03 03:33:27.680331",
  "doctype": "DocType",
@@ -272,7 +273,7 @@
   }
  ],
  "links": [],
- "modified": "2023-01-21 09:29:51.766599",
+ "modified": "2023-05-16 14:38:28.721230",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Vehicle",
