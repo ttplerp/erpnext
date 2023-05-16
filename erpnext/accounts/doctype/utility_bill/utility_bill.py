@@ -253,7 +253,9 @@ class UtilityBill(Document):
                                 "debit_in_account_currency": a.net_amount,
                                 "reference_type": "",
                                 "reference_no": self.name,
-                                "cost_center": self.cost_center
+                                "cost_center": self.cost_center,
+                                "party_type": "Supplier",
+                                "party": a.party
                         },)
                     doc.append("accounts", {
                         "account": self.expense_account,
