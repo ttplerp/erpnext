@@ -52,6 +52,7 @@ class DesuungSales(Document):
 		#self.consume_budget()
 	
 	def on_cancel(self):
+		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
 		self.post_gl_entry()
 		self.update_stock_ledger()
 		#self.cancel_budget_entry()
@@ -99,7 +100,7 @@ class DesuungSales(Document):
 					# if d.warehouse and self.docstatus==2:
 					# 		sl_entries.append(self.get_sl_entries(d, {
 					# 			"warehouse": cstr(d.warehouse),
-					# 			"actual_qty": -flt(d.qty),
+					# 			"actual_qty": flt(d.qty),
 					# 			"incoming_rate": d.rate
 					# 		}))
 
