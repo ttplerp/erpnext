@@ -141,7 +141,9 @@
   "feedback",
   "lft",
   "rgt",
-  "old_parent"
+  "old_parent",
+  "gis_tab",
+  "gis"
  ],
  "fields": [
   {
@@ -976,13 +978,23 @@
    "fieldtype": "Select",
    "label": "Nationality",
    "options": "\nBhutanese\nIndian\nInternational"
+  },
+  {
+   "fieldname": "gis_tab",
+   "fieldtype": "Tab Break",
+   "label": "GIS"
+  },
+  {
+   "fieldname": "gis",
+   "fieldtype": "Currency",
+   "label": "GIS Amount"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-03-09 15:59:34.095917",
+ "modified": "2023-05-16 11:59:29.350457",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
