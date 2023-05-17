@@ -8,7 +8,8 @@
  "engine": "InnoDB",
  "field_order": [
   "building_category",
-  "description"
+  "description",
+  "abbr"
  ],
  "fields": [
   {
@@ -23,11 +24,19 @@
    "fieldname": "description",
    "fieldtype": "Data",
    "label": "Description"
+  },
+  {
+   "fieldname": "abbr",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Abbr",
+   "set_only_once": 1,
+   "unique": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-04-27 14:07:48.171730",
+ "modified": "2023-05-11 16:08:58.831140",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Building Category",

@@ -41,7 +41,7 @@ class Task(NestedSet):
 		self.update_depends_on()
 		self.validate_dependencies_for_template_task()
 		self.validate_completed_on()
-
+	
 	def validate_dates(self):
 		if (
 			self.exp_start_date

@@ -61,11 +61,10 @@ class HireChargeInvoice(AccountsController):
 
 	def check_remarks(self):
 		if not self.remarks:
-			self.remarks = "EME payment to {0}".format(self.supplier)
+			self.remarks = "Hire Charge payment to {0}".format(self.party)
 
 	# fetch rate base on equipment hiring form
 	def get_rate(self, ehf, posting_date):
-		ehfr = qb.DocType("EHF Rate")
 		rate = frappe.db.sql('''
 					select hiring_rate from `tabEHF Rate` where parent = '{ehf}' 
 						and from_date <= '{posting_date}' 
@@ -137,6 +136,7 @@ class HireChargeInvoice(AccountsController):
 	def make_gl_entries(self):
 		gl_entries = []
 		self.make_supplier_gl_entry(gl_entries)
+		self.make_customer_gl_entry(gl_entries)
 		self.make_item_gl_entries(gl_entries)
 		self.deduction_gl_entries(gl_entries)
 		self.make_tds_gl_entries(gl_entries)
@@ -146,35 +146,15 @@ class HireChargeInvoice(AccountsController):
 	def deduction_gl_entries(self,gl_entries):
 		for d in self.deduct_items:
 			party_type = party = ''
-			if  get_account_type( d.account, self.company) in ["Receivable","Payable","Expense Account","Income Account"]:
-				party_type = "Supplier"
-				party = self.supplier
-			gl_entries.append(
-				self.get_gl_dict({
-					"account":  d.account,
-					"credit": flt(d.amount,2),
-					"credit_in_account_currency": flt(d.amount,2),
-					"against_voucher": self.name,
-					"against_voucher_type": self.doctype,
-					"party_type": party_type,
-					"party": party,
-					"cost_center": self.cost_center,
-					"voucher_type":self.doctype,
-					"voucher_no":self.name
-				}, self.currency)
-			)
-	def make_item_gl_entries(self, gl_entries):
-		for item in self.items:
-			party_type = party = ''
-			if  get_account_type( item.expense_account, self.company) in ["Receivable","Payable","Expense Account","Income Account"]:
-				party_type = "Supplier"
-				party = self.supplier
-
-			gl_entries.append(
-				self.get_gl_dict({
-						"account":  item.expense_account,
-						"debit": flt(item.amount,2),
-						"debit_in_account_currency": flt(item.amount,2),
+			if get_account_type( d.account, self.company) in ["Receivable","Payable","Expense Account","Income Account"]:
+				party_type = self.party_type
+				party = self.party
+			if self.party_type == "Supplier":
+				gl_entries.append(
+					self.get_gl_dict({
+						"account":  d.account,
+						"credit": flt(d.amount,2),
+						"credit_in_account_currency": flt(d.amount,2),
 						"against_voucher": self.name,
 						"against_voucher_type": self.doctype,
 						"party_type": party_type,
@@ -182,17 +162,86 @@ class HireChargeInvoice(AccountsController):
 						"cost_center": self.cost_center,
 						"voucher_type":self.doctype,
 						"voucher_no":self.name
-				}, self.currency)
-			)
+					}, self.currency)
+				)
+			else:
+				gl_entries.append(
+					self.get_gl_dict({
+						"account":  d.account,
+						"debit": flt(d.amount,2),
+						"debit_in_account_currency": flt(d.amount,2),
+						"against_voucher": self.name,
+						"against_voucher_type": self.doctype,
+						"party_type": party_type,
+						"party": party,
+						"cost_center": self.cost_center,
+						"voucher_type":self.doctype,
+						"voucher_no":self.name
+					}, self.currency)
+				)
+
+	def make_item_gl_entries(self, gl_entries):
+		for item in self.items:
+			party_type = party = ''
+			if  get_account_type( item.expense_account, self.company) in ["Receivable","Payable","Expense Account","Income Account"]:
+				party_type = self.party_type
+				party = self.party
+
+			if self.party_type == "Supplier":
+				gl_entries.append(
+					self.get_gl_dict({
+							"account":  item.expense_account,
+							"debit": flt(item.amount,2),
+							"debit_in_account_currency": flt(item.amount,2),
+							"against_voucher": self.name,
+							"against_voucher_type": self.doctype,
+							"party_type": party_type,
+							"party": party,
+							"cost_center": self.cost_center,
+							"voucher_type":self.doctype,
+							"voucher_no":self.name
+					}, self.currency)
+				)
+			else:
+				gl_entries.append(
+					self.get_gl_dict({
+							"account":  item.expense_account,
+							"credit": flt(item.amount,2),
+							"credit_in_account_currency": flt(item.amount,2),
+							"against_voucher": self.name,
+							"against_voucher_type": self.doctype,
+							"party_type": party_type,
+							"party": party,
+							"cost_center": self.cost_center,
+							"voucher_type":self.doctype,
+							"voucher_no":self.name
+					}, self.currency)
+				)
+
 
 	def make_tds_gl_entries(self,gl_entries):
 		if flt(self.tds_amount)> 0:
 			party_type = party = ''
 			if  get_account_type(self.tds_account, self.company) in ["Receivable","Payable","Expense Account","Income Account"]:
-				party_type = "Supplier"
-				party = self.supplier
-
-			gl_entries.append(
+				party_type = self.party_type
+				party = self.party
+			if self.party_type == "Supplier":
+				gl_entries.append(
+					self.get_gl_dict({
+							"account":  self.tds_account,
+							"credit": flt(self.tds_amount,2),
+							"credit_in_account_currency": flt(self.tds_amount,2),
+							"against_voucher": self.name,
+							"against_voucher_type": self.doctype,
+							"party_type": party_type,
+							"party": party,
+							"cost_center": self.cost_center,
+							"voucher_type":self.doctype,
+							"voucher_no":self.name
+					}, self.currency)
+				)
+			else:
+				gl_entries.append(
 					self.get_gl_dict({
 							"account":  self.tds_account,
 							"credit": flt(self.tds_amount,2),
@@ -207,8 +256,9 @@ class HireChargeInvoice(AccountsController):
 					}, self.currency)
 				)
 
+
 	def make_supplier_gl_entry(self, gl_entries):
-		if flt(self.payable_amount) > 0:
+		if flt(self.payable_amount) > 0 and self.party_type == "Supplier":
 			# Did not use base_grand_total to book rounding loss gle
 			gl_entries.append(
 				self.get_gl_dict({
@@ -216,13 +266,29 @@ class HireChargeInvoice(AccountsController):
 					"credit": flt(self.payable_amount,2),
 					"credit_in_account_currency": flt(self.payable_amount,2),
 					"against_voucher": self.name,
-					"party_type": "Supplier",
-					"party": self.supplier,
+					"party_type": self.party_type,
+					"party": self.party,
 					"against_voucher_type": self.doctype,
 					"cost_center": self.cost_center,
 					"voucher_type":self.doctype,
 					"voucher_no":self.name
 				}, self.currency))
+	
+	def make_customer_gl_entry(self, gl_entries):
+		if flt(self.payable_amount) > 0 and self.party_type == "Customer":
+			gl_entries.append(
+				self.get_gl_dict({
+						"account": self.credit_account,
+						"party_type": self.party_type,
+						"party": self.party,
+						"debit": flt(self.payable_amount,2),
+						"debit_in_account_currency": flt(self.payable_amount,2),
+						"against_voucher": self.name,
+						"against_voucher_type": self.doctype,
+						"cost_center": self.cost_center,
+						"voucher_type":self.doctype,
+						"voucher_no":self.name
+					}, self.currency))
 
 	# fetch logbook details
 	@frappe.whitelist()
@@ -242,7 +308,7 @@ class HireChargeInvoice(AccountsController):
 		entries = (qb.from_(l)
 					.inner_join(li)
 					.on(l.name == li.parent)
-					.select((l.name).as_("logbook"),l.posting_date, 
+					.select((l.name).as_("logbook"),l.from_date,l.posting_date,
 						l.equipment_hiring_form,
 						li.expense_head,(li.hours).as_("total_hours"),
 						l.equipment)
@@ -262,12 +328,12 @@ class HireChargeInvoice(AccountsController):
 
 		self.set('items', [])
 		if len(entries) == 0:
-			frappe.msgprint("No valid logbooks found for owner {} between {} and {}.You must have pulled in other EME Invoices(including draft invoices)".format(frappe.bold(self.supplier), frappe.bold(self.from_date),frappe.bold(self.to_date)), raise_exception=True)
+			frappe.msgprint("No valid logbooks found for owner {} between {} and {}.You must have pulled in other EME Invoices(including draft invoices)".format(frappe.bold(self.party), frappe.bold(self.from_date),frappe.bold(self.to_date)), raise_exception=True)
 
 		total = 0
 		exist_list = {}
 		for d in entries:
-			d.rate = self.get_rate(d.equipment_hiring_form, d.posting_date)
+			d.rate = self.get_rate(d.equipment_hiring_form, d.from_date)
 			d.amount = flt(d.total_hours * d.rate, 2)
 			row = self.append('items', {})
 			row.update(d)
@@ -278,12 +344,12 @@ class HireChargeInvoice(AccountsController):
 		if self.journal_entry and frappe.db.exists("Journal Entry",{"name":self.journal_entry,"docstatus":("!=",2)}):
 			frappe.msgprint(_("Journal Entry Already Exists {}".format(frappe.get_desk_link("Journal Entry",self.journal_entry))))
 		if not self.payable_amount:
-			frappe.throw(_("Payable Amount should be greater than zero"))
+			frappe.throw(_("Amount Receivable or Payable Amount should be greater than zero"))
 			
 		credit_account = self.credit_account
 	
 		if not credit_account:
-			frappe.throw("Expense Account is mandatory")
+			frappe.throw("Account is mandatory")
 		r = []
 		if self.remarks:
 			r.append(_("Note: {0}").format(self.remarks))
@@ -292,6 +358,7 @@ class HireChargeInvoice(AccountsController):
 		bank_account = frappe.db.get_value("Company",self.company, "default_bank_account")
 		if not bank_account:
 			frappe.throw(_("Default bank account is not set in company {}".format(frappe.bold(self.company))))
+		
 		# Posting Journal Entry
 		je = frappe.new_doc("Journal Entry")
 		je.flags.ignore_permissions=1
@@ -299,8 +366,8 @@ class HireChargeInvoice(AccountsController):
 			"doctype": "Journal Entry",
 			"voucher_type": "Bank Entry",
 			"naming_series": "Bank Payment Voucher",
-			"title": "EME Payment "+ self.supplier,
-			"user_remark": "Note: " + "Transporter Payment - " + self.supplier,
+			"title": "Hire Charge Invoice "+ self.party,
+			"user_remark": "Note: " + "Hire Charge Payment - " + self.party if self.party_type=="Supplier" else "Note: " + "Hire Charge Receivable - " + self.party,
 			"posting_date": self.posting_date,
 			"company": self.company,
 			"total_amount_in_words": money_in_words(self.payable_amount),
@@ -308,26 +375,43 @@ class HireChargeInvoice(AccountsController):
 			"reference_type":self.doctype,
 			"referece_doctype":self.name,
 		})
-		je.append("accounts",{
-			"account": credit_account,
-			"debit_in_account_currency": flt(self.payable_amount,2),
-			"cost_center": self.cost_center,
-			"party_check": 1,
-			"party_type": "Supplier",
-			"party": self.supplier,
-			"reference_type": "EME Invoice",
-			"reference_name": self.name
-		})
-		je.append("accounts",{
-			"account": bank_account,
-			"credit_in_account_currency": flt(self.payable_amount,2),
-			"cost_center": self.cost_center
-		})
+		if self.party_type == "Supplier":
+			je.append("accounts",{
+				"account": credit_account,
+				"debit_in_account_currency": flt(self.payable_amount,2),
+				"cost_center": self.cost_center,
+				"party_check": 1,
+				"party_type": self.party_type,
+				"party": self.party,
+				"reference_type": "Hire Charge Invoice",
+				"reference_name": self.name
+			})
+			je.append("accounts",{
+				"account": bank_account,
+				"credit_in_account_currency": flt(self.payable_amount,2),
+				"cost_center": self.cost_center
+			})
+		else:
+			je.append("accounts",{
+				"account": credit_account,
+				"credit_in_account_currency": flt(self.payable_amount,2),
+				"cost_center": self.cost_center,
+				"party_check": 1,
+				"party_type": self.party_type,
+				"party": self.party,
+				"reference_type": "Hire Charge Invoice",
+				"reference_name": self.name
+			})
+			je.append("accounts",{
+				"account": bank_account,
+				"debit_in_account_currency": flt(self.payable_amount,2),
+				"cost_center": self.cost_center
+			})
 
 		je.insert()
 		#Set a reference to the claim journal entry
 		self.db_set("journal_entry",je.name)
-		frappe.msgprint(_('Journal Entry {0} posted to accounts').format(frappe.get_desk_link("Journal Entry",je.name)))
+		frappe.msgprint(_('{0} posted to accounts').format(frappe.get_desk_link("Journal Entry",je.name)))
 
 def set_missing_values(source, target):
 	target.run_method("set_missing_values")
@@ -342,9 +426,9 @@ def make_arrear_payment(source_name, target_doc=None):
 	def update_item(obj, target, source_parent):
 		target.rate = 0.00
 
-	doclist = get_mapped_doc("EME Invoice", source_name, 	{
-		"EME Invoice": {
-			"doctype": "EME Invoice",
+	doclist = get_mapped_doc("Hire Charge Invoice", source_name, 	{
+		"Hire Charge Invoice": {
+			"doctype": "Hire Charge Invoice",
 			"field_map": {
 				"naming_series": "naming_series",
 			},

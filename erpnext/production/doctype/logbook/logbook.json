@@ -7,11 +7,13 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "branch",
   "equipment_hiring_form",
+  "branch",
+  "from_date",
   "column_break_2",
-  "cost_center",
   "posting_date",
+  "cost_center",
+  "to_date",
   "equipment_details_section",
   "equipment",
   "equipment_category",
@@ -22,19 +24,13 @@
   "equipment_model",
   "hired_equipment",
   "section_break_12",
-  "scheduled_working_hour",
-  "target_hours",
-  "total_downtime_hours",
-  "column_break_16",
-  "daily_output",
   "total_hours",
-  "target_trip",
-  "reading_based_on",
-  "section_break_6",
+  "column_break_16",
+  "total_idle_hour",
+  "column_break_21",
+  "total_km_reading",
+  "section_break_23",
   "items",
-  "total_ot",
-  "section_break_8",
-  "downtimes",
   "section_break_16",
   "paid",
   "amended_from"
@@ -73,7 +69,7 @@
    "fieldname": "posting_date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "Log Date",
+   "label": "Posting Date",
    "reqd": 1
   },
   {
@@ -102,7 +98,8 @@
   },
   {
    "fieldname": "section_break_12",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Hour Details"
   },
   {
    "depends_on": "eval:doc.branch",
@@ -114,21 +111,8 @@
    "reqd": 1
   },
   {
-   "fieldname": "scheduled_working_hour",
-   "fieldtype": "Float",
-   "label": "Scheduled Working Hour",
-   "precision": "1",
-   "reqd": 1
-  },
-  {
    "fieldname": "column_break_16",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "daily_output",
-   "fieldtype": "Float",
-   "label": "Daily Output (MT)",
-   "precision": "2"
   },
   {
    "fieldname": "total_hours",
@@ -138,56 +122,10 @@
    "read_only": 1
   },
   {
-   "fetch_from": "equipment_hiring_form.target_hour",
-   "fieldname": "target_hours",
-   "fieldtype": "Int",
-   "label": "Target Hours",
-   "read_only": 1
-  },
-  {
-   "fieldname": "total_downtime_hours",
-   "fieldtype": "Float",
-   "label": "Total Downtime Hours",
-   "read_only": 1
-  },
-  {
-   "fieldname": "reading_based_on",
-   "fieldtype": "Read Only",
-   "label": "Reading Based On",
-   "read_only": 1
-  },
-  {
-   "depends_on": "eval:doc.reading_based_on == \"Trip\"",
-   "fieldname": "target_trip",
-   "fieldtype": "Int",
-   "label": "Target Trip"
-  },
-  {
-   "fieldname": "section_break_6",
-   "fieldtype": "Section Break",
-   "label": "Hour Details"
-  },
-  {
    "fieldname": "items",
    "fieldtype": "Table",
    "label": "Logbook Item",
    "options": "Logbook Item"
-  },
-  {
-   "fieldname": "total_ot",
-   "fieldtype": "Float",
-   "label": "Total OT Hours",
-   "read_only": 1
-  },
-  {
-   "fieldname": "section_break_8",
-   "fieldtype": "Section Break",
-   "label": "Downtime Details"
-  },
-  {
-   "fieldname": "downtimes",
-   "fieldtype": "Table",
-   "options": "Downtime Item"
   },
   {
    "fieldname": "section_break_16",
@@ -246,11 +184,43 @@
    "label": "Party",
    "options": "party_type",
    "read_only": 1
+  },
+  {
+   "fieldname": "total_idle_hour",
+   "fieldtype": "Float",
+   "label": "Total Idle Hour",
+   "read_only": 1
+  },
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "From Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_21",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_km_reading",
+   "fieldtype": "Float",
+   "label": "Total KM Reading",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_23",
+   "fieldtype": "Section Break"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-08 17:30:47.349955",
+ "modified": "2023-05-16 14:51:33.924323",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Logbook",

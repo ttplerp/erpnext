@@ -24,7 +24,7 @@
    "fieldname": "boq_name",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "ID",
+   "label": "BOQ",
    "options": "BOQ",
    "read_only": 1
   },
@@ -75,19 +75,21 @@
   {
    "fieldname": "received_amount",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Received (D)",
    "read_only": 1
   },
   {
    "fieldname": "paid_amount",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Paid (D)",
    "read_only": 1
   },
   {
    "fieldname": "balance_amount",
    "fieldtype": "Currency",
-   "in_list_view": 1,
+   "hidden": 1,
    "label": "Balance (E=C-D)",
    "read_only": 1
   }
@@ -95,7 +97,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-04-27 14:35:12.567626",
+ "modified": "2023-05-16 14:51:49.357599",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project BOQ Item",

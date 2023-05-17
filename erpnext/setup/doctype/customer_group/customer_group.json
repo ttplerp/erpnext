@@ -11,6 +11,7 @@
   "customer_group_name",
   "parent_customer_group",
   "is_group",
+  "customer_code_base",
   "cb0",
   "default_price_list",
   "payment_terms",
@@ -28,7 +29,6 @@
   {
    "fieldname": "customer_group_name",
    "fieldtype": "Data",
-   "in_list_view": 1,
    "label": "Customer Group Name",
    "no_copy": 1,
    "oldfieldname": "customer_group_name",
@@ -53,7 +53,6 @@
    "description": "Only leaf nodes are allowed in transaction",
    "fieldname": "is_group",
    "fieldtype": "Check",
-   "in_list_view": 1,
    "label": "Is Group",
    "oldfieldname": "is_group",
    "oldfieldtype": "Select"
@@ -146,13 +145,19 @@
    "fieldtype": "Table",
    "label": "Advance Account",
    "options": "Party Advance Account"
+  },
+  {
+   "fieldname": "customer_code_base",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Customer Code Base"
   }
  ],
  "icon": "fa fa-sitemap",
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2022-09-14 19:38:04.258347",
+ "modified": "2023-05-17 10:31:28.431193",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Customer Group",

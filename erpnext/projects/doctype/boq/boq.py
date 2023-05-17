@@ -9,6 +9,7 @@ from frappe.model.mapper import get_mapped_doc
 from frappe.model.naming import make_autoname
 from frappe.utils import cstr, flt, getdate, today, nowdate, now_datetime
 from datetime import date
+from erpnext.accounts.party import get_party_account
 
 class BOQ(Document):	
 	def validate(self):
@@ -297,6 +298,7 @@ def make_mb_invoice(source_name, target_doc=None):
         target_doc.invoice_title = str(target_doc.project) + "(Project Invoice)"
         target_doc.invoice_type = "MB Based Invoice"
         target_doc.check_all_mb = 1
+        target_doc.debit_credit_account = get_party_account(source_doc.party_type, source_doc.party, source_doc.company)
             
     doclist = get_mapped_doc("BOQ", source_name, {
             "BOQ": {

@@ -112,7 +112,23 @@ frappe.ui.form.on('Project Invoice', {
 		calculate_totals(frm);
 		cur_frm.set_value("party", "");
 	},
-
+    tds_rate:function(frm){
+        if (frm.doc.tds_percent){
+			frappe.call({
+				method: "erpnext.accounts.utils.get_tds_account",
+				args: {
+					percent:frm.doc.tds_rate,
+					company:frm.doc.company
+				},
+				callback: function(r) {
+					if(r.message) {
+						frm.set_value("tds_rate",r.message)
+						frm.refresh_fields("tds_rate")
+					}
+				}
+			});
+		}
+    },
 	party_type: function (frm) {
 		if (frm.doc.invoice_type == "Direct Invoice") {
 			frm.trigger("boq_type");
@@ -418,6 +434,7 @@ function get_advance_list(frm) {
 						row.reference_doctype = "Project Advance";
 						row.reference_name = adv['name'];
 						row.total_amount = flt(adv['balance_amount']);
+                        row.advance_account = adv['advance_account']
 						row.allocated_amount = 0.00;
 					});
 					frm.refresh_field("advances");
@@ -426,6 +443,7 @@ function get_advance_list(frm) {
 					cur_frm.clear_table("advances");
 					cur_frm.refresh();
 				}
+                frm.dirty()
 			}
 		});
 	} else {
@@ -465,23 +483,7 @@ function tds_calculation(frm) {
 	cur_frm.refresh_field("tds_taxable_amount")
 	cur_frm.set_value("tds_amount", (cur_frm.doc.tds_rate / 100) * cur_frm.doc.tds_taxable_amount);
 	cur_frm.refresh_field("tds_amount")
-
-	// doUpdates(frm);
-
-	if (percent > 0) {
-		frappe.call({
-			method: "erpnext.accounts.doctype.purchase_invoice.purchase_invoice.get_tds_accounts",
-			args: {
-				"percent": percent
-			},
-			callback: function (r) {
-				cur_frm.set_value("tds_account", r.message);
-			}
-		})
-	}
-	else {
-		cur_frm.set_value("tds_account", "");
-	}
+    frm.trigger("tds_rate")
 	calculate_deductions(cur_frm)
 };
 

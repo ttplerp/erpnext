@@ -366,6 +366,7 @@ def get_party_account(party_type, party=None, company=None,is_advance=False):
 				"default_receivable_account" if party_type == "Customer" else "default_payable_account"
 			)
 		return frappe.get_cached_value("Company", company, default_account_name)
+
 	if is_advance:
 		account = frappe.db.get_value(
 			"Party Advance Account", {"parenttype": party_type, "parent": party, "company": company}, "account"

@@ -39,24 +39,24 @@ def get_data(query,from_date, to_date, filters):
 			supplement = flt(frappe.db.sql("""
 									select sum(amount)
 									from `tabSupplementary Details`
-									where posting_date between "{from_date}" and "{to_date}"
+									where month ="{month}"
 									and account="{account}"
 									and cost_center="{cost_center}"
-								""".format(from_date=from_date, to_date=to_date, account = d.account, cost_center=d.cost_center))[0][0],2)
+								""".format(month=filters.month, from_date=from_date, to_date=to_date, account = d.account, cost_center=d.cost_center))[0][0],2)
 			monthly_received = frappe.db.sql("""
 									select sum(amount)
 									from `tabReappropriation Details`
-									where posting_date between "{from_date}" and "{to_date}"
+									where from_month="{month}"
 									and to_account="{account}"
 									and to_cost_center="{cost_center}"
-								""".format(from_date=from_date, to_date=to_date, account = d.account, cost_center=d.cost_center))[0][0]
+								""".format(month=filters.month, from_date=from_date, to_date=to_date, account = d.account, cost_center=d.cost_center))[0][0]
 			monthly_sent = frappe.db.sql("""
 									select sum(amount)
 									from `tabReappropriation Details`
-									where posting_date between "{from_date}" and "{to_date}"
+									where to_month="{month}"
 									and from_account="{account}"
 									and from_cost_center="{cost_center}"
-								""".format(from_date=from_date, to_date=to_date, account = d.account, cost_center=d.cost_center))[0][0]
+								""".format(month=filters.month, from_date=from_date, to_date=to_date, account = d.account, cost_center=d.cost_center))[0][0]
 			adjustment = flt(monthly_received,2) - flt(monthly_sent,2)
 
 		else:

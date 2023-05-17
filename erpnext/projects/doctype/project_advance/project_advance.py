@@ -13,6 +13,8 @@ from __future__ import unicode_literals
 import frappe
 from frappe import _
 from frappe.model.document import Document
+import erpnext
+from erpnext.accounts.party import get_party_account
 from frappe.utils import money_in_words, cint, flt, nowdate, now_datetime
 # from erpnext.hr.doctype.travel_authorization.travel_authorization import get_exchange_rate
 from erpnext.setup.utils import get_exchange_rate
@@ -82,7 +84,8 @@ class ProjectAdvance(Document):
 			self.adjustment_amount = 0
 			self.balance_amount = 0
 			self.payment_type  = "Receive" if self.party_type == "Customer" else "Pay" 
-		
+		if not self.advance_account:
+			self.advance_account = get_party_account(self.party_type, self.party, self.company, is_advance=True)
 		if self.project:
 			project = frappe.get_doc("Project", self.project)
 
@@ -117,8 +120,7 @@ class ProjectAdvance(Document):
 			
 	def post_journal_entry(self):
 		# Fetching Advance GL
-		adv_gl_field = "project_advance_account" if self.party_type == "Customer" else "advance_account_supplier" if self.party_type == "Supplier" else "advance_account_internal"
-		adv_gl = frappe.db.get_value("Projects Accounts Settings",fieldname=adv_gl_field)  
+		adv_gl_field = self.advance_account
 
 		# added by phuntsho on june 24th, 2021
 		if self.advance_account:
@@ -138,7 +140,6 @@ class ProjectAdvance(Document):
 			if not exp_gl:
 					frappe.throw(_("Expense GL is not defined for this Branch '{0}'.").format(self.branch), title="Data Missing")
 			exp_gl_det = frappe.db.get_value(doctype="Account", filters=exp_gl, fieldname=["account_type","is_an_advance_account"], as_dict=True)                                
-
 
 		# Posting Journal Entry
 		accounts = []
@@ -191,4 +192,5 @@ class ProjectAdvance(Document):
 			je.save(ignore_permissions = True)
 			self.db_set("journal_entry", je.name)
 			self.db_set("journal_entry_status", "Forwarded to accounts for processing payment on {0}".format(now_datetime().strftime('%Y-%m-%d %H:%M:%S')))
-			frappe.msgprint(_('Journal Entry <a href="#Form/Journal Entry/{0}">{0}</a> posted to accounts').format(je.name))
+			frappe.msgprint(_('{} posted to accounts').format(frappe.get_desk_link(je.doctype,je.name)))
+

@@ -15,10 +15,9 @@
   "gross_invoice_amount",
   "price_adjustment_amount",
   "net_invoice_amount",
-  "column_break_50",
   "total_received_amount",
-  "total_paid_amount",
-  "total_balance_amount"
+  "total_balance_amount",
+  "total_paid_amount"
  ],
  "fields": [
   {
@@ -74,31 +73,27 @@
    "fieldname": "net_invoice_amount",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Claimed (C=A+B)",
+   "label": "Invoiced Amount (C=A+B)",
    "read_only": 1
-  },
-  {
-   "fieldname": "column_break_50",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "total_received_amount",
    "fieldtype": "Currency",
-   "in_list_view": 1,
+   "hidden": 1,
    "label": "Received (D)",
    "read_only": 1
   },
   {
    "fieldname": "total_paid_amount",
    "fieldtype": "Currency",
-   "in_list_view": 1,
+   "hidden": 1,
    "label": "Paid (D)",
    "read_only": 1
   },
   {
    "fieldname": "total_balance_amount",
    "fieldtype": "Currency",
-   "in_list_view": 1,
+   "hidden": 1,
    "label": "Balance (E=C-D)",
    "read_only": 1
   }
@@ -106,7 +101,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-05-04 17:07:35.483869",
+ "modified": "2023-05-16 14:55:09.021200",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project Invoice Item",

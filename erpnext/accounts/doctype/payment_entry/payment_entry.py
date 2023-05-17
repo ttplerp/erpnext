@@ -349,7 +349,7 @@ class PaymentEntry(AccountsController):
 				else:
 					ref_doc = frappe.get_doc(d.reference_doctype, d.reference_name)
 
-					if d.reference_doctype not in ("Journal Entry","Repair And Service Invoice"):
+					if d.reference_doctype not in ("Journal Entry","Repair And Service Invoice","Project Invoice"):
 						if self.party != ref_doc.get(scrub(self.party_type)):
 							frappe.throw(
 								_("{0} {1} is not associated with {2} {3}").format(
@@ -1745,7 +1745,7 @@ def get_payment_entry(
 	pe.received_amount = received_amount
 	pe.letter_head = doc.get("letter_head")
 
-	if dt in ["Purchase Order", "Sales Order", "Sales Invoice", "Purchase Invoice"]:
+	if dt in ["Purchase Order", "Sales Order", "Sales Invoice", "Purchase Invoice", "Project Invoice"]:
 		pe.project = doc.get("project") or reduce(
 			lambda prev, cur: prev or cur, [x.get("project") for x in doc.get("items")], None
 		)  # get first non-empty project from items

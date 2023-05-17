@@ -1,6 +1,6 @@
 import frappe
 from erpnext.setup.doctype.employee.employee import create_user
-import pandas as pd
+# import pandas as pd
 import csv
 from frappe.utils import flt, cint, nowdate, getdate, formatdate
 
@@ -224,3 +224,14 @@ def update_overtime_application_in_ss():
 			c += 1
 		print('DONE')
 		print(str(c))
+
+def update_customer_code():
+	customer = frappe.db.get_all("Customer", {"customer_group": "Rental"}, ["name"])
+	# data=[]
+	for a in customer:
+		code = a['name'].split("-")
+		frappe.db.sql("update tabCustomer set customer_code='{0}' where name='{1}'".format(code[1],a.name))
+		# data.append(code[1])
+	# log(data)
+		
+	# log(customer)

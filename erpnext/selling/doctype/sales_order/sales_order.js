@@ -10,7 +10,7 @@ frappe.ui.form.on("Sales Order", {
 			'Delivery Note': 'Delivery Note',
 			// 'Pick List': 'Pick List',
 			// 'Sales Invoice': 'Sales Invoice',
-			// 'Material Request': 'Material Request',
+			'Material Request': 'Material Request',
 			// 'Purchase Order': 'Purchase Order',
 			// 'Project': 'Project',
 			'Payment Entry': "Payment",
@@ -200,10 +200,10 @@ erpnext.selling.SalesOrderController = class SalesOrderController extends erpnex
 					// }
 
 					// material request
-					// if(!doc.order_type || (order_is_a_sale || order_is_a_custom_sale) && flt(doc.per_delivered, 6) < 100) {
-					// 	this.frm.add_custom_button(__('Material Request'), () => this.make_material_request(), __('Create'));
-					// 	this.frm.add_custom_button(__('Request for Raw Materials'), () => this.make_raw_material_request(), __('Create'));
-					// }
+					if(!doc.order_type || (order_is_a_sale || order_is_a_custom_sale) && flt(doc.per_delivered, 6) < 100) {
+						this.frm.add_custom_button(__('Material Request'), () => this.make_material_request(), __('Create'));
+						// this.frm.add_custom_button(__('Request for Raw Materials'), () => this.make_raw_material_request(), __('Create'));
+					}
 
 					// Make Purchase Order
 					// if (!this.frm.doc.is_internal_customer) {

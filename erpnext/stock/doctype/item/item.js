@@ -5,12 +5,6 @@ frappe.provide("erpnext.item");
 
 frappe.ui.form.on("Item", {
 	setup: function(frm) {
-		frm.add_fetch('attribute', 'numeric_values', 'numeric_values');
-		frm.add_fetch('attribute', 'from_range', 'from_range');
-		frm.add_fetch('attribute', 'to_range', 'to_range');
-		frm.add_fetch('attribute', 'increment', 'increment');
-		frm.add_fetch('tax_type', 'tax_rate', 'tax_rate');
-		cur_frm.set_df_property('item_code','reqd',0)
 	},
 	onload: function(frm) {
 		erpnext.item.setup_queries(frm);
@@ -161,7 +155,7 @@ frappe.ui.form.on("Item", {
 			frm.set_value('is_fixed_asset',1)
 			frm.trigger('is_fixed_asset')
 		}
-		if (frm.doc.item_group == "Service" || frm.doc.item_group == "Service (Miscellaneous)" || frm.doc.item_group =="Service (Works)"){
+		if (frm.doc.item_group == "Services" || frm.doc.item_group == "Service (Miscellaneous)" || frm.doc.item_group =="Service (Works)"){
 			frm.set_value("is_stock_item", 0);
 			frm.set_value('is_fixed_asset',0)
 			frm.trigger('is_service_item')
@@ -199,10 +193,10 @@ frappe.ui.form.on("Item", {
 		frm.trigger('auto_create_assets');
 	},
 	is_service_item: function(frm) {
-		// set serial no to false & toggles its visibility
-		console.log("here")
 		frm.set_value('has_serial_no', 0);
 		frm.set_value('has_batch_no', 0);
+        frm.set_value("is_stock_item", 0);
+		frm.set_value('is_fixed_asset',0)
 		frm.toggle_enable(['has_serial_no', 'serial_no_series','is_stock_item','is_fixed_asset'], false);
 	},
 	set_asset_naming_series: function(frm, asset_naming_series) {

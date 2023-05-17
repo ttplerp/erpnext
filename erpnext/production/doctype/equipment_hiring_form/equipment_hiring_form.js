@@ -52,12 +52,6 @@ frappe.ui.form.on('EHF Rate', {
 							else if (item.rate_type == "With Fuel") {
 								frappe.model.set_value(cdt, cdn, "rate", r.message[0].with_fuel)
 							}
-							else if(item.rate_type == "Cft - Broadleaf") {
-								frappe.model.set_value(cdt, cdn, "rate", r.message[0].cft_rate_bf)
-							}
-							else if(item.rate_type == "Cft - Conifer") {
-								frappe.model.set_value(cdt, cdn, "rate", r.message[0].cft_rate_co)
-							}
 							frappe.model.set_value(cdt, cdn, "idle_rate", r.message[0].idle)
 						}				
 						frm.refresh_fields("ehf_rate")

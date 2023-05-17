@@ -84,12 +84,11 @@ class EquipmentHiringForm(Document):
 	@frappe.whitelist()
 	def get_hire_rates(self, from_date):
 		data = frappe.db.sql("""select a.rate_fuel as with_fuel, a.rate_wofuel as without_fuel, 
-						a.idle_rate as idle, a.cft_rate_bf, a.cft_rate_co 
+						a.idle_rate as idle 
 					from `tabHire Charge Item` a, `tabHire Charge Parameter` b 
 					where a.parent = b.name and b.equipment_type = '{0}' and b.equipment_model = '{1}' 
 					and '{2}' between a.from_date and ifnull(a.to_date, now()) LIMIT 1""".format(self.equipment_type, self.equipment_model, from_date), as_dict=True)
 
-		# data = frappe.db.sql(db_query.format(e.equipment_type, e.equipment_model, from_date), as_dict=True)
 		if not data:
 			frappe.throw(_("No Hire Rates has been assigned for equipment type <b>{0}</b> and model <b>{1}</b>").format(self.equipment_type, self.equipment_model), title="No Data Found!")
 		return data

@@ -24,6 +24,7 @@
   "disabled",
   "allow_alternative_item",
   "is_stock_item",
+  "is_service_item",
   "has_variants",
   "is_production_item",
   "is_pol_item",
@@ -949,6 +950,12 @@
    "fieldname": "hsn_code",
    "fieldtype": "Data",
    "label": "HSN Code"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_service_item",
+   "fieldtype": "Check",
+   "label": "Is Service Item"
   }
  ],
  "icon": "fa fa-tag",
@@ -956,7 +963,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-12 16:41:28.318103",
+ "modified": "2023-05-09 15:35:50.307528",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",

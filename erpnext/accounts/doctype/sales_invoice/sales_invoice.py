@@ -1021,6 +1021,7 @@ class SalesInvoice(SellingController):
 					"against_voucher_type": self.doctype,
 					"cost_center": a.cost_center,
 				}, advance_account_currency))
+				
 	def make_customer_gl_entry(self, gl_entries):
 		# Checked both rounding_adjustment and rounded_total
 		# because rounded_total had value even before introcution of posting GLE based on rounded total

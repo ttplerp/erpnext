@@ -65,10 +65,19 @@ frappe.ui.form.on('BOQ', {
 			frm.add_custom_button(__("Measurement Book Entry"), function () { frm.trigger("make_book_entry") },
 				__("Make"), "icon-file-alt"
 			);
-			frm.add_custom_button(__("Invoice"), function () { frm.trigger("make_mb_invoice") },
+			frm.add_custom_button(__("Project Invoice"), function () { frm.trigger("make_mb_invoice") },
 				__("Make"), "icon-file-alt"
 			);
 		}
+        frm.set_query("boq_code", "boq_item", function () {
+            return {
+                filters: {
+                    item_group:"Services",
+                    is_service_item:1,
+                    disabled:0
+                }
+            };
+        });
 	},
 	make_boq_adjustment: function (frm) {
 		frappe.model.open_mapped_doc({

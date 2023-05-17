@@ -57,13 +57,13 @@ frappe.ui.form.on('Hire Charge Invoice', {
 			}
 		}
 	},
-	supplier:function(frm){
-		if (frm.doc.supplier){
+	party:function(frm){
+		if (frm.doc.party){
 			frappe.call({
 				method: "erpnext.accounts.party.get_party_account",
 				args: {
-					party_type:"Supplier",
-					party:frm.doc.supplier,
+					party_type:frm.doc.party_type,
+					party:frm.doc.party,
 					company: frm.doc.company,
 				},
 				callback: function(r) {
@@ -74,6 +74,7 @@ frappe.ui.form.on('Hire Charge Invoice', {
 				}
 			});
 		}
+		frm.clear_table("items");
 	},
 	tds_percent:function(frm){
 		if (frm.doc.tds_percent){

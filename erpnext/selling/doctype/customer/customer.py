@@ -97,6 +97,19 @@ class Customer(TransactionBase):
 			if sum(member.allocated_percentage or 0 for member in self.sales_team) != 100:
 				frappe.throw(_("Total contribution percentage should be equal to 100"))
 
+		self.customer_code = self.get_current_customer_code()
+
+	def get_current_customer_code(self):
+		customer_code = frappe.db.sql("""select customer_code from tabCustomer where customer_group=%s order by customer_code desc limit 1;""", self.customer_group);
+
+		if customer_code:
+			return str(int(customer_code[0][0]) + 1);
+		else:
+			base = frappe.db.get_value("Customer Group", self.customer_group, "customer_code_base")
+			if not base:
+				frappe.throw("Setup Customer Code Base in Customer Group")
+			return str(base)
+
 	@frappe.whitelist()
 	def get_customer_group_details(self):
 		doc = frappe.get_doc("Customer Group", self.customer_group)

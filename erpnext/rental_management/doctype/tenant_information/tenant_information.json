@@ -23,32 +23,49 @@
   "employee_id",
   "employee_name",
   "sb_building_details",
-  "block_no",
-  "block",
-  "dzongkhag",
-  "cb_3",
   "locations",
   "location_name",
-  "rate_per_sqft",
+  "dzongkhag",
+  "cb_3",
+  "block_no",
+  "block",
+  "building_category",
+  "building_classification",
   "cb_4",
   "flat_no",
   "flat",
   "total_floor_area",
+  "rate_per_sqft",
+  "house_no",
+  "land_area",
   "sb_rental_details",
+  "initial_allotment_date",
+  "allocated_date",
+  "status",
+  "surrendered_date",
+  "cb_5",
   "initial_rental_amount",
   "security_deposit",
   "security_deposit_received",
-  "cb_5",
-  "effective_date",
-  "status",
   "cb_6",
   "rental_term_year",
   "percent_of_increment",
   "no_of_year_for_increment",
+  "sb_pilot_housing_details",
+  "sale_price",
+  "repayment_period",
+  "cb_7",
+  "security_deposit_pilot",
+  "cb_8",
+  "original_monthly_instalment",
   "sb_tenant_rental_charges",
   "calculate_rent_charges",
   "rental_charges",
-  "sb_7",
+  "sb_pilot_housing_account",
+  "pilot_account_details",
+  "sb_tenant_family_members",
+  "family_details",
+  "sb_remarks",
   "remarks",
   "amended_from"
  ],
@@ -64,6 +81,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "fetch_from": "customer.customer_code",
    "fieldname": "customer_code",
    "fieldtype": "Data",
    "label": "Customer Code",
@@ -77,8 +95,10 @@
   {
    "fieldname": "block_no",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Block No. ID",
-   "options": "Block No"
+   "options": "Block No",
+   "reqd": 1
   },
   {
    "fieldname": "cb_2",
@@ -87,8 +107,10 @@
   {
    "fieldname": "flat_no",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Flat No. ID",
-   "options": "Flat No"
+   "options": "Flat No",
+   "reqd": 1
   },
   {
    "fieldname": "sb_tenant_details",
@@ -98,12 +120,14 @@
   {
    "fieldname": "tenant_name",
    "fieldtype": "Data",
-   "label": "Tenant Name"
+   "label": "Tenant Name",
+   "reqd": 1
   },
   {
    "fieldname": "tenant_cid",
    "fieldtype": "Data",
-   "label": "Tenant CID"
+   "label": "Tenant CID",
+   "reqd": 1
   },
   {
    "fieldname": "cb_3",
@@ -113,7 +137,8 @@
    "fieldname": "ministry_and_agency",
    "fieldtype": "Link",
    "label": "Ministry and Agency",
-   "options": "Ministry and Agency"
+   "options": "Ministry and Agency",
+   "reqd": 1
   },
   {
    "fieldname": "sb_rental_details",
@@ -135,15 +160,10 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "effective_date",
-   "fieldtype": "Date",
-   "label": "Effective Date"
-  },
-  {
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "\nA\nB\nC"
+   "options": "\nAllocated\nSurrendered\nUnder Maintenance\nSpecial Case"
   },
   {
    "fieldname": "amended_from",
@@ -162,15 +182,14 @@
    "read_only": 1
   },
   {
-   "fetch_from": "block_no.location",
    "fieldname": "locations",
    "fieldtype": "Link",
    "label": "Location ID",
    "options": "Locations",
-   "read_only": 1
+   "reqd": 1
   },
   {
-   "fetch_from": "block_no.dzongkhag",
+   "fetch_from": "locations.dzongkhag",
    "fieldname": "dzongkhag",
    "fieldtype": "Link",
    "label": "Dzongkhag",
@@ -178,12 +197,11 @@
    "read_only": 1
   },
   {
-   "allow_on_submit": 1,
-   "fetch_from": "block_no.rate",
+   "depends_on": "eval: doc.building_category != 'Pilot Housing' && doc.total_floor_area > 0",
    "fieldname": "rate_per_sqft",
    "fieldtype": "Currency",
    "label": "Rate per Sqft",
-   "read_only": 1
+   "mandatory_depends_on": "eval: doc.building_category != 'Pilot Housing'"
   },
   {
    "fetch_from": "flat_no.flat_no",
@@ -193,14 +211,15 @@
    "read_only": 1
   },
   {
+   "depends_on": "eval: doc.building_category != 'Pilot Housing'",
    "fetch_from": "flat_no.total_floor_area",
    "fieldname": "total_floor_area",
    "fieldtype": "Float",
-   "label": "Total Floor Area",
+   "label": "Total Floor Area (Sqft)",
    "read_only": 1
   },
   {
-   "fetch_from": "block_no.location_name",
+   "fetch_from": "locations.location",
    "fieldname": "location_name",
    "fieldtype": "Data",
    "label": "Location Name",
@@ -210,7 +229,8 @@
    "fieldname": "tenant_department",
    "fieldtype": "Link",
    "label": "Tenant Department ID",
-   "options": "Tenant Department"
+   "options": "Tenant Department",
+   "reqd": 1
   },
   {
    "fetch_from": "tenant_department.department",
@@ -257,7 +277,8 @@
    "fieldname": "customer",
    "fieldtype": "Link",
    "label": "Customer",
-   "options": "Customer"
+   "options": "Customer",
+   "read_only": 1
   },
   {
    "default": "0",
@@ -271,6 +292,7 @@
    "label": "Tenant Rental Charges"
   },
   {
+   "depends_on": "eval: doc.docstatus == 0",
    "fieldname": "calculate_rent_charges",
    "fieldtype": "Button",
    "label": "Calculate Rent Charges"
@@ -282,12 +304,14 @@
   {
    "fieldname": "percent_of_increment",
    "fieldtype": "Percent",
-   "label": "Percent of Increment"
+   "label": "Percent of Increment",
+   "read_only": 1
   },
   {
    "fieldname": "no_of_year_for_increment",
    "fieldtype": "Int",
-   "label": "No. of Year for Increment"
+   "label": "No. of Year for Increment",
+   "read_only": 1
   },
   {
    "fieldname": "rental_charges",
@@ -296,24 +320,130 @@
    "options": "Tenant Rental Charges"
   },
   {
-   "fieldname": "sb_7",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "remarks",
    "fieldtype": "Small Text",
    "label": "Remarks"
   },
   {
+   "depends_on": "eval:doc.building_category != 'Pilot Housing'",
    "fieldname": "rental_term_year",
    "fieldtype": "Int",
    "label": "Rental Term Years"
+  },
+  {
+   "fetch_from": "block_no.building_category",
+   "fieldname": "building_category",
+   "fieldtype": "Data",
+   "label": "Building Category",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "block_no.building_classification",
+   "fieldname": "building_classification",
+   "fieldtype": "Data",
+   "label": "Building Classification",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval: doc.building_category == 'Pilot Housing'",
+   "fetch_from": "flat_no.house_no",
+   "fieldname": "house_no",
+   "fieldtype": "Data",
+   "label": "House No",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval: doc.building_category == 'Pilot Housing'",
+   "fetch_from": "flat_no.land_area",
+   "fieldname": "land_area",
+   "fieldtype": "Float",
+   "label": "Land area (Sq.m)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "initial_allotment_date",
+   "fieldtype": "Date",
+   "label": "Initial Allotment Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "allocated_date",
+   "fieldtype": "Date",
+   "label": "Allocated Date",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.building_category == 'Pilot Housing'",
+   "fieldname": "sb_pilot_housing_details",
+   "fieldtype": "Section Break",
+   "label": "Pilot Housing Details"
+  },
+  {
+   "fieldname": "sale_price",
+   "fieldtype": "Currency",
+   "label": "Sale Price"
+  },
+  {
+   "fieldname": "repayment_period",
+   "fieldtype": "Int",
+   "label": "Repayment Period"
+  },
+  {
+   "fieldname": "cb_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "security_deposit_pilot",
+   "fieldtype": "Currency",
+   "label": "Security Deposit"
+  },
+  {
+   "fieldname": "cb_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "original_monthly_instalment",
+   "fieldtype": "Currency",
+   "label": "Original Monthly Installment"
+  },
+  {
+   "depends_on": "eval:doc.building_category == 'Pilot Housing'",
+   "fieldname": "sb_pilot_housing_account",
+   "fieldtype": "Section Break",
+   "label": "Pilot Housing Account"
+  },
+  {
+   "fieldname": "pilot_account_details",
+   "fieldtype": "Table",
+   "label": "Pilot Housing",
+   "options": "Pilot Housing Account"
+  },
+  {
+   "fieldname": "sb_remarks",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval: doc.status == 'Surrendered'",
+   "fieldname": "surrendered_date",
+   "fieldtype": "Date",
+   "label": "Surrendered Date"
+  },
+  {
+   "fieldname": "sb_tenant_family_members",
+   "fieldtype": "Section Break",
+   "label": "Tenant Family Members"
+  },
+  {
+   "fieldname": "family_details",
+   "fieldtype": "Table",
+   "label": "Family Details",
+   "options": "Tenant Family Details"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-08 12:08:52.905399",
+ "modified": "2023-05-17 17:48:06.156651",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Tenant Information",

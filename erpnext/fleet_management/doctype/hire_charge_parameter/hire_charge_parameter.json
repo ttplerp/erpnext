@@ -12,8 +12,8 @@
   "equipment_model",
   "section_break_4",
   "without_fuel",
-  "with_fuel",
   "column_break_6",
+  "with_fuel",
   "cft_rate_bf",
   "cft_rate_co",
   "column_break_10",
@@ -78,12 +78,14 @@
   {
    "fieldname": "cft_rate_bf",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Rate Per Cft (Broadleaf)",
    "read_only": 1
   },
   {
    "fieldname": "cft_rate_co",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Rate Per Cft (Conifer)",
    "read_only": 1
   },
@@ -155,7 +157,7 @@
   }
  ],
  "links": [],
- "modified": "2023-05-03 11:54:02.795480",
+ "modified": "2023-05-16 09:46:43.883129",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Hire Charge Parameter",
@@ -163,22 +165,26 @@
  "owner": "Administrator",
  "permissions": [
   {
+   "create": 1,
    "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
    "role": "Fleet Manager",
-   "share": 1
+   "share": 1,
+   "write": 1
   },
   {
+   "create": 1,
    "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
    "role": "Fleet User",
-   "share": 1
+   "share": 1,
+   "write": 1
   },
   {
    "create": 1,
@@ -200,6 +206,17 @@
    "report": 1,
    "role": "Projects User",
    "share": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
   }
  ],
  "sort_field": "modified",

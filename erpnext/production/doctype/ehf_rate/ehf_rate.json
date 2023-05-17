@@ -62,7 +62,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Rate Type",
-   "options": "\nWith Fuel\nWithout Fuel\nCft - Broadleaf\nCft - Conifer",
+   "options": "\nWith Fuel\nWithout Fuel",
    "reqd": 1
   },
   {
@@ -75,7 +75,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-05-08 15:20:52.308106",
+ "modified": "2023-05-16 11:38:29.583633",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "EHF Rate",

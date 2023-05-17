@@ -304,6 +304,7 @@ def make_entry(args, adv_adj, update_outstanding, from_repost=False):
 
 	if not from_repost and gle.voucher_type != "Period Closing Voucher":
 		#Commit and Consume budget
+		
 		transactions = [d.transaction for d in frappe.get_all("Budget Transaction", fields='transaction')]
 		if args.voucher_type in transactions and args.against_voucher_type != 'Asset':
 			account_types = [d.account_type for d in frappe.get_all("Budget Settings Account Types", fields='account_type')]
@@ -343,7 +344,6 @@ def make_entry(args, adv_adj, update_outstanding, from_repost=False):
 					})
 					con_obj.flags.ignore_permissions=1
 					con_obj.submit()
-
 def validate_cwip_accounts(gl_map):
 	# frappe.throw(str(gl_map))
 	"""Validate that CWIP account are not used in Journal Entry"""

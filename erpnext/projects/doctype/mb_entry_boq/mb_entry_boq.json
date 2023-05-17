@@ -7,6 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "boq_code",
+  "item_name",
   "is_group",
   "is_selected",
   "uom",
@@ -32,15 +33,17 @@
  "fields": [
   {
    "fieldname": "boq_code",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "label": "BOQ Code",
+   "options": "Item",
    "read_only": 1
   },
   {
+   "fetch_from": "boq_code.description",
    "fieldname": "item",
    "fieldtype": "Small Text",
    "in_list_view": 1,
-   "label": "Item",
+   "label": "Item Description",
    "read_only": 1
   },
   {
@@ -55,6 +58,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "fetch_from": "boq_code.stock_uom",
    "fieldname": "uom",
    "fieldtype": "Link",
    "label": "UOM",
@@ -164,12 +168,19 @@
    "hidden": 1,
    "label": "Original Amount",
    "precision": "2"
+  },
+  {
+   "fetch_from": "boq_code.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-05-01 16:37:09.160472",
+ "modified": "2023-05-15 13:11:08.117643",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "MB Entry BOQ",

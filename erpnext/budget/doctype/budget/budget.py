@@ -267,7 +267,6 @@ def validate_expense_against_budget(args):
 	commit_budget(args)
 
 def validate_budget_records(args, budget_records):
-	# frappe.throw(str(args))
 	for budget in budget_records:
 		amount = get_amount(args, budget)
 		yearly_action, monthly_action = get_actions(args, budget)

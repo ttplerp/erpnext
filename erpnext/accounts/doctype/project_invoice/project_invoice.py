@@ -8,6 +8,14 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.utils import flt, time_diff_in_hours, get_datetime, getdate, cint, get_datetime_str
 from erpnext.controllers.accounts_controller import AccountsController
+from erpnext.accounts.party import get_party_account
+from erpnext.accounts.utils import get_tds_account,get_account_type
+from erpnext.accounts.general_ledger import (
+	get_round_off_account_and_cost_center,
+	make_gl_entries,
+	make_reverse_gl_entries,
+	merge_similar_entries,
+)
 # from erpnext.accounts.doctype.business_activity.business_activity import get_default_ba
 # from erpnext.custom_utils import check_tds_remittance
 
@@ -23,7 +31,7 @@ class ProjectInvoice(AccountsController):
 		self.update_boq_item()
 		self.update_boq()
 		self.update_mb_entries()
-		self.make_gl_entries()
+		self.make_gl_entry()
 		self.project_invoice_item_entry()
 		self.update_advance_balance()
 		# self.consume_budget()  
@@ -34,7 +42,7 @@ class ProjectInvoice(AccountsController):
 	def on_cancel(self):
 			# check_tds_remittance(self.name)
 		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
-		self.make_gl_entries()
+		self.make_gl_entry()
 		self.update_boq_item()
 		self.update_boq()
 		self.update_mb_entries()
@@ -64,7 +72,7 @@ class ProjectInvoice(AccountsController):
 				self.payment_status = "Draft"
 
 		if update:
-			self.db_set("payment_status", self.status, update_modified=update_modified)
+			self.db_set("payment_status", self.payment_status, update_modified=update_modified)
 
 	def on_update_after_submit(self):
 		self.project_invoice_item_entry()
@@ -410,139 +418,108 @@ class ProjectInvoice(AccountsController):
 		if self.advances:
 			for item in self.advances:
 				total_deduction_amount += item.allocated_amount
-		if self.tds_amount:
-				pass
 
-
-	def make_gl_entries(self):
-		if self.net_invoice_amount:
-			from erpnext.accounts.general_ledger import make_gl_entries
-			gl_entries = []
-			self.posting_date = self.invoice_date
-			currency = frappe.db.get_value(doctype=self.party_type, filters=self.party, fieldname=["default_currency"], as_dict=True)
-
-			if self.party_type == "Customer":
-				rec_gl = frappe.db.get_value(doctype="Company",filters=self.company,fieldname="default_receivable_account")
-			elif self.party_type == "Supplier":
-				if not self.debit_credit_account:
-					self.debit_credit_account = frappe.db.get_value(doctype="Company",filters=self.company,fieldname="invoice_account_supplier")
-				rec_gl = frappe.db.get_value(doctype="Company",filters=self.company,fieldname="default_payable_account")
-				if self.net_invoice_amount < 0:
-					rec_gl = frappe.db.get_value(doctype="Company",filters=self.company,fieldname="refundable_account_supplier")
-			else:
-				rec_gl = frappe.db.get_value(doctype="Company",filters=self.company,fieldname="default_receivable_account")
-
-			if not self.debit_credit_account:
-				frappe.throw(_("Payable or Receivable account not set in party {}".format(self.party)))
-
-			if not rec_gl:
-				frappe.throw(_("Default Receivable Account is not defined in Company Settings."))
-					
-			gl_entries.append(
-				self.get_gl_dict({
-						"account":  rec_gl,
-						"party_type": self.party_type,
-						"party": self.party,
-						"against": self.debit_credit_account,
-						"credit" if self.party_type == "Supplier" else "debit": self.net_invoice_amount,
-						"credit_in_account_currency" if self.party_type == "Supplier" else "debit_in_account_currency": self.net_invoice_amount,
-						"against_voucher": self.name,
-						"against_voucher_type": self.doctype,
-						"project": self.project,
-						"cost_center": self.cost_center,
-				}, self.currency)
-			)
-			
-
-			gl_entries.append(
-				self.get_gl_dict({
+	def make_gl_entry(self):
+		gl_entries = []
+		self.make_party_gl_entry(gl_entries)
+		self.make_advance_gl_entry(gl_entries)
+		self.make_other_deduction_gl_entry(gl_entries)
+		self.make_tds_gl_entry(gl_entries)
+		gl_entries = merge_similar_entries(gl_entries)
+		make_gl_entries(gl_entries,update_outstanding="No",cancel=self.docstatus == 2)
+						
+	def make_party_gl_entry(self, gl_entries):
+		gl_entries.append(
+			self.get_gl_dict({
 					"account":  self.debit_credit_account,
-					"against": self.party,
-					"debit" if self.party_type == "Supplier" else "credit": self.net_amount,
-					"debit_in_account_currency" if self.party_type == "Supplier" else "credit_in_account_currency": self.net_amount,
+					"party_type": self.party_type,
+					"party": self.party,
+					"against": self.debit_credit_account,
+					"credit" if self.party_type == "Supplier" else "debit": self.net_invoice_amount,
+					"credit_in_account_currency" if self.party_type == "Supplier" else "debit_in_account_currency": self.net_invoice_amount,
+					"against_voucher": self.name,
+					"against_voucher_type": self.doctype,
 					"project": self.project,
 					"cost_center": self.cost_center,
-				}, self.currency)
-			)
-			
-			# Other Deductions
-			for ded in self.deductions:
-				if flt(ded.amount) > 0:
-					if not ded.account:
-						frappe.throw(_("Row#{0}: Account cannot be blank under other deductions.").format(ded.idx))
-							
-					deduction_account_type = frappe.db.get_value(doctype="Account", filters=ded.account, fieldname=["account_type"])
-					gl_entries.append(
-						self.get_gl_dict({"account": ded.account,
-								"credit" if self.party_type == "Supplier" else "debit": flt(ded.amount),
-								"credit_in_account_currency" if self.party_type == "Supplier" else "debit_in_account_currency": flt(ded.amount),
-								"cost_center": self.cost_center,
-								"account_type": deduction_account_type,
-								"is_advance": "No",
-								"reference_type": "Project Payment",
-								"reference_name": self.name,
-								"project": self.project,
-								"party_check": 1 if deduction_account_type in ("Payable","Receivable") else 0,
-								"party_type": self.party_type,
-								"party": self.party,
-						}, currency.default_currency)
-					)
+					"posting_date":self.invoice_date
+			}, self.currency)
+		)
+		expnse_account = frappe.db.get_value("Company",self.company,"invoice_account_supplier" if self.party_type == "Supplier"else "project_invoice_account")
 
+		gl_entries.append(
+			self.get_gl_dict({
+				"account":  expnse_account,
+				"against": self.party,
+				"debit" if self.party_type == "Supplier" else "credit": self.net_amount,
+				"debit_in_account_currency" if self.party_type == "Supplier" else "credit_in_account_currency": self.net_amount,
+				"project": self.project,
+				"cost_center": self.cost_center,
+				"posting_date":self.invoice_date
+			}, self.currency)
+		)
+	def make_advance_gl_entry(self, gl_entries):
+		for adv in self.advances:
+				advance_account_type = frappe.db.get_value(doctype="Account", filters=adv.advance_account, fieldname=["account_type"])                   
 
-			# Advance Entry
-			tot_advance = 0.0
-			for adv in self.advances:
-				tot_advance += flt(adv.allocated_amount)
-
-			if flt(tot_advance) > 0:
-				advance_map = {"Supplier": "advance_account_supplier", "Customer": "project_advance_account", "Employee": "advance_account_internal"}
-				advance_account = frappe.db.get_value(doctype="Projects Accounts Settings",fieldname=advance_map[self.party_type])
-
-				if not advance_account:
-					frappe.throw(_("Project Advance Account for party type {0} is not defined under Projects Accounts Settings").format(self.party_type))
-						
-				advance_account_type = frappe.db.get_value(doctype="Account", filters=advance_account, fieldname=["account_type"])                   
-						
 				gl_entries.append(
-					self.get_gl_dict({"account": advance_account,
-						"credit" if self.party_type == "Supplier" else "debit": flt(tot_advance),
-						"credit_in_account_currency" if self.party_type == "Supplier" else "debit_in_account_currency": flt(tot_advance),
+					self.get_gl_dict({"account": adv.advance_account,
+						"credit" if self.party_type == "Supplier" else "debit": flt(adv.allocated_amount),
+						"credit_in_account_currency" if self.party_type == "Supplier" else "debit_in_account_currency": flt(adv.allocated_amount),
 						"cost_center": self.cost_center,
 						"party_check": 1 if advance_account_type in ("Payable","Receivable") else 0,
 						"party_type": self.party_type,
 						"party": self.party,
 						"account_type": advance_account_type,
 						"is_advance": "No",
-						"reference_type": "Project Payment",
+						"reference_type": self.doctype,
 						"reference_name": self.name,
 						"project": self.project,
-					}, currency.default_currency)
+						"posting_date":self.invoice_date
+					},self.currency)
 				)
-
-			# TDS Deductions
-			if flt(self.tds_amount) > 0:
-				if not self.tds_account:
-					frappe.throw("TDS Account cannot be blank.")
+	def make_other_deduction_gl_entry(self, gl_entries):
+		for ded in self.deductions:
+			if flt(ded.amount) > 0:
+				if not ded.account:
+					frappe.throw(_("Row#{0}: Account cannot be blank under other deductions.").format(ded.idx))
 						
-				tds_account_type = frappe.db.get_value(doctype="Account", filters=self.tds_account, fieldname=["account_type"])
-
+				deduction_account_type = frappe.db.get_value(doctype="Account", filters=ded.account, fieldname=["account_type"])
 				gl_entries.append(
-					self.get_gl_dict({"account": self.tds_account,
-						"credit" if self.party_type == "Supplier" else "debit": flt(self.tds_amount),
-						"credit_in_account_currency" if self.party_type == "Supplier" else "debit_in_account_currency": flt(self.tds_amount),
-						"cost_center": self.cost_center,
-						"account_type": tds_account_type,
-						"is_advance": "No",
-						"reference_type": "Project Payment",
-						"reference_name": self.name,
-						"project": self.project,
-					}, currency.default_currency)
+					self.get_gl_dict({"account": ded.account,
+							"credit" if self.party_type == "Supplier" else "debit": flt(ded.amount),
+							"credit_in_account_currency" if self.party_type == "Supplier" else "debit_in_account_currency": flt(ded.amount),
+							"cost_center": self.cost_center,
+							"account_type": deduction_account_type,
+							"is_advance": "No",
+							"reference_type": self.doctype,
+							"reference_name": self.name,
+							"project": self.project,
+							"party_check": 1 if deduction_account_type in ("Payable","Receivable") else 0,
+							"party_type": self.party_type,
+							"party": self.party,
+							"posting_date":self.invoice_date
+					},self.currency)
 				)
+	def make_tds_gl_entry(self, gl_entries):
+		if flt(self.tds_amount) > 0:
+			if not self.tds_account:
+				self.tds_account = get_tds_account(self.tds_rate, self.company)
+					
+			tds_account_type = frappe.db.get_value(doctype="Account", filters=self.tds_account, fieldname=["account_type"])
 
-			make_gl_entries(gl_entries, cancel=(self.docstatus == 2),update_outstanding="No", merge_entries=False)
-
-				
-
+			gl_entries.append(
+				self.get_gl_dict({"account": self.tds_account,
+					"credit" if self.party_type == "Supplier" else "debit": flt(self.tds_amount),
+					"credit_in_account_currency" if self.party_type == "Supplier" else "debit_in_account_currency": flt(self.tds_amount),
+					"cost_center": self.cost_center,
+					"account_type": tds_account_type,
+					"is_advance": "No",
+					"reference_type": self.doctype,
+					"reference_name": self.name,
+					"project": self.project,
+					"posting_date":self.invoice_date
+				},self.currency)
+			)
 	def update_boq_item(self):
 		name_list = self.get_name_list()
 		if self.invoice_type == "Direct Invoice":
@@ -666,7 +643,6 @@ class ProjectInvoice(AccountsController):
 					mb_doc.status                 = 'Uninvoiced' if flt(balance_amount) > 0 else 'Invoiced'
 					mb_doc.save(ignore_permissions = True)           
 
-	# picked from project payment by phuntsho on may 6th
 	def update_advance_balance(self):
 		for adv in self.advances:
 			allocated_amount = 0.0

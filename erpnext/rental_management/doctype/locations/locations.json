@@ -59,7 +59,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-04-27 17:29:28.936450",
+ "modified": "2023-05-11 09:59:31.401403",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Locations",
@@ -110,6 +110,7 @@
    "write": 1
   }
  ],
+ "search_fields": "location,dzongkhag",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

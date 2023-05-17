@@ -1,0 +1,287 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:NHDCL-{YY}-{MM}-{#####}",
+ "creation": "2023-05-15 15:37:19.213981",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "cid",
+  "applicant_name",
+  "employee_id",
+  "employment_type",
+  "dzongkhag",
+  "gewog",
+  "village",
+  "gender",
+  "work_station",
+  "marital_status",
+  "email_id",
+  "mobile_no",
+  "telephone_office",
+  "telephone_residence",
+  "amended_from",
+  "spouse_information_section",
+  "spouse_cid",
+  "spouse_name",
+  "spouse_dob",
+  "spouse_dzongkhag",
+  "spouse_gewog",
+  "spouse_village",
+  "spouse_employment_type",
+  "spouse_service_record_section",
+  "spouse_designation",
+  "spouse_grade",
+  "spouse_ministry",
+  "spouse_department",
+  "spouse_gross_salary",
+  "spouse_provident_fund_no",
+  "service_record_section",
+  "designation",
+  "grade",
+  "ministry_agency",
+  "department",
+  "gross_salary",
+  "provident_fund_no"
+ ],
+ "fields": [
+  {
+   "fieldname": "cid",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Citizen ID No",
+   "reqd": 1
+  },
+  {
+   "fieldname": "applicant_name",
+   "fieldtype": "Data",
+   "label": "Applicant Name"
+  },
+  {
+   "fieldname": "employee_id",
+   "fieldtype": "Data",
+   "label": "Employee ID"
+  },
+  {
+   "fieldname": "employment_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Employment Type",
+   "options": "\nCivil Servant\nCorporate Employee\nPrivate Employee\nSelf Employee\nHouse Wife\nOthers",
+   "reqd": 1
+  },
+  {
+   "fieldname": "dzongkhag",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Dzongkhag",
+   "options": "Dzongkhag",
+   "reqd": 1
+  },
+  {
+   "fieldname": "gewog",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Gewog",
+   "reqd": 1
+  },
+  {
+   "fieldname": "village",
+   "fieldtype": "Data",
+   "label": "Village",
+   "reqd": 1
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Select",
+   "label": "Gender",
+   "options": "Male\nFemale"
+  },
+  {
+   "fieldname": "work_station",
+   "fieldtype": "Data",
+   "label": "Place of Application (Work Station)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "marital_status",
+   "fieldtype": "Select",
+   "label": "Marital Status",
+   "options": "Single\nMarried\nDivorced\nSeparated\nWidowed",
+   "reqd": 1
+  },
+  {
+   "fieldname": "email_id",
+   "fieldtype": "Data",
+   "label": "Email ID"
+  },
+  {
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "label": "Mobile No",
+   "reqd": 1
+  },
+  {
+   "fieldname": "telephone_office",
+   "fieldtype": "Data",
+   "label": "Telephone (Office)"
+  },
+  {
+   "fieldname": "telephone_residence",
+   "fieldtype": "Data",
+   "label": "Telephone (Residence)"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Housing Application",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "spouse_information_section",
+   "fieldtype": "Section Break",
+   "label": "Spouse Information"
+  },
+  {
+   "fieldname": "spouse_cid",
+   "fieldtype": "Data",
+   "label": "Citizen ID No."
+  },
+  {
+   "fieldname": "spouse_name",
+   "fieldtype": "Data",
+   "label": "Spouse Name"
+  },
+  {
+   "fieldname": "spouse_dob",
+   "fieldtype": "Data",
+   "label": "Date of Birth"
+  },
+  {
+   "fieldname": "spouse_dzongkhag",
+   "fieldtype": "Data",
+   "label": "Dzongkhag"
+  },
+  {
+   "fieldname": "spouse_gewog",
+   "fieldtype": "Data",
+   "label": "Gewog"
+  },
+  {
+   "fieldname": "spouse_village",
+   "fieldtype": "Data",
+   "label": "Village"
+  },
+  {
+   "fieldname": "spouse_employment_type",
+   "fieldtype": "Select",
+   "label": "Employment Type",
+   "options": "\nCivil Servant\nCorporate Employee\nPrivate Employee\nSelf Employee\nHouse Wife\nOthers"
+  },
+  {
+   "depends_on": "eval:doc.spouse_employment_type == \"Civil Servant\" || doc.spouse_employment_type==\"Corporate Employee\" || doc.spouse_employment_type == \"Private Employee\" || doc.spouse_employment_type==\"Self Employee\" || doc.spouse_employment_type==\"Others\"",
+   "fieldname": "spouse_service_record_section",
+   "fieldtype": "Section Break",
+   "label": "Spouse Service Record"
+  },
+  {
+   "depends_on": "eval:doc.spouse_employment_type==\"Civil Servant\"",
+   "fieldname": "spouse_designation",
+   "fieldtype": "Data",
+   "label": "Designation"
+  },
+  {
+   "depends_on": "eval:doc.spouse_employment_type==\"Civil Servant\"",
+   "fieldname": "spouse_grade",
+   "fieldtype": "Data",
+   "label": "Grade"
+  },
+  {
+   "fieldname": "spouse_ministry",
+   "fieldtype": "Data",
+   "label": "Ministry/Agency"
+  },
+  {
+   "depends_on": "eval:doc.spouse_employment_type==\"Civil Servant\"",
+   "fieldname": "spouse_department",
+   "fieldtype": "Data",
+   "label": "Department"
+  },
+  {
+   "fieldname": "spouse_gross_salary",
+   "fieldtype": "Currency",
+   "label": "Gross Salary/Month"
+  },
+  {
+   "fieldname": "spouse_provident_fund_no",
+   "fieldtype": "Data",
+   "label": "Provident Fund No."
+  },
+  {
+   "fieldname": "service_record_section",
+   "fieldtype": "Section Break",
+   "label": "Service Record"
+  },
+  {
+   "fieldname": "designation",
+   "fieldtype": "Data",
+   "label": "Designation"
+  },
+  {
+   "fieldname": "grade",
+   "fieldtype": "Data",
+   "label": "Grade"
+  },
+  {
+   "fieldname": "ministry_agency",
+   "fieldtype": "Data",
+   "label": "Ministry/Agency"
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Data",
+   "label": "Department"
+  },
+  {
+   "fieldname": "gross_salary",
+   "fieldtype": "Data",
+   "label": "Gross Salary"
+  },
+  {
+   "fieldname": "provident_fund_no",
+   "fieldtype": "Data",
+   "label": "Provident Fund No"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-05-17 17:32:19.725074",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Housing Application",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

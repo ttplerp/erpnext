@@ -10,10 +10,6 @@ frappe.ui.form.on('Hire Charge Parameter', {
 	},
 	"items_on_form_rendered": function(frm, grid_row, cdt, cdn) {
 		var row = cur_frm.open_grid_row();
-		// var d = frappe.datetime.get_today().toString()
-		// if(!row.grid_form.fields_dict.from_date.value) {
-		// 	row.grid_form.fields_dict.from_date.set_value(frm.doc.from_date)
-		// }
 		if(!row.grid_form.fields_dict.rate_fuel.value) {
 			row.grid_form.fields_dict.rate_fuel.set_value(frm.doc.with_fuel)
 		}
@@ -42,16 +38,6 @@ frappe.ui.form.on('Hire Charge Parameter', {
 function disable_drag_drop(frm) {
 	frm.page.body.find('[data-fieldname="items"] [data-idx] .data-row').removeClass('sortable-handle');
 }
-
-// frappe.ui.form.on("Hire Charge Parameter", "refresh", function(frm) {
-//     cur_frm.set_query("equipment_model", function() {
-//         return {
-//             "filters": {
-// 				"equipment_type": frm.doc.equipment_type
-//             }
-//         };
-//     });
-// })
 
 frappe.ui.form.on('Hire Charge Item', {
 	before_items_remove: function(frm, cdt, cdn) {

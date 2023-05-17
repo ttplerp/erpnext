@@ -6,4 +6,10 @@ from frappe.model.document import Document
 
 class BlockNo(Document):
 	def autoname(self):
-		self.name = "/".join([self.location, self.block_no])
+		abbr_building_category = frappe.get_value("Building Category", self.building_category, "abbr")
+
+		self.name = "/".join([self.location, abbr_building_category, self.block_no])
+	
+	def validate(self):
+		if not frappe.get_value("Building Category", self.building_category, "abbr"):
+			frappe.throw("Abbr required. Missing abbr for Building Category: {}".format(self.building_category))

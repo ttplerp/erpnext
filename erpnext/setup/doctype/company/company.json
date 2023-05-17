@@ -1016,7 +1016,7 @@
   {
    "fieldname": "project_invoice_account",
    "fieldtype": "Link",
-   "label": "Project Invoice Account",
+   "label": "Project Invoice Account(Customer)",
    "options": "Account"
   },
   {
@@ -1043,7 +1043,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2023-05-04 16:41:29.655963",
+ "modified": "2023-05-10 16:33:24.901710",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",

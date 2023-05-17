@@ -492,7 +492,8 @@
    "fieldname": "project_boq_item",
    "fieldtype": "Table",
    "label": "Project BOQ Item",
-   "options": "Project BOQ Item"
+   "options": "Project BOQ Item",
+   "read_only": 1
   },
   {
    "fieldname": "project_advance_section",
@@ -524,7 +525,7 @@
  "index_web_pages_for_search": 1,
  "links": [],
  "max_attachments": 4,
- "modified": "2023-05-04 17:03:33.173931",
+ "modified": "2023-05-16 13:28:12.853695",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project",

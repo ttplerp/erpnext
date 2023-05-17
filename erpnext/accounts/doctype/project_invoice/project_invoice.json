@@ -69,6 +69,7 @@
  ],
  "fields": [
   {
+   "allow_on_submit": 1,
    "default": "Draft",
    "fieldname": "payment_status",
    "fieldtype": "Select",
@@ -456,7 +457,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-09 11:07:52.644223",
+ "modified": "2023-05-09 12:11:34.172591",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Project Invoice",
