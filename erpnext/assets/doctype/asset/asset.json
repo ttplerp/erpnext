@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_import": 1,
+ "allow_rename": 1,
  "autoname": "SMCL.-.{abbr}.-.YY.-.####",
  "creation": "2022-01-18 02:26:55.975005",
  "doctype": "DocType",
@@ -677,7 +678,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2023-04-26 11:13:07.207134",
+ "modified": "2023-05-17 15:18:04.544249",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",
