@@ -435,6 +435,8 @@ scheduler_events = {
 		"erpnext.loan_management.doctype.process_loan_interest_accrual.process_loan_interest_accrual.process_loan_interest_accrual_for_term_loans",
 		"erpnext.crm.utils.open_leads_opportunities_based_on_todays_event",
 		"erpnext.assets.doctype.asset.depreciation.post_depreciation_entries",
+        "erpnext.integrations.bps.download_bank_statement",
+		"erpnext.accounts.doctype.brs_entries.brs_entries.update_bank_clearance_date",
 	],
 	"monthly_long": [
 		"erpnext.accounts.deferred_revenue.process_deferred_accounting",
