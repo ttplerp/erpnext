@@ -26,6 +26,7 @@
   "locations",
   "location_name",
   "dzongkhag",
+  "town_category",
   "cb_3",
   "block_no",
   "block",
@@ -438,12 +439,19 @@
    "fieldtype": "Table",
    "label": "Family Details",
    "options": "Tenant Family Details"
+  },
+  {
+   "fetch_from": "locations.town_category",
+   "fieldname": "town_category",
+   "fieldtype": "Data",
+   "label": "Town Category",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-17 17:48:06.156651",
+ "modified": "2023-05-22 11:10:22.599550",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Tenant Information",

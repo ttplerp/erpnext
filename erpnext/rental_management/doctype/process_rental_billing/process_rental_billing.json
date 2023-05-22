@@ -1,0 +1,213 @@
+{
+ "actions": [],
+ "creation": "2023-05-18 22:54:54.154342",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sb_rental_process",
+  "company",
+  "branch",
+  "cb_1",
+  "dzongkhag",
+  "cb_2",
+  "ministry_agency",
+  "cb_3",
+  "tenant",
+  "sb_notify_email",
+  "send_email",
+  "sb_year_month",
+  "fiscal_year",
+  "cb_4",
+  "month",
+  "cb_5",
+  "posting_date",
+  "sb_process_bill",
+  "create_rental_bills",
+  "cb_6",
+  "remove_rental_bills",
+  "cb_7",
+  "submit_rental_bills",
+  "sb_progress_and_activity_log",
+  "progress",
+  "activity_log"
+ ],
+ "fields": [
+  {
+   "fieldname": "sb_rental_process",
+   "fieldtype": "Section Break",
+   "label": "Rental Process Selection"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "dzongkhag",
+   "fieldtype": "Link",
+   "label": "Dzongkhag",
+   "options": "Dzongkhag",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ministry_agency",
+   "fieldtype": "Link",
+   "label": "Ministry/Agency",
+   "options": "Ministry and Agency"
+  },
+  {
+   "fieldname": "cb_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "*Select only if you are processing rental bill for particular tenant",
+   "fieldname": "tenant",
+   "fieldtype": "Link",
+   "label": "Tenant",
+   "options": "Tenant Information"
+  },
+  {
+   "fieldname": "sb_notify_email",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Notify Email"
+  },
+  {
+   "default": "0",
+   "fieldname": "send_email",
+   "fieldtype": "Check",
+   "label": "Send Email"
+  },
+  {
+   "fieldname": "sb_year_month",
+   "fieldtype": "Section Break",
+   "label": "Select Rental Year and Month"
+  },
+  {
+   "fieldname": "fiscal_year",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Fiscal Year",
+   "options": "Fiscal Year",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "month",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Month",
+   "options": "01\n02\n03\n04\n05\n06\n07\n08\n09\n10\n11\n12",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "sb_process_bill",
+   "fieldtype": "Section Break",
+   "label": "Process Rental Billing"
+  },
+  {
+   "description": "Creates rental bills for above mentioned criteria.",
+   "fieldname": "create_rental_bills",
+   "fieldtype": "Button",
+   "label": "Create Rental Bills"
+  },
+  {
+   "fieldname": "cb_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Removes unsubmitted rental bills for above mentioned criteria",
+   "fieldname": "remove_rental_bills",
+   "fieldtype": "Button",
+   "label": "Remove Rental Bills"
+  },
+  {
+   "fieldname": "cb_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Submit all rental bills for the above selected criteria",
+   "fieldname": "submit_rental_bills",
+   "fieldtype": "Button",
+   "label": "Submit Rental Bills"
+  },
+  {
+   "fieldname": "sb_progress_and_activity_log",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "progress",
+   "fieldtype": "Data",
+   "label": "Progress",
+   "read_only": 1
+  },
+  {
+   "fieldname": "activity_log",
+   "fieldtype": "HTML",
+   "label": "Activity Log"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  }
+ ],
+ "hide_toolbar": 1,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2023-05-22 15:06:09.878558",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Process Rental Billing",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "read": 1,
+   "role": "Rental Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

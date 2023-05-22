@@ -140,7 +140,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Tenant Transactions",
-   "link_count": 1,
+   "link_count": 2,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -153,9 +153,19 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Process Rental Bill",
+   "link_count": 0,
+   "link_to": "Process Rental Billing",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-05-17 16:42:57.905782",
+ "modified": "2023-05-19 10:42:36.228327",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Management",

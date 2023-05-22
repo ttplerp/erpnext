@@ -819,7 +819,6 @@ class StockEntry(StockController):
 			self.stock_entry_type = frappe.get_cached_value(
 				"Stock Entry Type", {"purpose": self.purpose}, "name"
 			)
-
 	def set_purpose_for_stock_entry(self):
 		if self.stock_entry_type and not self.purpose:
 			self.purpose = frappe.get_cached_value("Stock Entry Type", self.stock_entry_type, "purpose")
@@ -1404,7 +1403,6 @@ class StockEntry(StockController):
 		)
 
 		if self.bom_no:
-
 			backflush_based_on = frappe.db.get_single_value(
 				"Manufacturing Settings", "backflush_raw_materials_based_on"
 			)
@@ -1418,7 +1416,6 @@ class StockEntry(StockController):
 				"Material Transfer for Manufacture",
 				"Material Consumption for Manufacture",
 			]:
-
 				if self.work_order and self.purpose == "Material Transfer for Manufacture":
 					item_dict = self.get_pending_raw_materials(backflush_based_on)
 					if self.to_warehouse and self.pro_doc:
@@ -1898,7 +1895,7 @@ class StockEntry(StockController):
 		"""
 		item_dict, job_card_items = frappe._dict(), []
 		work_order = frappe.get_doc("Work Order", self.work_order)
-
+		
 		consider_job_card = work_order.transfer_material_against == "Job Card" and self.get("job_card")
 		if consider_job_card:
 			job_card_items = self.get_job_card_item_codes(self.get("job_card"))
@@ -1916,10 +1913,9 @@ class StockEntry(StockController):
 			can_transfer = transfer_pending or (
 				backflush_based_on == "Material Transferred for Manufacture"
 			)
-
 			if not can_transfer:
 				continue
-
+			d.include_item_in_manufacturing = 1
 			if d.include_item_in_manufacturing:
 				item_row = d.as_dict()
 				item_row["idx"] = len(item_dict) + 1

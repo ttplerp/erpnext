@@ -1178,7 +1178,6 @@ def make_stock_entry(work_order_id, purpose, qty=None):
 		wip_warehouse = work_order.wip_warehouse
 	else:
 		wip_warehouse = None
-
 	stock_entry = frappe.new_doc("Stock Entry")
 	stock_entry.purpose = purpose
 	stock_entry.work_order = work_order_id

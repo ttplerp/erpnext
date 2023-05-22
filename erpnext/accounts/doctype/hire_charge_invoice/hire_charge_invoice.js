@@ -20,23 +20,23 @@ frappe.ui.form.on('Hire Charge Invoice', {
 				},__("Create"))
 			}
 		}
-		frm.add_custom_button(__('EME Bill Report'), function () {
+		frm.add_custom_button(__('Bill Report'), function () {
 			frappe.route_options = {
 					name: frm.doc.name
 			};
-			frappe.set_route("query-report", "EME Bill Report");
+			frappe.set_route("query-report", "Bill Report");
 		}, __("View"));
 
-		frm.add_custom_button(__('EME Invoice Details'), function () {
+		frm.add_custom_button(__('Invoice Details'), function () {
 			frappe.route_options = {
 					name: frm.doc.name
 			};
-			frappe.set_route("query-report", "EME Invoice Details");
+			frappe.set_route("query-report", "Hire Charge Invoice Details");
 			}, __("View"));
 
 		frm.add_custom_button("Make Arrear Invoice", function() {
 			frappe.model.open_mapped_doc({
-				method: "erpnext.accounts.doctype.eme_invoice.eme_invoice.make_arrear_payment",
+				method: "erpnext.accounts.doctype.hire_charge_invoice.hire_charge_invoice.make_arrear_payment",
 				frm: cur_frm
 			});
 		},__("Create"));

@@ -1,4 +1,4 @@
-# Copyright (c) 2022, Frappe Technologies Pvt. Ltd. and contributors
+# Copyright (c) 2023, Frappe Technologies Pvt. Ltd. and contributors
 # For license information, please see license.txt
 
 import frappe
@@ -35,7 +35,7 @@ def get_data(filters):
 								WHERE parent = '{name}'
 								and rate = epi.rate 
 								and equipment_type = epi.equipment_type) AS total_hours 
-					FROM `tabEME Invoice` ep, `tabEME Invoice Item` epi
+					FROM `tabHire Charge Invoice` ep, `tabEME Invoice Item` epi
 					WHERE ep.name = epi.parent
 					and ep.name = "{name}"
 					group by epi.rate

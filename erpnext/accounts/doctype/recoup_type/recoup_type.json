@@ -1,0 +1,86 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "autoname": "field:recoup_type",
+ "creation": "2023-05-22 14:17:55.550494",
+ "doctype": "DocType",
+ "document_type": "Setup",
+ "engine": "InnoDB",
+ "field_order": [
+  "recoup_type",
+  "accounts",
+  "description"
+ ],
+ "fields": [
+  {
+   "fieldname": "recoup_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Imprest Recoup Type",
+   "oldfieldname": "expense_type",
+   "oldfieldtype": "Data",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "accounts",
+   "fieldtype": "Table",
+   "label": "Accounts",
+   "options": "Imprest Recoup Account"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description",
+   "oldfieldname": "description",
+   "oldfieldtype": "Small Text",
+   "width": "300px"
+  }
+ ],
+ "icon": "fa fa-flag",
+ "links": [],
+ "modified": "2023-05-22 16:05:43.526523",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Recoup Type",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Imprest User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Imprest Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "ASC",
+ "states": []
+}

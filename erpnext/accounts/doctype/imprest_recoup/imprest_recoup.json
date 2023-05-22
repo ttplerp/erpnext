@@ -1,0 +1,225 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "IMR.YYYY.######",
+ "creation": "2023-05-22 12:12:33.932379",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "company",
+  "branch",
+  "posting_date",
+  "party_type",
+  "purpose",
+  "column_break_001",
+  "cost_center",
+  "business_activity",
+  "party",
+  "section_break_001",
+  "get_imprest_advance",
+  "imprest_advance_list",
+  "section_break_003",
+  "items",
+  "section_break_13",
+  "total_amount",
+  "remarks",
+  "journal_entry",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "purpose",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Purpose",
+   "options": "\nImprest",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_001",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "branch.cost_center",
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "default": "Common",
+   "fieldname": "business_activity",
+   "fieldtype": "Link",
+   "label": "Business Activity",
+   "options": "Business Activity",
+   "reqd": 1
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "options": "Imprest Recoup Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_13",
+   "fieldtype": "Section Break",
+   "label": "AMOUNT DETAILS"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "journal_entry",
+   "fieldtype": "Data",
+   "label": "Journal Entry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Imprest Recoup",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_001",
+   "fieldtype": "Section Break",
+   "label": "ADVANCE DETAILS"
+  },
+  {
+   "depends_on": "eval:doc.docstatus != 1",
+   "fieldname": "get_imprest_advance",
+   "fieldtype": "Button",
+   "label": "Get Imprest Advance"
+  },
+  {
+   "fieldname": "imprest_advance_list",
+   "fieldtype": "Table",
+   "label": "Imprest Advance List",
+   "options": "Imprest Advance Item",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_003",
+   "fieldtype": "Section Break",
+   "label": "EXPENSE DETAILS"
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "label": "Total Payable Amount",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "party_type",
+   "fieldtype": "Select",
+   "label": "Party Type",
+   "options": "\nEmployee",
+   "reqd": 1
+  },
+  {
+   "fieldname": "party",
+   "fieldtype": "Dynamic Link",
+   "label": "Party",
+   "options": "party_type",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-05-22 17:18:00.049735",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Imprest Recoup",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Imprest User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Imprest Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

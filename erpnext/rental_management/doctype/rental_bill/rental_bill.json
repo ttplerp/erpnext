@@ -1,0 +1,389 @@
+{
+ "actions": [],
+ "creation": "2023-05-18 15:05:31.455980",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sb_tenant_details",
+  "tenant",
+  "tenant_name",
+  "tenant_cid",
+  "customer_code",
+  "party_type",
+  "is_nhdcl_employee",
+  "posting_date",
+  "cb_1",
+  "branch",
+  "ministry_agency",
+  "department",
+  "dzongkhag",
+  "location",
+  "cb_2",
+  "town_category",
+  "building_category",
+  "building_classification",
+  "block_no",
+  "flat_no",
+  "sb_rental_period",
+  "fiscal_year",
+  "cb_3",
+  "month",
+  "yearmonth",
+  "sb_rental_bill",
+  "rent_amount",
+  "tds_amount",
+  "penalty",
+  "rent_write_off_amount",
+  "cb_4",
+  "receivable_amount",
+  "received_amount",
+  "outstanding_amount",
+  "cb_5",
+  "adjusted_amount",
+  "pre_rent_amount",
+  "discount_amount",
+  "sb_other_details",
+  "rental_focal",
+  "cb_6",
+  "focal_name",
+  "gl_entry",
+  "company",
+  "cost_center",
+  "sb_rental_payment_details",
+  "rental_payment_details",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "sb_tenant_details",
+   "fieldtype": "Section Break",
+   "label": "Tenant Detail Section"
+  },
+  {
+   "fieldname": "tenant",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Tenant",
+   "options": "Tenant Information",
+   "reqd": 1
+  },
+  {
+   "fieldname": "tenant_name",
+   "fieldtype": "Data",
+   "label": "Tenant Name"
+  },
+  {
+   "fieldname": "tenant_cid",
+   "fieldtype": "Data",
+   "label": "Tenant CID"
+  },
+  {
+   "fieldname": "customer_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Customer Code",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_nhdcl_employee",
+   "fieldtype": "Check",
+   "label": "Is NHDCL Employee"
+  },
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch"
+  },
+  {
+   "fieldname": "ministry_agency",
+   "fieldtype": "Link",
+   "label": "Ministry/Agency",
+   "options": "Ministry and Agency"
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Data",
+   "label": "Department"
+  },
+  {
+   "fieldname": "dzongkhag",
+   "fieldtype": "Data",
+   "label": "Dzongkhag"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Location"
+  },
+  {
+   "fieldname": "cb_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "town_category",
+   "fieldtype": "Data",
+   "label": "Town Category"
+  },
+  {
+   "fieldname": "building_category",
+   "fieldtype": "Data",
+   "label": "Building Category"
+  },
+  {
+   "fieldname": "building_classification",
+   "fieldtype": "Data",
+   "label": "Building Classification"
+  },
+  {
+   "fieldname": "block_no",
+   "fieldtype": "Data",
+   "label": "Block No"
+  },
+  {
+   "fieldname": "flat_no",
+   "fieldtype": "Data",
+   "label": "Flat No"
+  },
+  {
+   "fieldname": "sb_rental_period",
+   "fieldtype": "Section Break",
+   "label": "Rental Period Section"
+  },
+  {
+   "fieldname": "fiscal_year",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Fiscal Year",
+   "options": "Fiscal Year",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "month",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Month",
+   "options": "\n01\n02\n03\n04\n05\n06\n07\n08\n09\n10\n11\n12",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "default": "Customer",
+   "fieldname": "party_type",
+   "fieldtype": "Read Only",
+   "hidden": 1,
+   "label": "Party Type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_rental_bill",
+   "fieldtype": "Section Break",
+   "label": "Rental Bill Section"
+  },
+  {
+   "fieldname": "rent_amount",
+   "fieldtype": "Currency",
+   "label": "Rent Amount"
+  },
+  {
+   "fieldname": "tds_amount",
+   "fieldtype": "Data",
+   "label": "TDS Deducted Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "penalty",
+   "fieldtype": "Currency",
+   "label": "Penalty Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rent_write_off_amount",
+   "fieldtype": "Currency",
+   "label": "Rent Write-off Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "receivable_amount",
+   "fieldtype": "Currency",
+   "label": "Receivable Amount"
+  },
+  {
+   "fieldname": "received_amount",
+   "fieldtype": "Currency",
+   "label": "Received Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "outstanding_amount",
+   "fieldtype": "Currency",
+   "label": "Outstanding Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "*Rent Amount Adjusted from Pre-Rent Amount",
+   "fieldname": "adjusted_amount",
+   "fieldtype": "Currency",
+   "label": "Adjusted Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "pre_rent_amount",
+   "fieldtype": "Currency",
+   "label": "Pre-Rent Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "discount_amount",
+   "fieldtype": "Currency",
+   "label": "Discount Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_other_details",
+   "fieldtype": "Section Break",
+   "label": "Other Details Section"
+  },
+  {
+   "default": "0",
+   "fieldname": "gl_entry",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "GL Entry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Rental Bill",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_rental_payment_details",
+   "fieldtype": "Section Break",
+   "label": "Rental Payment Section"
+  },
+  {
+   "fieldname": "rental_payment_details",
+   "fieldtype": "Table",
+   "label": "Payment Details",
+   "options": "Rental Payment Details"
+  },
+  {
+   "fieldname": "rental_focal",
+   "fieldtype": "Link",
+   "label": "Rental Focal",
+   "options": "Employee",
+   "read_only": 1
+  },
+  {
+   "fieldname": "focal_name",
+   "fieldtype": "Data",
+   "label": "Focal Name",
+   "read_only": 1
+  },
+  {
+   "description": "*202301",
+   "fieldname": "yearmonth",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "Year Month (YYYYMM)"
+  },
+  {
+   "fieldname": "cb_6",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-05-22 13:42:18.134316",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Rental Bill",
+ "naming_rule": "By script",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Rental Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Rental User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

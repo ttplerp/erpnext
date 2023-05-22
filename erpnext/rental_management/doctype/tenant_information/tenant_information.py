@@ -135,15 +135,15 @@ class TenantInformation(Document):
 	def calculate_rent_charges(self):
 		self.set('rental_charges', [])
 		if self.building_category == "Pilot Housing":
-			check_required = ["allocated_date", "repayment_period", "original_monthly_instalment"]
+			check_required = ["allocated_date", "repayment_period", "original_monthly_instalment", "initial_allotment_date"]
 			for k in check_required:
 				if not self.get(k):
 					frappe.msgprint(_("{0} is required").format(_(self.meta.get_label(k))), raise_exception=True)
 					
-			to_date = add_to_date(get_last_day(add_to_date(self.allocated_date, days=-10)), years=self.repayment_period)
+			to_date = add_to_date(get_last_day(add_to_date(self.initial_allotment_date, days=-10)), years=self.repayment_period)
 			# frappe.throw(str(to_date))
 			rent_obj = self.append("rental_charges", {
-							"from_date": self.allocated_date,
+							"from_date": self.initial_allotment_date,
 							"to_date": to_date,
 							"increment": 0.00,
 							"rental_amount": round(self.original_monthly_instalment)

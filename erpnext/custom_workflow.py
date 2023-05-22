@@ -454,7 +454,8 @@ class CustomWorkflow:
 		section = frappe.db.get_value("Employee",self.doc.employee, "section")
 		unit = frappe.db.get_value("Employee",self.doc.employee, "unit")
 		if self.new_state.lower() in ("Draft".lower(), "Waiting Supervisor Approval".lower()):
-			self.set_approver("Supervisor")	
+			if self.new_state.lower() == ("Waiting Supervisor Approval".lower()):
+				self.set_approver("Supervisor")	
 
 		elif self.new_state.lower() == ("Waiting Approval".lower()):
 			if self.doc.leave_approver != frappe.session.user:
@@ -544,11 +545,10 @@ class CustomWorkflow:
 		section = frappe.db.get_value("Employee",self.doc.employee, "section")
 		unit = frappe.db.get_value("Employee",self.doc.employee, "unit")
 		if self.new_state.lower() in ("Draft".lower()):
-			self.set_approver("Supervisor")
-
+			if frappe.session.user != self.doc.owner:
+				frappe.throw("Only {} can apply this leave".format(self.doc.owner))
 		elif self.new_state.lower() == ("Waiting Supervisor Approval".lower()):
 			self.set_approver("Supervisor")	
-
 		elif self.new_state.lower() == ("Waiting Approval".lower()):
 			if self.doc.leave_approver != frappe.session.user:
 				frappe.throw("Only {} can Approve this Leave Application".format(self.doc.leave_approver_name))
@@ -579,7 +579,7 @@ class CustomWorkflow:
 			if self.doc.leave_approver != frappe.session.user:
 				frappe.throw("Only {} can Approve this Leave Application".format(self.doc.leave_approver_name))
 
-		elif self.new_state.lower() == ("Rejected".lower(), "Rejected by CEO".lower()):
+		elif self.new_state.lower() == ("Rejected".lower() or "Rejected by CEO".lower()):
 			if self.doc.leave_approver != frappe.session.user:
 				frappe.throw("Only {} can Reject this Leave Application".format(self.doc.leave_approver_name))
 		else:
@@ -589,14 +589,15 @@ class CustomWorkflow:
 		''' Leave Encashment Workflow
 			1. Employee -> HR --> HR GM approved
 		'''
-		if self.new_state.lower() == ("Draft".lower(), "Waiting HR Approval".lower()):
-			if self.new_state.lower() == "Waiting HR Approval".lower():
-				self.set_approver("HR")
+		if self.new_state.lower() == ("Draft".lower()):
+			pass
+		elif self.new_state.lower() == "Waiting HR Approval".lower():
+			self.set_approver("HR")
 		elif self.new_state.lower() == "Waiting Approval".lower():
 			if self.doc.approver != frappe.session.user:
 				frappe.throw("Only {} can Forward this Encashment".format(self.doc.approver_name))
-			self.set_approver("HRGM")
-		elif self.new_state.lower() == ("Approved".lower(), "Rejected".lower()):
+			self.set_approver("CEO")
+		elif self.new_state.lower() == ("Approved".lower() or "Rejected".lower()):
 			if self.doc.approver != frappe.session.user:
 				frappe.throw("Only {} can Approve / Reject this Encashment".format(self.doc.approver_name))
 		else:
@@ -610,13 +611,15 @@ class CustomWorkflow:
 		section = frappe.db.get_value("Employee",self.doc.employee, "section")
 		unit = frappe.db.get_value("Employee",self.doc.employee, "unit")
 		
-		if self.new_state.lower() == ("Draft".lower(), "Waiting Supervisor Approval".lower()):
-			if self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
-				self.set_approver("Supervisor")	
+		if self.new_state.lower() == ("Draft".lower()):
+			if self.doc.owner != frappe.session.user:
+				frappe.throw("Only {} can Apply this Application".format(self.doc.owner))
+		elif self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
+			self.set_approver("Supervisor")	
 
 		elif self.new_state.lower() == ("Waiting Approval".lower()):
 			if self.doc.supervisor != frappe.session.user:
-				frappe.throw("Only {} can Forward this Leave Application".format(self.doc.supervisor_name))
+				frappe.throw("Only {} can Forward this Application".format(self.doc.supervisor_name))
 			if unit:
 				section_approver = frappe.db.get_value(
 					"Department Approver",
@@ -632,16 +635,16 @@ class CustomWorkflow:
 
 		elif self.new_state.lower() in ("Waiting HR Approval".lower()):
 			if self.doc.supervisor != frappe.session.user:
-				frappe.throw("Only {} can Apply or Forward this Leave Application".format(self.doc.supervisor_name))
+				frappe.throw("Only {} can Apply or Forward this Application".format(self.doc.supervisor_name))
 			self.set_approver("HR")	
 
 		elif self.new_state.lower() == ("Approved".lower()):
 			if self.doc.supervisor != frappe.session.user:
-				frappe.throw("Only {} can Approve this Leave Application".format(self.doc.supervisor_name))
+				frappe.throw("Only {} can Approve this Application".format(self.doc.supervisor_name))
 
 		elif self.new_state.lower() == ("Rejected".lower(), "Rejected by CEO".lower()):
 			if self.doc.supervisor != frappe.session.user:
-				frappe.throw("Only {} can Reject this Leave Application".format(self.doc.supervisor_name))
+				frappe.throw("Only {} can Reject this Application".format(self.doc.supervisor_name))
 		else:
 			frappe.throw(_("Invalid Workflow State {}").format(self.doc.workflow_state))
 
@@ -747,7 +750,9 @@ class CustomWorkflow:
 		section = frappe.db.get_value("Employee",self.doc.employee, "section")
 		unit = frappe.db.get_value("Employee",self.doc.employee, "unit")
 	
-		if self.new_state.lower() in ("Draft".lower(), "Waiting Supervisor Approval".lower()):
+		if self.new_state.lower() == "Draft".lower():
+			self.set_approver("Supervisor")
+		elif self.new_state.lower() == "Waiting Supervisor Approval".lower():
 			self.set_approver("Supervisor")
 		elif self.new_state.lower() == "Verified By Supervisor".lower():
 			if self.doc.approver != frappe.session.user:
@@ -770,7 +775,7 @@ class CustomWorkflow:
 				frappe.throw("Only {} can Forward / Reject this Application".format(self.doc.approver_name))
 			self.set_approver("Division Approver")
 
-		elif self.new_state.lower() == ("Approved".lower(), "Rejected".lower()):
+		elif self.new_state.lower() == ("Approved".lower() or "Rejected".lower()):
 			if self.doc.approver != frappe.session.user:
 				frappe.throw("Only {} can Approve/ Reject this Application".format(self.doc.approver_name))
 		
@@ -842,7 +847,7 @@ class CustomWorkflow:
 			pass
 
 	def employee_transfer(self):
-		if self.new_state.lower() in ("Draft".lower(), "Waiting Approval".lower()):
+		if self.new_state.lower() in ("Draft".lower() or "Waiting Approval".lower()):
 			if self.new_state.lower() == "Waiting Approval".lower():
 				if "HR User" not in frappe.get_roles(frappe.session.user):
 					frappe.throw("Only HR can Apply this Appeal")

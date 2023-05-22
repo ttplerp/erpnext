@@ -11,8 +11,9 @@ def execute(filters=None):
 def get_data(filters):
 	data = []
 	for d in frappe.db.sql("""SELECT 
-								ep.branch,  
-								ep.supplier, 
+								ep.branch, 
+								ep.party_type, 
+								ep.party, 
 								ep.from_date, 
 								ep.to_date, 
 								epi.equipment_type, 
@@ -20,11 +21,11 @@ def get_data(filters):
 								SUM(IFNULL(epi.total_hours,0)) as total_hours, 
 								epi.rate, 
 								SUM(IFNULL(epi.amount,0)) as amount
-							FROM `tabEME Invoice` ep, `tabEME Invoice Item` epi  
+							FROM `tabHire Charge Invoice` ep, `tabEME Invoice Item` epi  
 							WHERE epi.parent = ep.name AND ep.name = '{name}' 
 							GROUP BY  epi.equipment
 						""".format(name=filters.get("name")),as_dict=True):
-		supplier = frappe.get_doc("Supplier",d.supplier)
+		supplier = frappe.get_doc("Supplier",d.party)
 		d["bank_name"] = supplier.bank_name
 		d["account_number"] = supplier.account_number
 		d["ifs_code"]		= supplier.ifs_code
@@ -43,10 +44,17 @@ def get_columns():
 			"width":120
 		},
 		{
-			"fieldname":"supplier",
-			"label":_("Supplier"),
-			"fieldtype":"Link",
-			"options":"Supplier",
+			"fieldname":"party_type",
+			"label":_("Party Type"),
+			"fieldtype":"Select",
+			"options":["Supplier", "Customer"],
+			"width":120
+		},
+		{
+			"fieldname":"party",
+			"label":_("Party"),
+			"fieldtype":"Dynamic Link",
+			"options":"Party Type",
 			"width":120
 		},
 		{

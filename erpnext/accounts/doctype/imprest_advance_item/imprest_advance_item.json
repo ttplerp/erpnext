@@ -1,0 +1,63 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2023-05-22 12:00:00.435205",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "imprest_advance",
+  "advance_amount",
+  "column_break_3",
+  "allocated_amount",
+  "balance_amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "imprest_advance",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Imprest Advance",
+   "options": "Imprest Advance",
+   "read_only": 1
+  },
+  {
+   "fieldname": "advance_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Advance Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "allocated_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Allocated Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "balance_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Balance Amount",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-05-22 12:02:12.757482",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Imprest Advance Item",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

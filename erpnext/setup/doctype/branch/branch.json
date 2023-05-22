@@ -22,7 +22,9 @@
   "column_break_11",
   "revenue_bank_account",
   "epayment_bank_accounts_section",
-  "branch_bank_account"
+  "branch_bank_account",
+  "imprest_settings_section",
+  "items"
  ],
  "fields": [
   {
@@ -114,12 +116,22 @@
    "fieldname": "branch_bank_account",
    "fieldtype": "Table",
    "options": "Branch Bank Account"
+  },
+  {
+   "fieldname": "imprest_settings_section",
+   "fieldtype": "Section Break",
+   "label": "Imprest Settings"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "options": "Branch Imprest Item"
   }
  ],
  "icon": "fa fa-code-fork",
  "idx": 1,
  "links": [],
- "modified": "2023-05-10 15:14:58.189616",
+ "modified": "2023-05-22 15:55:13.010092",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Branch",

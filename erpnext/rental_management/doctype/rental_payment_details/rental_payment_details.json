@@ -1,0 +1,83 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2023-05-18 17:33:37.815485",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "reference_type",
+  "reference",
+  "cb_1",
+  "payment_date",
+  "received_amount",
+  "pre_rent_amount",
+  "cb_2",
+  "discount_amount",
+  "tds_amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "reference_type",
+   "fieldtype": "Data",
+   "label": "Reference Type"
+  },
+  {
+   "fieldname": "reference",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Reference"
+  },
+  {
+   "fieldname": "cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "payment_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Payment Date"
+  },
+  {
+   "fieldname": "received_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Received Amount"
+  },
+  {
+   "fieldname": "pre_rent_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Pre-Rent Amount"
+  },
+  {
+   "fieldname": "cb_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "discount_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Discount Amount"
+  },
+  {
+   "fieldname": "tds_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "TDS Deducted"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-05-18 17:39:31.578875",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Rental Payment Details",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,15 +1,16 @@
-// Copyright (c) 2022, Frappe Technologies Pvt. Ltd. and contributors
+// Copyright (c) 2023, Frappe Technologies Pvt. Ltd. and contributors
 // For license information, please see license.txt
 /* eslint-disable */
 
-frappe.query_reports["EME Bill Report"] = {
+frappe.query_reports["Bill Report"] = {
 	"filters": [
 		{
 			"fieldname":"name",
 			"label":__("Reference"),
 			"fieldtype":"Link",
-			"options":"EME Invoice",
+			"options":"Hire Charge Invoice",
 			"reqd":1
 		}
 	]
 };
+

@@ -58,12 +58,13 @@
   {
    "fieldname": "items",
    "fieldtype": "Table",
-   "options": "Rental Focal and Agency Item"
+   "options": "Rental Focal and Agency Item",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-04 14:26:08.204800",
+ "modified": "2023-05-22 12:16:09.342551",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Focal and Agency",

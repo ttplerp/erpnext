@@ -525,7 +525,7 @@
  "index_web_pages_for_search": 1,
  "links": [],
  "max_attachments": 4,
- "modified": "2023-05-16 13:28:12.853695",
+ "modified": "2023-05-18 14:57:16.435424",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project",
@@ -559,6 +559,18 @@
    "read": 1,
    "report": 1,
    "role": "Projects Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Projects GM",
    "share": 1,
    "write": 1
   }

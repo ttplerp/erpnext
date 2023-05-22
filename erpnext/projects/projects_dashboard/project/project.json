@@ -4,18 +4,22 @@
   {
    "chart": "Project Summary",
    "width": "Full"
+  },
+  {
+   "chart": "Employees by Branch",
+   "width": "Full"
   }
  ],
- "creation": "2020-07-20 20:17:16.397373",
+ "creation": "2023-04-10 16:38:14.873753",
  "dashboard_name": "Project",
  "docstatus": 0,
  "doctype": "Dashboard",
  "idx": 0,
  "is_default": 0,
  "is_standard": 1,
- "modified": "2020-07-22 17:17:03.780625",
- "modified_by": "Administrator",
+ "modified": "2023-05-19 12:12:24.160101",
+ "modified_by": "lhendrup.dorji@thimphutechpark.bt",
  "module": "Projects",
  "name": "Project",
- "owner": "Administrator"
+ "owner": "jairaj.rai@thimphutechpark.bt"
 }
