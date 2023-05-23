@@ -137,8 +137,6 @@ class AccountsController(TransactionBase):
 					)
 
 	def validate(self):
-		if self.doctype == "Rental Bill":
-			return
 		if not self.get("is_return") and not self.get("is_debit_note"):
 			self.validate_qty_is_not_zero()
 
