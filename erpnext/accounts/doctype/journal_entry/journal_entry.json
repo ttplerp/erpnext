@@ -17,6 +17,8 @@
   "finance_book",
   "process_deferred_accounting",
   "reversal_of",
+  "bill_no",
+  "bill_date",
   "column_break1",
   "mode_of_payment",
   "from_template",
@@ -50,8 +52,6 @@
   "paid_loan",
   "inter_company_journal_entry_reference",
   "column_break98",
-  "bill_no",
-  "bill_date",
   "due_date",
   "write_off",
   "write_off_based_on",
@@ -615,7 +615,7 @@
    "link_fieldname": "journal_entry"
   }
  ],
- "modified": "2023-03-09 15:25:01.428448",
+ "modified": "2023-05-24 10:45:05.500235",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",
