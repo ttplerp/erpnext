@@ -277,7 +277,8 @@ frappe.ui.form.on('Asset', {
 			args: {
 				item_code: frm.doc.item_code,
 				asset_category: frm.doc.asset_category,
-				asset_sub_category:frm.doc.asset_sub_category
+				asset_sub_category:frm.doc.asset_sub_category,
+                available_for_use_date: frm.doc.available_for_use_date
 			},
 			callback: function(r, rt) {
 				if(r.message) {

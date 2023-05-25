@@ -146,7 +146,7 @@ class Asset(AccountsController):
 		if not self.asset_sub_category:
 			self.asset_sub_category = frappe.db.get_value("Item", self.item_code, "asset_sub_category")
 		if self.item_code and not self.get("finance_books"):
-			finance_books = get_item_details(self.item_code, self.asset_category, self.asset_sub_category)
+			finance_books = get_item_details(self.item_code, self.asset_category, self.asset_sub_category, self.available_for_use_date)
 			self.set("finance_books", finance_books)
 		if not self.abbr:
 			self.abbr = frappe.db.get_value('Asset Category',self.asset_category,'abbr')
@@ -1150,7 +1150,7 @@ def transfer_asset(args):
 
 
 @frappe.whitelist()
-def get_item_details(item_code, asset_category, asset_sub_category):
+def get_item_details(item_code, asset_category, asset_sub_category,depreciation_start_date=None):
 	asset_category_doc = frappe.get_doc("Asset Category", asset_category)
 	books = []
 	for d in asset_category_doc.finance_books:
@@ -1163,7 +1163,8 @@ def get_item_details(item_code, asset_category, asset_sub_category):
 					"frequency_of_depreciation": d.frequency_of_depreciation,
 					"start_date": nowdate(),
 					"income_depreciation_percent":d.income_depreciation_percent,
-					"asset_sub_category":d.asset_sub_category
+					"asset_sub_category":d.asset_sub_category,
+					"depreciation_start_date": get_last_day(depreciation_start_date)
 				}
 			)
 
