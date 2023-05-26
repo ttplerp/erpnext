@@ -9,6 +9,7 @@ frappe.query_reports["TDS Certificate"] = {
 			"label": __("Party Type"),
 			"fieldtype": "Select",
 			"options": "\nSupplier\nCustomer",
+			"default": " ",
 			"reqd": 1,
 			"on_change":function(query_report){
 				var party_type = query_report.get_filter_value('party_type')
