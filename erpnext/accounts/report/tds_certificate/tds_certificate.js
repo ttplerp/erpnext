@@ -53,6 +53,7 @@ frappe.query_reports["TDS Certificate"] = {
 				}
 				frappe.model.with_doc("Supplier", supplier, function(r) {
 					var supplier = frappe.model.get_doc("Supplier", supplier);
+					console.log(supplier)
 					query_report.set_filter_value("vendor_tpn_no", supplier.supplier_tpn_no);
 					query_report.refresh("vendor_tpn_no");
 				});
