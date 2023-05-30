@@ -30,7 +30,7 @@ frappe.ui.form.on('Utility Bill', {
 				}
 			}
 		 });
-		 if(!frm.doc.direct_payment && frm.doc.docstatus === 1 && (frm.doc.payment_status === "Payment Successful" || frm.doc.payment_status === "Partial Payment")){
+		 if(!frm.doc.journal_entry && frm.doc.docstatus === 1 && (frm.doc.payment_status === "Payment Successful" || frm.doc.payment_status === "Partial Payment")){
 			frm.add_custom_button("Create Journal Entry", function() {
 				frappe.call({
 					"method": "make_journal_entry",
