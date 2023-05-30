@@ -2,23 +2,30 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Imprest Advance', {
-	// refresh: function(frm) {
-
-	// }
+	refresh: function(frm) {
+		frm.set_query('party', function() {
+			return {
+				filters: {
+					"branch": frm.doc.branch,
+					"status":"Active"
+				}
+			}
+		});
+	},
 	amount: function(frm){
 		if (frm.doc.amount > 0 ){
-			cur_frm.set_value("balance_amount",frm.doc.amount)
-			cur_frm.set_value("adjusted_amount",0)
+			frm.set_value("balance_amount",frm.doc.amount)
+			frm.set_value("adjusted_amount",0)
 		}
 	},
 
 	party: function(frm){
-		frm.set_query('party', function(doc, cdt, cdn) {
+		frm.set_query("party", function() {
 			return {
-				filters: {
+				"filters": {
 					"branch": frm.doc.branch
 				}
-			};
-		});
+			}
+		 });
 	}
 });

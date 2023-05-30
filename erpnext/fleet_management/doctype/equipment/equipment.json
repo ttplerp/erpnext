@@ -363,7 +363,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-04-25 17:22:06.718398",
+ "modified": "2023-05-26 13:41:33.445247",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment",
@@ -410,16 +410,8 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "Sales User",
-   "share": 1
-  },
-  {
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Stock User",
+   "role": "Employee",
+   "select": 1,
    "share": 1
   }
  ],

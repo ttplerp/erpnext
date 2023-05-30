@@ -10,7 +10,32 @@ class EquipmentHiringForm(Document):
 	def validate(self):
 		self.validate_date()
 		self.check_duplicate()
-		
+		self.status = self.get_status()
+	
+	def get_status(self, status=None):
+		if self.docstatus == 0:
+			status = "Hiring Requested"
+		elif self.docstatus == 1:
+			logbook = frappe.db.sql(
+				"""
+				SELECT name, paid, docstatus
+				FROM `tabLogbook`
+				WHERE equipment_hiring_form = '{}' AND docstatus = 1
+				""".format(self.name),
+				as_dict=True
+			)
+			if logbook:
+				for a in logbook:
+					if a.paid == 0 and a.docstatus == 1:
+						status = "Logbook Submitted"
+						break
+					elif a.paid == 1 and a.docstatus == 1:
+						status = "Closed"
+						break
+			else:
+				status = "Hiring Approved"
+		return status
+
 	def on_update_after_submit(self):
 		self.validate_date()
 		for a in self.get('efh_extension'):

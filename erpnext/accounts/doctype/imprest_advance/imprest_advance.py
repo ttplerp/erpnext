@@ -31,8 +31,18 @@ class ImprestAdvance(Document):
 
 	def before_cancel(self):
 		if self.journal_entry:
-			for t in frappe.get_all("Journal Entry", ["name"], {"name": self.journal_entry, "docstatus": ("<",2)}):
-				frappe.throw(_('Journal Entry  <a href="#Form/Journal Entry/{0}">{0}</a> for this transaction needs to be cancelled first').format(self.journal_entry),title='Not permitted')
+			je_status = frappe.get_value("Journal Entry", {"name": self.journal_entry}, "docstatus")
+			if cint(je_status) == 1:
+				frappe.throw("Journal Entry {} for this transaction needs to be cancelled first".format(frappe.get_desk_link("Journal Entry", self.journal_entry)))
+			else:
+				frappe.db.sql("delete from `tabJournal Entry` where name = '{}'".format(self.journal_entry))
+				self.db_set("journal_entry", None)
+	
+	def on_cancel(self):
+		if self.first_advance == 0 and self.imprest_recoup_id:
+			frappe.throw("Imprest Recoup <b>{}</b> needs to to cancelled first.".format(self.imprest_recoup_id))
+		
+		self.ignore_linked_doctypes = ("GL Entry", "Payment Ledger Entry")
 
 	def on_submit(self):
 		if not self.is_opening:
@@ -97,13 +107,6 @@ class ImprestAdvance(Document):
 		})
 
 		je.append("accounts", {
-			"account": credit_account,
-			"credit_in_account_currency": self.amount,
-			"cost_center": self.cost_center,
-			"business_activity": self.business_activity
-		})
-
-		je.append("accounts", {
 			"account": debit_account,
 			"debit_in_account_currency": self.amount,
 			"cost_center": self.cost_center,
@@ -112,6 +115,13 @@ class ImprestAdvance(Document):
 			"reference_name": self.name,
 			"party_type": party_type,
 			"party": party
+		})
+		
+		je.append("accounts", {
+			"account": credit_account,
+			"credit_in_account_currency": self.amount,
+			"cost_center": self.cost_center,
+			"business_activity": self.business_activity
 		})
 
 		je.insert()

@@ -843,7 +843,6 @@
    "fieldname": "equipment",
    "fieldtype": "Link",
    "label": "Vehicle/Equipment",
-   "mandatory_depends_on": "eval:!doc.others_equipment",
    "options": "Equipment"
   },
   {
@@ -886,15 +885,13 @@
    "depends_on": "eval:!doc.is_volumetric",
    "fieldname": "gross_vehicle_weight",
    "fieldtype": "Float",
-   "label": "Gross Vehicle Weight",
-   "mandatory_depends_on": "eval:!doc.is_volumetric"
+   "label": "Gross Vehicle Weight"
   },
   {
    "depends_on": "eval:!doc.is_volumetric",
    "fieldname": "tare_weight",
    "fieldtype": "Float",
-   "label": "Tare Weight",
-   "mandatory_depends_on": "eval:!doc.is_volumetric"
+   "label": "Tare Weight"
   },
   {
    "depends_on": "eval:doc.is_volumetric",
@@ -977,7 +974,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-01-04 15:32:03.416334",
+ "modified": "2023-05-24 12:45:18.154828",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Delivery Note Item",

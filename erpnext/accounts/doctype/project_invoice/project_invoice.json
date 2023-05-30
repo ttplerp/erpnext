@@ -457,7 +457,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-09 12:11:34.172591",
+ "modified": "2023-05-26 09:56:51.260425",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Project Invoice",
@@ -490,7 +490,6 @@
    "write": 1
   },
   {
-   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
@@ -500,10 +499,10 @@
    "report": 1,
    "role": "Accounts Manager",
    "share": 1,
-   "submit": 1,
    "write": 1
   },
   {
+   "amend": 1,
    "cancel": 1,
    "create": 1,
    "delete": 1,
@@ -518,7 +517,7 @@
    "write": 1
   },
   {
-   "cancel": 1,
+   "amend": 1,
    "create": 1,
    "email": 1,
    "export": 1,

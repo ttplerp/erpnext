@@ -40,7 +40,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-05 15:43:25.562253",
+ "modified": "2023-05-26 13:06:07.500091",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Tenant Department",
@@ -67,6 +67,26 @@
    "read": 1,
    "report": 1,
    "role": "Rental Master",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Rental User",
+   "share": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Rental Manager",
    "share": 1,
    "write": 1
   }

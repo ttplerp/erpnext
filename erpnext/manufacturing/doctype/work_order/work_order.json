@@ -575,7 +575,7 @@
  "image_field": "image",
  "is_submittable": 1,
  "links": [],
- "modified": "2022-01-24 21:18:12.160114",
+ "modified": "2023-05-26 09:46:24.614775",
  "modified_by": "Administrator",
  "module": "Manufacturing",
  "name": "Work Order",
@@ -584,10 +584,7 @@
  "owner": "Administrator",
  "permissions": [
   {
-   "amend": 1,
-   "cancel": 1,
    "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
    "import": 1,
@@ -597,13 +594,27 @@
    "role": "Manufacturing User",
    "set_user_permissions": 1,
    "share": 1,
-   "submit": 1,
    "write": 1
   },
   {
    "read": 1,
    "report": 1,
    "role": "Stock User"
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Manufacturing Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
   }
  ],
  "sort_field": "modified",

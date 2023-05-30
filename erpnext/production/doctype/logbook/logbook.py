@@ -13,6 +13,17 @@ class Logbook(Document):
 		self.check_date_validity()
 		self.calculate_hours()
 		self.check_duplicate_entry()
+	
+	def on_submit(self):
+		self.update_ehf_status()
+	
+	def on_cancel(self):
+		self.update_ehf_status()
+
+	def update_ehf_status(self):
+		ehf = frappe.get_doc("Equipment Hiring Form", self.equipment_hiring_form)
+		ehf.run_method("validate")
+		ehf.save(ignore_permissions=True)
 
 	def check_duplicate_entry(self):
 		if self.from_date and self.to_date:

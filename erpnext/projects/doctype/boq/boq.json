@@ -286,7 +286,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-17 12:50:26.764295",
+ "modified": "2023-05-26 14:10:06.081964",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "BOQ",
@@ -306,6 +306,7 @@
    "write": 1
   },
   {
+   "amend": 1,
    "create": 1,
    "email": 1,
    "export": 1,
@@ -326,10 +327,10 @@
    "report": 1,
    "role": "Projects User",
    "share": 1,
-   "submit": 1,
    "write": 1
   },
   {
+   "amend": 1,
    "cancel": 1,
    "create": 1,
    "delete": 1,

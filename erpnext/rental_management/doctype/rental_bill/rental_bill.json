@@ -9,6 +9,7 @@
   "tenant",
   "tenant_name",
   "tenant_cid",
+  "customer",
   "customer_code",
   "party_type",
   "is_nhdcl_employee",
@@ -32,15 +33,18 @@
   "yearmonth",
   "sb_rental_bill",
   "rent_amount",
+  "received_amount",
+  "cb_rb_1",
+  "receivable_amount",
+  "cb_rb_2",
+  "adjusted_amount",
+  "sb_payment_detail",
   "tds_amount",
   "penalty",
   "rent_write_off_amount",
   "cb_4",
-  "receivable_amount",
-  "received_amount",
   "outstanding_amount",
   "cb_5",
-  "adjusted_amount",
   "pre_rent_amount",
   "discount_amount",
   "sb_other_details",
@@ -69,29 +73,33 @@
    "reqd": 1
   },
   {
+   "fetch_from": "tenant.tenant_name",
    "fieldname": "tenant_name",
    "fieldtype": "Data",
    "label": "Tenant Name"
   },
   {
+   "fetch_from": "tenant.tenant_cid",
    "fieldname": "tenant_cid",
    "fieldtype": "Data",
    "label": "Tenant CID"
   },
   {
+   "fetch_from": "tenant.customer_code",
    "fieldname": "customer_code",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Customer Code",
-   "reqd": 1
+   "label": "Customer Code"
   },
   {
    "default": "0",
    "fieldname": "is_nhdcl_employee",
    "fieldtype": "Check",
-   "label": "Is NHDCL Employee"
+   "label": "Is NHDCL Employee",
+   "read_only": 1
   },
   {
+   "default": "Today",
    "fieldname": "posting_date",
    "fieldtype": "Date",
    "label": "Posting Date"
@@ -101,28 +109,33 @@
    "fieldtype": "Column Break"
   },
   {
+   "fetch_from": "tenant.branch",
    "fieldname": "branch",
    "fieldtype": "Link",
    "label": "Branch",
    "options": "Branch"
   },
   {
+   "fetch_from": "tenant.ministry_and_agency",
    "fieldname": "ministry_agency",
    "fieldtype": "Link",
    "label": "Ministry/Agency",
    "options": "Ministry and Agency"
   },
   {
+   "fetch_from": "tenant.tenant_department_name",
    "fieldname": "department",
    "fieldtype": "Data",
    "label": "Department"
   },
   {
+   "fetch_from": "tenant.dzongkhag",
    "fieldname": "dzongkhag",
    "fieldtype": "Data",
    "label": "Dzongkhag"
   },
   {
+   "fetch_from": "tenant.location_name",
    "fieldname": "location",
    "fieldtype": "Data",
    "label": "Location"
@@ -132,26 +145,31 @@
    "fieldtype": "Column Break"
   },
   {
+   "fetch_from": "tenant.town_category",
    "fieldname": "town_category",
    "fieldtype": "Data",
    "label": "Town Category"
   },
   {
+   "fetch_from": "tenant.building_category",
    "fieldname": "building_category",
    "fieldtype": "Data",
    "label": "Building Category"
   },
   {
+   "fetch_from": "tenant.building_classification",
    "fieldname": "building_classification",
    "fieldtype": "Data",
    "label": "Building Classification"
   },
   {
+   "fetch_from": "tenant.block",
    "fieldname": "block_no",
    "fieldtype": "Data",
    "label": "Block No"
   },
   {
+   "fetch_from": "tenant.flat",
    "fieldname": "flat_no",
    "fieldtype": "Data",
    "label": "Flat No"
@@ -180,7 +198,6 @@
    "in_list_view": 1,
    "label": "Month",
    "options": "\n01\n02\n03\n04\n05\n06\n07\n08\n09\n10\n11\n12",
-   "read_only": 1,
    "reqd": 1
   },
   {
@@ -202,18 +219,14 @@
    "label": "Rent Amount"
   },
   {
-   "fieldname": "tds_amount",
-   "fieldtype": "Data",
-   "label": "TDS Deducted Amount",
-   "read_only": 1
-  },
-  {
+   "allow_on_submit": 1,
    "fieldname": "penalty",
    "fieldtype": "Currency",
    "label": "Penalty Amount",
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "rent_write_off_amount",
    "fieldtype": "Currency",
    "label": "Rent Write-off Amount",
@@ -229,6 +242,7 @@
    "label": "Receivable Amount"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "received_amount",
    "fieldtype": "Currency",
    "label": "Received Amount",
@@ -252,12 +266,14 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "pre_rent_amount",
    "fieldtype": "Currency",
    "label": "Pre-Rent Amount",
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "discount_amount",
    "fieldtype": "Currency",
    "label": "Discount Amount",
@@ -307,6 +323,7 @@
    "label": "Rental Payment Section"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "rental_payment_details",
    "fieldtype": "Table",
    "label": "Payment Details",
@@ -336,12 +353,40 @@
   {
    "fieldname": "cb_6",
    "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "tenant.customer",
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "tds_amount",
+   "fieldtype": "Currency",
+   "label": "TDS Deducted Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_rb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "cb_rb_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sb_payment_detail",
+   "fieldtype": "Section Break",
+   "label": "Payment Detail"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-22 13:42:18.134316",
+ "modified": "2023-05-30 23:14:05.000293",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Bill",
@@ -358,11 +403,13 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
+   "amend": 1,
+   "cancel": 1,
    "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
@@ -370,6 +417,7 @@
    "report": 1,
    "role": "Rental Manager",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
@@ -380,6 +428,21 @@
    "report": 1,
    "role": "Rental User",
    "share": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Rental Master",
+   "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],

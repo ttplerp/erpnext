@@ -119,10 +119,10 @@
    "fieldtype": "Column Break"
   },
   {
-   "default": "Today",
    "fieldname": "posting_date",
    "fieldtype": "Date",
-   "label": "Posting Date"
+   "label": "Posting Date",
+   "reqd": 1
   },
   {
    "fieldname": "sb_process_bill",
@@ -182,7 +182,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-05-22 15:06:09.878558",
+ "modified": "2023-05-23 22:06:44.245302",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Process Rental Billing",

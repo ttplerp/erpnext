@@ -1,0 +1,443 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "RPAY.YY.MM.####",
+ "creation": "2023-05-24 12:06:48.468194",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sb_tenants",
+  "branch",
+  "is_nhdcl_employee",
+  "cb_1",
+  "dzongkhag",
+  "tenant",
+  "tenant_name",
+  "cb_2",
+  "ministry_and_agency",
+  "tenant_department",
+  "tenant_department_name",
+  "sb_payment_period",
+  "fiscal_year",
+  "cb_3",
+  "month",
+  "cb_4",
+  "posting_date",
+  "sb_account_details",
+  "payment_mode",
+  "discount_percent",
+  "cb_5",
+  "bank_account",
+  "debit_account",
+  "number_of_rental_bill",
+  "cb_6",
+  "write_off_penalty",
+  "rent_write_off",
+  "rent_write_off_account",
+  "sb_rental_bill_details",
+  "get_rental_bills",
+  "items",
+  "sb_tds_details",
+  "tds_account",
+  "cb_7",
+  "tds_amount",
+  "sb_total_bill",
+  "total_bill_amount",
+  "total_rent_received",
+  "rent_write_off_amount",
+  "cb_8",
+  "pre_rent_amount",
+  "excess_amount",
+  "discount_amount",
+  "cb_9",
+  "penalty_amount",
+  "total_amount_received",
+  "security_deposit_amount",
+  "sb_remarks",
+  "remarks",
+  "cb_10",
+  "cheque_no",
+  "cheque_date",
+  "clearance_date",
+  "sb_1",
+  "company",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "sb_tenants",
+   "fieldtype": "Section Break",
+   "label": "Select Tenants"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "dzongkhag",
+   "fieldtype": "Link",
+   "label": "Dzongkhag",
+   "options": "Dzongkhag"
+  },
+  {
+   "fieldname": "cb_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ministry_and_agency",
+   "fieldtype": "Link",
+   "label": "Ministry and Agency",
+   "options": "Ministry and Agency"
+  },
+  {
+   "fieldname": "sb_payment_period",
+   "fieldtype": "Section Break",
+   "label": "Select Rental Payment Period"
+  },
+  {
+   "fieldname": "fiscal_year",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Fiscal Year",
+   "options": "Fiscal Year",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "month",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Month",
+   "options": "\n01\n02\n03\n04\n05\n06\n07\n08\n09\n10\n11\n12"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Rental Payment",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "tenant",
+   "fieldtype": "Link",
+   "label": "Tenant",
+   "options": "Tenant Information"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_nhdcl_employee",
+   "fieldtype": "Check",
+   "label": "Is NHDCL Employee"
+  },
+  {
+   "fieldname": "cb_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "tenant.tenant_name",
+   "fieldname": "tenant_name",
+   "fieldtype": "Data",
+   "label": "Tenant Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "tenant_department",
+   "fieldtype": "Link",
+   "label": "Tenant Department ID",
+   "options": "Tenant Department"
+  },
+  {
+   "fetch_from": "tenant_department.department",
+   "fieldname": "tenant_department_name",
+   "fieldtype": "Data",
+   "label": "Tenant Department",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_account_details",
+   "fieldtype": "Section Break",
+   "label": "Other Details"
+  },
+  {
+   "fieldname": "payment_mode",
+   "fieldtype": "Select",
+   "label": "Payment Mode",
+   "mandatory_depends_on": "eval: doc.number_of_rental_bill > 0",
+   "options": "\nCash\nCheque\nePMS\nmBOB\nmPay\nTPay\nNHDCL Office"
+  },
+  {
+   "fieldname": "cb_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.is_nhdcl_employee != 1",
+   "fieldname": "bank_account",
+   "fieldtype": "Link",
+   "label": "Bank Account",
+   "mandatory_depends_on": "eval: doc.is_nhdcl_employee != 1 && doc.number_of_rental_bill > 0",
+   "options": "Account"
+  },
+  {
+   "depends_on": "eval: doc.is_nhdcl_employee == 1",
+   "fieldname": "debit_account",
+   "fieldtype": "Link",
+   "label": "Debit Account",
+   "mandatory_depends_on": "eval: doc.is_nhdcl_employee == 1 && doc.number_of_rental_bill > 0",
+   "options": "Account"
+  },
+  {
+   "fieldname": "cb_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "write_off_penalty",
+   "fieldtype": "Check",
+   "label": "Write-off Penalty"
+  },
+  {
+   "default": "0",
+   "fieldname": "rent_write_off",
+   "fieldtype": "Check",
+   "label": "Rent Write-off"
+  },
+  {
+   "depends_on": "eval: doc.rent_write_off",
+   "fieldname": "rent_write_off_account",
+   "fieldtype": "Data",
+   "label": "Rent Write-off Account",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_rental_bill_details",
+   "fieldtype": "Section Break",
+   "label": "Rental Bill Details"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Rental Bills",
+   "options": "Rental Payment Item"
+  },
+  {
+   "fieldname": "sb_tds_details",
+   "fieldtype": "Section Break",
+   "label": "TDS Details"
+  },
+  {
+   "fieldname": "tds_account",
+   "fieldtype": "Link",
+   "label": "TDS Account",
+   "mandatory_depends_on": "eval: doc.tds_amount > 0",
+   "options": "Account"
+  },
+  {
+   "fieldname": "cb_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tds_amount",
+   "fieldtype": "Currency",
+   "label": "TDS Amount"
+  },
+  {
+   "fieldname": "sb_total_bill",
+   "fieldtype": "Section Break",
+   "label": "Total Bill Summary"
+  },
+  {
+   "fieldname": "total_bill_amount",
+   "fieldtype": "Currency",
+   "label": "Total Bill Amount"
+  },
+  {
+   "fieldname": "total_rent_received",
+   "fieldtype": "Currency",
+   "label": "Total Rent Received"
+  },
+  {
+   "fieldname": "rent_write_off_amount",
+   "fieldtype": "Currency",
+   "label": "Rent Write-off Amount"
+  },
+  {
+   "fieldname": "cb_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pre_rent_amount",
+   "fieldtype": "Currency",
+   "label": "Pre-Rent Amount"
+  },
+  {
+   "fieldname": "excess_amount",
+   "fieldtype": "Currency",
+   "label": "Excess Amount"
+  },
+  {
+   "fieldname": "cb_9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "penalty_amount",
+   "fieldtype": "Currency",
+   "label": "Penalty Amount"
+  },
+  {
+   "fieldname": "total_amount_received",
+   "fieldtype": "Currency",
+   "label": "Total Amount Received"
+  },
+  {
+   "fieldname": "sb_remarks",
+   "fieldtype": "Section Break",
+   "label": "Remarks/Narration"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "cb_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "cheque_no",
+   "fieldtype": "Data",
+   "label": "Cheque No"
+  },
+  {
+   "fieldname": "cheque_date",
+   "fieldtype": "Date",
+   "label": "Cheque Date"
+  },
+  {
+   "fieldname": "clearance_date",
+   "fieldtype": "Date",
+   "label": "Clearance Date"
+  },
+  {
+   "fieldname": "sb_1",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1
+  },
+  {
+   "fieldname": "number_of_rental_bill",
+   "fieldtype": "Int",
+   "label": "Number of Rental Bill",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval: doc.docstatus == 0",
+   "fieldname": "get_rental_bills",
+   "fieldtype": "Button",
+   "label": "Get Rental Bills"
+  },
+  {
+   "fieldname": "discount_percent",
+   "fieldtype": "Percent",
+   "label": "Discount Percent"
+  },
+  {
+   "fieldname": "security_deposit_amount",
+   "fieldtype": "Currency",
+   "label": "Security Deposit Amount"
+  },
+  {
+   "fieldname": "discount_amount",
+   "fieldtype": "Currency",
+   "label": "Discount Amount"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-05-30 15:39:18.641705",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Rental Payment",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Rental User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Rental Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Rental Master",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

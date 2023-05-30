@@ -222,7 +222,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-04 13:50:28.846750",
+ "modified": "2023-05-26 09:51:17.206559",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "MB Entry",
@@ -254,6 +254,7 @@
    "write": 1
   },
   {
+   "amend": 1,
    "create": 1,
    "email": 1,
    "export": 1,
@@ -261,6 +262,21 @@
    "read": 1,
    "report": 1,
    "role": "Projects User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Projects GM",
    "share": 1,
    "submit": 1,
    "write": 1

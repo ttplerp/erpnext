@@ -52,6 +52,7 @@
    "search_index": 1
   },
   {
+   "fetch_from": "item_code.stock_uom",
    "fieldname": "uom",
    "fieldtype": "Link",
    "label": "UOM",
@@ -219,7 +220,7 @@
  "idx": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-02 16:12:24.866902",
+ "modified": "2023-05-23 13:44:56.484944",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item Price",

@@ -7,24 +7,32 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "company",
+  "title",
+  "section_break_2",
   "branch",
   "posting_date",
   "party_type",
-  "purpose",
+  "imprest_type",
   "column_break_001",
   "cost_center",
   "business_activity",
   "party",
+  "final",
   "section_break_001",
   "get_imprest_advance",
   "imprest_advance_list",
   "section_break_003",
   "items",
   "section_break_13",
+  "opening_balance",
   "total_amount",
+  "balance_amount",
   "remarks",
+  "column_break_17",
   "journal_entry",
+  "final_je",
+  "section_break_19",
+  "company",
   "amended_from"
  ],
  "fields": [
@@ -49,14 +57,6 @@
    "fieldtype": "Date",
    "in_list_view": 1,
    "label": "Posting Date",
-   "reqd": 1
-  },
-  {
-   "fieldname": "purpose",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Purpose",
-   "options": "\nImprest",
    "reqd": 1
   },
   {
@@ -138,7 +138,7 @@
   {
    "fieldname": "total_amount",
    "fieldtype": "Currency",
-   "label": "Total Payable Amount",
+   "label": "Purchase Amount",
    "read_only": 1,
    "reqd": 1
   },
@@ -155,12 +155,65 @@
    "label": "Party",
    "options": "party_type",
    "reqd": 1
+  },
+  {
+   "fieldname": "column_break_17",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_19",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "imprest_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Imprest Type",
+   "options": "Imprest Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "final",
+   "fieldtype": "Select",
+   "label": "Final Settlement ?",
+   "options": "\nYes\nNo",
+   "reqd": 1
+  },
+  {
+   "fieldname": "final_je",
+   "fieldtype": "Data",
+   "label": "Final Settlement JE",
+   "read_only": 1
+  },
+  {
+   "fieldname": "opening_balance",
+   "fieldtype": "Currency",
+   "label": "Opening Balance",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "balance_amount",
+   "fieldtype": "Currency",
+   "label": "Balance Amount",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "label": "Title",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_2",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-22 17:18:00.049735",
+ "modified": "2023-05-30 16:58:31.261025",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Imprest Recoup",

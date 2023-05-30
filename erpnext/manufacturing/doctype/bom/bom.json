@@ -39,11 +39,14 @@
   "column_break_31",
   "section_break_33",
   "items",
+  "labour_section",
+  "labour_details",
   "scrap_section",
   "scrap_items",
   "costing",
   "operating_cost",
   "raw_material_cost",
+  "labor_cost",
   "scrap_material_cost",
   "cb1",
   "base_operating_cost",
@@ -53,6 +56,14 @@
   "total_cost",
   "base_total_cost",
   "section_break_25",
+  "hand_tools_equipments",
+  "supervision_charges",
+  "column_break_90",
+  "electrical_charges",
+  "ohsmiscellaneous",
+  "column_break_91",
+  "profit",
+  "section_break_51",
   "description",
   "column_break_27",
   "has_variants",
@@ -380,8 +391,10 @@
    "read_only": 1
   },
   {
+   "depends_on": "eval:doc.with_operations != 1",
    "fieldname": "section_break_25",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Charges"
   },
   {
    "fetch_from": "item.description",
@@ -525,6 +538,74 @@
    "fieldname": "section_break_33",
    "fieldtype": "Section Break",
    "hide_border": 1
+  },
+  {
+   "fieldname": "labour_section",
+   "fieldtype": "Section Break",
+   "label": "Labour"
+  },
+  {
+   "depends_on": "eval:doc.with_operations != 1",
+   "fieldname": "labour_details",
+   "fieldtype": "Table",
+   "label": "Labour Details",
+   "options": "Labour Details"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.with_operations != 1",
+   "fieldname": "labor_cost",
+   "fieldtype": "Currency",
+   "label": "Labor Cost",
+   "options": "currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_51",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "hand_tools_equipments",
+   "fieldtype": "Data",
+   "label": "Hand Tools, Equipment, Machinery ",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "supervision_charges",
+   "fieldtype": "Data",
+   "label": "Supervision Charges",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "electrical_charges",
+   "fieldtype": "Data",
+   "label": "Electrical Charges",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "ohsmiscellaneous",
+   "fieldtype": "Data",
+   "label": "OHS/Miscellaneous",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "profit",
+   "fieldtype": "Data",
+   "label": "Profit",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_90",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_91",
+   "fieldtype": "Column Break"
   }
  ],
  "icon": "fa fa-sitemap",
@@ -532,7 +613,7 @@
  "image_field": "image",
  "is_submittable": 1,
  "links": [],
- "modified": "2022-01-30 21:27:54.727298",
+ "modified": "2023-05-29 11:49:37.513936",
  "modified_by": "Administrator",
  "module": "Manufacturing",
  "name": "BOM",
@@ -552,16 +633,14 @@
    "write": 1
   },
   {
-   "cancel": 1,
+   "amend": 1,
    "create": 1,
-   "delete": 1,
    "email": 1,
    "print": 1,
    "read": 1,
    "report": 1,
    "role": "Manufacturing User",
    "share": 1,
-   "submit": 1,
    "write": 1
   }
  ],

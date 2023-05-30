@@ -46,16 +46,16 @@
    "width": "Full"
   }
  ],
- "creation": "2022-08-24 17:57:48.912970",
+ "creation": "2023-04-10 16:38:14.486401",
  "dashboard_name": "Accounts",
  "docstatus": 0,
  "doctype": "Dashboard",
  "idx": 0,
  "is_default": 0,
  "is_standard": 1,
- "modified": "2022-12-01 14:32:50.638167",
- "modified_by": "pralad.rai@smcl.bt",
+ "modified": "2023-05-25 11:14:55.843283",
+ "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Accounts",
- "owner": "birendra.bhuejel@thimphutechpark.bt"
+ "owner": "jairaj.rai@thimphutechpark.bt"
 }

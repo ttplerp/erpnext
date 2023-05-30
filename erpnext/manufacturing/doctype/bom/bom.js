@@ -27,6 +27,14 @@ frappe.ui.form.on("BOM", {
 			};
 		});
 
+		frm.set_query("item_code", "labour_details", function() {
+			return {
+				filters: {
+					'is_service_item': 1
+				}
+			};
+		});
+
 		frm.set_query("item", function() {
 			return {
 				query: "erpnext.manufacturing.doctype.bom.bom.item_query",
@@ -388,9 +396,63 @@ frappe.ui.form.on("BOM", {
 				}
 			});
 		}
-	}
-});
+	},
+	raw_material_cost: function(frm) {
+		update_charges_amount(frm);
+	},
+	labor_cost: function(frm) {
+		update_charges_amount(frm);
+	},
+	hand_tools_equipments: function(frm) {
+		update_tot_charges(frm);
+	},
+	supervision_charges: function(frm) {
+		update_tot_charges(frm);
+	},
+	electrical_charges: function(frm) {
+		update_tot_charges(frm);
+	},
+	ohsmiscellaneous: function(frm){
+		update_tot_charges(frm);
+	},
+	profit: function(frm){
+		update_tot_charges(frm);
+	},
 
+
+});
+var update_charges_amount = function(frm){
+	if (frm.doc.with_operations != 1){
+		frappe.call({
+			doc: frm.doc,
+			method: "update_charges",
+			callback: function(r) {
+				if (r.message) {
+					cur_frm.set_value("hand_tools_equipments",flt(r.message[0]))
+					cur_frm.set_value("electrical_charges",flt(r.message[1]))
+					cur_frm.set_value("supervision_charges",flt(r.message[2]))
+					cur_frm.set_value("ohsmiscellaneous",flt(r.message[3]))
+					cur_frm.set_value("profit",flt(r.message[4]))
+					frm.refresh_fields();
+				}
+			}
+		});
+	}
+}
+var update_tot_charges = function(frm){
+	if (frm.doc.with_operations != 1){
+		frappe.call({
+			doc: frm.doc,
+			method: "update_total_charges",
+			callback: function(r){
+				if (r.message) {
+					cur_frm.set_value("total_cost", flt(r.message));
+					frm.refresh_fields();
+				}
+			}
+		});
+	}
+}
 erpnext.bom.BomController = class BomController extends erpnext.TransactionController {
 	conversion_rate(doc) {
 		if(this.frm.doc.currency === this.get_company_currency()) {
@@ -399,7 +461,6 @@ erpnext.bom.BomController = class BomController extends erpnext.TransactionContr
 			erpnext.bom.update_cost(doc);
 		}
 	}
-
 	item_code(doc, cdt, cdn){
 		var scrap_items = false;
 		var child = locals[cdt][cdn];
@@ -590,7 +651,7 @@ erpnext.bom.calculate_scrap_materials_cost = function(doc) {
 
 // Calculate Total Cost
 erpnext.bom.calculate_total = function(doc) {
-	var total_cost = flt(doc.operating_cost) + flt(doc.raw_material_cost) - flt(doc.scrap_material_cost);
+	var total_cost = flt(doc.operating_cost) + flt(doc.raw_material_cost) +flt(doc.labor_cost) - flt(doc.scrap_material_cost);
 	var base_total_cost = flt(doc.base_operating_cost) + flt(doc.base_raw_material_cost)
 		- flt(doc.base_scrap_material_cost);
 
@@ -744,4 +805,46 @@ function trigger_process_loss_qty_prompt(frm, cdt, cdn, item_code) {
 		__("Set Process Loss Item Quantity"),
 		__("Set Quantity")
 	);
+}
+
+frappe.ui.form.on("Labour Details", {	
+	"qty": function(frm, cdt, cdn){
+		update_amount(frm, cdt, cdn);
+	},
+	"rate": function(frm, cdt,cdn){
+		update_amount(frm,cdt, cdn);
+	},
+	"amount": function(frm, cdt,cdn){
+		update_tot_amount(frm,cdt, cdn);
+	},
+}); 
+var update_amount = function(frm, cdt, cdn){
+	var item = locals[cdt][cdn];
+	var tot_amount = 0;
+	tot_amount = flt(item.rate) * (flt(item.qty));
+	frappe.model.set_value(cdt, cdn, "amount", flt(tot_amount));
+}
+var update_tot_amount = function(frm, cdt, cdn){
+	var item = locals[cdt][cdn];
+	frappe.call({
+		method: "erpnext.manufacturing.doctype.bom.bom.set_total_amount",
+		args: {
+			"amount": item.amount,
+			"raw_material_cost":frm.doc.raw_material_cost,
+			"scrap_material_cost":frm.doc.scrap_material_cost,
+			"hand_tools_equipments":frm.doc.hand_tools_equipments,
+			"supervision_charges":frm.doc.supervision_charges,
+			"electrical_charges":frm.doc.electrical_charges,
+			"ohsmiscellaneous":frm.doc.ohsmiscellaneous,
+			"profit":frm.doc.profit
+		},
+		callback: function(r) {
+			console.log(r.message)
+			if(r.message) {
+				cur_frm.set_value("labor_cost",flt(r.message[0]))
+				cur_frm.set_value("total_cost",flt(r.message[1]))
+				frm.refresh_fields()
+			}
+		}
+	})
 }

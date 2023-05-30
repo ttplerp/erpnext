@@ -963,7 +963,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-09 15:35:50.307528",
+ "modified": "2023-05-26 11:52:31.390860",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",
@@ -1014,8 +1014,10 @@
    "role": "Accounts User"
   },
   {
+   "create": 1,
    "read": 1,
-   "role": "Manufacturing User"
+   "role": "Manufacturing User",
+   "write": 1
   },
   {
    "email": 1,

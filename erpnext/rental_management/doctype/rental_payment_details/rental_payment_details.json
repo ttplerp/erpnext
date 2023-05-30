@@ -8,13 +8,16 @@
  "field_order": [
   "reference_type",
   "reference",
-  "cb_1",
   "payment_date",
+  "cb_1",
   "received_amount",
   "pre_rent_amount",
+  "excess_amount",
   "cb_2",
   "discount_amount",
-  "tds_amount"
+  "tds_amount",
+  "penalty_amount",
+  "rent_write_off_amount"
  ],
  "fields": [
   {
@@ -65,12 +68,27 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "TDS Deducted"
+  },
+  {
+   "fieldname": "excess_amount",
+   "fieldtype": "Currency",
+   "label": "Excess Amount"
+  },
+  {
+   "fieldname": "penalty_amount",
+   "fieldtype": "Currency",
+   "label": "Penalty Amount"
+  },
+  {
+   "fieldname": "rent_write_off_amount",
+   "fieldtype": "Currency",
+   "label": "Rent Write-off Amount"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-05-18 17:39:31.578875",
+ "modified": "2023-05-30 14:19:03.551270",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Payment Details",

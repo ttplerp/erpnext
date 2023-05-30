@@ -896,6 +896,32 @@ class BOM(WebsiteGenerator):
 
 			if msg:
 				frappe.throw(msg, title=_("Note"))
+	@frappe.whitelist()
+	def update_total_charges(self):
+		if self.with_operations:
+			return
+		else:
+			hand_tool_tot = flt(self.hand_tools_equipments)+flt(self.electrical_charges)+flt(self.supervision_charges)+flt(self.ohsmiscellaneous)+flt(self.profit)
+			hand_tool_total = flt(self.total_cost)+flt(hand_tool_tot)
+			return hand_tool_total
+	@frappe.whitelist()
+	def update_charges(self):
+		if self.with_operations:
+			return
+		else:
+			hand_tools = frappe.db.get_single_value("Manufacturing Settings","hand_tools")
+			electrical_charges =frappe.db.get_single_value("Manufacturing Settings","electrical_charges")
+			supervision_charges =frappe.db.get_single_value("Manufacturing Settings","supervision_charges")
+			ohs_miscellaneous =frappe.db.get_single_value("Manufacturing Settings","ohs_miscellaneous")
+			profit =frappe.db.get_single_value("Manufacturing Settings","profit")
+			total_hand_cost = flt(self.raw_material_cost) + flt(self.labor_cost)
+			h_t = flt(hand_tools/100)* flt(total_hand_cost)
+			e_c =flt(electrical_charges/100)* flt(total_hand_cost)
+			s_c =flt(supervision_charges/100)* flt(total_hand_cost)
+			o_m =flt(ohs_miscellaneous/100)* flt(total_hand_cost)
+			pro =flt(profit/100)* flt(total_hand_cost)
+
+			return h_t, e_c, s_c, o_m, pro
 
 
 def get_bom_item_rate(args, bom_doc):
@@ -1380,3 +1406,9 @@ def make_variant_bom(source_name, bom_no, item, variant_items, target_doc=None):
 	)
 
 	return doc
+@frappe.whitelist()
+def set_total_amount(amount, raw_material_cost, scrap_material_cost,hand_tools_equipments,supervision_charges,electrical_charges, ohsmiscellaneous, profit):
+	labor_cost = amount
+	overhead_cost =flt(hand_tools_equipments) +flt(supervision_charges) +flt(electrical_charges) +flt(ohsmiscellaneous) +flt(profit)
+	total_cost = flt(labor_cost)+flt(raw_material_cost)+flt(scrap_material_cost)+ flt(overhead_cost)
+	return labor_cost,total_cost

@@ -19,13 +19,15 @@
    "fieldname": "invoice_no",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Invoice No."
+   "label": "Invoice No.",
+   "reqd": 1
   },
   {
    "fieldname": "invoice_date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "Invoice Date"
+   "label": "Invoice Date",
+   "reqd": 1
   },
   {
    "fieldname": "amount",
@@ -64,7 +66,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-05-22 14:32:43.318879",
+ "modified": "2023-05-24 11:35:25.163433",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Imprest Recoup Item",

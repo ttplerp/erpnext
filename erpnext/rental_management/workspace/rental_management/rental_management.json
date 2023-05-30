@@ -140,7 +140,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Tenant Transactions",
-   "link_count": 2,
+   "link_count": 4,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -163,9 +163,29 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Rental Bill",
+   "link_count": 0,
+   "link_to": "Rental Bill",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Rental Payment",
+   "link_count": 0,
+   "link_to": "Rental Payment",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-05-19 10:42:36.228327",
+ "modified": "2023-05-26 12:17:37.736877",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Management",

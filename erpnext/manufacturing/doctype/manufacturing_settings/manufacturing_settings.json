@@ -32,7 +32,14 @@
   "other_settings_section",
   "update_bom_costs_automatically",
   "column_break_23",
-  "make_serial_no_batch_from_work_order"
+  "make_serial_no_batch_from_work_order",
+  "manufacturing_overhead_section",
+  "hand_tools",
+  "supervision_charges",
+  "column_break_32",
+  "electrical_charges",
+  "ohs_miscellaneous",
+  "profit"
  ],
  "fields": [
   {
@@ -194,13 +201,47 @@
    "fieldname": "job_card_excess_transfer",
    "fieldtype": "Check",
    "label": "Allow Excess Material Transfer"
+  },
+  {
+   "fieldname": "manufacturing_overhead_section",
+   "fieldtype": "Section Break",
+   "label": "Manufacturing Overhead Percentage "
+  },
+  {
+   "fieldname": "hand_tools",
+   "fieldtype": "Percent",
+   "label": "Hand Tools, Equipments, Machinery(%)"
+  },
+  {
+   "fieldname": "supervision_charges",
+   "fieldtype": "Percent",
+   "label": "Supervision charges(%)"
+  },
+  {
+   "fieldname": "electrical_charges",
+   "fieldtype": "Percent",
+   "label": "Electrical Charges(%)"
+  },
+  {
+   "fieldname": "profit",
+   "fieldtype": "Percent",
+   "label": "Profit(%)"
+  },
+  {
+   "fieldname": "column_break_32",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ohs_miscellaneous",
+   "fieldtype": "Percent",
+   "label": "OHS/Miscellaneous(%)"
   }
  ],
  "icon": "icon-wrench",
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-09-13 22:09:09.401559",
+ "modified": "2023-05-23 16:47:48.109770",
  "modified_by": "Administrator",
  "module": "Manufacturing",
  "name": "Manufacturing Settings",
@@ -216,5 +257,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }

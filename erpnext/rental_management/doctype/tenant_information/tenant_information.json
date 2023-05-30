@@ -135,6 +135,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "ministry_and_agency",
    "fieldtype": "Link",
    "label": "Ministry and Agency",
@@ -227,6 +228,7 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "tenant_department",
    "fieldtype": "Link",
    "label": "Tenant Department ID",
@@ -234,6 +236,7 @@
    "reqd": 1
   },
   {
+   "allow_on_submit": 1,
    "fetch_from": "tenant_department.department",
    "fieldname": "tenant_department_name",
    "fieldtype": "Data",
@@ -282,10 +285,12 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "security_deposit_received",
    "fieldtype": "Check",
-   "label": "Security Deposit Received"
+   "label": "Security Deposit Received",
+   "read_only": 1
   },
   {
    "fieldname": "sb_tenant_rental_charges",
@@ -451,7 +456,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-22 11:10:22.599550",
+ "modified": "2023-05-30 22:34:41.196960",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Tenant Information",
@@ -459,6 +464,8 @@
  "owner": "Administrator",
  "permissions": [
   {
+   "amend": 1,
+   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
@@ -468,9 +475,50 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Rental Master",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Rental User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Rental Manager",
+   "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],
+ "search_fields": "tenant_name, tenant_cid",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

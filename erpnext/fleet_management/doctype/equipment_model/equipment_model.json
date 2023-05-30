@@ -35,7 +35,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-04-24 15:50:36.559154",
+ "modified": "2023-05-26 13:25:15.762252",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment Model",
@@ -72,15 +72,6 @@
    "read": 1,
    "report": 1,
    "role": "Fleet User",
-   "share": 1
-  },
-  {
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Employee",
    "share": 1
   }
  ],

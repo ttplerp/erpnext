@@ -309,7 +309,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2022-11-30 18:31:10.835868",
+ "modified": "2023-05-30 15:07:09.064212",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Vehicle Request",
@@ -332,55 +332,6 @@
    "write": 1
   },
   {
-   "amend": 1,
-   "cancel": 1,
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "ADM User",
-   "share": 1,
-   "submit": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "if_owner": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Employee",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Fleet Manager",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Fleet User",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
@@ -388,19 +339,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "CEO",
-   "share": 1,
-   "submit": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Branch Manager",
+   "role": "System Manager",
    "share": 1,
    "write": 1
   }

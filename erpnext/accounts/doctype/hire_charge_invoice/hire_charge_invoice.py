@@ -44,6 +44,10 @@ class HireChargeInvoice(AccountsController):
 			logbook = frappe.get_doc("Logbook", a.logbook)
 			logbook.db_set("paid", value)
 
+			ehf_doc = frappe.get_doc("Equipment Hiring Form", {"name":logbook.equipment_hiring_form})
+			ehf_doc.run_method("validate")
+			ehf_doc.save(ignore_permissions=True)
+
 	def before_cancel(self):
 		if self.journal_entry and frappe.db.exists("Journal Entry",self.journal_entry):
 			doc = frappe.get_doc("Journal Entry", self.journal_entry)

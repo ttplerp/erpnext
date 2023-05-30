@@ -8,7 +8,7 @@ from frappe.utils import get_first_day, get_last_day, add_to_date, flt
 from erpnext.controllers.accounts_controller import AccountsController
 from erpnext.accounts.general_ledger import make_gl_entries
 
-class ProcessRentalBilling(AccountsController):
+class ProcessRentalBilling(Document):
 	def check_mandatory(self):
 		for f in ['month', 'fiscal_year', 'branch', 'dzongkhag']:
 			if not self.get(f):
@@ -73,7 +73,6 @@ class ProcessRentalBilling(AccountsController):
 		if name:
 			try:
 				if process_type == "create":
-					# bill_date = self.fiscal_year+"-"+self.month+"-"+"01"
 					posting_date = self.posting_date
 					if self.month == "01":
 						prev_fiscal_year = int(self.fiscal_year) - 1
@@ -82,11 +81,10 @@ class ProcessRentalBilling(AccountsController):
 						prev_fiscal_year = int(self.fiscal_year)
 						prev_month = str(int(self.month) - 1).zfill(2)
 					
-					yearmonth = str(self.fiscal_year) + str(self.month)
 					previous_bill_date = str(prev_fiscal_year)+"-"+str(prev_month)+"-"+"01"
 
 					query = """
-							select tenant_cid, tenant_name, customer_code, block, flat, 
+							select tenant_cid, tenant_name, customer, block, flat, 
 							ministry_and_agency, location_name, branch, tenant_department_name, dzongkhag, 
 							town_category, building_category, is_nhdcl_employee, rental_amount, building_classification,
 							phone_no, allocated_date
@@ -118,15 +116,12 @@ class ProcessRentalBilling(AccountsController):
 							cost_center = frappe.db.get_value("Branch", d.branch, "cost_center")
 							if not self.company:
 								self.company = frappe.db.get_value("Branch", d.branch, "company")
-							focals = frappe.db.sql("""select rental_focal, focal_name from `tabRental Focal and Agency` r inner join `tabRental Focal and Agency Item` i On i.parent=r.name 
-											where r.is_active=1 and i.dzongkhag='{dzongkhag}' and i.ministry_and_agency='{ministry_and_agency}'""".format(dzongkhag=d.dzongkhag, ministry_and_agency=d.ministry_and_agency), as_dict=1)
-							if not len(focals):
-								frappe.throw("Missing Rental Focal and Agency master for Dzongkhag: {0} and Ministry and Agency: {1} OR it's inactive.".format(d.dzongkhag, d.ministry_and_agency))
+
 							rb = frappe.get_doc({
 								"doctype": "Rental Bill",
 								"tenant": str(name),
 								"tenant_cid" : str(d.tenant_cid),
-								"customer_code": str(d.customer_code),
+								"customer": str(d.customer_code),
 								"posting_date": posting_date,
 								"tenant_name": str(d.tenant_name),
 								"block_no": d.block,
@@ -141,14 +136,11 @@ class ProcessRentalBilling(AccountsController):
 								"town_category": d.town_category,
 								"building_category": d.building_category,
 								"building_classification": d.building_classification,
-								"yearmonth": yearmonth,
 								"rent_amount": d.rental_amount,
 								"receivable_amount": d.rental_amount,
 								"cost_center": cost_center,
 								"company": self.company,
 								"is_nhdcl_employee": d.is_nhdcl_employee,
-								"rental_focal": focals[0]['rental_focal'],
-								"focal_name": focals[0]['focal_name']
 							})
 							rb.insert()
 							# rb_no = frappe.db.get_value("Rental Bill", {"tenant":name, "month":self.month, "fiscal_year": self.fiscal_year, "docstatus":0}, "name")
@@ -167,85 +159,87 @@ class ProcessRentalBilling(AccountsController):
 							flag = 0
 							msg = "Rental Bill not allowed to be removed as it's already submitted"
 					else:
-						cost_center = frappe.db.get_value("Branch", self.branch, "cost_center")
-						revenue_claim_account = frappe.db.get_single_value("Rental Account Setting", "revenue_claim_account")
-						for a in frappe.db.sql("""
-								select t.name as rental_bill, t.tenant, c.name as customer, t.receivable_amount, t.building_category
-								from `tabRental Bill` t left join `tabCustomer` c on t.customer_code = c.customer_code
-								where t.name = '{name}'
-							""".format(name=name), as_dict=True):
-							gl_entries = []
-							pre_rent_account = frappe.db.get_single_value("Rental Account Setting", "pre_rent_account")
-							pre_rent_amount = frappe.db.sql("""
-													select ifnull(sum(credit) - sum(debit), 0) as pre_rent_amount
-													from `tabGL Entry` 
-													Where party_type='Customer' 
-													and party = '{party}' and account = '{account}' and is_cancelled=0
-												""".format(party=a.customer, account=pre_rent_account))[0][0]
-							pre_rent_adjustment_amount, balance_receivable_amount = 0,0
-							if pre_rent_amount > 0:
-								if a.receivable_amount <= pre_rent_amount:
-									pre_rent_adjustment_amount = flt(a.receivable_amount)
-								else:
-									pre_rent_adjustment_amount = flt(pre_rent_amount)
-									balance_receivable_amount = flt(a.receivable_amount) - flt(pre_rent_amount)
+						doc = frappe.get_doc("Rental Bill", name)
+						doc.submit()
+						# cost_center = frappe.db.get_value("Branch", self.branch, "cost_center")
+						# revenue_claim_account = frappe.db.get_single_value("Rental Account Setting", "revenue_claim_account")
+						# for a in frappe.db.sql("""
+						# 		select t.name as rental_bill, t.tenant, c.name as customer, t.receivable_amount, t.building_category
+						# 		from `tabRental Bill` t left join `tabCustomer` c on t.customer_code = c.customer_code
+						# 		where t.name = '{name}'
+						# 	""".format(name=name), as_dict=True):
+						# 	gl_entries = []
+						# 	pre_rent_account = frappe.db.get_single_value("Rental Account Setting", "pre_rent_account")
+						# 	pre_rent_amount = frappe.db.sql("""
+						# 							select ifnull(sum(credit) - sum(debit), 0) as pre_rent_amount
+						# 							from `tabGL Entry` 
+						# 							Where party_type='Customer' 
+						# 							and party = '{party}' and account = '{account}' and is_cancelled=0
+						# 						""".format(party=a.customer, account=pre_rent_account))[0][0]
+						# 	pre_rent_adjustment_amount, balance_receivable_amount = 0,0
+						# 	if pre_rent_amount > 0:
+						# 		if a.receivable_amount <= pre_rent_amount:
+						# 			pre_rent_adjustment_amount = flt(a.receivable_amount)
+						# 		else:
+						# 			pre_rent_adjustment_amount = flt(pre_rent_amount)
+						# 			balance_receivable_amount = flt(a.receivable_amount) - flt(pre_rent_amount)
 
-								gl_entries.append(
-									self.get_gl_dict({
-										"account": pre_rent_account,
-										"debit": flt(pre_rent_adjustment_amount),
-										"debit_in_account_currency": flt(pre_rent_adjustment_amount),
-										"voucher_no": a.rental_bill,
-										"voucher_type": "Rental Bill",
-										"cost_center": cost_center,
-										"party": a.customer,
-										"party_type": "Customer",
-										"company": self.company,
-										"remarks": str(a.tenant) + " Monthly Rental Bill for Year " + str(self.fiscal_year) + " Month " + str(self.month),
-										# "business_activity": business_activity
-									})
-								)
-							else:
-								balance_receivable_amount = flt(a.receivable_amount)
+						# 		gl_entries.append(
+						# 			self.get_gl_dict({
+						# 				"account": pre_rent_account,
+						# 				"debit": flt(pre_rent_adjustment_amount),
+						# 				"debit_in_account_currency": flt(pre_rent_adjustment_amount),
+						# 				"voucher_no": a.rental_bill,
+						# 				"voucher_type": "Rental Bill",
+						# 				"cost_center": cost_center,
+						# 				"party": a.customer,
+						# 				"party_type": "Customer",
+						# 				"company": self.company,
+						# 				"remarks": str(a.tenant) + " Monthly Rental Bill for Year " + str(self.fiscal_year) + " Month " + str(self.month),
+						# 				# "business_activity": business_activity
+						# 			})
+						# 		)
+						# 	else:
+						# 		balance_receivable_amount = flt(a.receivable_amount)
 							
-							if balance_receivable_amount > 0:
-								gl_entries.append(
-									self.get_gl_dict({
-										"account": revenue_claim_account,
-										"debit": flt(balance_receivable_amount),
-										"debit_in_account_currency": flt(balance_receivable_amount),
-										"voucher_no": a.rental_bill,
-										"voucher_type": "Rental Bill",
-										"cost_center": cost_center,
-										'party': a.customer,
-										'party_type': 'Customer',
-										"company": self.company,
-										"remarks": str(a.tenant) + " Monthly Rental Bill for Year " + str(self.fiscal_year) + " Month " + str(self.month),
-										# "business_activity": business_activity
-									})
-								)
-							credit_account = frappe.db.get_value("Rental Account Setting Item",{"building_category":a.building_category}, "account")
+						# 	if balance_receivable_amount > 0:
+						# 		gl_entries.append(
+						# 			self.get_gl_dict({
+						# 				"account": revenue_claim_account,
+						# 				"debit": flt(balance_receivable_amount),
+						# 				"debit_in_account_currency": flt(balance_receivable_amount),
+						# 				"voucher_no": a.rental_bill,
+						# 				"voucher_type": "Rental Bill",
+						# 				"cost_center": cost_center,
+						# 				'party': a.customer,
+						# 				'party_type': 'Customer',
+						# 				"company": self.company,
+						# 				"remarks": str(a.tenant) + " Monthly Rental Bill for Year " + str(self.fiscal_year) + " Month " + str(self.month),
+						# 				# "business_activity": business_activity
+						# 			})
+						# 		)
+						# 	credit_account = frappe.db.get_value("Rental Account Setting Item",{"building_category":a.building_category}, "account")
 
-							gl_entries.append(
-								self.get_gl_dict({
-									"account": credit_account,
-									"credit": flt(a.receivable_amount),
-									"credit_in_account_currency": flt(a.receivable_amount),
-									"voucher_no": a.rental_bill,
-									"voucher_type": "Rental Bill",
-									"cost_center": cost_center,
-									"company": self.company,
-									"remarks": str(a.tenant) + " Rental Bill for " + str(a.building_category) +" Year "+ str(self.fiscal_year) + " Month " +str(self.month),
-									# "business_activity": business_activity
-									})
-								)
-							make_gl_entries(gl_entries, cancel=(self.docstatus == 2), update_outstanding="No", merge_entries=False)
+						# 	gl_entries.append(
+						# 		self.get_gl_dict({
+						# 			"account": credit_account,
+						# 			"credit": flt(a.receivable_amount),
+						# 			"credit_in_account_currency": flt(a.receivable_amount),
+						# 			"voucher_no": a.rental_bill,
+						# 			"voucher_type": "Rental Bill",
+						# 			"cost_center": cost_center,
+						# 			"company": self.company,
+						# 			"remarks": str(a.tenant) + " Rental Bill for " + str(a.building_category) +" Year "+ str(self.fiscal_year) + " Month " +str(self.month),
+						# 			# "business_activity": business_activity
+						# 			})
+						# 		)
+						# 	make_gl_entries(gl_entries, cancel=(self.docstatus == 2), update_outstanding="No", merge_entries=False)
 
-							doc = frappe.get_doc("Rental Bill", a.rental_bill)
-							doc.gl_entry=1
-							doc.adjusted_amount=flt(pre_rent_adjustment_amount)
-							doc.outstanding_amount=flt(a.receivable_amount) - flt(pre_rent_adjustment_amount)
-							doc.submit()
+							# doc = frappe.get_doc("Rental Bill", a.rental_bill)
+							# doc.gl_entry=1
+							# doc.adjusted_amount=flt(pre_rent_adjustment_amount)
+							# doc.outstanding_amount=flt(a.receivable_amount) - flt(pre_rent_adjustment_amount)
+							# doc.submit()
 
 						# rb = frappe.get_doc("Rental Bill", name)
 						# rb.submit()

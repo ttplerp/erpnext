@@ -7,6 +7,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "status",
   "branch",
   "cost_center",
   "disabled",
@@ -298,11 +299,19 @@
    "label": "Party",
    "options": "party_type",
    "reqd": 1
+  },
+  {
+   "default": "Hiring Requested",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Status",
+   "options": "\nHiring Requested\nHiring Approved\nLogbook Submitted\nClosed\nCancelled"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-08 16:50:45.799999",
+ "modified": "2023-05-23 17:15:22.566638",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment Hiring Form",
