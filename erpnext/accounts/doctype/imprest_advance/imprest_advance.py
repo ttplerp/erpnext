@@ -6,12 +6,31 @@ import frappe
 from frappe.model.document import Document
 from frappe import _
 from frappe.utils import flt, cint, nowdate, getdate, formatdate, money_in_words
+from erpnext.custom_workflow import validate_workflow_states, notify_workflow_states
 
 class ImprestAdvance(Document):
 	def validate(self):
 		if not self.is_opening:
 			self.check_imprest_amount()
+		if cint(self.first_advance) == 1:
+			self.check_for_duplicate_entry()
+			validate_workflow_states(self)
+
+		if self.workflow_state != "Approved":
+			notify_workflow_states(self)
 	
+	def check_for_duplicate_entry(self):
+		import datetime
+
+		date_obj = datetime.datetime.strptime(str(self.posting_date), "%Y-%m-%d")
+		year = date_obj.year
+
+		for d in frappe.db.get_list("Imprest Advance",filters={"branch": self.branch, "imprest_type": self.imprest_type, "docstatus": 1}, fields=["posting_date"]):
+			date_obj = datetime.datetime.strptime(str(d.posting_date), "%Y-%m-%d")
+			year_old = date_obj.year
+			if str(year) == str(year_old):
+				frappe.throw("Imprest Advance already taken for branch <b>{}</b> and imprest type <b>{}</b>".format(self.branch, self.imprest_type))
+
 	def check_imprest_amount(self):
 		query = """
 			SELECT imp.imprest_limit
@@ -43,8 +62,12 @@ class ImprestAdvance(Document):
 			frappe.throw("Imprest Recoup <b>{}</b> needs to to cancelled first.".format(self.imprest_recoup_id))
 		
 		self.ignore_linked_doctypes = ("GL Entry", "Payment Ledger Entry")
+		if cint(self.first_advance) == 1:
+			notify_workflow_states(self)
 
 	def on_submit(self):
+		if cint(self.first_advance) == 1:
+			notify_workflow_states(self)
 		if not self.is_opening:
 			self.post_journal_entry()
 

@@ -64,6 +64,8 @@
   "company",
   "sb_more_information",
   "is_opening",
+  "journal_entry",
+  "cb_mi_1",
   "amended_from"
  ],
  "fields": [
@@ -389,12 +391,22 @@
    "fieldtype": "Select",
    "label": "Is Opening",
    "options": "No\nYes"
+  },
+  {
+   "fieldname": "journal_entry",
+   "fieldtype": "Data",
+   "label": "Journal Entry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_mi_1",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-31 07:25:37.212348",
+ "modified": "2023-05-31 15:45:58.785467",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Payment",

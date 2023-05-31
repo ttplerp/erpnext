@@ -24,7 +24,13 @@
   "epayment_bank_accounts_section",
   "branch_bank_account",
   "imprest_settings_section",
-  "items"
+  "items",
+  "imprest_verifier_details_section",
+  "imprest_verifier",
+  "column_break_20",
+  "imprest_verifier_name",
+  "column_break_22",
+  "imprest_verifier_designation"
  ],
  "fields": [
   {
@@ -126,12 +132,45 @@
    "fieldname": "items",
    "fieldtype": "Table",
    "options": "Branch Imprest Item"
+  },
+  {
+   "fieldname": "imprest_verifier_details_section",
+   "fieldtype": "Section Break",
+   "label": "Imprest Verifier Details"
+  },
+  {
+   "fieldname": "imprest_verifier",
+   "fieldtype": "Link",
+   "label": "Imprest Verifier",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "column_break_20",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "imprest_verifier.employee_name",
+   "fieldname": "imprest_verifier_name",
+   "fieldtype": "Data",
+   "label": "Imprest Verifier Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_22",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "imprest_verifier.designation",
+   "fieldname": "imprest_verifier_designation",
+   "fieldtype": "Data",
+   "label": "Imprest Verifier Designation",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-code-fork",
  "idx": 1,
  "links": [],
- "modified": "2023-05-22 15:55:13.010092",
+ "modified": "2023-05-31 16:48:34.099576",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Branch",

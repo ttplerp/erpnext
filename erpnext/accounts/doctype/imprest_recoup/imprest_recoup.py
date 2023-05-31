@@ -7,12 +7,16 @@ from frappe.model.document import Document
 from erpnext.custom_utils import check_budget_available
 from frappe import _
 from frappe.utils import flt, cint, nowdate, getdate, formatdate, money_in_words
+from erpnext.custom_workflow import validate_workflow_states, notify_workflow_states
 
 class ImprestRecoup(Document):
 	def validate(self):
+		validate_workflow_states(self)
 		self.calculate_amount()
 		self.populate_imprest_advance()
 		self.set_recoup_account(validate=True)
+		if self.workflow_state != "Recouped":
+			notify_workflow_states(self)
 	
 	def set_recoup_account(self, validate=False):
 		for d in self.items:
@@ -32,6 +36,7 @@ class ImprestRecoup(Document):
 			frappe.throw("Expense amount cannot be more than balance amount.")
 
 	def on_submit(self):
+		notify_workflow_states(self)
 		self.update_advance()
 		self.post_journal_entry()
 		if self.final == "No":
@@ -53,6 +58,7 @@ class ImprestRecoup(Document):
 	def on_cancel(self):
 		self.update_advance(1)
 		self.ignore_linked_doctypes = ("GL Entry", "Payment Ledger Entry")
+		notify_workflow_states(self)
 
 	def check_imprest_advance_status_and_cancel(self):
 		ima = frappe.db.sql("select name from `tabImprest Advance` where imprest_recoup_id = '{}' and docstatus = 1".format(self.name))

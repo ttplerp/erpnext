@@ -10,24 +10,34 @@ from erpnext.controllers.accounts_controller import AccountsController
 
 class RentalPayment(AccountsController):
 	def validate(self):
-		self.validate_rental_bill_gl_entry()
-		self.generate_penalty()
-		self.calculate_discount()
-		self.calculate_totals()
-		self.set_missing_value()
-		if self.is_nhdcl_employee:
-			self.bank_account = ''
+		self.is_opening = 0 if self.is_opening == "No" else 1
+		if not self.is_opening:
+			self.validate_rental_bill_gl_entry()
+			self.generate_penalty()
+			self.calculate_discount()
+			self.calculate_totals()
+			self.set_missing_value()
+			if self.is_nhdcl_employee:
+				self.bank_account = ''
+		else:
+			self.check_invalide_items()
 
 	def on_submit(self):
-		self.update_rental_bill()
-		self.post_gl_entry()
+		if not self.is_opening:
+			self.update_rental_bill()
+			self.post_gl_entry()
+		else:
+			pass
 
 	def on_cancel(self):
-		self.flags.ignore_links = True
-		if self.clearance_date:
-			frappe.throw("Already done bank reconciliation. Cannot cancel.")
-		self.post_gl_entry()
-		self.update_rental_bill()
+		if not self.is_opening:
+			self.flags.ignore_links = True
+			if self.clearance_date:
+				frappe.throw("Already done bank reconciliation. Cannot cancel.")
+			self.post_gl_entry()
+			self.update_rental_bill()
+		else:
+			pass
 
 	def validate_rental_bill_gl_entry(self):
 		counts = 0
@@ -86,7 +96,7 @@ class RentalPayment(AccountsController):
 			self.penalty_amount = 0.00
 
 	def calculate_discount(self):
-		if self.discount_percent > 0:
+		if flt(self.discount_percent) > 0:
 			discount_amount = 0.00
 			for a in self.items:
 				if not a.dont_apply_discount:
@@ -141,6 +151,9 @@ class RentalPayment(AccountsController):
 			if not self.tds_account:
 				frappe.throw("Missing value for TDS Deducted by Customer in Company")
 
+	def check_invalide_items(self):
+		pass
+		
 	def update_rental_bill(self):					
 		if self.docstatus == 1:
 			for a in self.get('items'):

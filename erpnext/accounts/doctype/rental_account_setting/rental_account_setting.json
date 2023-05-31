@@ -78,9 +78,9 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-05-03 15:06:39.376675",
+ "modified": "2023-05-31 18:12:54.113290",
  "modified_by": "Administrator",
- "module": "Rental Management",
+ "module": "Accounts",
  "name": "Rental Account Setting",
  "owner": "Administrator",
  "permissions": [

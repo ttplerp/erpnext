@@ -1006,7 +1006,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Imprest Management",
-   "link_count": 4,
+   "link_count": 5,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -1049,9 +1049,19 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Imprest Register",
+   "link_count": 0,
+   "link_to": "Imprest Register",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
   }
  ],
- "modified": "2023-05-24 16:41:24.196523",
+ "modified": "2023-05-31 14:26:24.670675",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Accounting",

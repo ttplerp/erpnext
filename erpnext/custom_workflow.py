@@ -24,7 +24,7 @@ class CustomWorkflow:
 		self.field_map 		= get_field_map()
 		self.doc_approver	= self.field_map[self.doc.doctype]
 		self.field_list		= ["user_id","employee_name","designation","name"]
-		if self.doc.doctype != "Material Request" and self.doc.doctype != "Performance Evaluation" and self.doc.doctype not in ("Project Capitalization","Asset Issue Details", "Compile Budget","Asset Movement", "Budget Reappropiation", "Employee Advance"):
+		if self.doc.doctype != "Material Request" and self.doc.doctype != "Performance Evaluation" and self.doc.doctype not in ("Project Capitalization","Asset Issue Details", "Compile Budget","Asset Movement", "Budget Reappropiation", "Employee Advance", "Imprest Advance", "Imprest Recoup"):
 			self.employee = frappe.db.get_value("Employee", self.doc.employee, self.field_list)
 			self.reports_to = frappe.db.get_value("Employee", {"name":frappe.db.get_value("Employee", self.doc.employee, "reports_to")}, self.field_list)
 			self.hr_approver	= frappe.db.get_value("Employee", frappe.db.get_single_value("HR Settings", "hr_approver"), self.field_list)
@@ -111,6 +111,10 @@ class CustomWorkflow:
 			
 		if self.doc.doctype == "Employee Benefits":
 			self.hrgm = frappe.db.get_value("Employee",frappe.db.get_single_value("HR Settings","hrgm"), self.field_list)	
+		
+		if self.doc.doctype in ("Imprest Advance", "Imprest Recoup"):
+			self.imprest_verifier = frappe.db.get_value("Employee", frappe.db.get_value("Branch", {"branch": self.doc.branch}, "imprest_verifier"), self.field_list)
+			self.imprest_approver = frappe.db.get_value("Employee", frappe.db.get_value("Department", {"name": "Corporate Services Division - NHDCL"}, "approver"), self.field_list)
 	
 		self.login_user		= frappe.db.get_value("Employee", {"user_id": frappe.session.user}, self.field_list)
 		self.final_approver	= []
@@ -119,6 +123,7 @@ class CustomWorkflow:
 			if "PERC Member" in frappe.get_roles(frappe.session.user):
 				return
 			frappe.throw("{0} is not added as the employee".format(frappe.session.user))
+		
 
 	def update_employment_status(self):
 		emp_status = frappe.db.get_value("Leave Type", self.doc.leave_type, ["check_employment_status","employment_status"])
@@ -291,6 +296,10 @@ class CustomWorkflow:
 			self.employee_separation()
 		elif self.doc.doctype == "Employee Benefits":
 			self.employee_benefits()
+		elif self.doc.doctype == "Imprest Advance":
+			self.imprest_advance()
+		elif self.doc.doctype == "Imprest Recoup":
+			self.imprest_recoup()
 		elif self.doc.doctype in ("Asset Issue Details","Project Capitalization"):
 			self.asset()
 		elif self.doc.doctype == "Asset Movement":
@@ -394,6 +403,46 @@ class CustomWorkflow:
 		elif self.new_state.lower() in ("Approved".lower(), "Rejected".lower()):
 			if self.doc.benefit_approver != frappe.session.user:
 				frappe.throw("Only {} can Approved or Reject this document".format(self.doc.benefit_approver_name))
+	
+	def imprest_advance(self):
+		if self.new_state.lower() == self.old_state.lower():
+			return
+		if self.new_state.lower() in ("Draft".lower(), "Waiting for Verification".lower()):
+			if self.new_state.lower() == "Waiting for Verification".lower():
+				if frappe.session.user != self.doc.owner:
+					frappe.throw("Only {} can apply this Imprest Advance".format(self.doc.owner))
+			self.set_approver("Imprest Verifier")
+
+		elif self.new_state.lower() in ("Waiting Approval".lower(), "Rejected".lower()):
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Forward or Reject this document".format(self.doc.approver_name))
+			self.set_approver("Imprest Approver")
+		
+		elif self.new_state.lower() in ("Approved".lower(), "Rejected".lower()):
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Approver or Reject this document".format(self.doc.approver_name))
+		else:
+			frappe.throw(_("Invalid Workflow State {}").format(self.doc.workflow_state))
+	
+	def imprest_recoup(self):
+		if self.new_state.lower() == self.old_state.lower():
+			return
+		if self.new_state.lower() in ("Draft".lower(), "Waiting for Verification".lower()):
+			if self.new_state.lower() == "Waiting for Verification".lower():
+				if frappe.session.user != self.doc.owner:
+					frappe.throw("Only {} can apply this Imprest Advance".format(self.doc.owner))
+			self.set_approver("Imprest Verifier")
+
+		elif self.new_state.lower() in ("Waiting Recoupment".lower(), "Rejected".lower()):
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Forward or Reject this document".format(self.doc.approver_name))
+			self.set_approver("Imprest Approver")
+		
+		elif self.new_state.lower() in ("Recouped".lower(), "Rejected".lower()):
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Recoup or Reject this document".format(self.doc.approver_name))
+		else:
+			frappe.throw(_("Invalid Workflow State {}").format(self.doc.workflow_state))
 
 	def asset(self):
 		pass
@@ -649,16 +698,21 @@ class NotifyCustomWorkflow:
 		self.field_map 		= get_field_map()
 		self.doc_approver	= self.field_map[self.doc.doctype]
 		self.field_list		= ["user_id","employee_name","designation","name"]
-		if self.doc.doctype not in ("Material Request","Asset Issue Details"):
+		if self.doc.doctype not in ("Material Request","Asset Issue Details", "Imprest Advance", "Imprest Recoup"):
 			self.employee   = frappe.db.get_value("Employee", self.doc.employee, self.field_list)
+		elif self.doc.doctype in ("Imprest Advance", "Imprest Recoup"):
+			self.employee   = frappe.db.get_value("Employee", self.doc.party, self.field_list)
 		else:
 			self.employee = frappe.db.get_value("Employee", {"user_id":self.doc.owner}, self.field_list)
 
 	def notify_employee(self):
-		if self.doc.doctype not in ("Material Request","Asset Issue Details","Project Capitalization"):
+		if self.doc.doctype not in ("Material Request","Asset Issue Details","Project Capitalization", "Imprest Advance", "Imprest Recoup"):
 			employee = frappe.get_doc("Employee", self.doc.employee)
+		elif self.doc.doctype in ("Imprest Advance", "Imprest Recoup"):
+			employee = frappe.get_doc("Employee", self.doc.party)
 		else:
 			employee = frappe.get_doc("Employee", frappe.db.get_value("Employee",{"user_id":self.doc.owner},"name"))
+		
 		if not employee.user_id:
 			return
 
@@ -812,7 +866,7 @@ class NotifyCustomWorkflow:
 			return
 		if self.new_state == "Draft":
 			return
-		elif self.new_state in ("Approved", "Rejected", "Cancelled", "Claimed", "Submitted"):
+		elif self.new_state in ("Approved", "Rejected", "Cancelled", "Claimed", "Submitted", "Recouped"):
 			if self.doc.doctype == "Material Request" and self.doc.owner != "Administrator":
 				self.notify_employee()
 			else:
@@ -841,6 +895,8 @@ def get_field_map():
 		"Training Approval Request": [],
 		"Employee Separation": ["approver","approver_name","approver_designation"],
 		"Target Set Up": ["approver","approver_name","approver_designation"],
+		"Imprest Advance": ["approver","approver_name","approver_designation"],
+		"Imprest Recoup": ["approver","approver_name","approver_designation"],
 		"Review": ["approver","approver_name","approver_designation"],
 		"Performance Evaluation": ["approver","approver_name","approver_designation"],
 		"PMS Appeal":[],
