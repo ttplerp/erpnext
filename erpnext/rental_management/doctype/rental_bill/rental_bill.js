@@ -4,7 +4,7 @@
 frappe.ui.form.on('Rental Bill', {
 	refresh: function(frm) {
 		frm.disable_save();
-		frm.disable_amend();
+		// frm.disable_amend();
 		
 		if(frm.doc.docstatus > 0) {
 			frm.add_custom_button(__('Ledger'), function() {

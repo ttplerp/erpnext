@@ -39,9 +39,9 @@
   "get_rental_bills",
   "items",
   "sb_tds_details",
-  "tds_account",
-  "cb_7",
   "tds_amount",
+  "cb_7",
+  "tds_account",
   "sb_total_bill",
   "total_bill_amount",
   "total_rent_received",
@@ -62,6 +62,8 @@
   "clearance_date",
   "sb_1",
   "company",
+  "sb_more_information",
+  "is_opening",
   "amended_from"
  ],
  "fields": [
@@ -375,12 +377,24 @@
    "fieldname": "discount_amount",
    "fieldtype": "Currency",
    "label": "Discount Amount"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "sb_more_information",
+   "fieldtype": "Section Break",
+   "label": "More Information"
+  },
+  {
+   "fieldname": "is_opening",
+   "fieldtype": "Select",
+   "label": "Is Opening",
+   "options": "No\nYes"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-30 15:39:18.641705",
+ "modified": "2023-05-31 07:25:37.212348",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Payment",

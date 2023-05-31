@@ -171,6 +171,8 @@ class RentalPayment(AccountsController):
 					""" update Tenant Information for Security Deposit Received check """
 					if a.security_deposit_amount > 0:
 						ti_doc = frappe.get_doc("Tenant Information", a.tenant)
+						if flt(a.security_deposit_amount) != flt(ti_doc.security_deposit):
+							frappe.throw("Security deposit amount {} at Tenant Information is not equal with {}".format(ti_doc.security_deposit, a.security_deposit_amount))
 						ti_doc.security_deposit_received = 1
 						ti_doc.save()
 		else:
@@ -365,7 +367,7 @@ class RentalPayment(AccountsController):
 					"business_activity": business_activity
 					})
 				)
-		make_gl_entries(gl_entries, cancel=(self.docstatus == 2),update_outstanding="No", merge_entries=False)
+		make_gl_entries(gl_entries, cancel=(self.docstatus == 2),update_outstanding="Yes", merge_entries=False)
 
 	def post_debit_account(self, gl_entries, cost_center, business_activity):
 		for a in self.get('item'):
