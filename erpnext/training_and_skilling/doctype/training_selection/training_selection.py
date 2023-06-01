@@ -233,34 +233,51 @@ class TrainingSelection(Document):
 	def check_barred(self):
 		if self.get("item"):
 			for a in self.get("item"):
-				barred_dtl = frappe.db.sql(""" SELECT name, reason, from_date, to_date
-									FROM `tabBarred Desuup`
-									where docstatus != 2 
-									AND (
-										('{}' < to_date AND (to_date IS NOT NULL OR to_date!=""))
-										OR 
-										to_date IS NULL 
-										OR 
-										to_date=""
-										)
-									AND desuung_id = '{}'
-							""".format(self.posting_date, a.did), as_dict=True)
-				status = a.status
-				remark = a.remark					
-				if barred_dtl:
-					if barred_dtl[0].from_date and barred_dtl[0].to_date:
-						from_date = barred_dtl[0].from_date
-						to_date = barred_dtl[0].to_date
-					else:
-						from_date = "Not Provided"
-						to_date = "Not Provided"
-					status = "Barred"
-					remark = "Barred reason: " + str(barred_dtl[0].reason) + ". Dessuup barred from " + str(from_date) + \
-									" till " + str(to_date) + " in Document " + str(barred_dtl[0].name)
-				frappe.db.sql("""Update `tabTraining Selection Item` 
-								set barred_list = "1", status = "{0}", remark = "{1}"
-								where name= "{2}"
-							""".format(status, remark, a.name))
+				ongoing_training = frappe.db.sql(""" Select m.name, m.course, m.cohort, m.programme, m.training_center, m.location,
+											m.domain, m.training_start_date, m.training_end_date
+											from `tabTraining Management` m
+											inner join `tabTrainee Details` d
+											on m.name = d.parent
+											where m.docstatus != 2
+											and d.desuup_id = '{}'
+											and m.status = 'On Going'
+										""".format(a.did), as_dict=True)
+				if not ongoing_training:
+					barred_dtl = frappe.db.sql(""" SELECT name, reason, from_date, to_date
+										FROM `tabBarred Desuup`
+										where docstatus != 2 
+										AND (
+											('{}' < to_date AND (to_date IS NOT NULL OR to_date!=""))
+											OR 
+											to_date IS NULL 
+											OR 
+											to_date=""
+											)
+										AND desuung_id = '{}'
+								""".format(self.posting_date, a.did), as_dict=True)
+					status = a.status
+					remark = a.remark
+					if barred_dtl:
+						if barred_dtl[0].from_date and barred_dtl[0].to_date:
+							from_date = barred_dtl[0].from_date
+							to_date = barred_dtl[0].to_date
+						else:
+							from_date = "Not Provided"
+							to_date = "Not Provided"
+						status = "Barred"
+						remark = "Barred reason: " + str(barred_dtl[0].reason) + ". Dessuup barred from " + str(from_date) + \
+										" till " + str(to_date) + " in Document " + str(barred_dtl[0].name)
+					frappe.db.sql("""Update `tabTraining Selection Item` 
+									set barred_list = "1", status = "{0}", remark = "{1}"
+									where name= "{2}"
+								""".format(status, remark, a.name))
+				else:
+					status = "Disqualified"
+					remark = "Disqualified as the applicant is under going training for '{}' at '{}'. Reference No: {} ".format(ongoing_training[0].training_center, ongoing_training[0].programme, ongoing_training[0].names)
+					frappe.db.sql("""Update `tabTraining Selection Item` 
+									set status="{0}", remark="{1}"
+									where name="{2}"
+								""".format(status, remark, a.name))
 			frappe.db.commit()
 
 	@frappe.whitelist()
@@ -301,22 +318,22 @@ class TrainingSelection(Document):
 				training_attended_count = 0
 				training_attended_detail = ""
 				for b in frappe.db.sql(""" Select m.name, m.course, m.cohort, m.programme, m.training_center, m.location,
-												m.domain, m.training_start_date, m.training_end_date
-												from `tabTraining Management` m
-												inner join `tabTrainee Details` d
-												on m.name = d.parent
-												where m.docstatus != 2
-												and d.desuup_id = '{}'
-												and not exists(
-														select 1 
-														from `tabCourse` c
-														where c.name = m.course
-														and 
-														(c.exclude_from_point_calculation=1 
-															or
-														 c.up_skilling=1
-														)
-													)
+									m.domain, m.training_start_date, m.training_end_date
+									from `tabTraining Management` m
+									inner join `tabTrainee Details` d
+									on m.name = d.parent
+									where m.docstatus != 2
+									and d.desuup_id = '{}'
+									and not exists(
+											select 1 
+											from `tabCourse` c
+											where c.name = m.course
+											and 
+											(c.exclude_from_point_calculation=1 
+												or
+											c.up_skilling=1
+											)
+										)
 										""".format(a.did), as_dict=True):
 					training_attended_count += 1
 					training_attended_detail += str(training_attended_count) + ": Programme : " + str(b.programme) + ", Domain : " + str(b.domain) + ", Training Center :" + str(b.training_center) + "(" + str(b.location) + "), Reference : " + str(b.name) + "<br/>"
@@ -324,9 +341,11 @@ class TrainingSelection(Document):
 				remark = a.remark
 				if training_attended_count > 3:
 					status = "Disqualified"
-					remark = str(remark) + " Applicant is disqualified as he has already availed training in 3 different domains"
-				frappe.db.sql("Update `tabTraining Selection Item` set maximum_three_core_skill_check = 1, status = '{0}', remark = '{1}', training_attended_detail = '{2}', training_attended = '{3}' \
-								where name= '{4}'".format(status, remark, training_attended_detail, training_attended_count, a.name))
+					remark = str(remark) + "Disqualified as the applicant has already availed training in 3 different domains"
+
+				frappe.db.sql("Update `tabTraining Selection Item` set maximum_three_core_skill_check = 1, status = '{0}', \
+						remark = '{1}', training_attended_detail = '{2}', training_attended = '{3}' \
+						where name= '{4}'".format(status, remark, training_attended_detail, training_attended_count, a.name))
 		frappe.db.commit()
 
 	@frappe.whitelist()
