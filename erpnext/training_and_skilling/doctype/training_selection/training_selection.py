@@ -273,7 +273,7 @@ class TrainingSelection(Document):
 								""".format(status, remark, a.name))
 				else:
 					status = "Disqualified"
-					remark = "Disqualified as the applicant is under going training for '{}' at '{}'. Reference No: {} ".format(ongoing_training[0].training_center, ongoing_training[0].programme, ongoing_training[0].names)
+					remark = "Disqualified as the applicant is under going training for '{}' at '{}'. Reference No: {} ".format(ongoing_training[0].training_center, ongoing_training[0].programme, ongoing_training[0].name)
 					frappe.db.sql("""Update `tabTraining Selection Item` 
 									set status="{0}", remark="{1}"
 									where name="{2}"
