@@ -15,9 +15,8 @@ class ImprestAdvance(Document):
 		if cint(self.first_advance) == 1:
 			self.check_for_duplicate_entry()
 			validate_workflow_states(self)
-
-		if self.workflow_state != "Approved":
-			notify_workflow_states(self)
+			if self.workflow_state != "Approved":
+				notify_workflow_states(self)
 	
 	def check_for_duplicate_entry(self):
 		import datetime

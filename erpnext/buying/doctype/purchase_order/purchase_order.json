@@ -56,6 +56,8 @@
   "currency_and_price_list",
   "currency",
   "conversion_rate",
+  "cb_annual_tender",
+  "annual_tender",
   "cb_price_list",
   "buying_price_list",
   "price_list_currency",
@@ -1217,13 +1219,23 @@
    "fieldtype": "Link",
    "label": "Site Name",
    "options": "Site Name"
+  },
+  {
+   "fieldname": "cb_annual_tender",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "annual_tender",
+   "fieldtype": "Check",
+   "label": "Annual Tender?"
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 105,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-08 15:17:25.778195",
+ "modified": "2023-06-02 15:00:25.276634",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Purchase Order",
@@ -1239,7 +1251,6 @@
    "amend": 1,
    "cancel": 1,
    "create": 1,
-   "delete": 1,
    "email": 1,
    "print": 1,
    "read": 1,

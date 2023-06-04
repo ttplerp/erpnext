@@ -211,59 +211,61 @@ def validate_expense_against_budget(args):
 		frappe.throw("Budget check against account <b>{}</b> is not allowed as the Account Type is {}. \
 						Check Budget Settings for allowed account type".format(args.account, account_type))
 	'''
-	for budget_against in ["project", "cost_center"] + get_accounting_dimensions():
-		if (
-			args.get(budget_against)
-			and args.account
-			and frappe.db.get_value("Account", args.account, "account_type") in ["Expense Account","Fixed Asset"]
-		):
-			doctype = frappe.unscrub(budget_against)
-			args.budget_against_field = budget_against
-			args.budget_against_doctype = doctype
+	""" avoid budget check at MR """
+	if frappe.db.get_single_value("Budget Settings", "budget_commit_on") != "Material Request":
+		for budget_against in ["project", "cost_center"] + get_accounting_dimensions():
+			if (
+				args.get(budget_against)
+				and args.account
+				and frappe.db.get_value("Account", args.account, "account_type") in ["Expense Account","Fixed Asset"]
+			):
+				doctype = frappe.unscrub(budget_against)
+				args.budget_against_field = budget_against
+				args.budget_against_doctype = doctype
 
-			if args.project:
-				condition = " and b.project = '{}'".format(args.project)
-			else:
-				bud_acc_dtl = frappe.get_doc("Account", args.account)
-				if bud_acc_dtl.centralized_budget:
-					budget_cost_center = bud_acc_dtl.cost_center
+				if args.project:
+					condition = " and b.project = '{}'".format(args.project)
 				else:
-					#Check Budget Cost for child cost centers
-					cc_doc = frappe.get_doc("Cost Center", args.cost_center)
-					budget_cost_center = cc_doc.budget_cost_center if cc_doc.use_budget_from_parent else args.cost_center
-				condition = " and b.cost_center='{}'".format(budget_cost_center)
+					bud_acc_dtl = frappe.get_doc("Account", args.account)
+					if bud_acc_dtl.centralized_budget:
+						budget_cost_center = bud_acc_dtl.cost_center
+					else:
+						#Check Budget Cost for child cost centers
+						cc_doc = frappe.get_doc("Cost Center", args.cost_center)
+						budget_cost_center = cc_doc.budget_cost_center if cc_doc.use_budget_from_parent else args.cost_center
+					condition = " and b.cost_center='{}'".format(budget_cost_center)
+					
+				args.is_tree = False
+				args.cost_center = budget_cost_center
 				
-			args.is_tree = False
-			args.cost_center = budget_cost_center
-			
-			budget_records = frappe.db.sql(
-				"""
-				select
-					b.{budget_against_field} as budget_against, ba.budget_amount, b.monthly_distribution,
-					ifnull(b.applicable_on_material_request, 0) as for_material_request,
-					ifnull(applicable_on_purchase_order, 0) as for_purchase_order,
-					ifnull(applicable_on_booking_actual_expenses,0) as for_actual_expenses,
-					b.action_if_annual_budget_exceeded, b.action_if_accumulated_monthly_budget_exceeded,
-					b.action_if_annual_budget_exceeded_on_mr, b.action_if_accumulated_monthly_budget_exceeded_on_mr,
-					b.action_if_annual_budget_exceeded_on_po, b.action_if_accumulated_monthly_budget_exceeded_on_po
-				from
-					`tabBudget` b, `tabBudget Account` ba
-				where
-					b.name=ba.parent and b.fiscal_year={fiscal_year}
-					and ba.account="{account}" and b.docstatus=1
-					{condition}
-			""".format(
-					condition=condition, budget_against_field=budget_against,
-				fiscal_year=args.fiscal_year, account=args.account),
-				as_dict=True,
-			)  # nosec
-			if budget_records:
-				validate_budget_records(args, budget_records)
-			else:
-				frappe.msgprint(_("Budget allocation not available for <b>%s </b> in %s <b>%s</b>" % (
-								args.account, budget_against, frappe.db.escape(args.get(budget_against))
-							)), raise_exception=True
-						)
+				budget_records = frappe.db.sql(
+					"""
+					select
+						b.{budget_against_field} as budget_against, ba.budget_amount, b.monthly_distribution,
+						ifnull(b.applicable_on_material_request, 0) as for_material_request,
+						ifnull(applicable_on_purchase_order, 0) as for_purchase_order,
+						ifnull(applicable_on_booking_actual_expenses,0) as for_actual_expenses,
+						b.action_if_annual_budget_exceeded, b.action_if_accumulated_monthly_budget_exceeded,
+						b.action_if_annual_budget_exceeded_on_mr, b.action_if_accumulated_monthly_budget_exceeded_on_mr,
+						b.action_if_annual_budget_exceeded_on_po, b.action_if_accumulated_monthly_budget_exceeded_on_po
+					from
+						`tabBudget` b, `tabBudget Account` ba
+					where
+						b.name=ba.parent and b.fiscal_year={fiscal_year}
+						and ba.account="{account}" and b.docstatus=1
+						{condition}
+				""".format(
+						condition=condition, budget_against_field=budget_against,
+					fiscal_year=args.fiscal_year, account=args.account),
+					as_dict=True,
+				)  # nosec
+				if budget_records:
+					validate_budget_records(args, budget_records)
+				else:
+					frappe.msgprint(_("Budget allocation not available for <b>%s </b> in %s <b>%s</b>" % (
+									args.account, budget_against, frappe.db.escape(args.get(budget_against))
+								)), raise_exception=True
+							)
 	commit_budget(args)
 
 def validate_budget_records(args, budget_records):

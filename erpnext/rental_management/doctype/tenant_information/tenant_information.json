@@ -66,6 +66,9 @@
   "pilot_account_details",
   "sb_tenant_family_members",
   "family_details",
+  "sb_property_management",
+  "total_property_management_amount",
+  "rental_property_management_item",
   "sb_remarks",
   "remarks",
   "amended_from"
@@ -451,12 +454,29 @@
    "fieldtype": "Data",
    "label": "Town Category",
    "read_only": 1
+  },
+  {
+   "fieldname": "sb_property_management",
+   "fieldtype": "Section Break",
+   "label": "Property Management Detail"
+  },
+  {
+   "fieldname": "rental_property_management_item",
+   "fieldtype": "Table",
+   "label": "Property Management Detail",
+   "options": "Rental Property Management Item"
+  },
+  {
+   "fieldname": "total_property_management_amount",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Total Property Management Amount"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-30 22:34:41.196960",
+ "modified": "2023-06-03 14:19:41.471133",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Tenant Information",

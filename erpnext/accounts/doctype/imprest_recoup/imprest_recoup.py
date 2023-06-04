@@ -32,7 +32,7 @@ class ImprestRecoup(Document):
 		self.opening_balance = sum(d.advance_amount for d in self.imprest_advance_list)
 		self.balance_amount = flt(self.opening_balance) - flt(self.total_amount)
 
-		if self.docstatus != 1 and tot_bal_amt < self.total_amount:
+		if self.docstatus != 1 and tot_bal_amt < self.total_amount and self.workflow_state == "Draft":
 			frappe.throw("Expense amount cannot be more than balance amount.")
 
 	def on_submit(self):

@@ -193,7 +193,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-26 13:00:41.894602",
+ "modified": "2023-06-02 12:48:51.603871",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Insurance and Registration",
@@ -242,17 +242,6 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Maintenance User",
    "share": 1,
    "write": 1
   },

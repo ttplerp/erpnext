@@ -137,3 +137,24 @@ frappe.ui.form.on('Rental Payment', {
 	},
 
 });
+
+frappe.ui.form.on('Rental Payment Item', {
+	deduct_from_security_deposit: function(frm, cdt, cdn){
+		var row = locals[cdt][cdn];
+		if (row.deduct_from_security_deposit){
+			return frappe.call({
+				method: "get_security_deposit",
+				doc:frm.doc,
+				args:{
+					'customer': row.customer,
+				},
+				callback: function(r){
+					console.log(r.message)
+					frappe.model.set_value(cdt, cdn, "security_deposit", r.message ?? 0.00)
+				}
+			});
+		} else {
+			frappe.model.set_value(cdt, cdn, "security_deposit", 0.00)
+		}
+	}
+});

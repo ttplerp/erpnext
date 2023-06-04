@@ -61,13 +61,26 @@ class TenantInformation(Document):
 					monthly_installment_amount += flt(a.amount)
 
 				self.original_monthly_instalment = monthly_installment_amount
+		""" Property Management Detail """
+		if self.block_no and not self.get('rental_property_management_item'):
+			self.set('rental_property_management_item', [])
+			for d in frappe.db.sql("select * from `tabBlock Property Management Item` where parent='{}'".format(self.block_no), as_dict=1):
+				self.append('rental_property_management_item', {
+					'property_management_type': d.property_management_type,
+					'amount': d.amount
+				})
 
+		prop_mgt_amt = 0
+		for a in self.get('rental_property_management_item'):
+			prop_mgt_amt += flt(a.amount)
+		self.total_property_management_amount = prop_mgt_amt
 
 	def validate_allocation(self):
 		if self.status != "Surrendered":
 			cid = frappe.db.get_value("Tenant Information", {"locations":self.locations, "building_category":self.building_category, "building_classification":self.building_classification, "block_no":self.block_no, "flat_no":self.flat_no, "docstatus":1, "status":"Allocated", "name": ("!=", self.name)}, "tenant_cid")
+			tenant_code = frappe.db.get_value("Tenant Information", {"locations":self.locations, "building_category":self.building_category, "building_classification":self.building_classification, "block_no":self.block_no, "flat_no":self.flat_no, "docstatus":1, "status":"Allocated", "name": ("!=", self.name)}, "name")
 			if cid:
-				frappe.throw("The {2}{1}'s Flat is already rented to a Tenant with CID No: {0}".format(cid, self.name, self.tenant_cid))
+				frappe.throw("The allocated Flat is already rented to a Tenant with CID No: {0} and Tenant code: {1}".format(cid, tenant_code))
 			else:
 				if frappe.db.exists("Tenant Information", {"locations":self.locations, "building_category":self.building_category, "block_no":self.block_no, "flat_no":self.flat_no, "docstatus": 1, "status":"Surrendered"}):
 					

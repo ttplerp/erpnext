@@ -113,7 +113,7 @@
    "fieldname": "party_type",
    "fieldtype": "Select",
    "label": "Party Type",
-   "options": "\nCustomer\nSupplier\nEmployee",
+   "options": "\nCustomer\nSupplier\nEmployee\nMuster Roll Employee",
    "search_index": 1
   },
   {
@@ -219,7 +219,7 @@
    "fieldname": "reference_type",
    "fieldtype": "Select",
    "label": "Reference Type",
-   "options": "\nSales Invoice\nPurchase Invoice\nJournal Entry\nSales Order\nPurchase Order\nExpense Claim\nAsset\nLoan\nPayroll Entry\nEmployee Advance\nExchange Rate Revaluation\nInvoice Discounting\nFees\nPBVA\nBonus\nLeave Travel Concession\nFull and Final Statement\nPOL Expense\nCoal Raising Invoice\nEmployee Benefit Claim\nInsurance and Registration\nTransporter Invoice\nHire Charge Invoice\nCoal Raising Invoice\nEmployee Benefits\nRepair And Service Invoice\nMPI Transaction\nImprest Advance\nTDS Remittance\nProject Advance\nImprest Recoup"
+   "options": "\nSales Invoice\nPurchase Invoice\nJournal Entry\nSales Order\nPurchase Order\nExpense Claim\nAsset\nLoan\nPayroll Entry\nEmployee Advance\nExchange Rate Revaluation\nInvoice Discounting\nFees\nPBVA\nBonus\nLeave Travel Concession\nFull and Final Statement\nPOL Expense\nCoal Raising Invoice\nEmployee Benefit Claim\nInsurance and Registration\nTransporter Invoice\nHire Charge Invoice\nCoal Raising Invoice\nEmployee Benefits\nRepair And Service Invoice\nMPI Transaction\nImprest Advance\nTDS Remittance\nProject Advance\nImprest Recoup\nMR Employee Invoice"
   },
   {
    "fieldname": "reference_name",
@@ -403,7 +403,7 @@
  "idx": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-05-24 14:40:59.148232",
+ "modified": "2023-06-02 17:07:56.504134",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry Account",

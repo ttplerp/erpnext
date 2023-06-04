@@ -17,7 +17,9 @@
   "asset",
   "description",
   "sb_1",
-  "rate"
+  "rate",
+  "sb_property_mgt",
+  "block_property_management_item"
  ],
  "fields": [
   {
@@ -100,11 +102,22 @@
    "fieldtype": "Link",
    "label": "Asset",
    "options": "Asset"
+  },
+  {
+   "fieldname": "sb_property_mgt",
+   "fieldtype": "Section Break",
+   "label": "Property Management Detail"
+  },
+  {
+   "fieldname": "block_property_management_item",
+   "fieldtype": "Table",
+   "label": "Property Management Detail",
+   "options": "Block Property Management Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-17 14:58:12.130713",
+ "modified": "2023-06-03 09:20:03.605044",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Block No",

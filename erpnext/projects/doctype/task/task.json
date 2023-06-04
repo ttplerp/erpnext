@@ -418,7 +418,7 @@
  "is_tree": 1,
  "links": [],
  "max_attachments": 5,
- "modified": "2023-05-26 09:52:23.971922",
+ "modified": "2023-06-02 12:09:21.187283",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Task",
@@ -435,6 +435,7 @@
    "report": 1,
    "role": "Projects User",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
@@ -447,6 +448,19 @@
    "read": 1,
    "report": 1,
    "role": "Projects Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
    "share": 1,
    "submit": 1,
    "write": 1

@@ -44,6 +44,7 @@
   "tds_account",
   "sb_total_bill",
   "total_bill_amount",
+  "property_management_amount",
   "total_rent_received",
   "rent_write_off_amount",
   "cb_8",
@@ -401,12 +402,17 @@
   {
    "fieldname": "cb_mi_1",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "property_management_amount",
+   "fieldtype": "Currency",
+   "label": "Property Management Amount"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-31 15:45:58.785467",
+ "modified": "2023-06-04 22:22:10.881861",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Payment",

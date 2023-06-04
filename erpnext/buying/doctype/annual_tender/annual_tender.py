@@ -12,9 +12,9 @@ class AnnualTender(Document):
 		doc = frappe.new_doc("Price List")
 		doc.flags.ignore_permissions = 1
 		doc.price_list_name = "Annual Tender " + str(self.fiscal_year) + "(" + str(self.supplier) + ")"
-		start, end = frappe.db.get_value("Fiscal Year", self.fiscal_year, ["year_start_date", "year_end_date"])
-		doc.price_valid_from = start
-		doc.price_valid_to = end
+		# start, end = frappe.db.get_value("Fiscal Year", self.fiscal_year, ["year_start_date", "year_end_date"])
+		# doc.price_valid_from = start
+		# doc.price_valid_to = end
 		doc.currency = self.currency
 		doc.buying = 1
 		doc.enabled = 1
@@ -27,6 +27,9 @@ class AnnualTender(Document):
 			ip.price_list = doc.name
 			ip.item_code = a.item
 			ip.price_list_rate = a.rate
+			start, end = frappe.db.get_value("Fiscal Year", self.fiscal_year, ["year_start_date", "year_end_date"])
+			ip.valid_from = start
+			ip.valid_upto = end
 			ip.save()
 	
 	def on_cancel(self):

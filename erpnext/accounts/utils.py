@@ -1271,7 +1271,7 @@ def get_voucherwise_gl_entries(future_stock_vouchers, posting_date):
 	Check compare_existing_and_expected_gle function below.
 
 	returns:
-	        Dict[Tuple[voucher_type, voucher_no], List[GL Entries]]
+			Dict[Tuple[voucher_type, voucher_no], List[GL Entries]]
 	"""
 	gl_entries = {}
 	if not future_stock_vouchers:
@@ -1498,8 +1498,7 @@ def update_voucher_outstanding(voucher_type, voucher_no, account, party_type, pa
 	ple_query = QueryPaymentLedger()
 	# on cancellation outstanding can be an empty list
 	voucher_outstanding = ple_query.get_voucher_outstandings(vouchers, common_filter=common_filter)
-
-	if voucher_type in ["Sales Invoice", "Purchase Invoice", "Fees","EME Invoice","Transporter Invoice","Repair And Service Invoice", "POL Expense","Coal Raising Invoice", "Project Invoice", "Hire Charge Invoice", "Rental Bill"] and voucher_outstanding:
+	if voucher_type in ["Sales Invoice", "Purchase Invoice", "Fees","EME Invoice","Transporter Invoice","Repair And Service Invoice", "POL Expense","Coal Raising Invoice", "Project Invoice", "Hire Charge Invoice", "Rental Bill", "MR Employee Invoice"] and voucher_outstanding:
 		outstanding = voucher_outstanding[0]
 		ref_doc = frappe.get_doc(voucher_type, voucher_no)
 		# Didn't use db_set for optimisation purpose

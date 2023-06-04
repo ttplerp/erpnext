@@ -380,7 +380,6 @@ frappe.ui.form.on("BOM", {
 			frm.set_value("plc_conversion_rate", 1.0);
 		}
 	},
-
 	routing: function(frm) {
 		if (frm.doc.routing) {
 			frappe.call({
@@ -418,8 +417,6 @@ frappe.ui.form.on("BOM", {
 	profit: function(frm){
 		update_tot_charges(frm);
 	},
-
-
 });
 var update_charges_amount = function(frm){
 	if (frm.doc.with_operations != 1){
@@ -433,6 +430,8 @@ var update_charges_amount = function(frm){
 					cur_frm.set_value("supervision_charges",flt(r.message[2]))
 					cur_frm.set_value("ohsmiscellaneous",flt(r.message[3]))
 					cur_frm.set_value("profit",flt(r.message[4]))
+					cur_frm.set_value("total_cost",flt(r.message[5]))
+
 					frm.refresh_fields();
 				}
 			}

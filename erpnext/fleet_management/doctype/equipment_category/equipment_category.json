@@ -60,7 +60,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-26 13:42:11.630735",
+ "modified": "2023-06-02 12:48:00.215168",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment Category",
@@ -105,6 +105,15 @@
    "print": 1,
    "report": 1,
    "role": "All",
+   "select": 1,
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "report": 1,
+   "role": "Employee",
    "select": 1,
    "share": 1
   }

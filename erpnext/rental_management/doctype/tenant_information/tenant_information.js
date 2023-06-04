@@ -42,8 +42,7 @@ frappe.ui.form.on('Tenant Information', {
 			cur_frm.set_value("percent_of_increment", "");
 			cur_frm.set_value("no_of_year_for_increment", "");
 			cur_frm.set_value("rental_term_year", "");
-		}
-		if(frm.doc.__islocal && frm.doc.building_category != 'Pilot Housing'){
+		} else {
 			frappe.model.get_value('Rental Setting',{'name': 'Rental Setting'}, ['percent_of_increment', 'no_of_year_for_increment', 'rental_term_year'], function(d){
 				cur_frm.set_value("percent_of_increment", d.percent_of_increment);
 				cur_frm.set_value("no_of_year_for_increment", d.no_of_year_for_increment);

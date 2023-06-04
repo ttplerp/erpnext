@@ -114,6 +114,8 @@ class CustomWorkflow:
 		
 		if self.doc.doctype in ("Imprest Advance", "Imprest Recoup"):
 			self.imprest_verifier = frappe.db.get_value("Employee", frappe.db.get_value("Branch", {"branch": self.doc.branch}, "imprest_verifier"), self.field_list)
+			if not self.imprest_verifier:
+				frappe.throw("Please set the Imprest Verifier for branch <b>{}</b>".format(self.doc.branch))
 			self.imprest_approver = frappe.db.get_value("Employee", frappe.db.get_value("Department", {"name": "Corporate Services Division - NHDCL"}, "approver"), self.field_list)
 	
 		self.login_user		= frappe.db.get_value("Employee", {"user_id": frappe.session.user}, self.field_list)
@@ -306,6 +308,7 @@ class CustomWorkflow:
 			self.asset_movement()
 		else:
 			frappe.throw(_("Workflow not defined for {}").format(self.doc.doctype))
+	
 	def target_setup_request(self):
 		pass
 
@@ -405,8 +408,6 @@ class CustomWorkflow:
 				frappe.throw("Only {} can Approved or Reject this document".format(self.doc.benefit_approver_name))
 	
 	def imprest_advance(self):
-		if self.new_state.lower() == self.old_state.lower():
-			return
 		if self.new_state.lower() in ("Draft".lower(), "Waiting for Verification".lower()):
 			if self.new_state.lower() == "Waiting for Verification".lower():
 				if frappe.session.user != self.doc.owner:
@@ -425,8 +426,6 @@ class CustomWorkflow:
 			frappe.throw(_("Invalid Workflow State {}").format(self.doc.workflow_state))
 	
 	def imprest_recoup(self):
-		if self.new_state.lower() == self.old_state.lower():
-			return
 		if self.new_state.lower() in ("Draft".lower(), "Waiting for Verification".lower()):
 			if self.new_state.lower() == "Waiting for Verification".lower():
 				if frappe.session.user != self.doc.owner:
@@ -759,6 +758,18 @@ class NotifyCustomWorkflow:
 			if not template:
 				frappe.msgprint(_("Please set default template for Asset Issue Status Notification in Asset Settings."))
 				return
+		
+		elif self.doc.doctype == "Imprest Advance":
+			template = frappe.db.get_single_value('HR Settings', 'imprest_advance_status_notification_template')
+			if not template:
+				frappe.msgprint(_("Please set default template for Imprest Advance Status Notification in HR Settings."))
+				return
+
+		elif self.doc.doctype == "Imprest Recoup":
+			template = frappe.db.get_single_value('HR Settings', 'imprest_recoup_status_notification_template')
+			if not template:
+				frappe.msgprint(_("Please set default template for Imprest Recoup Status Notification in HR Settings."))
+				return
 		else:
 			template = ""
 
@@ -822,6 +833,18 @@ class NotifyCustomWorkflow:
 				if not template:
 					frappe.msgprint(_("Please set default template for Asset Issue Approval Notification in Asset Settings."))
 					return
+			
+			elif self.doc.doctype == "Imprest Advance":
+				template = frappe.db.get_single_value('HR Settings', 'imprest_advance_approval_notification_template')
+				if not template:
+					frappe.msgprint(_("Please set default template for Imprest Advance Approval Notification in HR Settings."))
+					return
+
+			elif self.doc.doctype == "Imprest Recoup":
+				template = frappe.db.get_single_value('HR Settings', 'imprest_recoup_approval_notification_template')
+				if not template:
+					frappe.msgprint(_("Please set default template for Imprest Recoup Approval Notification in HR Settings."))
+					return
 			else:
 				template = ""
 
@@ -871,7 +894,7 @@ class NotifyCustomWorkflow:
 				self.notify_employee()
 			else:
 				self.notify_employee()
-		elif self.new_state.startswith("Waiting") and self.old_state != self.new_state and self.doc.doctype not in ("Asset Issue Details","Project Capitalization"):
+		elif self.new_state.startswith("Waiting") and self.old_state != self.new_state and self.doc.doctype not in ("Asset Issue Details","Project Capitalization", "Imprest Recoup"):
 			self.notify_approver()
 		# elif self.new_state.startswith("Waiting") and self.old_state != self.new_state and self.doc.doctype in ("Asset Issue Details","Project Capitalization"):
 		# 	self.notify_finance_users()

@@ -17,6 +17,8 @@
   "rental_bill",
   "bill_amount",
   "sb_payment_details",
+  "deduct_from_security_deposit",
+  "security_deposit",
   "dont_apply_discount",
   "write_off_penalty",
   "auto_calculate_penalty",
@@ -31,6 +33,7 @@
   "cb_4",
   "pre_rent_amount",
   "excess_amount",
+  "property_management_amount",
   "total_amount_received",
   "balance_rent"
  ],
@@ -185,12 +188,30 @@
    "fieldname": "security_deposit_amount",
    "fieldtype": "Currency",
    "label": "Security Deposit Amount"
+  },
+  {
+   "fieldname": "property_management_amount",
+   "fieldtype": "Currency",
+   "label": "Property Management Amount"
+  },
+  {
+   "default": "0",
+   "fieldname": "deduct_from_security_deposit",
+   "fieldtype": "Check",
+   "label": "Deduct From Security Deposit"
+  },
+  {
+   "depends_on": "eval: doc.deduct_from_security_deposit",
+   "fieldname": "security_deposit",
+   "fieldtype": "Currency",
+   "label": "Security Deposit",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-05-30 11:09:01.791958",
+ "modified": "2023-06-04 22:40:14.013244",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Payment Item",

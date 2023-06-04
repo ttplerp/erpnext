@@ -8,8 +8,8 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "number",
-  "person_name",
+  "mr_employee",
+  "mr_employee_name",
   "date",
   "number_of_hours",
   "cost_center",
@@ -19,15 +19,6 @@
   "reference"
  ],
  "fields": [
-  {
-   "fieldname": "number",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "MR Employee",
-   "options": "Muster Roll Employee",
-   "reqd": 1
-  },
   {
    "fieldname": "date",
    "fieldtype": "Date",
@@ -75,25 +66,34 @@
    "read_only": 1
   },
   {
-   "fetch_from": "number.person_name",
-   "fieldname": "person_name",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "MR Employee Name",
-   "read_only": 1
-  },
-  {
    "fieldname": "reference",
    "fieldtype": "Link",
    "label": "Reference",
    "options": "Bulk Upload Tool",
+   "read_only": 1
+  },
+  {
+   "fieldname": "mr_employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "MR Employee",
+   "options": "Muster Roll Employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "number.person_name",
+   "fieldname": "mr_employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "MR Employee Name",
    "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-31 15:25:31.043700",
+ "modified": "2023-06-01 14:40:44.415015",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Muster Roll Overtime Entry",
@@ -158,5 +158,5 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "number"
+ "title_field": "mr_employee"
 }

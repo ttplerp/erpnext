@@ -593,7 +593,7 @@ class BOM(WebsiteGenerator):
 			# not via doc event, table is not regenerated and needs updation
 			self.calculate_exploded_cost()
 
-		self.total_cost = self.operating_cost + self.raw_material_cost - self.scrap_material_cost
+		self.total_cost = self.operating_cost + self.raw_material_cost + self.labor_cost + self.hand_tools_equipments + self.electrical_charges + self.supervision_charges + self.ohsmiscellaneous + self.profit - self.scrap_material_cost
 		self.base_total_cost = (
 			self.base_operating_cost + self.base_raw_material_cost - self.base_scrap_material_cost
 		)
@@ -902,7 +902,7 @@ class BOM(WebsiteGenerator):
 			return
 		else:
 			hand_tool_tot = flt(self.hand_tools_equipments)+flt(self.electrical_charges)+flt(self.supervision_charges)+flt(self.ohsmiscellaneous)+flt(self.profit)
-			hand_tool_total = flt(self.total_cost)+flt(hand_tool_tot)
+			hand_tool_total = self.raw_material_cost + self.labor_cost + flt(hand_tool_tot) - self.scrap_material_cost
 			return hand_tool_total
 	@frappe.whitelist()
 	def update_charges(self):
@@ -920,8 +920,8 @@ class BOM(WebsiteGenerator):
 			s_c =flt(supervision_charges/100)* flt(total_hand_cost)
 			o_m =flt(ohs_miscellaneous/100)* flt(total_hand_cost)
 			pro =flt(profit/100)* flt(total_hand_cost)
-
-			return h_t, e_c, s_c, o_m, pro
+			tot_cos = self.operating_cost + self.raw_material_cost + self.labor_cost + flt(h_t) + flt(e_c) + flt(s_c) + flt(o_m) +flt(pro) - self.scrap_material_cost
+			return h_t, e_c, s_c, o_m, pro, tot_cos
 
 
 def get_bom_item_rate(args, bom_doc):

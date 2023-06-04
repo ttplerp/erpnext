@@ -73,7 +73,7 @@ class RentalBill(AccountsController):
 					select tenant_cid, tenant_name, customer_code, block, flat, 
 					ministry_and_agency, location_name, branch, tenant_department_name, dzongkhag, 
 					town_category, building_category, is_nhdcl_employee, rental_amount, building_classification,
-					phone_no, allocated_date
+					phone_no, allocated_date, total_property_management_amount
 					from `tabTenant Information` t 
 					inner join `tabTenant Rental Charges` r 
 					on t.name = r.parent 
@@ -100,7 +100,7 @@ class RentalBill(AccountsController):
 			if dtls:
 				for d in dtls:
 					self.rent_amount = d.rental_amount
-					self.receivable_amount = d.rental_amount
+					self.receivable_amount = flt(d.rental_amount + d.total_property_management_amount)
 			else:
 				frappe.throw("no rental amount to bill")
 		
@@ -119,7 +119,9 @@ class RentalBill(AccountsController):
 			else:
 				self.adjusted_amount = flt(pre_rent_amount)
 		
-		self.outstanding_amount=flt(self.receivable_amount) - flt(self.adjusted_amount)
+		if self.adjusted_amount > 0:
+			self.receivable_amount = flt(self.rent_amount + self.total_property_management_amount) - flt(self.adjusted_amount)
+		self.outstanding_amount = flt(self.receivable_amount)
 
 	def make_gl_entry(self):
 		revenue_claim_account = frappe.db.get_single_value("Rental Account Setting", "revenue_claim_account")

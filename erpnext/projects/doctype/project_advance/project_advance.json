@@ -336,7 +336,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-09 16:25:21.863572",
+ "modified": "2023-06-02 14:20:02.556613",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project Advance",
@@ -376,7 +376,6 @@
    "report": 1,
    "role": "Projects User",
    "share": 1,
-   "submit": 1,
    "write": 1
   }
  ],

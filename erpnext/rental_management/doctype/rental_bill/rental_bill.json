@@ -33,9 +33,10 @@
   "yearmonth",
   "sb_rental_bill",
   "rent_amount",
-  "received_amount",
+  "property_management_amount",
   "cb_rb_1",
   "receivable_amount",
+  "received_amount",
   "cb_rb_2",
   "adjusted_amount",
   "sb_payment_detail",
@@ -381,12 +382,17 @@
    "fieldname": "sb_payment_detail",
    "fieldtype": "Section Break",
    "label": "Payment Detail"
+  },
+  {
+   "fieldname": "property_management_amount",
+   "fieldtype": "Currency",
+   "label": "Property Management Amount"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-30 23:23:50.939859",
+ "modified": "2023-06-03 14:56:21.682668",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Bill",

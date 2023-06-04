@@ -309,7 +309,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-30 15:07:09.064212",
+ "modified": "2023-06-02 12:44:55.055832",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Vehicle Request",
@@ -340,6 +340,18 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Employee",
+   "select": 1,
    "share": 1,
    "write": 1
   }

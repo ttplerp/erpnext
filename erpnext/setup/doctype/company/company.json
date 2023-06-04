@@ -145,7 +145,9 @@
   "project_account_settings_section",
   "project_invoice_account",
   "invoice_account_supplier",
+  "mr_ot_account",
   "column_break_131",
+  "mr_daily_wage_account",
   "invoice_account_internal",
   "refundable_account_supplier"
  ],
@@ -1043,6 +1045,20 @@
    "fieldtype": "Link",
    "label": "TDS Deducted by Customer",
    "options": "Account"
+  },
+  {
+   "fieldname": "mr_ot_account",
+   "fieldtype": "Link",
+   "label": "MR OT Account",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "mr_daily_wage_account",
+   "fieldtype": "Link",
+   "label": "MR Daily Wage Account",
+   "options": "Account",
+   "reqd": 1
   }
  ],
  "icon": "fa fa-building",
@@ -1050,7 +1066,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2023-05-30 16:15:32.836300",
+ "modified": "2023-06-02 16:36:17.642699",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",

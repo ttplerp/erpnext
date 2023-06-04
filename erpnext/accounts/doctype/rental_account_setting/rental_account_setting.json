@@ -14,6 +14,7 @@
   "security_deposit_account",
   "discount_account",
   "excess_payment_account",
+  "property_management_account",
   "sb_1",
   "items"
  ],
@@ -73,12 +74,18 @@
    "fieldname": "items",
    "fieldtype": "Table",
    "options": "Rental Account Setting Item"
+  },
+  {
+   "fieldname": "property_management_account",
+   "fieldtype": "Link",
+   "label": "Property Management Account",
+   "options": "Account"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-05-31 18:12:54.113290",
+ "modified": "2023-06-01 16:59:52.135324",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Rental Account Setting",
@@ -95,13 +102,11 @@
    "write": 1
   },
   {
-   "create": 1,
    "email": 1,
    "print": 1,
    "read": 1,
    "role": "Rental Master",
-   "share": 1,
-   "write": 1
+   "share": 1
   },
   {
    "create": 1,

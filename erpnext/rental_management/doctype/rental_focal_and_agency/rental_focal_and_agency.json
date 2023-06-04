@@ -20,7 +20,8 @@
    "fieldtype": "Link",
    "label": "Rental Focal",
    "options": "Employee",
-   "reqd": 1
+   "reqd": 1,
+   "set_only_once": 1
   },
   {
    "fetch_from": "rental_focal.employee_name",
@@ -64,7 +65,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-22 12:16:09.342551",
+ "modified": "2023-06-03 07:38:35.803863",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Focal and Agency",
