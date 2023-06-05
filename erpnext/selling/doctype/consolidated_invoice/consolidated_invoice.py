@@ -14,7 +14,7 @@ def get_invoices(from_date, to_date, item_code, customer, cost_center):
 	# data = frappe.db.sql(query,as_dict=1)
 	# frappe.msgprint(str(query))
 	data = frappe.db.sql('''select si.name, si.reference_date_for_payment as posting_date, 
-							sii.rate as rate, sii.accepted_qty as qty, 
+							sii.rate as rate, round(sii.accepted_qty,2) as qty, 
 							sii.amount as outstanding_amount,sii.excess_amt as excess_amount,
 							sii.normal_loss_amt as normal_loss_amount, 
 							sii.abnormal_loss_amt as abnormal_loss_amount, 
@@ -32,7 +32,6 @@ def get_invoices(from_date, to_date, item_code, customer, cost_center):
 										where ci.invoice_no = si.name 
 										and c.docstatus != 2) 
 						order by reference_date_for_payment''', (customer, cost_center, from_date, to_date, item_code), as_dict=True)
-	# frappe.throw(str(data))
 	if not data:
 		frappe.throw("No Invoices for set Parameters")
 	return data
