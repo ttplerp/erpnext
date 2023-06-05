@@ -23,6 +23,7 @@ class TrainingManagement(Document):
 		# self.validate_desuup_course()
 		# self.count_duration()
 		# self.check_cohort_batch()
+		self.validate_trainees()
 
 	def update_trainees_status(self):
 		for d in self.get("trainee_details"):
@@ -118,6 +119,14 @@ class TrainingManagement(Document):
 				if self.name != t.name: 
 					if(t.desuup_id == td.desuup_id):
 						frappe.throw(_("At Row {0} Desuup with ID: {1} is already enrolled in training {2} taking ({3}) as it's course till {4}.").format(td.idx, t.desuup_id, t.name, t.course_cost_center, t.training_end_date))
+
+	def validate_trainees(self):
+		data = []
+		for d in self.trainee_details:
+			if d.desuup_id not in data:
+				data.append(d.desuup_id)
+			else:
+				frappe.throw("Duplicate Desuup entry at #Row. {}".format(d.idx))
 
 	def check_cohort_batch(self):
 		for a in frappe.db.sql("""
