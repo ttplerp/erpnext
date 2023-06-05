@@ -53,15 +53,17 @@ class CustomWorkflow:
 			self.supervisors_supervisor = frappe.db.get_value("Employee", frappe.db.get_value("Employee", frappe.db.get_value("Employee", {"user_id": self.doc.approver}, "name"), "reports_to"), self.field_list)
 		
 		if self.doc.doctype == "Asset Movement":
-			department = frappe.db.get_value("Employee",{"user_id":frappe.session.user}, "department")
+			department = frappe.db.get_value("Employee",self.doc.from_employee, "department")
 			if not department:
-				frappe.throw("Department not set for {}".format(frappe.session.user))
+				frappe.throw("Department not set for {}".format(self.doc.from_employee))
 			if department != "CHIEF EXECUTIVE OFFICE - SMCL":
 				self.asset_verifier = frappe.db.get_value("Employee",{"user_id":frappe.db.get_value(
 						"Department Approver",
 						{"parent": department, "parentfield": "expense_approvers", "idx": 1},
 						"approver",
 					)},self.field_list)
+				if not self.asset_verifier:
+					self.asset_verifier = frappe.get_value("Department", department, "approver")
 			else:
 				self.asset_verifier = frappe.db.get_value("Employee", frappe.db.get_value("Employee", {"designation": "Chief Executive Officer", "status": "Active"},"name"), self.field_list)
 		
