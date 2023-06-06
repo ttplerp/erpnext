@@ -61,19 +61,19 @@ class TenantInformation(Document):
 					monthly_installment_amount += flt(a.amount)
 
 				self.original_monthly_instalment = monthly_installment_amount
-		""" Property Management Detail """
-		if self.block_no and not self.get('rental_property_management_item'):
-			self.set('rental_property_management_item', [])
-			for d in frappe.db.sql("select * from `tabBlock Property Management Item` where parent='{}'".format(self.block_no), as_dict=1):
-				self.append('rental_property_management_item', {
-					'property_management_type': d.property_management_type,
-					'amount': d.amount
-				})
+		""" Property Management Detail, This shift to locations """
+		# if self.block_no and not self.get('rental_property_management_item'):
+		# 	self.set('rental_property_management_item', [])
+		# 	for d in frappe.db.sql("select * from `tabProperty Management Item` where parent='{}'".format(self.locations), as_dict=1):
+		# 		self.append('rental_property_management_item', {
+		# 			'property_management_type': d.property_management_type,
+		# 			'amount': d.amount
+		# 		})
 
-		prop_mgt_amt = 0
-		for a in self.get('rental_property_management_item'):
-			prop_mgt_amt += flt(a.amount)
-		self.total_property_management_amount = prop_mgt_amt
+		# prop_mgt_amt = 0
+		# for a in self.get('rental_property_management_item'):
+		# 	prop_mgt_amt += flt(a.amount)
+		# self.total_property_management_amount = prop_mgt_amt
 
 	def validate_allocation(self):
 		if self.status != "Surrendered":

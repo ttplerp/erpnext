@@ -757,16 +757,17 @@ class StockEntry(StockController):
 				return flt(outgoing_items_cost / total_fg_qty)
 
 	def get_basic_rate_for_manufactured_item(self, finished_item_qty, outgoing_items_cost=0) -> float:
-		scrap_items_cost = sum([flt(d.basic_amount) for d in self.get("items") if d.is_scrap_item])
+		cost = frappe.db.get_value("BOM",self.bom_no,"total_cost")
+		return cost
 
-		# Get raw materials cost from BOM if multiple material consumption entries
-		if not outgoing_items_cost and frappe.db.get_single_value(
-			"Manufacturing Settings", "material_consumption", cache=True
-		):
-			bom_items = self.get_bom_raw_materials(finished_item_qty)
-			outgoing_items_cost = sum([flt(row.qty) * flt(row.rate) for row in bom_items.values()])
-
-		return flt((outgoing_items_cost - scrap_items_cost) / finished_item_qty)
+		# scrap_items_cost = sum([flt(d.basic_amount) for d in self.get("items") if d.is_scrap_item])
+		#### Get raw materials cost from BOM if multiple material consumption entries
+		# if not outgoing_items_cost and frappe.db.get_single_value(
+		# 	"Manufacturing Settings", "material_consumption", cache=True
+		# ):
+		# 	bom_items = self.get_bom_raw_materials(finished_item_qty)
+		# 	outgoing_items_cost = sum([flt(row.qty) * flt(row.rate) for row in bom_items.values()])
+		# return flt((outgoing_items_cost - scrap_items_cost) / finished_item_qty)
 
 	def distribute_additional_costs(self):
 		# If no incoming items, set additional costs blank
@@ -1401,12 +1402,11 @@ class StockEntry(StockController):
 		self.flags.backflush_based_on = frappe.db.get_single_value(
 			"Manufacturing Settings", "backflush_raw_materials_based_on"
 		)
-
 		if self.bom_no:
 			backflush_based_on = frappe.db.get_single_value(
 				"Manufacturing Settings", "backflush_raw_materials_based_on"
 			)
-
+			# frappe.throw(str(self.purpose))
 			if self.purpose in [
 				"Material Issue",
 				"Material Transfer",
@@ -1519,7 +1519,7 @@ class StockEntry(StockController):
 			to_warehouse = self.to_warehouse
 
 		item = get_item_defaults(item_code, self.company)
-
+		# frappe.throw(str(item))
 		if not self.work_order and not to_warehouse:
 			# in case of BOM
 			to_warehouse = item.get("default_warehouse")
@@ -1738,7 +1738,6 @@ class StockEntry(StockController):
 		for item in wo_items:
 			item_account_details = get_item_defaults(item.item_code, self.company)
 			# Take into account consumption if there are any.
-
 			wo_item_qty = item.transferred_qty or item.required_qty
 
 			wo_qty_consumed = flt(wo_item_qty) - flt(item.consumed_qty)
@@ -1773,7 +1772,7 @@ class StockEntry(StockController):
 			["qty", "produced_qty", "material_transferred_for_manufacturing as trans_qty"],
 			as_dict=1,
 		)
-
+		# frappe.throw(str(wo_data))
 		for key, row in available_materials.items():
 			remaining_qty_to_produce = flt(wo_data.trans_qty) - flt(wo_data.produced_qty)
 			if remaining_qty_to_produce <= 0:
@@ -1947,8 +1946,10 @@ class StockEntry(StockController):
 		return [d.item_code for d in job_card_items]
 
 	def add_to_stock_entry_detail(self, item_dict, bom_no=None):
+		
 		for d in item_dict:
 			item_row = item_dict[d]
+			# frappe.throw(str(item_row))
 			stock_uom = item_row.get("stock_uom") or frappe.db.get_value("Item", d, "stock_uom")
 
 			se_child = self.append("items")

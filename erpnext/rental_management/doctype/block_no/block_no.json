@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "creation": "2023-04-27 17:25:50.524650",
  "doctype": "DocType",
@@ -17,9 +18,7 @@
   "asset",
   "description",
   "sb_1",
-  "rate",
-  "sb_property_mgt",
-  "block_property_management_item"
+  "rate"
  ],
  "fields": [
   {
@@ -102,22 +101,11 @@
    "fieldtype": "Link",
    "label": "Asset",
    "options": "Asset"
-  },
-  {
-   "fieldname": "sb_property_mgt",
-   "fieldtype": "Section Break",
-   "label": "Property Management Detail"
-  },
-  {
-   "fieldname": "block_property_management_item",
-   "fieldtype": "Table",
-   "label": "Property Management Detail",
-   "options": "Block Property Management Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-03 09:20:03.605044",
+ "modified": "2023-06-06 13:59:12.741423",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Block No",
@@ -140,6 +128,7 @@
    "create": 1,
    "email": 1,
    "export": 1,
+   "import": 1,
    "print": 1,
    "read": 1,
    "report": 1,

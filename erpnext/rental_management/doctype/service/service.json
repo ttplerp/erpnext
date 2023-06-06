@@ -1,0 +1,141 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "S1.####",
+ "creation": "2023-06-06 23:47:52.527879",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "fiscal_year",
+  "item_code",
+  "item_name",
+  "item_group",
+  "item_sub_group",
+  "cb_1",
+  "bsr_service_item",
+  "bsr_item_code",
+  "stock_uom",
+  "same_rate",
+  "cost",
+  "bsr_detail_item"
+ ],
+ "fields": [
+  {
+   "fieldname": "fiscal_year",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Fiscal Year",
+   "options": "Fiscal Year",
+   "reqd": 1
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Data",
+   "label": "Service Code",
+   "read_only": 1
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Text",
+   "in_list_view": 1,
+   "label": "Service Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "item_group",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Service Category",
+   "options": "Service Category"
+  },
+  {
+   "fieldname": "item_sub_group",
+   "fieldtype": "Link",
+   "label": "Service Sub Category",
+   "options": "Service Sub Category"
+  },
+  {
+   "fieldname": "cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "bsr_service_item",
+   "fieldtype": "Check",
+   "label": "BSR Service Item"
+  },
+  {
+   "depends_on": "eval:doc.bsr_service_item == 1",
+   "fieldname": "bsr_item_code",
+   "fieldtype": "Data",
+   "label": "BSR Code"
+  },
+  {
+   "fieldname": "stock_uom",
+   "fieldtype": "Link",
+   "label": "UOM",
+   "options": "UOM"
+  },
+  {
+   "default": "1",
+   "depends_on": "eval:doc.bsr_service_item == 1",
+   "fieldname": "same_rate",
+   "fieldtype": "Check",
+   "label": "Same Rate  in all the regions"
+  },
+  {
+   "depends_on": "eval:doc.same_rate == 1",
+   "fieldname": "cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Cost"
+  },
+  {
+   "depends_on": "eval:doc.same_rate == 0",
+   "fieldname": "bsr_detail_item",
+   "fieldtype": "Table",
+   "options": "BSR Item"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-06-06 23:52:33.144849",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Service",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Mechanical Master",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "item_code, item_name,bsr_item_code",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "item_name",
+ "track_changes": 1
+}

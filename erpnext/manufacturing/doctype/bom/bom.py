@@ -593,7 +593,7 @@ class BOM(WebsiteGenerator):
 			# not via doc event, table is not regenerated and needs updation
 			self.calculate_exploded_cost()
 
-		self.total_cost = self.operating_cost + self.raw_material_cost + self.labor_cost + self.hand_tools_equipments + self.electrical_charges + self.supervision_charges + self.ohsmiscellaneous + self.profit - self.scrap_material_cost
+		self.total_cost = flt(self.operating_cost) + flt(self.raw_material_cost) + flt(self.labor_cost) + flt(self.hand_tools_equipments) + flt(self.electrical_charges) + flt(self.supervision_charges) + flt(self.ohsmiscellaneous) + flt(self.profit) - flt(self.scrap_material_cost)
 		self.base_total_cost = (
 			self.base_operating_cost + self.base_raw_material_cost - self.base_scrap_material_cost
 		)
@@ -921,6 +921,13 @@ class BOM(WebsiteGenerator):
 			o_m =flt(ohs_miscellaneous/100)* flt(total_hand_cost)
 			pro =flt(profit/100)* flt(total_hand_cost)
 			tot_cos = self.operating_cost + self.raw_material_cost + self.labor_cost + flt(h_t) + flt(e_c) + flt(s_c) + flt(o_m) +flt(pro) - self.scrap_material_cost
+			h_t =round(h_t, 2)
+			e_c = round(e_c, 2)
+			s_c =round(s_c, 2)
+			o_m =round(o_m, 2)
+			pro =round(pro, 2)
+			tot_cos =round(tot_cos, 2)
+
 			return h_t, e_c, s_c, o_m, pro, tot_cos
 
 

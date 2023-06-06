@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "autoname": "DEPT.####",
  "creation": "2023-05-01 10:46:40.698204",
  "doctype": "DocType",
@@ -40,7 +41,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-26 13:06:07.500091",
+ "modified": "2023-06-06 14:01:23.986276",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Tenant Department",
@@ -63,6 +64,7 @@
    "create": 1,
    "email": 1,
    "export": 1,
+   "import": 1,
    "print": 1,
    "read": 1,
    "report": 1,

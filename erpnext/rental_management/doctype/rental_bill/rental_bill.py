@@ -16,7 +16,7 @@ class RentalBill(AccountsController):
 		dzo_prefix = dz[:3]
 		prefix = dzo_prefix.upper()
 		
-		bill_code = "RB/" + str(prefix) + "/" + str(formatdate(self.fiscal_year, "YY")) + str(self.month) + '/.####'
+		bill_code = "RB" + str(prefix) + "/" + str(formatdate(self.fiscal_year, "YY")) + str(self.month) + '/.####'
 		self.name = make_autoname(bill_code)
 	def validate(self):
 		self.set_missing_value()
@@ -73,7 +73,7 @@ class RentalBill(AccountsController):
 					select tenant_cid, tenant_name, customer_code, block, flat, 
 					ministry_and_agency, location_name, branch, tenant_department_name, dzongkhag, 
 					town_category, building_category, is_nhdcl_employee, rental_amount, building_classification,
-					phone_no, allocated_date, total_property_management_amount
+					phone_no, allocated_date, locations, total_property_management_amount
 					from `tabTenant Information` t 
 					inner join `tabTenant Rental Charges` r 
 					on t.name = r.parent 
@@ -99,8 +99,10 @@ class RentalBill(AccountsController):
 			dtls = frappe.db.sql(query, as_dict=True)
 			if dtls:
 				for d in dtls:
+					total_property_mgt_amount = frappe.db.get_value("Locations", d.locations, "total_property_management_amount")
+					total_property_management_amount = total_property_mgt_amount if total_property_mgt_amount > 0 else 0
 					self.rent_amount = d.rental_amount
-					self.receivable_amount = flt(d.rental_amount + d.total_property_management_amount)
+					self.receivable_amount = flt(d.rental_amount + total_property_management_amount)
 			else:
 				frappe.throw("no rental amount to bill")
 		
@@ -120,13 +122,14 @@ class RentalBill(AccountsController):
 				self.adjusted_amount = flt(pre_rent_amount)
 		
 		if self.adjusted_amount > 0:
-			self.receivable_amount = flt(self.rent_amount + self.total_property_management_amount) - flt(self.adjusted_amount)
+			self.receivable_amount = flt(self.rent_amount + self.property_management_amount) - flt(self.adjusted_amount)
 		self.outstanding_amount = flt(self.receivable_amount)
 
 	def make_gl_entry(self):
 		revenue_claim_account = frappe.db.get_single_value("Rental Account Setting", "revenue_claim_account")
 		gl_entries = []
 		pre_rent_account = frappe.db.get_single_value("Rental Account Setting", "pre_rent_account")
+		acc_property_management = frappe.db.get_single_value("Rental Account Setting", "property_management_account")
 		self.db_set("gl_entry", 1)
 
 		if self.adjusted_amount > 0:
@@ -150,8 +153,8 @@ class RentalBill(AccountsController):
 			gl_entries.append(
 				self.get_gl_dict({
 					"account": revenue_claim_account,
-					"debit": flt(self.receivable_amount - self.adjusted_amount),
-					"debit_in_account_currency": flt(self.receivable_amount - self.adjusted_amount),
+					"debit": flt(self.receivable_amount - self.property_management_amount),
+					"debit_in_account_currency": flt(self.receivable_amount - self.property_management_amount),
 					"voucher_no": self.name,
 					"voucher_type": "Rental Bill",
 					"cost_center": self.cost_center,
@@ -162,13 +165,29 @@ class RentalBill(AccountsController):
 					# "business_activity": business_activity
 				})
 			)
+
+			gl_entries.append(
+				self.get_gl_dict({
+					"account": acc_property_management,
+					"debit": flt(self.property_management_amount),
+					"debit_in_account_currency": flt(self.property_management_amount),
+					"voucher_no": self.name,
+					"voucher_type": "Rental Bill",
+					"cost_center": self.cost_center,
+					'party': self.customer,
+					'party_type': 'Customer',
+					"company": self.company,
+					"remarks": str(self.tenant) + " Property Management amount for Year " + str(self.fiscal_year) + " Month " + str(self.month),
+					# "business_activity": business_activity
+				})
+			)
 		
 			credit_account = frappe.db.get_value("Rental Account Setting Item",{"building_category":self.building_category}, "account")
 			gl_entries.append(
 				self.get_gl_dict({
 					"account": credit_account,
-					"credit": flt(self.receivable_amount),
-					"credit_in_account_currency": flt(self.receivable_amount),
+					"credit": flt(self.receivable_amount + self.adjusted_amount),
+					"credit_in_account_currency": flt(self.receivable_amount + self.adjusted_amount),
 					"voucher_no": self.name,
 					"voucher_type": "Rental Bill",
 					"cost_center": self.cost_center,
@@ -177,7 +196,8 @@ class RentalBill(AccountsController):
 					# "business_activity": business_activity
 					})
 				)
-			make_gl_entries(gl_entries, cancel=(self.docstatus == 2), update_outstanding="No", merge_entries=True)
+		# frappe.throw("<pre>{}</pre>".format(frappe.as_json(gl_entries)))
+		make_gl_entries(gl_entries, cancel=(self.docstatus == 2), update_outstanding="No", merge_entries=True)
 
 		# cost_center = frappe.db.get_value("Branch", self.branch, "cost_center")
 		# revenue_claim_account = frappe.db.get_single_value("Rental Account Setting", "revenue_claim_account")

@@ -13,7 +13,10 @@
   "description",
   "cb_1",
   "town_category",
-  "dzongkhag"
+  "dzongkhag",
+  "sb_property_mgt",
+  "property_management_item",
+  "total_property_management_amount"
  ],
  "fields": [
   {
@@ -55,11 +58,28 @@
    "fieldname": "description",
    "fieldtype": "Data",
    "label": "Description"
+  },
+  {
+   "fieldname": "sb_property_mgt",
+   "fieldtype": "Section Break",
+   "label": "Property Management Detail"
+  },
+  {
+   "fieldname": "property_management_item",
+   "fieldtype": "Table",
+   "label": "Property Management Detail",
+   "options": "Property Management Item"
+  },
+  {
+   "fieldname": "total_property_management_amount",
+   "fieldtype": "Currency",
+   "label": "Total Property Management Amount",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-11 09:59:31.401403",
+ "modified": "2023-06-06 12:29:28.798310",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Locations",

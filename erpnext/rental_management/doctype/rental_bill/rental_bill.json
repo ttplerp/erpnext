@@ -39,8 +39,8 @@
   "received_amount",
   "cb_rb_2",
   "adjusted_amount",
-  "sb_payment_detail",
   "outstanding_amount",
+  "sb_payment_detail",
   "tds_amount",
   "cb_4",
   "pre_rent_amount",
@@ -246,7 +246,7 @@
    "allow_on_submit": 1,
    "fieldname": "received_amount",
    "fieldtype": "Currency",
-   "label": "Received Amount",
+   "label": "Received Rent Amount",
    "read_only": 1
   },
   {
@@ -381,6 +381,7 @@
   {
    "fieldname": "sb_payment_detail",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Payment Detail"
   },
   {
@@ -392,7 +393,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-03 14:56:21.682668",
+ "modified": "2023-06-06 16:11:25.674414",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Bill",

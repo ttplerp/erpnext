@@ -458,6 +458,7 @@
   {
    "fieldname": "sb_property_management",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Property Management Detail"
   },
   {
@@ -476,7 +477,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-03 14:19:41.471133",
+ "modified": "2023-06-06 14:08:24.619648",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Tenant Information",

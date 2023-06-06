@@ -2,36 +2,36 @@
  "actions": [],
  "allow_import": 1,
  "allow_rename": 1,
- "autoname": "field:ministry_agency",
- "creation": "2023-05-01 10:41:58.058211",
+ "autoname": "field:category",
+ "creation": "2023-06-06 23:29:50.870154",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "ministry_agency",
+  "category",
   "description"
  ],
  "fields": [
   {
-   "fieldname": "ministry_agency",
+   "fieldname": "category",
    "fieldtype": "Data",
-   "label": "Ministry/Agency",
+   "in_list_view": 1,
+   "label": "BSR Category",
    "reqd": 1,
    "unique": 1
   },
   {
    "fieldname": "description",
-   "fieldtype": "Small Text",
-   "in_list_view": 1,
+   "fieldtype": "Data",
    "label": "Description"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-06 14:00:51.181995",
+ "modified": "2023-06-06 23:36:27.320778",
  "modified_by": "Administrator",
  "module": "Rental Management",
- "name": "Ministry and Agency",
+ "name": "Service Category",
  "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
@@ -49,38 +49,18 @@
   },
   {
    "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "import": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Rental Master",
-   "share": 1,
-   "write": 1
-  },
-  {
    "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "Rental User",
-   "share": 1
-  },
-  {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Rental Manager",
+   "role": "Mechanical Master",
    "share": 1,
    "write": 1
   }
  ],
+ "quick_entry": 1,
+ "search_fields": "category",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

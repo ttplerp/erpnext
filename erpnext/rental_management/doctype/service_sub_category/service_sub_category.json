@@ -2,36 +2,39 @@
  "actions": [],
  "allow_import": 1,
  "allow_rename": 1,
- "autoname": "field:ministry_agency",
- "creation": "2023-05-01 10:41:58.058211",
+ "autoname": "field:sub_category",
+ "creation": "2023-06-06 23:34:04.184663",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "ministry_agency",
-  "description"
+  "sub_category",
+  "category"
  ],
  "fields": [
   {
-   "fieldname": "ministry_agency",
+   "fieldname": "sub_category",
    "fieldtype": "Data",
-   "label": "Ministry/Agency",
+   "in_list_view": 1,
+   "label": "Service Sub Category",
    "reqd": 1,
    "unique": 1
   },
   {
-   "fieldname": "description",
-   "fieldtype": "Small Text",
+   "fieldname": "category",
+   "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Description"
+   "label": "Service Category",
+   "options": "Service Category",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-06 14:00:51.181995",
+ "modified": "2023-06-06 23:34:48.664316",
  "modified_by": "Administrator",
  "module": "Rental Management",
- "name": "Ministry and Agency",
+ "name": "Service Sub Category",
  "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
@@ -49,38 +52,17 @@
   },
   {
    "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "import": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Rental Master",
-   "share": 1,
-   "write": 1
-  },
-  {
    "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "Rental User",
-   "share": 1
-  },
-  {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Rental Manager",
+   "role": "Mechanical Master",
    "share": 1,
    "write": 1
   }
  ],
+ "search_fields": "sub_category",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

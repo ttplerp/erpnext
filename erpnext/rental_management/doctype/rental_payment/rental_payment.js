@@ -108,6 +108,15 @@ frappe.ui.form.on('Rental Payment', {
 				]
 			};
 		});
+		frm.set_query("tenant", "items", function() {
+			return {
+				filters: [
+					["docstatus", "=", 1],
+					["status", "=", "Allocated"],
+					["branch", "=", frm.doc.branch],
+				]
+			}
+		});
 	},
 	get_rental_bills: function (frm) {
 		frm.set_value("number_of_rental_bill", 0);
@@ -119,7 +128,7 @@ frappe.ui.form.on('Rental Payment', {
 				if (r.message){
 					frm.set_value("number_of_rental_bill", r.message['number_of_rental_bill']);
 					frm.set_value("total_bill_amount", r.message['total_bill_amount']);
-					frm.set_value("total_rent_received", r.message['total_bill_amount'] - r.message['rent_write_off_amount']);
+					frm.set_value("total_rent_received", r.message['total_rent_amt']);
 					frm.set_value("total_amount_received", r.message['total_bill_amount'] - r.message['rent_write_off_amount']);
 					frm.set_value("rent_write_off_amount", r.message['rent_write_off_amount']);
 					frm.refresh_field("number_of_rental_bill");

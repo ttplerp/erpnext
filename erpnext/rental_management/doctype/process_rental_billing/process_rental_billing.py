@@ -10,7 +10,7 @@ from erpnext.accounts.general_ledger import make_gl_entries
 
 class ProcessRentalBilling(Document):
 	def check_mandatory(self):
-		for f in ['month', 'fiscal_year', 'branch', 'dzongkhag']:
+		for f in ['month', 'fiscal_year', 'branch', 'dzongkhag', 'posting_date']:
 			if not self.get(f):
 				frappe.msgprint(_("Please set {0}").format(_(self.meta.get_label(f))), raise_exception=True)
 	
@@ -87,7 +87,7 @@ class ProcessRentalBilling(Document):
 							select tenant_cid, tenant_name, customer, block, flat, 
 							ministry_and_agency, location_name, branch, tenant_department_name, dzongkhag, 
 							town_category, building_category, is_nhdcl_employee, rental_amount, building_classification,
-							phone_no, allocated_date, total_property_management_amount
+							phone_no, allocated_date, locations
 							from `tabTenant Information` t 
 							inner join `tabTenant Rental Charges` r 
 							on t.name = r.parent 
@@ -116,7 +116,8 @@ class ProcessRentalBilling(Document):
 							cost_center = frappe.db.get_value("Branch", d.branch, "cost_center")
 							if not self.company:
 								self.company = frappe.db.get_value("Branch", d.branch, "company")
-
+							total_property_mgt_amount = frappe.db.get_value("Locations", d.locations, "total_property_management_amount")
+							total_property_management_amount = total_property_mgt_amount if total_property_mgt_amount > 0 else 0
 							rb = frappe.get_doc({
 								"doctype": "Rental Bill",
 								"tenant": str(name),
@@ -137,11 +138,11 @@ class ProcessRentalBilling(Document):
 								"building_category": d.building_category,
 								"building_classification": d.building_classification,
 								"rent_amount": d.rental_amount,
-								"receivable_amount": flt(d.rental_amount + d.total_property_management_amount),
+								"receivable_amount": flt(d.rental_amount + total_property_management_amount),
 								"cost_center": cost_center,
 								"company": self.company,
 								"is_nhdcl_employee": d.is_nhdcl_employee,
-								"property_management_amount": d.total_property_management_amount,
+								"property_management_amount": total_property_management_amount,
 							})
 							rb.insert()
 							# rb_no = frappe.db.get_value("Rental Bill", {"tenant":name, "month":self.month, "fiscal_year": self.fiscal_year, "docstatus":0}, "name")
@@ -249,5 +250,6 @@ class ProcessRentalBilling(Document):
 				return {"msg": '<tr><td>{0}</td><td>{1}</td></tr>'.format(name, msg), "flag": flag}
 			except Exception as e:
 				flag = 0
+				frappe.throw("Error: {}".format(str(e)))
 				return {"msg": '<div style="color:red;"> Error: Tenant :{1} - {0}</div>'.format(str(e), name), "flag": flag}
 

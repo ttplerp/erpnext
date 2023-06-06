@@ -14,10 +14,10 @@ class BlockNo(Document):
 		if not frappe.get_value("Building Category", self.building_category, "abbr"):
 			frappe.throw("Abbr required. Missing abbr for Building Category: {}".format(self.building_category))
 		""" Validate duplicate entry """
-		data=[]
-		for d in self.get('block_property_management_item'):
-			if d.property_management_type not in data:
-				data.append(d.property_management_type)
-			else:
-				frappe.throw("Duplicate data entry at #Row. {}".format(d.idx))
+		# data=[]
+		# for d in self.get('block_property_management_item'):
+		# 	if d.property_management_type not in data:
+		# 		data.append(d.property_management_type)
+		# 	else:
+		# 		frappe.throw("Duplicate data entry at #Row. {}".format(d.idx))
 
