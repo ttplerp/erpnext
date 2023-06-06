@@ -8,8 +8,10 @@
  "engine": "InnoDB",
  "field_order": [
   "programme",
-  "domain",
-  "course_level"
+  "course_level",
+  "column_break_3",
+  "programme_classification",
+  "domain"
  ],
  "fields": [
   {
@@ -20,6 +22,7 @@
    "reqd": 1
   },
   {
+   "fetch_from": "programme_classification.domain",
    "fieldname": "domain",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -35,11 +38,22 @@
    "options": "\nBasic\nIntermediate\nAdvanced\nAdd On",
    "reqd": 1,
    "set_only_once": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "programme_classification",
+   "fieldtype": "Link",
+   "label": "Programme Classification",
+   "options": "Programme Classification",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-04-07 09:40:23.696619",
+ "modified": "2023-06-06 15:32:00.764493",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Programme",
