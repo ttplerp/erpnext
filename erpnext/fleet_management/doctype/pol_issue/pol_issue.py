@@ -7,7 +7,12 @@ from erpnext.custom_utils import check_future_date
 from frappe.utils import flt, cint
 from erpnext.controllers.stock_controller import StockController
 from erpnext.fleet_management.fleet_utils import get_pol_till, get_previous_km
-
+from erpnext.accounts.general_ledger import (
+	get_round_off_account_and_cost_center,
+	make_gl_entries,
+	make_reverse_gl_entries,
+	merge_similar_entries,
+)
 class POLIssue(StockController):
 	def __init__(self, *args, **kwargs):
 		super(POLIssue, self).__init__(*args, **kwargs)
@@ -64,11 +69,46 @@ class POLIssue(StockController):
 	def on_submit(self):
 		self.check_tanker_hsd_balance()
 		self.make_pol_entry()
-
+		self.make_gl_entries()
 	def on_cancel(self):
 		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry", "POL Entry")
 		self.delete_pol_entry()
-	
+		self.make_gl_entries()
+	def make_gl_entries(self):
+		expense_account = frappe.db.get_value("Company", self.company,'pol_expense_account')
+		gl_entries=[]
+		for d in self.items:
+			party = frappe.db.get_value("Fuelbook", d.fuelbook,"supplier")
+			pol_expense_account = frappe.db.get_value("Equipment Category", d.equipment_category,"pol_expense_account")
+			gl_entries.append(
+				self.get_gl_dict({
+					"account": pol_expense_account,
+					"debit": d.amount,
+					"debit_in_account_currency": d.amount,
+					"against_voucher": self.name,
+					"party_type": "Supplier",
+					"party": party,
+					"against_voucher_type": self.doctype,
+					"cost_center": d.cost_center,
+					"voucher_type":self.doctype,
+					"voucher_no":self.name
+				}))
+			gl_entries.append(
+				self.get_gl_dict({
+					"account": expense_account,
+					"credit": d.amount,
+					"credit_in_account_currency": d.amount,
+					"against_voucher": self.name,
+					"party_type": "Supplier",
+					"party": party,
+					"against_voucher_type": self.doctype,
+					"cost_center": d.cost_center,
+					"voucher_type":self.doctype,
+					"voucher_no":self.name
+				}))
+		gl_entries = merge_similar_entries(gl_entries)
+		make_gl_entries(gl_entries,update_outstanding="No",cancel=self.docstatus == 2)
+
 	def check_tanker_hsd_balance(self):
 		if not self.tanker:
 			return
@@ -126,7 +166,7 @@ class POLIssue(StockController):
 			# item code 
 			a.item_code = self.pol_type
 			# cost center
-			a.cost_center = self.cost_center		
+			# a.cost_center = self.cost_center		
 			# Warehouse
 			a.warehouse = self.warehouse
 			# Expense Account

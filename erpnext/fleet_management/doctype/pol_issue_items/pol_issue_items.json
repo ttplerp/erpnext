@@ -95,6 +95,7 @@
    "read_only": 1
   },
   {
+   "fetch_from": "fuel_book_branch.cost_center",
    "fieldname": "cost_center",
    "fieldtype": "Link",
    "label": "Cost Center",
@@ -180,7 +181,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-04-20 11:37:07.206921",
+ "modified": "2023-06-07 16:15:37.694725",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Issue Items",
