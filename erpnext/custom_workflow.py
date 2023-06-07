@@ -1121,7 +1121,7 @@ class CustomWorkflow:
 				frappe.throw("Only {} can Approve this Vehicle Request".format(self.doc.approver_id))
 	
 	def asset_movement(self):
-		if self.new_state.lower() == self.old_state.lower():
+		if self.new_state.lower() and self.old_state.lower() and self.new_state.lower() == self.old_state.lower():
 			return
 		if self.new_state.lower() in ("Draft".lower()):
 			if self.doc.owner != frappe.session.user:
