@@ -1131,7 +1131,8 @@ class CustomWorkflow:
 		if self.new_state.lower() in ("Waiting for Verification".lower()):
 			if self.doc.owner != frappe.session.user:
 				frappe.throw("Only {} can Apply this request".format(self.doc.owner))
-				
+			self.set_approver("Asset Verifier")
+			
 	def budget_reappropiation(self):
 		user_roles = frappe.get_roles(frappe.session.user)
 		if self.new_state and self.old_state and self.new_state.lower() == self.old_state.lower():
