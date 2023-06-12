@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:POLA-{YY}-{MM}-{####}",
+ "autoname": "POLAD.####",
  "creation": "2023-06-07 15:52:51.124231",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -22,7 +22,6 @@
   "party",
   "credit_account",
   "advance_limit",
-  "outstanding_amount",
   "column_break_11",
   "currency",
   "amount",
@@ -38,32 +37,6 @@
   "sb_additional_info",
   "company",
   "branch",
-  "section_break_29",
-  "get_previous",
-  "items",
-  "previous_balance_amount",
-  "pol_received_details_section",
-  "from_date",
-  "column_break_35",
-  "to_date",
-  "section_break_37",
-  "pol_received_item",
-  "section_break_39",
-  "total_qty_received",
-  "column_break_41",
-  "total_bill_amount",
-  "summary_sheet_section",
-  "opening_pol_tank_balance",
-  "pol_issue_during_the_period",
-  "closing_pol_tank_balance",
-  "column_break_47",
-  "uom",
-  "previous_km_reading",
-  "present_km_reading",
-  "column_break_51",
-  "total_petrol_diesel_consumed",
-  "total_km_reading",
-  "average_km_reading",
   "sb_approver",
   "approver",
   "column_break_34",
@@ -73,55 +46,11 @@
   "section_break_31",
   "journal_entry",
   "user_remark",
+  "amended_from",
   "workflow_state",
-  "payment_status",
-  "amended_from"
+  "payment_status"
  ],
  "fields": [
-  {
-   "default": "0",
-   "fieldname": "use_common_fuelbook",
-   "fieldtype": "Check",
-   "label": "Use Common Fuelbook"
-  },
-  {
-   "fieldname": "equipment",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Equipment",
-   "mandatory_depends_on": "eval:!doc.use_common_fuelbook",
-   "options": "Equipment"
-  },
-  {
-   "fetch_from": "equipment.equipment_type",
-   "fieldname": "equipment_type",
-   "fieldtype": "Link",
-   "label": "Equipment Type",
-   "options": "Equipment Type",
-   "read_only": 1
-  },
-  {
-   "fetch_from": "equipment.equipment_category",
-   "fetch_if_empty": 1,
-   "fieldname": "equipment_category",
-   "fieldtype": "Link",
-   "label": "Equipment Category",
-   "options": "Equipment Category",
-   "read_only": 1
-  },
-  {
-   "fieldname": "fuel_book",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Fuel Book",
-   "options": "Fuelbook",
-   "reqd": 1
-  },
-  {
-   "fieldname": "column_break_5",
-   "fieldtype": "Column Break"
-  },
   {
    "default": "Today",
    "fieldname": "entry_date",
@@ -131,31 +60,16 @@
    "reqd": 1
   },
   {
-   "fetch_from": "fuelbook_branch.cost_center",
-   "fieldname": "cost_center",
+   "fieldname": "branch",
    "fieldtype": "Link",
-   "label": "Cost Center",
-   "options": "Cost Center",
-   "read_only": 1
-  },
-  {
-   "fetch_from": "fuel_book.branch",
-   "fieldname": "fuelbook_branch",
-   "fieldtype": "Link",
-   "label": "Fuelbook Branch",
+   "in_list_view": 1,
+   "label": "Branch",
    "options": "Branch",
    "read_only": 1
   },
   {
-   "default": "0",
-   "fieldname": "is_opening",
-   "fieldtype": "Check",
-   "label": "Is Opening"
-  },
-  {
-   "fieldname": "payment_details_section",
-   "fieldtype": "Section Break",
-   "label": "Payment Details"
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
   },
   {
    "default": "Supplier",
@@ -178,21 +92,9 @@
    "reqd": 1
   },
   {
-   "fieldname": "credit_account",
-   "fieldtype": "Link",
-   "label": "Credit Account",
-   "options": "Account",
-   "read_only": 1
-  },
-  {
-   "fieldname": "outstanding_amount",
-   "fieldtype": "Currency",
-   "label": "Outstanding Amount",
-   "read_only": 1
-  },
-  {
-   "fieldname": "column_break_11",
-   "fieldtype": "Column Break"
+   "fieldname": "payment_details_section",
+   "fieldtype": "Section Break",
+   "label": "Payment Details"
   },
   {
    "default": "BTN",
@@ -205,11 +107,56 @@
    "reqd": 1
   },
   {
+   "fieldname": "column_break_11",
+   "fieldtype": "Column Break"
+  },
+  {
    "fieldname": "amount",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Amount",
+   "label": "Advance Amount",
    "reqd": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "POL Advance",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "fuel_book",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Fuel Book",
+   "options": "Fuelbook",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "fuel_book.branch",
+   "fieldname": "fuelbook_branch",
+   "fieldtype": "Link",
+   "label": "Fuelbook Branch",
+   "options": "Branch",
+   "read_only": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "fuelbook_branch.cost_center",
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
   },
   {
    "allow_on_submit": 1,
@@ -225,6 +172,19 @@
    "in_list_view": 1,
    "label": "Balance Amount",
    "read_only": 1
+  },
+  {
+   "fieldname": "credit_account",
+   "fieldtype": "Link",
+   "label": "Credit Account",
+   "options": "Account",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "sb_additional_info",
+   "fieldtype": "Section Break",
+   "label": "ADDITIONAL INFORMATION"
   },
   {
    "depends_on": "eval:doc.workflow_state ==\"Waiting Approval\";",
@@ -246,15 +206,6 @@
    "options": "Cheque Lot"
   },
   {
-   "fieldname": "column_break_25",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "pay_to_recd_from",
-   "fieldtype": "Data",
-   "label": "Pay To / Recd From"
-  },
-  {
    "fieldname": "cheque_no",
    "fieldtype": "Data",
    "label": "Cheque Number"
@@ -265,163 +216,55 @@
    "label": "Cheque Date"
   },
   {
-   "collapsible": 1,
-   "fieldname": "sb_additional_info",
-   "fieldtype": "Section Break",
-   "label": "ADDITIONAL INFORMATION"
+   "fieldname": "pay_to_recd_from",
+   "fieldtype": "Data",
+   "label": "Pay To / Recd From"
   },
   {
-   "fieldname": "company",
-   "fieldtype": "Link",
-   "label": "Company",
-   "options": "Company",
-   "reqd": 1
+   "fieldname": "column_break_25",
+   "fieldtype": "Column Break"
   },
   {
-   "fieldname": "branch",
+   "default": "0",
+   "fieldname": "is_opening",
+   "fieldtype": "Check",
+   "label": "Is Opening"
+  },
+  {
+   "fieldname": "section_break_31",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "user_remark",
+   "fieldtype": "Small Text",
+   "label": "Narration"
+  },
+  {
+   "fieldname": "journal_entry",
+   "fieldtype": "Data",
+   "label": "Journal Entry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "equipment",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Branch",
-   "options": "Branch",
-   "read_only": 1
+   "in_standard_filter": 1,
+   "label": "Equipment",
+   "mandatory_depends_on": "eval:!doc.use_common_fuelbook",
+   "options": "Equipment"
   },
   {
-   "fieldname": "section_break_29",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "get_previous",
-   "fieldtype": "Button",
-   "label": "Get Previous Advances"
-  },
-  {
-   "fieldname": "items",
-   "fieldtype": "Table",
-   "label": "Items",
-   "options": "POL Advance Item"
-  },
-  {
-   "fieldname": "previous_balance_amount",
-   "fieldtype": "Currency",
-   "label": "Previous Balance Amount",
-   "read_only": 1
-  },
-  {
-   "depends_on": "eval:doc.is_opening == 0",
-   "fieldname": "pol_received_details_section",
-   "fieldtype": "Section Break",
-   "label": "POL Received Details"
-  },
-  {
-   "fieldname": "from_date",
-   "fieldtype": "Date",
-   "label": "From Date",
-   "mandatory_depends_on": "eval:doc.is_opening == 0"
-  },
-  {
-   "fieldname": "column_break_35",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "to_date",
-   "fieldtype": "Date",
-   "label": "To Date",
-   "mandatory_depends_on": "eval:doc.is_opening == 0"
-  },
-  {
-   "fieldname": "section_break_37",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "pol_received_item",
-   "fieldtype": "Table",
-   "label": "POL Received Item",
-   "options": "POL Receive Ref Item",
-   "read_only": 1
-  },
-  {
-   "fieldname": "section_break_39",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "total_qty_received",
-   "fieldtype": "Float",
-   "label": "Total Qty Received",
-   "read_only": 1
-  },
-  {
-   "fieldname": "column_break_41",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "total_bill_amount",
-   "fieldtype": "Currency",
-   "label": "Total Bill Amount",
-   "read_only": 1
-  },
-  {
-   "fieldname": "summary_sheet_section",
-   "fieldtype": "Section Break",
-   "label": "Summary Sheet"
-  },
-  {
-   "fieldname": "opening_pol_tank_balance",
-   "fieldtype": "Float",
-   "label": "Opening POL Tank Balance (Lts.(A))"
-  },
-  {
-   "fieldname": "pol_issue_during_the_period",
-   "fieldtype": "Float",
-   "label": "POL Issue During the Period (Lts. (B))"
-  },
-  {
-   "fieldname": "closing_pol_tank_balance",
-   "fieldtype": "Float",
-   "label": "Closing POL Tank Balance (Lts.(C))"
-  },
-  {
-   "fieldname": "column_break_47",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "KM",
-   "fetch_from": "equipment.reading_uom",
-   "fieldname": "uom",
+   "fieldname": "workflow_state",
    "fieldtype": "Data",
-   "label": "UOM",
-   "read_only": 1
+   "label": "Workflow"
   },
   {
-   "fieldname": "previous_km_reading",
-   "fieldtype": "Float",
-   "label": "Previous KM/HR Reading (KMs/Hrs)(E)",
-   "read_only": 1
-  },
-  {
-   "fieldname": "present_km_reading",
-   "fieldtype": "Float",
-   "label": "Present KM/HR Reading (KMs/Hrs)(F)"
-  },
-  {
-   "fieldname": "column_break_51",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "total_petrol_diesel_consumed",
-   "fieldtype": "Float",
-   "label": "Total Petrol/ Diesel Consumed (Lts.(D=A+B-C))",
-   "read_only": 1
-  },
-  {
-   "fieldname": "total_km_reading",
-   "fieldtype": "Float",
-   "label": "Total KM/ HR Reading (KMs/Hrs)(G=E-F)",
-   "read_only": 1
-  },
-  {
-   "fieldname": "average_km_reading",
-   "fieldtype": "Float",
-   "label": "Average KM/Ltrs. or Ltrs./Hr of POL B/A (KMs/Lts.)(H=G/D or D/G)",
+   "fetch_from": "equipment.equipment_type",
+   "fieldname": "equipment_type",
+   "fieldtype": "Link",
+   "label": "Equipment Type",
+   "options": "Equipment Type",
    "read_only": 1
   },
   {
@@ -437,18 +280,10 @@
    "read_only": 1
   },
   {
-   "fieldname": "column_break_34",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "approver_name",
    "fieldtype": "Data",
    "label": "Approver Name",
    "read_only": 1
-  },
-  {
-   "fieldname": "column_break_36",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "approver_designation",
@@ -458,24 +293,21 @@
    "read_only": 1
   },
   {
-   "fieldname": "section_break_31",
-   "fieldtype": "Section Break"
+   "fieldname": "column_break_34",
+   "fieldtype": "Column Break"
   },
   {
-   "fieldname": "journal_entry",
-   "fieldtype": "Data",
-   "label": "Journal Entry",
+   "fieldname": "column_break_36",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "equipment.equipment_category",
+   "fetch_if_empty": 1,
+   "fieldname": "equipment_category",
+   "fieldtype": "Link",
+   "label": "Equipment Category",
+   "options": "Equipment Category",
    "read_only": 1
-  },
-  {
-   "fieldname": "user_remark",
-   "fieldtype": "Small Text",
-   "label": "Narration"
-  },
-  {
-   "fieldname": "workflow_state",
-   "fieldtype": "Data",
-   "label": "Workflow"
   },
   {
    "fieldname": "payment_status",
@@ -486,13 +318,10 @@
    "read_only": 1
   },
   {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "POL Advance",
-   "print_hide": 1,
-   "read_only": 1
+   "default": "0",
+   "fieldname": "use_common_fuelbook",
+   "fieldtype": "Check",
+   "label": "Use Common Fuelbook"
   },
   {
    "fieldname": "advance_limit",
@@ -504,7 +333,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-07 17:14:53.584835",
+ "modified": "2023-06-12 17:02:30.706552",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Advance",

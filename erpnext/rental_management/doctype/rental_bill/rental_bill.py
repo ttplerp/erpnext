@@ -116,8 +116,8 @@ class RentalBill(AccountsController):
 			""".format(party=self.customer, account=pre_rent_account))[0][0]
 		self.adjusted_amount = 0
 		if pre_rent_amount > 0:
-			if self.receivable_amount <= pre_rent_amount:
-				self.adjusted_amount = flt(self.receivable_amount)
+			if self.rent_amount <= pre_rent_amount:
+				self.adjusted_amount = flt(self.rent_amount)
 			else:
 				self.adjusted_amount = flt(pre_rent_amount)
 		
@@ -149,7 +149,7 @@ class RentalBill(AccountsController):
 				})
 			)
 		
-		if self.receivable_amount > 0:
+		if flt(self.receivable_amount - self.property_management_amount) > 0:
 			gl_entries.append(
 				self.get_gl_dict({
 					"account": revenue_claim_account,
@@ -166,6 +166,7 @@ class RentalBill(AccountsController):
 				})
 			)
 
+		if self.property_management_amount > 0:
 			gl_entries.append(
 				self.get_gl_dict({
 					"account": acc_property_management,
@@ -182,20 +183,20 @@ class RentalBill(AccountsController):
 				})
 			)
 		
-			credit_account = frappe.db.get_value("Rental Account Setting Item",{"building_category":self.building_category}, "account")
-			gl_entries.append(
-				self.get_gl_dict({
-					"account": credit_account,
-					"credit": flt(self.receivable_amount + self.adjusted_amount),
-					"credit_in_account_currency": flt(self.receivable_amount + self.adjusted_amount),
-					"voucher_no": self.name,
-					"voucher_type": "Rental Bill",
-					"cost_center": self.cost_center,
-					"company": self.company,
-					"remarks": str(self.tenant) + " Rental Bill for " + str(self.building_category) +" Year "+ str(self.fiscal_year) + " Month " +str(self.month),
-					# "business_activity": business_activity
-					})
-				)
+		credit_account = frappe.db.get_value("Rental Account Setting Item",{"building_category":self.building_category}, "account")
+		gl_entries.append(
+			self.get_gl_dict({
+				"account": credit_account,
+				"credit": flt(self.receivable_amount + self.adjusted_amount),
+				"credit_in_account_currency": flt(self.receivable_amount + self.adjusted_amount),
+				"voucher_no": self.name,
+				"voucher_type": "Rental Bill",
+				"cost_center": self.cost_center,
+				"company": self.company,
+				"remarks": str(self.tenant) + " Rental Bill for " + str(self.building_category) +" Year "+ str(self.fiscal_year) + " Month " +str(self.month),
+				# "business_activity": business_activity
+				})
+			)
 		# frappe.throw("<pre>{}</pre>".format(frappe.as_json(gl_entries)))
 		make_gl_entries(gl_entries, cancel=(self.docstatus == 2), update_outstanding="No", merge_entries=True)
 

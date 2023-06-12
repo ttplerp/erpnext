@@ -24,11 +24,11 @@
   "department",
   "location",
   "location_name",
-  "maintenance_type",
+  "dzongkhag",
   "column_break_14",
   "block_no",
   "flat_no",
-  "dzongkhag",
+  "maintenance_type",
   "section_break_25",
   "maintenance_date",
   "column_break_22",
@@ -100,6 +100,7 @@
    "read_only": 1
   },
   {
+   "fetch_from": "location.dzongkhag",
    "fieldname": "dzongkhag",
    "fieldtype": "Link",
    "label": "Dzongkhag",
@@ -171,6 +172,7 @@
    "options": "Block No"
   },
   {
+   "fetch_from": "location.dzongkhag",
    "fieldname": "dzongkhag",
    "fieldtype": "Link",
    "label": "Dzongkhag",
@@ -268,7 +270,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-12 11:54:09.060921",
+ "modified": "2023-06-12 15:54:13.899782",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Maintenance Application Form",

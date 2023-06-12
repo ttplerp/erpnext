@@ -47,14 +47,14 @@ def get_data(query,from_date, to_date, filters):
 			monthly_received = frappe.db.sql("""
 									select sum(amount)
 									from `tabReappropriation Details`
-									where from_month="{month}"
+									where to_month="{month}"
 									and to_account="{account}"
 									and to_cost_center="{cost_center}"
 								""".format(month=filters.month, from_date=from_date, to_date=to_date, account = d.account, cost_center=d.cost_center))[0][0]
 			monthly_sent = frappe.db.sql("""
 									select sum(amount)
 									from `tabReappropriation Details`
-									where to_month="{month}"
+									where from_month="{month}"
 									and from_account="{account}"
 									and from_cost_center="{cost_center}"
 								""".format(month=filters.month, from_date=from_date, to_date=to_date, account = d.account, cost_center=d.cost_center))[0][0]

@@ -116,7 +116,7 @@ class TenantInformation(Document):
 			# cus.location = self.location
 			# cus.dzongkhag = self.dzongkhag
 			cus.save()
-			self.db_set("customer_code", cus.name)
+			# self.db_set("customer_code", cus.name)
 
 		else:
 			last_customer_code = frappe.db.sql("select customer_code from tabCustomer where customer_group='Rental' order by customer_code desc limit 1;");

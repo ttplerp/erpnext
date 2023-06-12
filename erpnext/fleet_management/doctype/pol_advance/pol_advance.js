@@ -109,7 +109,7 @@ frappe.ui.form.on('POL Advance', {
 					frm.refresh_field("items")
 					frm.refresh_field("previous_balance_amount")
 					frm.refresh_field("amount")
-					frm.refresh_field("advance_limit")
+					frm.refresh_field("expense_limit")
 					frm.dirty()
 				}
 			})

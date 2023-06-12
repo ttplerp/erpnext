@@ -24,14 +24,15 @@ class ProcessRentalBilling(Document):
 		condition = " and t1.building_category != 'Pilot Housing' and t1.branch = '{}'".format(self.branch)
 		if self.dzongkhag:
 			condition += " and t1.dzongkhag = '{dzongkhag}'".format(dzongkhag=self.dzongkhag)
-		if self.ministry_agency:
-			condition += " and t1.ministry_and_agency = '{ministry_agency}'".format(ministry_agency=self.ministry_agency)
 		if self.tenant:
 			condition += " and t1.name = '{tenant}'".format(tenant=self.tenant)
 
 		if process_type == "create":
 			# if self.tenant:
 			# 	condition += " and t1.name = '{tenant}'".format(tenant=self.tenant)
+			if self.ministry_agency:
+				condition += " and t1.ministry_and_agency = '{ministry_agency}'".format(ministry_agency=self.ministry_agency)
+
 			tenant_list = frappe.db.sql("""
 				   	select t1.name
 				   	from `tabTenant Information` t1
@@ -50,6 +51,9 @@ class ProcessRentalBilling(Document):
 		else:
 			# if self.tenant:
 			# 	condition += " and t1.tenant = '{tenant}'".format(tenant=self.tenant)
+			if self.ministry_agency:
+				condition += " and t1.ministry_agency = '{ministry_agency}'".format(ministry_agency=self.ministry_agency)
+			
 			tenant_list = frappe.db.sql("""
 						select t1.name
 						from `tabRental Bill` as t1
@@ -116,13 +120,19 @@ class ProcessRentalBilling(Document):
 							cost_center = frappe.db.get_value("Branch", d.branch, "cost_center")
 							if not self.company:
 								self.company = frappe.db.get_value("Branch", d.branch, "company")
+							""" calc. property mgt. amount """
 							total_property_mgt_amount = frappe.db.get_value("Locations", d.locations, "total_property_management_amount")
+							prop_mgt_amount = 0
+							for pm_item in frappe.db.sql("select * from `tabProperty Management Item` where is_percent=1 and parent='{}'".format(d.locations)):
+								prop_mgt_amount = flt(d.rental_amount * (pm_item / 100), 2)
+								total_property_mgt_amount += prop_mgt_amount
 							total_property_management_amount = total_property_mgt_amount if total_property_mgt_amount > 0 else 0
+
 							rb = frappe.get_doc({
 								"doctype": "Rental Bill",
 								"tenant": str(name),
 								"tenant_cid" : str(d.tenant_cid),
-								"customer": str(d.customer_code),
+								"customer": str(d.customer),
 								"posting_date": posting_date,
 								"tenant_name": str(d.tenant_name),
 								"block_no": d.block,

@@ -17,7 +17,7 @@ from erpnext.accounts.general_ledger import (
 	merge_similar_entries,
 )
 
-class POLAdvance(Document):
+class POLAdvance(AccountsController):
 	def validate(self):
 		# if flt(self.is_opening) == 0:
 		# 	validate_workflow_states(self)
@@ -33,6 +33,7 @@ class POLAdvance(Document):
 		# 	notify_workflow_states(self)
 		self.set_status()
 
+	
 	def on_submit(self): 
 		if cint(self.use_common_fuelbook) == 0:
 			self.make_gl_entries()
@@ -80,7 +81,6 @@ class POLAdvance(Document):
 					"voucher_no":self.name,
 					"posting_date":self.entry_date
 				}, self.currency))
-	
 	def make_expense_gl_entry(self, gl_entries):
 		if flt(self.amount) > 0:
 			expense_account = frappe.db.get_value("Equipment Category", self.equipment_category,'pol_expense_account')
@@ -198,8 +198,8 @@ class POLAdvance(Document):
 			"doctype": "Journal Entry",
 			"voucher_type": "Bank Entry",
 			"naming_series": "Bank Payment Voucher",
-			"title": "POL Advance - " + self.equipment if cint(self.use_common_fuelbook) == 0 else self.fuel_book,
-			"user_remark": "Note: " + "POL Advance - " + self.equipment if cint(self.use_common_fuelbook) == 0 else self.fuel_book,
+			"title": "POL Expense - " + self.equipment if cint(self.use_common_fuelbook) == 0 else self.fuel_book,
+			"user_remark": "Note: " + "POL Expense - " + self.equipment if cint(self.use_common_fuelbook) == 0 else self.fuel_book,
 			"posting_date": self.posting_date,
 			"company": self.company,
 			"total_amount_in_words": money_in_words(self.amount),
@@ -212,7 +212,7 @@ class POLAdvance(Document):
 			"party_check": 0,
 			"party_type": "Supplier",
 			"party": self.party,
-			"reference_type": "POL Advance",
+			"reference_type": "POL Expense",
 			"reference_name": self.name,
 			"business_activity": default_ba
 		})
@@ -227,6 +227,7 @@ class POLAdvance(Document):
 		#Set a reference to the claim journal entry
 		self.db_set("journal_entry",je.name)
 		frappe.msgprint(_('Journal Entry <a href="#Form/Journal Entry/{0}">{0}</a> posted to accounts').format(je.name))
+	
 	@frappe.whitelist()
 	def get_pol_received(self):
 		if self.is_opening:
@@ -250,10 +251,11 @@ class POLAdvance(Document):
 		if not self.pol_received_item:
 			frappe.msgprint("No pol receive found within Date {} to {}".format(self.from_date, self.to_date))
 		self.calculate_km_diff()
+	
 	def validate_amount(self):
 		if flt(self.amount) <= 0:
 			frappe.throw("Amount cannot be less than or equal to Zero")
-		if cint(self.use_common_fuelbook) == 0 and flt(self.amount) > flt(self.advance_limit):
+		if cint(self.use_common_fuelbook) == 0 and flt(self.amount) > flt(self.expense_limit):
 			frappe.throw("Amount cannot be greater than expense limit")
 		if cint(self.is_opening) == 0 :
 			self.outstanding_amount = self.amount
@@ -291,8 +293,8 @@ class POLAdvance(Document):
 		if cint(self.use_common_fuelbook) == 1:
 			if not self.fuel_book:
 				frappe.throw("Fuel book is missing")
-			if flt(self.advance_limit) <= 0 :
-				self.advance_limit = frappe.db.get_value("Fuelbook", self.fuel_book,"expense_limit")
+			if flt(self.expense_limit) <= 0 :
+				self.expense_limit = frappe.db.get_value("Fuelbook", self.fuel_book,"expense_limit")
 			for d in (qb.from_(pol_exp).select(pol_exp.name.as_("reference"), pol_exp.amount,pol_exp.adjusted_amount, pol_exp.balance_amount)
 						.where( (pol_exp.docstatus == 1 ) & ( pol_exp.balance_amount > 0 ) 
 							& (pol_exp.name != self.name) & (pol_exp.fuel_book == self.fuel_book))
@@ -305,8 +307,8 @@ class POLAdvance(Document):
 				frappe.throw("Equipment or Fuel book is missing")
 			self.set('items',[])
 
-			if flt(self.advance_limit) <= 0 and self.equipment_type:
-				self.advance_limit = frappe.db.get_value("Equipment Type",self.equipment_type,"pol_expense_limit")
+			if flt(self.expense_limit) <= 0 and self.equipment_type:
+				self.expense_limit = frappe.db.get_value("Equipment Type",self.equipment_type,"pol_expense_limit")
 				
 			for d in (qb.from_(pol_exp).select(pol_exp.name.as_("reference"), pol_exp.amount,pol_exp.adjusted_amount, pol_exp.balance_amount)
 							.where((pol_exp.equipment == self.equipment) & (pol_exp.docstatus == 1 ) & ( pol_exp.balance_amount > 0 ) 
@@ -316,8 +318,8 @@ class POLAdvance(Document):
 				self.append("items", d)
 			self.previous_balance_amount = total_amount
 
-		if flt(self.advance_limit) > 0 :
-			self.amount = flt(self.advance_limit) - flt(self.previous_balance_amount)
+		if flt(self.expense_limit) > 0 :
+			self.amount = flt(self.expense_limit) - flt(self.previous_balance_amount)
 			self.balance_amount = self.amount
 
 def get_permission_query_conditions(user):
@@ -328,11 +330,11 @@ def get_permission_query_conditions(user):
 		return
 
 	return """(
-		`tabPOL Advance`.owner = '{user}'
+		`tabPOL Expense`.owner = '{user}'
 		or
 		exists(select 1
 			from `tabEmployee` as e
-			where e.branch = `tabPOL Advance`.fuelbook_branch
+			where e.branch = `tabPOL Expense`.fuelbook_branch
 			and e.user_id = '{user}')
 		or
 		exists(select 1
@@ -340,7 +342,7 @@ def get_permission_query_conditions(user):
 			where e.user_id = '{user}'
 			and ab.employee = e.name
 			and bi.parent = ab.name
-			and bi.branch = `tabPOL Advance`.fuelbook_branch)
+			and bi.branch = `tabPOL Expense`.fuelbook_branch)
 		or
-		(`tabPOL Expense`.approver = '{user}' and `tabPOL Advance`.workflow_state not in  ('Draft','Approved','Rejected','Cancelled'))
+		(`tabPOL Expense`.approver = '{user}' and `tabPOL Expense`.workflow_state not in  ('Draft','Approved','Rejected','Cancelled'))
 	)""".format(user=user)
