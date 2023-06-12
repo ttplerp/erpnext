@@ -1028,8 +1028,7 @@
    "fieldname": "pol_expense_account",
    "fieldtype": "Link",
    "label": "POL Expense Account",
-   "options": "Account",
-   "reqd": 1
+   "options": "Account"
   }
  ],
  "icon": "fa fa-building",
@@ -1037,7 +1036,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2023-04-17 12:12:26.666698",
+ "modified": "2023-06-12 11:57:18.921298",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",
