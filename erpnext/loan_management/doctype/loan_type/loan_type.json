@@ -162,7 +162,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-01-25 16:23:57.009349",
+ "modified": "2023-04-27 17:08:41.423734",
  "modified_by": "Administrator",
  "module": "Loan Management",
  "name": "Loan Type",
@@ -191,5 +191,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }

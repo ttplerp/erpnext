@@ -37,7 +37,7 @@
  "icon": "fa fa-font",
  "idx": 1,
  "links": [],
- "modified": "2023-04-17 12:12:09.098034",
+ "modified": "2023-04-27 17:05:48.731328",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Print Heading",
@@ -64,5 +64,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
+ "track_changes": 1,
  "track_views": 1
 }

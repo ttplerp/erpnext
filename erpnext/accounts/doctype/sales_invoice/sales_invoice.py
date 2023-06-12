@@ -1003,43 +1003,68 @@ class SalesInvoice(SellingController):
 					"against_voucher_type": self.doctype,
 					"cost_center": a.cost_center,
 				}, advance_account_currency))
+			
 	def make_customer_gl_entry(self, gl_entries):
 		# Checked both rounding_adjustment and rounded_total
 		# because rounded_total had value even before introcution of posting GLE based on rounded total
-		grand_total = (
-			self.rounded_total if (self.rounding_adjustment and self.rounded_total) else self.grand_total
-		)
-		base_grand_total = flt(flt(
-			self.base_rounded_total
-			if (self.base_rounding_adjustment and self.base_rounded_total)
-			else self.base_grand_total,
-			self.precision("base_grand_total"),
-		) - flt(self.total_advance),2)
-		if grand_total and not self.is_internal_transfer():
-			# Did not use base_grand_total to book rounding loss gle
-			gl_entries.append(
-				self.get_gl_dict(
-					{
-						"account": self.debit_to,
-						"party_type": "Customer",
-						"party": self.customer,
-						"due_date": self.due_date,
-						"against": self.against_income_account,
-						"debit": base_grand_total,
-						"debit_in_account_currency": base_grand_total
-						if self.party_account_currency == self.company_currency
-						else grand_total,
-						"against_voucher": self.return_against
-						if cint(self.is_return) and self.return_against
-						else self.name,
-						"against_voucher_type": self.doctype,
-						"cost_center": self.cost_center,
-						"project": self.project,
-					},
-					self.party_account_currency,
-					item=self,
+		if self.order_type and self.order_type == "Vehicle Repairing":
+			for d in self.items:
+				gl_entries.append(
+					self.get_gl_dict(
+						{
+							"account": self.debit_to,
+							"party_type": "Customer",
+							"party": self.customer,
+							"due_date": self.due_date,
+							"against": self.against_income_account,
+							"debit": d.base_amount,
+							"debit_in_account_currency": d.base_amount,
+							"against_voucher": self.return_against
+							if cint(self.is_return) and self.return_against
+							else self.name,
+							"against_voucher_type": self.doctype,
+							"cost_center": d.cost_center,
+							"project": self.project,
+						},
+						self.party_account_currency,
+						item=self,
+					)
 				)
+		else:
+			grand_total = (
+				self.rounded_total if (self.rounding_adjustment and self.rounded_total) else self.grand_total
 			)
+			base_grand_total = flt(flt(
+				self.base_rounded_total
+				if (self.base_rounding_adjustment and self.base_rounded_total)
+				else self.base_grand_total,
+				self.precision("base_grand_total"),
+			) - flt(self.total_advance),2)
+			if grand_total and not self.is_internal_transfer():
+				# Did not use base_grand_total to book rounding loss gle
+				gl_entries.append(
+					self.get_gl_dict(
+						{
+							"account": self.debit_to,
+							"party_type": "Customer",
+							"party": self.customer,
+							"due_date": self.due_date,
+							"against": self.against_income_account,
+							"debit": base_grand_total,
+							"debit_in_account_currency": base_grand_total
+							if self.party_account_currency == self.company_currency
+							else grand_total,
+							"against_voucher": self.return_against
+							if cint(self.is_return) and self.return_against
+							else self.name,
+							"against_voucher_type": self.doctype,
+							"cost_center": self.cost_center,
+							"project": self.project,
+						},
+						self.party_account_currency,
+						item=self,
+					)
+				)
 
 	def make_tax_gl_entries(self, gl_entries):
 		enable_discount_accounting = cint(

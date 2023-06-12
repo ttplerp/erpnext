@@ -224,7 +224,7 @@
  "idx": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-02-17 16:53:34.878798",
+ "modified": "2023-04-27 17:08:13.086965",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Timesheet Detail",
@@ -233,5 +233,6 @@
  "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "ASC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }

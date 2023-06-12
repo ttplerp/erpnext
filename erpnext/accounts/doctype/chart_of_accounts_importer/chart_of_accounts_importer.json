@@ -50,7 +50,7 @@
  "in_create": 1,
  "issingle": 1,
  "links": [],
- "modified": "2020-02-28 08:49:11.422846",
+ "modified": "2023-04-27 17:08:58.945978",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Chart of Accounts Importer",
@@ -67,5 +67,7 @@
  "quick_entry": 1,
  "read_only": 1,
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
 }

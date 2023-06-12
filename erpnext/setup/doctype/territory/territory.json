@@ -123,7 +123,7 @@
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2021-02-08 17:10:03.767426",
+ "modified": "2023-04-27 17:08:51.098976",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Territory",
@@ -180,5 +180,7 @@
  "search_fields": "parent_territory,territory_manager",
  "show_name_in_global_search": 1,
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
 }

@@ -174,7 +174,6 @@ frappe.ui.form.on("Item", {
 		// if(frm.doc.item_group == 'Fixed Asset'){
 		// 	frm.set_value("is_stock_item", frm.doc.is_fixed_asset ? 0 : 1);
 		// }
-		// if (frm.doc.item_group == "Tata Vehicles"){
 		if(in_list(["Tata Vehicles", "Toyota Vehicle", "Eicher Vehicle", "SML Vehicle"], frm.doc.item_group)) {
 			frm.set_value("valuation_method", "SPECIFIC");
 			frm.set_value("has_serial_no", 1);

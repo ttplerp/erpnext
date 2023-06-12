@@ -1,9 +1,11 @@
 {
+ "actions": [],
  "allow_import": 1,
  "autoname": "field:label",
  "creation": "2013-06-25 11:48:03",
  "description": "Specify conditions to calculate shipping amount",
  "doctype": "DocType",
+ "engine": "InnoDB",
  "field_order": [
   "label",
   "disabled",
@@ -140,7 +142,8 @@
  ],
  "icon": "fa fa-truck",
  "idx": 1,
- "modified": "2019-05-25 23:12:26.156405",
+ "links": [],
+ "modified": "2023-04-27 17:09:01.832544",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Shipping Rule",
@@ -189,5 +192,8 @@
    "write": 1
   }
  ],
- "sort_order": "ASC"
+ "sort_field": "modified",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 1
 }

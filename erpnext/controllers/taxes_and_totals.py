@@ -379,7 +379,10 @@ class calculate_taxes_and_totals(object):
 					self.round_off_totals(tax)
 					self._set_in_company_currency(tax, ["tax_amount", "tax_amount_after_discount_amount"])
 
-					self.round_off_base_values(tax)
+					if self.doc.doctype == "Purchase Receipt" and tax.payable_to_different_vendor == 1 and tax.amount_paid_to_different_vendors:
+						self.round_off_base_values_for_pr(tax)
+					else:
+						self.round_off_base_values(tax)
 					self.set_cumulative_total(i, tax)
 
 					self._set_in_company_currency(tax, ["total"])
@@ -473,6 +476,11 @@ class calculate_taxes_and_totals(object):
 		if tax.account_head in frappe.flags.round_off_applicable_accounts:
 			tax.base_tax_amount = round(tax.base_tax_amount, 0)
 			tax.base_tax_amount_after_discount_amount = round(tax.base_tax_amount_after_discount_amount, 0)
+	
+	def round_off_base_values_for_pr(self, tax):
+		if tax.payable_to_different_vendor == 1 and tax.amount_paid_to_different_vendors:
+			tax.base_tax_amount = round(tax.amount_paid_to_different_vendors)
+			tax.base_tax_amount_after_discount_amount = round(tax.amount_paid_to_different_vendors)
 
 	def manipulate_grand_total_for_inclusive_tax(self):
 		# if fully inclusive taxes and diff

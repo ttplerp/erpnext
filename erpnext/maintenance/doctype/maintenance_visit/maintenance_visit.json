@@ -293,7 +293,7 @@
  "idx": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-12-17 03:10:27.608112",
+ "modified": "2023-04-27 17:08:42.470579",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Maintenance Visit",
@@ -319,6 +319,8 @@
  "show_name_in_global_search": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "timeline_field": "customer",
- "title_field": "customer_name"
+ "title_field": "customer_name",
+ "track_changes": 1
 }

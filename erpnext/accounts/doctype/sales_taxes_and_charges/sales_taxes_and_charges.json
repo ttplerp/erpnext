@@ -224,7 +224,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-04-18 09:24:09.246100",
+ "modified": "2023-04-27 17:08:08.271717",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Sales Taxes and Charges",
@@ -232,5 +232,6 @@
  "permissions": [],
  "sort_field": "modified",
  "sort_order": "ASC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }

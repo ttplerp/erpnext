@@ -310,7 +310,7 @@
  "idx": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2020-08-24 23:49:00.081695",
+ "modified": "2023-04-27 17:08:57.279217",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Email Digest",
@@ -334,5 +334,7 @@
   }
  ],
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
 }

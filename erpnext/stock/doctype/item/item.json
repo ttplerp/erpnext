@@ -17,6 +17,7 @@
   "item_code",
   "item_name",
   "item_group",
+  "abb",
   "item_sub_group",
   "stock_uom",
   "hsn_code",
@@ -980,7 +981,15 @@
    "fieldname": "item_type",
    "fieldtype": "Link",
    "label": "Item Type",
+   "mandatory_depends_on": "eval:!in_list([\"Export\", \"Service\", \"Fixed Assets\", \"Consumable\"], doc.item_group) ",
    "options": "Item Type"
+  },
+  {
+   "fetch_from": "item_group.item_group_abbreviation",
+   "fieldname": "abb",
+   "fieldtype": "Data",
+   "label": "Item Group Abbreviation",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-tag",
@@ -988,7 +997,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-04-17 12:11:55.784198",
+ "modified": "2023-04-27 17:05:47.788753",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",

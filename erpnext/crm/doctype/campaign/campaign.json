@@ -67,7 +67,7 @@
  "icon": "fa fa-bullhorn",
  "idx": 1,
  "links": [],
- "modified": "2021-06-30 18:05:06.412712",
+ "modified": "2023-04-27 17:08:47.468611",
  "modified_by": "Administrator",
  "module": "CRM",
  "name": "Campaign",
@@ -107,5 +107,7 @@
  ],
  "quick_entry": 1,
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
 }

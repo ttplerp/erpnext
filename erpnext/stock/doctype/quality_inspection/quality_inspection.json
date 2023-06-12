@@ -238,7 +238,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2020-12-18 19:59:55.710300",
+ "modified": "2023-04-27 17:08:52.002832",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Quality Inspection",
@@ -262,5 +262,7 @@
  "search_fields": "item_code, report_date, reference_name",
  "show_name_in_global_search": 1,
  "sort_field": "modified",
- "sort_order": "ASC"
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 1
 }

@@ -118,7 +118,7 @@
  "icon": "fa fa-code-fork",
  "idx": 1,
  "links": [],
- "modified": "2023-04-17 12:12:27.308044",
+ "modified": "2023-04-27 17:07:52.232738",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Branch",
@@ -161,5 +161,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
+ "track_changes": 1,
  "track_views": 1
 }

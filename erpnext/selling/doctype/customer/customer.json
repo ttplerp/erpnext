@@ -99,9 +99,10 @@
   {
    "fieldname": "naming_series",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Series",
    "no_copy": 1,
-   "options": "CUST-.YYYY.-",
+   "options": "CUS",
    "set_only_once": 1
   },
   {
@@ -116,7 +117,10 @@
    "bold": 1,
    "fieldname": "customer_name",
    "fieldtype": "Data",
+   "in_filter": 1,
    "in_global_search": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Customer Name",
    "no_copy": 1,
    "oldfieldname": "customer_name",
@@ -627,7 +631,7 @@
    "link_fieldname": "party"
   }
  ],
- "modified": "2023-04-17 12:12:11.042299",
+ "modified": "2023-04-27 17:05:48.921289",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Customer",

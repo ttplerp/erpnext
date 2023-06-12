@@ -97,6 +97,19 @@ class Customer(TransactionBase):
 		if self.sales_team:
 			if sum(member.allocated_percentage or 0 for member in self.sales_team) != 100:
 				frappe.throw(_("Total contribution percentage should be equal to 100"))
+		
+		self.check_for_duplicate_entry()
+
+	def check_for_duplicate_entry(self):
+		if self.customer_group == "Individual":
+			if len(self.cid_no) == 11:
+				if frappe.db.exists("Customer", {"cid_no": self.cid_no}):
+					frappe.throw("Customer already exists with the following CID No <b>{}</b>".format(self.cid_no))
+			else:
+				frappe.throw("CID No should be 11 digits")
+		else:
+			if frappe.db.exists("Customer", {"tpn_no": self.tpn_no}):
+				frappe.throw("Customer already exists with the following TPN No <b>{}</b>".format(self.tpn_no))
 
 	@frappe.whitelist()
 	def get_customer_group_details(self):

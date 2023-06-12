@@ -2075,102 +2075,102 @@
    "read_only": 1
   },
   {
-    "depends_on": "eval:doc.order_type == \"Vehicle Repairing\"",
-    "fieldname": "vehicle_details_section",
-    "fieldtype": "Section Break",
-    "label": "Vehicle Details"
-   },
-   {
-    "default": "Sales",
-    "fieldname": "order_type",
-    "fieldtype": "Select",
-    "hide_days": 1,
-    "hide_seconds": 1,
-    "label": "Order Type",
-    "oldfieldname": "order_type",
-    "oldfieldtype": "Select",
-    "options": "Sales\nMaintenance\nVehicle Repairing\nShopping Cart",
-    "print_hide": 1,
-    "read_only":1
-   },
-   {
-    "fieldname": "type",
-    "fieldtype": "Select",
-    "label": "Type",
-    "mandatory_depends_on": "eval:doc.order_type == \"Vehicle Repairing\"",
-    "options": "\nPaid Service\nFree Service"
-   },
-   {
-    "fieldname": "vehicle_reg_no",
-    "fieldtype": "Data",
-    "label": "Vehicle Reg No.",
-    "mandatory_depends_on": "eval:doc.order_type == \"Vehicle Repairing\""
-   },
-   {
-    "fieldname": "current_readingkm",
-    "fieldtype": "Data",
-    "label": "Current Reading(KM)"
-   },
-   {
-    "fieldname": "tvo_no",
-    "fieldtype": "Data",
-    "label": "TVO No."
-   },
-   {
-    "fieldname": "chasses_no",
-    "fieldtype": "Data",
-    "label": "Chasses No",
-    "mandatory_depends_on": "eval:doc.order_type == \"Vehicle Repairing\""
-   },
-   {
-    "depends_on": "eval:doc.order_type == \"Vehicle Repairing\"",
-    "fieldname": "model_name",
-    "fieldtype": "Data",
-    "label": "Model Name"
-   },
-   {
-    "fieldname": "make",
-    "fieldtype": "Data",
-    "label": "Make"
-   },
-   {
-    "fieldname": "engine_no",
-    "fieldtype": "Data",
-    "label": "Engine No"
-   },
-   {
-    "fieldname": "date_time_in",
-    "fieldtype": "Datetime",
-    "label": "Date & Time(IN) "
-   },
-   {
-    "fieldname": "date_time_out",
-    "fieldtype": "Datetime",
-    "label": "Date & Time(OUT)"
-   },
-   {
-    "fieldname": "employee",
-    "fieldtype": "Link",
-    "label": "Attended By",
-    "options": "Employee"
-   },
-   {
-    "fetch_from": "employee.employee_name",
-    "fieldname": "technician_name",
-    "fieldtype": "Data",
-    "label": "Technician Name",
-    "read_only": 1
-   },
-   {
-    "fieldname": "column_break_112",
-    "fieldtype": "Column Break"
-   },
-   {
-    "default": "0",
-    "fieldname": "completed_service",
-    "fieldtype": "Check",
-    "label": "Completed"
-   }
+   "depends_on": "eval:doc.order_type == \"Vehicle Repairing\"",
+   "fieldname": "vehicle_details_section",
+   "fieldtype": "Section Break",
+   "label": "Vehicle Details"
+  },
+  {
+   "default": "Sales",
+   "fieldname": "order_type",
+   "fieldtype": "Select",
+   "hide_days": 1,
+   "hide_seconds": 1,
+   "label": "Order Type",
+   "oldfieldname": "order_type",
+   "oldfieldtype": "Select",
+   "options": "Sales\nMaintenance\nVehicle Repairing\nShopping Cart",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "mandatory_depends_on": "eval:doc.order_type == \"Vehicle Repairing\"",
+   "options": "\nPaid Service\nFree Service"
+  },
+  {
+   "fieldname": "vehicle_reg_no",
+   "fieldtype": "Data",
+   "label": "Vehicle Reg No.",
+   "mandatory_depends_on": "eval:doc.order_type == \"Vehicle Repairing\""
+  },
+  {
+   "fieldname": "current_readingkm",
+   "fieldtype": "Data",
+   "label": "Current Reading(KM)"
+  },
+  {
+   "fieldname": "tvo_no",
+   "fieldtype": "Data",
+   "label": "TVO No."
+  },
+  {
+   "fieldname": "chasses_no",
+   "fieldtype": "Data",
+   "label": "Chasses No",
+   "mandatory_depends_on": "eval:doc.order_type == \"Vehicle Repairing\""
+  },
+  {
+   "depends_on": "eval:doc.order_type == \"Vehicle Repairing\"",
+   "fieldname": "model_name",
+   "fieldtype": "Data",
+   "label": "Model Name"
+  },
+  {
+   "fieldname": "make",
+   "fieldtype": "Data",
+   "label": "Make"
+  },
+  {
+   "fieldname": "engine_no",
+   "fieldtype": "Data",
+   "label": "Engine No"
+  },
+  {
+   "fieldname": "date_time_in",
+   "fieldtype": "Datetime",
+   "label": "Date & Time(IN) "
+  },
+  {
+   "fieldname": "date_time_out",
+   "fieldtype": "Datetime",
+   "label": "Date & Time(OUT)"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Attended By",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "technician_name",
+   "fieldtype": "Data",
+   "label": "Technician Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_112",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "completed_service",
+   "fieldtype": "Check",
+   "label": "Completed"
+  }
  ],
  "icon": "fa fa-file-text",
  "idx": 181,
@@ -2180,8 +2180,9 @@
    "group": "Reference",
    "link_doctype": "POS Invoice",
    "link_fieldname": "consolidated_invoice"
-  }],
- "modified": "2023-04-17 12:11:57.346479",
+  }
+ ],
+ "modified": "2023-04-27 17:05:50.349646",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Sales Invoice",

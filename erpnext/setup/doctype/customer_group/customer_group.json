@@ -152,7 +152,7 @@
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2023-04-17 12:13:25.254013",
+ "modified": "2023-04-27 17:07:53.124558",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Customer Group",
@@ -219,5 +219,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
+ "track_changes": 1,
  "track_views": 1
 }

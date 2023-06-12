@@ -84,7 +84,7 @@
  "idx": 1,
  "links": [],
  "max_attachments": 1,
- "modified": "2023-04-17 12:12:49.294671",
+ "modified": "2023-04-27 17:07:27.251108",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Price List",
@@ -142,5 +142,6 @@
  "sort_field": "modified",
  "sort_order": "ASC",
  "states": [],
+ "track_changes": 1,
  "track_views": 1
 }

@@ -89,7 +89,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-04-21 11:13:49.831769",
+ "modified": "2023-04-27 17:08:50.273978",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Bank Reconciliation Tool",
@@ -108,5 +108,7 @@
  ],
  "quick_entry": 1,
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
 }

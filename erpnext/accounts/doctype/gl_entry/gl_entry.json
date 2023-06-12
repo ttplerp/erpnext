@@ -272,7 +272,7 @@
  "idx": 1,
  "in_create": 1,
  "links": [],
- "modified": "2023-04-17 12:12:13.673906",
+ "modified": "2023-04-27 17:08:07.180384",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "GL Entry",
@@ -316,5 +316,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
+ "track_changes": 1,
  "track_views": 1
 }

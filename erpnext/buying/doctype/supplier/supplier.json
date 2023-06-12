@@ -117,7 +117,7 @@
    "no_copy": 1,
    "oldfieldname": "naming_series",
    "oldfieldtype": "Select",
-   "options": "SUP-.YYYY.-",
+   "options": "VEN",
    "set_only_once": 1
   },
   {
@@ -694,7 +694,7 @@
    "link_fieldname": "party"
   }
  ],
- "modified": "2023-04-17 12:12:07.246902",
+ "modified": "2023-04-27 17:05:44.301838",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Supplier",

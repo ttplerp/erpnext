@@ -59,7 +59,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-04-17 12:12:47.621537",
+ "modified": "2023-04-27 17:07:23.825877",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Auto Production Setting",
@@ -83,5 +83,6 @@
  "sort_order": "DESC",
  "states": [],
  "title_field": "item_code",
+ "track_changes": 1,
  "track_views": 1
 }

@@ -152,6 +152,19 @@ frappe.ui.form.on("Customer", {
 		grid.set_column_disp("allocated_amount", false);
 		grid.set_column_disp("incentives", false);
 	},
+
+	customer_group:function(frm){
+		if (frm.doc.customer_group === "Individual"){
+			frm.toggle_reqd("cid_no", 1)
+			frm.toggle_reqd("tpn_no", 0)
+		} else {
+			frm.toggle_reqd("tpn_no", 1)
+			frm.toggle_reqd("cid_no", 0)
+
+		}
+
+	},
+
 	validate: function(frm) {
 		if(frm.doc.lead_name) frappe.model.clear_doc("Lead", frm.doc.lead_name);
 

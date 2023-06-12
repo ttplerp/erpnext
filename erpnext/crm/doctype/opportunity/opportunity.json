@@ -622,7 +622,7 @@
  "icon": "fa fa-info-sign",
  "idx": 195,
  "links": [],
- "modified": "2023-04-17 12:13:34.608599",
+ "modified": "2023-04-27 17:07:57.264308",
  "modified_by": "Administrator",
  "module": "CRM",
  "name": "Opportunity",
@@ -663,6 +663,7 @@
  "subject_field": "title",
  "timeline_field": "party_name",
  "title_field": "title",
+ "track_changes": 1,
  "track_seen": 1,
  "track_views": 1
 }

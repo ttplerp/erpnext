@@ -33,7 +33,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-04-17 12:12:59.195464",
+ "modified": "2023-04-27 17:07:21.920398",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Cost Of Product List",
@@ -68,5 +68,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
+ "track_changes": 1,
  "track_views": 1
 }

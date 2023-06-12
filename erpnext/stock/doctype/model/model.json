@@ -27,7 +27,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-04-17 12:12:07.995044",
+ "modified": "2023-04-27 17:07:27.510773",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Model",
@@ -75,5 +75,6 @@
  "sort_order": "DESC",
  "states": [],
  "title_field": "model",
+ "track_changes": 1,
  "track_views": 1
 }

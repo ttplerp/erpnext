@@ -455,7 +455,8 @@ def get_asset_details(asset, finance_book=None):
 	value_after_depreciation = (
 		# asset.finance_books[idx - 1].value_after_depreciation
 		# add by biren to include pro rated depreciated amount in value after depreciation
-		frappe.db.get_value("Asset Finance Book", asset.finance_books[idx - 1].name, "value_after_depreciation")
+		frappe.db.get_value("Asset Finance Book", asset.finance_books[idx - 1].name, 
+		      "value_after_depreciation")
 		if asset.calculate_depreciation
 		else asset.value_after_depreciation
 	)

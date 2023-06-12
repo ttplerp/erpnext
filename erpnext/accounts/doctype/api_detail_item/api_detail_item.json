@@ -1,4 +1,5 @@
 {
+ "actions": [],
  "creation": "2021-05-20 03:38:40.081119",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -31,7 +32,8 @@
   }
  ],
  "istable": 1,
- "modified": "2021-06-20 23:11:56.351251",
+ "links": [],
+ "modified": "2023-04-27 17:08:47.690766",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "API Detail Item",
@@ -39,5 +41,7 @@
  "permissions": [],
  "quick_entry": 1,
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
 }

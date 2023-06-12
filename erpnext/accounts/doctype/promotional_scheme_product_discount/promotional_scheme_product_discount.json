@@ -166,12 +166,14 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2021-03-06 21:58:18.162346",
+ "modified": "2023-04-27 17:08:50.665580",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Promotional Scheme Product Discount",
  "owner": "Administrator",
  "permissions": [],
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
 }

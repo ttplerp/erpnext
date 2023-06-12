@@ -56,11 +56,14 @@ class Item(Document):
 		self.set_onload("asset_naming_series", get_asset_naming_series())
 
 	def autoname(self):
-		if frappe.db.exists("Item",{"item_group":self.item_group}):
-			prev_item = frappe.db.sql("select name from `tabItem` where item_group = '{}' order by name desc limit 1".format(self.item_group))
-			self.item_code = self.name = cstr(cint(prev_item[0][0]) + 1)
-		else:
-			self.item_code = self.name = make_autoname('ABC{}.#####'.format(frappe.db.get_value('Item Group',self.item_group,'item_code_base')))[3:]
+		# if frappe.db.exists("Item",{"item_group":self.item_group}):
+		# 	prev_item = frappe.db.sql("select name from `tabItem` where item_group = '{}' order by name desc limit 1".format(self.item_group))
+		# 	self.item_code = self.name = cstr(cint(prev_item[0][0]) + 1)
+		# else:
+		# 	self.item_code = self.name = make_autoname('ABC{}.#####'.format(frappe.db.get_value('Item Group',self.item_group,'item_code_base')))[3:]
+		
+		# abb = frappe.db.get_value('Item Group', self.item_group, 'item_group_abbreviation')
+		self.item_code = make_autoname(('{}.######'.format(self.abb)))
 
 	def after_insert(self):
 		"""set opening stock and item price"""
@@ -108,6 +111,7 @@ class Item(Document):
 		self.cant_change()
 		self.validate_item_tax_net_rate_range()
 		set_item_tax_from_hsn_code(self)
+		self.check_for_duplicate_entries()
 
 		if not self.is_new():
 			self.old_item_group = frappe.db.get_value(self.doctype, self.name, "item_group")
@@ -130,6 +134,14 @@ class Item(Document):
 			if self.valuation_rate:
 				frappe.throw(_('"Customer Provided Item" cannot have Valuation Rate'))
 			self.default_material_request_type = "Customer Provided"
+
+	def check_for_duplicate_entries(self):
+		if self.item_group and self.item_group in ("Fixed Assets", "Service", "Export", "Consumable"):
+			if frappe.db.exists("Item", {"item_name": self.item_name, "disabled": 0}):
+				frappe.throw("Item already exists with name <b>{}</b>".format(self.item_name))
+		else:
+			if self.item_type and frappe.db.exists("Item", {"item_type": self.item_type, "parts_no": self.parts_no}):
+				frappe.throw("Item already exists with Type <b>{}</b> and Part No <b>{}</b>".format(self.item_name, self.parts_no))
 
 	def add_price(self, price_list=None):
 		"""Add a new price"""

@@ -321,7 +321,7 @@ erpnext.taxes_and_totals = class TaxesAndTotals extends erpnext.payments {
 			if (tax.charge_type == "Actual") {
 				actual_tax_dict[tax.idx] = flt(tax.tax_amount, precision("tax_amount", tax));
 			}
-			if (tax.payable_to_different_vendor === 1 && tax.amount_paid_to_different_vendors){
+			if (me.frm.doc.doctype == "Purchase Receipt" && tax.payable_to_different_vendor === 1 && tax.amount_paid_to_different_vendors){
 				new_tax_amount = flt(tax.amount_paid_to_different_vendors) / flt(me.frm.doc.conversion_rate);
 				tax.tax_amount = flt(new_tax_amount)
 				actual_tax_dict[tax.idx] = flt(tax.tax_amount, precision("tax_amount", tax));
@@ -488,7 +488,12 @@ erpnext.taxes_and_totals = class TaxesAndTotals extends erpnext.payments {
 	}
 
 	round_off_base_values(tax) {
-		if (frappe.flags.round_off_applicable_accounts.includes(tax.account_head)) {
+		if (tax.payable_to_different_vendor && tax.payable_to_different_vendor === 1 && tax.amount_paid_to_different_vendors){
+			// new_tax_amount = flt(tax.amount_paid_to_different_vendors) / flt(me.frm.doc.conversion_rate);
+			tax.base_tax_amount= Math.round(tax.amount_paid_to_different_vendors);
+			tax.base_tax_amount_after_discount_amount = Math.round(tax.amount_paid_to_different_vendors);
+		}
+		else if (frappe.flags.round_off_applicable_accounts.includes(tax.account_head)) {
 			tax.base_tax_amount= Math.round(tax.base_tax_amount);
 			tax.base_tax_amount_after_discount_amount = Math.round(tax.base_tax_amount_after_discount_amount);
 		}

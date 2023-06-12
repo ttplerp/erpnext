@@ -130,7 +130,6 @@ cur_frm.cscript = new erpnext.setup.EmployeeController({
 	frm: cur_frm
 });
 
-
 frappe.tour['Employee'] = [
 	{
 		fieldname: "first_name",

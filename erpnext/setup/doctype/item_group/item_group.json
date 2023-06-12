@@ -17,6 +17,7 @@
   "is_sub_group",
   "image",
   "column_break_5",
+  "item_group_abbreviation",
   "defaults",
   "item_group_defaults",
   "sec_break_taxes",
@@ -244,6 +245,13 @@
    "fieldtype": "Check",
    "in_list_view": 1,
    "label": "Is Sub Group"
+  },
+  {
+   "depends_on": "eval:doc.is_group == 1;",
+   "fieldname": "item_group_abbreviation",
+   "fieldtype": "Data",
+   "label": "Item Group Abbreviation",
+   "mandatory_depends_on": "eval:doc.is_group == 1;"
   }
  ],
  "icon": "fa fa-sitemap",
@@ -252,7 +260,7 @@
  "is_tree": 1,
  "links": [],
  "max_attachments": 3,
- "modified": "2023-04-17 12:12:16.028690",
+ "modified": "2023-04-27 17:05:48.404438",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Item Group",
@@ -325,5 +333,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
+ "track_changes": 1,
  "track_views": 1
 }
