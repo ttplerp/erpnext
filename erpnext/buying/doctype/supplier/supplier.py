@@ -4,6 +4,8 @@
 
 import frappe
 import frappe.defaults
+import re
+
 from frappe import _, msgprint
 from frappe.contacts.address_and_contact import (
 	delete_contact_and_address,
@@ -57,6 +59,7 @@ class Supplier(TransactionBase):
 
 	def validate(self):
 		self.flags.is_new_doc = self.is_new()
+		self.vendor_tpn_no = self.vendor_tpn_no.upper()
 
 		# validation for Naming Series mandatory field...
 		if frappe.defaults.get_global_default("supp_master_name") == "Naming Series":
@@ -65,6 +68,7 @@ class Supplier(TransactionBase):
 
 		validate_party_accounts(self)
 		self.validate_internal_supplier()
+		self.validate_domestic_supplier()
 
 	@frappe.whitelist()
 	def get_supplier_group_details(self):
@@ -103,6 +107,15 @@ class Supplier(TransactionBase):
 					frappe.bold(self.represents_company)
 				)
 			)
+
+	def validate_domestic_supplier(self):
+		if self.supplier_type == "Domestic Vendor":
+			if re.match("[A-Z]{3}\d{5}", self.vendor_tpn_no):
+				pass
+			else:
+				frappe.throw("Enter Valid TPN")
+		else:
+			pass
 
 	def create_primary_contact(self):
 		from erpnext.selling.doctype.customer.customer import make_contact
