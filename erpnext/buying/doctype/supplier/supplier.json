@@ -544,7 +544,8 @@
   {
    "fieldname": "account_number",
    "fieldtype": "Data",
-   "label": "Account Number"
+   "label": "Account Number",
+   "reqd": 1
   }
  ],
  "icon": "fa fa-user",
@@ -557,7 +558,7 @@
    "link_fieldname": "party"
   }
  ],
- "modified": "2023-03-07 12:16:20.198350",
+ "modified": "2023-06-12 09:36:26.586386",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Supplier",
