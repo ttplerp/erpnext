@@ -11,7 +11,7 @@
   "equipment_category",
   "budget_account",
   "disabled",
-  "pol_expense_account",
+  "pol_advance_account",
   "r_m_expense_account",
   "hiring_rate_revision"
  ],
@@ -37,13 +37,6 @@
    "label": "Disabled"
   },
   {
-   "fieldname": "pol_expense_account",
-   "fieldtype": "Link",
-   "label": "POL Expense Account",
-   "options": "Account",
-   "reqd": 1
-  },
-  {
    "fieldname": "r_m_expense_account",
    "fieldtype": "Link",
    "label": "R & M Expense Account",
@@ -56,11 +49,18 @@
    "label": "Hiring Rate Revision(%)",
    "precision": "2",
    "reqd": 1
+  },
+  {
+   "fieldname": "pol_advance_account",
+   "fieldtype": "Link",
+   "label": "POL Advance Account",
+   "options": "Account",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-02 12:48:00.215168",
+ "modified": "2023-06-07 16:19:50.822996",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment Category",

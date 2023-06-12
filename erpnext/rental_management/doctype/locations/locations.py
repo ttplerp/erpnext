@@ -19,5 +19,10 @@ class Locations(Document):
 
 		prop_mgt_amt = 0
 		for a in self.get('property_management_item'):
+			if a.is_percent == 1:
+				a.amount = 0
+			else:
+				a.percent = 0
+			
 			prop_mgt_amt += flt(a.amount)
 		self.total_property_management_amount = prop_mgt_amt

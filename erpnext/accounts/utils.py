@@ -1498,7 +1498,7 @@ def update_voucher_outstanding(voucher_type, voucher_no, account, party_type, pa
 	ple_query = QueryPaymentLedger()
 	# on cancellation outstanding can be an empty list
 	voucher_outstanding = ple_query.get_voucher_outstandings(vouchers, common_filter=common_filter)
-	if voucher_type in ["Sales Invoice", "Purchase Invoice", "Fees","EME Invoice","Transporter Invoice","Repair And Service Invoice", "POL Expense","Coal Raising Invoice", "Project Invoice", "Hire Charge Invoice", "Rental Bill", "MR Employee Invoice"] and voucher_outstanding:
+	if voucher_type in ["Sales Invoice", "Purchase Invoice", "Fees","EME Invoice","Transporter Invoice","Repair And Service Invoice", "POL Advance","Coal Raising Invoice", "Project Invoice", "Hire Charge Invoice", "Rental Bill", "MR Employee Invoice"] and voucher_outstanding:
 		outstanding = voucher_outstanding[0]
 		ref_doc = frappe.get_doc(voucher_type, voucher_no)
 		# Didn't use db_set for optimisation purpose
@@ -1507,9 +1507,9 @@ def update_voucher_outstanding(voucher_type, voucher_no, account, party_type, pa
 			voucher_type, voucher_no, "outstanding_amount", outstanding["outstanding_in_account_currency"]
 		)
 		ref_doc.set_status(update=True)
-	elif voucher_type == "POL Expense" and len(voucher_outstanding) == 0:
+	elif voucher_type == "POL Advance" and len(voucher_outstanding) == 0:
 		# outstanding amount taken care
-		pol_exp = frappe.get_doc("POL Expense", voucher_no)
+		pol_exp = frappe.get_doc("POL Advance", voucher_no)
 		if cint(pol_exp.use_common_fuelbook) == 1:
 			total_debit = frappe.db.get_value("Journal Entry", pol_exp.journal_entry, "total_debit")
 			ref_doc = frappe.get_doc(voucher_type, voucher_no)

@@ -8,6 +8,8 @@
  "field_order": [
   "property_management_type",
   "cb",
+  "is_percent",
+  "percent",
   "amount"
  ],
  "fields": [
@@ -24,17 +26,33 @@
    "fieldtype": "Column Break"
   },
   {
+   "depends_on": "eval: doc.is_percent == 0",
    "fieldname": "amount",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Amount",
-   "reqd": 1
+   "label": "Direct Amount",
+   "mandatory_depends_on": "eval: doc.is_percent == 0"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_percent",
+   "fieldtype": "Check",
+   "label": "Is Percent"
+  },
+  {
+   "depends_on": "eval: doc.is_percent == 1",
+   "description": "? percent on Rent",
+   "fieldname": "percent",
+   "fieldtype": "Percent",
+   "in_list_view": 1,
+   "label": "Percent on Rent Amount",
+   "mandatory_depends_on": "eval: doc.is_percent == 1"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-06-03 09:12:10.058357",
+ "modified": "2023-06-12 14:58:37.029311",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Property Management Item",

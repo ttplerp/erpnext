@@ -115,7 +115,6 @@ class ImprestRecoup(Document):
 			"account": debit_account,
 			"debit_in_account_currency": flt(total_balance),
 			"cost_center": self.cost_center,
-			"business_activity": self.business_activity
 		})
 		
 		je.append("accounts", {
@@ -126,7 +125,6 @@ class ImprestRecoup(Document):
 			"reference_name": self.name,
 			"party_type": party_type,
 			"party": party,
-			"business_activity": self.business_activity
 		})
 
 		je.insert()
@@ -243,7 +241,6 @@ class ImprestRecoup(Document):
 				"account": i.account,
 				"debit_in_account_currency": i.amount,
 				"cost_center": self.cost_center,
-				"business_activity": self.business_activity
 			})
 		
 		je.append("accounts", {
@@ -254,7 +251,6 @@ class ImprestRecoup(Document):
 			"reference_name": self.name,
 			"party_type": party_type,
 			"party": party,
-			"business_activity": self.business_activity,
 		})
 
 		je.insert()
@@ -272,7 +268,6 @@ class ImprestRecoup(Document):
 				"title": f"Auto Imprest Allocation from - {self.name}",
 				"remarks": f"Note: Auto created Imprest Advance Allocation from Recoup - {self.name}",
 				"first_advance": 0,
-				"business_activity": self.business_activity,
 				"company": self.company,
 				"imprest_type": self.imprest_type,
 				"party_type": self.party_type,
@@ -297,3 +292,27 @@ def get_imprest_recoup_account(recoup_type, company):
 			)
 		)
 	return {"account": account}
+
+
+def get_permission_query_conditions(user):
+	if not user: user = frappe.session.user
+	user_roles = frappe.get_roles(user)
+
+	if user == "Administrator" or "System Manager" in user_roles or "Accounts User" in user_roles or "Account Manager" in user_roles: 
+		return
+
+	return """(
+		`tabImprest Recoup`.owner = '{user}'
+		or
+		exists(select 1
+			from `tabEmployee` as e
+			where e.branch = `tabImprest Recoup`.branch
+			and e.user_id = '{user}')
+		or
+		exists(select 1
+			from `tabEmployee` e, `tabAssign Branch` ab, `tabBranch Item` bi
+			where e.user_id = '{user}'
+			and ab.employee = e.name
+			and bi.parent = ab.name
+			and bi.branch = `tabImprest Recoup`.branch)
+	)""".format(user=user)

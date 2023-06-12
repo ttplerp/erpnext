@@ -43,11 +43,12 @@
    "mandatory_depends_on": "eval: doc.building_category != 'Pilot Housing'"
   },
   {
+   "default": "Unallocated",
    "fieldname": "status",
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Status",
-   "options": "\nAllocated\nSurrendered\nUnder Maintenance"
+   "options": "Unallocated\nAllocated\nSurrendered\nUnder Maintenance"
   },
   {
    "fetch_from": "block_no.building_category",
@@ -73,7 +74,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-06 14:00:09.382442",
+ "modified": "2023-06-12 12:00:19.094545",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Flat No",

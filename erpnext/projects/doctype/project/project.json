@@ -240,17 +240,20 @@
    "collapsible": 1,
    "fieldname": "section_break_18",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Start and End Dates"
   },
   {
    "fieldname": "actual_start_date",
    "fieldtype": "Date",
+   "hidden": 1,
    "label": "Actual Start Date (via Time Sheet)",
    "read_only": 1
   },
   {
    "fieldname": "actual_time",
    "fieldtype": "Float",
+   "hidden": 1,
    "label": "Actual Time (in Hours via Time Sheet)",
    "read_only": 1
   },
@@ -261,6 +264,7 @@
   {
    "fieldname": "actual_end_date",
    "fieldtype": "Date",
+   "hidden": 1,
    "label": "Actual End Date (via Time Sheet)",
    "oldfieldname": "act_completion_date",
    "oldfieldtype": "Date",
@@ -270,6 +274,7 @@
    "collapsible": 1,
    "fieldname": "project_details",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Costing and Billing",
    "oldfieldtype": "Section Break",
    "options": "fa fa-money"
@@ -277,6 +282,7 @@
   {
    "fieldname": "estimated_costing",
    "fieldtype": "Currency",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Estimated Cost",
    "oldfieldname": "project_value",
@@ -286,6 +292,7 @@
   {
    "fieldname": "total_costing_amount",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Total Costing Amount (via Timesheets)",
    "read_only": 1
   },
@@ -342,6 +349,7 @@
    "collapsible": 1,
    "fieldname": "margin",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Margin",
    "oldfieldtype": "Column Break",
    "width": "50%"
@@ -349,6 +357,7 @@
   {
    "fieldname": "gross_margin",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Gross Margin",
    "oldfieldname": "gross_margin_value",
    "oldfieldtype": "Currency",
@@ -525,7 +534,7 @@
  "index_web_pages_for_search": 1,
  "links": [],
  "max_attachments": 4,
- "modified": "2023-05-18 14:57:16.435424",
+ "modified": "2023-06-12 13:37:03.543137",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project",

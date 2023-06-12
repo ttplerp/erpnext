@@ -1,7 +1,7 @@
 {
  "charts": [
   {
-   "chart_name": "Employee Leave Balance",
+   "chart_name": "Employee Leave Taken Report",
    "label": "Employee Leave Balance"
   }
  ],
@@ -317,7 +317,7 @@
    "type": "Link"
   }
  ],
- "modified": "2022-12-15 17:11:01.903199",
+ "modified": "2023-06-07 11:26:43.024240",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Home",

@@ -12,11 +12,10 @@
   "company",
   "section_break_4",
   "branch",
-  "posting_date",
   "imprest_type",
   "column_break_001",
   "cost_center",
-  "business_activity",
+  "posting_date",
   "is_opening",
   "first_advance",
   "section_break_002",
@@ -66,13 +65,6 @@
   {
    "fieldname": "column_break_001",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "business_activity",
-   "fieldtype": "Link",
-   "label": "Business Activity",
-   "options": "Business Activity",
-   "reqd": 1
   },
   {
    "fieldname": "party",
@@ -233,7 +225,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-31 18:06:16.496035",
+ "modified": "2023-06-07 12:12:54.659845",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Imprest Advance",

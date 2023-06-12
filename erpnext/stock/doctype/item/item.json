@@ -927,9 +927,10 @@
    "label": "Is Production Item"
   },
   {
+   "description": "Item Old Code /or BSR Code for BSR Service Item",
    "fieldname": "item_old_code",
    "fieldtype": "Data",
-   "label": "Item Old Code",
+   "label": "Item Old Code (or BSR Code)",
    "unique": 1
   },
   {
@@ -955,7 +956,7 @@
    "default": "0",
    "fieldname": "is_service_item",
    "fieldtype": "Check",
-   "label": "Is Service Item"
+   "label": "Is BSR Service Item"
   }
  ],
  "icon": "fa fa-tag",
@@ -963,7 +964,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-26 11:52:31.390860",
+ "modified": "2023-06-11 23:06:43.945862",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",

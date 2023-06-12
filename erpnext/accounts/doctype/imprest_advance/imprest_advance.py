@@ -132,7 +132,6 @@ class ImprestAdvance(Document):
 			"account": debit_account,
 			"debit_in_account_currency": self.amount,
 			"cost_center": self.cost_center,
-			"business_activity": self.business_activity,
 			"reference_type": "Imprest Advance",
 			"reference_name": self.name,
 			"party_type": party_type,
@@ -143,10 +142,33 @@ class ImprestAdvance(Document):
 			"account": credit_account,
 			"credit_in_account_currency": self.amount,
 			"cost_center": self.cost_center,
-			"business_activity": self.business_activity
 		})
 
 		je.insert()
 		# Set a reference to the claim journal entry
 		self.db_set("journal_entry", je.name)
 		frappe.msgprint("Journal Entry created. {}".format(frappe.get_desk_link("Journal Entry", je.name)))
+
+def get_permission_query_conditions(user):
+	if not user: user = frappe.session.user
+	user_roles = frappe.get_roles(user)
+
+	if user == "Administrator" or "System Manager" in user_roles or "Accounts User" in user_roles or "Account Manager" in user_roles: 
+		return
+
+	return """(
+		`tabImprest Advance`.owner = '{user}'
+		or
+		exists(select 1
+			from `tabEmployee` as e
+			where e.branch = `tabImprest Advance`.branch
+			and e.user_id = '{user}')
+		or
+		exists(select 1
+			from `tabEmployee` e, `tabAssign Branch` ab, `tabBranch Item` bi
+			where e.user_id = '{user}'
+			and ab.employee = e.name
+			and bi.parent = ab.name
+			and bi.branch = `tabImprest Advance`.branch)
+	)""".format(user=user)
+

@@ -740,7 +740,10 @@ frappe.ui.form.on('Stock Entry Detail', {
 			frm.refresh_field("items")
 		}
 	},
-
+	// "qty" :function(frm, cdt, cdn){
+		
+	// 	console.log("her")
+	// },
 	conversion_factor: function (frm, cdt, cdn) {
 		frm.events.set_basic_rate(frm, cdt, cdn);
 	},
@@ -859,7 +862,6 @@ frappe.ui.form.on('Stock Entry Detail', {
 	// 	});
 	// }
 });
-
 var validate_sample_quantity = function (frm, cdt, cdn) {
 	var d = locals[cdt][cdn];
 	if (d.sample_quantity && frm.doc.purpose == "Material Receipt") {

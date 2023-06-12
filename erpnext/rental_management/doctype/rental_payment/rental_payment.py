@@ -119,7 +119,7 @@ class RentalPayment(AccountsController):
 			if a.rent_write_off:
 				a.balance_rent = flt(a.bill_amount) - flt(a.rent_received) - flt(a.tds_amount) - flt(a.discount_amount) - flt(a.rent_write_off_amount)
 			else:
-				a.balance_rent = flt(a.bill_amount) - flt(a.rent_received) - flt(a.tds_amount) - flt(a.discount_amount)
+				a.balance_rent = flt(a.bill_amount) - flt(a.rent_received) - flt(a.tds_amount) - flt(a.discount_amount) - flt(a.property_management_amount)
 
 			if flt(rent_received_amt) > flt(a.bill_amount):
 				a.rent_received = flt(a.bill_amount) - flt(a.tds_amount) - flt(a.discount_amount) - flt(a.property_management_amount)

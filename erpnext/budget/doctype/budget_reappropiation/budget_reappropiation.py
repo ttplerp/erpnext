@@ -3,7 +3,7 @@
 import frappe
 from frappe import _, msgprint, scrub
 from frappe.model.document import Document
-from frappe.utils import cint, cstr, flt, fmt_money, formatdate, get_link_to_form, nowdate
+from frappe.utils import cint, cstr, flt, fmt_money, formatdate, get_link_to_form, nowdate, datetime
 from erpnext.budget.doctype.budget.budget import validate_expense_against_budget
 from erpnext.custom_workflow import validate_workflow_states, notify_workflow_states
 
@@ -72,12 +72,17 @@ class BudgetReappropiation(Document):
 		args.budget_against = self.budget_against
 		args.cost_center = self.from_cost_center if self.budget_against == "Cost Center" else None
 		args.project = self.from_project if self.budget_against == "Project" else None
-		args.posting_date = self.appropriation_on
 		args.fiscal_year = self.fiscal_year
 		args.company = self.company
 		for a in self.get('items'):
+			for month_id in range(1, 13):
+				month = datetime.date(2023, month_id, 1).strftime("%B")
+				if a.from_month == month:
+					month_num  = str("0")+str(month_id) if month_id < 10 else str(month_id)
+					first_day = self.fiscal_year + "-" + month_num + "-" + "01"
 			args.account = a.from_account
 			args.amount = a.amount
+			args.posting_date = first_day
 		validate_expense_against_budget(args)
 
 	# Added by Thukten on 13th September, 2022

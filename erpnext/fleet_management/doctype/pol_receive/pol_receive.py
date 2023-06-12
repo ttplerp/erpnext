@@ -88,13 +88,13 @@ class POLReceive(StockController):
 	def update_pol_expense(self):
 		if self.docstatus == 2 :
 			for item in self.items:
-				doc = frappe.get_doc("POL Expense", {'name':item.pol_expense})
+				doc = frappe.get_doc("POL Advance", {'name':item.pol_expense})
 				doc.adjusted_amount = flt(doc.adjusted_amount) - flt(item.allocated_amount)
 				doc.balance_amount  = flt(doc.amount) - flt(doc.adjusted_amount)
 				doc.save(ignore_permissions=True)
 			return
 		for item in self.items:
-			doc = frappe.get_doc("POL Expense", {'name':item.pol_expense})
+			doc = frappe.get_doc("POL Advance", {'name':item.pol_expense})
 			doc.balance_amount  = flt(item.balance_amount) - flt(item.allocated_amount)
 			doc.adjusted_amount = flt(doc.adjusted_amount) + flt(item.allocated_amount)
 			doc.save(ignore_permissions=True)
@@ -155,7 +155,7 @@ class POLReceive(StockController):
 	@frappe.whitelist()
 	def populate_child_table(self):
 		self.calculate_km_diff()
-		pol_exp = qb.DocType("POL Expense")
+		pol_exp = qb.DocType("POL Advance")
 		je 		= qb.DocType("Journal Entry")
 		data = []
 		if not self.equipment or not self.supplier:
@@ -181,7 +181,7 @@ class POLReceive(StockController):
 					.orderby( pol_exp.entry_date,order=qb.desc)
 					).run(as_dict=True)
 		if not data:
-			frappe.throw("NO POL Expense Found against Equipment {}.Make sure Journal  Entry are submitted".format(self.equipment))
+			frappe.throw("NO POL Advance Found against Equipment {}.Make sure Journal  Entry are submitted".format(self.equipment))
 		self.set('items',[])
 		allocated_amount = self.total_amount
 		total_amount_adjusted = 0

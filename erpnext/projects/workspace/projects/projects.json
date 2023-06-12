@@ -11,7 +11,7 @@
  "doctype": "Workspace",
  "for_user": "",
  "hide_custom": 0,
- "icon": "project",
+ "icon": "organization",
  "idx": 0,
  "label": "Projects",
  "links": [
@@ -316,8 +316,8 @@
    "type": "Link"
   }
  ],
- "modified": "2023-05-19 13:26:56.579650",
- "modified_by": "Administrator",
+ "modified": "2023-06-12 13:55:39.185675",
+ "modified_by": "lhendrup.dorji@thimphutechpark.bt",
  "module": "Projects",
  "name": "Projects",
  "owner": "Administrator",
@@ -326,7 +326,7 @@
  "quick_lists": [],
  "restrict_to_domain": "",
  "roles": [],
- "sequence_id": 28.0,
+ "sequence_id": 25.0,
  "shortcuts": [
   {
    "color": "Blue",

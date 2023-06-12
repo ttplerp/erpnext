@@ -159,6 +159,7 @@ class StockEntry(StockController):
 		self.set_actual_qty()
 		self.calculate_rate_and_amount()
 		self.validate_putaway_capacity()
+		self.set_total_cost()
 		self.update_status()
 		if not self.get("purpose") == "Manufacture":
 			# ignore scrap item wh difference and empty source/target wh
@@ -757,8 +758,41 @@ class StockEntry(StockController):
 				return flt(outgoing_items_cost / total_fg_qty)
 
 	def get_basic_rate_for_manufactured_item(self, finished_item_qty, outgoing_items_cost=0) -> float:
-		cost = frappe.db.get_value("BOM",self.bom_no,"total_cost")
-		return cost
+		labor_cost = frappe.db.get_value("BOM",self.bom_no,"labor_cost")
+		qty = frappe.db.get_value("Work Order",self.work_order,"qty")
+		raw_material_cost = 0
+		raw_mat_tot = frappe.db.sql("""
+					select transferred_qty, rate 
+					from `tabWork Order Item`
+					where parent ='{}'
+		""".format(self.work_order),as_dict=True)
+		for x in raw_mat_tot:
+			cal_amount =(x.transferred_qty)*(x.rate)
+			cal_amount =round(cal_amount, 2)
+			raw_material_cost += flt(cal_amount)
+		final_raw_cost = flt(raw_material_cost)/ flt(qty)
+		sum_labor_raw = flt(final_raw_cost)+flt(labor_cost)
+		hand_tools = frappe.db.get_single_value("Manufacturing Settings","hand_tools")
+		electrical_charges =frappe.db.get_single_value("Manufacturing Settings","electrical_charges")
+		supervision_charges =frappe.db.get_single_value("Manufacturing Settings","supervision_charges")
+		ohs_miscellaneous =frappe.db.get_single_value("Manufacturing Settings","ohs_miscellaneous")
+		profit =frappe.db.get_single_value("Manufacturing Settings","profit")
+		h_t = flt(hand_tools/100)* flt(sum_labor_raw)
+		e_c =flt(electrical_charges/100)* flt(sum_labor_raw)
+		s_c =flt(supervision_charges/100)* flt(sum_labor_raw)
+		o_m =flt(ohs_miscellaneous/100)* flt(sum_labor_raw)
+		pro =flt(profit/100)* flt(sum_labor_raw)
+		h_t =round(h_t, 2)
+		e_c = round(e_c, 2)
+		s_c =round(s_c, 2)
+		o_m =round(o_m, 2)
+		pro =round(pro, 2)
+		tot_cos = flt(sum_labor_raw) + flt(h_t) + flt(e_c) + flt(s_c) + flt(o_m) +flt(pro)
+		tot_cos =round(tot_cos, 2)
+
+		# frappe.throw(str(tot_cos))
+		# cost = frappe.db.get_value("BOM",self.bom_no,"total_cost")
+		return tot_cos
 
 		# scrap_items_cost = sum([flt(d.basic_amount) for d in self.get("items") if d.is_scrap_item])
 		#### Get raw materials cost from BOM if multiple material consumption entries
@@ -2290,6 +2324,47 @@ class StockEntry(StockController):
 		self.set_transfer_qty()
 		self.set_actual_qty()
 		self.calculate_rate_and_amount()
+
+	def set_total_cost(self):
+		if self.stock_entry_type != "Manufacture":
+			return
+		if not self.bom_no or not self.work_order:
+			return
+		labor_cost = frappe.db.get_value("BOM",self.bom_no,"labor_cost")
+		qty = frappe.db.get_value("Work Order",self.work_order,"qty")
+		item_code = frappe.db.get_value("Work Order",self.work_order,"production_item")
+		raw_material_cost = 0
+		for d in self.get("items"):
+			r_amount = 0
+			if d.item_code != item_code:
+				r_amount = flt(d.qty)*flt(d.basic_rate)
+				raw_material_cost += flt(r_amount)
+
+		final_raw_cost = flt(raw_material_cost)/ flt(qty)
+		sum_labor_raw = flt(final_raw_cost)+flt(labor_cost)
+
+		hand_tools = frappe.db.get_single_value("Manufacturing Settings","hand_tools")
+		electrical_charges =frappe.db.get_single_value("Manufacturing Settings","electrical_charges")
+		supervision_charges =frappe.db.get_single_value("Manufacturing Settings","supervision_charges")
+		ohs_miscellaneous =frappe.db.get_single_value("Manufacturing Settings","ohs_miscellaneous")
+		profit =frappe.db.get_single_value("Manufacturing Settings","profit")
+
+		h_t = flt(hand_tools/100)* flt(sum_labor_raw)
+		e_c =flt(electrical_charges/100)* flt(sum_labor_raw)
+		s_c =flt(supervision_charges/100)* flt(sum_labor_raw)
+		o_m =flt(ohs_miscellaneous/100)* flt(sum_labor_raw)
+		pro =flt(profit/100)* flt(sum_labor_raw)
+		h_t =round(h_t, 2)
+		e_c = round(e_c, 2)
+		s_c =round(s_c, 2)
+		o_m =round(o_m, 2)
+		pro =round(pro, 2)
+		tot_cos = flt(sum_labor_raw) + flt(h_t) + flt(e_c) + flt(s_c) + flt(o_m) +flt(pro)
+		tot_cos =round(tot_cos, 2)
+		for d in self.get("items"):
+			if d.item_code == item_code:
+				# frappe.throw("here")
+				d.basic_rate = flt(tot_cos)
 
 
 @frappe.whitelist()

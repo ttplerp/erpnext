@@ -10,12 +10,11 @@
   "title",
   "section_break_2",
   "branch",
-  "posting_date",
   "party_type",
   "imprest_type",
   "column_break_001",
   "cost_center",
-  "business_activity",
+  "posting_date",
   "party",
   "final",
   "section_break_001",
@@ -77,14 +76,6 @@
    "label": "Cost Center",
    "options": "Cost Center",
    "read_only": 1,
-   "reqd": 1
-  },
-  {
-   "default": "Common",
-   "fieldname": "business_activity",
-   "fieldtype": "Link",
-   "label": "Business Activity",
-   "options": "Business Activity",
    "reqd": 1
   },
   {
@@ -253,7 +244,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-31 18:12:47.345172",
+ "modified": "2023-06-07 12:13:50.178414",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Imprest Recoup",

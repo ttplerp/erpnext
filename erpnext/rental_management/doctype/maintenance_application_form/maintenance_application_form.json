@@ -1,0 +1,305 @@
+{
+ "actions": [],
+ "autoname": "MAF.YY.MM.####",
+ "creation": "2023-06-11 23:17:59.888473",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "workflow_state",
+  "branch",
+  "column_break_3",
+  "no_current_tenant",
+  "cb_1",
+  "posting_date",
+  "maintenance_application_form",
+  "tenant",
+  "tenant_name",
+  "cid",
+  "structure_no",
+  "mobile_no",
+  "column_break_2",
+  "designation",
+  "ministry_agency",
+  "department",
+  "location",
+  "location_name",
+  "maintenance_type",
+  "column_break_14",
+  "block_no",
+  "flat_no",
+  "dzongkhag",
+  "section_break_25",
+  "maintenance_date",
+  "column_break_22",
+  "site_inspector",
+  "column_break_24",
+  "site_inspector_name",
+  "section_break_26",
+  "maintenance_required",
+  "technical_sanction",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Workflow State",
+   "options": "Workflow State"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "no_current_tenant",
+   "fieldtype": "Check",
+   "label": "No current tenant"
+  },
+  {
+   "fieldname": "maintenance_application_form",
+   "fieldtype": "Section Break",
+   "label": "Maintenance Application Form"
+  },
+  {
+   "depends_on": "eval: doc.no_current_tenant == 0",
+   "fieldname": "tenant",
+   "fieldtype": "Link",
+   "label": "Tenant",
+   "mandatory_depends_on": "eval: doc.no_current_tenant == 0",
+   "options": "Tenant Information"
+  },
+  {
+   "fetch_from": "tenant.tenant_name",
+   "fieldname": "tenant_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Tenant Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "tenant.tenant_cid",
+   "fieldname": "cid",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "CID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "structure_no",
+   "fieldtype": "Data",
+   "label": "Structure No",
+   "read_only": 1
+  },
+  {
+   "fieldname": "dzongkhag",
+   "fieldtype": "Link",
+   "label": "Dzongkhag",
+   "options": "Dzongkhag",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "designation",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Designation"
+  },
+  {
+   "fetch_from": "tenant.ministry_and_agency",
+   "fieldname": "ministry_agency",
+   "fieldtype": "Data",
+   "label": "Minisitry/Agency",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "tenant.tenant_department_name",
+   "fieldname": "department",
+   "fieldtype": "Data",
+   "label": "Department",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "tenant.locations",
+   "fieldname": "location",
+   "fieldtype": "Link",
+   "label": "Location",
+   "options": "Locations",
+   "reqd": 1
+  },
+  {
+   "fieldname": "maintenance_type",
+   "fieldtype": "Select",
+   "label": "Maintenance Type",
+   "options": "\nMinor\nPlanned\nAdhoc",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_14",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "site_inspector",
+   "fieldtype": "Link",
+   "label": "Site Visitor",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "site_inspector.employee_name",
+   "fieldname": "site_inspector_name",
+   "fieldtype": "Data",
+   "label": "Site Visitor Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "tenant.block_no",
+   "fieldname": "block_no",
+   "fieldtype": "Link",
+   "label": "Block No",
+   "options": "Block No"
+  },
+  {
+   "fieldname": "dzongkhag",
+   "fieldtype": "Link",
+   "label": "Dzongkhag",
+   "options": "Dzongkhag",
+   "read_only": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_25",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "maintenance_date",
+   "fieldtype": "Date",
+   "label": "Effective Maintenance Date"
+  },
+  {
+   "fieldname": "column_break_22",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "site_inspector",
+   "fieldtype": "Link",
+   "label": "Site Visitor",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_24",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "site_inspector.employee_name",
+   "fieldname": "site_inspector_name",
+   "fieldtype": "Data",
+   "label": "Site Visitor Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_26",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "maintenance_required",
+   "fieldtype": "Text Editor",
+   "label": "Natures of maintenance required",
+   "reqd": 1
+  },
+  {
+   "fieldname": "technical_sanction",
+   "fieldtype": "Data",
+   "label": "Technical Sanction",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Maintenance Application Form",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fetch_from": "tenant.phone_no",
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "label": "Mobile No.",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "tenant.flat_no",
+   "fieldname": "flat_no",
+   "fieldtype": "Link",
+   "label": "Flat No",
+   "options": "Flat No"
+  },
+  {
+   "fetch_from": "location.location",
+   "fieldname": "location_name",
+   "fieldtype": "Data",
+   "label": "Location Name"
+  },
+  {
+   "fieldname": "cb_1",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-06-12 11:54:09.060921",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Maintenance Application Form",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Maintenance User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

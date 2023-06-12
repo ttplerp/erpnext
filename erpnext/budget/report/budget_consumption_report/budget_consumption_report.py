@@ -42,6 +42,7 @@ def get_data(query,from_date, to_date, filters):
 									where month ="{month}"
 									and account="{account}"
 									and cost_center="{cost_center}"
+									and posting_date between '{from_date}' and '{to_date}'
 								""".format(month=filters.month, from_date=from_date, to_date=to_date, account = d.account, cost_center=d.cost_center))[0][0],2)
 			monthly_received = frappe.db.sql("""
 									select sum(amount)
@@ -131,10 +132,11 @@ def get_data(query,from_date, to_date, filters):
 
 def construct_query(from_date,ot_date,filters=None):
 	condition = ''
-	if filters.budget_against == "Project":
-		condition += " and b.project = \'" + str(filters.project) + "\' "
-	elif filters.budget_against == "Cost Center" and filters.cost_center:
+	# if filters.budget_against == "Project":
+	# 	condition += " and b.project = \'" + str(filters.project) + "\' "
+	if filters.budget_against == "Cost Center" and filters.cost_center:
 		condition += " and b.cost_center = \'" + str(filters.cost_center) + "\' "
+		
 	if filters.budget_type:
 		condition += " and ba.budget_type = \'" + str(filters.budget_type) + "\' "
 	
@@ -297,77 +299,3 @@ def get_columns(filters):
 			"width": 120
 		}
 	]
-	# if filters.budget_against == "Project":
-	# 	return [
-	# 		{
-	# 			"fieldname": "account",
-	# 			"label": "Account Head",
-	# 			"fieldtype": "Link",
-	# 			"options": "Account",
-	# 			"width": 200
-	# 		},
-	# 		{
-	# 			"fieldname": "project",
-	# 			"label": "Project",
-	# 			"fieldtype": "Link",
-	# 			"options": "Project",
-	# 			"width": 120
-	# 		},
-	# 		{
-	# 			"fieldname": "project_name",
-	# 			"label": "Project Name",
-	# 			"fieldtype": "Data",
-	# 			"width": 120
-	# 		},
-	# 		{
-	# 			"fieldname": "cost_center",
-	# 			"label": "Cost Center",
-	# 			"fieldtype": "Link",
-	# 			"options": "Cost Center",
-	# 			"width": 150
-	# 		},
-	# 		{
-	# 			"fieldname": "initial",
-	# 			"label": "Initial",
-	# 			"fieldtype": "Currency",
-	# 			"width": 120
-	# 		},
-	# 		{
-	# 			"fieldname": "supplementary",
-	# 			"label": "Supplement",
-	# 			"fieldtype": "Currency",
-	# 			"width": 110
-	# 		},
-	# 		{
-	# 			"fieldname": "adjustment",
-	# 			"label": "Adjustment",
-	# 			"fieldtype": "Currency",
-	# 			"width": 120
-	# 		},
-	# 		{
-	# 			"fieldname": "current",
-	# 			"label": "Current",
-	# 			"fieldtype": "Currency",
-	# 			"width": 120
-	# 		},
-	# 		{
-	# 			"fieldname": "committed",
-	# 			"label": "Committed",
-	# 			"fieldtype": "Currency",
-	# 			"width": 120
-	# 		},
-	# 		{
-	# 			"fieldname": "consumed",
-	# 			"label": "Consumed",
-	# 			"fieldtype": "Currency",
-	# 			"width": 120
-	# 		},
-	# 		{
-	# 			"fieldname": "available",
-	# 			"label": "Available",
-	# 			"fieldtype": "Currency",
-	# 			"width": 120
-	# 		}
-	# 	]
-	# else:
-		

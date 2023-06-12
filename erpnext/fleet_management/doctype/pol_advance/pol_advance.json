@@ -1,0 +1,558 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:POLA-{YY}-{MM}-{####}",
+ "creation": "2023-06-07 15:52:51.124231",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "use_common_fuelbook",
+  "equipment",
+  "equipment_type",
+  "equipment_category",
+  "fuel_book",
+  "column_break_5",
+  "entry_date",
+  "cost_center",
+  "fuelbook_branch",
+  "is_opening",
+  "payment_details_section",
+  "party_type",
+  "party",
+  "credit_account",
+  "advance_limit",
+  "outstanding_amount",
+  "column_break_11",
+  "currency",
+  "amount",
+  "adjusted_amount",
+  "balance_amount",
+  "cheque_details_section",
+  "use_cheque_lot",
+  "select_cheque_lot",
+  "column_break_25",
+  "pay_to_recd_from",
+  "cheque_no",
+  "cheque_date",
+  "sb_additional_info",
+  "company",
+  "branch",
+  "section_break_29",
+  "get_previous",
+  "items",
+  "previous_balance_amount",
+  "pol_received_details_section",
+  "from_date",
+  "column_break_35",
+  "to_date",
+  "section_break_37",
+  "pol_received_item",
+  "section_break_39",
+  "total_qty_received",
+  "column_break_41",
+  "total_bill_amount",
+  "summary_sheet_section",
+  "opening_pol_tank_balance",
+  "pol_issue_during_the_period",
+  "closing_pol_tank_balance",
+  "column_break_47",
+  "uom",
+  "previous_km_reading",
+  "present_km_reading",
+  "column_break_51",
+  "total_petrol_diesel_consumed",
+  "total_km_reading",
+  "average_km_reading",
+  "sb_approver",
+  "approver",
+  "column_break_34",
+  "approver_name",
+  "column_break_36",
+  "approver_designation",
+  "section_break_31",
+  "journal_entry",
+  "user_remark",
+  "workflow_state",
+  "payment_status",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "fieldname": "use_common_fuelbook",
+   "fieldtype": "Check",
+   "label": "Use Common Fuelbook"
+  },
+  {
+   "fieldname": "equipment",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Equipment",
+   "mandatory_depends_on": "eval:!doc.use_common_fuelbook",
+   "options": "Equipment"
+  },
+  {
+   "fetch_from": "equipment.equipment_type",
+   "fieldname": "equipment_type",
+   "fieldtype": "Link",
+   "label": "Equipment Type",
+   "options": "Equipment Type",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "equipment.equipment_category",
+   "fetch_if_empty": 1,
+   "fieldname": "equipment_category",
+   "fieldtype": "Link",
+   "label": "Equipment Category",
+   "options": "Equipment Category",
+   "read_only": 1
+  },
+  {
+   "fieldname": "fuel_book",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Fuel Book",
+   "options": "Fuelbook",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "entry_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Entry Date",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "fuelbook_branch.cost_center",
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "fuel_book.branch",
+   "fieldname": "fuelbook_branch",
+   "fieldtype": "Link",
+   "label": "Fuelbook Branch",
+   "options": "Branch",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_opening",
+   "fieldtype": "Check",
+   "label": "Is Opening"
+  },
+  {
+   "fieldname": "payment_details_section",
+   "fieldtype": "Section Break",
+   "label": "Payment Details"
+  },
+  {
+   "default": "Supplier",
+   "fieldname": "party_type",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "ignore_user_permissions": 1,
+   "label": "Party Type",
+   "options": "Party Type",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "fuel_book.supplier",
+   "fieldname": "party",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "in_list_view": 1,
+   "label": "Supplier",
+   "options": "Supplier",
+   "reqd": 1
+  },
+  {
+   "fieldname": "credit_account",
+   "fieldtype": "Link",
+   "label": "Credit Account",
+   "options": "Account",
+   "read_only": 1
+  },
+  {
+   "fieldname": "outstanding_amount",
+   "fieldtype": "Currency",
+   "label": "Outstanding Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "BTN",
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Currency",
+   "options": "Currency",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "adjusted_amount",
+   "fieldtype": "Currency",
+   "label": "Adjusted Amount",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "balance_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Balance Amount",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.workflow_state ==\"Waiting Approval\";",
+   "fieldname": "cheque_details_section",
+   "fieldtype": "Section Break",
+   "label": "Cheque Details"
+  },
+  {
+   "default": "0",
+   "fieldname": "use_cheque_lot",
+   "fieldtype": "Check",
+   "label": "Assign Using Cheque Lot"
+  },
+  {
+   "depends_on": "eval:doc.use_cheque_lot",
+   "fieldname": "select_cheque_lot",
+   "fieldtype": "Link",
+   "label": "Cheque Lot",
+   "options": "Cheque Lot"
+  },
+  {
+   "fieldname": "column_break_25",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pay_to_recd_from",
+   "fieldtype": "Data",
+   "label": "Pay To / Recd From"
+  },
+  {
+   "fieldname": "cheque_no",
+   "fieldtype": "Data",
+   "label": "Cheque Number"
+  },
+  {
+   "fieldname": "cheque_date",
+   "fieldtype": "Date",
+   "label": "Cheque Date"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "sb_additional_info",
+   "fieldtype": "Section Break",
+   "label": "ADDITIONAL INFORMATION"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Branch",
+   "options": "Branch",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_29",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "get_previous",
+   "fieldtype": "Button",
+   "label": "Get Previous Advances"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "POL Advance Item"
+  },
+  {
+   "fieldname": "previous_balance_amount",
+   "fieldtype": "Currency",
+   "label": "Previous Balance Amount",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.is_opening == 0",
+   "fieldname": "pol_received_details_section",
+   "fieldtype": "Section Break",
+   "label": "POL Received Details"
+  },
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "From Date",
+   "mandatory_depends_on": "eval:doc.is_opening == 0"
+  },
+  {
+   "fieldname": "column_break_35",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date",
+   "mandatory_depends_on": "eval:doc.is_opening == 0"
+  },
+  {
+   "fieldname": "section_break_37",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "pol_received_item",
+   "fieldtype": "Table",
+   "label": "POL Received Item",
+   "options": "POL Receive Ref Item",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_39",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "total_qty_received",
+   "fieldtype": "Float",
+   "label": "Total Qty Received",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_41",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_bill_amount",
+   "fieldtype": "Currency",
+   "label": "Total Bill Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "summary_sheet_section",
+   "fieldtype": "Section Break",
+   "label": "Summary Sheet"
+  },
+  {
+   "fieldname": "opening_pol_tank_balance",
+   "fieldtype": "Float",
+   "label": "Opening POL Tank Balance (Lts.(A))"
+  },
+  {
+   "fieldname": "pol_issue_during_the_period",
+   "fieldtype": "Float",
+   "label": "POL Issue During the Period (Lts. (B))"
+  },
+  {
+   "fieldname": "closing_pol_tank_balance",
+   "fieldtype": "Float",
+   "label": "Closing POL Tank Balance (Lts.(C))"
+  },
+  {
+   "fieldname": "column_break_47",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "KM",
+   "fetch_from": "equipment.reading_uom",
+   "fieldname": "uom",
+   "fieldtype": "Data",
+   "label": "UOM",
+   "read_only": 1
+  },
+  {
+   "fieldname": "previous_km_reading",
+   "fieldtype": "Float",
+   "label": "Previous KM/HR Reading (KMs/Hrs)(E)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "present_km_reading",
+   "fieldtype": "Float",
+   "label": "Present KM/HR Reading (KMs/Hrs)(F)"
+  },
+  {
+   "fieldname": "column_break_51",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_petrol_diesel_consumed",
+   "fieldtype": "Float",
+   "label": "Total Petrol/ Diesel Consumed (Lts.(D=A+B-C))",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_km_reading",
+   "fieldtype": "Float",
+   "label": "Total KM/ HR Reading (KMs/Hrs)(G=E-F)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "average_km_reading",
+   "fieldtype": "Float",
+   "label": "Average KM/Ltrs. or Ltrs./Hr of POL B/A (KMs/Lts.)(H=G/D or D/G)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_approver",
+   "fieldtype": "Section Break",
+   "label": "Approver Details"
+  },
+  {
+   "fieldname": "approver",
+   "fieldtype": "Link",
+   "label": "Approver",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_34",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "approver_name",
+   "fieldtype": "Data",
+   "label": "Approver Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_36",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "approver_designation",
+   "fieldtype": "Link",
+   "label": "Approver Designation",
+   "options": "Designation",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_31",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "journal_entry",
+   "fieldtype": "Data",
+   "label": "Journal Entry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "user_remark",
+   "fieldtype": "Small Text",
+   "label": "Narration"
+  },
+  {
+   "fieldname": "workflow_state",
+   "fieldtype": "Data",
+   "label": "Workflow"
+  },
+  {
+   "fieldname": "payment_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Payment Status",
+   "options": "\nPaid\nUnpaid\nSubmitted\nPartly Paid\nDraft\nCancelled",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "POL Advance",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "advance_limit",
+   "fieldtype": "Currency",
+   "label": "Advance Limit",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-06-07 17:14:53.584835",
+ "modified_by": "Administrator",
+ "module": "Fleet Management",
+ "name": "POL Advance",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Fleet User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Fleet Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "equipment",
+ "track_changes": 1
+}

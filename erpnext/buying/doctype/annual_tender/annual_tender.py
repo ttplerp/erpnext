@@ -26,6 +26,7 @@ class AnnualTender(Document):
 			ip.flags.ignore_permissions = 1
 			ip.price_list = doc.name
 			ip.item_code = a.item
+			ip.supplier = self.supplier
 			ip.price_list_rate = a.rate
 			start, end = frappe.db.get_value("Fiscal Year", self.fiscal_year, ["year_start_date", "year_end_date"])
 			ip.valid_from = start

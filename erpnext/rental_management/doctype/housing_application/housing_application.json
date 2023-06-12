@@ -7,6 +7,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "applicants_detail_section",
   "cid",
   "applicant_name",
   "employee_id",
@@ -15,6 +16,7 @@
   "gewog",
   "village",
   "gender",
+  "column_break_9",
   "work_station",
   "marital_status",
   "email_id",
@@ -27,6 +29,7 @@
   "spouse_name",
   "spouse_dob",
   "spouse_dzongkhag",
+  "column_break_22",
   "spouse_gewog",
   "spouse_village",
   "spouse_employment_type",
@@ -34,6 +37,7 @@
   "spouse_designation",
   "spouse_grade",
   "spouse_ministry",
+  "column_break_30",
   "spouse_department",
   "spouse_gross_salary",
   "spouse_provident_fund_no",
@@ -41,9 +45,11 @@
   "designation",
   "grade",
   "ministry_agency",
+  "column_break_38",
   "department",
   "gross_salary",
-  "provident_fund_no"
+  "provident_fund_no",
+  "applicant_rank"
  ],
  "fields": [
   {
@@ -255,12 +261,39 @@
    "fieldname": "provident_fund_no",
    "fieldtype": "Data",
    "label": "Provident Fund No"
+  },
+  {
+   "fieldname": "column_break_9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_22",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_30",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_38",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "applicants_detail_section",
+   "fieldtype": "Section Break",
+   "label": "Applicants Detail"
+  },
+  {
+   "fieldname": "applicant_rank",
+   "fieldtype": "Int",
+   "label": "Applicant Ranking",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-17 17:32:19.725074",
+ "modified": "2023-06-12 14:20:45.693249",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Housing Application",

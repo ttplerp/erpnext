@@ -177,7 +177,6 @@ def delete_committed_consumed_budget(reference=None, reference_no=None):
 						""".format(reference_type=reference, reference_no=reference_no))
 
 def validate_expense_against_budget(args):
-	# frappe.throw(str(args))
 	args = frappe._dict(args)
 	if args.is_cancelled:
 		delete_committed_consumed_budget(args.voucher_type, args.voucher_no)
@@ -273,7 +272,6 @@ def validate_budget_records(args, budget_records):
 		amount = get_amount(args, budget)
 		yearly_action, monthly_action = get_actions(args, budget)
 		monthly_budget_check = frappe.db.get_single_value("Budget Settings","monthly_budget_check")
-		# frappe.throw(str(args))
 		if monthly_budget_check:
 			budget_account = args.expense_account
 			if not budget_account:
@@ -282,7 +280,6 @@ def validate_budget_records(args, budget_records):
 			budget_amount = get_accumulated_monthly_budget(
 				args.cost_center, budget_account, transaction_date, args.amount
 			)
-
 			args["month_end_date"] = get_last_day(args.posting_date)
 
 			compare_expense_with_budget(

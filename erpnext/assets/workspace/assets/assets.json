@@ -174,8 +174,8 @@
    "type": "Link"
   }
  ],
- "modified": "2023-05-31 15:31:49.699746",
- "modified_by": "ugyen.choden@thimphutechpark.bt",
+ "modified": "2023-06-07 11:26:45.334251",
+ "modified_by": "Administrator",
  "module": "Assets",
  "name": "Assets",
  "owner": "Administrator",
@@ -184,7 +184,7 @@
  "quick_lists": [],
  "restrict_to_domain": "",
  "roles": [],
- "sequence_id": 8.0,
+ "sequence_id": 14.0,
  "shortcuts": [
   {
    "label": "Asset",
