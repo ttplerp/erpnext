@@ -541,6 +541,7 @@ class PurchaseInvoice(BuyingController):
 	def consume_budget(self, cancel=False):
 		if cancel:
 			frappe.db.sql("delete from `tabCommitted Budget` where reference_type='{}' and reference_no='{}'".format(self.doctype, self.name))
+			frappe.db.sql("delete from `tabConsumed Budget` where reference_type='{}' and reference_no='{}'".format(self.doctype, self.name))
 			return
 		for item in self.get("items"):
 			expense, cost_center = item.expense_account, item.cost_center
