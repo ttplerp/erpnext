@@ -15,6 +15,7 @@
   "course_cost_center",
   "programme",
   "domain",
+  "programme_classification",
   "col_break_01",
   "cohort",
   "cohort_name",
@@ -145,12 +146,12 @@
    "label": "Cohort Announcement Name"
   },
   {
-   "fetch_from": "course.domain",
    "fieldname": "domain",
    "fieldtype": "Link",
    "label": "Domain",
    "options": "DSP Domain",
-   "read_only": 1
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "fieldname": "course_cost_center",
@@ -230,12 +231,21 @@
   {
    "fieldname": "column_break_22",
    "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "programme.programme_classification",
+   "fieldname": "programme_classification",
+   "fieldtype": "Link",
+   "label": "Programme Classification",
+   "options": "Programme Classification",
+   "read_only": 1,
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-04 10:28:00.736234",
+ "modified": "2023-06-14 07:22:10.757142",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Management",
