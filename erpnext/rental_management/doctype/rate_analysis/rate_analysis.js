@@ -43,12 +43,14 @@ frappe.ui.form.on("Rate Analysis Item", {
 	},
 	"item_code": function(frm, cdt, cdn) {
 		var row = locals[cdt][cdn];
+		if (!row.item_code) return
 		if (row.type == 'Service' && !row.price_list) {
 			alert("Price list missing")
-		}
-		
-		if (row.type == 'Service'){
 			return
+		}
+
+		if (row.type == 'Service'){
+			get_item_price(frm, cdt, cdn);
 		} else if (row.type == 'Item'){
 			get_map(frm, cdt, cdn);
 		}
@@ -73,6 +75,11 @@ frappe.ui.form.on("Rate Analysis Item", {
 			update_amount(frm, cdt, cdn);
 		}
 	},
+	"service_category": function(frm, cdt, cdn) {
+		frappe.model.set_value(cdt, cdn, "item_code","");
+		frappe.model.set_value(cdt, cdn, "item_name","");
+		frappe.model.set_value(cdt, cdn, "uom","");
+	}
 });
 
 function get_map(frm, cdt, cdn) 
@@ -92,6 +99,25 @@ function get_map(frm, cdt, cdn)
 			}
 		});
 	}
+}
+
+function get_item_price(frm, cdt, cdn)
+{
+	var row = locals[cdt][cdn];
+	frappe.call({
+		method: "get_item_price",
+		doc: frm.doc,
+		args: {
+			item_code: row.item_code,
+			price_list: row.price_list,
+			uom: row.uom,
+			posting_date: frm.doc.posting_date
+		},
+		callback: function(r) {
+			console.log(r.message);
+			frappe.model.set_value(cdt, cdn, "rate", r.message[0][1] ?? 0.0)
+		}
+	});
 }
 
 function update_amount(frm, cdt, cdn)
