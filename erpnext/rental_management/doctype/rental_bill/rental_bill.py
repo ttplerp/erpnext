@@ -149,12 +149,13 @@ class RentalBill(AccountsController):
 				})
 			)
 		
-		if flt(self.receivable_amount - self.property_management_amount) > 0:
+		# if flt(self.receivable_amount - self.property_management_amount) > 0:
+		if flt(self.receivable_amount) > 0:
 			gl_entries.append(
 				self.get_gl_dict({
 					"account": revenue_claim_account,
-					"debit": flt(self.receivable_amount - self.property_management_amount),
-					"debit_in_account_currency": flt(self.receivable_amount - self.property_management_amount),
+					"debit": flt(self.receivable_amount),
+					"debit_in_account_currency": flt(self.receivable_amount),
 					"voucher_no": self.name,
 					"voucher_type": "Rental Bill",
 					"cost_center": self.cost_center,
@@ -170,8 +171,8 @@ class RentalBill(AccountsController):
 			gl_entries.append(
 				self.get_gl_dict({
 					"account": acc_property_management,
-					"debit": flt(self.property_management_amount),
-					"debit_in_account_currency": flt(self.property_management_amount),
+					"credit": flt(self.property_management_amount),
+					"credit_in_account_currency": flt(self.property_management_amount),
 					"voucher_no": self.name,
 					"voucher_type": "Rental Bill",
 					"cost_center": self.cost_center,
@@ -187,8 +188,8 @@ class RentalBill(AccountsController):
 		gl_entries.append(
 			self.get_gl_dict({
 				"account": credit_account,
-				"credit": flt(self.receivable_amount + self.adjusted_amount),
-				"credit_in_account_currency": flt(self.receivable_amount + self.adjusted_amount),
+				"credit": flt(self.receivable_amount - self.property_management_amount),
+				"credit_in_account_currency": flt(self.receivable_amount - self.property_management_amount),
 				"voucher_no": self.name,
 				"voucher_type": "Rental Bill",
 				"cost_center": self.cost_center,

@@ -61,7 +61,6 @@ class StockController(AccountsController):
 				"Company", self.company, "enable_provisional_accounting_for_non_stock_items"
 			)
 		)
-
 		if (
 			cint(erpnext.is_perpetual_inventory_enabled(self.company))
 			or provisional_accounting_for_non_stock_items
@@ -71,6 +70,7 @@ class StockController(AccountsController):
 			if self.docstatus == 1:
 				if not gl_entries:
 					gl_entries = self.get_gl_entries(warehouse_account)
+				# frappe.throw(str(gl_entries))
 				make_gl_entries(gl_entries, from_repost=from_repost)
 		elif self.doctype in ["Purchase Receipt", "Purchase Invoice"] and self.docstatus == 1:
 			gl_entries = []
@@ -134,6 +134,7 @@ class StockController(AccountsController):
 			warehouse_account = get_warehouse_account_map(self.company)
 
 		sle_map = self.get_stock_ledger_details()
+		# frappe.throw(str(sle_map))
 		voucher_details = self.get_voucher_details(default_expense_account, default_cost_center, sle_map)
 		gl_list = []
 		warehouse_with_no_account = []
@@ -259,6 +260,7 @@ class StockController(AccountsController):
 
 	def get_stock_ledger_details(self):
 		stock_ledger = {}
+		# frappe.throw(str(stock_ledger))
 		stock_ledger_entries = frappe.db.sql(
 			"""
 			select
@@ -273,7 +275,7 @@ class StockController(AccountsController):
 			(self.doctype, self.name),
 			as_dict=True,
 		)
-
+		# frappe.throw(str(stock_ledger_entries))
 		for sle in stock_ledger_entries:
 			stock_ledger.setdefault(sle.voucher_detail_no, []).append(sle)
 		return stock_ledger

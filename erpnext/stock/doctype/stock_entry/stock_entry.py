@@ -187,7 +187,7 @@ class StockEntry(StockController):
 
 		if self.work_order and self.purpose == "Manufacture":
 			self.update_so_in_serial_number()
-
+		# frappe.throw("there")
 		if self.purpose == "Material Transfer" and self.add_to_transit:
 			self.set_material_request_transfer_status("In Transit")
 		if self.purpose == "Material Transfer" and self.outgoing_stock_entry:
@@ -2363,8 +2363,13 @@ class StockEntry(StockController):
 		tot_cos =round(tot_cos, 2)
 		for d in self.get("items"):
 			if d.item_code == item_code:
-				# frappe.throw("here")
 				d.basic_rate = flt(tot_cos)
+				d.valuation_rate = flt(tot_cos)
+				self.total_incoming_value =flt(d.basic_rate)* flt(d.qty)
+				self.value_difference = flt(self.total_incoming_value) - flt(self.total_outgoing_value)
+				d.basic_amount = flt(d.basic_rate)*flt(d.qty)
+				d.amount = d.basic_amount
+		
 
 
 @frappe.whitelist()

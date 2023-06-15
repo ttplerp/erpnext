@@ -112,7 +112,7 @@ class RentalPayment(AccountsController):
 		# if not self.tenant:
 		# 	self.tenant_name = ""
 		# rent_received = bill_amount + property_mgt_amount
-		rent_received = security_deposit = total_amount_received = excess = pre_rent = tds_amount = write_off_amount = property_mgt_amount = 0.00
+		rent_received = security_deposit = total_amount_received = excess = pre_rent = tds_amount = write_off_amount = property_mgt_amount = tot_bill_amount = 0.00
 		for a in self.items:
 			rent_received_amt = flt(a.rent_received) + flt(a.property_management_amount) + flt(a.tds_amount) + flt(a.discount_amount)
 			a.total_amount_received = flt(a.rent_received) + flt(a.property_management_amount) + flt(a.security_deposit_amount) + flt(a.penalty) + flt(a.excess_amount) + flt(a.pre_rent_amount)
@@ -130,6 +130,7 @@ class RentalPayment(AccountsController):
 			if a.balance_rent > 0 and (a.pre_rent_amount > 0 or a.excess_amount > 0):
 				frappe.throw("Pre rent and excess rent collection not allowed as current rent is not settled")
 
+			tot_bill_amount += flt(a.bill_amount)
 			write_off_amount += flt(a.rent_write_off_amount)
 			tds_amount += flt(a.tds_amount)
 			rent_received += flt(a.rent_received)
@@ -141,7 +142,8 @@ class RentalPayment(AccountsController):
 
 		if self.rent_write_off:
 			self.rent_write_off_amount = write_off_amount
-		self.rent_received = rent_received
+		self.total_rent_received = rent_received
+		self.total_bill_amount = tot_bill_amount
 		self.security_deposit_amount = security_deposit
 		self.excess_amount = excess
 		self.pre_rent_amount = pre_rent
@@ -567,7 +569,7 @@ class RentalPayment(AccountsController):
 
 		rental_bills = frappe.db.sql("""select name as rental_bill, tenant, tenant_name, customer, 
 						(receivable_amount - received_amount - discount_amount - tds_amount - rent_write_off_amount) as bill_amount, 
-						fiscal_year, month, ministry_agency as ministry_and_agency, department as tenant_department, property_management_amount
+						fiscal_year, month, ministry_agency as ministry_and_agency, department as tenant_department, property_management_amount, adjusted_amount
 						from `tabRental Bill` 
 						where docstatus=1 and outstanding_amount > 0 {cond} 
 						order by tenant_name""".format(cond=condition), as_dict=1)

@@ -1,0 +1,182 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "RA.YY.MM.###",
+ "creation": "2023-06-15 17:18:10.948337",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "posting_date",
+  "cb_1",
+  "item_name",
+  "cb_2",
+  "stock_uom",
+  "sb_item_details",
+  "item",
+  "sb_total_amounts",
+  "base_amount",
+  "cb_ta_1",
+  "total_amount",
+  "sb_additional_cost",
+  "tools_plants",
+  "cb_ac_1",
+  "water_charges",
+  "cb_ac_2",
+  "overhead_cost",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Title",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "stock_uom",
+   "fieldtype": "Link",
+   "label": "UOM",
+   "options": "UOM",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sb_item_details",
+   "fieldtype": "Section Break",
+   "label": "Item Details"
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Table",
+   "label": "Item Details",
+   "options": "Rate Analysis Item"
+  },
+  {
+   "fieldname": "sb_total_amounts",
+   "fieldtype": "Section Break",
+   "label": "Total Amounts"
+  },
+  {
+   "fieldname": "base_amount",
+   "fieldtype": "Currency",
+   "label": "Base Total Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_ta_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "label": "Total Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_additional_cost",
+   "fieldtype": "Section Break",
+   "label": "Additional Cost"
+  },
+  {
+   "fieldname": "tools_plants",
+   "fieldtype": "Currency",
+   "label": "Add for Tools and Plants Etc (5%) ",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_ac_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "water_charges",
+   "fieldtype": "Currency",
+   "label": "Add For Water Charges(1%)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_ac_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "overhead_cost",
+   "fieldtype": "Currency",
+   "label": "Add for Overhead Cost(10%)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Rate Analysis",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-06-15 21:21:52.543592",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Rate Analysis",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Maintenance User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Maintenance Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "item_name",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

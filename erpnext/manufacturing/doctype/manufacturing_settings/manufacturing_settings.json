@@ -225,6 +225,7 @@
   {
    "fieldname": "profit",
    "fieldtype": "Percent",
+   "hidden": 1,
    "label": "Profit(%)"
   },
   {
@@ -241,7 +242,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-05-23 16:47:48.109770",
+ "modified": "2023-06-13 10:59:43.784817",
  "modified_by": "Administrator",
  "module": "Manufacturing",
  "name": "Manufacturing Settings",

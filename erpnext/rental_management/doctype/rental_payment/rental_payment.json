@@ -253,8 +253,8 @@
    "fieldname": "tds_account",
    "fieldtype": "Link",
    "label": "TDS Account",
-   "mandatory_depends_on": "eval: doc.tds_amount > 0",
-   "options": "Account"
+   "options": "Account",
+   "read_only": 1
   },
   {
    "fieldname": "cb_7",
@@ -412,7 +412,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-06 21:34:50.906541",
+ "modified": "2023-06-13 15:25:43.271791",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Payment",

@@ -16,6 +16,7 @@
   "cb_2",
   "rental_bill",
   "bill_amount",
+  "adjusted_amount",
   "sb_payment_details",
   "deduct_from_security_deposit",
   "security_deposit",
@@ -206,12 +207,18 @@
    "fieldtype": "Currency",
    "label": "Security Deposit",
    "read_only": 1
+  },
+  {
+   "fieldname": "adjusted_amount",
+   "fieldtype": "Currency",
+   "label": "Adjusted Amount",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-06-04 22:40:14.013244",
+ "modified": "2023-06-13 23:08:31.812310",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Payment Item",

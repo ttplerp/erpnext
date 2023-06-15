@@ -11,9 +11,10 @@ class BSRService(Document):
 		self.name = make_autoname(bsr_code)
 
 	def validate(self):
-		start, end = frappe.db.get_value("Fiscal Year", self.fiscal_year, ["year_start_date", "year_end_date"])
-		self.valid_from = start
-		self.valid_upto = end
+		if not self.valid_from:
+			start, end = frappe.db.get_value("Fiscal Year", self.fiscal_year, ["year_start_date", "year_end_date"])
+			self.valid_from = start
+			# self.valid_upto = end
 
 	def before_save(self):
 		self.price_list = ""

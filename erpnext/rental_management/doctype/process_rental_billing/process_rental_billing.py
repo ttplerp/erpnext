@@ -24,14 +24,14 @@ class ProcessRentalBilling(Document):
 		condition = " and t1.building_category != 'Pilot Housing' and t1.branch = '{}'".format(self.branch)
 		if self.dzongkhag:
 			condition += " and t1.dzongkhag = '{dzongkhag}'".format(dzongkhag=self.dzongkhag)
-		if self.tenant:
-			condition += " and t1.name = '{tenant}'".format(tenant=self.tenant)
 
 		if process_type == "create":
 			# if self.tenant:
 			# 	condition += " and t1.name = '{tenant}'".format(tenant=self.tenant)
 			if self.ministry_agency:
 				condition += " and t1.ministry_and_agency = '{ministry_agency}'".format(ministry_agency=self.ministry_agency)
+			if self.tenant:
+				condition += " and t1.name = '{tenant}'".format(tenant=self.tenant)
 
 			tenant_list = frappe.db.sql("""
 				   	select t1.name
@@ -53,6 +53,8 @@ class ProcessRentalBilling(Document):
 			# 	condition += " and t1.tenant = '{tenant}'".format(tenant=self.tenant)
 			if self.ministry_agency:
 				condition += " and t1.ministry_agency = '{ministry_agency}'".format(ministry_agency=self.ministry_agency)
+			if self.tenant:
+				condition += " and t1.tenant = '{tenant}'".format(tenant=self.tenant)
 			
 			tenant_list = frappe.db.sql("""
 						select t1.name
