@@ -26,7 +26,7 @@ def get_data(filters=None):
 				select td.desuup_id, 
 				td.desuup_name, td.desuup_cid, td.gender, tm.domain, 
 				tm.programme, tm.training_center,
-				tm.training_start_date, tm.training_end_date
+				tm.training_start_date, tm.training_end_date, tm.name
 				from `tabTraining Management` tm inner join `tabTrainee Details` td 
 				on tm.name=td.parent
 				where tm.docstatus!=2
@@ -49,9 +49,9 @@ def get_data(filters=None):
 
 def get_columns(filters):
 	columns = [
-			 _("DID") + ":Link/Desuup:150", 
+			 _("Desuup ID") + ":Link/Desuup:150", 
 			 _("Name") + ":Data:170",
-			 _("CID") + ":Data:130",
+			 _("Desuup CID") + ":Data:130",
 			 _("Gender") + ":Data:100",
 	]
 	if filters.detail:
@@ -61,7 +61,7 @@ def get_columns(filters):
 			_("Training Center") + ":Link/Training Center:160",
 			_("Start Date") + ":Date:100",
 			_("End Date") + ":Date:100",
-
+			_("Reference") + ":Link/Training Management:100",
 		]
 	if not filters.detail:
 		columns += [
