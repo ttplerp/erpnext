@@ -24,7 +24,7 @@ def get_data(filters=None):
 	if filters.detail:
 		query="""
 				select td.desuup_id, 
-				td.desuup_name, td.desuup_cid, td.gender, tm.domain, 
+				td.desuup_name, td.gender, tm.domain, 
 				tm.programme, tm.training_center,
 				tm.training_start_date, tm.training_end_date, tm.name
 				from `tabTraining Management` tm inner join `tabTrainee Details` td 
@@ -36,7 +36,7 @@ def get_data(filters=None):
 			 """.format(condition)
 	else:
 		query="""select td.desuup_id, 
-				td.desuup_name, td.desuup_cid, td.gender, count(td.desuup_id) as count
+				td.desuup_name, td.gender, count(td.desuup_id) as count
 				from `tabTraining Management` tm inner join `tabTrainee Details` td 
 				on tm.name=td.parent
 				where tm.docstatus!=2
@@ -51,7 +51,6 @@ def get_columns(filters):
 	columns = [
 			 _("Desuup ID") + ":Link/Desuup:150", 
 			 _("Name") + ":Data:170",
-			 _("Desuup CID") + ":Data:130",
 			 _("Gender") + ":Data:100",
 	]
 	if filters.detail:
