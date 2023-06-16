@@ -49,6 +49,7 @@ def get_columns(filters):
 		cols.append(("Received Qty")+":data:120")
 		cols.append(("Difference Qty")+":data:120")
 		cols.append(("Unloading By")+":data:120")
+		cols.append(("Challan Number")+":data:120")
 	return cols
 
 def get_data(filters):
@@ -66,7 +67,7 @@ def get_data(filters):
 
 	if filters.purpose == 'Material Transfer':
 		query = (query
-				.select(sed.t_warehouse, sed.equipment, sed.equipment_category, sed.equipment_type, sed.weight_slip_no, sed.pol_slip_no, sed.gross_vehicle_weight,sed.tare_weight, sed.received_qty, sed.difference_qty, sed.unloading_by)
+				.select(sed.t_warehouse, sed.equipment, sed.equipment_category, sed.equipment_type, sed.weight_slip_no, sed.pol_slip_no, sed.gross_vehicle_weight,sed.tare_weight, sed.received_qty, sed.difference_qty, sed.unloading_by, sed.challan_number)
 				.where(se.stock_entry_type == 'Material Transfer'))
 	elif filters.purpose == 'Material Issue': 
 		query = (query

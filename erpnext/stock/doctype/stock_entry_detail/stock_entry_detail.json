@@ -63,6 +63,7 @@
   "equipment_category",
   "equipment_model",
   "equipment_type",
+  "challan_number",
   "remarks",
   "column_break_54",
   "hired_equipmentvehicle",
@@ -745,13 +746,18 @@
    "fieldtype": "Data",
    "label": "Issued Equipment Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "challan_number",
+   "fieldtype": "Data",
+   "label": "Challan Number"
   }
  ],
  "idx": 1,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-01-09 10:12:47.443969",
+ "modified": "2023-06-16 13:00:47.341279",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Entry Detail",
