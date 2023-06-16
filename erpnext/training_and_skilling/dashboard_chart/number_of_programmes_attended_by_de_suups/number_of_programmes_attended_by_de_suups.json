@@ -1,0 +1,33 @@
+{
+ "chart_name": "Number of Programmes attended by De-Suups",
+ "chart_type": "Report",
+ "creation": "2023-06-16 13:59:22.186835",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "dynamic_filters_json": "{}",
+ "filters_json": "{}",
+ "group_by_type": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "modified": "2023-06-16 14:04:22.297048",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Number of Programmes attended by De-Suups",
+ "number_of_groups": 0,
+ "owner": "Administrator",
+ "report_name": "Number Of Programme Attended",
+ "roles": [],
+ "time_interval": "Yearly",
+ "timeseries": 0,
+ "timespan": "Last Year",
+ "type": "Bar",
+ "use_report_chart": 0,
+ "x_field": "programmes",
+ "y_axis": [
+  {
+   "color": "#ED6396",
+   "y_field": "total"
+  }
+ ]
+}
