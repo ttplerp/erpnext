@@ -40,5 +40,11 @@ frappe.query_reports["Desuung Undergone DSP"] = {
 			options: "Desuup",
 			default:""
 		},
+		{
+			fieldname: "detail",
+			label: __("Detail"),
+			fieldtype: "Check",
+			default:"0"
+		},
 	]
 };

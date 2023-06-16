@@ -11,7 +11,6 @@ def execute(filters=None):
 	return columns, data
 
 def get_data(filters=None):
-	data=[]
 	condition=""
 	if filters.from_date and filters.to_date:
 		condition += """ and tm.training_start_date between "{}" and "{}" """.format(filters.from_date, filters.to_date)
@@ -21,28 +20,32 @@ def get_data(filters=None):
 		condition += """ and tm.programme="{}" """.format(filters.programme)
 	if filters.did:
 		condition += """ and td.desuup_id="{}" """.format(filters.did)
-
-	for a in frappe.db.sql("""select count(td.desuup_id) as count, td.desuup_id, 
-				td.desuup_name, td.desuup_cid, td.gender
+	
+	if filters.detail:
+		query="""
+				select td.desuup_id, 
+				td.desuup_name, td.desuup_cid, td.gender, tm.domain, 
+				tm.programme, tm.training_center,
+				tm.training_start_date, tm.training_end_date
 				from `tabTraining Management` tm inner join `tabTrainee Details` td 
 				on tm.name=td.parent
 				where tm.docstatus!=2
+				and td.status not in ("Withdrawn","Terminated","Suspended")
+				{}
+				order by td.desuup_id
+			 """.format(condition)
+	else:
+		query="""select td.desuup_id, 
+				td.desuup_name, td.desuup_cid, td.gender, count(td.desuup_id) as count
+				from `tabTraining Management` tm inner join `tabTrainee Details` td 
+				on tm.name=td.parent
+				where tm.docstatus!=2
+				and td.status not in ("Withdrawn","Terminated","Suspended")
 				{}
 				group by td.desuup_id
 				order by count desc
-			""".format(condition),as_dict=True):
-		reference = ""
-		for b in frappe.db.sql(""" select tm.name, tm.programme, tm.domain, tm.training_start_date
-					from `tabTraining Management` tm inner join `tabTrainee Details` td 
-					on tm.name=td.parent
-					where tm.docstatus!=2
-					and td.desuup_id='{}'
-					order by tm.training_start_date
-				""".format(a.desuup_id), as_dict=True):
-			reference += str(b.name) + ", "
-		row={ "did": a.desuup_id, "name":a.desuup_name, "cid":a.desuup_cid, "gender":a.gender, "dsp_attended":a.count, "reference":reference}
-		data.append(row)
-	return data
+			""".format(condition)
+	return frappe.db.sql(query)
 
 def get_columns(filters):
 	columns = [
@@ -50,7 +53,18 @@ def get_columns(filters):
 			 _("Name") + ":Data:170",
 			 _("CID") + ":Data:130",
 			 _("Gender") + ":Data:100",
-			 _("DSP Attended") + ":Data:120",
-			 _("Reference") + ":Data:800",
 	]
+	if filters.detail:
+		columns += [
+			_("Domain") + ":Link/DSP Domain:150", 
+			_("Programme") + ":Link/Programme:170",
+			_("Training Center") + ":Link/Training Center:160",
+			_("Start Date") + ":Date:100",
+			_("End Date") + ":Date:100",
+
+		]
+	if not filters.detail:
+		columns += [
+			 _("Programme Attended") + ":Data:120",
+		]
 	return columns
