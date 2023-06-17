@@ -20,9 +20,13 @@ class BSRService(Document):
 		self.price_list = ""
 
 	def on_submit(self):
+		price_list_name = "BSR " + str(self.fiscal_year)
+		if self.region:
+			price_list_name += " "+ str(self.region)
+		
 		doc = frappe.new_doc("Price List")
 		doc.flags.ignore_permissions = 1
-		doc.price_list_name = "BSR " + str(self.fiscal_year) +" "+ str(self.region)
+		doc.price_list_name = price_list_name
 		doc.currency = self.currency
 		doc.buying = 1
 		doc.enabled = 1

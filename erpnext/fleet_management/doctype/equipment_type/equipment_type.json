@@ -54,11 +54,6 @@
    "label": "Disabled"
   },
   {
-   "fieldname": "pol_expense_limit",
-   "fieldtype": "Currency",
-   "label": "POL Expense Limit"
-  },
-  {
    "fieldname": "reading_uom",
    "fieldtype": "Select",
    "label": "Reading UOM",
@@ -68,11 +63,16 @@
   {
    "fieldname": "column_break_6",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pol_expense_limit",
+   "fieldtype": "Currency",
+   "label": "POL Advance Limit"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-02 12:47:27.744500",
+ "modified": "2023-06-16 16:19:09.710633",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment Type",

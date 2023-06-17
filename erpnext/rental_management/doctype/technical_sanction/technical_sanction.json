@@ -1,0 +1,232 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "TS.YY.MM.####",
+ "creation": "2023-06-17 14:54:08.406842",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "workflow_state",
+  "sb_technical_sanction",
+  "branch",
+  "maintenance_type",
+  "posting_date",
+  "dzongkhag",
+  "location",
+  "company",
+  "cb_ts_1",
+  "tenant",
+  "tenant_name",
+  "mobile_no",
+  "block_no",
+  "flat_no",
+  "cb_ts_2",
+  "site_inspector",
+  "site_inspector_name",
+  "outsource",
+  "supplier",
+  "region",
+  "party_type",
+  "party",
+  "sb_detail_measurement",
+  "detail_measurement",
+  "sb_abstract_cost",
+  "items",
+  "total_amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Workflow State",
+   "options": "Workflow State",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_technical_sanction",
+   "fieldtype": "Section Break",
+   "label": "Technical Sanction"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch"
+  },
+  {
+   "fieldname": "maintenance_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Maintenance Type",
+   "options": "\nMinor\nPlanned\nAdhoc",
+   "reqd": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Posting date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "dzongkhag",
+   "fieldtype": "Link",
+   "label": "Dzongkhag",
+   "options": "Dzongkhag"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Link",
+   "label": "Location",
+   "options": "Locations"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "cb_ts_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tenant",
+   "fieldtype": "Link",
+   "label": "Tenant",
+   "options": "Tenant Information"
+  },
+  {
+   "fetch_from": "tenant.tenant_name",
+   "fieldname": "tenant_name",
+   "fieldtype": "Data",
+   "label": "Tenant Name"
+  },
+  {
+   "fetch_from": "tenant.phone_no",
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "label": "Mobile No"
+  },
+  {
+   "fetch_from": "tenant.block_no",
+   "fieldname": "block_no",
+   "fieldtype": "Link",
+   "label": "Block No",
+   "options": "Block No"
+  },
+  {
+   "fetch_from": "tenant.flat_no",
+   "fieldname": "flat_no",
+   "fieldtype": "Link",
+   "label": "Flat No",
+   "options": "Flat No"
+  },
+  {
+   "fieldname": "cb_ts_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "site_inspector",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Site Supervisor",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "site_inspector.employee_name",
+   "fieldname": "site_inspector_name",
+   "fieldtype": "Data",
+   "label": "Site Supervisor Name"
+  },
+  {
+   "default": "0",
+   "fieldname": "outsource",
+   "fieldtype": "Check",
+   "label": "Is Outsource Work"
+  },
+  {
+   "depends_on": "eval: doc.outsource == 1",
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Contractor",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "region",
+   "fieldtype": "Link",
+   "label": "Region",
+   "options": "BSR Region"
+  },
+  {
+   "fieldname": "party_type",
+   "fieldtype": "Link",
+   "label": "Party Type",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "party",
+   "fieldtype": "Dynamic Link",
+   "label": "Party",
+   "options": "party_type"
+  },
+  {
+   "fieldname": "sb_detail_measurement",
+   "fieldtype": "Section Break",
+   "label": "Detail Measurement"
+  },
+  {
+   "fieldname": "detail_measurement",
+   "fieldtype": "Table",
+   "label": "Detail Measurement",
+   "options": "Technical Sanction Detail Item"
+  },
+  {
+   "fieldname": "sb_abstract_cost",
+   "fieldtype": "Section Break",
+   "label": "Abstract Of Cost"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Abstract Measurement",
+   "options": "Technical Sanction Item"
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "label": "Total Amount",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-06-18 00:33:08.369580",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Technical Sanction",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

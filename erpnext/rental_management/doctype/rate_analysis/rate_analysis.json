@@ -132,7 +132,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-15 21:21:52.543592",
+ "modified": "2023-06-17 12:45:54.649574",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rate Analysis",
@@ -178,5 +178,6 @@
  "search_fields": "item_name",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "item_name"
 }
