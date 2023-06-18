@@ -1,0 +1,323 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "MP.YY.MM.####",
+ "creation": "2023-06-18 18:41:21.615089",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "company",
+  "branch",
+  "cost_center",
+  "cb_1",
+  "posting_date",
+  "supplier",
+  "payment_for",
+  "sb_ts_detail",
+  "maintenance_payment_item",
+  "sb_total_amount",
+  "total_amount",
+  "cb_ta_1",
+  "other_deduction",
+  "other_deduction_account",
+  "cb_ta_2",
+  "maintenance_account",
+  "cb_ta_3",
+  "expense_account",
+  "sb_tds_details",
+  "tax_withholding_category",
+  "tds_amount",
+  "cb_tdsd_1",
+  "tds_account",
+  "cb_tdsd_2",
+  "net_amount",
+  "actual_amount",
+  "sb_narration_cheque",
+  "remarks",
+  "cb_nc_1",
+  "use_check_lot",
+  "select_cheque_lot",
+  "cheque_no",
+  "cheque_date",
+  "pay_to_recd_from",
+  "clearance_date",
+  "sb_attachment",
+  "attachment",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "payment_for",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Payment For",
+   "options": "\nMaintenance Payment",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sb_ts_detail",
+   "fieldtype": "Section Break",
+   "label": "Technical Sanction Details"
+  },
+  {
+   "fieldname": "maintenance_payment_item",
+   "fieldtype": "Table",
+   "label": "Technical Sanction Details",
+   "options": "Maintenance Payment Item"
+  },
+  {
+   "fieldname": "sb_total_amount",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "label": "Total Amount",
+   "precision": "2"
+  },
+  {
+   "fieldname": "cb_ta_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "other_deduction",
+   "fieldtype": "Currency",
+   "label": "Other Deduction"
+  },
+  {
+   "depends_on": "eval: doc.other_deduction",
+   "fieldname": "other_deduction_account",
+   "fieldtype": "Link",
+   "label": "Other Deduction Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "cb_ta_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.payment_for==\"Maintenance Payment\"",
+   "fieldname": "maintenance_account",
+   "fieldtype": "Link",
+   "label": "Maintenance Account(Debit)",
+   "options": "Account",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_ta_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "expense_account",
+   "fieldtype": "Link",
+   "label": "Credit Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "sb_tds_details",
+   "fieldtype": "Section Break",
+   "label": "TDS Details"
+  },
+  {
+   "fieldname": "tax_withholding_category",
+   "fieldtype": "Link",
+   "label": "Tax Withholding Category",
+   "options": "Tax Withholding Category"
+  },
+  {
+   "fieldname": "tds_amount",
+   "fieldtype": "Currency",
+   "label": "TDS Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_tdsd_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tds_account",
+   "fieldtype": "Link",
+   "label": "TDS Account",
+   "options": "Account",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_tdsd_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "net_amount",
+   "fieldtype": "Currency",
+   "label": "Net Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "actual_amount",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Actual Amount"
+  },
+  {
+   "fieldname": "sb_narration_cheque",
+   "fieldtype": "Section Break",
+   "label": "Narrations And Cheque Details"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Narration"
+  },
+  {
+   "fieldname": "cb_nc_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "use_check_lot",
+   "fieldtype": "Check",
+   "label": "Assign Using Check Lot"
+  },
+  {
+   "depends_on": "eval:doc.use_check_lot==1",
+   "fieldname": "select_cheque_lot",
+   "fieldtype": "Link",
+   "label": "Select Cheque Lot",
+   "options": "Cheque Lot"
+  },
+  {
+   "fieldname": "cheque_no",
+   "fieldtype": "Data",
+   "label": "Cheque Number"
+  },
+  {
+   "fieldname": "cheque_date",
+   "fieldtype": "Date",
+   "label": "Cheque Date"
+  },
+  {
+   "fieldname": "pay_to_recd_from",
+   "fieldtype": "Data",
+   "label": "Pay To / Recd From"
+  },
+  {
+   "fieldname": "clearance_date",
+   "fieldtype": "Date",
+   "label": "Clearance Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_attachment",
+   "fieldtype": "Section Break",
+   "label": "Attachment"
+  },
+  {
+   "fieldname": "attachment",
+   "fieldtype": "Attach",
+   "label": "Attachment"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Mechanical Payment",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-06-18 20:12:27.612587",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Mechanical Payment",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

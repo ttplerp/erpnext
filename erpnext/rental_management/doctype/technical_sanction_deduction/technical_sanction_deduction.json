@@ -1,0 +1,47 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2023-06-18 15:07:37.780523",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "account",
+  "deduction_amount",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Deduction Name",
+   "options": "Account"
+  },
+  {
+   "fieldname": "deduction_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Deduction Amount"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Remarks"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-06-18 15:07:37.780523",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Technical Sanction Deduction",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

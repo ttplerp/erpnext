@@ -449,3 +449,8 @@ def has_record_permission(doc, user):
 	else:
 		return False 
 
+""" Restrict for TDS Remittance submitted DocType """
+def check_tds_remittance(transaction_id):
+	value = frappe.db.sql("""select parent from `tabTDS Remittance Item` where docstatus=1 and invoice_no='{}'""".format(transaction_id))
+	if value:
+		frappe.throw("Linked to {} cannot cancel this transaction.".format(frappe.get_desk_link("TDS Remittance", value[0][0])))

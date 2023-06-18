@@ -1,0 +1,55 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2023-06-18 18:12:18.565302",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "technical_sanction_bill",
+  "service_charges",
+  "material_charges",
+  "payable_amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "technical_sanction_bill",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Technical Sanction Bill",
+   "options": "Technical Sanction Bill",
+   "reqd": 1
+  },
+  {
+   "fieldname": "service_charges",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Service Charges"
+  },
+  {
+   "fieldname": "material_charges",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Material Charges"
+  },
+  {
+   "fieldname": "payable_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Payable Amount"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-06-18 18:12:18.565302",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Maintenance Payment Item",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,467 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "TS-BILL.YY.MM.####",
+ "creation": "2023-06-18 15:20:15.714033",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "workflow_state",
+  "technical_sanction_details",
+  "branch",
+  "maintenance_type",
+  "posting_date",
+  "dzongkhag",
+  "location",
+  "payment_status",
+  "company",
+  "column_break_2",
+  "tenant",
+  "tenant_name",
+  "mobile_no",
+  "block_no",
+  "column_break_15",
+  "site_inspector",
+  "site_inspector_name",
+  "flat_no",
+  "outsource",
+  "supplier",
+  "region",
+  "party_type",
+  "party",
+  "expense_account",
+  "section_break_21",
+  "items",
+  "section_break_22",
+  "deduction",
+  "section_break_25",
+  "get_advances",
+  "advance",
+  "section_break33",
+  "tax_withholding_category",
+  "tds_account",
+  "column_break36",
+  "tds_amount",
+  "section_break_30",
+  "total_gross_amount",
+  "col_break",
+  "total_deduction_amount",
+  "column_break_27",
+  "total_amount",
+  "muster_roll_detail",
+  "mr_item",
+  "section_break_28",
+  "material_charges",
+  "maf",
+  "column_break_28",
+  "maintenance_payment",
+  "technical_sanction",
+  "column_break_32",
+  "revised_technical_sanction",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Workflow State",
+   "options": "Workflow State"
+  },
+  {
+   "fieldname": "technical_sanction_details",
+   "fieldtype": "Section Break",
+   "label": "Technical Sanction Details",
+   "read_only": 1
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "read_only": 1
+  },
+  {
+   "fieldname": "maintenance_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Maintenance Type",
+   "options": "\nMinor\nPlanned\nAdhoc",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Posting date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "dzongkhag",
+   "fieldtype": "Link",
+   "label": "Dzongkhag",
+   "options": "Dzongkhag",
+   "read_only": 1
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Location",
+   "options": "Locations",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "payment_status",
+   "fieldtype": "Select",
+   "label": "Payment Status",
+   "options": "\nPaid\nNot paid",
+   "read_only": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tenant",
+   "fieldtype": "Link",
+   "label": "Tenant CID",
+   "options": "Tenant Information",
+   "read_only": 1
+  },
+  {
+   "fieldname": "tenant_name",
+   "fieldtype": "Data",
+   "label": "Tenant Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "label": "Mobile No.",
+   "read_only": 1
+  },
+  {
+   "fieldname": "block_no",
+   "fieldtype": "Link",
+   "label": "Block No",
+   "options": "Block No",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_15",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "site_inspector",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Site Supervisor",
+   "options": "Employee",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fetch_from": "site_inspector.employee_name",
+   "fieldname": "site_inspector_name",
+   "fieldtype": "Data",
+   "label": "Site Supervisor Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "flat_no",
+   "fieldtype": "Link",
+   "label": "Flat No",
+   "options": "Flat No",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "outsource",
+   "fieldtype": "Check",
+   "label": "Is Outsource Work",
+   "read_only": 1
+  },
+  {
+   "depends_on": "outsource",
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Contractor",
+   "options": "Supplier",
+   "read_only": 1
+  },
+  {
+   "fieldname": "region",
+   "fieldtype": "Link",
+   "label": "Region",
+   "options": "BSR Region",
+   "read_only": 1
+  },
+  {
+   "fieldname": "party_type",
+   "fieldtype": "Link",
+   "label": "Party Type",
+   "options": "DocType",
+   "read_only": 1
+  },
+  {
+   "fieldname": "party",
+   "fieldtype": "Dynamic Link",
+   "label": "Party",
+   "options": "party_type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "expense_account",
+   "fieldtype": "Link",
+   "label": "Expense Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "section_break_21",
+   "fieldtype": "Section Break",
+   "label": "Details",
+   "read_only": 1
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "options": "Technical Sanction Item",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_22",
+   "fieldtype": "Section Break",
+   "label": "Deductions"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "deduction",
+   "fieldtype": "Table",
+   "options": "Technical Sanction Deduction"
+  },
+  {
+   "fieldname": "section_break_25",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "get_advances",
+   "fieldtype": "Button",
+   "label": "Get Advances"
+  },
+  {
+   "fieldname": "advance",
+   "fieldtype": "Table",
+   "label": "Advances",
+   "options": "Technical Sanction Bill Advance"
+  },
+  {
+   "fieldname": "section_break33",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "tds_account",
+   "fieldtype": "Link",
+   "label": "TDS Account",
+   "options": "Account",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break36",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.tds_percent",
+   "fieldname": "tds_amount",
+   "fieldtype": "Currency",
+   "label": "TDS Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_30",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "total_gross_amount",
+   "fieldtype": "Currency",
+   "label": "Total Gross Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "col_break",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_deduction_amount",
+   "fieldtype": "Currency",
+   "label": "Total Deduction Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_27",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "label": "Total Estimate Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "muster_roll_detail",
+   "fieldtype": "Section Break",
+   "label": "Payee Details"
+  },
+  {
+   "fieldname": "mr_item",
+   "fieldtype": "Table",
+   "options": "Technical Sanction MR Item"
+  },
+  {
+   "fieldname": "section_break_28",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "material_charges",
+   "fieldtype": "Currency",
+   "label": "Total Material Charges",
+   "read_only": 1
+  },
+  {
+   "fieldname": "maf",
+   "fieldtype": "Link",
+   "label": "MAF",
+   "options": "Maintenance Application Form",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_28",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "maintenance_payment",
+   "fieldtype": "Data",
+   "label": "Maintenance Payment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "technical_sanction",
+   "fieldtype": "Link",
+   "label": "Technical Sanction",
+   "options": "Technical Sanction",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_32",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "revised_technical_sanction",
+   "fieldtype": "Link",
+   "label": "Revised Technical Sanction",
+   "options": "Revised Technical Sanction",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Technical Sanction Bill",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "tax_withholding_category",
+   "fieldtype": "Link",
+   "label": "Tax Withholding Category",
+   "options": "Tax Withholding Category"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-06-18 17:04:43.603295",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Technical Sanction Bill",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Maintenance Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Maintenance User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "CEO",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "tenant,tenant_name",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "tenant_name"
+}

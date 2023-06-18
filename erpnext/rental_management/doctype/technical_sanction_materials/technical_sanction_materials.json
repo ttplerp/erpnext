@@ -1,0 +1,129 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2023-06-18 11:10:09.867811",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "item",
+  "cb_1",
+  "item_name",
+  "cb_2",
+  "uom",
+  "sb_one",
+  "amount",
+  "cb_3",
+  "quantity",
+  "cb_4",
+  "imprest",
+  "sb_two",
+  "stock_entry",
+  "stock_entry_detail",
+  "cb_5",
+  "checked_by"
+ ],
+ "fields": [
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Material Code",
+   "options": "Item",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Material Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "label": "UOM",
+   "options": "UOM",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_one",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Charge Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Float",
+   "label": "Quantity",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "imprest",
+   "fieldtype": "Check",
+   "label": "Bought Using Imprest?"
+  },
+  {
+   "fieldname": "sb_two",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "stock_entry",
+   "fieldtype": "Data",
+   "label": "MIN Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "stock_entry_detail",
+   "fieldtype": "Data",
+   "label": "MIN Detail No",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "checked_by",
+   "fieldtype": "Link",
+   "label": "Checked By",
+   "options": "Employee"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-06-18 11:10:09.867811",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Technical Sanction Materials",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,50 +1,51 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "TS.YY.MM.####",
- "creation": "2023-06-17 14:54:08.406842",
+ "autoname": "RTS.YY.MM.####",
+ "creation": "2023-06-18 14:28:11.627613",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "workflow_state",
-  "sb_technical_sanction",
+  "technical_sanction",
+  "technical_sanction_details",
   "branch",
   "maintenance_type",
   "posting_date",
   "dzongkhag",
   "location",
   "company",
-  "cb_ts_1",
+  "column_break_2",
   "tenant",
   "tenant_name",
   "mobile_no",
   "block_no",
-  "flat_no",
-  "cb_ts_2",
+  "column_break_15",
   "site_inspector",
   "site_inspector_name",
+  "flat_no",
   "outsource",
   "supplier",
   "region",
   "party_type",
   "party",
-  "sb_detail_measurement",
-  "detail_measurement",
-  "sb_abstract_cost",
+  "section_break_25",
   "items",
   "total_amount",
-  "sb_advances",
-  "technical_sanction_advance",
-  "sb_material_details",
+  "deductions",
+  "tools_and_plant",
+  "rm",
+  "column_break_27",
+  "material_details",
   "get_items",
   "material_items",
+  "supervisors_detail",
+  "supervisor_item",
+  "section_break_27",
   "material_charges",
-  "sb_references",
   "maf",
-  "sb_r_1",
-  "revised_technical_sanction",
-  "sb_r_2",
+  "column_break_28",
   "bill",
   "amended_from"
  ],
@@ -54,26 +55,35 @@
    "fieldtype": "Link",
    "hidden": 1,
    "label": "Workflow State",
-   "options": "Workflow State",
+   "options": "Workflow State"
+  },
+  {
+   "fieldname": "technical_sanction",
+   "fieldtype": "Link",
+   "label": "Technical Sanction",
+   "options": "Technical Sanction",
    "read_only": 1
   },
   {
-   "fieldname": "sb_technical_sanction",
+   "fieldname": "technical_sanction_details",
    "fieldtype": "Section Break",
-   "label": "Technical Sanction"
+   "label": "Technical Sanction Details",
+   "read_only": 1
   },
   {
    "fieldname": "branch",
    "fieldtype": "Link",
    "label": "Branch",
-   "options": "Branch"
+   "options": "Branch",
+   "read_only": 1
   },
   {
    "fieldname": "maintenance_type",
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Maintenance Type",
-   "options": "\nMinor\nPlanned\nAdhoc",
+   "options": "Minor\nPlanned\nAdhoc",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -88,13 +98,17 @@
    "fieldname": "dzongkhag",
    "fieldtype": "Link",
    "label": "Dzongkhag",
-   "options": "Dzongkhag"
+   "options": "Dzongkhag",
+   "read_only": 1
   },
   {
    "fieldname": "location",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Location",
-   "options": "Locations"
+   "options": "Locations",
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "fieldname": "company",
@@ -103,58 +117,62 @@
    "options": "Company"
   },
   {
-   "fieldname": "cb_ts_1",
+   "fieldname": "column_break_2",
    "fieldtype": "Column Break"
   },
   {
    "fieldname": "tenant",
    "fieldtype": "Link",
-   "label": "Tenant",
-   "options": "Tenant Information"
+   "label": "Tenant CID",
+   "options": "Tenant Information",
+   "read_only": 1
   },
   {
-   "fetch_from": "tenant.tenant_name",
    "fieldname": "tenant_name",
    "fieldtype": "Data",
-   "label": "Tenant Name"
+   "label": "Tenant Name",
+   "read_only": 1
   },
   {
-   "fetch_from": "tenant.phone_no",
    "fieldname": "mobile_no",
    "fieldtype": "Data",
-   "label": "Mobile No"
+   "label": "Mobile No.",
+   "read_only": 1
   },
   {
-   "fetch_from": "tenant.block_no",
    "fieldname": "block_no",
    "fieldtype": "Link",
    "label": "Block No",
-   "options": "Block No"
+   "options": "Block No",
+   "read_only": 1
   },
   {
-   "fetch_from": "tenant.flat_no",
-   "fieldname": "flat_no",
-   "fieldtype": "Link",
-   "label": "Flat No",
-   "options": "Flat No"
-  },
-  {
-   "fieldname": "cb_ts_2",
+   "fieldname": "column_break_15",
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "site_inspector",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Site Supervisor",
    "options": "Employee",
+   "read_only": 1,
    "reqd": 1
   },
   {
    "fetch_from": "site_inspector.employee_name",
    "fieldname": "site_inspector_name",
    "fieldtype": "Data",
-   "label": "Site Supervisor Name"
+   "label": "Site Supervisor Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "flat_no",
+   "fieldtype": "Link",
+   "label": "Flat No",
+   "options": "Flat No",
+   "read_only": 1
   },
   {
    "default": "0",
@@ -163,7 +181,7 @@
    "label": "Is Outsource Work"
   },
   {
-   "depends_on": "eval: doc.outsource == 1",
+   "depends_on": "outsource",
    "fieldname": "supplier",
    "fieldtype": "Link",
    "label": "Contractor",
@@ -188,59 +206,74 @@
    "options": "party_type"
   },
   {
-   "fieldname": "sb_detail_measurement",
+   "fieldname": "section_break_25",
    "fieldtype": "Section Break",
-   "label": "Detail Measurement"
-  },
-  {
-   "fieldname": "detail_measurement",
-   "fieldtype": "Table",
-   "label": "Detail Measurement",
-   "options": "Technical Sanction Detail Item"
-  },
-  {
-   "fieldname": "sb_abstract_cost",
-   "fieldtype": "Section Break",
-   "label": "Abstract Of Cost"
+   "label": "Details",
+   "read_only": 1
   },
   {
    "fieldname": "items",
    "fieldtype": "Table",
-   "label": "Abstract Measurement",
    "options": "Technical Sanction Item"
   },
   {
    "fieldname": "total_amount",
    "fieldtype": "Currency",
-   "label": "Total Amount",
+   "label": "Total Estimate Amount",
    "read_only": 1
   },
   {
-   "fieldname": "sb_advances",
+   "fieldname": "deductions",
    "fieldtype": "Section Break",
-   "label": "Advances"
+   "hidden": 1,
+   "label": "Deductions"
   },
   {
-   "fieldname": "technical_sanction_advance",
-   "fieldtype": "Table",
-   "label": "Technical Sanction Advance",
-   "options": "Technical Sanction Advance Item"
+   "fieldname": "tools_and_plant",
+   "fieldtype": "Currency",
+   "label": "5% Tools And Plant"
   },
   {
-   "fieldname": "sb_material_details",
+   "fieldname": "rm",
+   "fieldtype": "Currency",
+   "label": "10% RM"
+  },
+  {
+   "fieldname": "column_break_27",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "material_details",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Material Details"
   },
   {
+   "depends_on": "eval:!doc.maintenance_payment",
    "fieldname": "get_items",
    "fieldtype": "Button",
    "label": "Get Items from MIN"
   },
   {
+   "depends_on": "eval:doc.docstatus == 1",
    "fieldname": "material_items",
    "fieldtype": "Table",
-   "label": "Material Details",
-   "options": "Technical Sanction Materials"
+   "options": "Technical Sanction Materials",
+   "read_only": 1
+  },
+  {
+   "fieldname": "supervisors_detail",
+   "fieldtype": "Section Break",
+   "label": "Supervisors Detail"
+  },
+  {
+   "fieldname": "supervisor_item",
+   "fieldtype": "Table",
+   "options": "Technical Sanction Supervisor Item"
+  },
+  {
+   "fieldname": "section_break_27",
+   "fieldtype": "Section Break"
   },
   {
    "depends_on": "eval:doc.material_items",
@@ -250,10 +283,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "sb_references",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "maf",
    "fieldtype": "Link",
    "label": "MAF",
@@ -261,31 +290,20 @@
    "read_only": 1
   },
   {
-   "fieldname": "sb_r_1",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "revised_technical_sanction",
-   "fieldtype": "Link",
-   "label": "Revised Technical Sanction",
-   "options": "Revised Technical Sanction"
-  },
-  {
-   "fieldname": "sb_r_2",
+   "fieldname": "column_break_28",
    "fieldtype": "Column Break"
   },
   {
    "fieldname": "bill",
-   "fieldtype": "Link",
-   "label": "Bill",
-   "options": "Technical Sanction Bill"
+   "fieldtype": "Data",
+   "label": "Bill"
   },
   {
    "fieldname": "amended_from",
    "fieldtype": "Link",
    "label": "Amended From",
    "no_copy": 1,
-   "options": "Technical Sanction",
+   "options": "Revised Technical Sanction",
    "print_hide": 1,
    "read_only": 1
   }
@@ -293,10 +311,10 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-18 17:59:25.711564",
+ "modified": "2023-06-18 14:33:37.131558",
  "modified_by": "Administrator",
  "module": "Rental Management",
- "name": "Technical Sanction",
+ "name": "Revised Technical Sanction",
  "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
@@ -311,35 +329,10 @@
    "role": "System Manager",
    "share": 1,
    "write": 1
-  },
-  {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Maintenance User",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Maintenance Manager",
-   "share": 1,
-   "write": 1
   }
  ],
- "search_fields": "tenant,tenant_name",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "tenant_name",
  "track_changes": 1
 }

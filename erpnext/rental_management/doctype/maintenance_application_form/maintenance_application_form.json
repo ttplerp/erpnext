@@ -16,7 +16,6 @@
   "tenant",
   "tenant_name",
   "cid",
-  "structure_no",
   "mobile_no",
   "column_break_2",
   "designation",
@@ -94,12 +93,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "structure_no",
-   "fieldtype": "Data",
-   "label": "Structure No",
-   "read_only": 1
-  },
-  {
    "fetch_from": "location.dzongkhag",
    "fieldname": "dzongkhag",
    "fieldtype": "Link",
@@ -172,14 +165,6 @@
    "options": "Block No"
   },
   {
-   "fetch_from": "location.dzongkhag",
-   "fieldname": "dzongkhag",
-   "fieldtype": "Link",
-   "label": "Dzongkhag",
-   "options": "Dzongkhag",
-   "read_only": 1
-  },
-  {
    "default": "Today",
    "fieldname": "posting_date",
    "fieldtype": "Date",
@@ -200,24 +185,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "site_inspector",
-   "fieldtype": "Link",
-   "label": "Site Visitor",
-   "options": "Employee",
-   "reqd": 1
-  },
-  {
-   "fieldname": "column_break_24",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fetch_from": "site_inspector.employee_name",
-   "fieldname": "site_inspector_name",
-   "fieldtype": "Data",
-   "label": "Site Visitor Name",
-   "read_only": 1
-  },
-  {
    "fieldname": "section_break_26",
    "fieldtype": "Section Break"
   },
@@ -229,8 +196,9 @@
   },
   {
    "fieldname": "technical_sanction",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "label": "Technical Sanction",
+   "options": "Technical Sanction",
    "read_only": 1
   },
   {
@@ -265,12 +233,16 @@
   {
    "fieldname": "cb_1",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_24",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-13 10:29:29.949802",
+ "modified": "2023-06-18 12:54:05.778984",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Maintenance Application Form",

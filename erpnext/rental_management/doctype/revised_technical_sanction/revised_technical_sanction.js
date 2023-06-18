@@ -1,64 +1,18 @@
 // Copyright (c) 2023, Frappe Technologies Pvt. Ltd. and contributors
 // For license information, please see license.txt
 
-frappe.ui.form.on('Technical Sanction', {
+frappe.ui.form.on('Revised Technical Sanction', {
 	refresh: function(frm) {
-		if (frm.doc.docstatus == 1 && !frm.doc.bill && frm.doc.party && frm.doc.party_type) {
-			frm.add_custom_button("Make Advance", function () {
+		if (frm.doc.docstatus == 1) {
+			frm.add_custom_button("Prepare Bill", function () {
 				frappe.model.open_mapped_doc({
-					method: "erpnext.rental_management.doctype.technical_sanction.technical_sanction.make_advance",
+					method: "erpnext.rental_management.doctype.revised_technical_sanction.revised_technical_sanction.prepare_bill",
 					frm: cur_frm
 				});
 			});
 		}
-		// if (frm.doc.docstatus == 1 && !frm.doc.revised_technical_sanction && !frm.doc.bill) {
-		// 	frm.add_custom_button("Prepare RTS", function () {
-		// 		frappe.model.open_mapped_doc({
-		// 			method: "erpnext.rental_management.doctype.technical_sanction.technical_sanction.prepare_rts",
-		// 			frm: cur_frm
-		// 		});
-		// 	});
-		// 	if (!frm.doc.bill) {
-		// 		frm.add_custom_button("Prepare Bill", function () {
-		// 			frappe.model.open_mapped_doc({
-		// 				method: "erpnext.rental_management.doctype.technical_sanction.technical_sanction.prepare_bill",
-		// 				frm: cur_frm
-		// 			});
-		// 		});
-		// 	}
-		// }
-	},
-	onload: function (frm) {
-		frm.set_query("supplier", function () {
-			return {
-				"filters": {
-					"vendor_group": "Contractor",
-					//"vendor_type" : "GEP"
-				}
-			}
-		});
 	},
 	setup: function(frm) {
-		frm.set_query("service", "detail_measurement", function(frm,cdt,cdn) {
-			var row = locals[cdt][cdn];
-			// var is_service_item = (row.type == 'Service')? 1:0;
-			if (row.type == undefined && row.type == '') return
-			if (row.type == "Service") {
-				return {
-					filters: [
-						["disabled", "=", 0],
-						["is_service_item", "=", 1]
-					]
-				}
-			} else if (row.type == "Item") {
-				return {
-					filters: [
-						["disabled", "=", 0],
-						["is_service_item", "=", 0]
-					]
-				}
-			}
-		});
 		frm.set_query("service", "items", function(frm,cdt,cdn) {
 			var row = locals[cdt][cdn];
 			// var is_service_item = (row.type == 'Service')? 1:0;
@@ -92,18 +46,7 @@ frappe.ui.form.on('Technical Sanction', {
 				}
 			};
 		});
-	},
-	"get_items": function (frm) {
-		return frappe.call({
-			method: "get_technical_sanction_items",
-
-			doc: frm.doc,
-			callback: function (r, rt) {
-				frm.refresh_field("material_items");
-				frm.refresh_fields();
-			}
-		});
-	},
+	}
 });
 
 frappe.ui.form.on('Technical Sanction Item', {
@@ -174,67 +117,6 @@ frappe.ui.form.on('Technical Sanction Item', {
 		cur_frm.set_value("total_amount", total);
 	}
 });
-
-frappe.ui.form.on('Technical Sanction Detail Item', {
-	"type": function(frm, cdt, cdn) {
-		var row = locals[cdt][cdn];
-		if (row.type == 'Service' || row.type == 'Item'){
-			frappe.model.set_value(cdt, cdn, "item_type", "Item");
-		} else if (row.type == 'Rate Analysis') {
-			frappe.model.set_value(cdt, cdn, "item_type", "Rate Analysis");
-		} else {
-			frappe.model.set_value(cdt, cdn, "item_type", "");
-		}
-		// refresh_field("detail_measurement");
-		frappe.model.set_value(cdt, cdn, "service","");
-	},
-	"service": function (frm, cdt, cdn) {
-		var c = locals[cdt][cdn];
-
-		cur_frm.add_fetch("service", "item_name", "item_name");
-		cur_frm.add_fetch("service", "stock_uom", "uom");
-	},
-	"breath": function (frm, cdt, cdn) {
-		calculate_quantity(frm, cdt, cdn)
-	},
-	"length": function (frm, cdt, cdn) {
-		calculate_quantity(frm, cdt, cdn)
-	},
-	"height": function (frm, cdt, cdn) {
-		calculate_quantity(frm, cdt, cdn)
-	},
-	"coef": function (frm, cdt, cdn) {
-		calculate_quantity(frm, cdt, cdn)
-	},
-	"number": function (frm, cdt, cdn) {
-		calculate_quantity(frm, cdt, cdn)
-	},
-});
-
-function calculate_quantity(frm, cdt, cdn) {
-	var child = locals[cdt][cdn];
-	if (child.breath && child.length) {
-		child.qty = child.breath * child.length
-		let height = 1
-		let coef = 1
-		let number = 1
-
-		if (child.height) {
-			height = child.height
-		}
-		if (child.coef) {
-			coef = child.coef
-		}
-		if (child.number) {
-			number = child.number
-		}
-		child.qty = child.breath * child.length * height * coef * number
-		child.qty = child.qty.toFixed(2)
-	}
-	frm.refresh_fields()
-	// refresh_field("accounts");
-	// frm.refresh_field("tds_table")
-}
 
 function get_item_price(frm, cdt, cdn)
 {

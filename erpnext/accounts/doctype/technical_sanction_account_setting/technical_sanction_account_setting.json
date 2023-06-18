@@ -1,0 +1,120 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-06-18 12:08:55.994773",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sb_technical_sanction_advance",
+  "ts_customer",
+  "ts_advance_account",
+  "sb_tsa_1",
+  "ts_supplier",
+  "ts_advance_supplier",
+  "sb_accounts",
+  "expense_account",
+  "cb_a_1",
+  "income_account"
+ ],
+ "fields": [
+  {
+   "fieldname": "sb_technical_sanction_advance",
+   "fieldtype": "Section Break",
+   "label": "Technical Sanction Advance"
+  },
+  {
+   "fieldname": "ts_customer",
+   "fieldtype": "HTML",
+   "options": "<h5>Internal TS Setting(Customer)</h5>"
+  },
+  {
+   "fieldname": "ts_advance_account",
+   "fieldtype": "Link",
+   "label": "Advance Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "sb_tsa_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ts_supplier",
+   "fieldtype": "HTML",
+   "options": "<h5>External TS Settings(Supplier)</h5>"
+  },
+  {
+   "fieldname": "ts_advance_supplier",
+   "fieldtype": "Link",
+   "label": "Advance Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "sb_accounts",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "expense_account",
+   "fieldtype": "Link",
+   "label": "Expense Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "cb_a_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "income_account",
+   "fieldtype": "Link",
+   "label": "Income Account",
+   "options": "Account"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2023-06-18 12:09:52.124733",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Technical Sanction Account Setting",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Maintenance User",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Maintenance Manager",
+   "share": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

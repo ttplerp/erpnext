@@ -2,9 +2,16 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Maintenance Application Form', {
-	// refresh: function(frm) {
-
-	// }
+	refresh: function(frm) {
+		if (!frm.doc.technical_sanction && frm.doc.docstatus == 1) {
+			frm.add_custom_button("Create Technical Sanction", function () {
+				frappe.model.open_mapped_doc({
+					method: "erpnext.rental_management.doctype.maintenance_application_form.maintenance_application_form.make_technical_sanction",
+					frm: cur_frm
+				});
+			});
+		}
+	},
 	setup: function(frm) {
 		frm.set_query("tenant", function(){
 			return {
