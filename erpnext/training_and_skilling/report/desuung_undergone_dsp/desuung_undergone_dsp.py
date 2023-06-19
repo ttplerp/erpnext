@@ -66,6 +66,6 @@ def get_columns(filters):
 		]
 	if not filters.detail:
 		columns += [
-			 _("Programme Attended") + ":Data:120",
+			 _("Programme Attended") + ":Data:180",
 		]
 	return columns
