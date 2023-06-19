@@ -146,6 +146,7 @@
    "label": "Cohort Announcement Name"
   },
   {
+   "fetch_from": "programme.domain",
    "fieldname": "domain",
    "fieldtype": "Link",
    "label": "Domain",
@@ -245,7 +246,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-14 07:22:10.757142",
+ "modified": "2023-06-19 21:16:33.877430",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Management",

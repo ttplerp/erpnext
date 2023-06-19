@@ -30,7 +30,7 @@ frappe.query_reports["Desuung Undergone DSP"] = {
 			fieldname: "programme",
 			label: __("Programme"),
 			fieldtype: "Link",
-			options: "Programme",
+			options: "Programme Classification",
 			default:""
 		},
 		{

@@ -17,7 +17,7 @@ def get_data(filters=None):
 	if filters.domain:
 		condition += """ and tm.domain="{}" """.format(filters.domain)
 	if filters.programme:
-		condition += """ and tm.programme="{}" """.format(filters.programme)
+		condition += """ and tm.programme_classification="{}" """.format(filters.programme)
 	if filters.did:
 		condition += """ and td.desuup_id="{}" """.format(filters.did)
 	
@@ -25,12 +25,12 @@ def get_data(filters=None):
 		query="""
 				select td.desuup_id, 
 				td.desuup_name, td.desuup_cid, td.gender, tm.domain, 
-				tm.programme, tm.training_center,
+				tm.programme, tm.programme_classification, tm.training_center,
 				tm.training_start_date, tm.training_end_date, tm.name
 				from `tabTraining Management` tm inner join `tabTrainee Details` td 
 				on tm.name=td.parent
 				where tm.docstatus!=2
-				and td.status not in ("Withdrawn","Terminated","Suspended")
+				and td.status="Passed"
 				{}
 				order by td.desuup_id
 			 """.format(condition)
@@ -40,7 +40,7 @@ def get_data(filters=None):
 				from `tabTraining Management` tm inner join `tabTrainee Details` td 
 				on tm.name=td.parent
 				where tm.docstatus!=2
-				and td.status not in ("Withdrawn","Terminated","Suspended")
+				and td.status="Passed"
 				{}
 				group by td.desuup_id
 				order by count desc
@@ -56,9 +56,10 @@ def get_columns(filters):
 	]
 	if filters.detail:
 		columns += [
-			_("Domain") + ":Link/DSP Domain:150", 
-			_("Programme") + ":Link/Programme:170",
-			_("Training Center") + ":Link/Training Center:160",
+			_("Domain") + ":Link/DSP Domain:200", 
+			_("Programme") + ":Link/Programme:200",
+			_("Programme Classification") + ":Link/Programme Classification:200",
+			_("Training Center") + ":Link/Training Center:180",
 			_("Start Date") + ":Date:100",
 			_("End Date") + ":Date:100",
 			_("Reference") + ":Link/Training Management:100",

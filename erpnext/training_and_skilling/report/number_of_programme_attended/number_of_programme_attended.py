@@ -31,7 +31,7 @@ def get_data(filters):
 									from `tabTraining Management` tm inner join `tabTrainee Details` td 
 									on tm.name=td.parent
 									where tm.docstatus!=2
-									and td.status not in ("Withdrawn","Terminated","Suspended")
+									and td.status="Passed"
 									group by td.desuup_id) a
 								group by a.dsp_attended
 			""", as_dict=True):
