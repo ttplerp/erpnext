@@ -39,7 +39,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-06 15:32:17.531141",
+ "modified": "2023-06-19 22:18:39.289237",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Programme Classification",
@@ -60,6 +60,7 @@
   }
  ],
  "quick_entry": 1,
+ "search_fields": "domain",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
