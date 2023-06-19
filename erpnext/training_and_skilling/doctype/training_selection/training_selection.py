@@ -15,6 +15,15 @@ class TrainingSelection(Document):
 			self.slot = int(self.male_slot) + int(self.female_slot)
 		self.check_duplicate_cohort_course()
 		self.workflow_process()
+		self.validate_duplicate_applicant()
+	
+	def validate_duplicate_applicant(self):
+		data = []
+		for d in self.item:
+			if d.did not in data:
+				data.append(d.did)
+			else:
+				frappe.throw("Duplicate Desuup entry at #Row. {}: Desuug ID {}, Please delete the record to proceed".format(d.idx, d.did))
 	
 	def notification(self):
 		receipients = []
