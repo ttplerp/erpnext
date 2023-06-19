@@ -3,7 +3,7 @@
 
 frappe.ui.form.on('POL Receive', {
 	refresh: function(frm) {
-		if (frm.doc.docstatus === 1 && frm.doc.use_common_fuelbook == 1) {
+		if (frm.doc.docstatus === 1) {
 			frm.add_custom_button(
 				__("Ledger"),
 				function () {
@@ -33,7 +33,7 @@ frappe.ui.form.on('POL Receive', {
 		frm.refresh_fields("items")
 		calculate_total(frm)
 	},
-	get_pol_expense:function(frm){
+	get_pol_advance:function(frm){
 		populate_child_table(frm)
 	},
 	branch:function(frm){
@@ -90,6 +90,7 @@ frappe.ui.form.on('POL Receive', {
 		cur_frm.clear_table("items");
 	},
 });
+
 cur_frm.set_query("pol_type", function() {
 	return {
 		"filters": {

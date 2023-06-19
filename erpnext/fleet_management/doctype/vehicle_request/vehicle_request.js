@@ -63,7 +63,6 @@ function open_extension(frm){
 function get_date(frm){
     var get_date = cur_frm.doc.from_date;
     frappe.model.set_value("time_of_departure", get_date);
-
 }
 
 function check_date(frm){

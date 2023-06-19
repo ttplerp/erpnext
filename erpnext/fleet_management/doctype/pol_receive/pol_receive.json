@@ -42,7 +42,7 @@
   "column_break_33",
   "mileage",
   "advance_details_section",
-  "get_pol_expense",
+  "get_pol_advance",
   "items",
   "section_break_10",
   "total_amount",
@@ -227,7 +227,7 @@
   {
    "fieldname": "advance_details_section",
    "fieldtype": "Section Break",
-   "label": "Expenses Details"
+   "label": "Advance Details"
   },
   {
    "fieldname": "items",
@@ -276,12 +276,6 @@
    "label": "Fuelbook",
    "options": "Fuelbook",
    "reqd": 1
-  },
-  {
-   "depends_on": "eval:doc.docstatus == 0",
-   "fieldname": "get_pol_expense",
-   "fieldtype": "Button",
-   "label": "Get Pol Advance"
   },
   {
    "fetch_from": "fuelbook.branch",
@@ -343,12 +337,18 @@
    "label": "Currency",
    "options": "Currency",
    "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.docstatus == 0",
+   "fieldname": "get_pol_advance",
+   "fieldtype": "Button",
+   "label": "Get Pol Advance"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-07 16:19:02.907428",
+ "modified": "2023-06-19 12:40:47.012507",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Receive",

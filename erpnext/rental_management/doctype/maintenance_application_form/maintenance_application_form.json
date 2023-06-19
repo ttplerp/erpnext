@@ -242,7 +242,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-18 12:54:05.778984",
+ "modified": "2023-06-19 10:46:59.985586",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Maintenance Application Form",
@@ -270,6 +270,7 @@
    "report": 1,
    "role": "Maintenance User",
    "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],

@@ -57,7 +57,9 @@
   "stock_frozen_upto_days",
   "column_break_26",
   "role_allowed_to_create_edit_back_dated_transactions",
-  "stock_auth_role"
+  "stock_auth_role",
+  "tab_safety_stock",
+  "safety_stock_item"
  ],
  "fields": [
   {
@@ -358,6 +360,17 @@
    "fieldtype": "Link",
    "label": "MR Approvel Notification",
    "options": "Email Template"
+  },
+  {
+   "fieldname": "tab_safety_stock",
+   "fieldtype": "Tab Break",
+   "label": "Safety Stock Settings"
+  },
+  {
+   "fieldname": "safety_stock_item",
+   "fieldtype": "Table",
+   "label": "Safety Stock Levels",
+   "options": "Safety Stock Level Item"
   }
  ],
  "icon": "icon-cog",
@@ -365,7 +378,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2022-11-21 09:59:09.652385",
+ "modified": "2023-06-19 14:47:43.960737",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Settings",

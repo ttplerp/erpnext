@@ -7,8 +7,8 @@
  "engine": "InnoDB",
  "field_order": [
   "tb_notification",
-  "pol_advance_approval_notification_template",
-  "pol_advance_status_notification_template",
+  "vehicle_request_approval_notification_template",
+  "vehicle_request_status_notification_template",
   "sb_approver",
   "fleet_mto",
   "fleet_mto_name"
@@ -38,22 +38,22 @@
    "read_only": 1
   },
   {
-   "fieldname": "pol_advance_approval_notification_template",
+   "fieldname": "vehicle_request_approval_notification_template",
    "fieldtype": "Link",
-   "label": "POL Advance Approval Notification Template",
+   "label": "Vehicle Request Approval Notification Template",
    "options": "Email Template"
   },
   {
-   "fieldname": "pol_advance_status_notification_template",
+   "fieldname": "vehicle_request_status_notification_template",
    "fieldtype": "Link",
-   "label": "POL Advance Status Notification Template",
+   "label": "Vehicle Request Status Notification Template",
    "options": "Email Template"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-06-07 16:23:05.474305",
+ "modified": "2023-06-19 17:14:33.745727",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Maintenance Settings",

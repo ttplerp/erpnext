@@ -24,7 +24,7 @@ class CustomWorkflow:
 		self.field_map 		= get_field_map()
 		self.doc_approver	= self.field_map[self.doc.doctype]
 		self.field_list		= ["user_id","employee_name","designation","name"]
-		if self.doc.doctype != "Material Request" and self.doc.doctype != "Performance Evaluation" and self.doc.doctype not in ("Project Capitalization","Asset Issue Details", "Compile Budget","Asset Movement", "Budget Reappropiation", "Employee Advance", "Imprest Advance", "Imprest Recoup"):
+		if self.doc.doctype != "Material Request" and self.doc.doctype != "Performance Evaluation" and self.doc.doctype not in ("Project Capitalization","Asset Issue Details", "Compile Budget","Asset Movement", "Budget Reappropiation", "Employee Advance", "Imprest Advance", "Imprest Recoup", "Vehicle Request"):
 			self.employee = frappe.db.get_value("Employee", self.doc.employee, self.field_list)
 			self.reports_to = frappe.db.get_value("Employee", {"name":frappe.db.get_value("Employee", self.doc.employee, "reports_to")}, self.field_list)
 			self.hr_approver	= frappe.db.get_value("Employee", frappe.db.get_single_value("HR Settings", "hr_approver"), self.field_list)
@@ -117,6 +117,9 @@ class CustomWorkflow:
 			if not self.imprest_verifier:
 				frappe.throw("Please set the Imprest Verifier for branch <b>{}</b>".format(self.doc.branch))
 			self.imprest_approver = frappe.db.get_value("Employee", frappe.db.get_value("Department", {"name": "Corporate Services Division - NHDCL"}, "approver"), self.field_list)
+		
+		if self.doc.doctype == "Vehicle Request":
+			self.fleet_mto = frappe.db.get_value("Employee",{"user_id":frappe.db.get_single_value("Maintenance Settings","fleet_mto")},self.field_list)
 	
 		self.login_user		= frappe.db.get_value("Employee", {"user_id": frappe.session.user}, self.field_list)
 		self.final_approver	= []
@@ -233,6 +236,12 @@ class CustomWorkflow:
 			vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.hrgm[1]
 			vars(self.doc)[self.doc_approver[2]] = officiating[2] if officiating else self.hrgm[2]
 		
+		elif approver_type == "Fleet Manager":
+			officiating = get_officiating_employee(self.fleet_mto[3])
+			if officiating:
+				officiating = frappe.db.get_value("Employee", officiating[0].officiate, self.field_list)
+			vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.fleet_mto[0]
+			vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.fleet_mto[1]
 		
 		elif approver_type == "Warehouse Manager":
 			officiating = get_officiating_employee(self.warehouse_manager[3])
@@ -306,9 +315,23 @@ class CustomWorkflow:
 			self.asset()
 		elif self.doc.doctype == "Asset Movement":
 			self.asset_movement()
+		elif self.doc.doctype == "Vehicle Request":
+			self.vehicle_request()
 		else:
 			frappe.throw(_("Workflow not defined for {}").format(self.doc.doctype))
 	
+	def vehicle_request(self):
+		if self.new_state.lower() in ("Draft".lower()):
+			if self.doc.owner != frappe.session.user:
+				frappe.throw("Only {} can Apply this material request".format(self.doc.owner))
+			self.set_approver("Fleet Manager")
+		elif self.new_state.lower() in ("Waiting MTO Approval".lower()):
+			if self.doc.approver_id != frappe.session.user:
+				frappe.throw("Only {} can forward this request".format(self.doc.approver_id))
+			self.set_approver("Fleet Manager")
+		elif self.new_state.lower() in ("Approved".lower()):
+			if self.doc.approver_id != frappe.session.user:
+				frappe.throw("Only {} can Approve this Vehicle Request".format(self.doc.approver_id))
 	def target_setup_request(self):
 		pass
 
@@ -770,6 +793,12 @@ class NotifyCustomWorkflow:
 			if not template:
 				frappe.msgprint(_("Please set default template for Imprest Recoup Status Notification in HR Settings."))
 				return
+		
+		elif self.doc.doctype == "Vehicle Request":
+			template = frappe.db.get_single_value('Maintenance Settings', 'vehicle_request_status_notification_template')
+			if not template:
+				frappe.msgprint(_("Please set default template for Vehicle Request Status Notification in Maintenance Settings."))
+				return
 		else:
 			template = ""
 
@@ -844,6 +873,12 @@ class NotifyCustomWorkflow:
 				template = frappe.db.get_single_value('HR Settings', 'imprest_recoup_approval_notification_template')
 				if not template:
 					frappe.msgprint(_("Please set default template for Imprest Recoup Approval Notification in HR Settings."))
+					return
+			
+			elif self.doc.doctype == "Vehicle Request":
+				template = frappe.db.get_single_value('Maintenance Settings', 'vehicle_request_approval_notification_template')
+				if not template:
+					frappe.msgprint(_("Please set default template for Vehicle Request Approval Notification in Maintenance Settings."))
 					return
 			else:
 				template = ""
@@ -922,6 +957,7 @@ def get_field_map():
 		"Imprest Recoup": ["approver","approver_name","approver_designation"],
 		"Review": ["approver","approver_name","approver_designation"],
 		"Performance Evaluation": ["approver","approver_name","approver_designation"],
+		"Vehicle Request": ["approver_id", "approver"],
 		"PMS Appeal":[],
 		"Asset Issue Details": [],
 

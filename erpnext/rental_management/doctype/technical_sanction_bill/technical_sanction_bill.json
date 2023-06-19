@@ -55,7 +55,7 @@
   "material_charges",
   "maf",
   "column_break_28",
-  "maintenance_payment",
+  "journal_entry",
   "technical_sanction",
   "column_break_32",
   "revised_technical_sanction",
@@ -350,12 +350,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "maintenance_payment",
-   "fieldtype": "Data",
-   "label": "Maintenance Payment",
-   "read_only": 1
-  },
-  {
    "fieldname": "technical_sanction",
    "fieldtype": "Link",
    "label": "Technical Sanction",
@@ -387,12 +381,20 @@
    "fieldtype": "Link",
    "label": "Tax Withholding Category",
    "options": "Tax Withholding Category"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "journal_entry",
+   "fieldtype": "Link",
+   "label": "Journal Entry",
+   "options": "Journal Entry",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-18 17:04:43.603295",
+ "modified": "2023-06-19 23:37:07.207595",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Technical Sanction Bill",

@@ -38,8 +38,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Default Services Account",
-   "options": "Account",
-   "reqd": 1
+   "options": "Account"
   },
   {
    "fieldname": "column_break_3",
@@ -50,8 +49,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Default Goods Account",
-   "options": "Account",
-   "reqd": 1
+   "options": "Account"
   },
   {
    "fieldname": "section_break_5",
@@ -78,8 +76,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Default Receivable Account",
-   "options": "Account",
-   "reqd": 1
+   "options": "Account"
   },
   {
    "fieldname": "section_break_9",
@@ -90,22 +87,19 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Default Hire Revenue Account",
-   "options": "Account",
-   "reqd": 1
+   "options": "Account"
   },
   {
    "fieldname": "hire_revenue_internal_account",
    "fieldtype": "Link",
    "label": "Hire Revenue Account (Internal)",
-   "options": "Account",
-   "reqd": 1
+   "options": "Account"
   },
   {
    "fieldname": "discount_account",
    "fieldtype": "Link",
    "label": "Default Discount Account",
-   "options": "Account",
-   "reqd": 1
+   "options": "Account"
   },
   {
    "fieldname": "column_break_11",
@@ -115,15 +109,13 @@
    "fieldname": "default_advance_account",
    "fieldtype": "Link",
    "label": "Default Customer Advance Account",
-   "options": "Account",
-   "reqd": 1
+   "options": "Account"
   },
   {
    "fieldname": "hire_expense_account",
    "fieldtype": "Link",
    "label": "Hire Expense Account (Internal)",
-   "options": "Account",
-   "reqd": 1
+   "options": "Account"
   },
   {
    "fieldname": "section_break_13",
@@ -133,8 +125,7 @@
    "fieldname": "default_pol_expense_account",
    "fieldtype": "Link",
    "label": "Default POL Expense Account (Machinaries)",
-   "options": "Account",
-   "reqd": 1
+   "options": "Account"
   },
   {
    "fieldname": "column_break_15",
@@ -150,7 +141,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-06-18 18:19:47.439905",
+ "modified": "2023-06-19 10:06:56.819301",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Maintenance Accounts Settings",

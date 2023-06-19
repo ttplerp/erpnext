@@ -6,12 +6,12 @@ frappe.ui.form.on('Locations', {
 
 	// }
 	setup: function (frm) {
-		frm.set_query("dzongkhag", function () {
-			return {
-				"filters": {
-					"is_dzongkhag": 1
-				}
-			};
-		});
+		// frm.set_query("dzongkhag", function () {
+		// 	return {
+		// 		"filters": {
+		// 			"is_dzongkhag": 1
+		// 		}
+		// 	};
+		// });
 	},
 });

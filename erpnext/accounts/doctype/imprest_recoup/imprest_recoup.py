@@ -4,7 +4,6 @@
 from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
-from erpnext.custom_utils import check_budget_available
 from frappe import _
 from frappe.utils import flt, cint, nowdate, getdate, formatdate, money_in_words
 from erpnext.custom_workflow import validate_workflow_states, notify_workflow_states

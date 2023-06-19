@@ -387,6 +387,9 @@ scheduler_events = {
 		"30 * * * *": [
 			"erpnext.accounts.doctype.gl_entry.gl_entry.rename_gle_sle_docs",
 		],
+		"0 0 * * *": [
+			# "erpnext.stock.utils.send_safety_stock_notification",
+		]
 		# Daily but offset by 45 minutes
 		# "45 0 * * *": [
 		# 	"erpnext.stock.reorder_item.reorder_item",

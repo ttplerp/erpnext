@@ -3,14 +3,14 @@
 
 frappe.ui.form.on('Technical Sanction Bill', {
 	refresh: function(frm) {
-		if (frm.doc.docstatus == 1 && !frm.doc.maintenance_payment) {
-			frm.add_custom_button("Make Payment", function () {
-				frappe.model.open_mapped_doc({
-					method: "erpnext.rental_management.doctype.technical_sanction_bill.technical_sanction_bill.make_payment",
-					frm: cur_frm
-				});
-			});
-		}
+		// if (frm.doc.docstatus == 1 && !frm.doc.maintenance_payment) {
+		// 	frm.add_custom_button("Make Payment", function () {
+		// 		frappe.model.open_mapped_doc({
+		// 			method: "erpnext.rental_management.doctype.technical_sanction_bill.technical_sanction_bill.make_payment",
+		// 			frm: cur_frm
+		// 		});
+		// 	});
+		// }
 		if (frm.doc.docstatus === 1) {
 			frm.add_custom_button(__('Accounting Ledger'), function () {
 				frappe.route_options = {
@@ -23,6 +23,34 @@ frappe.ui.form.on('Technical Sanction Bill', {
 				frappe.set_route("query-report", "General Ledger");
 			}, __("View"));
 		}
+
+		frm.add_custom_button(
+			__("Journal Entry"),
+			function () {
+				frappe.route_options = {
+				name: frm.doc.journal_entry
+				};
+				frappe.set_route("List", "Journal Entry");
+			},
+			__("View")
+		);
+
+		if (frm.doc.docstatus == 1 && !frm.doc.journal_entry) {
+			frm.add_custom_button(
+				__("Make Payment"),
+				function () {
+					frappe.call({
+						method: "make_journal_entry",
+						doc: frm.doc,
+						callback: function(r){
+							frm.refresh();
+						}
+					});	
+				},
+				__("Make Payment")
+			);
+		}
+
 	},
 	"deduction": function (frm) {
 		console.log("hello world")

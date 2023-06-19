@@ -183,6 +183,78 @@ class TechnicalSanctionBill(AccountsController):
 		tds_account  = get_tds_account(tax_withholding_category)
 		return tds_account
 
+	@frappe.whitelist()
+	def make_journal_entry(self):
+		if not self.total_amount:
+			frappe.throw(_("Amount should be greater than zero"))
+		self.posting_date = nowdate()
+		ba = get_default_ba()
+
+		payable_account = frappe.db.get_value("Company", self.company,"default_payable_account")
+		bank_account = frappe.db.get_value("Company", self.company,"default_bank_account")
+
+		if not bank_account:
+			frappe.throw("Setup Default Bank Account in Company Setting")
+		if not payable_account:
+			frappe.throw("Setup Payable Bank Account in Company Setting")
+
+		# tds_rate, tds_account = 0, ""
+		# if self.tds_amount > 0:
+		# 	tds_dtls = self.get_tax_details()
+		# 	tds_rate = tds_dtls['rate']
+		# 	tds_account = tds_dtls['account']
+
+		r = []
+		if self.remarks:
+			r.append(_("Note: {0}").format(self.remarks))
+
+		remarks = ("").join(r) 
+
+		je = frappe.new_doc("Journal Entry")
+
+		je.update({
+			"doctype": "Journal Entry",
+			"voucher_type": "Bank Entry",
+			"naming_series": "Bank Payment Voucher",
+			"title": "Technical Sanction Bill - " + self.name,
+			"user_remark": remarks if remarks else "Note: " + "Technical Sanction Bill - " + self.name,
+			"posting_date": self.posting_date,
+			"company": self.company,
+			"total_amount_in_words": money_in_words(self.total_amount),
+			"branch": self.branch,
+			# "apply_tds": 1 if self.tds_amount > 0 else 0,
+			# "tax_withholding_category": self.tax_withholding_category
+		})
+
+		je.append("accounts",{
+			"account": payable_account,
+			"debit_in_account_currency": self.total_amount,
+			"cost_center": self.cost_center,
+			"party_check": 0,
+			"party_type": "Supplier",
+			"party": self.party,
+			"reference_type": "Technical Sanction Bill",
+			"reference_name": self.name,
+			"business_activity": ba,
+			# "apply_tds": 1 if self.tds_amount > 0 else 0,
+			# "add_deduct_tax": "Deduct" if self.tds_amount > 0 else "",
+			# "tax_account": tds_account,
+			# "rate": tds_rate,
+			# "tax_amount_in_account_currency": self.tds_amount,
+			# "tax_amount": self.tds_amount
+		})
+
+		je.append("accounts",{
+			"account": bank_account,
+			"credit_in_account_currency": self.total_amount,
+			"cost_center": self.cost_center,
+			"business_activity": ba,
+		})
+
+		je.insert()
+		self.db_set("journal_entry",je.name)
+		frappe.msgprint(_('Journal Entry {} posted to Accounts').format(frappe.get_desk_link(je.doctype,je.name)))
+
 @frappe.whitelist()
 def make_payment(source_name, target_doc=None):
 	def update_docs(obj, target, source_parent):

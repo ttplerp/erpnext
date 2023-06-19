@@ -597,3 +597,32 @@ def _update_item_info(scan_result: Dict[str, Optional[str]]) -> Dict[str, Option
 		):
 			scan_result.update(item_info)
 	return scan_result
+
+@frappe.whitelist()
+def send_safety_stock_notification():
+	stock_settings = frappe.get_doc("Stock Settings")
+	items = []
+	for a in stock_settings.safety_stock_item:
+		total_stock = frappe.db.sql("""
+			select sum(ifnull(actual_qty,0)) from `tabStock Ledger Entry` where item_code = '{}'
+		""".format(a.item_code))[0][0]
+		if a.safety_stock_level > 0 and flt(total_stock,2) <= flt(a.safety_stock_level,2):
+			items.append([a.item_code, a.item_name, a.safety_stock_level, total_stock])
+		if len(items) > 0:
+			item = ""
+			for b in items:
+				item += """<tr style="border: 1px solid black;"><td style="border: 1px solid black;">"""+str(a[0])+"""</td><td style="border: 1px solid black;">"""+str(a[1])+"""</td><td style="border: 1px solid black;">"""+str(a[2])+"""</td><td style="border: 1px solid black;">"""+str(a[3])+"""</td></tr>"""
+			msg = """Dear Sir/Madam,<br>This is to inform that the total inventory level has reached the Safety Stock Level.<br><br>"""\
+				  +"""<table style="text-align:center; border:1px solid black;"><tr><th>Material Code</th><th>Material Name</th><th>Safety Stock Level</th><th>Stock in System</th></tr>"""\
+				  +item+"</table>"\
+				  +"""Thanks and Regards<br>"""\
+				  +"""NHDCL ERP"""
+			try:
+				frappe.sendmail(
+					recipients =  ["inventory@bt.bt","procurement@bt.bt"],
+					subject = "Safety Stock Level Notification",
+					message = msg,
+				)
+				print(_("Email sent"))
+			except frappe.OutgoingEmailError:
+				pass

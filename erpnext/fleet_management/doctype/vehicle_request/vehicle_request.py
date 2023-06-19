@@ -40,6 +40,7 @@ class VehicleRequest(Document):
 	def check_vehicle(self):
 		if not self.vehicle:
 			frappe.throw("Vehicle is Mandatory")
+	
 	def calculate_time(self):
 		time = time_diff(self.to_date, self.from_date)
 		self.total_days_and_hours=time
@@ -58,6 +59,7 @@ class VehicleRequest(Document):
 def check_form_date_and_to_date(from_date, to_date):
 	if from_date > to_date:
 		frappe.throw("From Date cannot be before than To Date")
+
 @frappe.whitelist()
 def create_logbook(source_name, target_doc=None):
 	doclist = get_mapped_doc("Vehicle Request", source_name, {
