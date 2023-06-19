@@ -26,7 +26,9 @@
   "approver",
   "column_break_19",
   "approver_name",
-  "approver_designation"
+  "approver_designation",
+  "attachment_section",
+  "attachment"
  ],
  "fields": [
   {
@@ -167,12 +169,23 @@
    "fieldtype": "Data",
    "label": "Approver Designation",
    "read_only": 1
+  },
+  {
+   "fieldname": "attachment_section",
+   "fieldtype": "Section Break",
+   "label": "Attachment"
+  },
+  {
+   "fieldname": "attachment",
+   "fieldtype": "Attach",
+   "label": "attachment",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-05 15:41:58.119921",
+ "modified": "2023-06-19 12:14:24.115085",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset Movement",
