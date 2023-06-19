@@ -468,7 +468,7 @@ class TrainingSelection(Document):
 		tm = frappe.new_doc("Training Management")
 		tm.course = self.course
 		tm.course_name = self.course_name
-		tm.domain = self.domain
+		tm.domain = self.domain if self.domain else frappe.db.get_value("Programme", self.programme, "domain")
 		tm.course_cost_center = frappe.db.get_value("Course", self.course, "course")
 		tm.cohort = self.cohort
 		tm.cohort_name = self.cohort_name

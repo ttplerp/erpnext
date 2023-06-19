@@ -130,6 +130,7 @@
    "options": "Training Selection Item"
   },
   {
+   "fetch_from": "programme.domain",
    "fieldname": "domain",
    "fieldtype": "Link",
    "label": "DSP Domain",
@@ -322,7 +323,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-12 16:19:54.329189",
+ "modified": "2023-06-19 22:25:31.910778",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Selection",
