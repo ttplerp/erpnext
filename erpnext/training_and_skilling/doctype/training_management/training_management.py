@@ -24,6 +24,20 @@ class TrainingManagement(Document):
 		# self.count_duration()
 		# self.check_cohort_batch()
 		self.validate_trainees()
+		self.validate_deuplicate_record()
+	
+	def validate_deuplicate_record(self):
+		check_duplicate = frappe.db.sql("""
+										select name
+										from `tabTraining Management`
+										where training_start_date="{}"
+										and training_end_date="{}"
+										and training_center="{}"
+										and programme="{}"
+										and name!="{}"
+						""".format(self.training_start_date,self.training_end_date, self.training_center, self.programme, self.name))
+		if check_duplicate:
+			frappe.throw("Training with same details is recorded in <b>{}</b>".format(check_duplicate[0][0]))
 
 	def update_trainees_status(self):
 		for d in self.get("trainee_details"):
