@@ -3,7 +3,55 @@ from erpnext.setup.doctype.employee.employee import create_user
 import pandas as pd
 import csv
 from frappe.utils import flt, cint, nowdate, getdate, formatdate
-
+def rename_asset():
+	i = 0
+	abbr = "SMCL-BCS-23-"
+	for d in frappe.db.sql("select name, asset_category, creation from `tabAsset` \
+			where asset_category in ('Building & Civil Structure') and docstatus = 0 order by creation",as_dict=True):
+		name  = ""
+		if len(str(i)) == 1:
+			name = abbr +"000"+ str(i)
+		elif len(str(i)) == 2:
+			name = abbr +"00"+ str(i)
+		elif len(str(i)) == 3:
+			name = abbr +"0"+ str(i)
+		else:
+			name = abbr + str(i)
+			
+		print(name)
+		i += 1
+def delete_asset_gl():
+	for d in frappe.db.sql("select name, asset_category from `tabAsset` \
+			where asset_category in ('Furniture & Fixture', 'Plant & Machinery','Building & Civil Structure') and docstatus = 2",as_dict=True):
+		frappe.db.sql("delete from `tabGL Entry` where against_voucher_type='Asset' and against_voucher= '{}'".format(d.name))
+		for je in frappe.db.sql("select distinct(parent) as name from `tabJournal Entry Account` where reference_name= '{}'".format(d.name),as_dict=1):
+			je_doc = frappe.get_doc("Journal Entry",je.name)
+			print(je_doc.name)
+			je_doc.delete()
+	# 	asset = frappe.get_doc("Asset",d.name)
+	# 	print(asset.name, ' ',asset.asset_category,' ', asset.docstatus)
+	# 	asset.cancel()
+	print("Done")
+	frappe.db.commit()
+def pol_entry_correction():
+	for d in frappe.bd.sql("select name,reference_type,reference,equipment from `tabPOL Entry` where rate <= 0"):
+		if d.reference_type == "POL Receive":
+			doc = frappe.get_doc(d.reference_type,d.reference)
+			if doc.name:
+				frappe.db.sql('''
+					update `tabPOL Entry` set fuelbook = '{}', supplier='{}', item_name='{}',
+					memo_number = '{}', pol_slip_no = '{}', mileage = '{}', km_difference = '{}',
+					current_km = '{}', rate = {} where name = '{}'
+					'''.format(doc.fuelbook,doc.supplier,doc.item_name, doc.memo_number, 
+				doc.pol_slip_no, doc.mileage, doc.km_difference, doc.cur_km_reading, doc.rate, d.name))
+		elif d.reference_type == "POL Issue":
+			doc = frappe.get_doc("POL Issue Items",{"parent":d.reference,"equipment":d.equipment})
+			if doc.name:
+				frappe.db.sql('''
+					update `tabPOL Entry` set fuelbook = '{}', mileage = '{}', km_difference = '{}',
+					current_km = '{}', rate = {} where name = '{}' and equipment = '{}'
+					'''.format(doc.fuelbook, doc.mileage, doc.km_difference, doc.cur_km_reading, doc.rate, d.name, doc.equipment))
+	
 def cost_center_correction_budget():
 	for d in frappe.db.get_list("Committed Budget",filters={"reference_type":"Journal Entry"},fields=["cost_center","name"]):
 		parent_cost_center = frappe.db.get_value("Cost Center",{"name":d.cost_center,"use_budget_from_parent":1},["budget_cost_center"])
@@ -198,25 +246,25 @@ def update_ref_doc():
 
 	
 def update_overtime_application_in_ss():
-	with open("/home/frappe/erp/apps/Final.csv") as f:
+	with open("/home/frappe/erp/apps/Overtime.csv") as f:
 		reader = csv.reader(f)
 		mylist = list(reader)
 		c = 0
 		for i in mylist:
-			ss = frappe.db.sql("select name, employee, employee_name, branch, is_active from `tabSalary Structure` where employee='{}' and branch = '{}' and employee_name = '{}'".format(i[1], i[0], i[2]), as_dict=1)		
+			ss = frappe.db.sql("select name, employee, employee_name, branch, is_active from `tabSalary Structure` where employee='{}'and name='{}'".format(i[1], i[0]), as_dict=1)		
 			for d in ss:
 				ss_doc = frappe.get_doc("Salary Structure", {"name": d.name})
-				if ss_doc.employee == i[1] and ss_doc.branch == i[0]:
+				if ss_doc.employee == i[1]:
 					row = ss_doc.append('earnings',{})
 					row.salary_component = "Overtime Allowance"
 					row.amount = flt(i[3])
-					row.from_date = "2023-03-01"
-					row.to_date = "2023-03-31"
+					row.from_date = "2023-04-01"
+					row.to_date = "2023-04-30"
 				ss_doc.save(ignore_permissions=True)
 				
 				# rem_list = []
 				# for a in ss_doc.get("earnings"):
-				# 	if ss_doc.employee == i[2] and ss_doc.branch == i[0] and a.salary_component == "Overtime Allowance":
+				# 	if ss_doc.employee == i[1] and a.salary_component == "Overtime Allowance":
 				# 		rem_list.append(a)
 
 				# [ss_doc.remove(a) for a in rem_list]
@@ -224,3 +272,16 @@ def update_overtime_application_in_ss():
 			c += 1
 		print('DONE')
 		print(str(c))
+
+
+def earned_leave_deletion_manual():
+	count=0
+	for d in frappe.db.sql("select name, employee, from_date, leaves, transaction_name from `tabLeave Ledger Entry` where from_date='2023-06-21'", as_dict=1):
+		# print(str(d.transaction_name))	
+		# print(str(d.from_date))	
+		leave_all = frappe.get_doc("Leave Allocation", d.transaction_name)
+		leave_all.total_leaves_allocated = flt(leave_all.total_leaves_allocated) - flt(2.5)
+		leave_all.save(ignore_permissions=True)
+		frappe.db.sql("delete from `tabLeave Ledger Entry` where from_date='2023-06-21' and name='{}'".format(d.name))
+		count+=1
+	print(str(count))
