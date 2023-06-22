@@ -27,26 +27,7 @@
   "november",
   "december",
   "revenue_target_detail_section_section",
-  "target_amount",
-  "column_break_21",
-  "adjustment_amount",
-  "column_break_24",
-  "net_target_amount",
-  "target_adjustment_details_section",
-  "ad_jan",
-  "ad_feb",
-  "ad_march",
-  "ad_april",
-  "column_break_32",
-  "ad_may",
-  "ad_june",
-  "ad_july",
-  "ad_aug",
-  "column_break_37",
-  "ad_sep",
-  "ad_oct",
-  "ad_nov",
-  "ad_dec"
+  "target_amount"
  ],
  "fields": [
   {
@@ -160,35 +141,10 @@
    "label": "Revenue Target Detail Section"
   },
   {
-   "fieldname": "column_break_21",
-   "fieldtype": "Column Break"
-  },
-  {
-   "allow_on_submit": 1,
-   "fieldname": "adjustment_amount",
-   "fieldtype": "Currency",
-   "in_list_view": 1,
-   "label": "Adjustment Amount ( +/- )",
-   "read_only": 1
-  },
-  {
-   "fieldname": "column_break_24",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "target_amount",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Initial Target Amount",
-   "read_only": 1,
-   "reqd": 1
-  },
-  {
-   "allow_on_submit": 1,
-   "fieldname": "net_target_amount",
-   "fieldtype": "Currency",
-   "in_list_view": 1,
-   "label": "Final Target Amount",
+   "label": "Total Target Amount",
    "read_only": 1,
    "reqd": 1
   },
@@ -203,96 +159,11 @@
    "fieldtype": "Data",
    "label": "Reference No",
    "read_only": 1
-  },
-  {
-   "fieldname": "target_adjustment_details_section",
-   "fieldtype": "Section Break",
-   "label": "Target Adjustment Details"
-  },
-  {
-   "fieldname": "ad_jan",
-   "fieldtype": "Data",
-   "label": "Adjustment Amount January",
-   "read_only": 1
-  },
-  {
-   "fieldname": "ad_feb",
-   "fieldtype": "Data",
-   "label": "Adjustment Amount February",
-   "read_only": 1
-  },
-  {
-   "fieldname": "ad_march",
-   "fieldtype": "Data",
-   "label": "Adjustment Amount March",
-   "read_only": 1
-  },
-  {
-   "fieldname": "ad_april",
-   "fieldtype": "Data",
-   "label": "Adjustment Amount April",
-   "read_only": 1
-  },
-  {
-   "fieldname": "ad_may",
-   "fieldtype": "Data",
-   "label": "Adjustment Amount May",
-   "read_only": 1
-  },
-  {
-   "fieldname": "ad_june",
-   "fieldtype": "Data",
-   "label": "Adjustment Amount June",
-   "read_only": 1
-  },
-  {
-   "fieldname": "ad_july",
-   "fieldtype": "Data",
-   "label": "Adjustment Amount July",
-   "read_only": 1
-  },
-  {
-   "fieldname": "ad_aug",
-   "fieldtype": "Data",
-   "label": "Adjustment Amount August",
-   "read_only": 1
-  },
-  {
-   "fieldname": "ad_sep",
-   "fieldtype": "Data",
-   "label": "Adjustment Amount September",
-   "read_only": 1
-  },
-  {
-   "fieldname": "ad_oct",
-   "fieldtype": "Data",
-   "label": "Adjustment Amount October",
-   "read_only": 1
-  },
-  {
-   "fieldname": "ad_nov",
-   "fieldtype": "Data",
-   "label": "Adjustment Amount November",
-   "read_only": 1
-  },
-  {
-   "fieldname": "ad_dec",
-   "fieldtype": "Data",
-   "label": "Adjustment Amount December",
-   "read_only": 1
-  },
-  {
-   "fieldname": "column_break_32",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_37",
-   "fieldtype": "Column Break"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2023-06-14 11:44:06.206637",
+ "modified": "2023-06-21 10:59:04.904448",
  "modified_by": "Administrator",
  "module": "Budget",
  "name": "Revenue Target Account",

@@ -8,12 +8,13 @@
  "engine": "InnoDB",
  "field_order": [
   "posting_date",
-  "cb_1",
-  "item_name",
-  "cb_2",
   "stock_uom",
-  "sb_item_details",
+  "cb_1",
   "item",
+  "cb_2",
+  "item_name",
+  "sb_item_details",
+  "items",
   "sb_total_amounts",
   "base_amount",
   "cb_ta_1",
@@ -40,16 +41,17 @@
    "fieldtype": "Column Break"
   },
   {
+   "fetch_from": "item.item_name",
    "fieldname": "item_name",
    "fieldtype": "Data",
-   "label": "Title",
-   "reqd": 1
+   "label": "Item Name"
   },
   {
    "fieldname": "cb_2",
    "fieldtype": "Column Break"
   },
   {
+   "fetch_from": "item.stock_uom",
    "fieldname": "stock_uom",
    "fieldtype": "Link",
    "label": "UOM",
@@ -63,9 +65,10 @@
   },
   {
    "fieldname": "item",
-   "fieldtype": "Table",
-   "label": "Item Details",
-   "options": "Rate Analysis Item"
+   "fieldtype": "Link",
+   "label": "Item",
+   "options": "Item",
+   "reqd": 1
   },
   {
    "fieldname": "sb_total_amounts",
@@ -127,12 +130,18 @@
    "options": "Rate Analysis",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Item Details",
+   "options": "Rate Analysis Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-19 10:45:28.120668",
+ "modified": "2023-06-21 14:44:47.457287",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rate Analysis",

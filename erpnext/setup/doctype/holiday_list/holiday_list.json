@@ -13,6 +13,7 @@
   "to_date",
   "column_break_4",
   "total_holidays",
+  "saturday_half",
   "add_weekly_holidays",
   "weekly_off",
   "get_weekly_off_dates",
@@ -108,12 +109,18 @@
    "fieldtype": "Color",
    "label": "Color",
    "print_hide": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "saturday_half",
+   "fieldtype": "Check",
+   "label": "Saturday Half Working Day"
   }
  ],
  "icon": "fa fa-calendar",
  "idx": 1,
  "links": [],
- "modified": "2023-01-03 12:45:18.267338",
+ "modified": "2023-06-20 15:54:13.866817",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Holiday List",

@@ -11,6 +11,7 @@
   "get_items_from",
   "column_break1",
   "posting_date",
+  "branch",
   "filters",
   "item_code",
   "customer",
@@ -378,13 +379,19 @@
    "fieldname": "combine_sub_items",
    "fieldtype": "Check",
    "label": "Consolidate Sub Assembly Items"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch"
   }
  ],
  "icon": "fa fa-calendar",
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-26 12:01:28.304182",
+ "modified": "2023-06-22 13:45:14.271602",
  "modified_by": "Administrator",
  "module": "Manufacturing",
  "name": "Production Plan",

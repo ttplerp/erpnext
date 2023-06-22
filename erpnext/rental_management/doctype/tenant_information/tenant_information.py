@@ -140,7 +140,7 @@ class TenantInformation(Document):
 			# cus.location = self.location
 			# cus.dzongkhag = self.dzongkhag
 			# cus.cost_center = frappe.get_value("Branch", self.branch, "cost_center")
-			# cus.branch = self.branch
+			cus.branch = self.branch
 			cus.save()
 			self.db_set("customer", cus.name)
 			

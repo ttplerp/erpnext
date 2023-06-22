@@ -574,7 +574,8 @@
    "fieldname": "branch",
    "fieldtype": "Link",
    "label": "Branch",
-   "options": "Branch"
+   "options": "Branch",
+   "reqd": 1
   }
  ],
  "icon": "fa fa-cogs",
@@ -582,7 +583,7 @@
  "image_field": "image",
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-13 16:50:33.544593",
+ "modified": "2023-06-22 15:14:20.709101",
  "modified_by": "Administrator",
  "module": "Manufacturing",
  "name": "Work Order",

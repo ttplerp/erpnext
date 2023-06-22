@@ -617,7 +617,7 @@ def make_stock_entry(source_name, target_doc=None):
 		if source.job_card:
 			target.purpose = "Material Transfer for Manufacture"
 
-		if source.material_request_type == "Customer Provided":
+		if source.material_request_type in ("Customer Provided","Material Return"):
 			target.purpose = "Material Receipt"
 		if source.material_request_type == "Material Issue":
 			target.from_warehouse = source.set_warehouse
@@ -641,7 +641,7 @@ def make_stock_entry(source_name, target_doc=None):
 				},
 				"validation": {
 					"docstatus": ["=", 1],
-					"material_request_type": ["in", ["Material Transfer", "Material Issue", "Customer Provided"]],
+					"material_request_type": ["in", ["Material Transfer", "Material Issue", "Customer Provided","Material Return"]],
 				},
 			},
 			"Material Request Item": {

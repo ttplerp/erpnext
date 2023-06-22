@@ -1894,8 +1894,11 @@ def set_grand_total_and_outstanding_amount(party_amount, dt, party_account_curre
 	elif dt == "Dunning":
 		grand_total = doc.grand_total
 		outstanding_amount = doc.grand_total
-	elif dt in ["Transporter Invoice","EME Invoice","Repair And Service Invoice"]:
-		grand_total = doc.grand_total
+	elif dt in ["Transporter Invoice","EME Invoice","Repair And Service Invoice", "Project Invoice"]:
+		if dt == "Project Invoice":
+			grand_total = doc.gross_invoice_amount
+		else:
+			grand_total = doc.grand_total
 		outstanding_amount = doc.outstanding_amount
 	else:
 		if party_account_currency == doc.company_currency:

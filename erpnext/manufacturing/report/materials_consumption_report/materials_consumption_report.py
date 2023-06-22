@@ -128,10 +128,15 @@ def get_data(query, filters):
 	return data
 def get_conditions(filters):
 	conditions = ""
-	if filters.get("item"): 
-		conditions += " and wo.production_item = %(item)s"
+	if filters.get("item"):
+		conditions += """and wo.production_item = '{item}'""".format(item=filters.get("item"))
 	if filters.get("branch"): 
-		conditions += " and wo.branch = %(branch)s"
-
+		conditions += """and wo.branch = '{branch}'""".format(branch=filters.get("branch"))
+	if filters.get("from_date") and filters.get("to_date"):
+		if filters.get("from_date") > filters.get("to_date"):
+			frappe.throw("From Date cannot be after To Date")
+		else:
+			conditions += """and wo.actual_start_date between {0} and {1}""".format(filters.get("from_date"),filters.get("to_date"))
+	# frappe.throw(str(conditions))
 	return conditions, filters
 	

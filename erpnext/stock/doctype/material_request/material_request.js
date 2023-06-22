@@ -170,8 +170,8 @@ frappe.ui.form.on('Material Request', {
 						() => frm.events.make_stock_entry(frm), __('Create'));
 				}
 
-				if (frm.doc.material_request_type === "Customer Provided") {
-					frm.add_custom_button(__("Material Receipt"),
+				if (frm.doc.material_request_type === "Customer Provided" || frm.doc.material_request_type == "Material Return") {
+					frm.add_custom_button(__("Material Return"),
 						() => frm.events.make_stock_entry(frm), __('Create'));
 				}
 

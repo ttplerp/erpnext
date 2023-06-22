@@ -23,7 +23,7 @@
    "fieldname": "location",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Location",
+   "label": "Location Name",
    "reqd": 1
   },
   {
@@ -79,7 +79,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-06 12:29:28.798310",
+ "modified": "2023-06-22 11:00:53.680826",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Locations",

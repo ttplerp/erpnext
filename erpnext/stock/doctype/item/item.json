@@ -25,6 +25,7 @@
   "allow_alternative_item",
   "is_stock_item",
   "is_service_item",
+  "is_bsr_service_item",
   "has_variants",
   "is_production_item",
   "is_pol_item",
@@ -956,6 +957,12 @@
    "default": "0",
    "fieldname": "is_service_item",
    "fieldtype": "Check",
+   "label": "Is Service Item"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_bsr_service_item",
+   "fieldtype": "Check",
    "label": "Is BSR Service Item"
   }
  ],
@@ -964,7 +971,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-11 23:06:43.945862",
+ "modified": "2023-06-21 14:26:54.063860",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",

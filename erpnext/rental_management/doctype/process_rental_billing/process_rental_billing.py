@@ -77,7 +77,7 @@ class ProcessRentalBilling(Document):
 		self.check_permission('write')
 		msg=""
 		if name:
-			try:
+			# try:
 				if process_type == "create":
 					posting_date = self.posting_date
 					if self.month == "01":
@@ -125,8 +125,8 @@ class ProcessRentalBilling(Document):
 							""" calc. property mgt. amount """
 							total_property_mgt_amount = frappe.db.get_value("Locations", d.locations, "total_property_management_amount")
 							prop_mgt_amount = 0
-							for pm_item in frappe.db.sql("select * from `tabProperty Management Item` where is_percent=1 and parent='{}'".format(d.locations)):
-								prop_mgt_amount = flt(d.rental_amount * (pm_item / 100), 2)
+							for pm_item in frappe.db.sql("select * from `tabProperty Management Item` where is_percent=1 and parent='{}'".format(d.locations), as_dict=1):
+								prop_mgt_amount = flt(d.rental_amount * (pm_item.percent / 100), 2)
 								total_property_mgt_amount += prop_mgt_amount
 							total_property_management_amount = total_property_mgt_amount if total_property_mgt_amount > 0 else 0
 
@@ -260,8 +260,8 @@ class ProcessRentalBilling(Document):
 						msg = "Rental Bill Submitted Successfully"
 
 				return {"msg": '<tr><td>{0}</td><td>{1}</td></tr>'.format(name, msg), "flag": flag}
-			except Exception as e:
-				flag = 0
-				frappe.throw("Error: {}".format(str(e)))
-				return {"msg": '<div style="color:red;"> Error: Tenant :{1} - {0}</div>'.format(str(e), name), "flag": flag}
+			# except Exception as e:
+			# 	flag = 0
+			# 	frappe.throw("Error: {}".format(str(e)))
+			# 	return {"msg": '<div style="color:red;"> Error: Tenant :{1} - {0}</div>'.format(str(e), name), "flag": flag}
 

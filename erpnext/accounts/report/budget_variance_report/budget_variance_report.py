@@ -25,6 +25,7 @@ def execute(filters=None):
 	cam_map = get_dimension_account_month_map(filters)
 
 	data = []
+	
 	for dimension in dimensions:
 		dimension_items = cam_map.get(dimension)
 		if dimension_items:
@@ -38,11 +39,11 @@ def execute(filters=None):
 def get_final_data(dimension, dimension_items, filters, period_month_ranges, data, DCC_allocation):
 	for account, monthwise_data in dimension_items.items():
 		row = [dimension, account]
-		totals = [0, 0, 0]
+		totals = [0, 0, 0, 0]
 		for year in get_fiscal_years(filters):
 			last_total = 0
 			for relevant_months in period_month_ranges:
-				period_data = [0, 0, 0]
+				period_data = [0, 0, 0, 0]
 				for month in relevant_months:
 					if monthwise_data.get(year[0]):
 						month_data = monthwise_data.get(year[0]).get(month, {})
@@ -59,16 +60,26 @@ def get_final_data(dimension, dimension_items, filters, period_month_ranges, dat
 
 				if filters.get("show_cumulative"):
 					last_total = period_data[0] - period_data[1]
+				
+				period_data[2] = period_data[0] - period_data[1]
+				if period_data[0] != 0:
+					period_data[3] = round((period_data[2] / period_data[0]) *100,2)
+				row += period_data
 
 				period_data[2] = period_data[0] - period_data[1]
 				row += period_data
+				
 		totals[2] = totals[0] - totals[1]
+		totals[3] = totals[2]
+		if totals[0] == 0:
+			totals[3] = 0
+		else: 
+			totals[3] = round((totals[2]/totals[0])*100, 2)
 		if filters["period"] != "Yearly":
 			row += totals
 		data.append(row)
-
+	
 	return data
-
 
 def get_columns(filters):
 	columns = [
@@ -99,6 +110,7 @@ def get_columns(filters):
 					_("Budget") + " " + str(year[0]),
 					_("Actual") + " " + str(year[0]),
 					_("Variance") + " " + str(year[0]),
+					_("Variance Percentage ") + " " + str(year[0])
 				]
 				for label in labels:
 					columns.append(
@@ -109,6 +121,7 @@ def get_columns(filters):
 					_("Budget") + " (%s)" + " " + str(year[0]),
 					_("Actual") + " (%s)" + " " + str(year[0]),
 					_("Variance") + " (%s)" + " " + str(year[0]),
+					_("Variance Percentage") + " (%s)" + " " + str(year[0])
 				]:
 					if group_months:
 						label = label % (
@@ -122,7 +135,7 @@ def get_columns(filters):
 					)
 
 	if filters["period"] != "Yearly":
-		for label in [_("Total Budget"), _("Total Actual"), _("Total Variance")]:
+		for label in [_("Total Budget"), _("Total Actual"), _("Total Variance"), _("Total Variance Percentage")]:
 			columns.append(
 				{"label": label, "fieldtype": "Float", "fieldname": frappe.scrub(label), "width": 150}
 			)
@@ -168,6 +181,7 @@ def get_cost_centers(filters):
 # Get dimension & target details
 def get_dimension_target_details(filters):
 	budget_against = frappe.scrub(filters.get("budget_against"))
+	parent_account = frappe.scrub(filters.get("parent_account"))
 	cond = ""
 	if filters.get("budget_against_filter"):
 		cond += """ and b.{budget_against} in (%s)""".format(budget_against=budget_against) % ", ".join(

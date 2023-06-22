@@ -15,6 +15,18 @@ frappe.query_reports["Materials Consumption Report"] = {
 			"label": __("Branch"),
 			"fieldtype": "Link",
 			"options": "Branch"
+		},
+		{
+			"fieldname": "from_date",
+			"label": __("From Date"),
+			"fieldtype": "Date",
+			"default": frappe.defaults.get_user_default("year_start_date"),
+		},
+		{
+			"fieldname": "to_date",
+			"label": __("To Date"),
+			"fieldtype": "Date",
+			"default": get_today(),
 		}
 	]
 };

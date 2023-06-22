@@ -9,18 +9,16 @@
  "field_order": [
   "company",
   "branch",
-  "cost_center",
   "fiscal_year",
   "column_break_4",
+  "cost_center",
   "tot_target_amount",
-  "tot_adjustment_amount",
-  "tot_net_target_amount",
   "section_break_9",
   "get_accounts",
   "sb_target",
   "revenue_target_account",
   "sb_notes",
-  "notes",
+  "attachment",
   "amended_from"
  ],
  "fields": [
@@ -55,21 +53,7 @@
    "allow_on_submit": 1,
    "fieldname": "tot_target_amount",
    "fieldtype": "Currency",
-   "label": "Total Initial Target Amount",
-   "read_only": 1
-  },
-  {
-   "allow_on_submit": 1,
-   "fieldname": "tot_adjustment_amount",
-   "fieldtype": "Currency",
-   "label": "Total Adjustment Amount ( +/- )",
-   "read_only": 1
-  },
-  {
-   "allow_on_submit": 1,
-   "fieldname": "tot_net_target_amount",
-   "fieldtype": "Currency",
-   "label": "Total Final Target Amount",
+   "label": "Net Target Amount",
    "read_only": 1
   },
   {
@@ -110,21 +94,23 @@
    "label": "NOTES"
   },
   {
-   "fieldname": "notes",
-   "fieldtype": "Text Editor"
-  },
-  {
    "allow_bulk_edit": 1,
    "fieldname": "revenue_target_account",
    "fieldtype": "Table",
    "label": "Target Details",
-   "options": "Revenue Target Account"
+   "options": "Revenue Target Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "attachment",
+   "fieldtype": "Attach",
+   "label": "Attachment"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-14 15:45:56.067736",
+ "modified": "2023-06-21 11:08:25.997229",
  "modified_by": "Administrator",
  "module": "Budget",
  "name": "Revenue Target",

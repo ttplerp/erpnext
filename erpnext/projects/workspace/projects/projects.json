@@ -5,7 +5,7 @@
    "label": "Open Projects"
   }
  ],
- "content": "[{\"type\":\"chart\",\"data\":{\"chart_name\":\"Open Projects\",\"col\":12}},{\"type\":\"spacer\",\"data\":{\"col\":12}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Task\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Project\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Timesheet\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Project Billing Summary\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":3}},{\"type\":\"spacer\",\"data\":{\"col\":12}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Projects\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Time Tracking\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Bills of Quantities\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Payment\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Project Reports\",\"col\":4}}]",
+ "content": "[{\"type\":\"chart\",\"data\":{\"chart_name\":\"Open Projects\",\"col\":12}},{\"type\":\"spacer\",\"data\":{\"col\":12}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Task\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Project\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Timesheet\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Project Billing Summary\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Task\",\"col\":3}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Projects\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Time Tracking\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Bills of Quantities\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Payment\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Project Reports\",\"col\":4}}]",
  "creation": "2020-03-02 15:46:04.874669",
  "docstatus": 0,
  "doctype": "Workspace",
@@ -316,7 +316,7 @@
    "type": "Link"
   }
  ],
- "modified": "2023-06-12 13:55:39.185675",
+ "modified": "2023-06-21 16:30:26.561497",
  "modified_by": "lhendrup.dorji@thimphutechpark.bt",
  "module": "Projects",
  "name": "Projects",
@@ -329,11 +329,10 @@
  "sequence_id": 25.0,
  "shortcuts": [
   {
-   "color": "Blue",
-   "format": "{} Assigned",
+   "color": "Grey",
+   "doc_view": "List",
    "label": "Task",
    "link_to": "Task",
-   "stats_filter": "{\n    \"_assign\": [\"like\", '%' + frappe.session.user + '%'],\n    \"status\": \"Open\"\n}",
    "type": "DocType"
   },
   {

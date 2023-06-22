@@ -22,7 +22,8 @@ frappe.ui.form.on('Revised Technical Sanction', {
 				return {
 					filters: [
 						["disabled", "=", 0],
-						["is_service_item", "=", 1]
+						["is_service_item", "=", 1],
+						["is_bsr_service_item", "=", 1]
 					]
 				}
 			} else if (row.type == "Item") {

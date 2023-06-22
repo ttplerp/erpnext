@@ -44,17 +44,13 @@ class RevenueTarget(Document):
 	
 	def calculate_targets(self):
 		tot_target_amount     = 0.0
-		tot_adjustment_amount = 0.0
 
 		for d in self.revenue_target_account:
-			d.net_target_amount = flt(d.target_amount) + flt(d.adjustment_amount)
+			# d.net_target_amount = flt(d.target_amount)
 			tot_target_amount += flt(d.target_amount)
-			tot_adjustment_amount += flt(d.adjustment_amount)
 
 		self.tot_target_amount     = tot_target_amount
-		self.tot_adjustment_amount = tot_adjustment_amount
-		self.tot_net_target_amount = flt(tot_target_amount) + flt(tot_adjustment_amount)
-
+		# self.tot_net_target_amount = flt(tot_target_amount)
 	@frappe.whitelist()
 	def get_accounts(self):
 		query = "select name as account, account_number from `tabAccount` where account_type in (\'Income Account\') and is_group = 0 and company = \'" + str(self.company) + "\' and (freeze_account is null or freeze_account != 'Yes') and disabled=0"
@@ -64,35 +60,4 @@ class RevenueTarget(Document):
 		for d in entries:
 			row = self.append('revenue_target_account', {})
 			row.update(d)
-
-@frappe.whitelist()
-def make_adjustment_entry(source_name, target_doc=None):
-	doc = get_mapped_doc("Revenue Target", source_name, {
-		"Revenue Target": {
-			"doctype": "Revenue Target Adjustment",
-			"validation": {
-						"docstatus": ["=", 1]
-					},
-			"field_map": [
-				["name", "revenue_target"],
-				["tot_net_target_amount", "tot_target_amount"],
-				[0, "tot_adjustment_amount"]
-			]
-		},
-		"Revenue Target Account": {
-			"doctype": "Revenue Target Adjustment Account",
-			"field_map": [
-				["parent", "revenue_target"],
-				["name", "revenue_target_item"],
-				["net_target_amount", "target_amount"],
-				[0, "adjustment_amount"],
-				["cost_center", "original_cost_center"],
-				["account", "original_account"],
-				["account_code", "original_account_code"],
-				["net_target_amount", "original_target_amount"]
-			]
-		}
-	}, target_doc)
-
-	return doc
 

@@ -11,22 +11,22 @@ frappe.ui.form.on('Technical Sanction', {
 				});
 			});
 		}
-		// if (frm.doc.docstatus == 1 && !frm.doc.revised_technical_sanction && !frm.doc.bill) {
-		// 	frm.add_custom_button("Prepare RTS", function () {
-		// 		frappe.model.open_mapped_doc({
-		// 			method: "erpnext.rental_management.doctype.technical_sanction.technical_sanction.prepare_rts",
-		// 			frm: cur_frm
-		// 		});
-		// 	});
-		// 	if (!frm.doc.bill) {
-		// 		frm.add_custom_button("Prepare Bill", function () {
-		// 			frappe.model.open_mapped_doc({
-		// 				method: "erpnext.rental_management.doctype.technical_sanction.technical_sanction.prepare_bill",
-		// 				frm: cur_frm
-		// 			});
-		// 		});
-		// 	}
-		// }
+		if (frm.doc.docstatus == 1 && !frm.doc.revised_technical_sanction && !frm.doc.bill) {
+			frm.add_custom_button("Prepare RTS", function () {
+				frappe.model.open_mapped_doc({
+					method: "erpnext.rental_management.doctype.technical_sanction.technical_sanction.prepare_rts",
+					frm: cur_frm
+				});
+			});
+			if (!frm.doc.bill) {
+				frm.add_custom_button("Prepare Bill", function () {
+					frappe.model.open_mapped_doc({
+						method: "erpnext.rental_management.doctype.technical_sanction.technical_sanction.prepare_bill",
+						frm: cur_frm
+					});
+				});
+			}
+		}
 	},
 	onload: function (frm) {
 		frm.set_query("supplier", function () {
@@ -47,7 +47,8 @@ frappe.ui.form.on('Technical Sanction', {
 				return {
 					filters: [
 						["disabled", "=", 0],
-						["is_service_item", "=", 1]
+						["is_service_item", "=", 1],
+						["is_bsr_service_item", "=", 1]
 					]
 				}
 			} else if (row.type == "Item") {
@@ -69,6 +70,7 @@ frappe.ui.form.on('Technical Sanction', {
 					filters: [
 						["disabled", "=", 0],
 						["is_service_item", "=", 1]
+						["is_bsr_service_item", "=", 1]
 					]
 				}
 			} else if (row.type == "Item") {

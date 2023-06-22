@@ -17,6 +17,18 @@ frappe.query_reports["Revenue Target"] = {
 			"options": "Cost Center"
 		},
 		{
+			"fieldname": "from_date",
+			"label": __("From Date"),
+			"fieldtype": "Date",
+			"default": frappe.defaults.get_user_default("year_start_date"),
+		},
+		{
+			"fieldname": "to_date",
+			"label": __("To Date"),
+			"fieldtype": "Date",
+			"default": get_today(),
+		},
+		{
 			"fieldname": "monthly",
 			"label": __("Monthly"),
 			"fieldtype": "Check",
@@ -39,6 +51,6 @@ frappe.query_reports["Revenue Target"] = {
 			"fieldtype": "Select",
 			"width": "100",
 			"options": ["January","February","March","April","May","June","July","August","September","October","November","December"],
-		},
+		}
 	]
 };

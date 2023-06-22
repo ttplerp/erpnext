@@ -6,13 +6,13 @@ frappe.ui.form.on('Rental Focal and Agency', {
 
 	// }
 	setup: function (frm) {
-		frm.set_query("dzongkhag", "items", function () {
-			return {
-				"filters": [
-					["is_dzongkhag", "=", 1]
-				]
-			};
-		});
+		// frm.set_query("dzongkhag", "items", function () {
+		// 	return {
+		// 		"filters": [
+		// 			["is_dzongkhag", "=", 1]
+		// 		]
+		// 	};
+		// });
 	},
 
 });

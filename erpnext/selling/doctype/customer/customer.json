@@ -35,11 +35,15 @@
   "customer_type",
   "country",
   "represents_company",
+  "branch_and_cc_info_section",
+  "branch",
+  "column_break_28",
+  "cost_center",
   "consolidation_section",
   "inter_company",
-  "column_break_26",
+  "column_break_32",
   "company_code",
-  "column_break_28",
+  "column_break_34",
   "company_name",
   "allowed_to_transact_section",
   "companies",
@@ -338,10 +342,6 @@
    "label": "Email Id"
   },
   {
-   "fieldname": "column_break_26",
-   "fieldtype": "Column Break"
-  },
-  {
    "description": "Reselect, if the chosen address is edited after save",
    "fieldname": "customer_primary_address",
    "fieldtype": "Link",
@@ -584,10 +584,6 @@
    "options": "DHI Company"
   },
   {
-   "fieldname": "column_break_28",
-   "fieldtype": "Column Break"
-  },
-  {
    "depends_on": "eval:doc.inter_company",
    "fetch_from": "company_code.company",
    "fieldname": "company_name",
@@ -619,6 +615,40 @@
    "fieldname": "customer_id",
    "fieldtype": "Data",
    "label": "Customer CID/License No"
+  },
+  {
+   "fieldname": "column_break_32",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_34",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.customer_group==\"Internal\";",
+   "fieldname": "branch_and_cc_info_section",
+   "fieldtype": "Section Break",
+   "label": "Branch and CC Info"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "mandatory_depends_on": "eval:doc.customer_group==\"Internal\";",
+   "options": "Branch"
+  },
+  {
+   "fieldname": "column_break_28",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "branch.cost_center",
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "mandatory_depends_on": "eval:doc.customer_group==\"Internal\";",
+   "options": "Cost Center",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-user",
@@ -632,7 +662,7 @@
    "link_fieldname": "party"
   }
  ],
- "modified": "2023-05-17 15:32:14.559661",
+ "modified": "2023-06-22 14:17:08.107324",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Customer",

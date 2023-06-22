@@ -6,7 +6,15 @@ frappe.ui.form.on('Rate Analysis', {
 
 	// }
 	setup: function(frm) {
-		frm.set_query("item_code", "item", function(frm,cdt,cdn) {
+		frm.set_query("item", function(frm) {
+			return {
+				filters: [
+					["disabled", "=", 0],
+					["is_service_item", "=", 1]
+				]
+			}
+		});
+		frm.set_query("item_code", "items", function(frm,cdt,cdn) {
 			var row = locals[cdt][cdn];
 			// var is_service_item = (row.type == 'Service')? 1:0;
 			if (row.service_category !== undefined && row.service_category !== '') {
@@ -14,6 +22,7 @@ frappe.ui.form.on('Rate Analysis', {
 					filters: [
 						["disabled", "=", 0],
 						["is_service_item", "=", (row.type == 'Service')? 1:0],
+						["is_bsr_service_item", "=", (row.type == 'Service')? 1:0],
 						["item_group", "=", row.service_category]
 					]
 				}
@@ -21,11 +30,12 @@ frappe.ui.form.on('Rate Analysis', {
 			return {
 				filters: [
 					["disabled", "=", 0],
-					["is_service_item", "=", (row.type == 'Service')? 1:0]
+					["is_service_item", "=", (row.type == 'Service')? 1:0],
+					["is_bsr_service_item", "=", (row.type == 'Service')? 1:0]
 				]
 			}
 		});
-		frm.set_query("service_category", "item", function(frm,cdt,cdn) {
+		frm.set_query("service_category", "items", function(frm,cdt,cdn) {
 			return {
 				filters: [
 					["is_group", "=", 1]
@@ -123,7 +133,7 @@ function get_item_price(frm, cdt, cdn)
 function update_amount(frm, cdt, cdn)
 {
 	var d = locals[cdt][cdn];
-	var items = frm.doc.item || [];
+	var items = frm.doc.items || [];
 	var total_amount = 0;
 	var total_base_amount = 0;
 	for(var i = 0; i < items.length; i++ ){

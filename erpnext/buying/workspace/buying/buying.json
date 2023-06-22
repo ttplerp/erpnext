@@ -542,8 +542,8 @@
    "type": "Link"
   }
  ],
- "modified": "2023-06-19 00:32:10.603338",
- "modified_by": "Administrator",
+ "modified": "2023-06-21 16:41:19.093569",
+ "modified_by": "lhendrup.dorji@thimphutechpark.bt",
  "module": "Buying",
  "name": "Buying",
  "owner": "Administrator",
@@ -567,7 +567,7 @@
    "format": "{} Pending",
    "label": "Material Request",
    "link_to": "Material Request",
-   "stats_filter": "{\n    \"company\": [\"like\", '%' + frappe.defaults.get_global_default(\"company\") + '%'],\n    \"status\": \"Pending\"\n}",
+   "stats_filter": "{\"company\":[\"like\",\"%National Housing Development Corporations Ltd.%\"],\"status\":[\"=\",\"Submitted\"]}",
    "type": "DocType"
   },
   {

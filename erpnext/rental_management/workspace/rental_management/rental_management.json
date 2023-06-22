@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Rental Management</span>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Master Data\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Tenant Transactions\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Real Estate Management Services\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"REMS Account Setting\",\"col\":4}}]",
+ "content": "[{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Rental Management</span>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Master Data\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Tenant Transactions\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Real Estate Management Services\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Tools\",\"col\":4}}]",
  "creation": "2023-04-27 17:50:54.834147",
  "docstatus": 0,
  "doctype": "Workspace",
@@ -94,44 +94,6 @@
    "label": "Tenant Department",
    "link_count": 0,
    "link_to": "Tenant Department",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Settings",
-   "link_count": 3,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Rental Setting",
-   "link_count": 0,
-   "link_to": "Rental Setting",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Rental Accounts Setting",
-   "link_count": 0,
-   "link_to": "Rental Account Setting",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Rental Focal and Agency Assignment",
-   "link_count": 0,
-   "link_to": "Rental Focal and Agency",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -255,10 +217,40 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "REMS Account Setting",
-   "link_count": 1,
+   "label": "Settings",
+   "link_count": 4,
    "onboard": 0,
    "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Rental Setting",
+   "link_count": 0,
+   "link_to": "Rental Setting",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Rental Accounts Setting",
+   "link_count": 0,
+   "link_to": "Rental Account Setting",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Rental Focal and Agency Assignment",
+   "link_count": 0,
+   "link_to": "Rental Focal and Agency",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   },
   {
    "hidden": 0,
@@ -269,9 +261,37 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Tools",
+   "link_count": 2,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Tenant Updation Tools",
+   "link_count": 0,
+   "link_to": "Tenant Updation Tool",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Payment Refund",
+   "link_count": 0,
+   "link_to": "Payment Refund",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-06-19 23:41:52.761012",
+ "modified": "2023-06-21 22:54:44.953713",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Management",

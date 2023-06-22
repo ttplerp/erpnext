@@ -357,7 +357,7 @@ class RentalPayment(AccountsController):
 				party = None
 				party_type = None
 
-			debtor_amount = flt(a.rent_received) + flt(a.discount_amount) + flt(a.tds_amount) + flt(a.rent_write_off_amount)
+			debtor_amount = flt(a.rent_received) + flt(a.discount_amount) + flt(a.tds_amount) + flt(a.rent_write_off_amount) + flt(a.property_management_amount)
 			if debtor_amount > 0 and not a.deduct_from_security_deposit:
 				gl_entries.append(
 					self.get_gl_dict({
@@ -508,29 +508,29 @@ class RentalPayment(AccountsController):
 					})
 				)
 		
-		if self.property_management_amount > 0:
-			gl_entries.append(
-				self.get_gl_dict({
-					"account": acc_property_management,
-					"credit": self.property_management_amount,
-					"credit_in_account_currency": self.property_management_amount,
-					"voucher_no": self.name,
-					"voucher_type": self.doctype,
-					"cost_center": cost_center,
-					"party": party,
-					"party_type": party_type,
-					"company": self.company,
-					"remarks": self.remarks,
-					"business_activity": business_activity
-					})
-				)
+		# if self.property_management_amount > 0:
+		# 	gl_entries.append(
+		# 		self.get_gl_dict({
+		# 			"account": acc_property_management,
+		# 			"credit": self.property_management_amount,
+		# 			"credit_in_account_currency": self.property_management_amount,
+		# 			"voucher_no": self.name,
+		# 			"voucher_type": self.doctype,
+		# 			"cost_center": cost_center,
+		# 			"party": party,
+		# 			"party_type": party_type,
+		# 			"company": self.company,
+		# 			"remarks": self.remarks,
+		# 			"business_activity": business_activity
+		# 			})
+		# 		)
 
 		# frappe.throw("<pre>{}</pre>".format(frappe.as_json(gl_entries)))
 		make_gl_entries(gl_entries, cancel=(self.docstatus == 2),update_outstanding="Yes", merge_entries=False)
 
 	def post_debit_account(self, gl_entries, cost_center, business_activity):
-		for a in self.get('item'):
-			party = frappe.db.get_value("Tenant Information", a.tenant, "nhdcl_employee")
+		for a in self.get('items'):
+			party = frappe.db.get_value("Tenant Information", a.tenant, "employee_id")
 			party_type = "Employee"
 			if not self.debit_account:
 				frappe.throw(_("Debit Account is missing."))

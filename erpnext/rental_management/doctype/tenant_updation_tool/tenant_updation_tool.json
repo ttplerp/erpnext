@@ -1,0 +1,249 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "TIU.YY.####",
+ "creation": "2023-06-20 10:49:38.861658",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "tenant",
+  "tenant_name",
+  "cb_1",
+  "customer",
+  "mobile_no",
+  "sb_rental_details",
+  "location",
+  "dzongkhag",
+  "town_category",
+  "cb_2",
+  "building_classification",
+  "building_category",
+  "cb_3",
+  "block_no",
+  "flat_no",
+  "sb_information_update",
+  "ministry_agency",
+  "tenant_department_id",
+  "tenant_department",
+  "cb_iu_1",
+  "new_ministry_agency",
+  "new_tenant_department",
+  "new_tenant_department_name",
+  "sb_remarks",
+  "remarks",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "tenant",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Tenant",
+   "options": "Tenant Information",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "tenant.tenant_name",
+   "fieldname": "tenant_name",
+   "fieldtype": "Read Only",
+   "label": "Tenant Name"
+  },
+  {
+   "fieldname": "cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "tenant.customer",
+   "fieldname": "customer",
+   "fieldtype": "Read Only",
+   "label": "Customer"
+  },
+  {
+   "fetch_from": "tenant.phone_no",
+   "fieldname": "mobile_no",
+   "fieldtype": "Read Only",
+   "label": "Mobile No"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "sb_rental_details",
+   "fieldtype": "Section Break",
+   "label": "Rental Details"
+  },
+  {
+   "fetch_from": "tenant.locations",
+   "fieldname": "location",
+   "fieldtype": "Read Only",
+   "label": "Location"
+  },
+  {
+   "fetch_from": "tenant.dzongkhag",
+   "fieldname": "dzongkhag",
+   "fieldtype": "Read Only",
+   "label": "Dzongkhag"
+  },
+  {
+   "fetch_from": "tenant.town_category",
+   "fieldname": "town_category",
+   "fieldtype": "Read Only",
+   "label": "Town Category"
+  },
+  {
+   "fieldname": "cb_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "tenant.building_classification",
+   "fieldname": "building_classification",
+   "fieldtype": "Read Only",
+   "label": "Building Classification"
+  },
+  {
+   "fetch_from": "tenant.building_category",
+   "fieldname": "building_category",
+   "fieldtype": "Read Only",
+   "label": "Building Category"
+  },
+  {
+   "fieldname": "cb_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "tenant.block_no",
+   "fieldname": "block_no",
+   "fieldtype": "Read Only",
+   "label": "Block No"
+  },
+  {
+   "fetch_from": "tenant.flat_no",
+   "fieldname": "flat_no",
+   "fieldtype": "Read Only",
+   "label": "Flat No"
+  },
+  {
+   "fieldname": "sb_information_update",
+   "fieldtype": "Section Break",
+   "label": "Information to Update"
+  },
+  {
+   "fetch_from": "tenant.ministry_and_agency",
+   "fieldname": "ministry_agency",
+   "fieldtype": "Link",
+   "label": "Ministry/Agency",
+   "options": "Ministry and Agency",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "tenant.tenant_department_name",
+   "fieldname": "tenant_department",
+   "fieldtype": "Read Only",
+   "label": "Tenant Department"
+  },
+  {
+   "fieldname": "cb_iu_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "new_ministry_agency",
+   "fieldtype": "Link",
+   "label": "New Ministry/Agency",
+   "options": "Ministry and Agency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "new_tenant_department",
+   "fieldtype": "Link",
+   "label": "New Tenant Department ID",
+   "options": "Tenant Department",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "new_tenant_department.department",
+   "fieldname": "new_tenant_department_name",
+   "fieldtype": "Read Only",
+   "label": "New Tenant Department"
+  },
+  {
+   "fieldname": "sb_remarks",
+   "fieldtype": "Section Break",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Tenant Updation Tool",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fetch_from": "tenant.tenant_department",
+   "fieldname": "tenant_department_id",
+   "fieldtype": "Link",
+   "label": "Tenant Department ID",
+   "options": "Tenant Department",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-06-20 11:36:38.652430",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Tenant Updation Tool",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Rental Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Rental Master",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
