@@ -1,0 +1,41 @@
+{
+ "chart_name": "Total Desuups by Programme Status",
+ "chart_type": "Report",
+ "creation": "2023-06-22 08:45:33.188930",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "dynamic_filters_json": "{}",
+ "filters_json": "{}",
+ "group_by_type": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "modified": "2023-06-22 08:45:43.114074",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Total Desuups by Programme Status",
+ "number_of_groups": 0,
+ "owner": "Administrator",
+ "report_name": "Total Desuups by Programme Status",
+ "roles": [],
+ "time_interval": "Yearly",
+ "timeseries": 0,
+ "timespan": "Last Year",
+ "type": "Bar",
+ "use_report_chart": 0,
+ "x_field": "training_status",
+ "y_axis": [
+  {
+   "color": "#4463F0",
+   "y_field": "Male"
+  },
+  {
+   "color": "#4F9DD9",
+   "y_field": "Female"
+  },
+  {
+   "color": "#29CD42",
+   "y_field": "Total"
+  }
+ ]
+}
