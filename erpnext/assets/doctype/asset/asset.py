@@ -1281,6 +1281,29 @@ def is_last_day_of_the_month(date):
 
 	return getdate(last_day_of_the_month) == getdate(date)
 
+def get_permission_query_conditions(user):
+	if not user: user = frappe.session.user
+	user_roles = frappe.get_roles(user)
+
+	if user == "Administrator" or "System Manager" in user_roles or "Purchase Master" in user_roles: 
+		return
+
+	return """(
+		`tabAsset`.owner = '{user}'
+		or
+		exists(select 1
+			from `tabEmployee` as e
+			where e.branch = `tabAsset`.branch
+			and e.user_id = '{user}')
+		or
+		exists(select 1
+			from `tabEmployee` e, `tabAssign Branch` ab, `tabBranch Item` bi
+			where e.user_id = '{user}'
+			and ab.employee = e.name
+			and bi.parent = ab.name
+			and bi.branch = `tabAsset`.branch)
+	)""".format(user=user)
+
 @erpnext.allow_regional
 def get_depreciation_amount(asset, depreciable_value, row, schedule_date, no_of_days_in_a_schedule):
 	if row.depreciation_method in ("Straight Line", "Manual"):
