@@ -1,0 +1,288 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "MBE.-.YY.-.MM.-.####",
+ "creation": "2023-05-01 16:07:22.662833",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "entry_date",
+  "party_type",
+  "party",
+  "customer",
+  "column_break_10",
+  "project",
+  "company",
+  "branch",
+  "cost_center",
+  "column_break_15",
+  "boq",
+  "boq_type",
+  "subcontract",
+  "section_break_10",
+  "check_all",
+  "mb_entry_boq",
+  "section_break_20",
+  "total_entry_amount",
+  "total_price_adjustment",
+  "total_invoice_amount",
+  "total_received_amount",
+  "total_balance_amount",
+  "status",
+  "amended_from",
+  "sb_notes",
+  "notes"
+ ],
+ "fields": [
+  {
+   "default": "Today",
+   "fieldname": "entry_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Entry Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "party_type",
+   "fieldtype": "Link",
+   "label": "Party Type",
+   "options": "DocType",
+   "read_only": 1
+  },
+  {
+   "fieldname": "party",
+   "fieldtype": "Dynamic Link",
+   "label": "Party",
+   "options": "party_type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Customer"
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Project",
+   "options": "Project",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_15",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "boq",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "BOQ",
+   "options": "BOQ",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "boq_type",
+   "fieldtype": "Data",
+   "label": "Type of BOQ",
+   "read_only": 1
+  },
+  {
+   "fieldname": "subcontract",
+   "fieldtype": "Link",
+   "label": "Subcontract",
+   "options": "Subcontract",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_10",
+   "fieldtype": "Section Break",
+   "label": "ITEMS"
+  },
+  {
+   "default": "0",
+   "fieldname": "check_all",
+   "fieldtype": "Check",
+   "label": "Check/Uncheck All"
+  },
+  {
+   "fieldname": "mb_entry_boq",
+   "fieldtype": "Table",
+   "label": "MB Entry BOQ",
+   "options": "MB Entry BOQ"
+  },
+  {
+   "fieldname": "section_break_20",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "total_entry_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total Entry Amount (A)",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "total_price_adjustment",
+   "fieldtype": "Currency",
+   "label": "Total Price Adjustment(+/-) (B)",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "total_invoice_amount",
+   "fieldtype": "Currency",
+   "label": "Total Invoiced Amount (C)",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "total_received_amount",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Total Received Amount",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "total_balance_amount",
+   "fieldtype": "Currency",
+   "label": "Total Balance Amount (D=A+B-C)",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "Draft",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Draft\nInvoiced\nUninvoiced\nCancelled"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "MB Entry",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "sb_notes",
+   "fieldtype": "Section Break",
+   "label": "NOTES"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Text Editor",
+   "label": "notes"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-05-26 09:51:17.206559",
+ "modified_by": "Administrator",
+ "module": "Projects",
+ "name": "MB Entry",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Projects Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Projects User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Projects GM",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

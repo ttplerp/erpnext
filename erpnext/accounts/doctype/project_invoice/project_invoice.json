@@ -1,0 +1,536 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "PRJIN.-.YY.-.MM.-.DD.-.###",
+ "creation": "2023-05-04 10:37:18.726328",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "payment_status",
+  "workflow_state",
+  "invoice_title",
+  "invoice_date",
+  "invoice_type",
+  "customer",
+  "currency",
+  "boq",
+  "boq_type",
+  "column_break_10",
+  "project",
+  "party_type",
+  "party",
+  "debit_credit_account",
+  "company",
+  "branch",
+  "cost_center",
+  "subcontract",
+  "sb_mb_items",
+  "get_mb_entries",
+  "check_all_mb",
+  "project_invoice_mb",
+  "sb_boq_items",
+  "check_all",
+  "project_invoice_boq",
+  "section_break_20",
+  "gross_invoice_amount",
+  "column_break_29",
+  "net_amount",
+  "price_adjustment_amount",
+  "advance_recovery",
+  "sec_break",
+  "rebate",
+  "section_break_29",
+  "get_advances",
+  "advances",
+  "section_break_31",
+  "deductions",
+  "tds_deduction",
+  "type",
+  "tds_rate",
+  "tds_amount",
+  "column_break_38",
+  "tds_taxable_amount",
+  "tds_account",
+  "section_break_41",
+  "total_deduction_amount",
+  "net_invoice_amount",
+  "outstanding_amount",
+  "column_break_30",
+  "total_received_amount",
+  "total_paid_amount",
+  "total_balance_amount",
+  "status",
+  "reference_doctype",
+  "reference_name",
+  "sb_notes",
+  "notes",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "allow_on_submit": 1,
+   "default": "Draft",
+   "fieldname": "payment_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Payment Status",
+   "options": "\nPaid\nUnpaid\nSubmitted\nPartly Paid\nDraft\nCancelled",
+   "read_only": 1
+  },
+  {
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Workflow State",
+   "options": "Workflow State"
+  },
+  {
+   "fieldname": "invoice_title",
+   "fieldtype": "Data",
+   "label": "Invoice Title"
+  },
+  {
+   "default": "Today",
+   "fieldname": "invoice_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Invoice Date",
+   "reqd": 1
+  },
+  {
+   "default": "MB Based Invoice",
+   "fieldname": "invoice_type",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Invoice Type",
+   "options": "Direct Invoice\nMB Based Invoice",
+   "read_only": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Customer"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "boq",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "BOQ",
+   "options": "BOQ",
+   "read_only": 1
+  },
+  {
+   "fieldname": "boq_type",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Type of BOQ",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Project",
+   "options": "Project",
+   "reqd": 1
+  },
+  {
+   "fieldname": "party_type",
+   "fieldtype": "Link",
+   "label": "Party Type",
+   "options": "DocType",
+   "reqd": 1
+  },
+  {
+   "fieldname": "party",
+   "fieldtype": "Dynamic Link",
+   "label": "Party",
+   "options": "party_type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Branch",
+   "options": "Branch",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
+  },
+  {
+   "fieldname": "subcontract",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Subcontract",
+   "options": "Subcontract",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:(doc.invoice_type === \"MB Based Invoice\")",
+   "fieldname": "sb_mb_items",
+   "fieldtype": "Section Break",
+   "label": "MEASUREMENT BOOK ENTRIES"
+  },
+  {
+   "fieldname": "get_mb_entries",
+   "fieldtype": "Button",
+   "label": "Get Measurement Book Entries"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval: cur_frm.doc.invoice_type === \"MB Based Invoice\"",
+   "fieldname": "check_all_mb",
+   "fieldtype": "Check",
+   "label": "Check/Uncheck All"
+  },
+  {
+   "fieldname": "project_invoice_mb",
+   "fieldtype": "Table",
+   "label": "Project Invoice MB",
+   "options": "Project Invoice MB"
+  },
+  {
+   "depends_on": "eval:(doc.invoice_type === \"Direct Invoice\")",
+   "fieldname": "sb_boq_items",
+   "fieldtype": "Section Break",
+   "label": "BOQ ITEMS"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval: cur_frm.doc.invoice_type === \"Direct Invoice\"",
+   "fieldname": "check_all",
+   "fieldtype": "Check",
+   "label": "Check/Uncheck All"
+  },
+  {
+   "fieldname": "project_invoice_boq",
+   "fieldtype": "Table",
+   "label": "project Invoice BOQ",
+   "options": "Project Invoice BOQ"
+  },
+  {
+   "fieldname": "section_break_20",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "gross_invoice_amount",
+   "fieldtype": "Currency",
+   "label": "Gross Invoice Amount",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_29",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "net_amount",
+   "fieldtype": "Currency",
+   "label": "Net Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "price_adjustment_amount",
+   "fieldtype": "Currency",
+   "label": "Price Adjustment (+/-)",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "advance_recovery",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Advance Recovery",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sec_break",
+   "fieldtype": "Section Break",
+   "label": "Rebate / Material Adjustment"
+  },
+  {
+   "fieldname": "rebate",
+   "fieldtype": "Table",
+   "label": "Rebate",
+   "options": "Project Invoice Rebate Item"
+  },
+  {
+   "fieldname": "section_break_29",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "get_advances",
+   "fieldtype": "Button",
+   "label": "Get Advances"
+  },
+  {
+   "fieldname": "advances",
+   "fieldtype": "Table",
+   "options": "Project Invoice Advance"
+  },
+  {
+   "fieldname": "section_break_31",
+   "fieldtype": "Section Break",
+   "label": "Other Deductions"
+  },
+  {
+   "fieldname": "deductions",
+   "fieldtype": "Table",
+   "options": "Project Invoice Deduction"
+  },
+  {
+   "fieldname": "tds_deduction",
+   "fieldtype": "Section Break",
+   "label": "TDS Deduction"
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "\nDomestic Vendor\nInternational Vendor\nRent and Consultancy\nDividend"
+  },
+  {
+   "fieldname": "tds_rate",
+   "fieldtype": "Int",
+   "label": "TDS Rate (%)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "tds_amount",
+   "fieldtype": "Currency",
+   "label": "TDS Amount",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_38",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tds_taxable_amount",
+   "fieldtype": "Currency",
+   "label": "TDS Taxable Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "tds_account",
+   "fieldtype": "Link",
+   "label": "TDS Account",
+   "options": "Account",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_41",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "total_deduction_amount",
+   "fieldtype": "Currency",
+   "label": "Total Deduction Amount",
+   "read_only": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "net_invoice_amount",
+   "fieldtype": "Currency",
+   "label": "Net Invoice Amount",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_30",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:(doc.party_type !== \"Supplier\")",
+   "fieldname": "total_received_amount",
+   "fieldtype": "Currency",
+   "label": "Payment Received against Invoice",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:(doc.party_type === \"Supplier\")",
+   "fieldname": "total_paid_amount",
+   "fieldtype": "Currency",
+   "label": "Payment Made against Invoice",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "total_balance_amount",
+   "fieldtype": "Currency",
+   "label": "Invoice Balance Amount",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "Draft",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Draft\nUnpaid\nPaid\nCancelled"
+  },
+  {
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Reference Doctype",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "reference_name",
+   "fieldtype": "Dynamic Link",
+   "hidden": 1,
+   "label": "Reference Name",
+   "options": "reference_doctype"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "sb_notes",
+   "fieldtype": "Section Break",
+   "label": "NOTES"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Text Editor"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Project Invoice",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "outstanding_amount",
+   "fieldtype": "Currency",
+   "label": "Outstanding_amount",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "debit_credit_account",
+   "fieldtype": "Link",
+   "label": "Debit/Credit Account",
+   "options": "Account",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-05-26 09:56:51.260425",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Project Invoice",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Projects Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Projects User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

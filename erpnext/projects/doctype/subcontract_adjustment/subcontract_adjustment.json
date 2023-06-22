@@ -1,0 +1,209 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "SUBA.-.YY.-.MM.####",
+ "creation": "2023-05-01 15:06:00.573458",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "adjustment_date",
+  "project",
+  "branch",
+  "cost_center",
+  "column_break_40",
+  "subcontract",
+  "subcontract_date",
+  "boq",
+  "boq_date",
+  "boq_type",
+  "remarks",
+  "sb_totals",
+  "total_amount",
+  "section_break_20",
+  "boq_item",
+  "sb_notes",
+  "notes",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "default": "Today",
+   "fieldname": "adjustment_date",
+   "fieldtype": "Date",
+   "label": "Adjustment Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Project",
+   "options": "Project",
+   "read_only": 1,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_40",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "subcontract",
+   "fieldtype": "Link",
+   "label": "Subcontract",
+   "options": "Subcontract",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "subcontract_date",
+   "fieldtype": "Date",
+   "label": "Subcontract Date",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "boq",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "BOQ",
+   "options": "BOQ",
+   "read_only": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "boq_date",
+   "fieldtype": "Date",
+   "hidden": 1,
+   "label": "BOQ Date",
+   "read_only": 1
+  },
+  {
+   "default": "Item Based",
+   "fieldname": "boq_type",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Type of BOQ",
+   "options": "Item Based\nMilestone Based\nPiece Rate Work Based(PRW)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "sb_totals",
+   "fieldtype": "Section Break"
+  },
+  {
+   "bold": 1,
+   "fieldname": "total_amount",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Total Adjusted Amount (+/-)",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_20",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "boq_item",
+   "fieldtype": "Table",
+   "label": "Subcontract Item",
+   "options": "Subcontract Adjustment Item"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "sb_notes",
+   "fieldtype": "Section Break",
+   "label": "NOTES"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Text Editor",
+   "label": "notes"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Subcontract Adjustment",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-05-26 09:54:52.430993",
+ "modified_by": "Administrator",
+ "module": "Projects",
+ "name": "Subcontract Adjustment",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Projects Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Projects User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

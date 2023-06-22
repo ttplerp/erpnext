@@ -1,0 +1,306 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2023-04-27 17:31:49.353403",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "boq_code",
+  "uom",
+  "is_selected",
+  "currency",
+  "column_break_10",
+  "item",
+  "is_group",
+  "section_break_5",
+  "boq_quantity",
+  "column_break_12",
+  "boq_rate",
+  "column_break_14",
+  "boq_amount",
+  "section_break_10",
+  "quantity",
+  "claimed_quantity",
+  "booked_quantity",
+  "received_quantity",
+  "adjustment_quantity",
+  "column_break_40",
+  "rate",
+  "column_break_50",
+  "amount",
+  "claimed_amount",
+  "booked_amount",
+  "received_amount",
+  "adjustment_amount",
+  "section_break_21",
+  "balance_quantity",
+  "column_break_55",
+  "balance_rate",
+  "column_break_60",
+  "balance_amount",
+  "section_break_20",
+  "remarks",
+  "project",
+  "parent_item",
+  "boq_item_name"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "fieldname": "boq_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "BOQ Code"
+  },
+  {
+   "columns": 1,
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "UOM",
+   "options": "UOM"
+  },
+  {
+   "columns": 1,
+   "default": "0",
+   "fieldname": "is_selected",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Select"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Currency",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 2,
+   "fieldname": "item",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Item"
+  },
+  {
+   "default": "0",
+   "description": "Group items are not meant to have any values, basically used for printing purposes.",
+   "fieldname": "is_group",
+   "fieldtype": "Check",
+   "label": "Is Group Item?"
+  },
+  {
+   "fieldname": "section_break_5",
+   "fieldtype": "Section Break",
+   "label": "BOQ BALANCE BEFORE SUBCONTRACTING"
+  },
+  {
+   "columns": 2,
+   "fieldname": "boq_quantity",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Quantity",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_12",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 1,
+   "fieldname": "boq_rate",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Rate",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_14",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 2,
+   "fieldname": "boq_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:(doc.is_selected)",
+   "fieldname": "section_break_10",
+   "fieldtype": "Section Break",
+   "label": "SUBCONTRACT DETAILS"
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Float",
+   "label": "Quantity",
+   "precision": "2"
+  },
+  {
+   "fieldname": "claimed_quantity",
+   "fieldtype": "Float",
+   "label": "Claimed Quantity",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "booked_quantity",
+   "fieldtype": "Float",
+   "label": "Booked Quantity",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "received_quantity",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Received Quantity",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "adjustment_quantity",
+   "fieldtype": "Float",
+   "label": "Adjustment Quantity",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_40",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Float",
+   "label": "Rate",
+   "precision": "2"
+  },
+  {
+   "fieldname": "column_break_50",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "claimed_amount",
+   "fieldtype": "Currency",
+   "label": "Claimed Amount",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "booked_amount",
+   "fieldtype": "Currency",
+   "label": "Booked Amount",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "received_amount",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Received Amount",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "adjustment_amount",
+   "fieldtype": "Currency",
+   "label": "Adjustment Amount",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:(doc.is_selected)",
+   "fieldname": "section_break_21",
+   "fieldtype": "Section Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "balance_quantity",
+   "fieldtype": "Float",
+   "label": "Balance Quantity",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_55",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "balance_rate",
+   "fieldtype": "Float",
+   "label": "Balance Rate",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_60",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "balance_amount",
+   "fieldtype": "Currency",
+   "label": "Balance Amount",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_20",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Text Editor",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Project",
+   "options": "Project"
+  },
+  {
+   "fieldname": "parent_item",
+   "fieldtype": "Text",
+   "hidden": 1,
+   "label": "Parent Item"
+  },
+  {
+   "fieldname": "boq_item_name",
+   "fieldtype": "Data",
+   "label": "BOQ Item Name",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-04-27 18:04:20.642442",
+ "modified_by": "Administrator",
+ "module": "Projects",
+ "name": "Subcontract Item",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

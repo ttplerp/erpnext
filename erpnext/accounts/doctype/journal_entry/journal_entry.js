@@ -11,6 +11,16 @@ frappe.ui.form.on("Journal Entry", {
 		frm.add_fetch("bank_account", "account", "account");
 		frm.ignore_doctypes_on_cancel_all = ['Sales Invoice', 'Purchase Invoice'];
 		draw_tds_table(frm)
+
+		// filter naming base on entry type
+		frm.set_query("naming_series", function() {
+			return {
+				filters: {
+					"entry_type": frm.doc.voucher_type,
+				}
+			}
+		});
+
 	},
 	onload:function(frm){
 		draw_tds_table(frm)
@@ -131,6 +141,12 @@ frappe.ui.form.on("Journal Entry", {
 
 		erpnext.accounts.dimensions.update_dimension(frm, frm.doctype);
 	},
+
+	// voucher_type: function (frm) { 
+	// 	if (frm.doc.voucher_type === "Bank Entry") { 
+
+	// 	}
+	// }
 
 	voucher_type: function(frm){
 

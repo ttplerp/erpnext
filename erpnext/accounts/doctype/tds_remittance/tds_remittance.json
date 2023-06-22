@@ -9,7 +9,6 @@
  "field_order": [
   "purpose",
   "branch",
-  "region",
   "from_date",
   "to_date",
   "business_activity",
@@ -119,13 +118,6 @@
    "fieldtype": "Check",
    "hidden": 1,
    "label": "Based On Region"
-  },
-  {
-   "fieldname": "region",
-   "fieldtype": "Link",
-   "label": "Region",
-   "options": "Region",
-   "reqd": 1
   },
   {
    "default": "Today",
@@ -268,7 +260,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-17 12:12:06.585441",
+ "modified": "2023-06-21 12:12:31.004850",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "TDS Remittance",

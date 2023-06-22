@@ -1,0 +1,225 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2023-05-04 10:57:21.471114",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "boq_code",
+  "item",
+  "uom",
+  "column_break_5",
+  "is_group",
+  "is_selected",
+  "section_break_10",
+  "invoice_quantity",
+  "column_break_20",
+  "invoice_rate",
+  "column_break_30",
+  "invoice_amount",
+  "section_break_20",
+  "act_quantity",
+  "column_break_40",
+  "act_rate",
+  "column_break_50",
+  "act_amount",
+  "boq",
+  "subcontract",
+  "boq_item_name",
+  "original_quantity",
+  "original_rate",
+  "original_amount",
+  "uptodate_quantity",
+  "uptodate_rate",
+  "uptodate_amount"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "fieldname": "boq_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "BOQ Code",
+   "read_only": 1
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Item",
+   "read_only": 1
+  },
+  {
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "UOM",
+   "options": "UOM",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 1,
+   "default": "0",
+   "fieldname": "is_group",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is Group Item?",
+   "read_only": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "is_selected",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Select"
+  },
+  {
+   "fieldname": "section_break_10",
+   "fieldtype": "Section Break",
+   "label": "INVOICE CLAIM"
+  },
+  {
+   "fieldname": "invoice_quantity",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Invoice Quantity",
+   "precision": "2"
+  },
+  {
+   "fieldname": "column_break_20",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "invoice_rate",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Rate",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_30",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "invoice_amount",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Invoice Amount",
+   "precision": "2"
+  },
+  {
+   "fieldname": "section_break_20",
+   "fieldtype": "Section Break",
+   "label": "BALANCE BEFORE CLAIM"
+  },
+  {
+   "fieldname": "act_quantity",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Balance Quantity",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_40",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "act_rate",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Balance Rate",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_50",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "act_amount",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Balance Amount",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "boq",
+   "fieldtype": "Data",
+   "label": "BOQ",
+   "read_only": 1
+  },
+  {
+   "fieldname": "subcontract",
+   "fieldtype": "Data",
+   "label": "Subcontract",
+   "read_only": 1
+  },
+  {
+   "fieldname": "boq_item_name",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "BOQ Item Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "original_quantity",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Original Quantity",
+   "precision": "2"
+  },
+  {
+   "fieldname": "original_rate",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Original Rate",
+   "precision": "2"
+  },
+  {
+   "fieldname": "original_amount",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Original Amount",
+   "precision": "2"
+  },
+  {
+   "fieldname": "uptodate_quantity",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Upto Date Quantity"
+  },
+  {
+   "fieldname": "uptodate_rate",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Upto Date Rate"
+  },
+  {
+   "fieldname": "uptodate_amount",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Upto Date Amount"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-05-04 13:34:48.977713",
+ "modified_by": "Administrator",
+ "module": "Projects",
+ "name": "Project Invoice BOQ",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

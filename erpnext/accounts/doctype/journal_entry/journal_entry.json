@@ -103,12 +103,12 @@
   },
   {
    "fieldname": "naming_series",
-   "fieldtype": "Select",
+   "fieldtype": "Link",
    "label": "Series",
    "no_copy": 1,
    "oldfieldname": "naming_series",
    "oldfieldtype": "Select",
-   "options": "Journal Voucher\nBank Payment Voucher\nBank Receipt Voucher\nCash Receipt Voucher\nCash Payment Voucher\nContra Entry\nMaintenance Invoice",
+   "options": "Journal Entry Series",
    "print_hide": 1,
    "reqd": 1,
    "set_only_once": 1
@@ -615,7 +615,7 @@
    "link_fieldname": "journal_entry"
   }
  ],
- "modified": "2023-04-17 12:12:13.998279",
+ "modified": "2023-06-21 11:20:20.490350",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",
