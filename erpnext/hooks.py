@@ -565,7 +565,7 @@ has_permission = {
 }
 
 permission_query_conditions = {
-	"Asset": "erpnext.assets.doctype.assets.assets.get_permission_query_conditions",
+	"Asset": "erpnext.assets.doctype.asset.asset.get_permission_query_conditions",
 	"Journal Entry": "erpnext.accounts.doctype.journal_entry.journal_entry.get_permission_query_conditions",
 	"Payment Entry": "erpnext.accounts.doctype.payment_entry.payment_entry.get_permission_query_conditions",
 	"Purchase Order": "erpnext.buying.doctype.purchase_order.purchase_order.get_permission_query_conditions",
