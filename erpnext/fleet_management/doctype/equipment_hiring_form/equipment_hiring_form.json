@@ -15,10 +15,13 @@
   "request_date",
   "contact_number",
   "is_hired",
+  "is_internal",
   "section_break_8",
   "party_type",
+  "party_branch",
   "column_break_10",
   "party",
+  "party_cost_center",
   "section_break_3",
   "equipment",
   "equipment_model",
@@ -307,11 +310,32 @@
    "hidden": 1,
    "label": "Status",
    "options": "\nHiring Requested\nHiring Approved\nLogbook Submitted\nClosed\nCancelled"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_internal",
+   "fieldtype": "Check",
+   "label": "Is Internal Customer?",
+   "read_only_depends_on": "eval:doc.party_type!=\"Customer\";"
+  },
+  {
+   "fieldname": "party_branch",
+   "fieldtype": "Link",
+   "label": "Party Branch",
+   "options": "Branch",
+   "read_only": 1
+  },
+  {
+   "fieldname": "party_cost_center",
+   "fieldtype": "Link",
+   "label": "Party Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-02 12:40:38.709509",
+ "modified": "2023-06-22 17:04:51.037107",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment Hiring Form",

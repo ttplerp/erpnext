@@ -420,12 +420,15 @@ class CustomWorkflow:
 			frappe.throw(_("Invalid Workflow State {}").format(self.doc.workflow_state))
 	
 	def employee_benefits(self):
-		if self.new_state.lower() in ("Draft".lower(), "Waiting Approval".lower()):
-			if self.new_state.lower() == "Waiting Approval".lower():
+		if self.new_state.lower() in ("Draft".lower(), "Waiting GM Approval".lower()):
+			if self.new_state.lower() == "Waiting GM Approval".lower():
 				if "HR User" not in frappe.get_roles(frappe.session.user):
 					frappe.throw("Only HR can Apply this Appeal")
 			self.set_approver("HRGM")
-
+		elif self.new_state.lower() == "Waiting Approval".lower():
+			if self.doc.benefit_approver != frappe.session.user:
+				frappe.throw("Only {} can Forward this document".format(self.doc.benefit_approver_name))
+			self.set_approver("HRGM")
 		elif self.new_state.lower() in ("Approved".lower(), "Rejected".lower()):
 			if self.doc.benefit_approver != frappe.session.user:
 				frappe.throw("Only {} can Approved or Reject this document".format(self.doc.benefit_approver_name))
@@ -525,7 +528,7 @@ class CustomWorkflow:
 		elif self.new_state.lower() == "Waiting Approval".lower():
 			if self.doc.approver != frappe.session.user:
 				frappe.throw("Only {} can Forward this Encashment".format(self.doc.approver_name))
-			self.set_approver("CEO")
+			self.set_approver("HRGM")
 		elif self.new_state.lower() == ("Approved".lower() or "Rejected".lower()):
 			if self.doc.approver != frappe.session.user:
 				frappe.throw("Only {} can Approve / Reject this Encashment".format(self.doc.approver_name))
@@ -582,7 +585,7 @@ class CustomWorkflow:
 			if self.doc.owner != frappe.session.user:
 				frappe.throw("Only {} can Make changes to this document".format(self.doc.owner))
 
-		elif self.new_state.lower() in ("Waiting Hr Approval".lower()):
+		elif self.new_state.lower() in ("Waiting HR Approval".lower()):
 			if self.doc.owner != frappe.session.user:
 				frappe.throw("Only {} can Apply this document".format(self.doc.owner))
 			self.set_approver("HR")

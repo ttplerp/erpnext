@@ -380,6 +380,7 @@
    "collapsible": 1,
    "fieldname": "monitor_progress",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Monitor Progress"
   },
   {
@@ -534,7 +535,7 @@
  "index_web_pages_for_search": 1,
  "links": [],
  "max_attachments": 4,
- "modified": "2023-06-12 13:37:03.543137",
+ "modified": "2023-06-23 14:08:12.554513",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project",

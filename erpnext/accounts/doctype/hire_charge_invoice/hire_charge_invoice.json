@@ -9,12 +9,17 @@
  "field_order": [
   "branch",
   "cost_center",
-  "party_type",
   "bill_no",
   "column_break_2",
   "posting_date",
-  "party",
   "bill_date",
+  "party_details_section",
+  "party_type",
+  "party_branch",
+  "is_internal_customer",
+  "column_break_11",
+  "party",
+  "party_cost_center",
   "section_break_10",
   "from_date",
   "to_date",
@@ -299,11 +304,42 @@
    "label": "Party",
    "options": "party_type",
    "reqd": 1
+  },
+  {
+   "fieldname": "party_details_section",
+   "fieldtype": "Section Break",
+   "label": "Party Details"
+  },
+  {
+   "fieldname": "party_branch",
+   "fieldtype": "Link",
+   "label": "Party Branch",
+   "options": "Branch",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_internal_customer",
+   "fieldtype": "Check",
+   "label": "Is Internal Customer",
+   "read_only_depends_on": "eval:doc.party_type!=\"Customer\";"
+  },
+  {
+   "fieldname": "column_break_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "party_branch.cost_center",
+   "fieldname": "party_cost_center",
+   "fieldtype": "Link",
+   "label": "Party Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-09 17:18:11.679002",
+ "modified": "2023-06-22 17:35:41.350906",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Hire Charge Invoice",
@@ -360,7 +396,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "EME Manager",
+   "role": "Mechanical Manager",
    "share": 1,
    "submit": 1,
    "write": 1
@@ -373,7 +409,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "EME Head",
+   "role": "Mechanical Head",
    "share": 1,
    "submit": 1,
    "write": 1
@@ -386,7 +422,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "EME User",
+   "role": "Mechanical User",
    "share": 1,
    "write": 1
   }

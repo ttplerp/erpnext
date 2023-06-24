@@ -150,8 +150,8 @@ class RentalPayment(AccountsController):
 		self.tds_amount = tds_amount
 		self.property_management_amount = property_mgt_amount
 		self.total_amount_received = flt(total_amount_received)
-		if self.tds_amount > 0 and not self.tds_account:
-			frappe.throw("Please select TDS Account")
+		# if self.tds_amount > 0 and not self.tds_account:
+		# 	frappe.throw("Please select TDS Account")
 
 	def set_missing_value(self):
 		if self.tds_amount and not self.tds_account:

@@ -8,6 +8,11 @@
  "engine": "InnoDB",
  "field_order": [
   "building_classification",
+  "minimum_floor_area",
+  "maximum_floor_area",
+  "column_break_5",
+  "minimum_income",
+  "maximum_income",
   "remarks"
  ],
  "fields": [
@@ -23,11 +28,41 @@
    "fieldname": "remarks",
    "fieldtype": "Data",
    "label": "Remarks"
+  },
+  {
+   "fieldname": "minimum_floor_area",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Minimum Floor Area(Sqft)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "maximum_floor_area",
+   "fieldtype": "Float",
+   "label": "Maximum Floor Area(Sqft)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "minimum_income",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Minimum Income",
+   "reqd": 1
+  },
+  {
+   "fieldname": "maximum_income",
+   "fieldtype": "Currency",
+   "label": "Maximum Income",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-04-27 14:12:21.021664",
+ "modified": "2023-06-22 16:46:36.535253",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Building Classification",

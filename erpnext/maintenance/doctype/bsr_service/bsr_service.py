@@ -47,3 +47,24 @@ class BSRService(Document):
 	def on_cancel(self):
 		frappe.db.sql("delete from `tabPrice List` where name = \'" + str(self.price_list) + "\'")
 		frappe.db.sql("delete from `tabItem Price` where price_list = \'" + str(self.price_list) + "\'")
+
+	def get_item_list(self):
+		items = frappe.db.sql("""Select * from tabItem where disabled=0 and is_bsr_service_item=1""",as_dict=1)
+		# frappe.throw(str(items))
+		return items
+
+	@frappe.whitelist()
+	def get_bsr_item(self):
+		self.set('items', [])
+		
+		items = self.get_item_list()
+		# frappe.throw("<pre>{}</pre>".format(frappe.as_json(items)))
+		if not items:
+			frappe.throw(_("No items created for BSR Services"))
+
+		for d in items:
+			row = self.append('items', {})
+			row.item = d.name
+			row.item_name = d.item_name
+			# row.update(d)
+		return "done"

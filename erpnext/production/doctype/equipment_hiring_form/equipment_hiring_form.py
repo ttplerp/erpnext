@@ -93,6 +93,7 @@ class EquipmentHiringForm(Document):
 			frappe.throw(_("No Hire Rates has been assigned for equipment type <b>{0}</b> and model <b>{1}</b>").format(self.equipment_type, self.equipment_model), title="No Data Found!")
 		return data
 
+
 @frappe.whitelist()
 def make_logbook(source_name, target_doc=None):
 	from frappe.model.mapper import get_mapped_doc

@@ -15,6 +15,11 @@
   "marital_status",
   "work_station",
   "employment_type",
+  "aplication_status_section",
+  "applicant_rank",
+  "column_break_8",
+  "application_status",
+  "tenant_id",
   "permanent_address_section",
   "dzongkhag",
   "gewog",
@@ -52,7 +57,6 @@
   "department",
   "gross_salary",
   "provident_fund_no",
-  "applicant_rank",
   "amended_from",
   "attachment_tab",
   "salary_slip",
@@ -342,12 +346,36 @@
    "fieldtype": "Attach",
    "label": "Appointment Letter",
    "reqd": 1
+  },
+  {
+   "default": "Pending",
+   "fieldname": "application_status",
+   "fieldtype": "Select",
+   "label": "Application Status",
+   "options": "Pending\nAllocated\nRejected\nWithdrawn\nCancelled"
+  },
+  {
+   "depends_on": "eval:doc.application_status==\"Allocated\"",
+   "fieldname": "tenant_id",
+   "fieldtype": "Link",
+   "label": "Tenant ID",
+   "options": "Tenant Information",
+   "read_only": 1
+  },
+  {
+   "fieldname": "aplication_status_section",
+   "fieldtype": "Section Break",
+   "label": "Aplication Status"
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-22 15:19:17.473413",
+ "modified": "2023-06-23 17:35:47.145793",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Housing Application",

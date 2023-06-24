@@ -11,6 +11,7 @@ class EquipmentHiringForm(Document):
 		self.validate_date()
 		self.check_duplicate()
 		self.status = self.get_status()
+		self.set_internal_cc_and_branch()
 	
 	def get_status(self, status=None):
 		if self.docstatus == 0:
@@ -117,6 +118,17 @@ class EquipmentHiringForm(Document):
 		if not data:
 			frappe.throw(_("No Hire Rates has been assigned for equipment type <b>{0}</b> and model <b>{1}</b>").format(self.equipment_type, self.equipment_model), title="No Data Found!")
 		return data
+	
+	@frappe.whitelist()
+	def set_internal_cc_and_branch(self):
+		if self.party_type == "Supplier":
+			return
+		else:
+			if cint(self.is_internal) == 1:
+				branch, cc = frappe.db.get_value("Customer", {"name": self.party}, ["branch", "cost_center"])
+
+				self.db_set("party_branch", branch)
+				self.db_set("party_cost_center", cc)
 
 @frappe.whitelist()
 def make_logbook(source_name, target_doc=None):

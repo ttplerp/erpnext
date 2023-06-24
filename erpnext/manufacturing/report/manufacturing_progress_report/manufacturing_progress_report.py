@@ -65,9 +65,9 @@ def construct_query(filters=None):
 	conditions, filters = get_conditions(filters)
 	query = ("""
 			select 
-				p.name as name,p.branch as branch,pi.item_code as item_code,pi.planed_qty as planed_qty, pi.warehouse as warehouse
+				p.name as name,p.branch as branch,pi.item_code as item_code,pi.planned_qty as planned_qty, pi.warehouse as warehouse
 			from `tabProduction Plan` p 
-			inner join `tabProduction Plan Item` pi on pp.parent = p.name 
+			inner join `tabProduction Plan Item` pi on pi.parent = p.name 
 			where p.docstatus != 2
 			{conditions}
 			""".format(conditions=conditions))
@@ -76,17 +76,24 @@ def get_data(query, filters):
 	data = []
 	datas = frappe.db.sql(query, as_dict=True)
 	for d in datas:
-		from_date = filters.get('from_date')
-		to_date = filters.get('to_date')
-
+		qty = frappe.db.sql("""
+			select
+				sum(produced_qty)as qty
+			from
+				`tabWork Order`
+			where production_item = '{0}'
+			and production_plan = '{1}'
+		""".format(d.item_code,d.name),as_dict=True)
+		manufactured_qty = qty[0]['qty']
+		item_name = frappe.db.get_value("Item",d.item_code,"item_name")
 		row = {
-			"item": d.cost_center,
-			"item_name": d.account,
-			"planed_qty": d.account_number,
-			"manufactured_qty": d.target_amount,
-			"warehouse": d.adestment_amount,
-			"branch": d.net_target_amount,
-			"production_id":achieved_amount
+			"item": d.item_code,
+			"item_name": item_name,
+			"planed_qty": d.planned_qty,
+			"manufactured_qty": manufactured_qty,
+			"warehouse":d.warehouse,
+			"branch": d.branch,
+			"production_id":d.name
 		}
 		data.append(row)
 	return data
@@ -94,8 +101,7 @@ def get_conditions(filters):
 	conditions = ""
 	if filters.get("branch"):
 		conditions += """and p.branch ='{}'""".format(filters.get("branch"))
-	if filters.get("year"):
-		year = filters.get("year")
-		conditions += """and rt.fiscal_year = {year}""".format(year=year)
+	if filters.get("from_date") and filters.get("to_date"):
+		conditions += """and p.posting_date between '{from_date}' and '{to_date}'""".format(from_date=filters.get("from_date"),to_date=filters.get("to_date"))
 
 	return conditions, filters

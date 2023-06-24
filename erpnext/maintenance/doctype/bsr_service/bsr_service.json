@@ -13,6 +13,7 @@
   "region",
   "currency",
   "sb_bsr_service_item",
+  "get_bsr_item",
   "items",
   "sb_price_list",
   "price_list",
@@ -97,12 +98,18 @@
    "label": "Currency",
    "options": "Currency",
    "reqd": 1
+  },
+  {
+   "depends_on": "eval: doc.docstatus == 0",
+   "fieldname": "get_bsr_item",
+   "fieldtype": "Button",
+   "label": "Get BSR Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-16 11:22:07.272206",
+ "modified": "2023-06-24 11:03:35.664251",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "BSR Service",

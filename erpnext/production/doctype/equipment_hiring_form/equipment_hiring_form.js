@@ -3,6 +3,14 @@
 
 frappe.ui.form.on('Equipment Hiring Form', {
 	refresh: function(frm) {
+		frm.set_query("party", function() {
+			return {
+				"filters": {
+					"customer_group": "Internal"
+				}
+			}
+		});
+
 		if(frm.doc.docstatus == 1 ){
 			cur_frm.add_custom_button(__('Logbooks'), function() {
 				frappe.route_options = {
@@ -28,12 +36,42 @@ frappe.ui.form.on('Equipment Hiring Form', {
 			}
 		})
 	},
+
 	make_logbook:function(frm){
 		frappe.model.open_mapped_doc({
 			method: "erpnext.production.doctype.equipment_hiring_form.equipment_hiring_form.make_logbook",
 			frm: cur_frm
 		})
-	}
+	},
+	// party_type: function(frm){
+	// 	frm.set_query("party", function() {
+	// 		return {
+	// 			"filters": {
+	// 				"customer_group": "Internal"
+	// 			}
+	// 		}
+	// 	});
+	// },
+
+	// is_internal: function(frm){
+	// 	frm.set_query("party", function() {
+	// 		return {
+	// 			"filters": {
+	// 				"customer_group": "Internal"
+	// 			}
+	// 		}
+	// 	});
+	// },
+
+	// party: function(frm){
+	// 	frm.set_query("party", function() {
+	// 		return {
+	// 			"filters": {
+	// 				"branch": frm.doc.branch
+	// 			}
+	// 		}
+	// 	});
+	// }
 });
 
 frappe.ui.form.on('EHF Rate', {

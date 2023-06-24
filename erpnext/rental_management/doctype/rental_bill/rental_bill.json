@@ -68,7 +68,6 @@
   {
    "fieldname": "tenant",
    "fieldtype": "Link",
-   "in_list_view": 1,
    "label": "Tenant",
    "options": "Tenant Information",
    "reqd": 1
@@ -89,7 +88,6 @@
    "fetch_from": "tenant.customer_code",
    "fieldname": "customer_code",
    "fieldtype": "Data",
-   "in_list_view": 1,
    "label": "Customer Code"
   },
   {
@@ -183,7 +181,6 @@
   {
    "fieldname": "fiscal_year",
    "fieldtype": "Link",
-   "in_list_view": 1,
    "label": "Fiscal Year",
    "options": "Fiscal Year",
    "read_only": 1,
@@ -196,7 +193,6 @@
   {
    "fieldname": "month",
    "fieldtype": "Select",
-   "in_list_view": 1,
    "label": "Month",
    "options": "\n01\n02\n03\n04\n05\n06\n07\n08\n09\n10\n11\n12",
    "reqd": 1
@@ -393,7 +389,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-06 16:11:25.674414",
+ "modified": "2023-06-24 11:28:15.480861",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Bill",
@@ -455,5 +451,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "tenant_name"
 }

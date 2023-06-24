@@ -3,6 +3,7 @@
 
 frappe.ui.form.on('Technical Sanction', {
 	refresh: function(frm) {
+		
 		if (frm.doc.docstatus == 1 && !frm.doc.bill && frm.doc.party && frm.doc.party_type) {
 			frm.add_custom_button("Make Advance", function () {
 				frappe.model.open_mapped_doc({
@@ -69,7 +70,7 @@ frappe.ui.form.on('Technical Sanction', {
 				return {
 					filters: [
 						["disabled", "=", 0],
-						["is_service_item", "=", 1]
+						["is_service_item", "=", 1],
 						["is_bsr_service_item", "=", 1]
 					]
 				}

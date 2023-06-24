@@ -54,6 +54,38 @@ frappe.ui.form.on('Equipment Hiring Form', {
 			})
 		}
 	},
+	is_internal: function(frm){
+		if (frm.doc.party_type == "Customer"){
+			if (frm.doc.is_internal == 1){
+				frm.set_query("party", function() {
+					return {
+						"filters": {
+							"customer_group": "Internal",
+							"disabled": 0
+						}
+					}
+				})
+			}else{
+				frm.set_query("party", function() {
+					return {
+						"filters": {
+							"disabled": 0
+						}
+					}
+				})
+			}
+		}
+	},
+	party: function(frm){
+		frappe.call({
+			method: 'set_internal_cc_and_branch',
+			doc: frm.doc,
+			callback:  () =>{
+				frm.refresh_field("party_branch")
+				frm.refresh_field("party_cost_center")
+			}
+		})
+	}
 });
 
 frappe.ui.form.on('EHF Rate', {

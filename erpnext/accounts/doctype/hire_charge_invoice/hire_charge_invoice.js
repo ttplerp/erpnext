@@ -57,24 +57,66 @@ frappe.ui.form.on('Hire Charge Invoice', {
 			}
 		}
 	},
-	party:function(frm){
-		if (frm.doc.party){
-			frappe.call({
-				method: "erpnext.accounts.party.get_party_account",
-				args: {
-					party_type:frm.doc.party_type,
-					party:frm.doc.party,
-					company: frm.doc.company,
-				},
-				callback: function(r) {
-					if(r.message) {
-						frm.set_value("credit_account",r.message)
-						frm.refresh_fields("credit_account")
+	is_internal_customer: function(frm){
+		if (frm.doc.party_type == "Customer"){
+			if (frm.doc.is_internal_customer == 1){
+				frm.set_query("party", function() {
+					return {
+						"filters": {
+							"customer_group": "Internal",
+							"disabled": 0
+						}
 					}
-				}
-			});
+				})
+			}else{
+				frm.set_query("party", function() {
+					return {
+						"filters": {
+							"disabled": 0
+						}
+					}
+				})
+			}
 		}
-		frm.clear_table("items");
+	},
+	party:function(frm){
+		if (frm.doc.is_internal_customer == 0){
+			if (frm.doc.party){
+				frappe.call({
+					method: "erpnext.accounts.party.get_party_account",
+					args: {
+						party_type:frm.doc.party_type,
+						party:frm.doc.party,
+						company: frm.doc.company,
+					},
+					callback: function(r) {
+						if(r.message) {
+							frm.set_value("credit_account",r.message)
+							frm.refresh_fields("credit_account")
+						}
+					}
+				});
+			}
+			frm.clear_table("items");
+		}else{
+			frappe.call({
+				method: 'set_internal_cc_and_branch',
+				doc: frm.doc,
+				callback:  () =>{
+					frm.refresh_field("party_branch")
+					frm.refresh_field("party_cost_center")
+				}
+			})
+
+			frappe.call({
+				method: 'set_internal_customer_account',
+				doc: frm.doc,
+				callback:  () =>{
+					frm.refresh_field("credit_account")
+				}
+			})
+			
+		}
 	},
 	tds_percent:function(frm){
 		if (frm.doc.tds_percent){

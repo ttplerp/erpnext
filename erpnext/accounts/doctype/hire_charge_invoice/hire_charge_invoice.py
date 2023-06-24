@@ -26,6 +26,7 @@ class HireChargeInvoice(AccountsController):
 			self.update_rate_amount()
 		self.calculate_totals()
 		self.set_status()
+		self.set_internal_cc_and_branch()
 
 	def on_submit(self):
 		self.update_logbook()
@@ -53,7 +54,30 @@ class HireChargeInvoice(AccountsController):
 			doc = frappe.get_doc("Journal Entry", self.journal_entry)
 			if doc.docstatus != 2:
 				frappe.throw("Journal Entry exists for this transaction {}".format(frappe.get_desk_link("Journal Entry",self.journal_entry)))
-			
+	
+	@frappe.whitelist()
+	def set_internal_cc_and_branch(self):
+		if self.party_type == "Supplier":
+			return
+		else:
+			if cint(self.is_internal_customer) == 1:
+				branch, cc = frappe.db.get_value("Customer", {"name": self.party}, ["branch", "cost_center"])
+
+				self.db_set("party_branch", branch)
+				self.db_set("party_cost_center", cc)
+	
+	@frappe.whitelist()
+	def set_internal_customer_account(self):
+		if self.party_type == "Supplier":
+			return
+		else:
+			if cint(self.is_internal_customer) == 1:
+				branch, cc = frappe.db.get_value("Customer", {"name": self.party}, ["branch", "cost_center"])
+
+				self.db_set("party_branch", branch)
+				self.db_set("party_cost_center", cc)
+
+
 	#Function to pay arrear base on change in rate
 	def update_rate_amount(self):
 		for a in self.get("items"):

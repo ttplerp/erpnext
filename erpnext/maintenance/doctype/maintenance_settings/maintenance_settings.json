@@ -13,7 +13,6 @@
   "fleet_mto",
   "fleet_mto_name",
   "account_settings_tab",
-  "intra_company",
   "equipment_hire_income_account",
   "equipment_hire_expense_account"
  ],
@@ -59,12 +58,6 @@
    "label": "Account Settings"
   },
   {
-   "fieldname": "intra_company",
-   "fieldtype": "Link",
-   "label": "Intra Company Hiring Account",
-   "options": "Account"
-  },
-  {
    "fieldname": "equipment_hire_income_account",
    "fieldtype": "Link",
    "label": "Equipment Hire Income Account",
@@ -80,7 +73,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-06-20 15:06:18.642922",
+ "modified": "2023-06-22 17:48:10.449188",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Maintenance Settings",

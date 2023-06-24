@@ -6,8 +6,6 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "expense_head",
-  "column_break_2",
   "hours",
   "column_break_4",
   "total_km",
@@ -21,14 +19,6 @@
   "idle_time"
  ],
  "fields": [
-  {
-   "fieldname": "expense_head",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Expense Head",
-   "options": "Expense Head",
-   "reqd": 1
-  },
   {
    "fieldname": "column_break_4",
    "fieldtype": "Column Break"
@@ -64,10 +54,6 @@
    "fieldname": "time_details_section",
    "fieldtype": "Section Break",
    "label": "Time Details"
-  },
-  {
-   "fieldname": "column_break_2",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "total_km",
@@ -106,7 +92,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-05-16 14:08:44.757276",
+ "modified": "2023-06-22 17:50:25.041212",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Logbook Item",
