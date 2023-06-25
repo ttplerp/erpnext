@@ -86,7 +86,7 @@ frappe.ui.form.on('Technical Sanction', {
 		frm.set_query("price_list", "items", function(frm,cdt,cdn) {
 			var row = locals[cdt][cdn];
 			console.log(cur_frm.doc.company);
-			if (row.type != 'Service') return
+			// if (row.type != 'Service') return
 			return {
 				query: "erpnext.rental_management.doctype.technical_sanction.technical_sanction.get_price_list",
 				filters: {
@@ -120,12 +120,13 @@ frappe.ui.form.on('Technical Sanction Item', {
 			frappe.model.set_value(cdt, cdn, "item_type", "");
 		}
 		// refresh_field("detail_measurement");
-		if (row.service){
-			frappe.model.set_value(cdt, cdn, "service","");
-			frappe.model.set_value(cdt, cdn, "qty", 0);
-			frappe.model.set_value(cdt, cdn, "amount", 0.0);
-			frappe.model.set_value(cdt, cdn, "total", 0.0);
-		}
+		frappe.model.set_value(cdt, cdn, "service","");
+		// if (row.service){
+		// 	frappe.model.set_value(cdt, cdn, "service","");
+		// 	frappe.model.set_value(cdt, cdn, "qty", 0);
+		// 	frappe.model.set_value(cdt, cdn, "amount", 0.0);
+		// 	frappe.model.set_value(cdt, cdn, "total", 0.0);
+		// }
 		if (row.price_list){
 			frappe.model.set_value(cdt, cdn, "price_list","");
 		}
@@ -146,10 +147,10 @@ frappe.ui.form.on('Technical Sanction Item', {
 		cur_frm.add_fetch("service", "item_name", "item_name");
 		cur_frm.add_fetch("service", "stock_uom", "uom");
 		
-		if (!row.service) return
-		frappe.model.set_value(cdt, cdn, "qty", 0);
-		frappe.model.set_value(cdt, cdn, "amount", 0.0);
-		frappe.model.set_value(cdt, cdn, "total", 0.0);
+		// if (!row.service) return
+		// frappe.model.set_value(cdt, cdn, "qty", 0);
+		// frappe.model.set_value(cdt, cdn, "amount", 0.0);
+		// frappe.model.set_value(cdt, cdn, "total", 0.0);
 
 
 		if (row.type == 'Service') {
@@ -242,6 +243,7 @@ function calculate_quantity(frm, cdt, cdn) {
 function get_item_price(frm, cdt, cdn)
 {
 	var row = locals[cdt][cdn];
+	console.log(row)
 	frappe.call({
 		method: "get_item_price",
 		doc: frm.doc,
@@ -253,7 +255,7 @@ function get_item_price(frm, cdt, cdn)
 		},
 		callback: function(r) {
 			console.log(r.message);
-			if (r.message.length == 0) frappe.throw(__("Missing Item in Price List"));
+			// if (r.message.length == 0) frappe.throw(__("Missing Item in Price List"));
 			frappe.model.set_value(cdt, cdn, "amount", r.message[0][1] ?? 0.0)
 		}
 	});

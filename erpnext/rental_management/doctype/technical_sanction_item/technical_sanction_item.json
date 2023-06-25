@@ -33,7 +33,7 @@
    "fieldtype": "Select",
    "hidden": 1,
    "label": "Item Type",
-   "options": "\nRate Analysis\nItem",
+   "options": "\nItem\nRate Analysis",
    "read_only": 1
   },
   {
@@ -96,14 +96,13 @@
    "fieldname": "price_list",
    "fieldtype": "Link",
    "label": "Price List",
-   "mandatory_depends_on": "eval: doc.type == 'Service'",
    "options": "Price List"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-06-17 18:37:53.964419",
+ "modified": "2023-06-25 21:15:40.756821",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Technical Sanction Item",

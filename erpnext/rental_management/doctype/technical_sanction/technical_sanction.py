@@ -85,8 +85,23 @@ class TechnicalSanction(Document):
 			args,
 		)
 
-		# if len(item_price) == 0:
-		# 	frappe.throw("Missing Item in Price List.")
+		if len(item_price) == 0:
+			cond = """where item_code=%(item_code)s
+				and price_list=%(price_list)s
+				and ifnull(uom, '') in ('', %(uom)s)"""
+
+			chk_item = frappe.db.sql(
+				""" select name, price_list_rate, uom
+				from `tabItem Price` {conditions}
+				""".format(
+					conditions=cond
+				),
+				args,
+			)
+			if len(chk_item) != 0:
+				frappe.throw("Posting date, not within the validity of Item Price list.")
+			
+			frappe.throw("Missing Item in Price List.")
 
 		return item_price
 
