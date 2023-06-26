@@ -274,7 +274,7 @@
  "idx": 1,
  "in_create": 1,
  "links": [],
- "modified": "2023-03-30 10:35:57.677832",
+ "modified": "2023-06-26 12:17:57.164428",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "GL Entry",
@@ -310,6 +310,15 @@
    "read": 1,
    "report": 1,
    "role": "Sales User",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Employee",
    "share": 1
   }
  ],

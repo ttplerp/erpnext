@@ -98,24 +98,6 @@ frappe.ui.form.on('Hire Charge Invoice', {
 				});
 			}
 			frm.clear_table("items");
-		}else{
-			frappe.call({
-				method: 'set_internal_cc_and_branch',
-				doc: frm.doc,
-				callback:  () =>{
-					frm.refresh_field("party_branch")
-					frm.refresh_field("party_cost_center")
-				}
-			})
-
-			frappe.call({
-				method: 'set_internal_customer_account',
-				doc: frm.doc,
-				callback:  () =>{
-					frm.refresh_field("credit_account")
-				}
-			})
-			
 		}
 	},
 	tds_percent:function(frm){

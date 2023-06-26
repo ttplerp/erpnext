@@ -15,7 +15,7 @@ class TechnicalSanction(Document):
 		total_amount = 0.0
 		for i in self.items:
 			total_amount += i.total
-		self.total_amount = total_amount_in_words
+		# self.total_amount = total_amount_in_words
 		self.total_amount = total_amount
 
 	def on_submit(self):

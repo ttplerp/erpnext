@@ -20,7 +20,8 @@ frappe.ui.form.on('Process Rental Billing', {
 		cur_frm.set_query("tenant", function() {
 			return {
 				"filters": [
-					["dzongkhag", "=", frm.doc.dzongkhag]
+					["dzongkhag", "=", frm.doc.dzongkhag],
+					["docstatus", "=", 1]
 				]
 			};
 		});

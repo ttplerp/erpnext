@@ -72,6 +72,8 @@
   "gross_vehicle_weight",
   "tare_weight",
   "unloading_by",
+  "stock_entry_category_section",
+  "stock_entry_category",
   "accounting",
   "expense_account",
   "accounting_dimensions_section",
@@ -745,13 +747,24 @@
    "fieldtype": "Data",
    "label": "Issued Equipment Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "stock_entry_category_section",
+   "fieldtype": "Section Break",
+   "label": "Stock Entry Category"
+  },
+  {
+   "fieldname": "stock_entry_category",
+   "fieldtype": "Select",
+   "label": "Stock Entry Category",
+   "options": "\nStore\nPurchased"
   }
  ],
  "idx": 1,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-01-09 10:12:47.443969",
+ "modified": "2023-06-26 16:27:25.023360",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Entry Detail",

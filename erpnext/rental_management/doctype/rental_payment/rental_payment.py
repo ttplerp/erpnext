@@ -27,8 +27,8 @@ class RentalPayment(AccountsController):
 			self.update_rental_bill()
 			self.post_gl_entry()
 		else:
-			self.update_security_deposit_check(cancel=0)
 			self.post_journal_entry()
+		self.update_security_deposit_check(cancel=0)
 
 	def on_cancel(self):
 		if self.is_opening == 'No':
@@ -38,9 +38,9 @@ class RentalPayment(AccountsController):
 			self.post_gl_entry()
 			self.update_rental_bill()
 		else:
-			self.update_security_deposit_check(cancel=1)
 			if frappe.db.exists("Journal Entry", self.journal_entry) and frappe.db.get_value("Journal Entry", self.journal_entry, "docstatus") != 2:
 				frappe.throw("Cancel this Journal Entry: {}".format(self.journal_entry))
+		self.update_security_deposit_check(cancel=1)
 
 	def validate_rental_bill_gl_entry(self):
 		counts = 0
@@ -93,7 +93,7 @@ class RentalPayment(AccountsController):
 					a.penalty = 0.00					
 			self.penalty_amount = round(total_penalty)
 		else:
-			for a in self.item:
+			for a in self.items:
 				a.write_off_penalty = 1
 				a.penalty = 0.00
 			self.penalty_amount = 0.00
@@ -119,14 +119,14 @@ class RentalPayment(AccountsController):
 			if a.rent_write_off:
 				a.balance_rent = flt(a.bill_amount) - flt(a.rent_received) - flt(a.tds_amount) - flt(a.discount_amount) - flt(a.rent_write_off_amount)
 			else:
-				a.balance_rent = flt(a.bill_amount) - flt(a.rent_received) - flt(a.tds_amount) - flt(a.discount_amount) - flt(a.property_management_amount)
-
+				a.balance_rent = round(a.bill_amount) - round(a.rent_received) - round(a.tds_amount) - round(a.discount_amount) - round(a.property_management_amount)
+				# frappe.throw(str(a.balance_rent))
 			if flt(rent_received_amt) > flt(a.bill_amount):
 				a.rent_received = flt(a.bill_amount) - flt(a.tds_amount) - flt(a.discount_amount) - flt(a.property_management_amount)
 				a.balance_rent = flt(a.bill_amount) - flt(a.rent_received) - flt(a.tds_amount) - flt(a.discount_amount) - flt(a.property_management_amount)
 				
 				frappe.msgprint("Rent Received amount is changed to {} as the total of Rent receive + Discount + TDS cannot be more than Bill Amount {} for tenant {}".format(a.rent_received, a.bill_amount, a.tenant_name))
-			
+			# frappe.throw("not here! check on balance rent")
 			if a.balance_rent > 0 and (a.pre_rent_amount > 0 or a.excess_amount > 0):
 				frappe.throw("Pre rent and excess rent collection not allowed as current rent is not settled")
 
@@ -168,12 +168,9 @@ class RentalPayment(AccountsController):
 		for d in self.get('items'):
 			if d.security_deposit_amount > 0 and not cancel:
 				tenant_obj = frappe.get_doc("Tenant Information", d.tenant)
-				if flt(tenant_obj.security_deposit) == flt(d.security_deposit_amount):
-					tenant_obj.security_deposit_received=1
-					tenant_obj.save()
-				else:
-					frappe.throw("Check the Security Deposit amount with Tenant Information at #Row.{}".format(d.idx))
-			else:
+				tenant_obj.security_deposit_received=1
+				tenant_obj.save()
+			elif d.security_deposit_amount > 0 and cancel:
 				tenant_obj = frappe.get_doc("Tenant Information", d.tenant)
 				tenant_obj.security_deposit_received=0
 				tenant_obj.save()

@@ -73,7 +73,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Maintenance Type",
-   "options": "\nMinor\nPlanned\nAdhoc",
+   "options": "\nMinor\nMajor\nPlanned\nAdhoc",
    "reqd": 1
   },
   {
@@ -293,7 +293,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-18 17:59:25.711564",
+ "modified": "2023-06-26 16:53:09.900226",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Technical Sanction",
@@ -310,6 +310,7 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
@@ -321,6 +322,7 @@
    "report": 1,
    "role": "Maintenance User",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
@@ -333,6 +335,7 @@
    "report": 1,
    "role": "Maintenance Manager",
    "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],

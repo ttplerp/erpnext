@@ -222,7 +222,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Reports",
-   "link_count": 11,
+   "link_count": 12,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -344,9 +344,19 @@
    "link_type": "Report",
    "onboard": 1,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Manufacturing Progress Report",
+   "link_count": 0,
+   "link_to": "Manufacturing Progress Report",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
   }
  ],
- "modified": "2023-06-19 17:30:39.903734",
+ "modified": "2023-06-26 15:57:20.421814",
  "modified_by": "Administrator",
  "module": "Manufacturing",
  "name": "Manufacturing",

@@ -61,6 +61,8 @@ class TenantInformation(Document):
 					monthly_installment_amount += flt(a.amount)
 
 				self.original_monthly_instalment = monthly_installment_amount
+		if not self.status:
+			self.status = 'Allocated'
 		""" Property Management Detail, This shift to locations """
 		# if self.block_no and not self.get('rental_property_management_item'):
 		# 	self.set('rental_property_management_item', [])
@@ -111,8 +113,12 @@ class TenantInformation(Document):
 						frappe.throw("Setup Customer Code Base in Rental Customer Group")
 				self.db_set("customer_code", customer_code)
 				cus.customer_code = customer_code
+			self.db_set("customer", cus.name)
+			frappe.db.commit()
 
 			cus.mobile_no = self.phone_no
+			cus.branch = self.branch
+			cus.country = 'Bhutan'
 			# cus.location = self.location
 			# cus.dzongkhag = self.dzongkhag
 			cus.save()
@@ -136,6 +142,7 @@ class TenantInformation(Document):
 			cus.customer_group = "Rental"
 			cus.customer_id = self.tenant_cid
 			cus.territory = "Bhutan"
+			cus.country = "Bhutan"
 			cus.mobile_no = self.phone_no
 			# cus.location = self.location
 			# cus.dzongkhag = self.dzongkhag

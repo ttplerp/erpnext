@@ -27,6 +27,7 @@ class HireChargeInvoice(AccountsController):
 		self.calculate_totals()
 		self.set_status()
 		self.set_internal_cc_and_branch()
+		self.set_internal_customer_account()
 
 	def on_submit(self):
 		self.update_logbook()
@@ -72,11 +73,9 @@ class HireChargeInvoice(AccountsController):
 			return
 		else:
 			if cint(self.is_internal_customer) == 1:
-				branch, cc = frappe.db.get_value("Customer", {"name": self.party}, ["branch", "cost_center"])
+				income_account = frappe.db.get_single_value("Maintenance Settings", "equipment_hire_income_account")
 
-				self.db_set("party_branch", branch)
-				self.db_set("party_cost_center", cc)
-
+				self.db_set("credit_account", income_account)
 
 	#Function to pay arrear base on change in rate
 	def update_rate_amount(self):
@@ -177,6 +176,7 @@ class HireChargeInvoice(AccountsController):
 			if get_account_type( d.account, self.company) in ["Receivable","Payable","Expense Account","Income Account"]:
 				party_type = self.party_type
 				party = self.party
+			
 			if self.party_type == "Supplier":
 				gl_entries.append(
 					self.get_gl_dict({
@@ -209,16 +209,17 @@ class HireChargeInvoice(AccountsController):
 				)
 
 	def make_item_gl_entries(self, gl_entries):
+		expense_account = frappe.db.get_single_value("Maintenance Settings", "equipment_hire_expense_account")
 		for item in self.items:
 			party_type = party = ''
-			if  get_account_type( item.expense_account, self.company) in ["Receivable","Payable","Expense Account","Income Account"]:
+			if  get_account_type( expense_account, self.company) in ["Receivable","Payable","Expense Account","Income Account"]:
 				party_type = self.party_type
 				party = self.party
 
 			if self.party_type == "Supplier":
 				gl_entries.append(
 					self.get_gl_dict({
-							"account":  item.expense_account,
+							"account":  expense_account,
 							"debit": flt(item.amount,2),
 							"debit_in_account_currency": flt(item.amount,2),
 							"against_voucher": self.name,
@@ -231,21 +232,36 @@ class HireChargeInvoice(AccountsController):
 					}, self.currency)
 				)
 			else:
-				gl_entries.append(
-					self.get_gl_dict({
-							"account":  item.expense_account,
-							"credit": flt(item.amount,2),
-							"credit_in_account_currency": flt(item.amount,2),
-							"against_voucher": self.name,
-							"against_voucher_type": self.doctype,
-							"party_type": party_type,
-							"party": party,
-							"cost_center": self.cost_center,
-							"voucher_type":self.doctype,
-							"voucher_no":self.name
-					}, self.currency)
-				)
-
+				if cint(self.is_internal_customer) == 0:
+					gl_entries.append(
+						self.get_gl_dict({
+								"account": expense_account,
+								"credit": flt(item.amount,2),
+								"credit_in_account_currency": flt(item.amount,2),
+								"against_voucher": self.name,
+								"against_voucher_type": self.doctype,
+								"party_type": party_type,
+								"party": party,
+								"cost_center": self.cost_center,
+								"voucher_type":self.doctype,
+								"voucher_no":self.name
+						}, self.currency)
+					)
+				else:
+					gl_entries.append(
+						self.get_gl_dict({
+								"account": expense_account,
+								"credit": flt(item.amount,2),
+								"credit_in_account_currency": flt(item.amount,2),
+								"against_voucher": self.name,
+								"against_voucher_type": self.doctype,
+								"party_type": party_type,
+								"party": party,
+								"cost_center": self.party_cost_center,
+								"voucher_type":self.doctype,
+								"voucher_no":self.name
+						}, self.currency)
+					)
 
 	def make_tds_gl_entries(self,gl_entries):
 		if flt(self.tds_amount)> 0:
@@ -423,7 +439,7 @@ class HireChargeInvoice(AccountsController):
 			je.append("accounts",{
 				"account": credit_account,
 				"credit_in_account_currency": flt(self.payable_amount,2),
-				"cost_center": self.cost_center,
+				"cost_center": self.cost_center if cint(self.is_internal_customer) == 0 else self.party_cost_center,
 				"party_check": 1,
 				"party_type": self.party_type,
 				"party": self.party,
@@ -433,7 +449,7 @@ class HireChargeInvoice(AccountsController):
 			je.append("accounts",{
 				"account": bank_account,
 				"debit_in_account_currency": flt(self.payable_amount,2),
-				"cost_center": self.cost_center
+				"cost_center": self.cost_center if cint(self.is_internal_customer) == 0 else self.party_cost_center
 			})
 
 		je.insert()

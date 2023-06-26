@@ -4,17 +4,23 @@
 
 import frappe
 from frappe import _
+from frappe.utils import flt, cint, nowdate, getdate, formatdate
 from frappe.model.document import Document
 from erpnext.custom_workflow import validate_workflow_states, notify_workflow_states
 
 class AssetMovement(Document):
 	def validate(self):
-		validate_workflow_states(self)
+		# validate_workflow_states(self)
+		self.check_for_targets()
 		self.validate_cost_center()
 		self.validate_employee()
 		self.validate_asset()
-		# if self.workflow_state != "Approved":
-		# 	notify_workflow_states(self)
+	
+	def check_for_targets(self):
+		for idx, d in enumerate(self.assets):
+			if d.target_cost_center and d.to_employee and idx == idx:
+				frappe.throw("Target Cost Center and To Employee cannot be used together at Row: <b>{}</b>".format(idx+1))
+
 	def validate_asset(self):
 		for d in self.assets:
 			status, company = frappe.db.get_value("Asset", d.asset, ["status", "company"])
@@ -56,10 +62,10 @@ class AssetMovement(Document):
 					frappe.throw(_("Employee is required while issuing Asset {0}").format(d.asset))
 
 			if self.purpose == "Transfer":
-				if not d.target_cost_center and self.transfer_type == 'Cost Center To Cost Center':
-					frappe.throw(_("Target Cost Center is required while transferring Asset {0}").format(d.asset))
-				# if d.source_cost_center == d.target_cost_center:
-				# 	frappe.throw(_("Source and Target Cost Center cannot be same"))
+				if not d.target_cost_center and not d.to_employee:
+					frappe.throw(_("Target Cost Center/ To Employee is required while transferring Asset {0}").format(d.asset))
+				if d.source_cost_center == d.target_cost_center:
+					frappe.throw(_("Source and Target Cost Center cannot be same"))
 
 			if self.purpose == "Receipt":
 				# only when asset is bought and first entry is made
@@ -87,108 +93,116 @@ class AssetMovement(Document):
 						)
 
 	def validate_employee(self):
-		for d in self.assets:
+		for idx, d in enumerate(self.assets):
 			if d.from_employee:
-				current_custodian = frappe.db.get_value("Asset", d.asset, "custodian")
-				# frappe.throw(str(current_custodian))
-				# frappe.throw(str(d.asset))
+				current_custodian = self.from_employee
 				if current_custodian != d.from_employee:
 					frappe.throw(
 						_("Asset {0} does not belongs to the custodian {1}").format(d.asset, d.from_employee)
 					)
-
+				
 			if d.to_employee and frappe.db.get_value("Employee", d.to_employee, "company") != self.company:
 				frappe.throw(
 					_("Employee {0} does not belongs to the company {1}").format(d.to_employee, self.company)
 				)
+			
+			if d.to_employee and d.to_employee == self.from_employee:
+				frappe.throw(
+					_("Row {}: From Employee and To Employee cannot be same").format(d.idx, d.to_employee)
+				)
 
 	def on_submit(self):
 		self.set_latest_cost_center_in_asset()
-		# notify_workflow_states(self)
 
 	def on_cancel(self):
-		self.set_latest_cost_center_in_asset()
-		# notify_workflow_states(self)
+		self.set_latest_cost_center_in_asset(cancel=1)
 
-	def set_latest_cost_center_in_asset(self):
-		current_cost_center, current_employee = "", ""
-		cond = "1=1"
-
+	def set_latest_cost_center_in_asset(self, cancel=None):
 		for d in self.assets:
-			args = {"asset": d.asset, "company": self.company}
-
-			# latest entry corresponds to current document's Cost Center, employee when transaction date > previous dates
-			# In case of cancellation it corresponds to previous latest document's Cost Center, employee
-			latest_movement_entry = frappe.db.sql(
-				"""
-				SELECT asm_item.target_cost_center, asm_item.to_employee, asm_item.to_employee_name
-				FROM `tabAsset Movement Item` asm_item, `tabAsset Movement` asm
-				WHERE
-					asm_item.parent=asm.name and
-					asm_item.asset=%(asset)s and
-					asm.company=%(company)s and
-					asm.docstatus=1 and {0}
-				ORDER BY
-					asm.transaction_date desc limit 1
-				""".format(
-					cond
-				),
-				args,
-			)
-			if latest_movement_entry:
-				current_location = latest_movement_entry[0][0]
-				current_employee = latest_movement_entry[0][1]
-				current_employee_name = latest_movement_entry[0][2]
-			frappe.db.set_value("Asset", d.asset, "location", current_location)
-			frappe.db.set_value("Asset", d.asset, "custodian", current_employee)
-			frappe.db.set_value("Asset", d.asset, "custodian_name", current_employee_name)
+			if cint(cancel) == 1:
+				custodian = d.from_employee
+				custodian_name = d.from_employee_name
+				cost_center = d.source_cost_center
+				branch = frappe.db.get_value("Branch", {"cost_center": d.source_cost_center}, "name")
+			else:
+				custodian = d.to_employee
+				custodian_name = d.to_employee_name
+				cost_center = d.target_cost_center if d.target_cost_center else frappe.db.get_value("Employee", d.to_employee, "cost_center")
+			
+			if d.from_employee != d.to_employee:
+				frappe.db.set_value("Asset", d.asset, "custodian", custodian)
+				frappe.db.set_value("Asset", d.asset, "custodian_name", custodian_name)
+			
+			if d.source_cost_center != d.target_cost_center:
+				branch = frappe.db.get_value("Branch", {'cost_center':cost_center}, "name")
+				frappe.db.set_value("Asset", d.asset, "cost_center", cost_center)
+				frappe.db.set_value("Asset", d.asset, "branch", branch)
 			
 	@frappe.whitelist()
 	def get_asset_list(self):
-		if not self.from_employee:
-			frappe.throw("From Employee is Mandatory")
+		if self.transfer_from == "Employee" and not self.from_employee:
+			frappe.throw("From Employee is mandatory")
+		elif self.transfer_from == "Cost Center" and not self.from_cost_center:
+			frappe.throw("From Cost Center is mandatory")
 		else:
-			if self.to_single:
-				if not self.to_employee:
-					frappe.throw("To Employee is Mandatory")
-				elif self.from_employee == self.to_employee:
-					frappe.throw("Select Different Employee")
-			asset_list = frappe.db.sql("""
-				select name
-				from `tabAsset` 
-				where custodian = {} 
-				and docstatus = 1 
-				""".format(self.from_employee),as_dict = 1)
-			if asset_list:
-				self.set("assets",[])
-				for x in asset_list:
-					row = self.append("assets",{})
-					data = {"asset":x.name, 
-							"from_employee":self.from_employee, 
-							"to_employee":self.to_employee, 
-							"source_cost_center": frappe.db.get_value("Employee",self.from_employee,"cost_center"),
-							"target_cost_center": frappe.db.get_value("Employee",self.to_employee,"cost_center")
-							}
-					row.update(data)
+			if self.transfer_from == "Employee":
+				asset_list = frappe.db.sql("""
+					SELECT name
+					FROM `tabAsset`
+					WHERE custodian = %s AND docstatus = 1
+					""", self.from_employee, as_dict=1)
 
-# def get_permission_query_conditions(user):
-# 	if not user: user = frappe.session.user
-# 	user_roles = frappe.get_roles(user)
+				if asset_list:
+					self.set("assets", [])
+					for x in asset_list:
+						row = self.append("assets", {})
+						data = {
+							"asset": x.name,
+							"from_employee": self.from_employee,
+							"source_cost_center": frappe.db.get_value("Employee", self.from_employee, "cost_center"),
+						}
+						row.update(data)
+				else:
+					frappe.throw("No Asset Record Found")
+			else:
+				asset_list = frappe.db.sql("""
+					SELECT name
+					FROM `tabAsset`
+					WHERE custodian IS NULL
+					AND cost_center = %s
+					AND docstatus = 1
+					""", self.from_cost_center, as_dict=1)
 
-# 	if user == "Administrator" or "System Manager" in user_roles: 
-# 		return
+				if asset_list:
+					self.set("assets", [])
+					for x in asset_list:
+						row = self.append("assets", {})
+						data = {
+							"asset": x.name,
+							"source_cost_center": self.from_cost_center,
+						}
+						row.update(data)
+				else:
+					frappe.throw("No Asset Record Found")
 
-# 	return """(
-# 		exists(select 1
-# 			from `tabEmployee` as e
-# 			where e.branch = `tabAsset Movement`.branch
-# 			and e.user_id = '{user}')
-# 		or
-# 		exists(select 1
-# 			from `tabEmployee` e, `tabAssign Branch` ab, `tabBranch Item` bi
-# 			where e.user_id = '{user}'
-# 			and ab.employee = e.name
-# 			and bi.parent = ab.name
-# 			and bi.branch = `tabPurchase Invoice`.branch)
-# 	)""".format(user=user)
+def get_permission_query_conditions(user):
+	if not user: user = frappe.session.user
+	user_roles = frappe.get_roles(user)
+
+	if user == "Administrator" or "System Manager" in user_roles: 
+		return
+
+	return """(
+		exists(select 1
+			from `tabEmployee` as e
+			where e.branch = `tabAsset Movement`.branch
+			and e.user_id = '{user}')
+		or
+		exists(select 1
+			from `tabEmployee` e, `tabAssign Branch` ab, `tabBranch Item` bi
+			where e.user_id = '{user}'
+			and ab.employee = e.name
+			and bi.parent = ab.name
+			and bi.branch = `tabPurchase Invoice`.branch)
+	)""".format(user=user)
 			

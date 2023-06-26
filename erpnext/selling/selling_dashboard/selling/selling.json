@@ -29,18 +29,22 @@
   {
    "chart": "Item-wise Annual Sales",
    "width": "Full"
+  },
+  {
+   "chart": "Sales Order Trends",
+   "width": "Half"
   }
  ],
- "creation": "2020-07-20 20:17:16.688162",
+ "creation": "2023-04-10 16:38:14.885582",
  "dashboard_name": "Selling",
  "docstatus": 0,
  "doctype": "Dashboard",
  "idx": 0,
  "is_default": 0,
  "is_standard": 1,
- "modified": "2020-07-22 15:31:22.299903",
- "modified_by": "Administrator",
+ "modified": "2023-06-26 12:19:23.227256",
+ "modified_by": "sangay.dorji@thimphutechpark.bt",
  "module": "Selling",
  "name": "Selling",
- "owner": "Administrator"
+ "owner": "jairaj.rai@thimphutechpark.bt"
 }

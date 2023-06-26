@@ -85,14 +85,6 @@ frappe.ui.form.on('Asset Movement', {
 	},
 	get_asset: function(frm){
 		get_asset_list(frm);
-	},
-	to_employee:function(frm){
-		if(cint(frm.doc.to_single) == 1){
-			frm.doc.assets.map(v=>{
-				v.to_employee = frm.doc.to_employee
-			})
-			frm.refresh_field("assets")
-		}
 	}
 });
 
@@ -105,7 +97,6 @@ function get_asset_list(frm){
 
 		}
 	});
-	
 }
 
 frappe.ui.form.on('Asset Movement Item', {

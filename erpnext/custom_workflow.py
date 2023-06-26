@@ -428,7 +428,7 @@ class CustomWorkflow:
 		elif self.new_state.lower() == "Waiting Approval".lower():
 			if self.doc.benefit_approver != frappe.session.user:
 				frappe.throw("Only {} can Forward this document".format(self.doc.benefit_approver_name))
-			self.set_approver("HRGM")
+			self.set_approver("CEO")
 		elif self.new_state.lower() in ("Approved".lower(), "Rejected".lower()):
 			if self.doc.benefit_approver != frappe.session.user:
 				frappe.throw("Only {} can Approved or Reject this document".format(self.doc.benefit_approver_name))

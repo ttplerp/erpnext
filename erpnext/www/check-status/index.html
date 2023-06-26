@@ -9,6 +9,24 @@
 
 {% block page_content %}
 <div class="container">
-
+    <div class="row mb-12">
+        <div class="col-sm-8">
+            <form action="{{ route }}">
+                <div class="input-group">
+                    <input name="q" class="form-control" type="text" value="{{ query or ''}}"
+                        placeholder="{{ _('Search...') }}">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-sm btn-primary btn-search">
+                            {{ _('Search') }}
+                        </button>
+                    </div>
+                </div>
+                {% if frappe.form_dict.scope %}
+                    <input type="text" hidden name="scope" value="{{ frappe.sanitize_html(frappe.form_dict.scope) }}">
+                {% endif %}
+            </form>
+        </div>
+    </div>
+    
 </div>
 {% endblock %}
