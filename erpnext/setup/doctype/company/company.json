@@ -73,6 +73,7 @@
   "payment_terms",
   "cost_center",
   "company_cost_center",
+  "dhq_default_cost_center",
   "default_finance_book",
   "default_payroll_payable_account",
   "auto_accounting_for_stock_settings",
@@ -873,6 +874,7 @@
    "label": "Pro Rate Asset Value during Sale/Scrap"
   },
   {
+   "description": "*DSP default Cost Center",
    "fieldname": "company_cost_center",
    "fieldtype": "Link",
    "label": "Default Cost Center",
@@ -892,6 +894,13 @@
    "fieldtype": "Link",
    "label": "Default Bank Account for DHQ",
    "options": "Account"
+  },
+  {
+   "description": "*DHQ default Cost Center",
+   "fieldname": "dhq_default_cost_center",
+   "fieldtype": "Link",
+   "label": "DHQ Default Cost Center",
+   "options": "Cost Center"
   }
  ],
  "icon": "fa fa-building",
@@ -899,7 +908,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2022-12-23 12:20:00.988843",
+ "modified": "2023-06-21 09:56:17.988943",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",
