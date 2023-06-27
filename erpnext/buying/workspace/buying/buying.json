@@ -534,8 +534,8 @@
    "type": "Link"
   }
  ],
- "modified": "2023-03-22 16:29:56.830815",
- "modified_by": "pema.dhendup@thimphutechpark.bt",
+ "modified": "2023-06-21 19:48:06.488766",
+ "modified_by": "Administrator",
  "module": "Buying",
  "name": "Buying",
  "owner": "Administrator",
@@ -544,7 +544,7 @@
  "quick_lists": [],
  "restrict_to_domain": "",
  "roles": [],
- "sequence_id": 12.0,
+ "sequence_id": 16.0,
  "shortcuts": [
   {
    "color": "Green",

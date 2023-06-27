@@ -12,7 +12,6 @@ from frappe.permissions import (
 )
 from frappe.utils import cstr, getdate, today, validate_email_address, cint, flt, add_days, nowdate, date_diff
 from frappe.utils.nestedset import NestedSet
-from frappe.model.naming import make_autoname
 from erpnext.utilities.transaction_base import delete_events
 from erpnext.custom_utils import get_year_start_date, get_year_end_date, round5, check_future_date
 from datetime import datetime, timedelta
@@ -28,18 +27,9 @@ class InactiveEmployeeStatusError(frappe.ValidationError):
 
 class Employee(NestedSet):
 	nsm_parent_field = "reports_to"
-	def autoname(self):
-		name = make_autoname('EMP.####')[3:]
-		if not self.employee_name:
-			self.set_employee_name()
-
 	def validate(self):
 		from erpnext.controllers.status_updater import validate_status
 		validate_status(self.status, ["Active", "Inactive", "Suspended", "Left"])
-		# naming done with combination with joining year, month and 4 digits series
-		if self.old_id:
-			self.employee =	self.name = self.old_id
-			return
 		year_month = str(self.date_of_joining)[2:4] + str(self.date_of_joining)[5:7]
 		self.validate_date()
 		self.validate_email()

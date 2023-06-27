@@ -36,6 +36,7 @@
   "reports_to_name",
   "business_activity",
   "column_break_22",
+  "employee_qualification",
   "employment_status",
   "probation_end_date",
   "increment_cycle",
@@ -204,7 +205,7 @@
    "label": "Status",
    "oldfieldname": "status",
    "oldfieldtype": "Select",
-   "options": "Active\nInactive\nSuspended\nLeft",
+   "options": "Active\nInactive\nSuspended\nLeft\nObservation",
    "search_index": 1
   },
   {
@@ -544,7 +545,6 @@
    "label": "Health Details"
   },
   {
-   "collapsible": 1,
    "fieldname": "educational_qualification",
    "fieldtype": "Section Break",
    "label": "Educational Qualification"
@@ -840,12 +840,14 @@
   {
    "fieldname": "promotion_cycle",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Promotion Cycle",
    "options": "\nJanuary\nJuly"
   },
   {
    "fieldname": "promotion_due_date",
    "fieldtype": "Date",
+   "hidden": 1,
    "label": "Promotion Due Date"
   },
   {
@@ -919,6 +921,7 @@
   {
    "fieldname": "unit",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Unit",
    "options": "Department"
   },
@@ -970,25 +973,39 @@
    "fieldtype": "Link",
    "label": "Location Code",
    "options": "Location"
+  },
+  {
+   "fieldname": "employee_qualification",
+   "fieldtype": "Link",
+   "label": "Employee Qualification",
+   "options": "Education Level"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-04-17 12:12:24.125757",
+ "modified": "2023-06-21 17:49:29.687586",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
  "name_case": "Title Case",
+ "naming_rule": "By script",
  "owner": "Administrator",
  "permissions": [
   {
+   "create": 1,
+   "delete": 1,
    "email": 1,
+   "export": 1,
+   "import": 1,
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "Employee"
+   "role": "HR Manager",
+   "set_user_permissions": 1,
+   "share": 1,
+   "write": 1
   },
   {
    "create": 1,
@@ -1004,18 +1021,11 @@
    "write": 1
   },
   {
-   "create": 1,
-   "delete": 1,
    "email": 1,
-   "export": 1,
-   "import": 1,
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "HR Manager",
-   "set_user_permissions": 1,
-   "share": 1,
-   "write": 1
+   "role": "Employee"
   }
  ],
  "search_fields": "employee_name, gender, designation, employment_type",
@@ -1024,5 +1034,6 @@
  "sort_order": "DESC",
  "states": [],
  "title_field": "employee_name",
+ "track_changes": 1,
  "track_views": 1
 }

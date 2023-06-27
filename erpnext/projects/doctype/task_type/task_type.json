@@ -21,7 +21,7 @@
   }
  ],
  "links": [],
- "modified": "2023-04-17 12:13:28.907542",
+ "modified": "2022-08-29 17:46:41.342979",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Task Type",
@@ -66,6 +66,5 @@
  "sort_field": "modified",
  "sort_order": "ASC",
  "states": [],
- "track_changes": 1,
- "track_views": 1
+ "track_changes": 1
 }

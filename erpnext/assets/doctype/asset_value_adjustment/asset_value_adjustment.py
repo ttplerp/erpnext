@@ -76,6 +76,8 @@ class AssetValueAdjustment(Document):
 
 	def make_depreciation_entry(self):
 		je = frappe.new_doc("Journal Entry")
+		je.naming_series 	= "Journal Voucher"
+		je.mode_of_payment 	= "Cash"
 		je.voucher_type = "Journal Entry"
 		je.posting_date = self.date
 		je.company = self.company

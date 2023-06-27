@@ -6,6 +6,8 @@ from frappe.model.document import Document
 from frappe import _, qb, throw
 from frappe.utils import flt, cint
 from erpnext.custom_utils import check_future_date
+from erpnext.accounts.doctype.business_activity.business_activity import get_default_ba
+from frappe.utils import money_in_words, cstr, flt, fmt_money, formatdate, getdate, nowdate, cint, get_link_to_form, now_datetime, get_datetime
 from erpnext.controllers.stock_controller import StockController
 from erpnext.fleet_management.fleet_utils import get_pol_till, get_pol_till, get_previous_km
 from erpnext.accounts.general_ledger import (
@@ -21,25 +23,77 @@ class POLReceive(StockController):
 		check_future_date(self.posting_date)
 		self.calculate_km_diff()
 		self.validate_data()
-		self.balance_check()
+		# self.balance_check()
 
 	def on_submit(self):
 		self.update_pol_expense()
 		self.make_pol_entry()
-		self.make_gl_entries()
+		self.post_journal_entry()
+		# self.make_gl_entries()
+		
 	def before_cancel(self):
 		self.delete_pol_entry()
 
 	def on_cancel(self):
 		self.update_pol_expense()
 		self.delete_pol_entry()
-		self.make_gl_entries()
-	def balance_check(self):
-		total_balance = 0
-		for row in self.items:
-			total_balance = flt(total_balance) + flt(row.balance_amount)
-		if total_balance < self.total_amount :
-			frappe.throw("<b>Payable Amount({})</b> cannot be greater than <b>Total Advance Balance({})</b>".format(self.total_amount,total_balance))
+		self.post_journal_entry()
+		# self.make_gl_entries()
+
+	# def balance_check(self):
+	# 	total_balance = 0
+	# 	for row in self.items:
+	# 		total_balance = flt(total_balance) + flt(row.balance_amount)
+	# 	if total_balance < self.total_amount :
+	# 		frappe.throw("<b>Payable Amount({})</b> cannot be greater than <b>Total Advance Balance({})</b>".format(self.total_amount,total_balance))
+
+	def post_journal_entry(self):
+		if not self.total_amount:
+			frappe.throw(_("Amount should be greater than zero"))
+
+		credit_account = frappe.get_value("Company", self.company, "default_bank_account")
+		debit_account = frappe.db.get_value("Equipment Category", self.equipment_category, "pol_expense_account")
+
+		# Posting Journal Entry
+		je = frappe.new_doc("Journal Entry")
+		je.flags.ignore_permissions=1
+		accounts = []
+		accounts.append({
+				"account": credit_account,
+				"credit_in_account_currency": flt(self.total_amount,2),
+				"cost_center": self.cost_center,
+				"reference_type": "POL Receive",
+				"reference_name": self.name,
+				"business_activity": get_default_ba
+			})
+		accounts.append({
+				"account": debit_account,
+				"debit_in_account_currency": flt(self.total_amount,2),
+				"cost_center": self.cost_center,
+				"business_activity": get_default_ba
+			})
+		
+		je.update({
+			"doctype": "Journal Entry",
+			"voucher_type": "Journal Entry",
+			"naming_series": "Bank Payment Voucher",
+			"title": "POL Receive - " + self.equipment,
+			"user_remark": "Note: " + "POL Receive - " + self.equipment,
+			"posting_date": self.posting_date,
+			"company": self.company,
+			"total_amount_in_words": money_in_words(self.total_amount),
+			"branch": self.branch,
+			"accounts":accounts
+		})
+
+		# frappe.throw('{}'.format(accounts))
+		je.insert()
+		#Set a reference to the claim journal entry
+		self.db_set("journal_entry",je.name)
+		self.db_set("journal_entry_status", "Forwarded to accounts for processing payment on {0}".format(now_datetime().strftime('%Y-%m-%d %H:%M:%S')))
+		frappe.msgprint(_('{} posted to accounts').format(frappe.get_desk_link('Journal Entry',je.name)))
+		# frappe.throw('Here!')
+
 	def make_gl_entries(self):
 		if cint(self.out_sourced) == 0:
 			return
@@ -142,8 +196,8 @@ class POLReceive(StockController):
 			self.mileage = flt(self.km_difference) / self.qty
 
 	def validate_data(self):
-		if not self.fuelbook_branch:
-			frappe.throw("Fuelbook Branch are mandatory")
+		# if not self.fuelbook_branch:
+		# 	frappe.throw("Fuelbook Branch are mandatory")
 
 		if flt(self.qty) <= 0 or flt(self.rate) <= 0:
 			frappe.throw("Quantity and Rate should be greater than 0")

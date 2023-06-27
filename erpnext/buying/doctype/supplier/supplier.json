@@ -532,14 +532,12 @@
    "fieldname": "credit_days_based_on",
    "fieldtype": "Select",
    "label": "Payment Days Based On",
-   "options": "\nFixed Days\nLast Day of the Next Month",
-   "reqd": 1
+   "options": "\nFixed Days\nLast Day of the Next Month"
   },
   {
    "fieldname": "credit_days",
    "fieldtype": "Int",
-   "label": "Payment due days",
-   "reqd": 1
+   "label": "Payment due days"
   },
   {
    "fieldname": "column_break_34",
@@ -694,7 +692,7 @@
    "link_fieldname": "party"
   }
  ],
- "modified": "2023-04-17 12:12:07.246902",
+ "modified": "2023-06-13 11:08:19.266382",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Supplier",

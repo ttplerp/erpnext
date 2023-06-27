@@ -48,6 +48,8 @@ def validate_for_items(doc) -> None:
 			if doc.doctype == "Purchase Receipt" and d.rejected_qty:
 				continue
 			frappe.throw(_("Please enter quantity for Item {0}").format(d.item_code))
+		if not d.rate or flt(d.rate) <= 0.00:
+			frappe.throw(_("Please enter rate for Item {0}").format(d.item_code))
 
 		set_stock_levels(row=d)  # update with latest quantities
 		item = validate_item_and_get_basic_data(row=d)

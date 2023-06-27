@@ -352,14 +352,14 @@
    "fieldtype": "Link",
    "label": "MR Status Notification Template",
    "options": "Email Template",
-   "reqd": 1
+   "reqd": 0
   },
   {
    "fieldname": "mr_approval_notification_template",
    "fieldtype": "Link",
    "label": "MR Approvel Notification",
    "options": "Email Template",
-   "reqd": 1
+   "reqd": 0
   }
  ],
  "icon": "icon-cog",

@@ -891,6 +891,9 @@ class Asset(AccountsController):
 		if self.gross_purchase_amount:
 			je = frappe.new_doc("Journal Entry")
 			je.flags.ignore_permissions = 1 
+			je.naming_series = "Journal Voucher"
+			je.mode_of_payment = "Cash"
+
 			je.update({
 				"voucher_type": "Journal Entry",
 				"company": self.company,

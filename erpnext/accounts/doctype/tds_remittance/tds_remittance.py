@@ -20,21 +20,22 @@ class TDSRemittance(AccountsController):
 	def on_cancel(self):
 		self.make_gl_entries()
 
-	def get_condition(self):
-		branch =[b.branch for b in frappe.db.sql('''select branch from `tabRegion Item` where parent = '{}' '''.format(self.region), as_dict=1)]
-		if len(branch) > 1:
-			return ' AND t.branch in {} '.format(tuple(branch))
-		elif len(branch) == 1 :
-			return " AND t.branch = '{}'".format(branch[0])
-		return ''
+	# def get_condition(self):
+	# 	branch =[b.branch for b in frappe.db.sql('''select branch from `tabRegion Item` where parent = '{}' '''.format(self.region), as_dict=1)]
+	# 	if len(branch) > 1:
+	# 		return ' AND t.branch in {} '.format(tuple(branch))
+	# 	elif len(branch) == 1 :
+	# 		return " AND t.branch = '{}'".format(branch[0])
+	# 	return ''
 	@frappe.whitelist()
 	def get_details(self):
 		total_tds_amount = total_bill_amount = 0
-		if not self.region:
-			frappe.throw("Region is required")
+		# if not self.region:
+		# 	frappe.throw("Region is required")
 		if self.purpose != 'Other Invoice':
 			return total_tds_amount, total_bill_amount
-		cond = self.get_condition()
+		cond = ""
+		# self.get_condition()
 
 		entries = get_tds_invoices(self.tax_withholding_category, self.from_date, self.to_date, \
 			self.name, filter_existing=True, cond= cond)

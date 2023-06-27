@@ -7,16 +7,12 @@ from frappe import _
 from frappe.model.document import Document
 from erpnext.custom_utils import get_branch_from_cost_center
 
-# from erpnext.custom_workflow import validate_workflow_states, notify_workflow_states
-
 class AssetMovement(Document):
 	def validate(self):
-		# validate_workflow_states(self)
 		self.validate_cost_center()
 		self.validate_employee()
 		self.validate_asset()
-		# if self.workflow_state != "Approved":
-		# 	notify_workflow_states(self)
+		
 	def validate_asset(self):
 		for d in self.assets:
 			status, company = frappe.db.get_value("Asset", d.asset, ["status", "company"])
@@ -60,7 +56,7 @@ class AssetMovement(Document):
 			if self.purpose == "Transfer":
 				if not d.target_cost_center and self.transfer_type == 'Cost Center To Cost Center':
 					frappe.throw(_("Target Cost Center is required while transferring Asset {0}").format(d.asset))
-				if d.source_cost_center == d.target_cost_center:
+				if d.source_cost_center == d.target_cost_center and self.transfer_type == 'Cost Center To Cost Center':
 					frappe.throw(_("Source and Target Cost Center cannot be same"))
 
 			if self.purpose == "Receipt":
@@ -106,12 +102,9 @@ class AssetMovement(Document):
 		self.set_latest_cost_center_in_asset()
 		if self.transfer_type == 'Cost Center To Cost Center':
 			self.set_latest_cc_in_asset()
-		# notify_workflow_states(self)
-
 	def on_cancel(self):
 		self.set_latest_cost_center_in_asset()
 		self.set_latest_cc_in_asset(True)
-		# notify_workflow_states(self)
 
 	def set_latest_cc_in_asset(self, cancel=None):
 		for ass in self.assets:

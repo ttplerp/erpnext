@@ -26,15 +26,9 @@ form_grid_templates = {"items": "templates/form_grid/material_request_grid.html"
 
 class MaterialRequest(BuyingController):
 	def autoname(self):
-		if self.material_request_type == 'Material Issue':
-			series = 'MRI'
-			self.name = make_autoname(str(series) + ".YY.MM.####")
-		elif self.material_request_type == 'Material Transfer':
-			series = 'MRT'
-			self.name = make_autoname(str(series) + ".YY.MM.####")
-		else:
-			series = 'MRP'
-			self.name = make_autoname(str(series) + ".YY.MM.####")
+		code = frappe.db.get_value('Cost Center', self.cost_center, 'code')
+		series = code
+		self.name = make_autoname(str(series)+".YYYY.###")
 	def get_feed(self):
 		return
 

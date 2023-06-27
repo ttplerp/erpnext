@@ -13,6 +13,7 @@
   "cost_center_name",
   "cost_center_number",
   "parent_cost_center",
+  "code",
   "company",
   "cb0",
   "is_group",
@@ -151,13 +152,19 @@
    "fieldname": "is_company",
    "fieldtype": "Check",
    "label": "Is Company"
+  },
+  {
+   "fieldname": "code",
+   "fieldtype": "Data",
+   "label": "Code",
+   "reqd": 1
   }
  ],
  "icon": "fa fa-money",
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2023-04-17 12:12:12.326847",
+ "modified": "2023-06-27 10:33:25.338573",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Cost Center",

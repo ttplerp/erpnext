@@ -21,12 +21,7 @@
   "reference_doctype",
   "column_break_9",
   "reference_name",
-  "amended_from",
-  "approver_details_section",
-  "approver",
-  "column_break_19",
-  "approver_name",
-  "approver_designation"
+  "amended_from"
  ],
  "fields": [
   {
@@ -137,41 +132,12 @@
    "fieldname": "get_asset",
    "fieldtype": "Button",
    "label": "Get Asset"
-  },
-  {
-   "fieldname": "approver_details_section",
-   "fieldtype": "Section Break",
-   "label": "Approver Details",
-   "read_only": 1
-  },
-  {
-   "fieldname": "approver",
-   "fieldtype": "Link",
-   "label": "Approver",
-   "options": "User",
-   "read_only": 1
-  },
-  {
-   "fieldname": "column_break_19",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "approver_name",
-   "fieldtype": "Data",
-   "label": "Approver Name",
-   "read_only": 1
-  },
-  {
-   "fieldname": "approver_designation",
-   "fieldtype": "Data",
-   "label": "Approver Designation",
-   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-17 12:12:20.114156",
+ "modified": "2023-06-26 15:38:25.163934",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset Movement",

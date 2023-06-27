@@ -210,7 +210,7 @@ class PaymentEntry(AccountsController):
 				frappe.msgprint(_("Party Type is mandatory"), raise_exception=True)
 
 			if not self.party:
-				frappe.msgprint(_("Party is mandatory"), raise_exception)
+				frappe.msgprint(_("Party is mandatory"), raise_exception=True)
 
 			_party_name = "title" if self.party_type == "Shareholder" else self.party_type.lower() + "_name"
 
@@ -333,7 +333,6 @@ class PaymentEntry(AccountsController):
 
 	def validate_reference_documents(self):
 		valid_reference_doctypes = self.get_valid_reference_doctypes()
-
 		if not valid_reference_doctypes:
 			return
 		for d in self.get("references"):
@@ -350,7 +349,7 @@ class PaymentEntry(AccountsController):
 				else:
 					ref_doc = frappe.get_doc(d.reference_doctype, d.reference_name)
 
-					if d.reference_doctype not in ("Journal Entry","Repair And Service Invoice"):
+					if d.reference_doctype not in ("Journal Entry","Repair And Service Invoice","Project Invoice"):
 						if self.party != ref_doc.get(scrub(self.party_type)):
 							frappe.throw(
 								_("{0} {1} is not associated with {2} {3}").format(
@@ -388,9 +387,9 @@ class PaymentEntry(AccountsController):
 
 	def get_valid_reference_doctypes(self):
 		if self.party_type == "Customer":
-			return ("Sales Order", "Sales Invoice", "Journal Entry", "Dunning")
+			return ("Sales Order", "Sales Invoice", "Journal Entry", "Dunning", "Project Invoice")
 		elif self.party_type == "Supplier":
-			return ("Purchase Order", "Purchase Invoice", "Journal Entry","Repair And Service Invoice")
+			return ("Purchase Order", "Purchase Invoice", "Journal Entry","Repair And Service Invoice", "Project Invoice")
 		elif self.party_type == "Shareholder":
 			return ("Journal Entry",)
 		elif self.party_type == "Employee":
@@ -409,9 +408,8 @@ class PaymentEntry(AccountsController):
 				)
 				if outstanding_amount <= 0 and not is_return:
 					no_oustanding_refs.setdefault(d.reference_doctype, []).append(d)
-
 		for k, v in no_oustanding_refs.items():
-			frappe.msgprint(
+			frappe.throw(
 				_(
 					"{} - {} now have {} as they had no outstanding amount left before submitting the Payment Entry."
 				).format(
@@ -424,6 +422,21 @@ class PaymentEntry(AccountsController):
 				title=_("Warning"),
 				indicator="orange",
 			)
+		# msgprint changed to throw to prevent negative outstanding_amount
+		# for k, v in no_oustanding_refs.items():
+		# 	frappe.msgprint(
+		# 		_(
+		# 			"{} - {} now have {} as they had no outstanding amount left before submitting the Payment Entry."
+		# 		).format(
+		# 			_(k),
+		# 			frappe.bold(", ".join(d.reference_name for d in v)),
+		# 			frappe.bold(_("negative outstanding amount")),
+		# 		)
+		# 		+ "<br><br>"
+		# 		+ _("If this is undesirable please cancel the corresponding Payment Entry."),
+		# 		title=_("Warning"),
+		# 		indicator="orange",
+		# 	)
 
 	def validate_journal_entry(self):
 		for d in self.get("references"):
@@ -1251,7 +1264,7 @@ def get_outstanding_reference_documents(args):
 		common_filter.append(ple.voucher_type == args["voucher_type"])
 		common_filter.append(ple.voucher_no == args["voucher_no"])
 	# Add cost center condition
-	if args.get("cost_center"):
+	if args.get("cost_center") and flt(args.get('avoid_cost_center_filter')) == 0:
 		condition += " and cost_center='%s'" % args.get("cost_center")
 		common_filter.append(ple.cost_center == args.get("cost_center"))
 	date_fields_dict = {
@@ -1293,7 +1306,6 @@ def get_outstanding_reference_documents(args):
 				)
 		if d.voucher_type in ("Purchase Invoice"):
 			d["bill_no"] = frappe.db.get_value(d.voucher_type, d.voucher_no, "bill_no")
-
 	# Get all SO / PO which are not fully billed or against which full advance not paid
 	orders_to_be_billed = []
 	orders_to_be_billed = get_orders_to_be_billed(
@@ -1307,16 +1319,16 @@ def get_outstanding_reference_documents(args):
 	)
 
 	# Get negative outstanding sales /purchase invoices
-	negative_outstanding_invoices = []
-	if args.get("party_type") != "Employee" and not args.get("voucher_no"):
-		negative_outstanding_invoices = get_negative_outstanding_invoices(
-			args.get("party_type"),
-			args.get("party"),
-			args.get("party_account"),
-			party_account_currency,
-			company_currency,
-			condition=condition,
-		)
+	# negative_outstanding_invoices = []
+	# if args.get("party_type") != "Employee" and not args.get("voucher_no"):
+	# 	negative_outstanding_invoices = get_negative_outstanding_invoices(
+	# 		args.get("party_type"),
+	# 		args.get("party"),
+	# 		args.get("party_account"),
+	# 		party_account_currency,
+	# 		company_currency,
+	# 		condition=condition,
+	# 	)
 	# commented as -ve outstanding was not required
 	# data = negative_outstanding_invoices + outstanding_invoices + orders_to_be_billed
 	data = outstanding_invoices + orders_to_be_billed
@@ -1704,7 +1716,7 @@ def get_payment_entry(
 	paid_amount, received_amount, discount_amount = apply_early_payment_discount(
 		paid_amount, received_amount, doc
 	)
-	if dt in ["Repair And Service Invoice"]:
+	if dt in ["Repair And Service Invoice","Project Invoice"]:
 		party = doc.party
 	else:
 		party = doc.get(scrub(party_type))
@@ -1733,7 +1745,7 @@ def get_payment_entry(
 	pe.received_amount = received_amount
 	pe.letter_head = doc.get("letter_head")
 
-	if dt in ["Purchase Order", "Sales Order", "Sales Invoice", "Purchase Invoice"]:
+	if dt in ["Purchase Order", "Sales Order", "Sales Invoice", "Purchase Invoice", "Project Invoice"]:
 		pe.project = doc.get("project") or reduce(
 			lambda prev, cur: prev or cur, [x.get("project") for x in doc.get("items")], None
 		)  # get first non-empty project from items
@@ -1862,6 +1874,8 @@ def set_payment_type(dt, doc):
 		dt == "Sales Order" or (dt in ("Sales Invoice", "Dunning") and doc.outstanding_amount > 0)
 	) or (dt == "Purchase Invoice" and doc.outstanding_amount < 0):
 		payment_type = "Receive"
+	elif dt == "Project Invoice":
+		payment_type = "Receive" if doc.party_type == "Customer" else "Pay"
 	else:
 		payment_type = "Pay"
 	return payment_type

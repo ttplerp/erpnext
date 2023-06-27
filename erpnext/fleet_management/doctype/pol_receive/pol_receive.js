@@ -3,6 +3,7 @@
 
 frappe.ui.form.on('POL Receive', {
 	refresh: function(frm) {
+		refresh_html(frm);
 		if (frm.doc.docstatus === 1 && frm.doc.out_sourced == 1) {
 			frm.add_custom_button(
 				__("Ledger"),
@@ -18,6 +19,16 @@ frappe.ui.form.on('POL Receive', {
 				},
 				__("View")
 			  );
+		}
+		if(!frm.doc.__islocal){
+			// if(frappe.model.can_read("Project")) {
+				if(frm.doc.journal_entry){
+					frm.add_custom_button(__('Journal Entry'), function() {
+							frappe.route_options = {"name": frm.doc.journal_entry};
+							frappe.set_route("List", "Journal Entry");
+					}, __("View"));
+				}
+			// }
 		}
 	},
 	qty: function(frm) {
@@ -100,4 +111,15 @@ var set_equipment_filter=function(frm){
 			};
 		});
 	}
+}
+
+var refresh_html = function(frm){
+	var journal_entry_status = "";
+	if(frm.doc.journal_entry_status){
+		journal_entry_status = '<div style="font-style: italic; font-size: 0.8em; ">* '+frm.doc.journal_entry_status+'</div>';
+	}
+	
+	if(frm.doc.journal_entry){
+		$(cur_frm.fields_dict.journal_entry_html.wrapper).html('<label class="control-label" style="padding-right: 0px;">Journal Entry</label><br><b>'+'<a href="/desk#Form/Journal Entry/'+frm.doc.journal_entry+'">'+frm.doc.journal_entry+"</a> "+"</b>"+journal_entry_status);
+	}	
 }

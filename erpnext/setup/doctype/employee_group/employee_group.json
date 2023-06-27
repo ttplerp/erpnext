@@ -68,15 +68,13 @@
    "fieldname": "employee_pf",
    "fieldtype": "Percent",
    "in_list_view": 1,
-   "label": "Employee PF Contribution ( % )",
-   "reqd": 1
+   "label": "Employee PF Contribution ( % )"
   },
   {
    "fieldname": "employer_pf",
    "fieldtype": "Percent",
    "in_list_view": 1,
-   "label": "Employer PF Contribution ( % )",
-   "reqd": 1
+   "label": "Employer PF Contribution ( % )"
   },
   {
    "fieldname": "column_break_9",
@@ -97,8 +95,7 @@
    "fieldname": "retirement_age",
    "fieldtype": "Int",
    "in_list_view": 1,
-   "label": "Retirement Age",
-   "reqd": 1
+   "label": "Retirement Age"
   },
   {
    "depends_on": "eval:doc.salary_advance_type && doc.salary_advance_type != \"Flat Amount\"",
@@ -217,7 +214,7 @@
   }
  ],
  "links": [],
- "modified": "2023-04-17 12:13:08.839020",
+ "modified": "2023-06-07 11:44:46.668080",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee Group",
