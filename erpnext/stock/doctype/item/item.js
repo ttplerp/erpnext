@@ -164,7 +164,6 @@ frappe.ui.form.on("Item", {
 		if (frm.doc.item_group == "Service"){
 			frm.set_value("is_stock_item", 0);
 			frm.set_value('is_fixed_asset',0)
-			frm.trigger('is_service_item')
 		}
 		if (frm.doc.item_group == "Consumable"){
 			frm.set_value("is_stock_item", 1);
@@ -215,13 +214,6 @@ frappe.ui.form.on("Item", {
 		});
 
 		frm.trigger('auto_create_assets');
-	},
-	is_service_item: function(frm) {
-		// set serial no to false & toggles its visibility
-		console.log("here")
-		frm.set_value('has_serial_no', 0);
-		frm.set_value('has_batch_no', 0);
-		frm.toggle_enable(['has_serial_no', 'serial_no_series','is_stock_item','is_fixed_asset'], false);
 	},
 	set_asset_naming_series: function(frm, asset_naming_series) {
 		if ((frm.doc.__onload && frm.doc.__onload.asset_naming_series) || asset_naming_series) {
