@@ -108,21 +108,25 @@ class HireChargeInvoice(AccountsController):
 			self.status = "Draft"
 			return
 
-		outstanding_amount = flt(self.outstanding_amount, 2)
-		if not status:
-			if self.docstatus == 2:
-				status = "Cancelled"
-			elif self.docstatus == 1:
-				if outstanding_amount > 0 and flt(self.payable_amount) > outstanding_amount:
-					self.status = "Partly Paid"
-				elif outstanding_amount > 0 :
-					self.status = "Unpaid"
-				elif outstanding_amount <= 0:
-					self.status = "Paid"
+		if cint(self.is_internal_customer) == 0:
+			outstanding_amount = flt(self.outstanding_amount, 2)
+			if not status:
+				if self.docstatus == 2:
+					status = "Cancelled"
+				elif self.docstatus == 1:
+					if outstanding_amount > 0 and flt(self.payable_amount) > outstanding_amount:
+						self.status = "Partly Paid"
+					elif outstanding_amount > 0 :
+						self.status = "Unpaid"
+					elif outstanding_amount <= 0:
+						self.status = "Paid"
+					else:
+						self.status = "Submitted"
 				else:
-					self.status = "Submitted"
-			else:
-				self.status = "Draft"
+					self.status = "Draft"
+		else:
+			if self.docstatus == 1:
+				self.status = "Submitted"
 
 		if update:
 			self.db_set("status", self.status, update_modified=update_modified)
@@ -251,8 +255,8 @@ class HireChargeInvoice(AccountsController):
 					gl_entries.append(
 						self.get_gl_dict({
 								"account": expense_account,
-								"credit": flt(item.amount,2),
-								"credit_in_account_currency": flt(item.amount,2),
+								"debit": flt(item.amount,2),
+								"debit_in_account_currency": flt(item.amount,2),
 								"against_voucher": self.name,
 								"against_voucher_type": self.doctype,
 								"party_type": party_type,
@@ -320,19 +324,35 @@ class HireChargeInvoice(AccountsController):
 	
 	def make_customer_gl_entry(self, gl_entries):
 		if flt(self.payable_amount) > 0 and self.party_type == "Customer":
-			gl_entries.append(
-				self.get_gl_dict({
-						"account": self.credit_account,
-						"party_type": self.party_type,
-						"party": self.party,
-						"debit": flt(self.payable_amount,2),
-						"debit_in_account_currency": flt(self.payable_amount,2),
-						"against_voucher": self.name,
-						"against_voucher_type": self.doctype,
-						"cost_center": self.cost_center,
-						"voucher_type":self.doctype,
-						"voucher_no":self.name
-					}, self.currency))
+			if cint(self.is_internal_customer) == 0:
+				gl_entries.append(
+					self.get_gl_dict({
+							"account": self.credit_account,
+							"party_type": self.party_type,
+							"party": self.party,
+							"debit": flt(self.payable_amount,2),
+							"debit_in_account_currency": flt(self.payable_amount,2),
+							"against_voucher": self.name,
+							"against_voucher_type": self.doctype,
+							"cost_center": self.cost_center,
+							"voucher_type":self.doctype,
+							"voucher_no":self.name
+						}, self.currency))
+			else:
+				gl_entries.append(
+					self.get_gl_dict({
+							"account": self.credit_account,
+							"party_type": self.party_type,
+							"party": self.party,
+							"credit": flt(self.payable_amount,2),
+							"credit_in_account_currency": flt(self.payable_amount,2),
+							"against_voucher": self.name,
+							"against_voucher_type": self.doctype,
+							"cost_center": self.cost_center,
+							"voucher_type":self.doctype,
+							"voucher_no":self.name
+						}, self.currency))
+
 
 	# fetch logbook details
 	@frappe.whitelist()
@@ -360,8 +380,8 @@ class HireChargeInvoice(AccountsController):
 						& (l.party_type == self.party_type)
 						& (l.party == self.party)
 						& (l.cost_center == self.cost_center)
-						& (l.posting_date >= self.from_date)
-						& (l.posting_date <= self.to_date)
+						& (l.from_date >= self.from_date)
+						& (l.to_date <= self.to_date)
 						& (l.paid == 0)
 						& ((l.name).
 								notin(qb.from_(eme).inner_join(emei).on(eme.name==emei.parent).select(emei.logbook)

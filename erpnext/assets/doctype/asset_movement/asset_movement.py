@@ -150,6 +150,7 @@ class AssetMovement(Document):
 					SELECT name
 					FROM `tabAsset`
 					WHERE custodian = %s AND docstatus = 1
+					AND status NOT IN ('Scrapped', 'Sold')
 					""", self.from_employee, as_dict=1)
 
 				if asset_list:
@@ -168,9 +169,10 @@ class AssetMovement(Document):
 				asset_list = frappe.db.sql("""
 					SELECT name
 					FROM `tabAsset`
-					WHERE custodian IS NULL
+					WHERE (custodian = '' OR custodian IS NULL)
 					AND cost_center = %s
 					AND docstatus = 1
+					AND status NOT IN ('Scrapped', 'Sold')
 					""", self.from_cost_center, as_dict=1)
 
 				if asset_list:

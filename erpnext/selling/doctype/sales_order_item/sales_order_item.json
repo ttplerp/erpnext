@@ -90,6 +90,9 @@
   "picked_qty",
   "shopping_cart_section",
   "additional_notes",
+  "sb_mr_reference",
+  "material_request",
+  "material_request_item",
   "section_break_63",
   "page_break",
   "item_tax_rate",
@@ -830,12 +833,36 @@
    "hidden": 1,
    "label": "Item Type",
    "options": "Item Type"
+  },
+  {
+   "fieldname": "sb_mr_reference",
+   "fieldtype": "Section Break",
+   "label": "MR Reference"
+  },
+  {
+   "fieldname": "material_request",
+   "fieldtype": "Link",
+   "label": "Material Request",
+   "no_copy": 1,
+   "options": "Material Request",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "material_request_item",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Material Request Item",
+   "no_copy": 1,
+   "options": "Material Request Item",
+   "print_hide": 1,
+   "read_only": 1
   }
  ],
  "idx": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-11-29 14:25:38.423050",
+ "modified": "2023-06-27 13:09:08.516989",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Sales Order Item",

@@ -133,7 +133,6 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 
 	if filter_existing:
 		existing_cond = _get_existing_cond()
-	
 	# Purchase Invoice
 	if not party_type or party_type == "Supplier":
 		pi_entries = frappe.db.sql("""select t.posting_date, 'Purchase Invoice' as invoice_type, t.name as invoice_no,  
@@ -188,7 +187,7 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 	
 	if party_type:
 		party_cond = "and t1.party_type = '{}'".format(party_type)
-
+	# frappe.throw(str(existing_cond))
 	je_entries = frappe.db.sql("""select t.posting_date, t.name as invoice_no, 'Journal Entry' as invoice_type,
 		t1.party_type, t1.party, 
 		(case when t1.party_type = 'Customer' then c.tax_id 
@@ -211,14 +210,13 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 			left join `tabSupplier` s on t1.party_type = 'Supplier' and s.name = t1.party
 			left join `tabTDS Receipt Entry` tre on tre.invoice_no = t.name 
 		where t.posting_date between '{from_date}' and '{to_date}'
-		and t1.credit_in_account_currency != 0
 		{accounts_cond}
 		and t.docstatus = 1 
 		{existing_cond}
 		{party_cond}
 		{cost_center_filter_je}""".format(accounts_cond = accounts_cond, cost_center_filter_je = cost_center_filter_je, existing_cond = existing_cond,\
 			party_cond = party_cond, from_date=from_date, to_date=to_date), as_dict=True)
-
+	
 	entries = pi_entries + pe_entries + je_entries 
 	entries = sorted(entries, key=lambda d: (d['posting_date'], d['invoice_no']))
 	return entries

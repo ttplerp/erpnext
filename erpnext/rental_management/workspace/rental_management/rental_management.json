@@ -149,74 +149,6 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Real Estate Management Services",
-   "link_count": 6,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "BSR Services List",
-   "link_count": 0,
-   "link_to": "BSR Service",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Rate Analysis",
-   "link_count": 0,
-   "link_to": "Rate Analysis",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Maintenance Application Form",
-   "link_count": 0,
-   "link_to": "Maintenance Application Form",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Technical Sanction",
-   "link_count": 0,
-   "link_to": "Technical Sanction",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Revised Technical Sanction",
-   "link_count": 0,
-   "link_to": "Revised Technical Sanction",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Technical Sanction Bill",
-   "link_count": 0,
-   "link_to": "Technical Sanction Bill",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Settings",
    "link_count": 4,
    "onboard": 0,
@@ -289,9 +221,87 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Real Estate Management Services",
+   "link_count": 7,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "BSR Services List",
+   "link_count": 0,
+   "link_to": "BSR Service",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Rate Analysis",
+   "link_count": 0,
+   "link_to": "Rate Analysis",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Maintenance Application Form",
+   "link_count": 0,
+   "link_to": "Maintenance Application Form",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Technical Sanction",
+   "link_count": 0,
+   "link_to": "Technical Sanction",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Revised Technical Sanction",
+   "link_count": 0,
+   "link_to": "Revised Technical Sanction",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Technical Sanction Bill",
+   "link_count": 0,
+   "link_to": "Technical Sanction Bill",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Technical Sanction Advance",
+   "link_count": 0,
+   "link_to": "Technical Sanction Advance",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-06-21 22:54:44.953713",
+ "modified": "2023-06-27 10:28:44.801217",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Management",

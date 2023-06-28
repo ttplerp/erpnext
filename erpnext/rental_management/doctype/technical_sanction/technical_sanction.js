@@ -33,8 +33,7 @@ frappe.ui.form.on('Technical Sanction', {
 		frm.set_query("supplier", function () {
 			return {
 				"filters": {
-					"vendor_group": "Contractor",
-					//"vendor_type" : "GEP"
+					"supplier_group": "Contractor"
 				}
 			}
 		});
@@ -94,6 +93,13 @@ frappe.ui.form.on('Technical Sanction', {
 					'region': cur_frm.doc.region
 				}
 			};
+		});
+		frm.set_query("party_type", function(frm) {
+			return {
+				filters:[
+					["name", "in", ["Supplier", "Customer", "Employee"]]
+				]
+			}
 		});
 	},
 	"get_items": function (frm) {

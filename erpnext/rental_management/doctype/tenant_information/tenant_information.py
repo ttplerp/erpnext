@@ -40,7 +40,7 @@ class TenantInformation(Document):
 		if not self.rental_charges:
 			self.calculate_rent_charges()
 		if not self.is_nhdcl_employee:
-			self.nhdcl_employee = ''
+			self.employee = ''
 
 	def on_submit(self):
 		if self.status == "Surrendered":

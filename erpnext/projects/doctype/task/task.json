@@ -418,7 +418,7 @@
  "is_tree": 1,
  "links": [],
  "max_attachments": 5,
- "modified": "2023-06-02 12:09:21.187283",
+ "modified": "2023-06-27 16:02:33.287943",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Task",
@@ -427,6 +427,8 @@
  "owner": "Administrator",
  "permissions": [
   {
+   "amend": 1,
+   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
@@ -440,6 +442,7 @@
   },
   {
    "amend": 1,
+   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
@@ -453,6 +456,8 @@
    "write": 1
   },
   {
+   "amend": 1,
+   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,

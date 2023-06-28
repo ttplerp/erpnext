@@ -117,7 +117,7 @@ class RentalPayment(AccountsController):
 			rent_received_amt = flt(a.rent_received) + flt(a.property_management_amount) + flt(a.tds_amount) + flt(a.discount_amount)
 			a.total_amount_received = flt(a.rent_received) + flt(a.property_management_amount) + flt(a.security_deposit_amount) + flt(a.penalty) + flt(a.excess_amount) + flt(a.pre_rent_amount)
 			if a.rent_write_off:
-				a.balance_rent = flt(a.bill_amount) - flt(a.rent_received) - flt(a.tds_amount) - flt(a.discount_amount) - flt(a.rent_write_off_amount)
+				a.balance_rent = round(a.bill_amount) - round(a.rent_received) - round(a.tds_amount) - round(a.discount_amount) - round(a.rent_write_off_amount)
 			else:
 				a.balance_rent = round(a.bill_amount) - round(a.rent_received) - round(a.tds_amount) - round(a.discount_amount) - round(a.property_management_amount)
 				# frappe.throw(str(a.balance_rent))
@@ -527,7 +527,7 @@ class RentalPayment(AccountsController):
 
 	def post_debit_account(self, gl_entries, cost_center, business_activity):
 		for a in self.get('items'):
-			party = frappe.db.get_value("Tenant Information", a.tenant, "employee_id")
+			party = frappe.db.get_value("Tenant Information", a.tenant, "employee")
 			party_type = "Employee"
 			if not self.debit_account:
 				frappe.throw(_("Debit Account is missing."))

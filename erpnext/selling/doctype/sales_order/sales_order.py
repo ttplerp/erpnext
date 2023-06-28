@@ -225,6 +225,7 @@ class SalesOrder(SellingController):
 		self.update_prevdoc_status("submit")
 
 		self.update_blanket_order()
+		self.on_sales_order_update_completed_qty_in_mr()
 
 		update_linked_doc(self.doctype, self.name, self.inter_company_order_reference)
 		if self.coupon_code:
@@ -248,6 +249,7 @@ class SalesOrder(SellingController):
 		frappe.db.set(self, "status", "Cancelled")
 
 		self.update_blanket_order()
+		self.on_sales_order_update_completed_qty_in_mr()
 
 		unlink_inter_company_doc(self.doctype, self.name, self.inter_company_order_reference)
 		if self.coupon_code:
@@ -265,6 +267,19 @@ class SalesOrder(SellingController):
 			project = frappe.get_doc("Project", self.project)
 			project.update_sales_amount()
 			project.db_update()
+
+	def on_sales_order_update_completed_qty_in_mr(self):
+		for d in self.get("items"):
+			if d.material_request and d.material_request_item:
+				mr_obj = frappe.get_doc("Material Request", d.material_request)
+
+				if mr_obj.status in ["Stopped", "Cancelled"]:
+					frappe.throw(
+						_("{0} {1} is cancelled or stopped").format(_("Material Request"), d.material_request),
+						frappe.InvalidStatusError,
+					)
+
+				mr_obj.on_so_update_completed_qty(d.material_request_item)
 
 	def check_credit_limit(self):
 		# if bypass credit limit check is set to true (1) at sales order level,

@@ -194,6 +194,11 @@ frappe.ui.form.on('Material Request', {
 					frm.add_custom_button(__("Work Order"),
 						() => frm.events.raise_work_orders(frm), __('Create'));
 				}
+				
+				if (frm.doc.material_request_type === "Sales") {
+					frm.add_custom_button(__("Sales Order"),
+						() => frm.events.make_sales_order(frm), __('Create'));
+				}
 
 				frm.page.set_inner_btn_group_as_primary(__('Create'));
 
@@ -389,6 +394,13 @@ frappe.ui.form.on('Material Request', {
 	make_stock_entry: function (frm) {
 		frappe.model.open_mapped_doc({
 			method: "erpnext.stock.doctype.material_request.material_request.make_stock_entry",
+			frm: frm
+		});
+	},
+
+	make_sales_order: function (frm) {
+		frappe.model.open_mapped_doc({
+			method: "erpnext.stock.doctype.material_request.material_request.make_sales_order",
 			frm: frm
 		});
 	},

@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "format:NHDCL-{YY}-{MM}-{#####}",
  "creation": "2023-05-15 15:37:19.213981",
@@ -17,6 +18,7 @@
   "employment_type",
   "aplication_status_section",
   "applicant_rank",
+  "flat_no",
   "column_break_8",
   "application_status",
   "tenant_id",
@@ -76,7 +78,7 @@
    "label": "Applicant Name"
   },
   {
-   "depends_on": "doc.employment_type==\"Civil Servant\"",
+   "depends_on": "eval:doc.employment_type==\"Civil Servant\"",
    "fieldname": "employee_id",
    "fieldtype": "Data",
    "label": "Employee ID"
@@ -352,7 +354,7 @@
    "fieldname": "application_status",
    "fieldtype": "Select",
    "label": "Application Status",
-   "options": "Pending\nAllocated\nRejected\nWithdrawn\nCancelled"
+   "options": "Pending\nAllotted\nRejected\nWithdrawn\nCancelled"
   },
   {
    "depends_on": "eval:doc.application_status==\"Allocated\"",
@@ -370,12 +372,18 @@
   {
    "fieldname": "column_break_8",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "flat_no",
+   "fieldtype": "Link",
+   "label": "Flat No",
+   "options": "Flat No"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-23 17:35:47.145793",
+ "modified": "2023-06-27 16:21:44.472042",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Housing Application",
@@ -392,6 +400,7 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],

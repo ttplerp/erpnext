@@ -32,8 +32,11 @@ class MaterialRequest(BuyingController):
 		elif self.material_request_type == 'Material Transfer':
 			series = 'MRT'
 			self.name = make_autoname(str(series) + ".YY.MM.####")
-		else:
+		elif self.material_request_type == 'Purchase':
 			series = 'MRP'
+			self.name = make_autoname(str(series) + ".YY.MM.####")
+		else:
+			series = 'MRS'
 			self.name = make_autoname(str(series) + ".YY.MM.####")
 	def get_feed(self):
 		return
@@ -110,7 +113,7 @@ class MaterialRequest(BuyingController):
 		validate_for_items(self)
 
 		self.set_title()
-		# self.validate_qty_against_so()
+		self.validate_qty_against_so()
 		# NOTE: Since Item BOM and FG quantities are combined, using current data, it cannot be validated
 		# Though the creation of Material Request from a Production Plan can be rethought to fix this
 
@@ -128,7 +131,7 @@ class MaterialRequest(BuyingController):
 	def validate_material_request_type(self):
 		"""Validate fields in accordance with selected type"""
 
-		if self.material_request_type != "Customer Provided":
+		if self.material_request_type not in ["Customer Provided", "Sales"]:
 			self.customer = None
 
 	def set_title(self):
@@ -219,7 +222,7 @@ class MaterialRequest(BuyingController):
 
 		for d in self.get("items"):
 			if d.name in mr_items:
-				if self.material_request_type in ("Material Issue", "Material Transfer", "Customer Provided"):
+				if self.material_request_type in ("Material Issue", "Material Transfer", "Customer Provided", "Material Return"):
 					d.ordered_qty = flt(
 						frappe.db.sql(
 							"""select sum(transfer_qty)
@@ -301,6 +304,45 @@ class MaterialRequest(BuyingController):
 			doc = frappe.get_doc("Production Plan", production_plan)
 			doc.set_status()
 			doc.db_set("status", doc.status)
+
+	def on_so_update_completed_qty(self, mr_items=None, update_modified=True):
+		if self.material_request_type != "Sales":
+			return
+
+		# if not mr_items:
+		# 	mr_items = [d.name for d in self.get("items")]
+
+		for d in self.get("items"):
+			if d.name in mr_items:
+				d.ordered_qty = flt(
+					frappe.db.sql(
+						"""select sum(qty)
+					from `tabSales Order Item` where material_request = %s
+					and material_request_item = %s and docstatus = 1""",
+						(self.name, d.name),
+					)[0][0]
+				)
+				
+				if d.ordered_qty and d.ordered_qty > d.stock_qty:
+					frappe.throw(
+						_(
+							"The total Sale quantity {0} cannot be greater than requested quantity {2} for Item {3} in Material Request {1}"
+						).format(d.ordered_qty, d.parent, d.qty, d.item_code)
+					)
+
+				frappe.db.set_value(d.doctype, d.name, "ordered_qty", d.ordered_qty)
+
+		self._update_percent_field(
+			{
+				"target_dt": "Material Request Item",
+				"target_parent_dt": self.doctype,
+				"target_parent_field": "per_ordered",
+				"target_ref_field": "stock_qty",
+				"target_field": "ordered_qty",
+				"name": self.name,
+			},
+			update_modified,
+		)
 
 def update_completed_and_requested_qty(stock_entry, method):
 	if stock_entry.doctype == "Stock Entry":
@@ -662,6 +704,48 @@ def make_stock_entry(source_name, target_doc=None):
 
 	return doclist
 
+@frappe.whitelist()
+def make_sales_order(source_name, target_doc=None):
+	def update_item(obj, target, source_parent):
+		qty = (
+			flt(flt(obj.stock_qty) - flt(obj.ordered_qty)) / target.conversion_factor
+			if flt(obj.stock_qty) > flt(obj.ordered_qty)
+			else 0
+		)
+		target.qty = qty
+		target.conversion_factor = obj.conversion_factor
+		target.delivery_date = source_parent.transaction_date
+
+	doclist = get_mapped_doc(
+		"Material Request",
+		source_name,
+		{
+			"Material Request": {
+				"doctype": "Sales Order",
+				"field_map": {
+					"material_request_type":"order_type",
+					"transaction_date":"delivery_date",
+				},
+				"validation": {
+					"docstatus": ["=", 1],
+					"material_request_type": ["=", "Sales"],
+				},
+			},
+			"Material Request Item": {
+				"doctype": "Sales Order Item",
+				"field_map": {
+					"name": "material_request_item",
+					"parent": "material_request",
+				},
+				"postprocess": update_item,
+				"condition": lambda doc: doc.ordered_qty < doc.stock_qty,
+			},
+		},
+		target_doc,
+	)
+
+	return doclist
+
 
 @frappe.whitelist()
 def raise_work_orders(material_request):
@@ -778,3 +862,4 @@ def get_permission_query_conditions(user):
                 )
             )
     )""".format(user = user, ceo_or_general_manager = ceo_or_general_manager)
+

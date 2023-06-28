@@ -7,7 +7,7 @@ def get_data():
 		"transactions": [
 			{
 				"label": _("Reference"),
-				"items": ["Request for Quotation", "Supplier Quotation", "Purchase Order"],
+				"items": ["Request for Quotation", "Supplier Quotation", "Purchase Order", "Sales Order"],
 			},
 			{"label": _("Stock"), "items": ["Stock Entry", "Purchase Receipt", "Pick List"]},
 			{"label": _("Manufacturing"), "items": ["Work Order"]},

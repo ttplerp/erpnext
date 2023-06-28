@@ -318,7 +318,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-18 11:42:21.129616",
+ "modified": "2023-06-27 10:14:52.708110",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Technical Sanction Advance",
@@ -347,6 +347,7 @@
    "report": 1,
    "role": "Maintenance Manager",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
@@ -358,6 +359,7 @@
    "report": 1,
    "role": "Maintenance User",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
@@ -369,6 +371,7 @@
    "report": 1,
    "role": "Accounts User",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
