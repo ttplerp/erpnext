@@ -17,7 +17,7 @@ frappe.ui.form.on('Technical Sanction Bill', {
 					voucher_no: frm.doc.name,
 					from_date: frm.doc.posting_date,
 					to_date: frm.doc.posting_date,
-					company: "National Housing Development Corporation Ltd.",
+					company: frm.doc.company,
 					group_by_voucher: false
 				};
 				frappe.set_route("query-report", "General Ledger");
