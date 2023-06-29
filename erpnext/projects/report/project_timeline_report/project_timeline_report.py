@@ -83,13 +83,12 @@ def get_data(query, filters):
 		a_days = date_diff(d.a_end_date, d.a_start_date)
 		if filters.get("branch"):
 			branch = frappe.db.sql("""
-					select branch 
+					select branch as branch 
 					from `tabProject` 
 					where name ='{0}' 
-				""".format(d.project))
-			frappe.throw(str(branch[0][0]))
-
-			if filters.get("branch") == str(branch):
+				""".format(d.project),as_dict=True)
+			in_branch = [d.branch for d in branch]
+			if filters.get("branch") in in_branch:
 				row = {
 					"project": d.project,
 					"task": d.task,
