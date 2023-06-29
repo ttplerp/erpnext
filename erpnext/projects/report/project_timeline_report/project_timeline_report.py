@@ -61,7 +61,7 @@ def get_columns(data):
 			"fieldname": "a_days",
 			"label": "Actual Days",
 			"fieldtype": "Data",
-			"width": 80
+			"width": 120
 		},
 	]
 
@@ -115,7 +115,9 @@ def get_data(query, filters):
 	return data
 def get_conditions(filters):
 	conditions = ""
-	if filters.get("from_date") and filters.get("to_date"):
-		conditions += """and t.exp_start_date between '{0}' and '{1}'""".format(filters.get("from_date"),filters.get("to_date"))
+	if filters.get("from_date"):
+		conditions += """and t.exp_start_date >='{}'""".format(filters.get("from_date"))
+	if filters.get("to_date"):
+		conditions += """and t.exp_end_date <= '{}'""".format(filters.get("to_date"))
 	return conditions, filters
 

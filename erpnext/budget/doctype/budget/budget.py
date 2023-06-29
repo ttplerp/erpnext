@@ -221,7 +221,6 @@ def validate_expense_against_budget(args):
 				doctype = frappe.unscrub(budget_against)
 				args.budget_against_field = budget_against
 				args.budget_against_doctype = doctype
-
 				if args.project:
 					condition = " and b.project = '{}'".format(args.project)
 				else:
@@ -235,7 +234,8 @@ def validate_expense_against_budget(args):
 					condition = " and b.cost_center='{}'".format(budget_cost_center)
 					
 				args.is_tree = False
-				args.cost_center = budget_cost_center
+				if not args.project:
+					args.cost_center = budget_cost_center
 				
 				budget_records = frappe.db.sql(
 					"""

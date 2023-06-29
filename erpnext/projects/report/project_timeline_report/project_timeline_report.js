@@ -12,13 +12,13 @@ frappe.query_reports["Project Timeline Report"] = {
 		},
 		{
 			"fieldname": "from_date",
-			"label": __("Expected Start Date From Date"),
+			"label": __("Expected Start Date"),
 			"fieldtype": "Date",
 			"default": frappe.defaults.get_user_default("year_start_date"),
 		},
 		{
 			"fieldname": "to_date",
-			"label": __("Expected Start Date To Date"),
+			"label": __("Expected End Date"),
 			"fieldtype": "Date",
 			"default": get_today(),
 		},
