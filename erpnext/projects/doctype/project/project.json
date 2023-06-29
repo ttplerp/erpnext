@@ -103,7 +103,8 @@
    "label": "Project Type",
    "oldfieldname": "project_type",
    "oldfieldtype": "Data",
-   "options": "Project Type"
+   "options": "Project Type",
+   "reqd": 1
   },
   {
    "fieldname": "is_active",
@@ -478,13 +479,15 @@
    "fieldname": "party_type",
    "fieldtype": "Link",
    "label": "Party Type",
-   "options": "DocType"
+   "options": "DocType",
+   "reqd": 1
   },
   {
    "fieldname": "party",
    "fieldtype": "Dynamic Link",
    "label": "Party",
-   "options": "party_type"
+   "options": "party_type",
+   "reqd": 1
   },
   {
    "fieldname": "boq_value",
@@ -534,7 +537,7 @@
  "index_web_pages_for_search": 1,
  "links": [],
  "max_attachments": 4,
- "modified": "2023-06-12 13:37:03.543137",
+ "modified": "2023-06-29 11:07:06.025782",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project",
