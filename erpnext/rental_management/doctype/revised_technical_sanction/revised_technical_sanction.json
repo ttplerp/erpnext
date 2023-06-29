@@ -311,7 +311,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-26 16:49:50.451667",
+ "modified": "2023-06-29 11:22:57.556795",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Revised Technical Sanction",
@@ -332,6 +332,8 @@
    "write": 1
   },
   {
+   "amend": 1,
+   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,

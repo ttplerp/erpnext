@@ -19,9 +19,16 @@ frappe.query_reports["General Tenant Summary"] = {
 		{
 			fieldname: "rental_official",
 			label: __("Rental Official"),
-			fieldtype: "Select",
+			fieldtype: "Link",
 			width: "80",
-			options: ["", "Bumpa Dema", "Dik Maya Ghalley", "Rinzin Dema", "Seema Uroan", "Dorji Wangmo", "Sangay Dorji", "Sangay Dubjur", "Kunzang Choden", "Dema"],
+			options: "Employee",
+			get_query: function() {
+				return {
+					filters: [
+						['Employee', 'user_id', 'in', ['dema@nhdcl.bt','bumpa.dema@nhdcl.bt','dm.ghalley@nhdcl.bt','rinzin.dema@nhdcl.bt','dorji.wangmo@nhdcl.bt']]
+					]
+				}
+			}
 		}
 	]
 };

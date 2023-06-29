@@ -22,20 +22,24 @@ def get_columns():
 		("Rental Income") + ":Currency:120",
 		("Rent Received") + ":Currency:120",
 		("Pre-rent") + ":Currency:120",
-		("Adjusted Amount") + ":Currency:120",
+		("Adjusted Amount") + ":Currency:150",
 		("Excess Rent") + ":Currency:120",
 		("TDS") + ":Currency:90",
-		("Rent Write-off") + ":Currency:100",
+		("Rent Write-off") + ":Currency:150",
 		("Penalty") + ":Currency:90",
 		("Discount") + ":Currency:90",
-		("Total Rent Received") + ":Currency:120",
-		("Outstanding Rent") + ":Currency:120",
-		("Pre-rent Balance") + ":Currency:120",
-		("Outstanding Received") + ":Currency:150"
+		("Total Rent Received") + ":Currency:180",
+		("Outstanding Rent") + ":Currency:170",
+		("Pre-rent Balance") + ":Currency:170",
+		("Outstanding Received") + ":Currency:180"
 	]
 
 def get_data(filters):
-	return frappe.db.sql("""
+	cond=''
+	if filters.get("rental_official"):
+		cond = " and rb.rental_focal='{}'".format(filters.get("rental_official"))
+
+	query = """
 		select 
 			tenant, 
 			tenant_name, 
@@ -113,6 +117,11 @@ def get_data(filters):
 				IFNULL(sum(rpd.property_management_amount), 0) rpd_property_management_amount
 			from `tabRental Bill` rb
 			inner join `tabRental Payment Details` rpd on rb.name=rpd.parent and rpd.payment_date between '{from_date}' and '{to_date}'
-			where rb.docstatus=1 and rb.gl_entry = 1 group by name order by rb.name
+			where rb.docstatus=1 and rb.gl_entry = 1 {cond} group by name order by rb.name
 		) as x group by tenant
-		""".format(from_date=filters.get("from_date"), to_date=filters.get("to_date")), as_dict=1)
+		""".format(from_date=filters.get("from_date"), to_date=filters.get("to_date"), cond=cond)
+	
+	# frappe.throw(str(query))
+	retult = frappe.db.sql(query)
+
+	return retult
