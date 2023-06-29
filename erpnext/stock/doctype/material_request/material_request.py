@@ -83,7 +83,6 @@ class MaterialRequest(BuyingController):
                         ).format(actual_so_qty - already_indented, item, so_no)
                     )
 
-    # validation functipon
     def validate(self):
         super(MaterialRequest, self).validate()
         validate_workflow_states(self)
