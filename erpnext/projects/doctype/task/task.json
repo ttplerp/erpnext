@@ -172,6 +172,7 @@
    "fetch_from": "type.weight",
    "fieldname": "task_weight",
    "fieldtype": "Float",
+   "in_list_view": 1,
    "label": "Weight"
   },
   {
@@ -420,7 +421,7 @@
  "is_tree": 1,
  "links": [],
  "max_attachments": 5,
- "modified": "2023-06-29 11:06:44.848962",
+ "modified": "2023-06-29 11:16:57.425743",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Task",
@@ -429,6 +430,7 @@
  "owner": "Administrator",
  "permissions": [
   {
+   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
