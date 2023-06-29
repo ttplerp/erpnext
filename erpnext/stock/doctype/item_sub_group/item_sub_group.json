@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "autoname": "field:item_sub_group",
  "creation": "2021-02-18 12:35:46.710821",
  "doctype": "DocType",
@@ -61,7 +62,7 @@
   }
  ],
  "links": [],
- "modified": "2023-05-26 13:40:38.947991",
+ "modified": "2023-06-29 10:53:50.440762",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item Sub Group",
