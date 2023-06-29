@@ -163,7 +163,7 @@ def update_user_pwd():
         if not frappe.db.exists("Employee", {"user_id":i.name}):
             non_employee.append({"User ID":i.name, "User Name":frappe.db.get_value("User",i.name,"full_name")})
         ds = frappe.get_doc("User", i.name)
-        ds.new_password = 'smcl@2022'
+        ds.new_password = 'vcsc@2023'
         ds.save(ignore_permissions=1)
         c += 1
     # df = pd.DataFrame(data = non_employee) # convert dict to dataframe

@@ -103,7 +103,7 @@ class AssetMovement(Document):
 		if self.transfer_type == 'Cost Center To Cost Center':
 			self.set_latest_cc_in_asset()
 	def on_cancel(self):
-		self.set_latest_cost_center_in_asset()
+		# self.set_latest_cost_center_in_asset()
 		self.set_latest_cc_in_asset(True)
 
 	def set_latest_cc_in_asset(self, cancel=None):
@@ -154,12 +154,8 @@ class AssetMovement(Document):
 			# In case of cancellation it corresponds to previous latest document's Cost Center, employee
 			latest_movement_entry = frappe.db.sql(
 				"""
-				SELECT 
-					asm_item.target_cost_center, 
-					asm_item.to_employee, 
-					asm_item.to_employee_name
-				FROM `tabAsset Movement Item` asm_item,
-					 `tabAsset Movement` asm
+				SELECT asm_item.target_cost_center, asm_item.to_employee, asm_item.to_employee_name
+				FROM `tabAsset Movement Item` asm_item, `tabAsset Movement` asm
 				WHERE
 					asm_item.parent=asm.name and
 					asm_item.asset=%(asset)s and
@@ -167,7 +163,10 @@ class AssetMovement(Document):
 					asm.docstatus=1 and {0}
 				ORDER BY
 					asm.transaction_date desc limit 1
-				""".format(cond),args,
+				""".format(
+					cond
+				),
+				args,
 			)
 			if latest_movement_entry:
 				current_location = latest_movement_entry[0][0]

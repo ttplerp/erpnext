@@ -56,11 +56,16 @@ class Item(Document):
 		self.set_onload("asset_naming_series", get_asset_naming_series())
 
 	def autoname(self):
-		if frappe.db.exists("Item",{"item_group":self.item_group}):
-			prev_item = frappe.db.sql("select name from `tabItem` where item_group = '{}' order by name desc limit 1".format(self.item_group))
-			self.item_code = self.name = cstr(cint(prev_item[0][0]) + 1)
-		else:
-			self.item_code = self.name = make_autoname('ABC{}.#####'.format(frappe.db.get_value('Item Group',self.item_group,'item_code_base')))[3:]
+		# if frappe.db.exists("Item",{"item_group":self.item_group}):
+		# 	prev_item = frappe.db.sql("select name from `tabItem` where item_group = '{}' order by name desc limit 1".format(self.item_group))
+		# 	self.item_code = self.name = cstr(cint(prev_item[0][0]) + 1)
+		# else:
+		# 	self.item_code = self.name = make_autoname('ABC{}.#####'.format(frappe.db.get_value('Item Group',self.item_group,'item_code_base')))[3:]
+		abb = frappe.db.get_value('Item Group', self.item_group, 'item_group_abbreviation')
+		if not abb:
+			frappe.throw('Set Item Group Abbreviation for item group {}'.format("<a href='/app/Form/Item Group/{0}'><b>{0}</b></a>").format(self.item_group))
+		self.item_code = make_autoname(('{}.######'.format(abb)))
+
 
 	def after_insert(self):
 		"""set opening stock and item price"""

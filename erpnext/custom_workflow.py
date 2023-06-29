@@ -107,6 +107,8 @@ class CustomWorkflow:
 				)))
 		if self.doc.doctype == "Employee Advance":
 			self.reports_to		= frappe.db.get_value("Employee", frappe.db.get_value("Employee", self.doc.employee, "reports_to"), self.field_list)
+			self.ceo= frappe.db.get_value("Employee", frappe.db.get_value("Employee", {"designation": "CEO", "status": "Active"},"name"), self.field_list)
+			self.deputy_ceo			= frappe.db.get_value("Employee", frappe.db.get_value("Employee", {"designation": "Dy. CEO/Director", "status": "Active"},"name"), self.field_list)
 
 			# if self.doc.advance_type != "Imprest Advance":
 			# 	self.hr_approver	= frappe.db.get_value("Employee", frappe.db.get_single_value("HR Settings", "hr_approver"), self.field_list)
@@ -1108,6 +1110,16 @@ class CustomWorkflow:
 			if self.doc.owner != frappe.session.user:
 				frappe.throw("Only {} can Apply this document".format(self.doc.owner))
 			self.set_approver("Supervisor")
+		
+		if self.new_state.lower() in ("Waiting Director Approval".lower()):
+			if self.doc.advance_approver != frappe.session.user:
+				frappe.throw("Only {} can forward/approve this request".format(self.doc.advance_approver_name))
+			self.set_approver("Deputy CEO")
+
+		if self.new_state.lower() in ("Waiting CEO Approval".lower()):
+			if self.doc.advance_approver != frappe.session.user:
+				frappe.throw("Only {} can approve this request".format(self.doc.advance_approver_name))
+			self.set_approver("CEO")
 
 		elif self.new_state.lower() == "Approved".lower():
 			if self.doc.advance_approver != frappe.session.user:

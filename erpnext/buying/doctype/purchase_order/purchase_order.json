@@ -1206,7 +1206,8 @@
    "fieldname": "item_group",
    "fieldtype": "Link",
    "label": "Item Group",
-   "options": "Item Group"
+   "options": "Item Group",
+   "reqd": 1
   },
   {
    "fieldname": "deliver_to",
@@ -1234,7 +1235,7 @@
  "idx": 105,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-18 12:46:28.395117",
+ "modified": "2023-06-27 15:40:47.549213",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Purchase Order",
