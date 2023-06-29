@@ -125,6 +125,7 @@ class JournalEntry(AccountsController):
 		self.update_inter_company_jv()
 		self.update_invoice_discounting()
 		self.update_project_advance(cancel=self.docstatus == 2)
+		self.update_technical_sanction_advance(cancel=self.docstatus == 2)
 		
 	def on_cancel(self):
 		from erpnext.accounts.utils import unlink_ref_doc_from_payment_entries
@@ -141,6 +142,7 @@ class JournalEntry(AccountsController):
 		self.unlink_transporter_invoice()
 		check_clearance_date(self.doctype, self.name)
 		self.update_project_advance(cancel=self.docstatus == 2)
+		self.update_technical_sanction_advance(cancel=self.docstatus == 2)
 
 	def on_trash(self):
 		self.unlink_transporter_invoice()
@@ -1078,6 +1080,37 @@ class JournalEntry(AccountsController):
 		factor = 1
 		for key, value in project_advance.items():
 			doc = frappe.get_doc("Project Advance", key)
+			if cancel:
+				factor = -1
+				doc.journal_entry_status = "Cancelled on {0}".format(now_datetime().strftime('%Y-%m-%d %H:%M:%S'))
+			else:
+				doc.journal_entry = self.name
+				if doc.payment_type == "Pay":
+					doc.journal_entry_status = "Paid on {0}".format(now_datetime().strftime('%Y-%m-%d %H:%M:%S'))
+				else:
+					doc.journal_entry_status = "Received on {0}".format(now_datetime().strftime('%Y-%m-%d %H:%M:%S'))
+					
+			if doc.party_type == "Customer":
+				doc.balance_amount = flt(doc.balance_amount) + (value["credit"] * factor)
+				doc.received_amount = flt(doc.received_amount) + (value["credit"] * factor)
+			else:
+				doc.balance_amount = flt(doc.balance_amount) + (value["debit"] * factor)
+				doc.paid_amount = flt(doc.paid_amount) + (value["debit"] * factor)
+
+			doc.save(ignore_permissions=True)
+	def update_technical_sanction_advance(self, cancel=False):
+		ts_advance = frappe._dict()
+		for d in self.accounts:
+			if d.reference_type == "Technical Sanction Advance" and d.reference_name:
+				if ts_advance in [d.reference_name]:
+					ts_advance[d.reference_name]["credit"] += flt(d.credit)
+					ts_advance[d.reference_name]["debit"] += flt(d.debit)
+				else:
+					ts_advance[d.reference_name] = frappe._dict({"credit": flt(d.credit), "debit": flt(d.debit)})
+
+		factor = 1
+		for key, value in ts_advance.items():
+			doc = frappe.get_doc("Technical Sanction Advance", key)
 			if cancel:
 				factor = -1
 				doc.journal_entry_status = "Cancelled on {0}".format(now_datetime().strftime('%Y-%m-%d %H:%M:%S'))

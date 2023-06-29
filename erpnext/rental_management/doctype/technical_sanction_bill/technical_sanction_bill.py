@@ -36,6 +36,7 @@ class TechnicalSanctionBill(AccountsController):
 	def on_submit(self):
 		self.make_gl_entries()
 		self.update_linked_docs()
+		self.update_advance_balance()
 	
 	def make_gl_entries(self):
 		if self.total_amount:
@@ -167,15 +168,31 @@ class TechnicalSanctionBill(AccountsController):
 
 	def on_cancel(self):
 		check_tds_remittance(self.name)
-		if self.docstatus == 2:
-			self.cancel_linked_docs()
-			self.make_gl_entries()
+		self.cancel_linked_docs()
+		self.make_gl_entries()
+		self.update_advance_balance()
 	
 	def cancel_linked_docs(self): 
 		if self.technical_sanction: 
 			frappe.db.sql("update `tabTechnical Sanction` set bill = '' where name ='{ts}'".format(ts=self.technical_sanction))
 		if self.revised_technical_sanction:
 			frappe.db.sql("update `tabRevised Technical Sanction` set bill = '' where name ='{rts}'".format(rts=self.technical_sanction))
+
+	def update_advance_balance(self):
+		for adv in self.advance:
+			allocated_amount = 0.0
+			if flt(adv.allocated_amount) > 0:
+				balance_amount = frappe.db.get_value("Technical Sanction Advance", adv.reference_name, "balance_amount")
+
+				if flt(balance_amount) < flt(adv.allocated_amount) and self.docstatus < 2:
+					frappe.throw(_("Advance#{0} : Allocated amount Nu. {1}/- cannot be more than Advance Balance Nu. {2}/-").format(adv.reference_name, "{:,.2f}".format(flt(adv.allocated_amount)),"{:,.2f}".format(flt(balance_amount))))
+				else:
+					allocated_amount = -1*flt(adv.allocated_amount) if self.docstatus == 2 else flt(adv.allocated_amount)
+
+					adv_doc = frappe.get_doc("Technical Sanction Advance", adv.reference_name)
+					adv_doc.adjustment_amount = flt(adv_doc.adjustment_amount) + flt(allocated_amount)
+					adv_doc.balance_amount    = flt(adv_doc.balance_amount) - flt(allocated_amount)
+					adv_doc.save(ignore_permissions = True)
 
 	@frappe.whitelist()
 	def get_tds_details(self, tax_withholding_category):
