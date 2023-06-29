@@ -18,7 +18,7 @@ frappe.query_reports["General Tenant Summary"] = {
 		},
 		{
 			fieldname: "rental_official",
-			label: __("Rental Official"),
+			label: __("Rental Focal"),
 			fieldtype: "Link",
 			width: "80",
 			options: "Employee",
@@ -28,7 +28,22 @@ frappe.query_reports["General Tenant Summary"] = {
 						['Employee', 'user_id', 'in', ['dema@nhdcl.bt','bumpa.dema@nhdcl.bt','dm.ghalley@nhdcl.bt','rinzin.dema@nhdcl.bt','dorji.wangmo@nhdcl.bt']]
 					]
 				}
+			},
+			on_change: function(query_report) {
+				var emp = query_report.get_filter_value('rental_official');
+				if (!emp) {
+					return;
+				}
+				frappe.db.get_value("Employee", emp, "employee_name", function(value) {
+					frappe.query_report.set_filter_value('focal_name', value["employee_name"]);
+				});
 			}
+		},
+		{
+			"fieldname": "focal_name",
+			"label": __("Focal Name"),
+			"fieldtype": "Data",
+			"read_only": 1
 		}
 	]
 };
