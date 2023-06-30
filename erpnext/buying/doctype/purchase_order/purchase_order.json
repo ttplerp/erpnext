@@ -1181,7 +1181,8 @@
    "fieldname": "business_activity",
    "fieldtype": "Link",
    "label": "Business Activity",
-   "options": "Business Activity"
+   "options": "Business Activity",
+   "reqd": 1
   },
   {
    "collapsible": 1,
@@ -1243,7 +1244,7 @@
  "idx": 105,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-23 12:32:51.053076",
+ "modified": "2023-06-30 14:32:16.013004",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Purchase Order",
