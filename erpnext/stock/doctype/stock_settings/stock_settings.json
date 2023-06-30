@@ -57,7 +57,9 @@
   "stock_frozen_upto_days",
   "column_break_26",
   "role_allowed_to_create_edit_back_dated_transactions",
-  "stock_auth_role"
+  "stock_auth_role",
+  "stock_settings_tab",
+  "mr_approval"
  ],
  "fields": [
   {
@@ -351,15 +353,24 @@
    "fieldname": "mr_status_notification_template",
    "fieldtype": "Link",
    "label": "MR Status Notification Template",
-   "options": "Email Template",
-   "reqd": 0
+   "options": "Email Template"
   },
   {
    "fieldname": "mr_approval_notification_template",
    "fieldtype": "Link",
    "label": "MR Approvel Notification",
-   "options": "Email Template",
-   "reqd": 0
+   "options": "Email Template"
+  },
+  {
+   "fieldname": "stock_settings_tab",
+   "fieldtype": "Tab Break",
+   "label": "Stock Settings"
+  },
+  {
+   "fieldname": "mr_approval",
+   "fieldtype": "Link",
+   "label": "MR Approval",
+   "options": "Employee"
   }
  ],
  "icon": "icon-cog",
@@ -367,7 +378,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-04-17 12:13:04.215113",
+ "modified": "2023-06-30 12:08:43.225545",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Settings",

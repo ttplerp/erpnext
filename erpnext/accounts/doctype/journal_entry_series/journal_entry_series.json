@@ -1,7 +1,6 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:je_series",
  "creation": "2023-06-21 11:07:59.727111",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -18,8 +17,7 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "JE Series",
-   "reqd": 1,
-   "unique": 1
+   "reqd": 1
   },
   {
    "fieldname": "description",
@@ -41,11 +39,10 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-21 11:08:25.574105",
+ "modified": "2023-06-29 17:20:25.261652",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry Series",
- "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {

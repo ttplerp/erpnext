@@ -17,10 +17,11 @@ class AssetIssueDetails(Document):
             self.make_asset(i+1)
 
     def on_cancel(self):
-        if self.reference_code:
-            asset_status = frappe.db.get_value("Asset", self.reference_code, 'docstatus')
-            if asset_status < 2:
-                frappe.throw("You cannot cancel the document before cancelling asset with code {0}".format(self.reference_code))    
+        pass
+        # if self.reference_code:
+        #     asset_status = frappe.db.get_value("Asset", self.reference_code, 'docstatus')
+        #     if asset_status < 2:
+        #         frappe.throw("You cannot cancel the document before cancelling asset with code {0}".format(self.reference_code))    
     
     def check_qty_balance(self):
         total_qty = frappe.db.sql("""select sum(ifnull(qty,0)) total_qty 

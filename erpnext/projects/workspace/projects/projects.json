@@ -276,7 +276,7 @@
    "type": "Link"
   }
  ],
- "modified": "2023-06-21 19:48:06.869479",
+ "modified": "2023-06-30 10:27:16.932853",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Projects",
@@ -286,7 +286,7 @@
  "quick_lists": [],
  "restrict_to_domain": "",
  "roles": [],
- "sequence_id": 18.0,
+ "sequence_id": 22.0,
  "shortcuts": [
   {
    "color": "Blue",

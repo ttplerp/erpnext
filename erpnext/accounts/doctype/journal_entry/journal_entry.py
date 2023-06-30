@@ -1982,8 +1982,14 @@ def get_permission_query_conditions(user):
         user=user
     )
 
-
+@frappe.whitelist()
+def naming_series_query(entry_type):
+    return frappe.db.sql("""
+        SELECT je_series 
+        FROM `tabJournal Entry Series` where entry_type = {0}
+    """.format(entry_type))
 # ePayment Begins
+
 @frappe.whitelist()
 def make_bank_payment(source_name, target_doc=None):
     def set_missing_values(obj, target, source_parent):

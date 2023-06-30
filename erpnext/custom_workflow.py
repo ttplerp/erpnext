@@ -26,6 +26,7 @@ class CustomWorkflow:
 		self.field_map 		= get_field_map()
 		self.doc_approver	= self.field_map[self.doc.doctype]
 		self.field_list		= ["user_id","employee_name","designation","name"]
+
 		if self.doc.doctype != "Material Request" and self.doc.doctype != "Performance Evaluation" and self.doc.doctype not in ("Project Capitalization","Asset Issue Details", "Compile Budget","POL Expense","Vehicle Request", "Repair And Services", "Asset Movement", "Budget Reappropiation", "Employee Advance"):
 			self.employee		= frappe.db.get_value("Employee", self.doc.employee, self.field_list)
 			self.reports_to = frappe.db.get_value("Employee", {"name":frappe.db.get_value("Employee", self.doc.employee, "reports_to")}, self.field_list)
@@ -130,15 +131,20 @@ class CustomWorkflow:
 			# 		frappe.throw("Please Set Expense Approver for the Department <b>{}</b>".format(department))
 
 		if self.doc.doctype == "Material Request":
-			self.expense_approver = frappe.db.get_value("Employee", {"user_id":frappe.db.get_value("Employee", {"user_id":self.doc.owner}, "expense_approver")}, self.field_list)
+			self.expense_approver = frappe.db.get_value("Employee", {"user_id":frappe.db.get_value	("Employee", {"user_id":self.doc.owner}, "expense_approver")}, self.field_list)
+
 			self.employee = frappe.db.get_value("Employee", {"user_id":self.doc.owner}, self.field_list)
+
 			if self.doc.material_request_type == "Material Issue":
 				self.warehouse_manager = frappe.db.get_value("Employee",{'user_id':frappe.db.get_value("Warehouse",self.doc.set_warehouse,"email_id")},self.field_list)
 			elif self.doc.material_request_type == "Material Transfer":
 				self.warehouse_manager = frappe.db.get_value("Employee",{'user_id':frappe.db.get_value("Warehouse",self.doc.set_from_warehouse,"email_id")},self.field_list)
 			
 			self.reports_to	= frappe.db.get_value("Employee", frappe.db.get_value("Employee", {'user_id':self.doc.owner}, "reports_to"), self.field_list)
+
 			self.general_manager = frappe.db.get_value("Employee", frappe.db.get_value("Department",{"department_name":str(frappe.db.get_value("Employee",{"user_id":self.doc.owner},"division")).split(" - ")[0]},"approver"),self.field_list)
+
+			self.mr_approval = frappe.db.get_value("Employee", frappe.db.get_single_value("Stock Settings","mr_approval"), self.field_list)
 		
 		if self.doc.doctype == "Employee Benefits":
 			self.hrgm = frappe.db.get_value("Employee",frappe.db.get_single_value("HR Settings","hrgm"), self.field_list)	
@@ -226,6 +232,14 @@ class CustomWorkflow:
 			vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.pol_approver[0]
 			vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.pol_approver[1]
 			vars(self.doc)[self.doc_approver[2]] = officiating[2] if officiating else self.pol_approver[2]
+
+		elif approver_type == "MR Manager":
+			officiating = get_officiating_employee(self.mr_approval[3])
+			if officiating:
+				officiating = frappe.db.get_value("Employee", officiating[0].officiate, self.field_list)
+			vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.mr_approval[0]
+			vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.mr_approval[1]
+			vars(self.doc)[self.doc_approver[2]] = officiating[2] if officiating else self.mr_approval[2]
 
 		elif approver_type =="Asset Verifier":
 			officiating = get_officiating_employee(self.asset_verifier[3])
@@ -1222,7 +1236,7 @@ class CustomWorkflow:
 
 	def material_request(self):
 		''' Material Request Workflow
-			1. Employee -> MR Manager
+			1. Employee -> supervisor/ project manager -> MR Manager
 		'''
 		if self.new_state.lower() in ("Draft".lower()):
 			if self.doc.owner != frappe.session.user:
@@ -1234,8 +1248,12 @@ class CustomWorkflow:
 			self.set_approver("Supervisor")
 			
 		elif self.new_state.lower() in ("Waiting Approval".lower()):
-			self.set_approver("Warehouse Manager")
-
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only the {} can Approve this material request".format(self.doc.approver))
+			self.set_approver("MR Manager")
+		elif self.new_state.lower() == "Approved".lower():
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Approve the Materual Request".format(self.doc.approver_name))
 		# elif self.new_state.lower() in ("Waiting GM Approval".lower()):
 		# 	if self.doc.approver != frappe.session.user:
 		# 		frappe.throw("Only the {} can Approve this material request".format(self.doc.approver))

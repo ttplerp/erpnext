@@ -62,10 +62,10 @@
    "fetch_if_empty": 1,
    "fieldname": "fuelbook",
    "fieldtype": "Link",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Fuelbook",
-   "options": "Fuelbook",
-   "reqd": 1
+   "options": "Fuelbook"
   },
   {
    "fetch_from": "fuelbook.branch",
@@ -146,6 +146,7 @@
   {
    "fieldname": "amount",
    "fieldtype": "Currency",
+   "in_list_view": 1,
    "label": "Amount",
    "read_only": 1
   },
@@ -179,7 +180,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-04-17 12:12:36.332047",
+ "modified": "2023-06-30 11:46:01.698743",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Issue Items",

@@ -34,6 +34,7 @@ class Task(NestedSet):
 
 	def validate(self):
 		self.validate_dates()
+		self.validate_task_weigth()
 		self.validate_parent_expected_end_date()
 		self.validate_parent_project_dates()
 		self.validate_progress()
@@ -64,6 +65,23 @@ class Task(NestedSet):
 					frappe.bold("Actual Start Date"), frappe.bold("Actual End Date")
 				)
 			)
+	def validate_task_weigth(self):
+		exists = frappe.db.sql("""select name from `tabTask` where docstatus !=2 and project=%s""", self.project, as_dict=True)
+		if exists:
+			sum_weight = frappe.db.sql("""
+			select sum(task_weight) as total_weight from `tabTask` where project=%s and docstatus != 2
+			""", self.project)[0][0]
+
+			if self.is_new():
+				total_weight = sum_weight + self.task_weight
+			else:
+				t_weight = frappe.db.sql("""
+				select task_weight from `tabTask` where project='{}' and docstatus != 2 and name='{}'
+				""".format(self.project, self.name))[0][0]
+				total_weight = sum_weight - t_weight + self.task_weight
+
+			if total_weight > 100:
+				frappe.throw('Your total task weigth is {}. Total Task weight for project {} should not be exceeding 100'.format(total_weight, self.project))
 
 	def validate_parent_expected_end_date(self):
 		if self.parent_task:
@@ -143,12 +161,17 @@ class Task(NestedSet):
 		frappe.utils.nestedset.update_nsm(self)
 
 	def on_update(self):
+		self.validate_percent_progress()
 		self.update_nsm_model()
 		self.check_recursion()
 		self.reschedule_dependent_tasks()
 		self.update_project()
 		self.unassign_todo()
 		self.populate_depends_on()
+
+	def validate_percent_progress(self):
+		if self.status == "Completed" and self.progress != 100:
+			frappe.throw('Here')
 
 	def unassign_todo(self):
 		if self.status == "Completed":
