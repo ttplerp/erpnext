@@ -110,13 +110,17 @@
   "gis_policy_number",
   "personal_details",
   "marital_status",
-  "family_background",
-  "column_break6",
-  "blood_group",
+  "column_break_107",
   "health_details",
+  "cbreak_33",
+  "ef_details",
+  "section_break_105",
+  "blood_group",
+  "column_break_103",
   "passport_details_section",
   "passport_number",
   "valid_upto",
+  "column_break6",
   "license_no",
   "column_break_73",
   "date_of_issue",
@@ -492,6 +496,7 @@
    "description": "Short biography for website and other publications.",
    "fieldname": "bio",
    "fieldtype": "Text Editor",
+   "hidden": 1,
    "label": "Bio / Cover Letter"
   },
   {
@@ -538,15 +543,10 @@
    "options": "\nA+\nA-\nB+\nB-\nAB+\nAB-\nO+\nO-"
   },
   {
-   "description": "Here you can maintain family details like name and occupation of parent, spouse and children",
-   "fieldname": "family_background",
-   "fieldtype": "Small Text",
-   "label": "Family Background"
-  },
-  {
    "description": "Here you can maintain height, weight, allergies, medical concerns etc",
    "fieldname": "health_details",
    "fieldtype": "Small Text",
+   "hidden": 1,
    "label": "Health Details"
   },
   {
@@ -1009,13 +1009,35 @@
    "fieldtype": "Link",
    "label": "Employee Grade",
    "options": "Employee Grade"
+  },
+  {
+   "fieldname": "column_break_103",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_105",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_107",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ef_details",
+   "fieldtype": "Table",
+   "options": "Employee Family Details"
+  },
+  {
+   "fieldname": "cbreak_33",
+   "fieldtype": "Section Break",
+   "label": "Family Member Details"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-05-04 12:17:42.101843",
+ "modified": "2023-06-30 11:32:15.773606",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
