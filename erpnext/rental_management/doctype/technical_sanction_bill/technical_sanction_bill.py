@@ -5,7 +5,7 @@ import frappe
 from frappe.model.document import Document
 from frappe import _
 from frappe.model.mapper import get_mapped_doc
-from frappe.utils import cstr, flt, fmt_money, formatdate, nowdate, cint
+from frappe.utils import cstr, flt, fmt_money, formatdate, nowdate, cint, money_in_words
 from erpnext.controllers.accounts_controller import AccountsController
 from erpnext.accounts.doctype.business_activity.business_activity import get_default_ba
 from erpnext.custom_utils import check_tds_remittance
@@ -209,6 +209,7 @@ class TechnicalSanctionBill(AccountsController):
 
 		payable_account = frappe.db.get_value("Company", self.company,"default_payable_account")
 		bank_account = frappe.db.get_value("Company", self.company,"default_bank_account")
+		cost_center = frappe.db.get_value("Branch", self.branch, "cost_center")
 
 		if not bank_account:
 			frappe.throw("Setup Default Bank Account in Company Setting")
@@ -221,11 +222,11 @@ class TechnicalSanctionBill(AccountsController):
 		# 	tds_rate = tds_dtls['rate']
 		# 	tds_account = tds_dtls['account']
 
-		r = []
-		if self.remarks:
-			r.append(_("Note: {0}").format(self.remarks))
+		# r = []
+		# if self.remarks:
+		# 	r.append(_("Note: {0}").format(self.remarks))
 
-		remarks = ("").join(r) 
+		# remarks = ("").join(r) 
 
 		je = frappe.new_doc("Journal Entry")
 
@@ -234,7 +235,8 @@ class TechnicalSanctionBill(AccountsController):
 			"voucher_type": "Bank Entry",
 			"naming_series": "Bank Payment Voucher",
 			"title": "Technical Sanction Bill - " + self.name,
-			"user_remark": remarks if remarks else "Note: " + "Technical Sanction Bill - " + self.name,
+			# "user_remark": remarks if remarks else "Note: " + "Technical Sanction Bill - " + self.name,
+			"user_remark": "Note: " + "Technical Sanction Bill - " + self.name,
 			"posting_date": self.posting_date,
 			"company": self.company,
 			"total_amount_in_words": money_in_words(self.total_amount),
@@ -246,7 +248,7 @@ class TechnicalSanctionBill(AccountsController):
 		je.append("accounts",{
 			"account": payable_account,
 			"debit_in_account_currency": self.total_amount,
-			"cost_center": self.cost_center,
+			"cost_center": cost_center,
 			"party_check": 0,
 			"party_type": "Supplier",
 			"party": self.party,
@@ -264,7 +266,7 @@ class TechnicalSanctionBill(AccountsController):
 		je.append("accounts",{
 			"account": bank_account,
 			"credit_in_account_currency": self.total_amount,
-			"cost_center": self.cost_center,
+			"cost_center": cost_center,
 			"business_activity": ba,
 		})
 
