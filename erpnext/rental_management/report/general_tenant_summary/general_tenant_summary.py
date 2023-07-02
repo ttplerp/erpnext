@@ -124,26 +124,6 @@ def get_columns():
 		]
 	
 	return columns
-	# return [
-	# 	("Tenant Code") + ":Data:120",
-	# 	("Tenant") + ":Data:150",
-	# 	("Rental Bill") + ":Data:260",
-	# 	("Receivable Amount") + ":Currency:120",
-	# 	("Rental Income") + ":Currency:120",
-	# 	("Rent Received") + ":Currency:120",
-	# 	("Property Mgt. Amount") + ":Currency:150",
-	# 	("Pre-rent") + ":Currency:120",
-	# 	("Adjusted Amount") + ":Currency:150",
-	# 	("Excess Rent") + ":Currency:120",
-	# 	("TDS") + ":Currency:90",
-	# 	("Rent Write-off") + ":Currency:150",
-	# 	("Penalty") + ":Currency:90",
-	# 	("Discount") + ":Currency:90",
-	# 	("Total Rent Received") + ":Currency:180",
-	# 	("Outstanding Rent") + ":Currency:170",
-	# 	("Pre-rent Balance") + ":Currency:170",
-	# 	("Outstanding Received") + ":Currency:180"
-	# ]
 
 def get_data(filters):
 	# cond=''
@@ -263,11 +243,17 @@ def get_data(filters):
 			"outstanding_received": 0.0,
 		})
 
+		""" opening values """
+
 		total_receivalble_amt = total_prop_mgt_amt = 0
 		for d in value:
-			if d.rb_posting_date < to_date:
+			# if d.rb_posting_date < to_date:
+			# 	filter_data['rental_bill'] += str(d.name) + ", "
+			if d.rb_posting_date < from_date:
+				filter_data['total_pre_rent_amount'] 	= flt(filter_data['total_pre_rent_amount'] + (d.rpd_pre_rent_amount - d.rb_adjusted_amount), 2)
+			elif d.rb_posting_date >= from_date and d.rb_posting_date <= to_date:
+				# if d.rb_posting_date >= from_date and d.rb_posting_date <= to_date:
 				filter_data['rental_bill'] += str(d.name) + ", "
-			if d.rb_posting_date >= from_date and d.rb_posting_date <= to_date:
 				filter_data['total_rent_amount'] 		= flt(filter_data['total_rent_amount'] + d.rb_rent_amount, 2)
 				filter_data['total_received_amount'] 	= flt(filter_data['total_received_amount'] + d.rpd_received_amount, 2)
 				filter_data['total_pre_rent_amount'] 	= flt(filter_data['total_pre_rent_amount'] + d.rpd_pre_rent_amount, 2)
@@ -279,10 +265,11 @@ def get_data(filters):
 				filter_data['total_discount_amount'] 	= flt(filter_data['total_discount_amount'] + d.rpd_discount_amount, 2)
 				filter_data['total_receivable_amount'] 	= flt(filter_data['total_receivable_amount'] + d.rb_receivable_amount, 2)
 				filter_data['total_prop_mgt_amount'] 	= flt(filter_data['total_prop_mgt_amount'] + d.rpd_property_management_amount, 2)
-				# total_receivalble_amt = flt(total_receivalble_amt + d.rb_receivable_amount, 2)
-				# total_prop_mgt_amt = flt(total_prop_mgt_amt + d.rpd_property_management_amount, 2)
-			if d.rb_posting_date < from_date:
-				filter_data['outstanding_received'] = flt(filter_data['outstanding_received'] + d.rpd_received_amount, 2)
+				
+			if d.rb_posting_date < from_date and d.rpd_payment_date: 
+				if d.rpd_payment_date >= from_date and d.rpd_payment_date <= to_date:
+					filter_data['rental_bill'] += str(d.name) + ", "
+					filter_data['outstanding_received'] = flt(filter_data['outstanding_received'] + d.rpd_received_amount, 2)
 
 		filter_data['total_rent_received'] = flt(filter_data['total_received_amount'] + filter_data['total_prop_mgt_amount'] + filter_data['total_pre_rent_amount'] + filter_data['total_excess_amount'] + filter_data['total_penalty_amount'] - filter_data['total_discount_amount'], 2)
 		filter_data['outstanding_amount'] = flt(filter_data['total_receivable_amount'] - filter_data['total_received_amount'] - filter_data['total_prop_mgt_amount'] - filter_data['total_adjusted_amount'] - filter_data['total_rent_write_off_amount'] - filter_data['total_tds_amount'], 2)
@@ -315,7 +302,7 @@ def get_all_bills(filters):
 				IFNULL(sum(rpd.discount_amount), 0) rpd_discount_amount,
 				IFNULL(sum(rpd.property_management_amount), 0) rpd_property_management_amount
 			from `tabRental Bill` rb
-			left join `tabRental Payment Details` rpd on rb.name=rpd.parent and rpd.payment_date between '{from_date}' and '{to_date}'
+			left join `tabRental Payment Details` rpd on rb.name=rpd.parent and rpd.payment_date <= '{to_date}'
 			where rb.docstatus=1 and rb.gl_entry = 1 {cond} group by name order by rb.name
 		""".format(from_date=filters.get("from_date"), to_date=filters.get("to_date"), cond=cond)
 	

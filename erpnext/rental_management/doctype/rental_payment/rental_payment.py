@@ -250,6 +250,7 @@ class RentalPayment(AccountsController):
 
 		# Set a reference to the claim journal entry
 		self.db_set("journal_entry", je.name)
+		self.db_set("journal_entry_status", "Forwarded to accounts for processing payment on {0}".format(now_datetime().strftime('%Y-%m-%d %H:%M:%S')))
 		frappe.msgprint("Journal Entry created. {}".format(frappe.get_desk_link("Journal Entry", je.name)))
 
 	def update_rental_bill(self):					

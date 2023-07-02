@@ -49,6 +49,8 @@ class TenantInformation(Document):
 		self.create_customer()
 		if not self.customer_code:
 			frappe.throw("An issue occured with auto Customer creation, alert you System developer.")
+		
+		self.update_housing_application()
 
 	def set_missing_values(self):
 		if self.building_category != "Pilot Housing" and not self.initial_rental_amount:
@@ -63,6 +65,14 @@ class TenantInformation(Document):
 				self.original_monthly_instalment = monthly_installment_amount
 		if not self.status:
 			self.status = 'Allocated'
+		
+		if not self.no_of_year_for_increment:
+			self.no_of_year_for_increment=frappe.db.get_single_value("Rental Setting","no_of_year_for_increment")
+		if not self.rental_term_year:
+			self.rental_term_year=frappe.db.get_single_value("Rental Setting","rental_term_year")
+		if not self.percent_of_increment:
+			self.percent_of_increment=frappe.db.get_single_value("Rental Setting","percent_of_increment")
+			
 		""" Property Management Detail, This shift to locations """
 		# if self.block_no and not self.get('rental_property_management_item'):
 		# 	self.set('rental_property_management_item', [])
@@ -199,4 +209,10 @@ class TenantInformation(Document):
 						})
 
 				# rent_obj.save()
+	def update_housing_application(self):
+		if self.housing_application:
+			doc = frappe.get_doc("Housing Application", self.housing_application)
+			if not doc.tenant_id:
+				doc.tenant_id = self.name
+				doc.save(ignore_permissions=True)
 		

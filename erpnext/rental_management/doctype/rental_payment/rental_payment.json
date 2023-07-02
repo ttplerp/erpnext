@@ -66,6 +66,7 @@
   "sb_more_information",
   "is_opening",
   "journal_entry",
+  "journal_entry_status",
   "cb_mi_1",
   "amended_from"
  ],
@@ -405,12 +406,19 @@
    "fieldname": "property_management_amount",
    "fieldtype": "Currency",
    "label": "Property Management Amount"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "journal_entry_status",
+   "fieldtype": "Data",
+   "label": "Journal Entry Status",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-24 11:40:23.992818",
+ "modified": "2023-07-02 21:34:29.402479",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Payment",

@@ -16,6 +16,7 @@
   "employment_type",
   "ministry_and_agency",
   "tenant_department",
+  "agency",
   "tenant_department_name",
   "designation",
   "cb_2",
@@ -142,11 +143,12 @@
   },
   {
    "allow_on_submit": 1,
+   "depends_on": "eval:doc.employment_type==\"Civil Servant\"",
    "fieldname": "ministry_and_agency",
    "fieldtype": "Link",
    "label": "Ministry and Agency",
-   "options": "Ministry and Agency",
-   "reqd": 1
+   "mandatory_depends_on": "eval:doc.employment_type==\"Civil Servant\"",
+   "options": "Ministry and Agency"
   },
   {
    "fieldname": "sb_rental_details",
@@ -235,14 +237,16 @@
   },
   {
    "allow_on_submit": 1,
+   "depends_on": "eval:doc.employment_type==\"Civil Servant\"",
    "fieldname": "tenant_department",
    "fieldtype": "Link",
    "label": "Tenant Department ID",
-   "options": "Tenant Department",
-   "reqd": 1
+   "mandatory_depends_on": "eval:doc.employment_type==\"Civil Servant\"",
+   "options": "Tenant Department"
   },
   {
    "allow_on_submit": 1,
+   "depends_on": "eval:doc.employment_type==\"Civil Servant\"",
    "fetch_from": "tenant_department.department",
    "fieldname": "tenant_department_name",
    "fieldtype": "Data",
@@ -268,7 +272,7 @@
   },
   {
    "fieldname": "phone_no",
-   "fieldtype": "Data",
+   "fieldtype": "Phone",
    "label": "Phone No"
   },
   {
@@ -493,12 +497,18 @@
    "fieldtype": "Link",
    "label": "Employee ID",
    "options": "Employee"
+  },
+  {
+   "depends_on": "eval:doc.employment_type!=\"Civil Servant\"",
+   "fieldname": "agency",
+   "fieldtype": "Data",
+   "label": "Name of Agency"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-27 16:26:22.858160",
+ "modified": "2023-06-30 16:06:06.929155",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Tenant Information",

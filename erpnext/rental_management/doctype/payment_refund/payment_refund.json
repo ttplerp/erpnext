@@ -28,7 +28,8 @@
   "amended_from",
   "cb_r_1",
   "company",
-  "journal_entry"
+  "journal_entry",
+  "journal_entry_status"
  ],
  "fields": [
   {
@@ -167,12 +168,19 @@
    "fieldtype": "Data",
    "label": "Journal Entry",
    "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "journal_entry_status",
+   "fieldtype": "Data",
+   "label": "Journal Entry Status",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-21 22:49:20.599819",
+ "modified": "2023-07-02 21:33:58.415587",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Payment Refund",

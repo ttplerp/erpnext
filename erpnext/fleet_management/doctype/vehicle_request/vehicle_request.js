@@ -48,6 +48,14 @@ frappe.ui.form.on('Vehicle Request', {
 				}
 			}
 		})
+
+        frm.set_query('driver', () => {
+			return {
+				filters: {
+					designation: ["like", "driver"],
+				}
+			}
+		})
 	}
 });
 

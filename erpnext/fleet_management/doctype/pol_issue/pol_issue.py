@@ -93,6 +93,7 @@ class POLIssue(StockController):
 			con1.is_opening = 0
 			con1.cost_center = self.cost_center
 			con1.submit()
+		
 		for item in self.items:
 			con = frappe.new_doc("POL Entry")
 			con.flags.ignore_permissions = 1	
@@ -107,8 +108,8 @@ class POLIssue(StockController):
 			con.is_opening = 0
 			con.uom = item.uom
 			con.cost_center = self.cost_center
-			con1.current_km = item.cur_km_reading
-			con1.mileage = item.mileage
+			con.current_km = item.cur_km_reading
+			con.mileage = item.mileage
 			con.type = "Receive"
 			con.submit()
 

@@ -15,6 +15,7 @@
   "column_break_3",
   "party_type",
   "party",
+  "advance_type",
   "advance_account",
   "party_address",
   "customer",
@@ -116,10 +117,12 @@
    "reqd": 1
   },
   {
+   "fetch_from": "advance_type.account",
    "fieldname": "advance_account",
    "fieldtype": "Link",
    "label": "Advance Account",
-   "options": "Account"
+   "options": "Account",
+   "read_only": 1
   },
   {
    "fieldname": "party_address",
@@ -331,12 +334,19 @@
    "options": "Project Advance",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "advance_type",
+   "fieldtype": "Link",
+   "label": "Advance Type",
+   "options": "Advance Type",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-02 14:20:02.556613",
+ "modified": "2023-06-29 13:02:23.943837",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project Advance",

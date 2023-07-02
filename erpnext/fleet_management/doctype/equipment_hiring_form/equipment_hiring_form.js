@@ -92,18 +92,15 @@ frappe.ui.form.on('EHF Rate', {
 	"rate_type": function(frm, cdt, cdn) {
 		get_rates(frm, cdt, cdn)
 	},
-	"from_date": function(frm, cdt, cdn){
-		get_rates(frm, cdt, cdn)
-	}
 });
 
 function get_rates(frm, cdt, cdn) {
 	var item = locals[cdt][cdn]
-	if (frm.doc.equipment_model && frm.doc.equipment_type && item.rate_type && item.from_date) {
+	if (frm.doc.equipment_model && frm.doc.equipment_type && item.rate_type && frm.doc.start_date) {
 		return frappe.call({
 			method: "get_hire_rates",
 			doc: frm.doc,
-			args: {"from_date": item.from_date},
+			args: {"from_date": frm.doc.start_date},
 			callback: function(r) {
 				if(r.message) {
 					if(item.rate_type == "Without Fuel") {

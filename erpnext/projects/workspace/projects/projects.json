@@ -261,7 +261,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Project Reports",
-   "link_count": 5,
+   "link_count": 6,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -314,10 +314,20 @@
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Project Timeline Report",
+   "link_count": 0,
+   "link_to": "Project Timeline Report",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
   }
  ],
- "modified": "2023-06-21 16:30:26.561497",
- "modified_by": "lhendrup.dorji@thimphutechpark.bt",
+ "modified": "2023-06-29 11:54:51.654685",
+ "modified_by": "Administrator",
  "module": "Projects",
  "name": "Projects",
  "owner": "Administrator",

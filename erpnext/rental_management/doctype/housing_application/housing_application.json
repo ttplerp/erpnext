@@ -19,9 +19,10 @@
   "aplication_status_section",
   "applicant_rank",
   "flat_no",
+  "tenant_id",
   "column_break_8",
   "application_status",
-  "tenant_id",
+  "building_classification",
   "permanent_address_section",
   "dzongkhag",
   "gewog",
@@ -139,7 +140,7 @@
   },
   {
    "fieldname": "mobile_no",
-   "fieldtype": "Data",
+   "fieldtype": "Phone",
    "label": "Mobile No",
    "reqd": 1
   },
@@ -289,6 +290,7 @@
    "fieldname": "applicant_rank",
    "fieldtype": "Int",
    "label": "Applicant Ranking",
+   "no_copy": 1,
    "read_only": 1
   },
   {
@@ -354,13 +356,16 @@
    "fieldname": "application_status",
    "fieldtype": "Select",
    "label": "Application Status",
+   "no_copy": 1,
    "options": "Pending\nAllotted\nRejected\nWithdrawn\nCancelled"
   },
   {
-   "depends_on": "eval:doc.application_status==\"Allocated\"",
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.application_status==\"Allotted\"",
    "fieldname": "tenant_id",
    "fieldtype": "Link",
    "label": "Tenant ID",
+   "no_copy": 1,
    "options": "Tenant Information",
    "read_only": 1
   },
@@ -377,13 +382,21 @@
    "fieldname": "flat_no",
    "fieldtype": "Link",
    "label": "Flat No",
+   "no_copy": 1,
    "options": "Flat No"
+  },
+  {
+   "fieldname": "building_classification",
+   "fieldtype": "Link",
+   "label": "Eligible Building Classification",
+   "options": "Building Classification",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-27 16:21:44.472042",
+ "modified": "2023-06-30 16:07:10.626217",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Housing Application",

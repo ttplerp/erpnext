@@ -126,6 +126,7 @@ class JournalEntry(AccountsController):
 		self.update_invoice_discounting()
 		self.update_project_advance(cancel=self.docstatus == 2)
 		self.update_technical_sanction_advance(cancel=self.docstatus == 2)
+		self.update_je_link_status(cancel=self.docstatus == 2)
 		
 	def on_cancel(self):
 		from erpnext.accounts.utils import unlink_ref_doc_from_payment_entries
@@ -1129,6 +1130,22 @@ class JournalEntry(AccountsController):
 				doc.paid_amount = flt(doc.paid_amount) + (value["debit"] * factor)
 
 			doc.save(ignore_permissions=True)
+
+	def update_je_link_status(self, cancel=False):
+		ref_list = ['Rental Payment','Payment Refund']
+		for d in self.accounts:
+			if d.reference_type in ref_list and d.reference_name:
+				doc = frappe.get_doc(d.reference_type, d.reference_name)
+				if cancel:
+					doc.journal_entry_status = "Cancelled"
+				else:
+					doc.journal_entry = self.name
+					if doc.doctype == 'Payment Refund':
+						doc.journal_entry_status = "Paid"
+					else:
+						doc.journal_entry_status = "Received"
+				doc.save(ignore_permissions=True)
+
 	@frappe.whitelist()
 	def set_cost_center_in_item(self):
 		if not self.branch:

@@ -62,24 +62,7 @@ class EquipmentHiringForm(Document):
 	def validate_date(self):
 		if getdate(self.start_date) > getdate(self.end_date):
 			frappe.throw("Start Date cannot be greater than End Date")
-		for d in self.ehf_rate:
-			if getdate(d.from_date) < getdate(self.start_date):
-				throw("From Date cannot be greater than Equipment Start Date at row {}".format(bold(d.idx)))
-			if getdate(d.to_date) > getdate(self.end_date):
-				throw("To Date cannot be greater than Equipment End Date at row {}".format(bold(d.idx)))
-			if d.to_date and getdate(d.from_date) > getdate(d.to_date):
-				throw("From Date cannot be greater than To Date at row {}".format(bold(d.idx)))
 
-			# validate date overlapping
-			n = flt(d.idx)-1
-			i = 0
-			while i < n:
-				if getdate(d.from_date) >= getdate(self.ehf_rate[i].from_date) and getdate(d.from_date) <= getdate(self.ehf_rate[i].to_date):
-					throw("From Date at row {} is overlapping with row no {}".format(bold(d.idx),bold(self.ehf_rate[i].idx)))
-
-				if d.to_date and getdate(d.to_date) >= getdate(self.ehf_rate[i].from_date) and getdate(d.to_date) <= getdate(self.ehf_rate[i].to_date):
-					throw("To Date at row {} is overlapping with row no {}".format(bold(d.idx),bold(self.ehf_rate[i].idx)))
-				i  = i + 1
 
 	def validate_update_after_submit(self):
 		efh_extension_count = frappe.db.sql("select count(*) from `tabEHF Extension` where parent = '{}'".format(self.name))
@@ -94,18 +77,11 @@ class EquipmentHiringForm(Document):
 		for b in self.get('ehf_rate'):
 			rate_count += 1
 			if not b.name:
-				if getdate(b.from_date) > getdate(b.to_date):
+				if getdate(self.start_date) > getdate(self.end_date):
 					frappe.throw("From Date cannot be after to Date")
-				check = frappe.db.sql("""select count(*) 
-									from `tabEHF Rate` where ('{}' between from_date and to_date 
-									or '{}' between from_date and to_date)
-									and parent = '{}'
-									""".format(b.from_date, b.to_date, self.name))
-				if check[0][0] > 0:
-					frappe.throw("Row ID : <b>{} </b>date range {} and {} is already defined.".format(b.idx, b.from_date, b.to_date))
 
-		if rate_count < efh_rate_count[0][0]:
-			frappe.throw("You are not allowed to <b>remove the record in Rate table</b>. Please reload to load the record again")
+		# if rate_count < efh_rate_count[0][0]:
+		# 	frappe.throw("You are not allowed to <b>remove the record in Rate table</b>. Please reload to load the record again")
 
 	@frappe.whitelist()
 	def get_hire_rates(self, from_date):

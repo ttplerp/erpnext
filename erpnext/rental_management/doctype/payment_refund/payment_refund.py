@@ -79,4 +79,5 @@ class PaymentRefund(AccountsController):
 
 		je.insert()
 		self.db_set("journal_entry",je.name)
+		self.db_set("journal_entry_status", "Forwarded to accounts for processing payment on {0}".format(now_datetime().strftime('%Y-%m-%d %H:%M:%S')))
 		frappe.msgprint(_('Journal Entry {} posted to Accounts').format(frappe.get_desk_link(je.doctype,je.name)))

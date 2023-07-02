@@ -80,7 +80,7 @@ class HireChargeInvoice(AccountsController):
 	#Function to pay arrear base on change in rate
 	def update_rate_amount(self):
 		for a in self.get("items"):
-			rate = self.get_rate(a.equipment_hiring_form,d.posting_date)
+			rate = self.get_rate(a.equipment_hiring_form, d.posting_date)
 			if rate:
 				a.new_rate = flt(rate)
 				a.rate   = flt(a.new_rate) - flt(a.prev_rate)
@@ -89,19 +89,29 @@ class HireChargeInvoice(AccountsController):
 	def check_remarks(self):
 		if not self.remarks:
 			self.remarks = "Hire Charge payment to {0}".format(self.party)
-
+	
 	# fetch rate base on equipment hiring form
-	def get_rate(self, ehf, posting_date):
+	def get_rate(self, ehf):
 		rate = frappe.db.sql('''
 					select hiring_rate from `tabEHF Rate` where parent = '{ehf}' 
-						and from_date <= '{posting_date}' 
-						and ifnull(to_date, NOW()) >= '{posting_date}' 
 						and docstatus = 1 limit 1
-					'''.format(ehf = ehf, posting_date = posting_date))
+					'''.format(ehf = ehf))
 		if rate:
 			return rate[0][0]
 		else:
-			throw("No rates defined in Equipment Hiring Form <b>{}</b> for date <b>{}</b>".format(frappe.get_desk_link("Equipment Hiring Form", ehf), posting_date),title="Hiring Rate Not Found")
+			throw("No rates defined in Equipment Hiring Form <b>{}</b>".format(frappe.get_desk_link("Equipment Hiring Form", ehf)),title="Hiring Rate Not Found")
+
+	# def get_rate(self, ehf):
+	# 	rate = frappe.db.sql('''
+	# 				select hiring_rate from `tabEHF Rate` where parent = '{ehf}' 
+	# 					and from_date <= '{posting_date}' 
+	# 					and ifnull(to_date, NOW()) >= '{posting_date}' 
+	# 					and docstatus = 1 limit 1
+	# 				'''.format(ehf = ehf, posting_date = posting_date))
+	# 	if rate:
+	# 		return rate[0][0]
+	# 	else:
+	# 		throw("No rates defined in Equipment Hiring Form <b>{}</b> for date <b>{}</b>".format(frappe.get_desk_link("Equipment Hiring Form", ehf), posting_date),title="Hiring Rate Not Found")
 	
 	def set_status(self, update=False, status=None, update_modified=True):
 		if self.is_new():
@@ -372,7 +382,7 @@ class HireChargeInvoice(AccountsController):
 		entries = (qb.from_(l)
 					.inner_join(li)
 					.on(l.name == li.parent)
-					.select((l.name).as_("logbook"),l.from_date,l.posting_date,
+					.select((l.name).as_("logbook"),l.from_date,l.posting_date,l.to_date,
 						l.equipment_hiring_form,
 						li.expense_head,(li.hours).as_("total_hours"),
 						l.equipment)
@@ -392,12 +402,12 @@ class HireChargeInvoice(AccountsController):
 
 		self.set('items', [])
 		if len(entries) == 0:
-			frappe.msgprint("No valid logbooks found for owner {} between {} and {}.You must have pulled in other EME Invoices(including draft invoices)".format(frappe.bold(self.party), frappe.bold(self.from_date),frappe.bold(self.to_date)), raise_exception=True)
+			frappe.msgprint("No valid logbooks found for owner {} between {} and {}.You must have pulled in other Hire Charge Invoices(including draft invoices)".format(frappe.bold(self.party), frappe.bold(self.from_date),frappe.bold(self.to_date)), raise_exception=True)
 
 		total = 0
 		exist_list = {}
 		for d in entries:
-			d.rate = self.get_rate(d.equipment_hiring_form, d.from_date)
+			d.rate = self.get_rate(d.equipment_hiring_form)
 			d.amount = flt(d.total_hours * d.rate, 2)
 			row = self.append('items', {})
 			row.update(d)
