@@ -80,7 +80,12 @@ class Production(StockController):
 					}))
 		if self.docstatus == 2:
 			sl_entries.reverse()
-		self.make_sl_entries(sl_entries, self.amended_from and 'Yes' or 'No')
+		allow_negative_stock = frappe.db.get_single_value("Stock Settings","allow_negative_stock")
+		if allow_negative_stock:
+			allow_negative_stock = True
+		else:
+			allow_negative_stock=False
+		self.make_sl_entries(sl_entries,allow_negative_stock)
 	def get_gl_entries(self, warehouse_account):
 		gl_entries = super(Production, self).get_gl_entries(
 			warehouse_account)
