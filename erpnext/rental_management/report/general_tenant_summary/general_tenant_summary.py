@@ -272,7 +272,7 @@ def get_data(filters):
 					filter_data['outstanding_received'] = flt(filter_data['outstanding_received'] + d.rpd_received_amount, 2)
 
 		filter_data['total_rent_received'] = flt(filter_data['total_received_amount'] + filter_data['total_prop_mgt_amount'] + filter_data['total_pre_rent_amount'] + filter_data['total_excess_amount'] + filter_data['total_penalty_amount'] - filter_data['total_discount_amount'], 2)
-		filter_data['outstanding_amount'] = flt(filter_data['total_receivable_amount'] - filter_data['total_received_amount'] - filter_data['total_prop_mgt_amount'] - filter_data['total_adjusted_amount'] - filter_data['total_rent_write_off_amount'] - filter_data['total_tds_amount'], 2)
+		filter_data['outstanding_amount'] = flt(filter_data['total_rent_amount'] - filter_data['total_received_amount'] - filter_data['total_adjusted_amount'] - filter_data['total_rent_write_off_amount'] - filter_data['total_tds_amount'], 2)
 		filter_data['pre_rent_balance'] = flt(filter_data['total_pre_rent_amount'] - filter_data['total_adjusted_amount'], 2)
 
 		data.append(filter_data)

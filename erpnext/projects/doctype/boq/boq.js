@@ -13,12 +13,12 @@ frappe.ui.form.on('BOQ', {
 					frappe.set_route("List", "BOQ Adjustment");
 				}, __("View"), true);
 			}
-			// if (frappe.model.can_read("BOQ Substitution")) {
-			// 					frm.add_custom_button(__("Substitutions"), function () {
-			// 							frappe.route_options = { "boq": frm.doc.name }
-			// 							frappe.set_route("List", "BOQ Substitution");
-			// 					}, __("View"), true);
-			// 			}
+			if (frappe.model.can_read("BOQ Substitution")) {
+				frm.add_custom_button(__("Substitutions"), function () {
+					frappe.route_options = { "boq": frm.doc.name }
+					frappe.set_route("List", "BOQ Substitution");
+				}, __("View"), true);
+			}
 
 			// if (frappe.model.can_read("BOQ Addition")) {
 			// 					frm.add_custom_button(__("Additions"), function () {
@@ -49,9 +49,9 @@ frappe.ui.form.on('BOQ', {
 			frm.add_custom_button(__("BOQ Adjustment"), function () { frm.trigger("make_boq_adjustment") },
 				__("Make"), "icon-file-alt"
 			);			
-			// frm.add_custom_button(__("BOQ Substitution"), function () { frm.trigger("make_boq_substitution") },
-			// 					__("Make"), "icon-file-alt"
-			// 			);
+			frm.add_custom_button(__("BOQ Substitution"), function () { frm.trigger("make_boq_substitution") },
+				__("Make"), "icon-file-alt"
+			);
 			// frm.add_custom_button(__("BOQ Addition"), function () { frm.trigger("make_additional_boq") },
 			// 					__("Make"), "icon-file-alt"
 			// 			);

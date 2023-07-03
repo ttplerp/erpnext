@@ -3,9 +3,10 @@
 
 import frappe
 from frappe.model.document import Document
+from frappe import _
 from erpnext.accounts.doctype.business_activity.business_activity import get_default_ba
 from erpnext.controllers.accounts_controller import AccountsController
-from frappe.utils import flt, cint, nowdate, getdate, formatdate, money_in_words
+from frappe.utils import flt, cint, nowdate, getdate, formatdate, money_in_words, now_datetime
 
 class PaymentRefund(AccountsController):
 	def validate(self):
@@ -30,6 +31,7 @@ class PaymentRefund(AccountsController):
 		self.post_journal_entry()
 
 	def post_journal_entry(self):
+		ba = get_default_ba()
 		r = []
 		if self.remarks:
 			r.append(_("Note: {0}").format(self.remarks))

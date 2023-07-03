@@ -21,6 +21,7 @@
   "sales_invoice_no",
   "pick_list",
   "purchase_receipt_no",
+  "technical_sanction",
   "col2",
   "company",
   "posting_date",
@@ -671,6 +672,14 @@
    "fieldtype": "Link",
    "label": "Site Name",
    "options": "Site Name"
+  },
+  {
+   "depends_on": "eval: doc.purpose == 'Material Issue'",
+   "description": "Select only if the issue is for Maintenance Purpose",
+   "fieldname": "technical_sanction",
+   "fieldtype": "Link",
+   "label": "Technical Sanction",
+   "options": "Technical Sanction"
   }
  ],
  "icon": "fa fa-file-text",
@@ -678,7 +687,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-08 15:42:15.376529",
+ "modified": "2023-07-03 23:30:49.901615",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Entry",

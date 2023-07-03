@@ -237,8 +237,7 @@
   {
    "fieldname": "items",
    "fieldtype": "Table",
-   "options": "Technical Sanction Item",
-   "read_only": 1
+   "options": "Technical Sanction Item"
   },
   {
    "fieldname": "section_break_22",
@@ -282,7 +281,7 @@
    "fieldtype": "Column Break"
   },
   {
-   "depends_on": "eval: doc.tds_percent",
+   "depends_on": "eval: doc.tds_account != ''",
    "fieldname": "tds_amount",
    "fieldtype": "Currency",
    "label": "TDS Amount",
@@ -394,7 +393,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-19 23:37:07.207595",
+ "modified": "2023-07-04 00:05:12.294309",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Technical Sanction Bill",

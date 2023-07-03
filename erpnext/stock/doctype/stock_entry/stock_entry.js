@@ -385,6 +385,39 @@ frappe.ui.form.on('Stock Entry', {
 				}
 			});
 		}
+		if (frm.doc.stock_entry_type == "Material Return" && frm.doc.to_warehouse && frm.doc.docstatus === 0) {
+			frm.page.clear_primary_action();
+			frappe.call({
+				method: 'erpnext.stock.doctype.stock_entry.stock_entry.has_warehouse_permission',
+				args: {
+					warehouse: frm.doc.to_warehouse
+				},
+				callback: (r) => {
+					if (!frm.doc.in_transit) {
+						frm.page.set_primary_action(__('Return'), () => {
+							frm.set_value("in_transit", 1);
+							frm.set_value("issued_by", frappe.session.user_fullname);
+							frm.save().then(() => {
+								frm.page.clear_primary_action();
+								frm.refresh();
+								// frm.events.refresh(frm);
+							});
+						});
+					} else {
+						if (r.message) {
+							frm.page.set_primary_action(__('Confirm Receipt'), () => {
+								frm.set_value("received_by", frappe.session.user_fullname);
+								frm.save('Submit').then(() => {
+									frm.page.clear_primary_action();
+									frm.refresh();
+									// frm.events.refresh(frm);
+								});
+							});
+						}
+					}
+				}
+			});
+		}
 	},
 
 	before_save: function (frm) {

@@ -37,7 +37,21 @@ class TechnicalSanctionBill(AccountsController):
 		self.make_gl_entries()
 		self.update_linked_docs()
 		self.update_advance_balance()
+		self.validate_bill_qty()
 	
+	def validate_bill_qty(self):
+		for d in self.get("items"):
+			if d.qty:
+				ts_obj = frappe.get_doc("Technical Sanction", self.technical_sanction)
+
+				if ts_obj.docstatus == 2:
+					frappe.throw(
+						_("{0} {1} is cancelled").format(_("Technical Sanction"), self.technical_sanction),
+						frappe.InvalidStatusError,
+					)
+
+				ts_obj.ts_bill_validate_service_qty(d.service)
+
 	def make_gl_entries(self):
 		if self.total_amount:
 			cost_center = frappe.db.get_value("Branch", self.branch, "cost_center")
@@ -171,6 +185,7 @@ class TechnicalSanctionBill(AccountsController):
 		self.cancel_linked_docs()
 		self.make_gl_entries()
 		self.update_advance_balance()
+		self.validate_bill_qty()
 	
 	def cancel_linked_docs(self): 
 		if self.technical_sanction: 

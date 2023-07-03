@@ -492,6 +492,13 @@ class RentalPayment(AccountsController):
 				)
 
 		if self.excess_amount > 0:
+			account_type = frappe.db.get_value("Account", pre_rent_account, "account_type") or ""
+			if account_type in ["Receivable", "Payable"]:
+				party = party_name
+				party_type = "Customer"
+			else:
+				party = None
+				party_type = None
 			gl_entries.append(
 				self.get_gl_dict({
 					"account": excess_payment_account,
@@ -500,6 +507,8 @@ class RentalPayment(AccountsController):
 					"voucher_no": self.name,
 					"voucher_type": self.doctype,
 					"cost_center": cost_center,
+					"party": party,
+					"party_type": party_type,
 					"company": self.company,
 					"remarks": self.remarks,
 					"business_activity": business_activity

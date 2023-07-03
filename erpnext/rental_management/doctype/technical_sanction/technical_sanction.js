@@ -12,21 +12,23 @@ frappe.ui.form.on('Technical Sanction', {
 				});
 			});
 		}
-		if (frm.doc.docstatus == 1 && !frm.doc.revised_technical_sanction && !frm.doc.bill) {
-			frm.add_custom_button("Prepare RTS", function () {
-				frappe.model.open_mapped_doc({
-					method: "erpnext.rental_management.doctype.technical_sanction.technical_sanction.prepare_rts",
-					frm: cur_frm
-				});
-			});
+		if (frm.doc.docstatus == 1 && !frm.doc.revised_technical_sanction) {
 			if (!frm.doc.bill) {
-				frm.add_custom_button("Prepare Bill", function () {
+				frm.add_custom_button("Prepare RTS", function () {
 					frappe.model.open_mapped_doc({
-						method: "erpnext.rental_management.doctype.technical_sanction.technical_sanction.prepare_bill",
+						method: "erpnext.rental_management.doctype.technical_sanction.technical_sanction.prepare_rts",
 						frm: cur_frm
 					});
 				});
 			}
+			
+			frm.add_custom_button("Prepare Bill", function () {
+				frappe.model.open_mapped_doc({
+					method: "erpnext.rental_management.doctype.technical_sanction.technical_sanction.prepare_bill",
+					frm: cur_frm
+				});
+			});
+			
 		}
 	},
 	onload: function (frm) {

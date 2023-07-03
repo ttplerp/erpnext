@@ -2,6 +2,7 @@
 # For license information, please see license.txt
 
 import frappe
+from frappe import _
 from frappe.model.document import Document
 from frappe.model.mapper import get_mapped_doc
 from frappe.utils import cstr, flt, fmt_money, formatdate, nowdate
@@ -61,6 +62,25 @@ class TechnicalSanction(Document):
 			self.material_charges = material_amount
 		else:
 			frappe.msgprint("No stock entries related to the Technical Sanction found. Entries might not have been submitted?")
+
+	def ts_bill_validate_service_qty(self, item_name=None, ts_bill=None):
+		for d in self.get("items"):
+			if d.service == item_name:
+				ts_qty = flt(
+					frappe.db.sql(
+						"""select sum(i.qty)
+					from `tabTechnical Sanction Item` i inner join `tabTechnical Sanction Bill` b on b.name=i.parent where i.service = %s
+					and i.parenttype = 'Technical Sanction Bill' and b.technical_sanction = %s and i.docstatus = 1""",
+						(item_name, self.name),
+					)[0][0]
+				)
+
+				if ts_qty and ts_qty > flt(d.qty):
+					frappe.throw(
+						_(
+							"The total TS-Bill quantity {0} cannot be greater then total Technical Sanction quantity {1} for Item {2} in Technical Sanction {3}"
+						).format(ts_qty, flt(d.qty), d.service, d.parent)
+					)
 
 	@frappe.whitelist()
 	def get_item_price(self, args):

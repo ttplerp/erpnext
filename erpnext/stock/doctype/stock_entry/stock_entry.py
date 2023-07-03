@@ -166,6 +166,8 @@ class StockEntry(StockController):
 			# in Manufacture Entry
 			self.reset_default_field_value("from_warehouse", "items", "s_warehouse")
 			self.reset_default_field_value("to_warehouse", "items", "t_warehouse")
+		if self.technical_sanction and self.purpose != "Material Issue":
+			frappe.throw("Stock Entry Type must be Material Issue for Technical Sanction")
 
 	def on_submit(self):
 		self.validate_received_qty()

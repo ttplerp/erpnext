@@ -99,6 +99,19 @@ frappe.ui.form.on('Technical Sanction Bill', {
 	}
 });
 
+frappe.ui.form.on('Technical Sanction Item', {
+	"qty": function (frm, cdt, cdn) {
+		var row = locals[cdt][cdn];
+		frappe.model.set_value(cdt, cdn, "total", row.amount * row.qty);
+		var total = 0;
+		for (var i in cur_frm.doc.items) {
+			var item = cur_frm.doc.items[i];
+			total += item.total;
+		}
+		cur_frm.set_value("total_gross_amount", total);
+	}
+});
+
 frappe.ui.form.on('Technical Sanction Deduction', {
 	"deduction_amount": function (frm, cdt, cdn) {
 		calculate_total_amount(frm)

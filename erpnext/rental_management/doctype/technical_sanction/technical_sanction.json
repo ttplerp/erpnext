@@ -179,12 +179,14 @@
    "fieldname": "party_type",
    "fieldtype": "Link",
    "label": "Party Type",
+   "mandatory_depends_on": "eval: doc.outsource",
    "options": "DocType"
   },
   {
    "fieldname": "party",
    "fieldtype": "Dynamic Link",
    "label": "Party",
+   "mandatory_depends_on": "eval: doc.outsource",
    "options": "party_type"
   },
   {
@@ -293,7 +295,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-26 16:53:09.900226",
+ "modified": "2023-07-03 10:47:23.300288",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Technical Sanction",

@@ -144,6 +144,7 @@ class JournalEntry(AccountsController):
 		check_clearance_date(self.doctype, self.name)
 		self.update_project_advance(cancel=self.docstatus == 2)
 		self.update_technical_sanction_advance(cancel=self.docstatus == 2)
+		self.update_je_link_status(cancel=self.docstatus == 2)
 
 	def on_trash(self):
 		self.unlink_transporter_invoice()

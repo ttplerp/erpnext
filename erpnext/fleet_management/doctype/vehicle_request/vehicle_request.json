@@ -25,13 +25,13 @@
   "from_date",
   "vehicle_type",
   "approver",
+  "total_days_and_hours",
   "columb_break04",
   "to_date",
   "approver_id",
   "place",
   "column_break04",
   "purpose",
-  "total_days_and_hours",
   "fleet_details_section",
   "vehicle",
   "vehicle_model",
@@ -118,7 +118,6 @@
    "read_only": 1
   },
   {
-   "collapsible": 1,
    "fieldname": "travel_information",
    "fieldtype": "Section Break",
    "label": "Travel Information"
@@ -126,12 +125,13 @@
   {
    "fieldname": "from_date",
    "fieldtype": "Datetime",
-   "label": "From Date",
+   "label": "From Date Time",
    "reqd": 1
   },
   {
    "fieldname": "approver",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Approver",
    "read_only": 1
   },
@@ -143,12 +143,13 @@
    "allow_on_submit": 1,
    "fieldname": "to_date",
    "fieldtype": "Datetime",
-   "label": "To Date",
+   "label": "To Date Time",
    "reqd": 1
   },
   {
    "fieldname": "approver_id",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Approver ID",
    "options": "User",
    "read_only": 1
@@ -309,7 +310,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-19 12:06:09.317217",
+ "modified": "2023-07-03 17:11:03.637456",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Vehicle Request",
