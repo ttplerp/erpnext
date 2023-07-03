@@ -44,6 +44,12 @@ frappe.query_reports["General Tenant Summary"] = {
 			"label": __("Focal Name"),
 			"fieldtype": "Data",
 			"read_only": 1
-		}
+		},
+		{
+			"fieldname": "ministyr_agency",
+			"label": __("Ministry/Agency"),
+			"fieldtype": "Link",
+			"options": "Ministry and Agency"
+		},
 	]
 };

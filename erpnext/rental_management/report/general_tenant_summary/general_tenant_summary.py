@@ -284,6 +284,8 @@ def get_all_bills(filters):
 	cond=''
 	if filters.get("rental_official"):
 		cond = " and rb.rental_focal='{}'".format(filters.get("rental_official"))
+	if filters.get("ministyr_agency"):
+		cond = " and rb.ministry_agency='{}'".format(filters.get("ministyr_agency"))
 
 	query = """select 
 				rb.name, rb.tenant, rb.tenant_name,
