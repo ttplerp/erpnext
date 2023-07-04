@@ -222,4 +222,6 @@ def get_permission_query_conditions(user):
 			and ab.employee = e.name
 			and bi.parent = ab.name
 			and bi.branch = `tabRepair And Services`.branch)
+		or 
+		(`tabRepair And Services`.approver = '{user}' and `tabRepair And Services`.workflow_state not in  ('Draft','Approved','Rejected','Cancelled'))
 	)""".format(user=user)
