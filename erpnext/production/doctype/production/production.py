@@ -13,7 +13,7 @@ class Production(StockController):
 		super(Production, self).__init__(*args, **kwargs)
 	def validate(self):
 		check_future_date(self.posting_date)
-		self.posting_time = nowtime()
+		self.posting_time = self.posting_time
 		self.check_cop()
 		self.validate_data()
 		self.validate_items()
@@ -590,7 +590,7 @@ def make_auto_production(self):
 			prod.cost_center = self.cost_center
 			prod.posting_date = self.posting_date
 			prod.entry_date = self.entry_date
-			prod.posting_time = nowtime()
+			prod.posting_time = self.posting_time
 			prod.cop_list = self.cop_list
 			prod.warehouse = self.warehouse if cint(self.transfer) == 0 else self.to_warehouse
 			prod.production_type = self.production_type
