@@ -1173,7 +1173,8 @@
   {
    "fieldname": "actual_receipt_date",
    "fieldtype": "Date",
-   "label": "Actual Receipt Date"
+   "label": "Actual Receipt Date",
+   "reqd": 1
   },
   {
    "fieldname": "delay_by",
@@ -1192,7 +1193,7 @@
  "idx": 261,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-11-28 18:30:17.677515",
+ "modified": "2023-07-04 10:26:07.994421",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Purchase Receipt",
