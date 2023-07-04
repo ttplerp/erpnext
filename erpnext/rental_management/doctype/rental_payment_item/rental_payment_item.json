@@ -94,6 +94,7 @@
    "options": "Rental Bill"
   },
   {
+   "default": "0.0",
    "fieldname": "bill_amount",
    "fieldtype": "Currency",
    "in_list_view": 1,
@@ -106,17 +107,20 @@
    "label": "Payment Details"
   },
   {
+   "default": "0.0",
    "fieldname": "rent_received",
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Rent Received"
   },
   {
+   "default": "0.0",
    "fieldname": "penalty",
    "fieldtype": "Currency",
    "label": "Late Payment Penalty "
   },
   {
+   "default": "0.0",
    "fieldname": "tds_amount",
    "fieldtype": "Currency",
    "label": "TDS Amount"
@@ -126,11 +130,13 @@
    "fieldtype": "Column Break"
   },
   {
+   "default": "0.0",
    "fieldname": "pre_rent_amount",
    "fieldtype": "Currency",
    "label": "Pre Rent  Amount Received"
   },
   {
+   "default": "0.0",
    "fieldname": "excess_amount",
    "fieldtype": "Currency",
    "label": "Excess Amount Received"
@@ -140,12 +146,14 @@
    "fieldtype": "Column Break"
   },
   {
+   "default": "0.0",
    "fieldname": "total_amount_received",
    "fieldtype": "Currency",
    "label": "Total Amount Received",
    "read_only": 1
   },
   {
+   "default": "0.0",
    "fieldname": "balance_rent",
    "fieldtype": "Currency",
    "label": "Balance Rent Amount",
@@ -170,6 +178,7 @@
    "label": "Rent Write-off"
   },
   {
+   "default": "0.0",
    "fieldname": "rent_write_off_amount",
    "fieldtype": "Currency",
    "label": "Rent Write-off Amount"
@@ -181,16 +190,19 @@
    "label": "Don't Apply Discount"
   },
   {
+   "default": "0.0",
    "fieldname": "discount_amount",
    "fieldtype": "Currency",
    "label": "Discount Amount"
   },
   {
+   "default": "0.0",
    "fieldname": "security_deposit_amount",
    "fieldtype": "Currency",
    "label": "Security Deposit Amount"
   },
   {
+   "default": "0.0",
    "fieldname": "property_management_amount",
    "fieldtype": "Currency",
    "label": "Property Management Amount"
@@ -202,6 +214,7 @@
    "label": "Deduct From Security Deposit"
   },
   {
+   "default": "0.0",
    "depends_on": "eval: doc.deduct_from_security_deposit",
    "fieldname": "security_deposit",
    "fieldtype": "Currency",
@@ -218,7 +231,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-06-13 23:08:31.812310",
+ "modified": "2023-07-04 12:38:38.943493",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Payment Item",

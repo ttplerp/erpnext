@@ -41,7 +41,17 @@ class TechnicalSanctionBill(AccountsController):
 	
 	def validate_bill_qty(self):
 		for d in self.get("items"):
-			if d.qty:
+			if d.qty and self.revised_technical_sanction:
+				rts_obj = frappe.get_doc("Revised Technical Sanction", self.revised_technical_sanction)
+
+				if rts_obj.docstatus == 2:
+					frappe.throw(
+						_("{0} {1} is cancelled").format(_("Revised Technical Sanction"), self.revised_technical_sanction),
+						frappe.InvalidStatusError,
+					)
+
+				rts_obj.rts_bill_validate_service_qty(d.service)
+			elif d.qty:
 				ts_obj = frappe.get_doc("Technical Sanction", self.technical_sanction)
 
 				if ts_obj.docstatus == 2:

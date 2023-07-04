@@ -24,8 +24,31 @@ class PaymentRefund(AccountsController):
 				self.account_refund_to = company.get("security_deposit_account")
 
 	def validate_amount(self):
+		self.validate_refund_amount()
+
+	def validate_refund_amount(self):
 		if self.refund_amount < 0 or self.refund_amount == 0:
 			frappe.throw("Invalid Refund Amount figure.")
+		
+		account = self.account_refund_to
+		bal_amount = self.get_party_balance_amount()
+
+		if self.refund_amount > bal_amount:
+			frappe.throw(
+					_(
+						"Refund Amount {0} cannot be greater than balance amount {1} for Customer {2} and Account {3}"
+					).format(self.refund_amount, flt(bal_amount), self.customer, account)
+				)
+
+	def get_party_balance_amount(self):
+		bal_amount = frappe.db.sql("""
+				select ifnull(sum(credit) - sum(debit), 0) as bal_amount
+				from `tabGL Entry` 
+				Where party_type='Customer' 
+				and party = '{party}' and account = '{account}' and is_cancelled=0
+			""".format(party=self.customer, account=account))[0][0]
+		
+		return bal_amount
 
 	def on_submit(self):
 		self.post_journal_entry()

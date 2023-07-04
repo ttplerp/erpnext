@@ -28,6 +28,25 @@ class RevisedTechnicalSanction(Document):
 		if self.docstatus == 2:
 			frappe.db.sql("update `tabTechnical Sanction` set revised_technical_sanction = '' where name ='{ts}'".format(ts=self.technical_sanction))
 
+	def rts_bill_validate_service_qty(self, item_name=None):
+		for d in self.get("items"):
+			if d.service == item_name:
+				rts_qty = flt(
+					frappe.db.sql(
+						"""select sum(i.qty)
+					from `tabTechnical Sanction Item` i inner join `tabTechnical Sanction Bill` b on b.name=i.parent where i.service = %s
+					and i.parenttype = 'Technical Sanction Bill' and b.revised_technical_sanction = %s and i.docstatus = 1""",
+						(item_name, self.name),
+					)[0][0]
+				)
+
+				if rts_qty and rts_qty > flt(d.qty):
+					frappe.throw(
+						_(
+							"The total TS-Bill quantity {0} cannot be greater then total Revised Technical Sanction quantity {1} for Item {2} in Revised Technical Sanction {3}"
+						).format(rts_qty, flt(d.qty), d.service, d.parent)
+					)
+
 	@frappe.whitelist()
 	def get_item_price(self, args):
 		# frappe.throw(str(args))

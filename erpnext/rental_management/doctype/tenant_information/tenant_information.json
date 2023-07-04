@@ -508,7 +508,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-30 16:06:06.929155",
+ "modified": "2023-07-04 12:17:58.252171",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Tenant Information",
@@ -553,6 +553,7 @@
    "report": 1,
    "role": "Rental User",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {

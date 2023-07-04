@@ -82,6 +82,21 @@ class TechnicalSanction(Document):
 						).format(ts_qty, flt(d.qty), d.service, d.parent)
 					)
 
+	def validate_duplicate_items(self):
+		data = []
+		for d in self.get("items"):
+			if d.service not in data:
+				data.append(d.service)
+			else:
+				frappe.throw("Duplicate service item entry at #Row. {}".format(d.idx))
+		
+		dtl_data = []
+		for a in self.get("detail_measurement"):
+			if a.service not in dtl_data:
+				dtl_data.append(a.service)
+			else:
+				frappe.throw("Duplicate service item entry at #Row. {}".format(a.idx))
+
 	@frappe.whitelist()
 	def get_item_price(self, args):
 		# frappe.throw(str(args))

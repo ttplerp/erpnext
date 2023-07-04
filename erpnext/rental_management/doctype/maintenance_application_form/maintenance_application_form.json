@@ -136,7 +136,7 @@
    "fieldname": "maintenance_type",
    "fieldtype": "Select",
    "label": "Maintenance Type",
-   "options": "\nMinor\nPlanned\nAdhoc",
+   "options": "\nMinor\nMajor\nPlanned\nAdhoc",
    "reqd": 1
   },
   {
@@ -242,7 +242,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-19 10:46:59.985586",
+ "modified": "2023-07-04 22:57:38.812370",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Maintenance Application Form",
