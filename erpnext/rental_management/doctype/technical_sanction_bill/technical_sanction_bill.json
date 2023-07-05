@@ -257,6 +257,7 @@
    "fieldtype": "Section Break"
   },
   {
+   "depends_on": "eval: doc.docstatus == 0",
    "fieldname": "get_advances",
    "fieldtype": "Button",
    "label": "Get Advances"
@@ -405,7 +406,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-04 22:54:07.943702",
+ "modified": "2023-07-05 10:30:30.065928",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Technical Sanction Bill",

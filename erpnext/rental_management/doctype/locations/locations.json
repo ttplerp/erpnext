@@ -10,6 +10,7 @@
  "field_order": [
   "location",
   "location_id",
+  "luc_no",
   "description",
   "cb_1",
   "town_category",
@@ -31,6 +32,7 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Location ID",
+   "read_only": 1,
    "reqd": 1,
    "unique": 1
   },
@@ -75,11 +77,17 @@
    "fieldtype": "Currency",
    "label": "Total Property Management Amount",
    "read_only": 1
+  },
+  {
+   "fieldname": "luc_no",
+   "fieldtype": "Data",
+   "label": "LUC No",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-22 11:00:53.680826",
+ "modified": "2023-07-04 23:44:55.315206",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Locations",
@@ -130,7 +138,7 @@
    "write": 1
   }
  ],
- "search_fields": "location,dzongkhag",
+ "search_fields": "luc_no,location,dzongkhag",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

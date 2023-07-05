@@ -304,7 +304,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Reports",
-   "link_count": 1,
+   "link_count": 2,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -317,9 +317,19 @@
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Rental Location Details",
+   "link_count": 0,
+   "link_to": "Rental Location Details",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
   }
  ],
- "modified": "2023-06-29 22:06:15.219558",
+ "modified": "2023-07-05 10:55:31.258175",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Management",

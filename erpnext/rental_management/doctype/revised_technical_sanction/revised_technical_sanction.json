@@ -40,10 +40,10 @@
   "material_details",
   "get_items",
   "material_items",
+  "material_charges",
   "supervisors_detail",
   "supervisor_item",
   "section_break_27",
-  "material_charges",
   "maf",
   "column_break_28",
   "bill",
@@ -294,9 +294,12 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "bill",
    "fieldtype": "Data",
-   "label": "Bill"
+   "hidden": 1,
+   "label": "Bill",
+   "read_only": 1
   },
   {
    "fieldname": "amended_from",
@@ -311,7 +314,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-29 11:22:57.556795",
+ "modified": "2023-07-05 10:14:18.896417",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Revised Technical Sanction",

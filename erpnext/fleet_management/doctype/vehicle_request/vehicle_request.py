@@ -27,15 +27,14 @@ class VehicleRequest(Document):
 
 	def check_duplicate_entry(self):
 		data = frappe.db.sql("""
-			SELECT vehicle
+			SELECT vehicle, employee
 			FROM `tabVehicle Request`
 			WHERE vehicle = '{0}'
-			AND docstatus = 1
-			AND (from_date BETWEEN '{1}' AND '{2}'
-				OR to_date BETWEEN '{1}' AND '{2}')
-		""".format(self.vehicle,self.from_date,self.to_date),as_dict=1)
+			AND docstatus = 1 AND status = 'Booked'
+		""".format(self.vehicle), as_dict=1)
+		
 		if data:
-			frappe.throw("Vehicle <b>{}</b> is already booked".format(self.vehicle_number))
+			frappe.throw("Vehicle <b>{}</b> is already booked by Employee <b>{}</b>".format(self.vehicle_number, data[0].employee))
 
 	def check_vehicle(self):
 		if not self.vehicle:
@@ -54,6 +53,11 @@ class VehicleRequest(Document):
 	def  check_date(self):
 		if self.from_date > self.to_date:
 			frappe.throw("From Date cannot be before than To Date")
+	
+	@frappe.whitelist()
+	def open_the_vehicle_for_booking(self):
+		if self.docstatus == 1 and self.status == "Booked":
+			self.db_set("status", "Open")
 
 @frappe.whitelist()  
 def check_form_date_and_to_date(from_date, to_date):

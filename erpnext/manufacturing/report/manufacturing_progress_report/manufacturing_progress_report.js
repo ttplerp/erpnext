@@ -8,7 +8,7 @@ frappe.query_reports["Manufacturing Progress Report"] = {
 			"fieldname": "branch",
 			"label": __("Branch"),
 			"fieldtype": "Link",
-			"options": "Cost Center"
+			"options": "Branch"
 		},
 		{
 			"fieldname": "from_date",

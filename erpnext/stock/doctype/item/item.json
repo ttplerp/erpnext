@@ -127,7 +127,9 @@
   "default_item_manufacturer",
   "default_manufacturer_part_no",
   "published_in_website",
-  "total_projected_qty"
+  "total_projected_qty",
+  "raw_material_required_tab",
+  "item_details"
  ],
  "fields": [
   {
@@ -964,6 +966,18 @@
    "fieldname": "is_bsr_service_item",
    "fieldtype": "Check",
    "label": "Is BSR Service Item"
+  },
+  {
+   "depends_on": "eval:doc.is_bsr_service_item == 1;",
+   "fieldname": "raw_material_required_tab",
+   "fieldtype": "Tab Break",
+   "label": "Raw Material Required"
+  },
+  {
+   "fieldname": "item_details",
+   "fieldtype": "Table",
+   "label": "Item Details",
+   "options": "BSR Raw Item"
   }
  ],
  "icon": "fa fa-tag",
@@ -971,7 +985,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-21 14:26:54.063860",
+ "modified": "2023-07-04 12:33:39.979313",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",

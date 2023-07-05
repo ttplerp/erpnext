@@ -38,6 +38,7 @@ class TechnicalSanction(Document):
 			else:
 				frappe.throw("Not able to update MAF")
 
+	@frappe.whitelist()
 	def get_technical_sanction_items(self):
 		items = frappe.db.sql("select se.name as stock_entry, sed.name as stock_entry_detail, sed.item_code as item, sed.item_name as item_name, sed.stock_uom as uom, sed.qty as quantity, sed.amount \
 					from `tabStock Entry Detail` sed, `tabStock Entry` se \

@@ -569,6 +569,44 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "Fleet Transaction",
+   "link_count": 3,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Vehicle Request",
+   "link_count": 0,
+   "link_to": "Vehicle Request",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Insurance and Registration",
+   "link_count": 0,
+   "link_to": "Insurance and Registration",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Fleet Engagement",
+   "link_count": 0,
+   "link_to": "Fleet Engagement",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "Fleet Report",
    "link_count": 7,
    "onboard": 0,
@@ -597,9 +635,9 @@
   {
    "hidden": 0,
    "is_query_report": 1,
-   "label": "Vehicle Request Report",
+   "label": "Vehicle Request History Report",
    "link_count": 0,
-   "link_to": "Vehicle Request Report",
+   "link_to": "Vehicle Request History Report",
    "link_type": "Report",
    "onboard": 1,
    "type": "Link"
@@ -643,48 +681,10 @@
    "link_type": "Report",
    "onboard": 1,
    "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Fleet Transaction",
-   "link_count": 3,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Vehicle Request",
-   "link_count": 0,
-   "link_to": "Vehicle Request",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Insurance and Registration",
-   "link_count": 0,
-   "link_to": "Insurance and Registration",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Fleet Engagement",
-   "link_count": 0,
-   "link_to": "Fleet Engagement",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
   }
  ],
- "modified": "2023-06-29 12:20:26.744156",
- "modified_by": "ugyen.choden@thimphutechpark.bt",
+ "modified": "2023-07-05 09:54:33.739252",
+ "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Fleet Management",
  "owner": "Administrator",

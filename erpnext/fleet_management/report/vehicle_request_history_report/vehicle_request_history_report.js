@@ -1,21 +1,14 @@
-// Copyright (c) 2022, Frappe Technologies Pvt. Ltd. and contributors
+// Copyright (c) 2023, Frappe Technologies Pvt. Ltd. and contributors
 // For license information, please see license.txt
 /* eslint-disable */
 
-frappe.query_reports["Vehicle Request Report"] = {
+frappe.query_reports["Vehicle Request History Report"] = {
 	"filters": [
 		{
 			"fieldname":"branch",
 			"fieldtype":"Link",
 			"label":__("Branch"),
 			"options":"Branch",
-			"reqd":0
-		},
-		{
-			"fieldname":"status",
-			"fieldtype":"Select",
-			"label":__("Status"),
-			"options":['', 'Free', 'Booked'],
 			"reqd":0
 		},
 		{
@@ -37,11 +30,6 @@ frappe.query_reports["Vehicle Request Report"] = {
 			"label":__("To Date"),
 			"default":frappe.datetime.month_end(),
 			"reqd":1
-		},
-		{
-			"fieldname":"show_details",
-			"fieldtype":"Check",
-			"label":__("Show Details"),
 		}
 	]
 };

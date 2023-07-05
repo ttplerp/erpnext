@@ -21,6 +21,7 @@
   "parent_cost_center",
   "column_break001",
   "posting_date",
+  "status",
   "travel_information",
   "from_date",
   "vehicle_type",
@@ -221,7 +222,8 @@
   {
    "fieldname": "time_of_departure",
    "fieldtype": "Datetime",
-   "label": "Time Of Departure"
+   "label": "Time Of Departure",
+   "reqd": 1
   },
   {
    "fetch_from": "vehicle.equipment_type",
@@ -235,7 +237,8 @@
    "fieldname": "vehicle",
    "fieldtype": "Link",
    "label": "Vehicle",
-   "options": "Equipment"
+   "options": "Equipment",
+   "reqd": 1
   },
   {
    "fetch_from": "vehicle.equipment_model",
@@ -258,13 +261,15 @@
    "fieldtype": "Link",
    "ignore_user_permissions": 1,
    "label": "Driver",
-   "options": "Employee"
+   "options": "Employee",
+   "reqd": 1
   },
   {
    "fetch_from": "driver.employee_name",
    "fieldname": "driver_name",
    "fieldtype": "Data",
-   "label": "Driver Name"
+   "label": "Driver Name",
+   "read_only": 1
   },
   {
    "allow_on_submit": 1,
@@ -306,11 +311,21 @@
    "fieldname": "fleet_details_section",
    "fieldtype": "Section Break",
    "label": "Fleet Details"
+  },
+  {
+   "default": "Booked",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Free\nBooked",
+   "read_only": 1,
+   "reqd": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-03 17:11:03.637456",
+ "modified": "2023-07-04 16:41:22.299851",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Vehicle Request",

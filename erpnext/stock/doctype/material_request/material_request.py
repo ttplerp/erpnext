@@ -121,12 +121,43 @@ class MaterialRequest(BuyingController):
 		self.reset_default_field_value("set_from_warehouse", "items", "from_warehouse")
 		# if self.workflow_state != "Approved":
 			# notify_workflow_states(self)
+		self.validate_project_bsr_item_qty()
+
 	def before_update_after_submit(self):
 		self.validate_schedule_date()
 
 	# def validate_transaction_date(self):
 	# 	if self.transaction_date > today():
 	# 		frappe.throw("Transaction Date cannot be future date")
+	
+	def validate_project_bsr_item_qty(self):
+		for idx, d in enumerate(self.items):
+			if d.project:
+				prj = frappe.get_doc("Project", d.project)
+				
+				for row in prj.project_boq_item:
+					boq = frappe.get_doc("BOQ", row.boq_name)
+					
+					for b in boq.boq_item:
+						item_details = frappe.db.sql("""
+							SELECT i.name, it.item_code, it.qty
+							FROM `tabItem` i
+							INNER JOIN `tabBSR Raw Item` it ON it.parent = i.name
+							WHERE i.name = %s
+								AND i.is_bsr_service_item = 1
+								AND it.item_code = %s
+							LIMIT 1
+						""", (b.boq_code, d.item_code), as_dict=True)
+						
+						if item_details:
+							i = item_details[0]
+							total_qty = i.qty * b.quantity
+							if d.qty > total_qty and i.item_code == d.item_code:
+								frappe.msgprint(
+									_("Row <b>{}</b>: Quantity Requested exceeds the defined Qty in <b>{}</b> for Item Code <b>{}</b>").format(idx+1, row.boq_name, d.item_code),
+									indicator="red",
+									title=_("Warning")
+								)
 
 	def validate_material_request_type(self):
 		"""Validate fields in accordance with selected type"""
