@@ -72,7 +72,6 @@ frappe.ui.form.on('BOQ', {
         frm.set_query("boq_code", "boq_item", function () {
             return {
                 filters: {
-                    item_group:"Services",
                     is_service_item:1,
                     disabled:0
                 }

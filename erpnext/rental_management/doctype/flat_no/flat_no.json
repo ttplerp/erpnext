@@ -1,7 +1,6 @@
 {
  "actions": [],
  "allow_import": 1,
- "allow_rename": 1,
  "creation": "2023-04-27 17:47:10.116451",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -51,11 +50,12 @@
    "options": "Unallocated\nAllocated\nSurrendered\nUnder Maintenance"
   },
   {
-   "fetch_from": "block_no.building_category",
    "fieldname": "building_category",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Building Category",
-   "read_only": 1
+   "options": "Building Category",
+   "reqd": 1
   },
   {
    "depends_on": "eval: doc.building_category == 'Pilot Housing'",
@@ -74,7 +74,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-12 12:00:19.094545",
+ "modified": "2023-07-05 22:23:57.222750",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Flat No",

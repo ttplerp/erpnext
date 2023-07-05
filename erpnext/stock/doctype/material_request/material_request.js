@@ -55,7 +55,7 @@ frappe.ui.form.on('Material Request', {
 				filters: { 'company': doc.company }
 			};
 		});
-
+		
 		frm.set_query("set_warehouse", function (doc) {
 			return {
 				filters: { 'company': doc.company }

@@ -1,15 +1,12 @@
 {
  "actions": [],
  "allow_import": 1,
- "allow_rename": 1,
- "autoname": "field:location_id",
  "creation": "2023-04-27 12:26:57.182733",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "location",
-  "location_id",
   "luc_no",
   "description",
   "cb_1",
@@ -26,15 +23,6 @@
    "in_list_view": 1,
    "label": "Location Name",
    "reqd": 1
-  },
-  {
-   "fieldname": "location_id",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Location ID",
-   "read_only": 1,
-   "reqd": 1,
-   "unique": 1
   },
   {
    "fieldname": "cb_1",
@@ -87,11 +75,11 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-07-04 23:44:55.315206",
+ "modified": "2023-07-05 22:25:17.705181",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Locations",
- "naming_rule": "By fieldname",
+ "naming_rule": "By script",
  "owner": "Administrator",
  "permissions": [
   {
@@ -142,6 +130,5 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "location_id",
  "track_changes": 1
 }

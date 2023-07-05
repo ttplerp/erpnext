@@ -87,7 +87,7 @@ def get_previous_km(vehicle, vehicle_number):
 def create_vr_extension(source_name, target_doc=None):
 	doclist = get_mapped_doc("Vehicle Request", source_name, {
 		"Vehicle Request": {
-			"doctype": "Vechicle Request Extension",
+			"doctype": "Vehicle Request Extension",
 			"field_map": {
 				"vehicle_request": "name",
 				"from_date":"from_date",

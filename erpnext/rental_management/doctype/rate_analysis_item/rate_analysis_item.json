@@ -15,8 +15,8 @@
   "cb_1",
   "warehouse",
   "posting_time",
-  "rate",
   "qty",
+  "rate",
   "amount",
   "sb_remarks",
   "remarks"
@@ -97,7 +97,7 @@
    "fieldname": "qty",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "Qty",
+   "label": "Coeff./Qty",
    "reqd": 1
   },
   {
@@ -120,7 +120,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-06-15 21:03:39.287611",
+ "modified": "2023-07-05 15:24:56.275938",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rate Analysis Item",

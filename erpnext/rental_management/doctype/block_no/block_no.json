@@ -7,11 +7,10 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "town_category",
   "location",
+  "town_category",
   "location_name",
   "building_classification",
-  "building_category",
   "cb_1",
   "dzongkhag",
   "block_no",
@@ -22,6 +21,7 @@
  ],
  "fields": [
   {
+   "fetch_from": "location.town_category",
    "fieldname": "town_category",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -43,15 +43,6 @@
    "label": "Building Classification",
    "options": "Building Classification",
    "reqd": 1
-  },
-  {
-   "fieldname": "building_category",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Building Category",
-   "options": "Building Category",
-   "reqd": 1,
-   "set_only_once": 1
   },
   {
    "fieldname": "cb_1",
@@ -105,7 +96,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-06 13:59:12.741423",
+ "modified": "2023-07-05 22:22:45.197635",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Block No",
@@ -155,7 +146,7 @@
    "share": 1
   }
  ],
- "search_fields": "block_no,dzongkhag,location_name,town_category,building_category",
+ "search_fields": "block_no,dzongkhag,location_name,town_category",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

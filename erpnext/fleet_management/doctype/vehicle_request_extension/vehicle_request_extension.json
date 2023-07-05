@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "VRE.MM.DD.###",
  "creation": "2022-11-07 10:11:11.836134",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -60,8 +61,26 @@
    "fieldtype": "Section Break"
   },
   {
+   "fetch_from": "vehicle_request.from_date",
+   "fieldname": "from_date",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Previous From Date",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
    "fieldname": "column_break_8",
    "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "vehicle_request.to_date",
+   "fieldname": "to_date",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Previous To Date",
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "fieldname": "column_break_10",
@@ -75,33 +94,6 @@
    "reqd": 1
   },
   {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Vechicle Request Extension",
-   "print_hide": 1,
-   "read_only": 1
-  },
-  {
-   "fetch_from": "vehicle_request.from_date",
-   "fieldname": "from_date",
-   "fieldtype": "Datetime",
-   "in_list_view": 1,
-   "label": "Previous From Date",
-   "read_only": 1,
-   "reqd": 1
-  },
-  {
-   "fetch_from": "vehicle_request.to_date",
-   "fieldname": "to_date",
-   "fieldtype": "Datetime",
-   "in_list_view": 1,
-   "label": "Previous To Date",
-   "read_only": 1,
-   "reqd": 1
-  },
-  {
    "fieldname": "section_break_12",
    "fieldtype": "Section Break"
   },
@@ -110,14 +102,24 @@
    "fieldtype": "Small Text",
    "label": "Reason for Extension",
    "reqd": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Vehicle Request Extension",
+   "print_hide": 1,
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2022-11-07 10:16:12.145540",
+ "modified": "2023-07-05 13:42:57.863333",
  "modified_by": "Administrator",
  "module": "Fleet Management",
- "name": "Vechicle Request Extension",
+ "name": "Vehicle Request Extension",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
