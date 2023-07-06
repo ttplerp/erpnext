@@ -133,63 +133,6 @@ def get_data(filters):
 	# query = """
 	# 	select 
 	# 		tenant, 
-	# 		tenant_name, 
-	# 		GROUP_CONCAT(DISTINCT(name) SEPARATOR ', ') rental_bill,
-			# (case 
-			# 	when rb_posting_date between '{from_date}' and '{to_date}' then sum(rb_rent_amount)
-			# 	else 0
-			# end) total_rent_amount,
-			# (case 
-			# 	when rb_posting_date between '{from_date}' and '{to_date}' then sum(rpd_received_amount)
-			# 	else 0
-			# end) total_received_amount,
-			# (case 
-			# 	when rb_posting_date between '{from_date}' and '{to_date}' then sum(rpd_pre_rent_amount)
-			# 	else 0
-			# end) total_pre_rent_amount,
-			# (case 
-			# 	when rb_posting_date between '{from_date}' and '{to_date}' then sum(rb_adjusted_amount)
-			# 	else 0
-			# end) total_adjusted_amount,
-			# (case 
-			# 	when rb_posting_date between '{from_date}' and '{to_date}' then sum(rpd_excess_amount)
-			# 	else 0
-			# end) total_excess_amount,
-			# (case 
-			# 	when rb_posting_date between '{from_date}' and '{to_date}' then sum(rpd_tds_amount)
-			# 	else 0
-			# end) total_tds_amount,
-			# (case 
-			# 	when rb_posting_date between '{from_date}' and '{to_date}' then sum(rpd_rent_write_off_amount)
-			# 	else 0
-			# end) total_rent_write_off_amount,
-			# (case 
-			# 	when rb_posting_date between '{from_date}' and '{to_date}' then sum(rpd_penalty_amount)
-			# 	else 0
-			# end) total_penalty_amount,
-			# (case 
-			# 	when rb_posting_date between '{from_date}' and '{to_date}' then sum(rpd_discount_amount)
-			# 	else 0
-			# end) total_discount_amount,
-			# (case 
-			# 	when rb_posting_date between '{from_date}' and '{to_date}'
-			# 	then sum(rpd_received_amount) + sum(rpd_property_management_amount) + sum(rpd_pre_rent_amount) + sum(rpd_excess_amount) + sum(rpd_penalty_amount) - sum(rpd_discount_amount)
-			# 	else 0
-			# end) total_rent_received,
-			# (case 
-			# 	when rb_posting_date between '{from_date}' and '{to_date}'
-			# 	then sum(rb_receivable_amount) - sum(rpd_received_amount) - sum(rpd_property_management_amount) - sum(rb_adjusted_amount) - sum(rpd_rent_write_off_amount) - sum(rpd_tds_amount)
-			# 	else 0
-			# end) outstanding_amount,
-			# (case 
-			# 	when rb_posting_date between '{from_date}' and '{to_date}'
-			# 	then sum(rpd_pre_rent_amount) - sum(rb_adjusted_amount)
-			# 	else 0
-			# end) pre_rent_balance,
-			# (case 
-			# 	when rb_posting_date < '{from_date}' then sum(rpd_received_amount)
-			# 	else 0
-			# end) outstanding_received
 	# 	from (
 	# 		select 
 	# 			rb.name, rb.tenant, rb.tenant_name,
@@ -215,11 +158,15 @@ def get_data(filters):
 	
 	data = []
 	tenant_rental_map = frappe._dict()
-	rental_list = get_all_bills(filters);
+
+	opening_balance = opening_data(filters)
+	refund_excess_amounts = get_excess_amount(filters)
+
+	rental_list = get_all_bills(filters)
 	for d in rental_list:
 		tenant_rental_map.setdefault(d.tenant, []).append(d)
 	
-	# frappe.throw("<pre>{}</pre>".format(frappe.as_json(tenant_rental_map)))
+	# frappe.throw("<pre>{}</pre>".format(frappe.as_json(refund_excess_amounts)))
 	from_date, to_date = getdate(filters.from_date), getdate(filters.to_date)
 	for key, value in tenant_rental_map.items():
 		filter_data = frappe._dict({
@@ -244,6 +191,9 @@ def get_data(filters):
 		})
 
 		""" opening values """
+		for op in opening_balance.get(key) or []:
+			filter_data['total_excess_amount'] 		= flt(filter_data['total_excess_amount'] + op.excess_amount, 2)
+			filter_data['total_pre_rent_amount'] 	= flt(filter_data['total_pre_rent_amount'] + op.pre_rent_amount, 2)
 
 		total_receivalble_amt = total_prop_mgt_amt = 0
 		for d in value:
@@ -251,6 +201,7 @@ def get_data(filters):
 			# 	filter_data['rental_bill'] += str(d.name) + ", "
 			if d.rb_posting_date < from_date:
 				filter_data['total_pre_rent_amount'] 	= flt(filter_data['total_pre_rent_amount'] + (d.rpd_pre_rent_amount - d.rb_adjusted_amount), 2)
+				filter_data['total_excess_amount'] 		= flt(filter_data['total_excess_amount'] + d.rpd_excess_amount, 2)
 			elif d.rb_posting_date >= from_date and d.rb_posting_date <= to_date:
 				# if d.rb_posting_date >= from_date and d.rb_posting_date <= to_date:
 				filter_data['rental_bill'] += str(d.name) + ", "
@@ -270,6 +221,9 @@ def get_data(filters):
 				if d.rpd_payment_date >= from_date and d.rpd_payment_date <= to_date:
 					filter_data['rental_bill'] += str(d.name) + ", "
 					filter_data['outstanding_received'] = flt(filter_data['outstanding_received'] + d.rpd_received_amount, 2)
+
+		for rf_excess in refund_excess_amounts.get(key) or []:
+			filter_data['total_excess_amount'] 		= flt(filter_data['total_excess_amount'] - rf_excess.amount, 2)
 
 		filter_data['total_rent_received'] = flt(filter_data['total_received_amount'] + filter_data['total_prop_mgt_amount'] + filter_data['total_pre_rent_amount'] + filter_data['total_excess_amount'] + filter_data['total_penalty_amount'] - filter_data['total_discount_amount'], 2)
 		filter_data['outstanding_amount'] = flt(filter_data['total_rent_amount'] - filter_data['total_received_amount'] - filter_data['total_adjusted_amount'] - filter_data['total_rent_write_off_amount'] - filter_data['total_tds_amount'], 2)
@@ -310,3 +264,31 @@ def get_all_bills(filters):
 	
 	result = frappe.db.sql(query, as_dict=1)
 	return result
+
+def get_excess_amount(filters):
+	""" payment refund for excess amount"""
+	data = {}
+	query = """
+			select tenant,customer,sum(refund_amount) as amount,posting_date 
+			from `tabPayment Refund`
+			where type='Excess Amount' and docstatus=1 and journal_entry_status='Paid' and 
+			posting_date between '{from_date}' and '{to_date}' group by tenant
+		""".format(from_date=filters.get("from_date"), to_date=filters.get("to_date"))
+
+	for d in frappe.db.sql(query, as_dict=1):
+		data.setdefault(d.tenant, []).append(d)
+	return data
+
+def opening_data(filters):
+	""" opening pre_rent and excess amount from Rental Payment with is_opening Yes"""
+	data = {}
+	query = """
+			select sum(i.pre_rent_amount) pre_rent_amount, sum(i.excess_amount) excess_amount, i.tenant, i.customer, r.posting_date
+			from `tabRental Payment` r inner join `tabRental Payment Item` i on i.parent=r.name 
+			where r.docstatus=1 and r.is_opening='Yes' and r.posting_date <= '{to_date}' and r.journal_entry_status='Received' 
+			group by i.tenant
+		""".format(from_date=filters.get("from_date"), to_date=filters.get("to_date"))
+
+	for d in frappe.db.sql(query, as_dict=1):
+		data.setdefault(d.tenant, []).append(d)
+	return data

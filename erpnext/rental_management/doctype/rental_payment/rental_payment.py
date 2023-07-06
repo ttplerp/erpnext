@@ -3,7 +3,7 @@
 
 import frappe
 from frappe.model.document import Document
-from frappe.utils import flt, get_last_day, date_diff, add_to_date, cint, money_in_words
+from frappe.utils import flt, get_last_day, date_diff, add_to_date, cint, money_in_words, now_datetime
 from frappe import _
 from erpnext.accounts.general_ledger import make_gl_entries
 from erpnext.controllers.accounts_controller import AccountsController

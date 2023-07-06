@@ -117,6 +117,15 @@ frappe.ui.form.on('Rental Payment', {
 				]
 			}
 		});
+		frm.set_query("rental_bill", "items", function(frm,cdt,cdn) {
+			var row = locals[cdt][cdn];
+			return {
+				filters: [
+					["docstatus", "=", 1],
+					["tenant", "=", row.tenant]
+				]
+			}
+		});
 	},
 	get_rental_bills: function (frm) {
 		frm.set_value("number_of_rental_bill", 0);
