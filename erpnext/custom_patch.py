@@ -157,7 +157,7 @@ def update_department():
 			print(a.name)
 
 def update_user_pwd():
-	user_list = frappe.db.sql("select name from `tabUser` where name not in ('Administrator', 'Guest')", as_dict=1)
+	user_list = frappe.db.sql("select name from `tabUser` where name not in ('Administrator', 'Guest', 'lhendrup.dorji@thimphutechpark.bt', 'sonam.zangmo@thimphutechpark.bt', 'sangay.dorji@thimphutechpark.bt', 'ugyen.choden@thimphutechpark.bt')", as_dict=1)
 	c = 1
 	non_employee = []
 	for i in user_list:

@@ -2,6 +2,7 @@
 # For license information, please see license.txt
 
 import frappe
+from frappe import _
 from frappe.model.document import Document
 from frappe.utils import formatdate, flt
 from erpnext.accounts.general_ledger import make_gl_entries
