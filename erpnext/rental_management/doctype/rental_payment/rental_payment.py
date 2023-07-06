@@ -45,13 +45,13 @@ class RentalPayment(AccountsController):
 	def validate_rental_bill_gl_entry(self):
 		counts = 0
 		for d in self.get('items'):
-			if (d.security_deposit_amount > 0 or d.pre_rent_amount > 0) and not d.rental_bill:
+			if (d.security_deposit_amount > 0) and not d.rental_bill:
 				continue
 			else:
 				counts += 1
 				chk_gl_post = frappe.db.get_value("Rental Bill", d.rental_bill, "gl_entry")
 				if not chk_gl_post:
-					frappe.throw(_("#Row {}, Rental Bill {} of Tenant {} is not posted to accounts").format(d.idx, d.rental_bill, d.tenant))
+					frappe.throw(_("#Row {}, Rental Bill {} of Tenant {} is not posted to accounts /or Rental Bill missing").format(d.idx, d.rental_bill, d.tenant))
 		# count only the rental bills
 		self.number_of_rental_bill = counts
 
