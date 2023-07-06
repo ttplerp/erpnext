@@ -385,7 +385,7 @@ frappe.ui.form.on('Stock Entry', {
 				}
 			});
 		}
-		if (frm.doc.stock_entry_type == "Material Return" && frm.doc.to_warehouse && frm.doc.docstatus === 0) {
+		if (frm.doc.stock_entry_type == "Material Return" && frm.doc.from_warehouse && frm.doc.to_warehouse && frm.doc.docstatus === 0) {
 			frm.page.clear_primary_action();
 			frappe.call({
 				method: 'erpnext.stock.doctype.stock_entry.stock_entry.has_warehouse_permission',
