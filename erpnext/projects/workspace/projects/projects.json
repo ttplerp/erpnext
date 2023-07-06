@@ -277,7 +277,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Reports",
-   "link_count": 4,
+   "link_count": 5,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -324,9 +324,19 @@
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Raw Material Required and Consumed Report",
+   "link_count": 0,
+   "link_to": "Raw Material Required and Consumed Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-07-05 17:17:53.336423",
+ "modified": "2023-07-06 10:20:01.057386",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Projects",
