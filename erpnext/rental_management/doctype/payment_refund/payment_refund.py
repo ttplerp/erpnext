@@ -31,7 +31,7 @@ class PaymentRefund(AccountsController):
 			frappe.throw("Invalid Refund Amount figure.")
 		
 		account = self.account_refund_to
-		bal_amount = self.get_party_balance_amount()
+		bal_amount = self.get_party_balance_amount(account)
 
 		if self.refund_amount > bal_amount:
 			frappe.throw(
@@ -40,7 +40,7 @@ class PaymentRefund(AccountsController):
 					).format(self.refund_amount, flt(bal_amount), self.customer, account)
 				)
 
-	def get_party_balance_amount(self):
+	def get_party_balance_amount(self, account):
 		bal_amount = frappe.db.sql("""
 				select ifnull(sum(credit) - sum(debit), 0) as bal_amount
 				from `tabGL Entry` 

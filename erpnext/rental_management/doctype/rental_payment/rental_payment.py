@@ -45,7 +45,7 @@ class RentalPayment(AccountsController):
 	def validate_rental_bill_gl_entry(self):
 		counts = 0
 		for d in self.get('items'):
-			if d.security_deposit_amount > 0 and not d.rental_bill:
+			if (d.security_deposit_amount > 0 or d.pre_rent_amount > 0) and not d.rental_bill:
 				continue
 			else:
 				counts += 1
