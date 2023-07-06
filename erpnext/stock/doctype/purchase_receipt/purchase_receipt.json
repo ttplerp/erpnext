@@ -1026,7 +1026,6 @@
    "collapsible_depends_on": "transporter_name",
    "fieldname": "transporter_info",
    "fieldtype": "Section Break",
-   "hidden": 1,
    "label": "Transporter Details",
    "options": "fa fa-truck"
   },
@@ -1199,7 +1198,7 @@
  "idx": 261,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-08 15:19:44.775198",
+ "modified": "2023-07-06 13:13:37.720039",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Purchase Receipt",

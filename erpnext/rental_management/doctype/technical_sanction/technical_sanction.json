@@ -192,6 +192,7 @@
   {
    "fieldname": "sb_detail_measurement",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Detail Measurement"
   },
   {
@@ -308,7 +309,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-05 10:17:27.624562",
+ "modified": "2023-07-06 10:56:59.727252",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Technical Sanction",

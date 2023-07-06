@@ -69,6 +69,11 @@
   "accounting_dimensions_section",
   "project",
   "dimension_col_break",
+  "sb_transport_info",
+  "transporter_name",
+  "vehicle_no",
+  "cb_ti_1",
+  "vehicle_dispatch_date",
   "printing_settings",
   "select_print_heading",
   "print_settings_col_break",
@@ -680,6 +685,31 @@
    "fieldtype": "Link",
    "label": "Technical Sanction",
    "options": "Technical Sanction"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "sb_transport_info",
+   "fieldtype": "Section Break",
+   "label": "Transport Info"
+  },
+  {
+   "fieldname": "transporter_name",
+   "fieldtype": "Data",
+   "label": "Transporter Name"
+  },
+  {
+   "fieldname": "vehicle_no",
+   "fieldtype": "Data",
+   "label": "Vehicle No"
+  },
+  {
+   "fieldname": "cb_ti_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "vehicle_dispatch_date",
+   "fieldtype": "Date",
+   "label": "Vehicle dispatch date"
   }
  ],
  "icon": "fa fa-file-text",
@@ -687,7 +717,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-03 23:30:49.901615",
+ "modified": "2023-07-06 13:09:54.754650",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Entry",
