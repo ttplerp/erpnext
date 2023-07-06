@@ -166,13 +166,12 @@
   {
    "bold": 1,
    "fieldname": "item_name",
-   "fieldtype": "Data",
+   "fieldtype": "Text",
    "in_global_search": 1,
    "label": "Item Name",
    "oldfieldname": "item_name",
    "oldfieldtype": "Data",
-   "reqd": 1,
-   "search_index": 1
+   "reqd": 1
   },
   {
    "fieldname": "item_group",
@@ -985,7 +984,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-07-04 12:33:39.979313",
+ "modified": "2023-07-06 19:38:12.722230",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",
