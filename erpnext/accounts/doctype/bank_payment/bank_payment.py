@@ -481,6 +481,7 @@ class BankPayment(Document):
                     if flt(p.debit) > 0:
                         debit_bank_account += 1
             elif a.voucher_type == "Bank Entry":
+                frappe.throw('Here')
                 party_type = party = reference_type = reference_name = ""
                 party_count = frappe.db.sql("""select count(distinct party) as party_count 
                                 from `tabJournal Entry Account` 

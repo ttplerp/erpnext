@@ -11,7 +11,8 @@
   "pol_expense_status_notification_template",
   "sb_approver",
   "fleet_mto",
-  "fleet_mto_name"
+  "fleet_mto_name",
+  "mto_gm"
  ],
  "fields": [
   {
@@ -48,12 +49,18 @@
    "fieldtype": "Link",
    "label": "POL Expense Status Notification Template",
    "options": "Email Template"
+  },
+  {
+   "fieldname": "mto_gm",
+   "fieldtype": "Link",
+   "label": "MTO GM",
+   "options": "Employee"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-04-17 12:12:55.994623",
+ "modified": "2023-06-30 16:00:16.682374",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Maintenance Settings",

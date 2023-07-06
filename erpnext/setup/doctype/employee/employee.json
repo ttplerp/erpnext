@@ -42,6 +42,7 @@
   "increment_cycle",
   "promotion_cycle",
   "promotion_due_date",
+  "pms_group",
   "erpnext_user",
   "create_user_permission",
   "create_user",
@@ -231,14 +232,16 @@
    "fieldtype": "Date",
    "label": "Date of Birth",
    "oldfieldname": "date_of_birth",
-   "oldfieldtype": "Date"
+   "oldfieldtype": "Date",
+   "reqd": 1
   },
   {
    "fieldname": "date_of_joining",
    "fieldtype": "Date",
    "label": "Date of Joining",
    "oldfieldname": "date_of_joining",
-   "oldfieldtype": "Date"
+   "oldfieldtype": "Date",
+   "reqd": 1
   },
   {
    "bold": 1,
@@ -350,6 +353,7 @@
    "oldfieldname": "designation",
    "oldfieldtype": "Link",
    "options": "Designation",
+   "reqd": 1,
    "search_index": 1
   },
   {
@@ -820,7 +824,8 @@
    "fieldname": "employee_group",
    "fieldtype": "Link",
    "label": "Employee Group",
-   "options": "Employee Group"
+   "options": "Employee Group",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_22",
@@ -979,14 +984,21 @@
    "fieldname": "employee_qualification",
    "fieldtype": "Link",
    "label": "Employee Qualification",
-   "options": "Education Level"
+   "options": "Education Level",
+   "reqd": 1
+  },
+  {
+   "fieldname": "pms_group",
+   "fieldtype": "Link",
+   "label": "PMS Group",
+   "options": "PMS Group"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-06-27 19:20:59.289466",
+ "modified": "2023-07-06 10:12:30.737224",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
@@ -1035,6 +1047,5 @@
  "sort_order": "DESC",
  "states": [],
  "title_field": "employee_name",
- "track_changes": 1,
- "track_views": 1
+ "track_changes": 1
 }

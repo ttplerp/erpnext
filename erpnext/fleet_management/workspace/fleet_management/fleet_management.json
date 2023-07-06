@@ -531,8 +531,46 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Fleet Transaction",
+   "label": "Repair and Services",
    "link_count": 3,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Repair and Services",
+   "link_count": 0,
+   "link_to": "Repair And Services",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "POL Issue",
+   "link_count": 0,
+   "link_to": "POL Issue",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "POL Receive",
+   "link_count": 0,
+   "link_to": "POL Receive",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Fleet Transaction",
+   "link_count": 4,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -569,54 +607,16 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Repair and Services",
-   "link_count": 4,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Repair and Services",
+   "label": "Hiring Form",
    "link_count": 0,
-   "link_to": "Repair And Services",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Equipment Modifier Tool",
-   "link_count": 0,
-   "link_to": "Equipment Modifier Tool",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "POL Issue",
-   "link_count": 0,
-   "link_to": "POL Issue",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "POL Receive",
-   "link_count": 0,
-   "link_to": "POL Receive",
+   "link_to": "Equipment Hiring Form",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
   }
  ],
- "modified": "2023-06-30 10:27:15.910606",
- "modified_by": "Administrator",
+ "modified": "2023-07-05 16:17:42.086149",
+ "modified_by": "tshering.lham@thimphutechpark.bt",
  "module": "Fleet Management",
  "name": "Fleet Management",
  "owner": "Administrator",

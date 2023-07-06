@@ -29,11 +29,19 @@ def post_depreciation_entries(date=None):
 
 def get_depreciable_assets(date):
     return frappe.db.sql_list(
-        """select distinct a.name
-		from tabAsset a, `tabDepreciation Schedule` ds
-		where a.name = ds.parent and a.docstatus=1 and ds.schedule_date<=%s and a.calculate_depreciation = 1
-			and a.status in ('Submitted', 'Partially Depreciated')
-			and ifnull(ds.journal_entry, '')=''""",
+        """
+        SELECT  DISTINCT a.name
+		FROM    `tabAsset` a, 
+                `tabDepreciation Schedule` ds
+		WHERE a.name = ds.parent 
+            AND a.docstatus=1 
+            AND ds.schedule_date<=%s 
+            AND a.calculate_depreciation = 1
+			AND a.status in (
+                'Submitted', 
+                'Partially Depreciated'
+            )
+			AND ifnull(ds.journal_entry, '')=''""",
         date,
     )
 

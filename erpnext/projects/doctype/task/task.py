@@ -161,17 +161,19 @@ class Task(NestedSet):
 		frappe.utils.nestedset.update_nsm(self)
 
 	def on_update(self):
-		self.validate_percent_progress()
 		self.update_nsm_model()
 		self.check_recursion()
 		self.reschedule_dependent_tasks()
 		self.update_project()
 		self.unassign_todo()
 		self.populate_depends_on()
+	
+	def on_update_after_submit(self):
+		self.validate_percent_progress()
 
 	def validate_percent_progress(self):
 		if self.status == "Completed" and self.progress != 100:
-			frappe.throw('Here')
+			frappe.throw('You have {}% task completed.'.format(self.progress))
 
 	def unassign_todo(self):
 		if self.status == "Completed":

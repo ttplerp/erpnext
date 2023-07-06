@@ -832,49 +832,70 @@ def get_permission_query_conditions(user):
         return
     else:
         return """(
-			exists(select 1
-				from `tabEmployee` as e
-				where e.user_id = `tabMaterial Request`.owner
-				and e.user_id = '{user}')
+			EXISTS
+            (
+                SELECT 
+                    1
+				FROM 
+                    `tabEmployee` as e 
+                WHERE 
+                    e.user_id = `tabMaterial Request`.owner AND
+				    e.user_id = '{user}'
+            )
+            OR 
+            EXISTS
+            (
+                SELECT 
+                    1
+				FROM 
+                    `tabEmployee` as e 
+                WHERE
+                    e.user_id = `tabMaterial Request`.approver AND
+				    e.user_id = '{user}'
+            )
 		)""".format(
             user=user
         )
+    # e.user_id = `tabMaterial Request`.owner
 
-        # ceo_or_general_manager = 1 if 'General Manager' in user_roles or 'CEO' in user_roles else 0
 
-        # return """(
-        #         `tabMaterial Request`.owner = '{user}'
-        #         or
-        #         (`tabMaterial Request`.approver = '{user}' and `tabMaterial Request`.workflow_state not in  ('Draft','Approved','Rejected','Cancelled'))
-        #         or
-        #         (
-        #             {ceo_or_general_manager} = 0
-        #             and
-        #             exists (
-        #                 select 1
-        #                 from `tabEmployee` as e, `tabWarehouse` w, `tabWarehouse Branch` wb
-        #                 where e.user_id = '{user}'
-        #                 and wb.branch = e.branch
-        #                 and w.name = wb.parent
-        #                 and (`tabMaterial Request`.set_from_warehouse = w.name or `tabMaterial Request`.set_warehouse = w.name)
-        #                 and `tabMaterial Request`.workflow_state not in  ('Draft','Rejected','Cancelled')
-        #             )
-        #         )
-        # )""".format(user = user, ceo_or_general_manager = ceo_or_general_manager)
+# 			and
 
-        # '''
-        # return """(
-        # 		exists(select 1
-        # 			from `tabEmployee` as e
-        # 			where e.user_id = `tabMaterial Request`.owner
-        # 			and e.user_id = '{user}')
-        # 		or
-        # 		exists (
-        # 			select 1 from `tabEmployee` as e, `tabWarehouse Branch` wb, `tabWarehouse` w, `tabHas Role` hr where w.name = wb.parent
-        # 			and (`tabMaterial Request`.source_warehouse = w.name or `tabMaterial Request`.requesting_warehouse = w.name) and e.branch = wb.branch
-        # 			and `tabMaterial Request`.workflow_state not in  ('Draft','Rejected','Cancelled')
-        # 			and hr.parent = e.user_id and (hr.role = 'Stock User' or hr.role = 'Purchase User') and hr.role != 'General Manager' and e.user_id = '{user}'
-        # 		)
-        # 		or
-        # 		(`tabMaterial Request`.approver = '{user}' and `tabMaterial Request`.workflow_state not in  ('Draft','Approved','Rejected','Cancelled'))
-        # )""".format(user=user)
+# ceo_or_general_manager = 1 if 'General Manager' in user_roles or 'CEO' in user_roles else 0
+
+# return """(
+#         `tabMaterial Request`.owner = '{user}'
+#         or
+#         (`tabMaterial Request`.approver = '{user}' and `tabMaterial Request`.workflow_state not in  ('Draft','Approved','Rejected','Cancelled'))
+#         or
+#         (
+#             {ceo_or_general_manager} = 0
+#             and
+#             exists (
+#                 select 1
+#                 from `tabEmployee` as e, `tabWarehouse` w, `tabWarehouse Branch` wb
+#                 where e.user_id = '{user}'
+#                 and wb.branch = e.branch
+#                 and w.name = wb.parent
+#                 and (`tabMaterial Request`.set_from_warehouse = w.name or `tabMaterial Request`.set_warehouse = w.name)
+#                 and `tabMaterial Request`.workflow_state not in  ('Draft','Rejected','Cancelled')
+#             )
+#         )
+# )""".format(user = user, ceo_or_general_manager = ceo_or_general_manager)
+
+# '''
+# return """(
+# 		exists(select 1
+# 			from `tabEmployee` as e
+# 			where e.user_id = `tabMaterial Request`.owner
+# 			and e.user_id = '{user}')
+# 		or
+# 		exists (
+# 			select 1 from `tabEmployee` as e, `tabWarehouse Branch` wb, `tabWarehouse` w, `tabHas Role` hr where w.name = wb.parent
+# 			and (`tabMaterial Request`.source_warehouse = w.name or `tabMaterial Request`.requesting_warehouse = w.name) and e.branch = wb.branch
+# 			and `tabMaterial Request`.workflow_state not in  ('Draft','Rejected','Cancelled')
+# 			and hr.parent = e.user_id and (hr.role = 'Stock User' or hr.role = 'Purchase User') and hr.role != 'General Manager' and e.user_id = '{user}'
+# 		)
+# 		or
+# 		(`tabMaterial Request`.approver = '{user}' and `tabMaterial Request`.workflow_state not in  ('Draft','Approved','Rejected','Cancelled'))
+# )""".format(user=user)

@@ -448,7 +448,7 @@ default_mail_footer = """
 	<span>
 		Sent via
 		<a class="text-muted" href="https://dev.stcb.bt" target="_blank">
-			STCBL ERP
+			VAJRA ERP
 		</a>
 	</span>
 """

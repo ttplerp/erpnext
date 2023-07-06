@@ -9,16 +9,12 @@
  "field_order": [
   "barcode",
   "item_code",
-  "parts_no",
-  "part_name",
   "col_break1",
+  "item_type",
   "item_name",
   "customer_item_code",
   "description_section",
   "description",
-  "column_break_11",
-  "tvo_no",
-  "engine_no",
   "item_group",
   "brand",
   "image_section",
@@ -42,6 +38,27 @@
   "discount_percentage",
   "discount_amount",
   "base_rate_with_margin",
+  "transporter_info_section",
+  "others_equipment",
+  "equipment",
+  "vehicle_number",
+  "transporter_name",
+  "vehicle_type",
+  "column_break_37",
+  "is_volumetric",
+  "gross_vehicle_weight",
+  "tare_weight",
+  "volumetric_weight",
+  "weight_slip_no",
+  "pol_slip_no",
+  "location_base_info_section",
+  "from_warehouse",
+  "distance",
+  "transporter_rate_ref",
+  "column_break_48",
+  "location",
+  "transporter_rate",
+  "transporter_rate_expense_account",
   "section_break1",
   "rate",
   "amount",
@@ -93,6 +110,21 @@
   "item_tax_rate",
   "actual_batch_qty",
   "actual_qty",
+  "loss_details_section",
+  "name_tolerance",
+  "loss_method",
+  "loss_tolerance",
+  "loss_qty_flat",
+  "remarks",
+  "justification",
+  "column_break_111",
+  "accepted_qty",
+  "normal_loss",
+  "normal_loss_amt",
+  "abnormal_loss",
+  "abnormal_loss_amt",
+  "excess_qty",
+  "excess_amt",
   "edit_references",
   "sales_order",
   "so_detail",
@@ -125,6 +157,7 @@
    "oldfieldname": "item_code",
    "oldfieldtype": "Link",
    "options": "Item",
+   "read_only": 1,
    "search_index": 1
   },
   {
@@ -132,6 +165,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "fetch_from": "item_code.item_name",
    "fieldname": "item_name",
    "fieldtype": "Data",
    "in_global_search": 1,
@@ -139,6 +173,7 @@
    "oldfieldname": "item_name",
    "oldfieldtype": "Data",
    "print_hide": 1,
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -156,6 +191,7 @@
    "oldfieldname": "description",
    "oldfieldtype": "Text",
    "print_width": "200px",
+   "reqd": 1,
    "width": "200px"
   },
   {
@@ -183,7 +219,8 @@
    "in_list_view": 1,
    "label": "Quantity",
    "oldfieldname": "qty",
-   "oldfieldtype": "Currency"
+   "oldfieldtype": "Currency",
+   "read_only_depends_on": "eval:doc.sales_order"
   },
   {
    "depends_on": "eval:doc.uom != doc.stock_uom",
@@ -198,10 +235,12 @@
    "fieldtype": "Column Break"
   },
   {
+   "fetch_from": "item_code.stock_uom",
    "fieldname": "uom",
    "fieldtype": "Link",
    "label": "UOM",
    "options": "UOM",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -223,7 +262,8 @@
   },
   {
    "fieldname": "section_break_17",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "hidden": 1
   },
   {
    "fieldname": "price_list_rate",
@@ -246,8 +286,10 @@
    "read_only": 1
   },
   {
+   "collapsible": 1,
    "fieldname": "discount_and_margin",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Discount and Margin"
   },
   {
@@ -317,6 +359,7 @@
    "oldfieldname": "export_rate",
    "oldfieldtype": "Currency",
    "options": "currency",
+   "read_only_depends_on": "eval:doc.sales_order",
    "reqd": 1
   },
   {
@@ -418,6 +461,7 @@
    "collapsible_depends_on": "eval:doc.delivered_by_supplier==1",
    "fieldname": "drop_ship",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Drop Ship"
   },
   {
@@ -432,6 +476,7 @@
    "collapsible": 1,
    "fieldname": "accounting",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Accounting Details"
   },
   {
@@ -461,6 +506,7 @@
   {
    "fieldname": "item_tax_template",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Item Tax Template",
    "options": "Item Tax Template",
    "print_hide": 1
@@ -483,6 +529,7 @@
    "collapsible_depends_on": "enable_deferred_revenue",
    "fieldname": "deferred_revenue",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Deferred Revenue"
   },
   {
@@ -528,6 +575,7 @@
    "collapsible": 1,
    "fieldname": "section_break_18",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Item Weight Details"
   },
   {
@@ -561,6 +609,7 @@
    "collapsible_depends_on": "eval:doc.serial_no || doc.batch_no",
    "fieldname": "warehouse_and_reference",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Stock Details"
   },
   {
@@ -612,11 +661,10 @@
    "print_hide": 1
   },
   {
-   "description": "<b>Use comma to enter more than one nos.</b>",
    "fieldname": "serial_no",
    "fieldtype": "Small Text",
    "in_list_view": 1,
-   "label": "Serial No/Chassis No",
+   "label": "Serial No",
    "oldfieldname": "serial_no",
    "oldfieldtype": "Small Text"
   },
@@ -772,12 +820,14 @@
    "collapsible": 1,
    "fieldname": "description_section",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Description"
   },
   {
    "collapsible": 1,
    "fieldname": "image_section",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Image"
   },
   {
@@ -846,39 +896,221 @@
    "read_only": 1
   },
   {
-   "fetch_from": "item_code.parts_no",
-   "fieldname": "parts_no",
+   "collapsible": 1,
+   "fieldname": "transporter_info_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Transporter Info"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "location_base_info_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Location Base Info"
+  },
+  {
+   "default": "0",
+   "fieldname": "others_equipment",
+   "fieldtype": "Check",
+   "label": "Others Equipment"
+  },
+  {
+   "fieldname": "equipment",
    "fieldtype": "Link",
-   "label": "Parts No/Model",
-   "options": "Part No",
-   "read_only": 1
+   "label": "Vehicle/Equipment",
+   "options": "Equipment"
   },
   {
-   "fetch_from": "item_code.part_name",
-   "fieldname": "part_name",
-   "fieldtype": "Data",
-   "label": "Part Name",
-   "read_only": 1
+   "fieldname": "transporter_name",
+   "fieldtype": "Link",
+   "label": "Transporter Name",
+   "options": "Supplier"
   },
   {
-   "fieldname": "column_break_11",
+   "fieldname": "vehicle_type",
+   "fieldtype": "Link",
+   "label": "Vehicle Type",
+   "options": "Equipment Type"
+  },
+  {
+   "fieldname": "column_break_37",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "tvo_no",
-   "fieldtype": "Data",
-   "label": "Tvo No."
+   "default": "0",
+   "fieldname": "is_volumetric",
+   "fieldtype": "Check",
+   "label": "Is Volumetric"
   },
   {
-   "fieldname": "engine_no",
+   "fieldname": "gross_vehicle_weight",
+   "fieldtype": "Float",
+   "label": "Gross Vehicle Weight"
+  },
+  {
+   "fieldname": "tare_weight",
+   "fieldtype": "Float",
+   "label": "Tare Weight"
+  },
+  {
+   "fieldname": "volumetric_weight",
+   "fieldtype": "Float",
+   "label": "Volumetric Weight"
+  },
+  {
+   "fieldname": "weight_slip_no",
    "fieldtype": "Data",
-   "label": "Engine No."
+   "label": "Weight Slip No"
+  },
+  {
+   "fieldname": "pol_slip_no",
+   "fieldtype": "Data",
+   "label": "POL Slip No"
+  },
+  {
+   "fieldname": "from_warehouse",
+   "fieldtype": "Link",
+   "label": "From Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "distance",
+   "fieldtype": "Link",
+   "label": "Distance",
+   "options": "Distance"
+  },
+  {
+   "fieldname": "transporter_rate_ref",
+   "fieldtype": "Link",
+   "label": "Transporter Rate Ref",
+   "options": "Transporter Rate"
+  },
+  {
+   "fieldname": "column_break_48",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Link",
+   "label": " Location",
+   "options": "Location"
+  },
+  {
+   "fieldname": "transporter_rate",
+   "fieldtype": "Currency",
+   "label": "Transporter Rate"
+  },
+  {
+   "fieldname": "transporter_rate_expense_account",
+   "fieldtype": "Link",
+   "label": "Transporter Rate Expense Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "item_type",
+   "fieldtype": "Link",
+   "label": "Item Type",
+   "options": "Item Type",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "loss_details_section",
+   "fieldtype": "Section Break",
+   "label": "Loss Details"
+  },
+  {
+   "fieldname": "name_tolerance",
+   "fieldtype": "Link",
+   "label": "Loss Tolerance",
+   "options": "Loss Tolerance"
+  },
+  {
+   "fieldname": "loss_method",
+   "fieldtype": "Select",
+   "label": "Loss Tolerance Based On",
+   "options": "Quantity in %\nQuantity in Flat"
+  },
+  {
+   "fetch_from": "name_tolerance.loss_tolerance",
+   "fieldname": "loss_tolerance",
+   "fieldtype": "Float",
+   "label": "Quantity in (%)",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "name_tolerance.loss_qty_flat",
+   "fieldname": "loss_qty_flat",
+   "fieldtype": "Float",
+   "label": "Quantity in Flat",
+   "read_only": 1
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Normal loss description/justification"
+  },
+  {
+   "fieldname": "justification",
+   "fieldtype": "Small Text",
+   "label": "Abnormal loss description/justification"
+  },
+  {
+   "fieldname": "column_break_111",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "accepted_qty",
+   "fieldtype": "Float",
+   "label": "Quantity Accepted by Customer"
+  },
+  {
+   "fieldname": "normal_loss",
+   "fieldtype": "Float",
+   "label": "Normal Loss Quantity",
+   "read_only": 1
+  },
+  {
+   "fieldname": "normal_loss_amt",
+   "fieldtype": "Currency",
+   "label": "Normal Loss Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "abnormal_loss",
+   "fieldtype": "Float",
+   "label": "Abnormal Loss Quantity",
+   "read_only": 1
+  },
+  {
+   "fieldname": "abnormal_loss_amt",
+   "fieldtype": "Currency",
+   "label": "Abnormal Loss Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "excess_qty",
+   "fieldtype": "Float",
+   "label": "Excess Quantity",
+   "read_only": 1
+  },
+  {
+   "fieldname": "excess_amt",
+   "fieldtype": "Currency",
+   "label": "Excess Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "vehicle_number",
+   "fieldtype": "Data",
+   "label": "Vehicle No"
   }
  ],
  "idx": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-04-17 12:11:58.221899",
+ "modified": "2023-01-03 12:43:34.113906",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Sales Invoice Item",
@@ -887,6 +1119,5 @@
  "permissions": [],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
- "track_views": 1
+ "states": []
 }
