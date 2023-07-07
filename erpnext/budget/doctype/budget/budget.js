@@ -62,14 +62,12 @@ frappe.ui.form.on('Budget', {
 	}
 });
 
-frappe.ui.form.on("Budget Account", {
-	initial_budget: function (frm, doctype, name) {
-		var d = locals[doctype][name];
-		if(d.initial_budget >0){
-			frappe.model.set_value(doctype, name, "budget_amount", d.initial_budget);
-		}
-	},
-});
+// frappe.ui.form.on("Budget Account", {
+// 	initial_budget: function (frm, doctype, name) {
+// 		var d = locals[doctype][name];
+// 		frappe.model.set_value(doctype, name, "budget_amount", d.initial_budget);
+// 	},
+// });
 
 frappe.ui.form.on("Budget Account", {	
 	"january": function(frm, cdt, cdn) {
@@ -109,30 +107,15 @@ frappe.ui.form.on("Budget Account", {
 		set_initial_budget(frm, cdt, cdn);
 	},
 }); 
+
 function set_initial_budget(frm, cdt, cdn){
-	var item = locals[cdt][cdn];
 	frappe.call({
-		method:"erpnext.budget.doctype.budget.budget.set_initial_budget",
-		// doc: frm.doc,
-		args: {
-			"january": item.january,
-			"february": item.february,
-			"march": item.march,
-			"april": item.april,
-			"may": item.may,
-			"june": item.june,
-			"july": item.july,
-			"august": item.august,
-			"september": item.september,
-			"october": item.october,
-			"november": item.november,
-			"december": item.december
-		},
+		method:"set_initial_budget",
+		doc: frm.doc,
 		callback: function(r) {
-			if(r.message) {
-				frappe.model.set_value(cdt, cdn, "initial_budget", flt(r.message))
-				refresh_field('initial_budget');
-			}
+			frm.refresh_field('initial_budget');
+			frm.refresh_field('budget_amount');
+			frm.refresh_fields('accounts');
 		}
 	})
 }

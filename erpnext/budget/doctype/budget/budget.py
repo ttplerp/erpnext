@@ -34,6 +34,7 @@ class Budget(Document):
 		self.validate_accounts()
 		self.set_null_value()
 		self.validate_applicable_for()
+		self.set_initial_budget()
 		self.calculate_budget()
 		self.calculate_totals()
 
@@ -129,6 +130,13 @@ class Budget(Document):
 			self.initial_total = total_initial
 			self.actual_total = total_actual
 			self.supp_total = total_supplementary
+	
+	@frappe.whitelist()
+	def set_initial_budget(self):
+		for d in self.accounts:
+			initial_budget = flt(d.january) + flt(d.february) + flt(d.march) + flt(d.april)+ flt(d.may) +flt(d.june) +flt(d.july) +flt(d.august) + flt(d.september) +flt(d.october) +flt(d.november) +flt(d.december)
+			d.db_set("initial_budget", initial_budget)
+			d.db_set("budget_amount", flt(initial_budget) + flt(d.supplementary_budget) + flt(d.budget_received) - flt(d.budget_sent))
 
 	@frappe.whitelist()
 	def get_accounts(self):
@@ -635,8 +643,3 @@ def get_expense_cost_center(doctype, args):
 		return frappe.db.get_value(
 			doctype, args.get(frappe.scrub(doctype)), ["cost_center", "default_expense_account"]
 		)
-
-@frappe.whitelist()
-def set_initial_budget(january, february, march, april, may, june, july, august, september, october, november, december):
-    initial_budget = flt(january)+ flt(february) + flt(march) + flt(april)+ flt(may) +flt(june) +flt(july) +flt(august) + flt(september) +flt(october) +flt(november) +flt(december)  
-    return initial_budget
