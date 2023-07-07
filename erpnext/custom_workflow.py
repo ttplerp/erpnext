@@ -529,7 +529,7 @@ class CustomWorkflow:
 			if self.doc.approver != frappe.session.user:
 				frappe.throw("Only {} can Forward this Encashment".format(self.doc.approver_name))
 			self.set_approver("HRGM")
-		elif self.new_state.lower() == ("Approved".lower() or "Rejected".lower()):
+		elif  self.new_state.lower() in ("Approved".lower(), "Rejected".lower()):
 			if self.doc.approver != frappe.session.user:
 				frappe.throw("Only {} can Approve / Reject this Encashment".format(self.doc.approver_name))
 		else:
