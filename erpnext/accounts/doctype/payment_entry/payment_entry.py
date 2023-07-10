@@ -43,9 +43,9 @@ class PaymentEntry(AccountsController):
 		if not self.is_new():
 			self.setup_party_account_field()
 	
-	# def autoname(self):
-	# 	year = formatdate(self.posting_date, "YYYY")
-	# 	self.name = make_autoname(str("PE") + '.{}.#####'.format(year))
+	def autoname(self):
+		year = formatdate(self.posting_date, "YYYY")
+		self.name = make_autoname(str("PE") + '.{}.#####'.format(year))
 
 	def setup_party_account_field(self):
 		self.party_account_field = None
