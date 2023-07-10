@@ -8,10 +8,11 @@
  "field_order": [
   "location",
   "luc_no",
-  "description",
+  "plot_no",
   "cb_1",
   "town_category",
   "dzongkhag",
+  "description",
   "sb_property_mgt",
   "property_management_item",
   "total_property_management_amount"
@@ -46,7 +47,7 @@
   },
   {
    "fieldname": "description",
-   "fieldtype": "Data",
+   "fieldtype": "Small Text",
    "label": "Description"
   },
   {
@@ -71,11 +72,16 @@
    "fieldtype": "Data",
    "label": "LUC No",
    "reqd": 1
+  },
+  {
+   "fieldname": "plot_no",
+   "fieldtype": "Data",
+   "label": "Plot No"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-07-05 22:25:17.705181",
+ "modified": "2023-07-10 12:26:30.296856",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Locations",
