@@ -12,7 +12,6 @@
   "to_date",
   "column_break_5",
   "bank_account",
-  "type",
   "include_reconciled_entries",
   "include_pos_transactions",
   "section_break_10",
@@ -99,14 +98,6 @@
    "label": "Total Amount",
    "options": "account_currency",
    "read_only": 1
-  },
-  {
-   "default": "Debit",
-   "fieldname": "type",
-   "fieldtype": "Select",
-   "label": "Type",
-   "options": "\nDebit\nCredit",
-   "reqd": 1
   }
  ],
  "hide_toolbar": 1,
@@ -114,7 +105,7 @@
  "idx": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-04-17 12:12:13.162627",
+ "modified": "2023-07-10 11:54:55.145373",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Bank Clearance",

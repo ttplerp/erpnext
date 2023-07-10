@@ -280,6 +280,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Requesting Warehouse",
+   "mandatory_depends_on": "eval:doc.material_request_type == 'Material Issue';",
    "options": "Warehouse"
   },
   {
@@ -290,7 +291,7 @@
    "width": "50%"
   },
   {
-   "depends_on": "eval:doc.material_request_type == 'Material Transfer'",
+   "depends_on": "eval:doc.material_request_type == \"Material Transfer\";",
    "fieldname": "set_from_warehouse",
    "fieldtype": "Link",
    "label": "Source Warehouse",
@@ -370,7 +371,7 @@
  "idx": 70,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-05 09:55:57.692602",
+ "modified": "2023-07-10 12:18:53.063391",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Material Request",
@@ -505,7 +506,6 @@
    "read": 1,
    "report": 1,
    "role": "Projects Manager",
-   "select": 1,
    "share": 1,
    "submit": 1,
    "write": 1

@@ -856,11 +856,51 @@ def get_permission_query_conditions(user):
 		)""".format(
             user=user
         )
-    # e.user_id = `tabMaterial Request`.owner
+    # dsp copied
+    # if not user:
+    #     user = frappe.session.user
+    # user_roles = frappe.get_roles(user)
+    # if "Administrator" in user_roles or "System Manager" in user_roles:
+    #     return
+    # ceo_or_general_manager = (
+    #     1 if "General Manager" in user_roles or "CEO" in user_roles else 0
+    # )
+    # return """(
 
 
+# 		`tabMaterial Request`.owner = '{user}'
+# 		or
+# 		(`tabMaterial Request`.approver = '{user}' and `tabMaterial Request`.workflow_state not in  ('Draft','Approved','Rejected','Cancelled'))
+# 		or
+# 		(
+# 			{ceo_or_general_manager} = 0
 # 			and
+# 			exists (
+# 				select 1
+# 				from `tabEmployee` as e, `tabWarehouse` w, `tabWarehouse Branch` wb
+# 				where e.user_id = '{user}'
+# 				and wb.branch = e.branch
+# 				and w.name = wb.parent
+# 				and (`tabMaterial Request`.set_from_warehouse = w.name or `tabMaterial Request`.set_warehouse = w.name)
+# 				and `tabMaterial Request`.workflow_state not in  ('Draft','Rejected','Cancelled')
+# 			)
+# 		)
+# 		or
+# 		exists(select 1
+# 			from `tabEmployee` e, `tabAssign Branch` ab, `tabBranch Item` bi
+# 			where e.user_id = '{user}'
+# 			and ab.employee = e.name
+# 			and bi.parent = ab.name
+# 			and bi.branch = `tabMaterial Request`.branch)
+# )""".format(
+#     user=user, ceo_or_general_manager=ceo_or_general_manager
+# )
 
+
+
+
+# e.user_id = `tabMaterial Request`.owner
+# 			and
 # ceo_or_general_manager = 1 if 'General Manager' in user_roles or 'CEO' in user_roles else 0
 
 # return """(
