@@ -68,10 +68,10 @@ class PurchaseInvoice(BuyingController):
 		]
 
 	# Added by Jai, 2 June, 2022
-	def autoname(self):
-		year = formatdate(self.posting_date, "YY")
-		month = formatdate(self.posting_date, "MM")
-		self.name = make_autoname(str("PI") + '.{}.{}.####'.format(year, month))
+	# def autoname(self):
+	# 	year = formatdate(self.posting_date, "YY")
+	# 	month = formatdate(self.posting_date, "MM")
+	# 	self.name = make_autoname(str("PI") + '.{}.{}.####'.format(year, month))
 
 	def onload(self):
 		super(PurchaseInvoice, self).onload()

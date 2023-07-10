@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_import": 1,
- "autoname": "naming_series:",
+ "autoname": "PI.YY.MM.####",
  "creation": "2013-05-21 16:16:39",
  "doctype": "DocType",
  "document_type": "Document",
@@ -1453,12 +1453,12 @@
  "idx": 204,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-23 12:34:00.231034",
+ "modified": "2023-07-10 09:26:06.269521",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Purchase Invoice",
  "name_case": "Title Case",
- "naming_rule": "By \"Naming Series\" field",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
