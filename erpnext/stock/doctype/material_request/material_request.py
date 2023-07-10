@@ -83,7 +83,7 @@ class MaterialRequest(BuyingController):
 
 	def validate(self):
 		super(MaterialRequest, self).validate()
-		# validate_workflow_states(self)
+		validate_workflow_states(self)
 		# self.validate_transaction_date()
 		self.validate_schedule_date()
 		self.check_for_on_hold_or_closed_status("Sales Order", "sales_order")
@@ -133,28 +133,22 @@ class MaterialRequest(BuyingController):
 	def validate_project_bsr_item_qty(self):
 		for idx, d in enumerate(self.items):
 			if d.project:
-				prj = frappe.get_doc("Project", d.project)
+				data = frappe.db.sql("""
+						SELECT b.name, bsr.item_code, bsr.item_name, SUM(bi.quantity * bsr.qty) AS total_req_qty,
+							(SELECT SUM(sd.qty) FROM `tabStock Entry Detail` sd WHERE sd.item_code = bsr.item_code AND sd.project = '{project}' AND sd.docstatus = 1) AS consumed
+						FROM `tabBOQ` b
+						JOIN `tabBOQ Item` bi ON bi.parent = b.name
+						JOIN `tabBSR Raw Item` bsr ON bsr.parent = bi.boq_code
+						WHERE b.docstatus = 1 AND b.workflow_state = 'Approved' AND b.project = '{project}'
+						AND bsr.item_code = '{item_code}'
+						GROUP BY bsr.item_code
+					""".format(project=d.project, item_code=d.item_code), as_dict=True)
 				
-				for row in prj.project_boq_item:
-					boq = frappe.get_doc("BOQ", row.boq_name)
-					
-					for b in boq.boq_item:
-						item_details = frappe.db.sql("""
-							SELECT i.name, it.item_code, it.qty
-							FROM `tabItem` i
-							INNER JOIN `tabBSR Raw Item` it ON it.parent = i.name
-							WHERE i.name = %s
-								AND i.is_bsr_service_item = 1
-								AND it.item_code = %s
-							LIMIT 1
-						""", (b.boq_code, d.item_code), as_dict=True)
-						
-						if item_details:
-							i = item_details[0]
-							total_qty = i.qty * b.quantity
-							if d.qty > total_qty and i.item_code == d.item_code:
-								frappe.msgprint(
-									_("Row <b>{}</b>: Quantity Requested exceeds the defined Qty in <b>{}</b> for Item Code <b>{}</b>").format(idx+1, row.boq_name, d.item_code),
+				if data:
+					for row in data:
+						if flt(d.qty) > (flt(row.total_req_qty) - flt(row.consumed)):
+							frappe.msgprint(
+									_("Row <b>{}</b>: Quantity Requested exceeds the defined Qty in <b>{}</b> for Item Code <b>{}</b>").format(idx+1, row.name, d.item_code),
 									indicator="red",
 									title=_("Warning")
 								)
