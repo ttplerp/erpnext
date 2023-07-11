@@ -3,6 +3,40 @@ from erpnext.setup.doctype.employee.employee import create_user
 import pandas as pd
 import csv
 from frappe.utils import flt, cint, nowdate, getdate, formatdate
+
+def update_sle_gl():
+	for b in ["PRO-23-07-05-095","PRO-23-07-06-062","PRO-23-07-06-069","PRO-23-07-06-064","PRO-23-07-06-070"]:
+		#frappe.db.sql("delete from `tabGL Entry` where voucher_type='Production' and voucher_no='{}'".format(b))
+		for a in frappe.db.sql("""select name, actual_qty, incoming_rate,
+									valuation_rate, qty_after_transaction
+									from `tabStock Ledger Entry` 
+									where voucher_no="{}"
+									and item_code="300023"	
+								""".format(b), as_dict=True):
+			stock_value = a.qty_after_transaction * a.valuation_rate
+			stock_value_difference = a.actual_qty * a.incoming_rate
+			frappe.db.sql("""  update `tabStock Ledger Entry`
+							set stock_value='{}', stock_value_difference='{}'
+							where name ='{}'
+						""".format(stock_value, stock_value_difference, a.name))
+		doc = frappe.get_doc("Production", b)
+		#doc.make_gl_entries()
+		#frappe.db.commit()
+		print("Done for Production No: " + str(b))
+
+def get_wrong_dn():
+	i=0
+	for a in frappe.db.sql("""
+					select is_cancelled docstatus, voucher_no, credit, posting_date, account from `tabGL Entry`
+					where voucher_type="Delivery Note"
+					and account="Cost of Goods Manufactured - SMCL"
+					and credit > 0
+					and is_cancelled = 0
+					order by posting_date 
+				""", as_dict=True):
+		i+=1
+		print(str(i) + ", " + str(a.voucher_no))
+		
 def rename_asset():
 	i = 0
 	abbr = "SMCL-BCS-23-"
