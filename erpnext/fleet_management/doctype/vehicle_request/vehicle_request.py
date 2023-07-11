@@ -1,121 +1,93 @@
-# Copyright (c) 2022, Frappe Technologies Pvt. Ltd. and contributors
+# -*- coding: utf-8 -*-
+# Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and contributors
 # For license information, please see license.txt
 
+from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
-from frappe.model.mapper import get_mapped_doc
-from frappe.utils import flt
-from frappe.utils import flt, get_datetime, nowdate, cint, datetime, date_diff, time_diff
-from erpnext.custom_workflow import validate_workflow_states, notify_workflow_states
+from frappe.utils import flt, get_datetime, nowdate
 
 class VehicleRequest(Document):
 	def validate(self):
-		validate_workflow_states(self)
-		self.check_duplicate_entry()
-		self.calculate_time()
-		self.check_date()
-		self.fetch_departrure_time()
-		if self.kilometer_reading:
-			if flt(self.previous_km) > flt(self.kilometer_reading):
-				frappe.throw("Kilometer reading must be greater than previous kilometer reading.")
-		if self.workflow_state != "Approved":
-			notify_workflow_states(self)
+		if get_datetime(self.from_date) > get_datetime(self.to_date):
+			frappe.throw("To Date/Time cannot be earlier then From Date/Time")
+		if not self.posting_date:
+			self.posting_date = nowdate()
+		self.check_duplicate()
+		if self.workflow_state == "Rejected":
+			if not self.rejection_reason:
+				frappe.throw("Rejection Reason Is Mandatory")
+		self.update_verifier_approver()
+
+	def update_verifier_approver(self):
+		if frappe.db.exists("Employee", {"user_id":frappe.session.user}):
+			verifier_approver = frappe.db.get_value("Employee", {"user_id":frappe.session.user}, "employee_name")
+			approver_designation = frappe.db.get_value("Employee", {"user_id": frappe.session.user}, "designation")
+		else:
+			verifier_approver = frappe.session.user
+
+		if self.workflow_state == "Approved":
+			self.approver = str(verifier_approver)
+			self.approver_designation = str(approver_designation)
+		elif self.workflow_state == "Verified By Supervisor":
+			self.verifier = str(verifier_approver)
 
 	def on_submit(self):
-		self.check_vehicle()
-		notify_workflow_states(self)
+		self.check_if_free()
+		self.send_email()
 
-	def check_duplicate_entry(self):
-		data = frappe.db.sql("""
-			SELECT vehicle
-			FROM `tabVehicle Request`
-			WHERE vehicle = '{0}'
-			AND docstatus = 1
-			AND (from_date BETWEEN '{1}' AND '{2}'
-				OR to_date BETWEEN '{1}' AND '{2}')
-		""".format(self.vehicle,self.from_date,self.to_date),as_dict=1)
-		if data:
-			frappe.throw("Vehicle <b>{}</b> is already booked".format(self.vehicle_number))
+	def on_cancel(self):
+		frappe.db.sql(""" delete from `tabEquipment Reservation Entry` where vehicle_request = '{0}'""".format(self.name)) 
 
-	def check_vehicle(self):
-		if not self.vehicle:
-			frappe.throw("Vehicle is Mandatory")
-	def calculate_time(self):
-		time = time_diff(self.to_date, self.from_date)
-		self.total_days_and_hours=time
-		return time  
+	def check_duplicate(self):
+		found = []
+		for a in self.items:
+			if a.employee in found:
+				frappe.throw("Employee <b> '{0}' </b> already added in the list".format(a.employee))
+			else:
+				found.append(a.employee)
 
-	def fetch_departrure_time(self):
-		if self.workflow_state == "Waiting Approval":
-			get_time = self.from_date
-			self.time_of_departure = get_time  
+	def check_if_free(self):
+		result = frappe.db.sql("""
+										select equipment
+										from `tabEquipment Reservation Entry`
+										where equipment = '{0}'
+										and docstatus = 1 and reason = 'On Duty'
+										and ('{1}' between concat(from_date,' ',from_time) and concat(to_date,' ',to_time)
+												or
+												'{2}' between concat(from_date,' ',from_time) and concat(to_date,' ',to_time)
+												or
+												('{3}' <= concat(from_date,' ',from_time) and '{4}' >= concat(to_date,' ',to_time))
+										)
+								""".format(self.equipment, self.from_date, self.to_date, self.from_date, self.to_date), as_dict=True)
+		if result:
+			frappe.throw("<b> '{0}' </b> is currently in use".format(result[0]))
 
-	def  check_date(self):
-		if self.from_date > self.to_date:
-			frappe.throw("From Date cannot be before than To Date")
+	def update_reservation_entry(self):
+		import datetime
+		from_time = datetime.datetime.strptime(self.from_date, '%Y-%m-%d %H:%M:%S')
+		to_time = datetime.datetime.strptime(self.to_date, '%Y-%m-%d %H:%M:%S')
+		doc = frappe.new_doc("Equipment Reservation Entry")
+		doc.equipment = self.equipment
+		doc.vehicle_request = self.name
+		doc.reason = "On Duty"
+		doc.ehf_name = "On Duty" 
+		doc.from_date = self.from_date
+		doc.to_date = self.to_date
+		doc.from_time = from_time.time()
+		doc.to_time = to_time.time()
+		doc.submit()
 
-@frappe.whitelist()  
-def check_form_date_and_to_date(from_date, to_date):
-	if from_date > to_date:
-		frappe.throw("From Date cannot be before than To Date")
-@frappe.whitelist()
-def create_logbook(source_name, target_doc=None):
-	doclist = get_mapped_doc("Vehicle Request", source_name, {
-		"Vehicle Request": {
-			"doctype": "Vehicle Logbook"
-		},
-	}, target_doc)
+	def send_email(self):
+		email = self.owner
+		subject = "Vehicle Request"
+		message = "Your Vehicle Request <b> '{0}' </b> has been '{1}'".format(self.name, self.workflow_state)
+		if self.workflow_state == 'Approved':
+			message = "Your Vehicle Request <b> '{0}' </b> has been Approved".format(self.name)
 
-	return doclist
+		frappe.msgprint("{0}".format(message))
+		try:
+			frappe.sendmail(recipients=email, sender=None, subject=subject, message=message)
+		except:
+			pass
 
-@frappe.whitelist()
-def get_previous_km(vehicle, vehicle_number):
-	return frappe.db.sql(""" 
-	SELECT 
-		vr.kilometer_reading as km
-	FROM `tabVehicle Request` vr 
-	WHERE vr.vehicle ='{}' and vr.vehicle_number='{}' 
-	ORDER BY vr.creation DESC LIMIT 1 """.format(vehicle, vehicle_number),as_dict=1)
-
-@frappe.whitelist()
-def create_vr_extension(source_name, target_doc=None):
-	doclist = get_mapped_doc("Vehicle Request", source_name, {
-		"Vehicle Request": {
-			"doctype": "Vechicle Request Extension",
-			"field_map": {
-				"vehicle_request": "name",
-				"from_date":"from_date",
-				"to_date":"to_date"
-			}
-		},
-	}, target_doc)
-
-	return doclist
-
-def get_permission_query_conditions(user):
-	if not user: user = frappe.session.user
-	user_roles = frappe.get_roles(user)
-
-	if user == "Administrator" or "System Manager" in user_roles: 
-		return
-	if "ADM User" in user_roles or  "Branch Manager" in user_roles or "Fleet Manager" in user_roles:
-		return """(
-			exists(select 1
-				from `tabEmployee` as e
-				where e.branch = `tabVehicle Request`.branch
-				and e.user_id = '{user}')
-			or
-			exists(select 1
-				from `tabEmployee` e, `tabAssign Branch` ab, `tabBranch Item` bi
-				where e.user_id = '{user}'
-				and ab.employee = e.name
-				and bi.parent = ab.name
-				and bi.branch = `tabVehicle Request`.branch)
-		)""".format(user=user)
-	else:
-		return """(
-			exists(select 1
-				from `tabEmployee` as e
-				where e.name = `tabVehicle Request`.employee
-				and e.user_id = '{user}')
-		)""".format(user=user)

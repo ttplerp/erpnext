@@ -1,69 +1,117 @@
 {
  "actions": [],
  "allow_import": 1,
- "allow_rename": 1,
- "autoname": "field:registeration_number",
- "creation": "2022-10-19 12:38:16.340269",
+ "autoname": "EQUIP.YY.####",
+ "creation": "2017-07-17 10:26:25.774536",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "equipment_details_tab",
   "branch",
-  "creation_date",
+  "is_disabled",
+  "col_break_2",
+  "business_activity",
+  "disabled_date",
+  "col_break_5",
+  "not_dsp",
+  "col_break_4",
   "asset_code",
-  "rate",
-  "asset_issue_details",
-  "column_break_2",
-  "enabled",
-  "hired_equipment",
-  "status",
-  "equipment_information_section",
-  "equipment_name",
+  "owner_name",
+  "section_break_2",
   "equipment_category",
+  "column_break_2",
   "equipment_type",
-  "wheeler",
-  "fuelbook",
-  "reading_uom",
-  "column_break_8",
+  "column_break_5",
   "equipment_model",
-  "registeration_number",
-  "initial_km_reading",
-  "fuel_type",
-  "emission_standard",
-  "make",
-  "capacity",
-  "is_container",
-  "purchase_details_section",
-  "purchase_receipt",
-  "purchase_date",
-  "column_break_20",
-  "purchase_rate",
-  "engine_details_section",
+  "column_break_4",
+  "equipment_number",
+  "section_break_15",
   "engine_number",
-  "column_break_13",
-  "chasis_number",
-  "equipment_operator_section",
-  "equipment_operator",
-  "equipment_description",
-  "model_items",
-  "company",
-  "owner_details_tab",
-  "supplier",
-  "dzongkhag",
-  "gewog",
-  "village",
-  "equipment_history_tab",
-  "equipment_history"
+  "column_break_17",
+  "chassis_number",
+  "column_break_19",
+  "fuelbook",
+  "column_break_23",
+  "hsd_type",
+  "item_name",
+  "section_break_8",
+  "operators",
+  "section_break_6",
+  "equipment_history",
+  "section_break_06",
+  "details",
+  "section_break_18",
+  "current_operator",
+  "column_break_27",
+  "current_km_reading",
+  "column_break_29",
+  "current_hr_reading",
+  "amended_from"
  ],
  "fields": [
   {
    "fieldname": "branch",
    "fieldtype": "Link",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
    "label": "Branch",
    "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_disabled",
+   "fieldtype": "Check",
+   "label": "Is Disabled"
+  },
+  {
+   "fieldname": "col_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "business_activity",
+   "fieldtype": "Link",
+   "label": "Business Activity",
+   "options": "Business Activity",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.is_disabled",
+   "fieldname": "disabled_date",
+   "fieldtype": "Date",
+   "label": "Disabled Date"
+  },
+  {
+   "fieldname": "col_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "col_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.not_cdcl==0",
+   "fieldname": "asset_code",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "label": "Asset Code",
+   "options": "Asset"
+  },
+  {
+   "depends_on": "eval:doc.not_dsp == 1",
+   "fieldname": "owner_name",
+   "fieldtype": "Link",
+   "label": "Owner Name",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "section_break_2",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "equipment_category",
+   "fieldtype": "Link",
+   "label": "Equipment Category",
+   "options": "Equipment Category",
+   "permlevel": 1,
    "reqd": 1
   },
   {
@@ -71,123 +119,62 @@
    "fieldtype": "Column Break"
   },
   {
-   "default": "1",
-   "fieldname": "enabled",
-   "fieldtype": "Check",
-   "label": "Enabled"
-  },
-  {
-   "default": "0",
-   "fieldname": "hired_equipment",
-   "fieldtype": "Check",
-   "in_list_view": 1,
-   "label": "Hired Equipment/Vehicle"
-  },
-  {
-   "fieldname": "equipment_information_section",
-   "fieldtype": "Section Break",
-   "label": "Equipment/Vehicle Information"
-  },
-  {
-   "fieldname": "equipment_category",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Equipment/Vehicle Category",
-   "options": "Equipment Category",
-   "reqd": 1
-  },
-  {
-   "fetch_from": "asset_issue_details.equipment_type",
-   "fetch_if_empty": 1,
+   "fetch_from": "equipment_model.equipment_type",
    "fieldname": "equipment_type",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Equipment/Vehicle Type",
+   "label": "Equipment Type",
    "options": "Equipment Type",
-   "reqd": 1
+   "reqd": 1,
+   "set_only_once": 1
   },
   {
-   "fieldname": "column_break_8",
+   "fieldname": "column_break_5",
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "asset_issue_details.model",
-   "fetch_if_empty": 1,
    "fieldname": "equipment_model",
    "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Equipment/Vehicle Model",
+   "label": "Equipment Model",
    "options": "Equipment Model",
-   "reqd": 1
+   "set_only_once": 1
   },
   {
-   "fetch_from": "asset_issue_details.reg_number",
-   "fieldname": "registeration_number",
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "equipment_number",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Registration Number",
-   "reqd": 1,
+   "set_only_once": 1,
    "unique": 1
   },
   {
-   "fieldname": "engine_details_section",
+   "fieldname": "section_break_15",
    "fieldtype": "Section Break",
    "label": "Engine Details"
   },
   {
-   "fetch_from": "asset_issue_details.engine_no",
    "fieldname": "engine_number",
    "fieldtype": "Data",
    "label": "Engine Number",
    "unique": 1
   },
   {
-   "fieldname": "column_break_13",
+   "fieldname": "column_break_17",
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "asset_issue_details.chesis_no",
-   "fieldname": "chasis_number",
+   "fieldname": "chassis_number",
    "fieldtype": "Data",
-   "label": "Chasis Number"
+   "label": "Chassis Number",
+   "unique": 1
   },
   {
-   "depends_on": "hired_equipment",
-   "fieldname": "owner_details_tab",
-   "fieldtype": "Tab Break",
-   "label": "Owner Details"
-  },
-  {
-   "depends_on": "eval:!doc.hired_equipment",
-   "fieldname": "asset_code",
-   "fieldtype": "Link",
-   "label": "Asset Code",
-   "options": "Asset"
-  },
-  {
-   "fieldname": "supplier",
-   "fieldtype": "Link",
-   "ignore_user_permissions": 1,
-   "label": "Owner(Supplier)",
-   "mandatory_depends_on": "hired_equipment",
-   "options": "Supplier"
-  },
-  {
-   "fieldname": "equipment_operator_section",
-   "fieldtype": "Section Break",
-   "label": "Equipment/Vehicle Operator/Driver"
-  },
-  {
-   "fieldname": "equipment_operator",
-   "fieldtype": "Table",
-   "label": "Equipment Operator",
-   "options": "Equipment Operator"
-  },
-  {
-   "fieldname": "equipment_details_tab",
-   "fieldtype": "Tab Break",
-   "label": "Equipment/Vehicle Details"
+   "fieldname": "column_break_19",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "fuelbook",
@@ -196,179 +183,150 @@
    "options": "Fuelbook"
   },
   {
-   "fieldname": "initial_km_reading",
-   "fieldtype": "Float",
-   "label": "Initial KM/Hr Reading"
-  },
-  {
-   "fieldname": "model_items",
-   "fieldtype": "Table",
-   "label": "Equipment Model History",
-   "options": "Equipment Model History",
-   "read_only": 1
-  },
-  {
-   "fieldname": "fuel_type",
-   "fieldtype": "Link",
-   "label": "Fuel Type",
-   "options": "Fuel Type"
-  },
-  {
-   "fieldname": "equipment_description",
-   "fieldtype": "Small Text",
-   "label": "Equipment/Vehicle Description"
-  },
-  {
-   "fieldname": "equipment_name",
-   "fieldtype": "Data",
-   "label": "Equipment/Vehicle Name"
-  },
-  {
-   "default": "Running",
-   "fieldname": "status",
-   "fieldtype": "Select",
-   "label": "Status",
-   "options": "\nRunning\nMaintenance"
-  },
-  {
-   "depends_on": "eval:!doc.hired_equipment",
-   "fieldname": "purchase_details_section",
-   "fieldtype": "Section Break",
-   "label": "Purchase Details"
-  },
-  {
-   "fieldname": "purchase_receipt",
-   "fieldtype": "Link",
-   "label": "Purchase Receipt",
-   "options": "Purchase Receipt",
-   "read_only": 1
-  },
-  {
-   "fieldname": "column_break_20",
+   "fieldname": "column_break_23",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "purchase_rate",
-   "fieldtype": "Currency",
-   "label": "Purchase Rate(Price)",
-   "read_only": 1
-  },
-  {
-   "default": "Today",
-   "fieldname": "creation_date",
-   "fieldtype": "Date",
-   "label": "Creation Date",
-   "reqd": 1
-  },
-  {
-   "fetch_from": "purchase_receipt.posting_date",
-   "fieldname": "purchase_date",
-   "fieldtype": "Date",
-   "label": "Purchase Date",
-   "read_only": 1
-  },
-  {
-   "depends_on": "eval:doc.asset_code",
-   "fetch_from": "asset_code.gross_purchase_amount",
-   "fieldname": "rate",
-   "fieldtype": "Currency",
-   "label": "Rate",
-   "read_only": 1
-  },
-  {
-   "fetch_from": "supplier.dzongkhag",
-   "fieldname": "dzongkhag",
+   "fieldname": "hsd_type",
    "fieldtype": "Link",
-   "label": "Dzongkhag",
-   "options": "Dzongkhag",
-   "read_only": 1
+   "label": "HSD Type",
+   "options": "Item",
+   "permlevel": 1
   },
   {
-   "fetch_from": "supplier.gewog",
-   "fieldname": "gewog",
-   "fieldtype": "Link",
-   "label": "Gewog",
-   "options": "Dzongkhag",
-   "read_only": 1
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Material Name"
   },
   {
-   "fetch_from": "supplier.village",
-   "fieldname": "village",
-   "fieldtype": "Link",
-   "label": "Village",
-   "options": "Dzongkhag",
-   "read_only": 1
+   "fieldname": "section_break_8",
+   "fieldtype": "Section Break",
+   "label": "Operator/Driver Details"
   },
   {
-   "default": "0",
-   "fetch_from": "equipment_type.is_container",
-   "fieldname": "is_container",
-   "fieldtype": "Check",
-   "label": "Is Container?"
+   "fieldname": "operators",
+   "fieldtype": "Table",
+   "label": "Operator/Driver",
+   "options": "Equipment Operator"
   },
   {
-   "fieldname": "company",
-   "fieldtype": "Link",
-   "label": "Company",
-   "options": "Company"
+   "fieldname": "section_break_6",
+   "fieldtype": "Section Break",
+   "label": "Equipment History"
   },
   {
    "fieldname": "equipment_history",
    "fieldtype": "Table",
    "label": "Equipment History",
-   "options": "Equipment History"
+   "options": "Equipment History",
+   "read_only": 1
   },
   {
-   "fieldname": "equipment_history_tab",
-   "fieldtype": "Tab Break",
-   "label": "Equipment History"
+   "fieldname": "section_break_06",
+   "fieldtype": "Section Break"
   },
   {
-   "fetch_from": "asset_code.asset_issue_details",
-   "fieldname": "asset_issue_details",
+   "fieldname": "details",
+   "fieldtype": "Small Text",
+   "label": "Equipment Details",
+   "permlevel": 1
+  },
+  {
+   "fieldname": "section_break_18",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "current_operator",
+   "fieldtype": "Data",
+   "label": "Current Operator",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_27",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "current_km_reading",
+   "fieldtype": "Read Only",
+   "label": "Current KM Reading"
+  },
+  {
+   "fieldname": "column_break_29",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "current_hr_reading",
+   "fieldtype": "Read Only",
+   "label": "Current Hour Reading"
+  },
+  {
+   "fieldname": "amended_from",
    "fieldtype": "Link",
-   "label": "Asset Issue Details",
-   "options": "Asset Issue Details",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Equipment",
+   "print_hide": 1,
    "read_only": 1
   },
   {
-   "fieldname": "make",
-   "fieldtype": "Data",
-   "label": "Make(Brand)"
-  },
-  {
-   "fieldname": "emission_standard",
-   "fieldtype": "Data",
-   "label": "Emission Standard"
-  },
-  {
-   "fieldname": "wheeler",
-   "fieldtype": "Select",
-   "label": "Wheeler",
-   "options": "\n26\n10\n6\n4\n2"
-  },
-  {
-   "fieldname": "capacity",
-   "fieldtype": "Data",
-   "label": "Capacity"
-  },
-  {
-   "fetch_from": "equipment_type.reading_uom",
-   "fieldname": "reading_uom",
-   "fieldtype": "Data",
-   "label": "Reading UOM",
-   "read_only": 1
+   "default": "0",
+   "description": "Check if the Equipment is Not Company's Property",
+   "fieldname": "not_dsp",
+   "fieldtype": "Check",
+   "label": "Other's Equipment"
   }
  ],
- "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-30 11:34:55.330753",
+ "modified": "2023-01-05 17:23:41.259871",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment",
- "naming_rule": "By fieldname",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
+  {
+   "email": 1,
+   "export": 1,
+   "permlevel": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Workshop Manager",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Management",
+   "share": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Mechanical Master",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Asset Manager",
+   "write": 1
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User"
+  },
   {
    "create": 1,
    "delete": 1,
@@ -377,39 +335,150 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "System Manager",
+   "role": "Administrator",
    "share": 1,
    "write": 1
   },
   {
-   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Asset User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "permlevel": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Mechanical Master",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "permlevel": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Workshop User",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Stock User (other)",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Drivers and Operators",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "permlevel": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Fleet User",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "POL User",
+   "share": 1
+  },
+  {
    "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
    "role": "Fleet Manager",
-   "share": 1,
-   "write": 1
+   "share": 1
   },
   {
-   "create": 1,
+   "email": 1,
+   "export": 1,
+   "permlevel": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Auditor",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "permlevel": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Mechanical Services All",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Auditor",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR User",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Workshop User",
+   "share": 1
+  },
+  {
    "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
    "role": "Fleet User",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Sales User",
    "share": 1
   },
   {
@@ -418,13 +487,32 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "Stock User",
+   "role": "Unit Manager",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Mechanical Services All",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Workshop Manager",
    "share": 1
   }
  ],
- "search_fields": "equipment_category,equipment_type, equipment_model",
+ "search_fields": "equipment_number, equipment_type, branch",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_views": 1
+ "title_field": "equipment_number",
+ "track_changes": 1
 }

@@ -1,0 +1,273 @@
+{
+ "actions": [],
+ "autoname": "EHF.YY.MM.####",
+ "creation": "2017-07-21 05:24:02.199872",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "hiring_status",
+  "section_break_1",
+  "branch",
+  "cost_center",
+  "col_break_3",
+  "request_date",
+  "contact_number",
+  "section_break_3",
+  "equipment",
+  "supplier",
+  "equipment_number",
+  "column_break_11",
+  "equipment_type",
+  "equipment_model",
+  "target_hour",
+  "section_break_15",
+  "start_date",
+  "end_date",
+  "column_break_18",
+  "rate",
+  "rate_based_on",
+  "reading_based_on",
+  "section_break_20",
+  "amended_from",
+  "section_break_32",
+  "tc_name",
+  "terms",
+  "sb12",
+  "company",
+  "workflow_state"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "fieldname": "hiring_status",
+   "fieldtype": "Check",
+   "hidden": 1
+  },
+  {
+   "fieldname": "section_break_1",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Branch",
+   "options": "Branch"
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
+  },
+  {
+   "fieldname": "col_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "request_date",
+   "fieldtype": "Date",
+   "label": "Request Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "contact_number",
+   "fieldtype": "Data",
+   "label": "Contact Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_3",
+   "fieldtype": "Section Break",
+   "label": "Equipment Details"
+  },
+  {
+   "fieldname": "equipment",
+   "fieldtype": "Link",
+   "label": "Equipment",
+   "options": "Equipment",
+   "reqd": 1
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Owner",
+   "options": "Supplier",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "equipment.equipment_number",
+   "fieldname": "equipment_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Registration Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "equipment.equipment_type",
+   "fieldname": "equipment_type",
+   "fieldtype": "Data",
+   "label": "Equipment Type",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "equipment.equipment_model",
+   "fieldname": "equipment_model",
+   "fieldtype": "Data",
+   "label": "Equipment Model",
+   "read_only": 1
+  },
+  {
+   "fieldname": "target_hour",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Target Hour"
+  },
+  {
+   "fieldname": "section_break_15",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Equipment Start Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "Equipment End Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_18",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "label": "Hiring Rate",
+   "reqd": 1
+  },
+  {
+   "fieldname": "rate_based_on",
+   "fieldtype": "Select",
+   "label": "Rate Based On",
+   "options": "\nDaily\nKilometer\nLumpsum",
+   "reqd": 1
+  },
+  {
+   "fieldname": "reading_based_on",
+   "fieldtype": "Data",
+   "label": "Reading Based On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_20",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Equipment Hiring Form",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_32",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "tc_name",
+   "fieldtype": "Link",
+   "label": "Terms and Conditions",
+   "options": "Terms and Conditions"
+  },
+  {
+   "fieldname": "terms",
+   "fieldtype": "Text Editor"
+  },
+  {
+   "fieldname": "sb12",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "label": "Workflow State",
+   "options": "Workflow State",
+   "read_only": 1
+  }
+ ],
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-01-05 17:27:41.647955",
+ "modified_by": "Administrator",
+ "module": "Maintenance",
+ "name": "Equipment Hiring Form",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Administrator",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "EME User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "EME Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "equipment, start_date, end_date",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

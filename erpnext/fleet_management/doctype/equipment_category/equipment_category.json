@@ -1,25 +1,20 @@
 {
  "actions": [],
- "allow_import": 1,
- "allow_rename": 1,
  "autoname": "field:equipment_category",
- "creation": "2022-10-17 13:39:34.898492",
+ "creation": "2017-08-11 11:47:45.073176",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "equipment_category",
   "budget_account",
-  "disabled",
-  "pol_expense_account",
-  "r_m_expense_account",
-  "hiring_rate_revision"
+  "column_break_3",
+  "allow_hire"
  ],
  "fields": [
   {
    "fieldname": "equipment_category",
    "fieldtype": "Data",
-   "in_list_view": 1,
    "label": "Equipment Category",
    "reqd": 1,
    "unique": 1
@@ -27,40 +22,25 @@
   {
    "fieldname": "budget_account",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Budget Account",
-   "options": "Account"
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
   },
   {
    "default": "0",
-   "fieldname": "disabled",
+   "fieldname": "allow_hire",
    "fieldtype": "Check",
-   "label": "Disabled"
-  },
-  {
-   "fieldname": "pol_expense_account",
-   "fieldtype": "Link",
-   "label": "POL Expense Account",
-   "options": "Account",
-   "reqd": 1
-  },
-  {
-   "fieldname": "r_m_expense_account",
-   "fieldtype": "Link",
-   "label": "R & M Expense Account",
-   "options": "Account",
-   "reqd": 1
-  },
-  {
-   "fieldname": "hiring_rate_revision",
-   "fieldtype": "Percent",
-   "label": "Hiring Rate Revision(%)",
-   "precision": "2",
-   "reqd": 1
+   "in_list_view": 1,
+   "label": "Allow Multiple Hire Forms"
   }
  ],
- "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-04-17 12:12:44.409232",
+ "modified": "2022-12-13 15:48:15.844874",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment Category",
@@ -75,27 +55,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "System Manager",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Fleet User",
-   "share": 1
-  },
-  {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Fleet Manager",
+   "role": "Administrator",
    "share": 1,
    "write": 1
   },
@@ -107,14 +67,13 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "Maintenance User",
+   "role": "Mechanical Master",
    "share": 1,
    "write": 1
   }
  ],
+ "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
- "track_changes": 1,
- "track_views": 1
+ "states": []
 }
