@@ -17,10 +17,14 @@ class AssetIssueDetails(Document):
             self.make_asset(1)
 
     def on_cancel(self):
-        if self.reference_code:
-            asset_status = frappe.db.get_value("Asset", self.reference_code, 'docstatus')
-            if asset_status < 2:
-                frappe.throw("You cannot cancel the document before cancelling asset with code {0}".format(self.reference_code))    
+        for d in frappe.db.sql("select * from `tabAsset` where asset_issue_details='{}'".format(self.name), as_dict=1):
+            if d.docstatus < 2:
+                frappe.throw("You cannot cancel the document before cancelling Asset with code <a href='#Form/Asset/{0}'>{0}</a>".format(d.name))
+
+        # if self.reference_code:
+        #     asset_status = frappe.db.get_value("Asset", self.reference_code, 'docstatus')
+        #     if asset_status < 2:
+        #         frappe.throw("You cannot cancel the document before cancelling asset with code {0}".format(self.reference_code))    
     
     def check_qty_balance(self):
         total_qty = frappe.db.sql("""select sum(ifnull(qty,0)) total_qty 
@@ -28,7 +32,7 @@ class AssetIssueDetails(Document):
                                   where item_code="{}"
                                   and ref_doc = "{}"
                                   and docstatus = 1
-						""".format(self.item_code, self.purchase_receipt))[0][0]
+                        """.format(self.item_code, self.purchase_receipt))[0][0]
         issued_qty = frappe.db.sql("""select sum(ifnull(qty,0)) issued_qty
                                    from `tabAsset Issue Details` 
                                    where item_code ='{}'
@@ -36,7 +40,7 @@ class AssetIssueDetails(Document):
                                    and purchase_receipt = '{}'
                                    and docstatus = 1 
                                    and name != '{}'
-						""".format(self.item_code, self.branch, self.purchase_receipt, self.name))[0][0]
+                        """.format(self.item_code, self.branch, self.purchase_receipt, self.name))[0][0]
         
         balance_qty = flt(total_qty) - flt(issued_qty)
         if flt(self.qty) > flt(balance_qty):
@@ -67,23 +71,23 @@ class AssetIssueDetails(Document):
         )
         asset_abbr = frappe.db.get_value('Asset Category',item_data.get("asset_category"),'abbr')
         asset = frappe.get_doc(
-			{
-				"doctype": "Asset",
-				"item_code": self.item_code,
-				"asset_name": self.item_name,
-				"naming_series": item_data.get("asset_naming_series") or "AST",
-				"asset_category": item_data.get("asset_category"),
-				"asset_sub_category":item_data.get("asset_sub_category"),
-				"abbr": asset_abbr,
-				"cost_center": frappe.db.get_value("Branch", self.branch, "cost_center"),
-				"company": self.company,
-				"purchase_date": self.issued_date,
-				"calculate_depreciation": 1,
+            {
+                "doctype": "Asset",
+                "item_code": self.item_code,
+                "asset_name": self.item_name,
+                "naming_series": item_data.get("asset_naming_series") or "AST",
+                "asset_category": item_data.get("asset_category"),
+                "asset_sub_category":item_data.get("asset_sub_category"),
+                "abbr": asset_abbr,
+                "cost_center": frappe.db.get_value("Branch", self.branch, "cost_center"),
+                "company": self.company,
+                "purchase_date": self.issued_date,
+                "calculate_depreciation": 1,
                 "asset_rate": self.asset_rate,
-				"purchase_receipt_amount": self.asset_rate,
-				"gross_purchase_amount": flt(self.asset_rate) * flt(qty),
-				"asset_quantity": qty,
-				"purchase_receipt": self.purchase_receipt,
+                "purchase_receipt_amount": self.asset_rate,
+                "gross_purchase_amount": flt(self.asset_rate) * flt(qty),
+                "asset_quantity": qty,
+                "purchase_receipt": self.purchase_receipt,
                 "location": self.location,
                 "branch": self.branch,
                 "custodian": self.issued_to,
@@ -93,8 +97,8 @@ class AssetIssueDetails(Document):
                 "credit_account": credit_account,
                 "asset_issue_details":self.name,
                 "serial_number":self.reg_number
-			}
-		)
+            }
+        )
 
         asset.flags.ignore_validate = True
         asset.flags.ignore_mandatory = True
