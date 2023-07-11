@@ -107,7 +107,7 @@ class AssetIssueDetails(Document):
         asset_code = asset.name
         
         if not asset_code:
-            frappe.throw("Asset not able to create for asset issue no.".format(self.name))
+            frappe.throw("Asset not able to create for asset issue no. {}".format(self.name))
 
 def get_permission_query_conditions(user):
     if not user: user = frappe.session.user
