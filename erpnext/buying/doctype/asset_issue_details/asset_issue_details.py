@@ -14,7 +14,7 @@ class AssetIssueDetails(Document):
     def on_submit(self):
         self.check_qty_balance()
         for i in range(cint(self.qty)):
-            self.make_asset(i+1)
+            self.make_asset(1)
 
     def on_cancel(self):
         if self.reference_code:
@@ -102,9 +102,7 @@ class AssetIssueDetails(Document):
         asset.insert()
         asset_code = asset.name
         
-        if asset_code:
-            self.db_set("reference_code", asset_code)
-        else:
+        if not asset_code:
             frappe.throw("Asset not able to create for asset issue no.".format(self.name))
 
 def get_permission_query_conditions(user):
