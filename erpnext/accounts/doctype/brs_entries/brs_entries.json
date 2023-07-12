@@ -18,7 +18,9 @@
   "narration",
   "company",
   "reconciled",
-  "amended_from"
+  "amended_from",
+  "reconciled_doctype",
+  "reconciled_doc"
  ],
  "fields": [
   {
@@ -92,12 +94,24 @@
    "options": "BRS Entries",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "reconciled_doctype",
+   "fieldtype": "Link",
+   "label": "Reconciled Document Type",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "reconciled_doc",
+   "fieldtype": "Dynamic Link",
+   "label": "Reconciled Document",
+   "options": "reconciled_doctype"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-12 15:37:15.979847",
+ "modified": "2023-07-12 13:47:09.681677",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "BRS Entries",

@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 import frappe
 from frappe import _
-from frappe.utils import cint, flt, get_bench_path, get_datetime, get_site_path, add_days
+from frappe.utils import cint, flt, get_bench_path, get_datetime, get_site_path, add_days, nowdate, getdate, formatdate
 from erpnext.accounts.doctype.bank_payment_settings.bank_payment_settings import get_upload_path
 import paramiko
 import sys, hashlib, os, signal, errno, logging, traceback
@@ -136,67 +136,50 @@ def get_files_waiting_ack():
 
 ''' download the bank statement files from bank and make BRS Entry accordingly '''
 @frappe.whitelist()
-def download_bank_statement(bank='BOBL'):
+def download_bank_statement(bank='BOBL', bs_date=None):
 	remote_base = frappe.db.get_value('Bank Payment Settings', bank, 'report_path')
+	file_name = frappe.db.get_value('Bank Payment Settings', bank, 'day_txn_file_name')
+	statement_date = getdate(bs_date) if bs_date else getdate()
+	if frappe.db.exists("Bank Statement Files", {"bank_statement_date":statement_date}):
+		print("Bank Statement already downloaded for " + str(statement_date))
+		return
 	try:
-		brs_start_date = get_datetime(frappe.db.sql(""" select max(clearing_date) from `tabBRS Entries` """)[0][0])
-		statement_date = brs_start_date if brs_start_date else add_days(get_datetime(),-1)
-		current_date = add_days(get_datetime(),-1)
-		while statement_date <= current_date:
-			logging.info("*** update_file_status started ***")
-			statement_date = add_days(statement_date,1)
-			monthly_folder = statement_date.strftime("%b-%y")
-			date_folder = statement_date.strftime("%d%m%y")
-			remote_path = '/'.join([str(remote_base),str(monthly_folder),str(date_folder)])
-			file_name = frappe.db.get_value('Bank Payment Settings', bank, 'day_txn_file_name')					
-			
-			try:
-				sftp = SftpClient(bank)
-			except Exception as e:
-				logging.critical("CONNECTION_FAILURE {}".format(traceback.format_exc()))
-				logging.info("Re-trying to connect ...")
-				sleep(10)
-				continue
-			logging.info("Files waiting for Bank Statement: {}".format(file_name))
+		logging.info("*** Downloading Bank Statement FILE started ***")
+		monthly_folder = statement_date.strftime("%b-%y")
+		file_ext = statement_date.strftime("%Y%m%d")
+		remote_path = '/'.join([str(remote_base),str(monthly_folder)])
+		file_name = file_name.replace('YYYYMMDD',file_ext)
+		try:
+			sftp = SftpClient(bank)
+		except Exception as e:
+			logging.critical("CONNECTION_FAILURE {}".format(traceback.format_exc()))
+			logging.info("Re-trying to connect ...")
+			sleep(10)
 
-			if sftp.file_exists(remote_path):
-				# create local directories
-				filepath = get_site_path('private','files','epayment','DAY_TXN_REPORT',monthly_folder,date_folder).rstrip("/")
-				if not os.path.exists(filepath):
-					os.makedirs(filepath)
-				try:
-					sftp.download(remote_path='/'.join([remote_path, file_name]),
-						local_path = '/'.join([filepath, file_name]))
-				except Exception as e:
-					logging.error("DOWNLOAD_FAILED {}".format(traceback.format_exc()))
-				else:
-					''' read the statement file '''
-					downloaded_file = '/'.join([filepath, file_name])
-					#with open('/home/frappe/erp/sites/erp.thimphutechpark.bt/private/files/epayment/DAY_TXN_REPORT/Apr-23/180423/EPAY_DAILY_PT_OP.csv', 'rb') as f:
-					if os.path.exists(downloaded_file):
-						with open(downloaded_file,'r') as f:
-							reader = csv.reader(f)
-							row=1
-							for i in reader:
-								if row > 1:
-									from datetime import datetime
-									date_string = i[0]
-									datetime_obj = datetime.strptime(date_string, '%d-%b-%y')
-									correct_date_format = datetime_obj.strftime('%Y-%m-%d')
-									doc = frappe.get_doc({
-											'doctype' : "BRS Entries",
-											'clearing_date': correct_date_format,
-											'jrnl_no' : i[1],
-											'clearing_time' : i[2],
-											'account_no' : i[3],
-											'amount' : i[4],
-											'ref_no' : i[5],
-											'narration' : i[6],
-											'cheque_no' : i[1],
-									})
-									doc.submit()
-								row += 1
-			print("**** Bank Statement Downloaded for {} ****".format(statement_date))													
+		logging.info("Files waiting for Bank Statement: {}".format(file_name))
+
+		if sftp.file_exists(remote_path):
+			# create local directories
+			filepath = get_site_path('private','files','epayment','DAY_TXN_REPORT',monthly_folder).rstrip("/")
+			print(filepath)
+			if not os.path.exists(filepath):
+				os.makedirs(filepath)
+			try:
+				sftp.download(remote_path='/'.join([remote_path, file_name]),
+					local_path = '/'.join([filepath, file_name]))
+			except Exception as e:
+				logging.error("DOWNLOAD_FAILED {}".format(traceback.format_exc()))
+			else:
+				''' Update in Bank Statement File Doctype '''
+				downloaded_file = '/'.join([filepath, file_name])
+				if os.path.exists(downloaded_file):
+					doc = frappe.get_doc({
+						'doctype' : "Bank Statement Files",
+						'bank_statement_file' : downloaded_file,
+						'bank_statement_date' : statement_date
+					})
+					doc.save()
+		print("**** Bank Statement Downloaded for {} ****".format(statement_date))													
 		sftp.close()
 		return
 	except KeyboardInterrupt:

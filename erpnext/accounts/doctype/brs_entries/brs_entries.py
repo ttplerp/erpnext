@@ -21,36 +21,38 @@ def update_bank_clearance_date():
 					""",as_dict=True):
 		# Outgoing Payment (Credit to Bank Account)
 		if a.ref_no:
-			transaction_ids = []
 			for c in frappe.db.sql("""
-								select i.transaction_type, i.transaction_id, i.amount, i.bank_account_no
-								from `tabBank Payment` b, `tabBank Payment Item` i
-								where b.name = i.parent
-								and b.docstatus = 1
-								and (i.pi_number='{0}' 
-										or 
-								i.bank_journal_no='{1}')
-								group by i.pi_number
-								Union 
-								select "Direct Payment" as transaction_type, b.direct_payment as transaction_id, i.net_amount as amount, 
-							 	i.payment_journal_no as bank_journal_no
-								from `tabUtility Bill` b, `tabUtility Bill Item` i
-								where b.name = i.parent
-								and b.docstatus = 1
-								and (i.pi_number='{0}' 
-										or 
-								i.payment_journal_no='{1}')
-								group by i.pi_number
-							""".format(a.ref_no, a.jrnl_no), as_dict=True):
-				if c.transaction_id not in transaction_ids:
-					transaction_ids.append(c.transaction_id)
-					if c.transaction_type in ["Direct Payment","Journal Entry","Payment Entry"]:
-						frappe.db.sql("""
+						select i.transaction_type, i.transaction_id, i.amount, 
+						b.paid_from as bank_account, b.bank_account_no
+						from `tabBank Payment` b, `tabBank Payment Item` i
+						where b.name = i.parent
+						and b.docstatus = 1
+						and (i.pi_number='{0}' 
+								or 
+						i.bank_journal_no='{1}')
+						group by i.pi_number
+						Union 
+						select "Journal Entry" as transaction_type, b.journal_entry as transaction_id, 
+						i.net_amount as amount, b.expense_account as bank_account, b.bank_account as bank_account_no
+						from `tabUtility Bill` b, `tabUtility Bill Item` i
+						where b.name = i.parent
+						and b.docstatus = 1
+						and (i.pi_number='{0}' 
+								or 
+						i.payment_journal_no='{1}')
+						group by i.pi_number
+					""".format(a.ref_no, a.jrnl_no), as_dict=True):
+				#Update Cheque Detail Table
+				clearance_update=0
+				print("Transaction Type:{}, Transaction No: {}".format(c.transaction_type, c.transaction_id))
+				if c.transaction_type in ["Journal Entry","TDS Remittance","Direct Payment","Payment Entry"]:
+					frappe.db.sql("""
 									Update `tab{0}` 
 									set clearance_date = '{1}'
 									where name = '{2}'
 								""".format(c.transaction_type, a.clearing_date, c.transaction_id))
-						frappe.db.sql("""
-								Update `tabBRS Entries` set reconciled = 1 where name = '{}'
-						""".format(a.name))
-	frappe.db.commit()
+					frappe.db.sql("""update `tabBRS Entries` 
+								set reconciled=1, reconciled_doctype='{0}', reconciled_doc='{1}' 
+								where name ='{2}'
+								""".format(c.transaction_type,c.transaction_id,a.name))
+			frappe.db.commit()
