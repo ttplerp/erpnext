@@ -31,19 +31,19 @@ def get_data(filters):
 	condition = ""
 	if filters.get("account"):
 		bank_account_no = frappe.db.get_value("Account", filters.get("account"), "bank_account_no")
-		condition = " and account='{}'".format(bank_account_no)
+		condition += " and account='{}'".format(bank_account_no)
 	
 	if filters.get("company"):
-		condition = " and company = '{}'".format(filters.get("company"))
+		condition += " and company = '{}'".format(filters.get("company"))
 
 	if filters.get("from_date") and filters.get("to_date"):
-		condition = " and clearing_date between '{}' and '{}' ".format(filters.get("from_date"), filters.get("to_date"))
+		condition += " and clearing_date between '{}' and '{}' ".format(filters.get("from_date"), filters.get("to_date"))
 	
 	if filters.get("payment_type"):
 		if filters.get("payment_type") == "Payment":
-			condition = " and amount < 0"
+			condition += " and amount < 0"
 		else:
-			condition = " and amount > 0"
+			condition += " and amount > 0"
 
 	query = """ select clearing_date, account_no, amount, ref_no, jrnl_no, narration, 
 				CASE WHEN reconciled = 0 THEN "No" ELSE "Yes" END, 
