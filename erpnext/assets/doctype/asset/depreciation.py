@@ -239,12 +239,18 @@ def reset_asset_value_for_scrap_sales(asset_name, posting_date):
             _("Asset Sales and Scrap date should be within the current fiscal year")
         )
 
-    schedules = frappe.db.sql(
-        """SELECT name, journal_entry, depreciation_amount 
-								~l_entry !='' or journal_entry is NOT NULL)""",
-        (asset_name, reverse_start_date, today()),
-        as_dict=True,
-    )
+    # schedules = frappe.db.sql(
+    #     """SELECT name, journal_entry, depreciation_amount 
+	# 							~l_entry !='' or journal_entry is NOT NULL)""",
+    #     (asset_name, reverse_start_date, today()),
+    #     as_dict=True,
+    # )
+    schedules = frappe.db.sql('''SELECT name, journal_entry, depreciation_amount 
+                                FROM `tabDepreciation Schedule` 
+                                WHERE parent = %s 
+                                AND schedule_date BETWEEN %s AND %s 
+                                AND (journal_entry !='' or journal_entry is NOT NULL)''',
+                                    ( asset_name, reverse_start_date, today()), as_dict=True)
     accounts = frappe.db.sql(
         """
 					SELECT 
@@ -483,9 +489,9 @@ def scrap_asset(asset_name, scrap_date=None):
     # reset_asset_value_for_scrap_sales(asset_name, getdate(today()))
     je = frappe.new_doc("Journal Entry")
     je.voucher_type = "Depreciation Entry"
-    je.naming_series = "Journal Voucher"
     je.mode_of_payment = "Cash"
-    je.naming_series = depreciation_series
+    # je.naming_series = depreciation_series
+    je.naming_series = 'Journal Voucher'
     je.posting_date = today()
     je.company = asset.company
     je.remark = "Scrap Entry for asset {0}".format(asset_name)
@@ -561,6 +567,7 @@ def get_gl_entries_on_asset_disposal(asset, selling_amount=0, finance_book=None)
         disposal_account,
         value_after_depreciation,
     ) = get_asset_details(asset, finance_book)
+
     gl_entries = [
         {
             "account": fixed_asset_account,
@@ -613,15 +620,15 @@ def get_asset_details(asset, finance_book=None):
                 break
 
     value_after_depreciation = (
-        # asset.finance_books[idx - 1].value_after_depreciation
+        asset.finance_books[idx - 1].value_after_depreciation
         # add by biren to include pro rated depreciated amount in value after depreciation
-        frappe.db.get_value(
-            "Asset Finance Book",
-            asset.finance_books[idx - 1].name,
-            "value_after_depreciation",
-        )
-        if asset.calculate_depreciation
-        else asset.value_after_depreciation
+        # frappe.db.get_value(
+        #     "Asset Finance Book",
+        #     asset.finance_books[idx - 1].name,
+        #     "value_after_depreciation",
+        # )
+        # if asset.calculate_depreciation
+        # else asset.value_after_depreciation
     )
     accumulated_depr_amount = flt(asset.gross_purchase_amount) - flt(
         value_after_depreciation

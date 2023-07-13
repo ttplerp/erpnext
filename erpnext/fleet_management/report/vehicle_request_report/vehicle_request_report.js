@@ -15,8 +15,8 @@ frappe.query_reports["Vehicle Request Report"] = {
 			"fieldname":"status",
 			"fieldtype":"Select",
 			"label":__("Status"),
-			"options":['Free','Booked'],
-			"reqd":1
+			"options":['', 'Free', 'Booked'],
+			"reqd":0
 		},
 		{
 			"fieldname":"vehicle_type",
@@ -37,6 +37,11 @@ frappe.query_reports["Vehicle Request Report"] = {
 			"label":__("To Date"),
 			"default":frappe.datetime.month_end(),
 			"reqd":1
+		},
+		{
+			"fieldname":"show_details",
+			"fieldtype":"Check",
+			"label":__("Show Details"),
 		}
 	]
 };

@@ -1680,6 +1680,9 @@ def get_against_jv(doctype, txt, searchfield, start, page_len, filters):
         ),
     )
 
+@frappe.whitelist()
+def get_cost_center(args):
+    return frappe.db.get_value("Branch", args.branch, 'cost_center')
 
 @frappe.whitelist()
 def get_outstanding(args):

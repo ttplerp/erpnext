@@ -1,0 +1,42 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2023-07-05 09:50:29.888258",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "NHDCL Letter Head",
+ "modified": "2023-07-05 09:54:47.440783",
+ "modified_by": "Administrator",
+ "module": "Fleet Management",
+ "name": "Vehicle Request History Report",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Vehicle Request",
+ "report_name": "Vehicle Request History Report",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "Administrator"
+  },
+  {
+   "role": "ADM User"
+  },
+  {
+   "role": "Fleet Manager"
+  },
+  {
+   "role": "Fleet User"
+  },
+  {
+   "role": "CEO"
+  },
+  {
+   "role": "Branch Manager"
+  }
+ ]
+}

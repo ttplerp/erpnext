@@ -113,6 +113,7 @@
    "fieldname": "party_type",
    "fieldtype": "Select",
    "label": "Party Type",
+   "mandatory_depends_on": "eval:parent.apply_tds==1 && doc.debit > 0.00;",
    "options": "\nCustomer\nSupplier\nEmployee",
    "search_index": 1
   },
@@ -122,6 +123,7 @@
    "fieldtype": "Dynamic Link",
    "in_list_view": 1,
    "label": "Party",
+   "mandatory_depends_on": "eval:parent.apply_tds==1 && doc.debit > 0.00;",
    "options": "party_type"
   },
   {
@@ -403,7 +405,7 @@
  "idx": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-06-21 18:35:32.574106",
+ "modified": "2023-07-12 16:08:47.025887",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry Account",

@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"type\":\"header\",\"data\":{\"text\":\"<span style=\\\"font-size: 18px;\\\"><b>Quick Access</b></span>\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Equipment\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"POL Expense\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"POL Receive\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"POL Issue\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Repair &amp; Services\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"R &amp; Service Invoice\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Equipment Modifier Tool\",\"col\":3}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Master Data\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Repair and Services\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Fleet Transaction\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Fleet Report\",\"col\":4}}]",
+ "content": "[{\"type\":\"header\",\"data\":{\"text\":\"<span style=\\\"font-size: 18px;\\\"><b>Quick Access</b></span>\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Equipment\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"POL Expense\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"POL Receive\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"POL Issue\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Repair &amp; Services\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"R &amp; Service Invoice\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Equipment Modifier Tool\",\"col\":3}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Master Data\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Repair and Services\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Fleet Transaction\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Fleet Report\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Hire Transaction\",\"col\":4}}]",
  "creation": "2023-03-14 12:40:35.110706",
  "docstatus": 0,
  "doctype": "Workspace",
@@ -405,64 +405,6 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Master Data",
-   "link_count": 5,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Equipment",
-   "link_count": 0,
-   "link_to": "Equipment",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Equipment Category",
-   "link_count": 0,
-   "link_to": "Equipment Category",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Equipment Type",
-   "link_count": 0,
-   "link_to": "Equipment Type",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Equipment Model",
-   "link_count": 0,
-   "link_to": "Equipment Model",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Shift",
-   "link_count": 0,
-   "link_to": "Shift Type",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Fleet Report",
    "link_count": 6,
    "onboard": 0,
@@ -569,8 +511,66 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "Master Data",
+   "link_count": 5,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Equipment",
+   "link_count": 0,
+   "link_to": "Equipment",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Shift",
+   "link_count": 0,
+   "link_to": "Shift Type",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Equipment Category",
+   "link_count": 0,
+   "link_to": "Equipment Category",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Equipment Type",
+   "link_count": 0,
+   "link_to": "Equipment Type",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Equipment Model",
+   "link_count": 0,
+   "link_to": "Equipment Model",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "Fleet Transaction",
-   "link_count": 4,
+   "link_count": 3,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -607,15 +607,43 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Hiring Form",
+   "label": "Hire Transaction",
+   "link_count": 3,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Equipment Hiring Form",
    "link_count": 0,
    "link_to": "Equipment Hiring Form",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Logbook",
+   "link_count": 0,
+   "link_to": "Logbook",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Hire Charge",
+   "link_count": 0,
+   "link_to": "Hire Charge Invoice",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-07-05 16:17:42.086149",
+ "modified": "2023-07-13 09:51:24.305905",
  "modified_by": "tshering.lham@thimphutechpark.bt",
  "module": "Fleet Management",
  "name": "Fleet Management",

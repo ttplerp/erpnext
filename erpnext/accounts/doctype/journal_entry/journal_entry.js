@@ -414,6 +414,18 @@ erpnext.accounts.JournalEntry = class JournalEntry extends frappe.ui.form.Contro
 				row.party = d.party;
 				row.party_type = d.party_type;
 			}
+			frappe.call({
+			method: "erpnext.accounts.doctype.journal_entry.journal_entry.get_cost_center",
+			args: { branch: doc.branch},
+			callback: function(r) {
+				if (r.message) {
+					console.log(r.message)
+					row.cost_center = r.message
+					d.cost_center = r.message
+				}
+			}
+		});
+			d.cost_center = "MEP Phase-1 Project pangbesa - VBPL"
 		});
 		// set difference
 		if(doc.difference) {

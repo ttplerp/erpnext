@@ -1,12 +1,10 @@
-# -*- coding: utf-8 -*-
-# Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and contributors
+# Copyright (c) 2022, Frappe Technologies Pvt. Ltd. and contributors
 # For license information, please see license.txt
 
-from __future__ import unicode_literals
-import frappe
+# import frappe
 from frappe.model.document import Document
-from frappe.model.naming import make_autoname
 
 class EquipmentModel(Document):
-	def autoname(self):
-		self.name = self.equipment_type + "(" + self.model + ")"
+	def validate(self):
+		if not self.description:
+			self.description = self.model

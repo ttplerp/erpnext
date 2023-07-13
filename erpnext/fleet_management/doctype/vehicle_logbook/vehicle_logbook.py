@@ -27,6 +27,7 @@ class VehicleLogbook(Document):
         self.calculate_total_days()
         
     def validate_date(self):
+        start_date = end_date = ""
         if self.vlogs:
             start_date = self.vlogs[0].date
             end_date = self.vlogs[len(self.vlogs) - 1].date

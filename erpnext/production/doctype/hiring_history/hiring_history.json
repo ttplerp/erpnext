@@ -55,7 +55,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-04-17 12:13:11.000727",
+ "modified": "2022-11-05 13:52:57.638335",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Hiring History",
@@ -64,6 +64,5 @@
  "permissions": [],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
- "track_views": 1
+ "states": []
 }

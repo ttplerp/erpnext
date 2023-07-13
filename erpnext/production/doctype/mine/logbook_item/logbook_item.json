@@ -1,0 +1,106 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2022-11-04 14:42:11.045136",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "hours",
+  "column_break_4",
+  "total_km",
+  "time_details_section",
+  "initial_hour",
+  "initial_km",
+  "column_break_7",
+  "final_hour",
+  "final_km",
+  "equipment",
+  "idle_time"
+ ],
+ "fields": [
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "hours",
+   "fieldtype": "Float",
+   "label": "Total Work Time (Hours)",
+   "precision": "1",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "equipment",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Equipment"
+  },
+  {
+   "default": "0",
+   "fieldname": "idle_time",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Idle Time",
+   "precision": "1",
+   "reqd": 1
+  },
+  {
+   "fieldname": "time_details_section",
+   "fieldtype": "Section Break",
+   "label": "Time Details"
+  },
+  {
+   "fieldname": "total_km",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Total KM",
+   "read_only": 1
+  },
+  {
+   "fieldname": "initial_hour",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Initial Hour",
+   "precision": "1",
+   "reqd": 1
+  },
+  {
+   "fieldname": "final_hour",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Final Hour",
+   "precision": "1",
+   "reqd": 1
+  },
+  {
+   "fieldname": "initial_km",
+   "fieldtype": "Float",
+   "label": "Initial KM",
+   "reqd": 1
+  },
+  {
+   "fieldname": "final_km",
+   "fieldtype": "Float",
+   "label": "Final KM",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-06-26 16:20:15.059883",
+ "modified_by": "Administrator",
+ "module": "Production",
+ "name": "Logbook Item",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

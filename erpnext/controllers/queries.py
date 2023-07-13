@@ -46,6 +46,21 @@ def employee_query(doctype, txt, searchfield, start, page_len, filters):
 	)
 
 
+@frappe.whitelist()
+def filter_advance_type(doctype, txt, searchfield, start, page_len, filters):
+	if not filters.get("employee"):
+		frappe.throw("Please select From Employee first.")
+	if filters.get("imprest_advance") == 1:
+		return frappe.db.sql("""
+			select name, employee, employee_name  from `tabEmployee Advance` where advance_type = 'Imprest Advance' and docstatus = 1
+			and employee = '{}'
+		""".format(filters.get("employee")))
+	else:
+		return frappe.db.sql("""
+			select name, employee, employee_name  from `tabEmployee Advance` where docstatus = 1
+			and employee = '{}'
+		""".format(filters.get("employee")))
+
 # searches for leads which are not converted
 @frappe.whitelist()
 @frappe.validate_and_sanitize_search_inputs

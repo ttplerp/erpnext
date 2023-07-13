@@ -7,33 +7,30 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "branch",
   "equipment_hiring_form",
+  "branch",
+  "from_date",
   "column_break_2",
-  "cost_center",
   "posting_date",
+  "cost_center",
+  "to_date",
   "equipment_details_section",
   "equipment",
   "equipment_category",
-  "supplier",
+  "party_type",
+  "party",
   "column_break_4",
   "equipment_type",
   "equipment_model",
   "hired_equipment",
   "section_break_12",
-  "scheduled_working_hour",
-  "target_hours",
-  "total_downtime_hours",
-  "column_break_16",
-  "daily_output",
   "total_hours",
-  "target_trip",
-  "reading_based_on",
-  "section_break_6",
+  "column_break_16",
+  "total_idle_hour",
+  "column_break_21",
+  "total_km_reading",
+  "section_break_23",
   "items",
-  "total_ot",
-  "section_break_8",
-  "downtimes",
   "section_break_16",
   "paid",
   "amended_from"
@@ -72,7 +69,7 @@
    "fieldname": "posting_date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "Log Date",
+   "label": "Posting Date",
    "reqd": 1
   },
   {
@@ -101,7 +98,8 @@
   },
   {
    "fieldname": "section_break_12",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Hour Details"
   },
   {
    "depends_on": "eval:doc.branch",
@@ -113,29 +111,8 @@
    "reqd": 1
   },
   {
-   "fetch_from": "equipment_hiring_form.supplier",
-   "fieldname": "supplier",
-   "fieldtype": "Link",
-   "label": "Supplier",
-   "options": "Supplier",
-   "read_only": 1
-  },
-  {
-   "fieldname": "scheduled_working_hour",
-   "fieldtype": "Float",
-   "label": "Scheduled Working Hour",
-   "precision": "1",
-   "reqd": 1
-  },
-  {
    "fieldname": "column_break_16",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "daily_output",
-   "fieldtype": "Float",
-   "label": "Daily Output (MT)",
-   "precision": "2"
   },
   {
    "fieldname": "total_hours",
@@ -145,56 +122,10 @@
    "read_only": 1
   },
   {
-   "fetch_from": "equipment_hiring_form.target_hour",
-   "fieldname": "target_hours",
-   "fieldtype": "Int",
-   "label": "Target Hours",
-   "read_only": 1
-  },
-  {
-   "fieldname": "total_downtime_hours",
-   "fieldtype": "Float",
-   "label": "Total Downtime Hours",
-   "read_only": 1
-  },
-  {
-   "fieldname": "reading_based_on",
-   "fieldtype": "Read Only",
-   "label": "Reading Based On",
-   "read_only": 1
-  },
-  {
-   "depends_on": "eval:doc.reading_based_on == \"Trip\"",
-   "fieldname": "target_trip",
-   "fieldtype": "Int",
-   "label": "Target Trip"
-  },
-  {
-   "fieldname": "section_break_6",
-   "fieldtype": "Section Break",
-   "label": "Hour Details"
-  },
-  {
    "fieldname": "items",
    "fieldtype": "Table",
    "label": "Logbook Item",
    "options": "Logbook Item"
-  },
-  {
-   "fieldname": "total_ot",
-   "fieldtype": "Float",
-   "label": "Total OT Hours",
-   "read_only": 1
-  },
-  {
-   "fieldname": "section_break_8",
-   "fieldtype": "Section Break",
-   "label": "Downtime Details"
-  },
-  {
-   "fieldname": "downtimes",
-   "fieldtype": "Table",
-   "options": "Downtime Item"
   },
   {
    "fieldname": "section_break_16",
@@ -237,11 +168,59 @@
    "fieldtype": "Check",
    "label": "Hired Equipment",
    "read_only": 1
+  },
+  {
+   "fetch_from": "equipment_hiring_form.party_type",
+   "fieldname": "party_type",
+   "fieldtype": "Select",
+   "label": "Party Type",
+   "options": "Supplier\nCustomer",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "equipment_hiring_form.party",
+   "fieldname": "party",
+   "fieldtype": "Dynamic Link",
+   "label": "Party",
+   "options": "party_type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_idle_hour",
+   "fieldtype": "Float",
+   "label": "Total Idle Hour",
+   "read_only": 1
+  },
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "From Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_21",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_km_reading",
+   "fieldtype": "Float",
+   "label": "Total KM Reading",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_23",
+   "fieldtype": "Section Break"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-17 12:12:38.319190",
+ "modified": "2023-06-02 12:41:43.054074",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Logbook",
@@ -281,7 +260,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "EME Manager",
+   "role": "Mechanical Manager",
    "share": 1,
    "submit": 1,
    "write": 1
@@ -293,7 +272,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "EME User",
+   "role": "Mechanical User",
    "share": 1,
    "write": 1
   },
@@ -309,11 +288,36 @@
    "share": 1,
    "submit": 1,
    "write": 1
+  },
+  {
+   "amend": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Fleet User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Fleet Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
   }
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1,
- "track_views": 1
+ "track_changes": 1
 }

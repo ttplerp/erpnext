@@ -56,6 +56,14 @@
   "division",
   "section",
   "unit",
+  "evaluator_details_section",
+  "eval_1",
+  "eval_2",
+  "eval_3",
+  "column_break_52",
+  "eval_1_name",
+  "eval_2_name",
+  "eval_3_name",
   "employment_details",
   "scheduled_confirmation_date",
   "column_break_32",
@@ -992,13 +1000,61 @@
    "fieldtype": "Link",
    "label": "PMS Group",
    "options": "PMS Group"
+  },
+  {
+   "fieldname": "eval_1",
+   "fieldtype": "Link",
+   "label": "Evaluator 1",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "eval_2",
+   "fieldtype": "Link",
+   "label": "Evaluator 2",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "eval_3",
+   "fieldtype": "Link",
+   "label": "Evaluator 3",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "column_break_52",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "eval_1.employee_name",
+   "fieldname": "eval_1_name",
+   "fieldtype": "Data",
+   "label": "Evaluator Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "eval_2.employee_name",
+   "fieldname": "eval_2_name",
+   "fieldtype": "Data",
+   "label": "Evaluator Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "eval_3.employee_name",
+   "fieldname": "eval_3_name",
+   "fieldtype": "Data",
+   "label": "Evaluator Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "evaluator_details_section",
+   "fieldtype": "Section Break",
+   "label": "PMS Evaluator Details"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-07-06 10:12:30.737224",
+ "modified": "2023-07-11 10:29:12.630561",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
