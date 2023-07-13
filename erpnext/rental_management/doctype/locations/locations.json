@@ -71,18 +71,18 @@
   {
    "fieldname": "luc_no",
    "fieldtype": "Data",
-   "label": "LUC No",
-   "reqd": 1
+   "label": "LUC No"
   },
   {
    "fieldname": "plot_no",
    "fieldtype": "Data",
-   "label": "Plot No"
+   "label": "Plot No",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-07-13 15:15:43.031407",
+ "modified": "2023-07-13 15:46:32.329318",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Locations",

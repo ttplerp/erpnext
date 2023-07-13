@@ -13,7 +13,7 @@ class Locations(Document):
 		dz = self.dzongkhag
 		dzo_prefix = dz[:3]
 		prefix = dzo_prefix.upper()
-		self.name = "/".join([prefix, self.luc_no])
+		self.name = "/".join([prefix, self.plot_no])
 	
 	def validate(self):
 		# self.make_location_id()
