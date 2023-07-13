@@ -5,13 +5,11 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "hiring_rate",
+  "rate_type",
   "column_break_2",
-  "reference",
-  "section_break_2",
-  "from_date",
-  "column_break_6",
-  "to_date"
+  "hiring_rate",
+  "idle_rate",
+  "reference"
  ],
  "fields": [
   {
@@ -26,38 +24,33 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "from_date",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "label": "From Date"
-  },
-  {
-   "allow_on_submit": 1,
-   "fieldname": "to_date",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "label": "To Date"
-  },
-  {
-   "fieldname": "section_break_2",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "reference",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Hire Rate Revision",
    "options": "Hiring Rate Revision",
    "read_only": 1
   },
   {
-   "fieldname": "column_break_6",
-   "fieldtype": "Column Break"
+   "fieldname": "rate_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Rate Type",
+   "options": "\nWith Fuel\nWithout Fuel",
+   "reqd": 1
+  },
+  {
+   "fieldname": "idle_rate",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Idle Rate",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-04-17 12:12:52.934223",
+ "modified": "2023-06-29 17:03:09.085190",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "EHF Rate",
@@ -65,6 +58,5 @@
  "permissions": [],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
- "track_views": 1
+ "states": []
 }
