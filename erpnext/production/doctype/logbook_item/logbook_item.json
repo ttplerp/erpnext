@@ -6,47 +6,19 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "expense_head",
-  "ob_qty_required",
-  "column_break_2",
-  "is_overtime",
-  "ob_qty",
-  "column_break_4",
   "hours",
-  "section_break_4",
-  "uom",
-  "column_break_6",
-  "initial_reading",
-  "reading_initial",
-  "initial_time",
+  "column_break_4",
+  "total_km",
+  "time_details_section",
+  "initial_hour",
+  "initial_km",
   "column_break_7",
-  "final_time",
-  "reading_final",
-  "target_trip",
-  "final_reading",
+  "final_hour",
+  "final_km",
   "equipment",
   "idle_time"
  ],
  "fields": [
-  {
-   "fieldname": "expense_head",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Expense Head",
-   "options": "Expense Head",
-   "reqd": 1
-  },
-  {
-   "fieldname": "column_break_2",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "0",
-   "fieldname": "is_overtime",
-   "fieldtype": "Check",
-   "label": "Is Overtime",
-   "reqd": 1
-  },
   {
    "fieldname": "column_break_4",
    "fieldtype": "Column Break"
@@ -54,77 +26,13 @@
   {
    "fieldname": "hours",
    "fieldtype": "Float",
-   "in_list_view": 1,
-   "label": "No. of Hours",
+   "label": "Total Work Time (Hours)",
    "precision": "1",
    "read_only": 1
   },
   {
-   "fieldname": "section_break_4",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "uom",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Reading Unit",
-   "options": "\nTrip\nHour\nTime",
-   "reqd": 1
-  },
-  {
-   "fieldname": "column_break_6",
-   "fieldtype": "Column Break"
-  },
-  {
-   "depends_on": "eval:doc.uom==\"Trip\"",
-   "fieldname": "initial_reading",
-   "fieldtype": "Int",
-   "label": "Reading"
-  },
-  {
-   "depends_on": "eval:doc.uom==\"Hour\"",
-   "fieldname": "reading_initial",
-   "fieldtype": "Float",
-   "label": "Initital Reading",
-   "precision": "1"
-  },
-  {
-   "depends_on": "eval:doc.uom==\"Time\"",
-   "fieldname": "initial_time",
-   "fieldtype": "Time",
-   "label": "Initial Time"
-  },
-  {
    "fieldname": "column_break_7",
    "fieldtype": "Column Break"
-  },
-  {
-   "depends_on": "eval:doc.initial_time && doc.uom==\"Time\"",
-   "fieldname": "final_time",
-   "fieldtype": "Time",
-   "label": "Final Time"
-  },
-  {
-   "depends_on": "eval:doc.uom==\"Hour\"",
-   "fieldname": "reading_final",
-   "fieldtype": "Float",
-   "label": "Final Reading",
-   "precision": "1"
-  },
-  {
-   "depends_on": "eval:doc.uom==\"Trip\"",
-   "fetch_from": "trip_link.target_trip",
-   "fieldname": "target_trip",
-   "fieldtype": "Int",
-   "label": "Target Trip",
-   "precision": "2"
-  },
-  {
-   "depends_on": "eval:doc.uom==\"Trip\"",
-   "fieldname": "final_reading",
-   "fieldtype": "Float",
-   "hidden": 1,
-   "label": "Final Reading"
   },
   {
    "fieldname": "equipment",
@@ -134,32 +42,58 @@
   },
   {
    "default": "0",
-   "depends_on": "eval:(doc.final_time && doc.uom==\"Time\") || (doc.reading_final && doc.uom==\"Hour\")",
    "fieldname": "idle_time",
    "fieldtype": "Float",
+   "in_list_view": 1,
    "label": "Idle Time",
-   "precision": "1"
+   "precision": "1",
+   "reqd": 1
   },
   {
-   "default": "0",
-   "fetch_from": "expense_head.ob_qty_required",
-   "fieldname": "ob_qty_required",
-   "fieldtype": "Check",
-   "label": "OB Qty Required",
+   "fieldname": "time_details_section",
+   "fieldtype": "Section Break",
+   "label": "Time Details"
+  },
+  {
+   "fieldname": "total_km",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Total KM",
    "read_only": 1
   },
   {
-   "depends_on": "eval:doc.ob_qty_required == 1",
-   "fieldname": "ob_qty",
+   "fieldname": "initial_hour",
    "fieldtype": "Float",
-   "label": "OB Qty",
-   "mandatory_depends_on": "eval:doc.ob_qty_required == 1"
+   "in_list_view": 1,
+   "label": "Initial Hour",
+   "precision": "1",
+   "reqd": 1
+  },
+  {
+   "fieldname": "final_hour",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Final Hour",
+   "precision": "1",
+   "reqd": 1
+  },
+  {
+   "fieldname": "initial_km",
+   "fieldtype": "Float",
+   "label": "Initial KM",
+   "reqd": 1
+  },
+  {
+   "fieldname": "final_km",
+   "fieldtype": "Float",
+   "label": "Final KM",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-04-17 12:12:41.476068",
+ "modified": "2023-06-26 16:20:15.059883",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Logbook Item",
@@ -168,6 +102,5 @@
  "permissions": [],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
- "track_views": 1
+ "states": []
 }

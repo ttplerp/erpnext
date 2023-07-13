@@ -459,7 +459,6 @@ frappe.ui.form.on("Material Request Item", {
 	item_code: function (frm, doctype, name) {
 		const item = locals[doctype][name];
 
-		// item.rate = 10;
 		item.uom = '';
 		set_schedule_date(frm);
 		frm.events.get_item_data(frm, item, true);
@@ -467,16 +466,16 @@ frappe.ui.form.on("Material Request Item", {
 	form_render:function(frm, cdt, cdn){
 		frappe.model.set_value(cdt,cdn,"cost_center",frm.doc.cost_center)
 	},
-	schedule_date: function (frm, cdt, cdn) {
-		var row = locals[cdt][cdn];
-		if (row.schedule_date) {
-			if (!frm.doc.schedule_date) {
-				erpnext.utils.copy_value_in_all_rows(frm.doc, cdt, cdn, "items", "schedule_date");
-			} else {
-				set_schedule_date(frm);
-			}
-		}
-	},
+	// schedule_date: function (frm, cdt, cdn) {
+	// 	var row = locals[cdt][cdn];
+	// 	if (row.schedule_date) {
+	// 		if (!frm.doc.schedule_date) {
+	// 			erpnext.utils.copy_value_in_all_rows(frm.doc, cdt, cdn, "items", "schedule_date");
+	// 		} else {
+	// 			set_schedule_date(frm);
+	// 		}
+	// 	}
+	// },
 	
 
 	// issue_to: function (frm, cdt, cdn) {
@@ -535,6 +534,7 @@ erpnext.buying.MaterialRequestController = class MaterialRequestController exten
 	}
 
 	items_add(doc, cdt, cdn) {
+		console.log("iii")
 		var row = frappe.get_doc(cdt, cdn);
 		if (doc.schedule_date) {
 			row.schedule_date = doc.schedule_date;

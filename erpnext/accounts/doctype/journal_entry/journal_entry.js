@@ -125,36 +125,29 @@ frappe.ui.form.on("Journal Entry", {
 		})
 	},
 
-	company: function(frm) {
+	// add cost_center based on branch to the child table.
+	branch: function (frm) { 
 		frappe.call({
-			method: "frappe.client.get_value",
+			method: "erpnext.accounts.doctype.journal_entry.journal_entry.get_cost_center",
 			args: {
-				doctype: "Company",
-				filters: {"name": frm.doc.company},
-				fieldname: "cost_center"
+				args: {
+					"branch": frm.doc.branch
+				}
 			},
 			callback: function(r){
-				if(r.message){
-					$.each(frm.doc.accounts || [], function(i, jvd) {
-						frappe.model.set_value(jvd.doctype, jvd.name, "cost_center", r.message.cost_center);
+				if (r.message) {
+					$.each(frm.doc.accounts || [], function (i, jvd) {
+						frappe.model.set_value(jvd.doctype, jvd.name, "cost_center", r.message);
+						console.log(jvd)
+						
 					});
 				}
 			}
 		});
-
-		erpnext.accounts.dimensions.update_dimension(frm, frm.doctype);
 	},
 
-	// voucher_type: function (frm) { 
-	// 	if (frm.doc.voucher_type === "Bank Entry") { 
-
-	// 	}
-	// }
-
 	voucher_type: function(frm){
-
 		if(!frm.doc.company) return null;
-
 		if((!(frm.doc.accounts || []).length) || ((frm.doc.accounts || []).length === 1 && !frm.doc.accounts[0].account)) {
 			if(in_list(["Bank Entry", "Cash Entry"], frm.doc.voucher_type)) {
 				return frappe.call({
@@ -164,8 +157,7 @@ frappe.ui.form.on("Journal Entry", {
 						"account_type": (frm.doc.voucher_type=="Bank Entry" ?
 							"Bank" : (frm.doc.voucher_type=="Cash Entry" ? "Cash" : null)),
 						"company": frm.doc.company
-					},
-					callback: function(r) {
+					}, callback: function(r) {
 						if(r.message) {
 							// If default company bank account not set
 							if(!$.isEmptyObject(r.message)){
@@ -414,18 +406,6 @@ erpnext.accounts.JournalEntry = class JournalEntry extends frappe.ui.form.Contro
 				row.party = d.party;
 				row.party_type = d.party_type;
 			}
-			frappe.call({
-			method: "erpnext.accounts.doctype.journal_entry.journal_entry.get_cost_center",
-			args: { branch: doc.branch},
-			callback: function(r) {
-				if (r.message) {
-					console.log(r.message)
-					row.cost_center = r.message
-					d.cost_center = r.message
-				}
-			}
-		});
-			d.cost_center = "MEP Phase-1 Project pangbesa - VBPL"
 		});
 		// set difference
 		if(doc.difference) {
@@ -439,10 +419,8 @@ erpnext.accounts.JournalEntry = class JournalEntry extends frappe.ui.form.Contro
 		}
 		cur_frm.refresh_field("accounts")
 		cur_frm.cscript.update_totals(doc);
-
 		erpnext.accounts.dimensions.copy_dimension_from_first_row(this.frm, cdt, cdn, 'accounts');
 	}
-
 };
 
 cur_frm.script_manager.make(erpnext.accounts.JournalEntry);
