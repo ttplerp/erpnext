@@ -10,9 +10,13 @@ class Locations(Document):
 		""" generate id """
 		if not self.dzongkhag:
 			frappe.throw("Dzongkhag name is missing")
-		dz = self.dzongkhag
-		dzo_prefix = dz[:3]
-		prefix = dzo_prefix.upper()
+		if not frappe.db.get_value("Dzongkhag", self.dzongkhag, "rental_dzo_abbr"):
+			frappe.throw("Dzongkhag Abbr is missing in Dzongkhag master")
+		# dz = self.dzongkhag
+		# dzo_prefix = dz[:3]
+		abbr = frappe.db.get_value("Dzongkhag", self.dzongkhag, "rental_dzo_abbr")
+		prefix = abbr.upper()
+		
 		self.name = "/".join([prefix, self.plot_no])
 	
 	def validate(self):
