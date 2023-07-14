@@ -7,24 +7,20 @@
  "engine": "InnoDB",
  "field_order": [
   "tb_notification",
-  "pol_expense_approval_notification_template",
-  "pol_expense_status_notification_template",
+  "vehicle_request_approval_notification_template",
+  "vehicle_request_status_notification_template",
   "sb_approver",
   "fleet_mto",
   "fleet_mto_name",
-  "mto_gm"
+  "account_settings_tab",
+  "equipment_hire_income_account",
+  "equipment_hire_expense_account"
  ],
  "fields": [
   {
    "fieldname": "tb_notification",
    "fieldtype": "Tab Break",
    "label": "Notification Templates"
-  },
-  {
-   "fieldname": "pol_expense_approval_notification_template",
-   "fieldtype": "Link",
-   "label": "POL Expense Approval Notification Template",
-   "options": "Email Template"
   },
   {
    "fieldname": "sb_approver",
@@ -45,22 +41,39 @@
    "read_only": 1
   },
   {
-   "fieldname": "pol_expense_status_notification_template",
+   "fieldname": "vehicle_request_approval_notification_template",
    "fieldtype": "Link",
-   "label": "POL Expense Status Notification Template",
+   "label": "Vehicle Request Approval Notification Template",
    "options": "Email Template"
   },
   {
-   "fieldname": "mto_gm",
+   "fieldname": "vehicle_request_status_notification_template",
    "fieldtype": "Link",
-   "label": "MTO GM",
-   "options": "Employee"
+   "label": "Vehicle Request Status Notification Template",
+   "options": "Email Template"
+  },
+  {
+   "fieldname": "account_settings_tab",
+   "fieldtype": "Tab Break",
+   "label": "Account Settings"
+  },
+  {
+   "fieldname": "equipment_hire_income_account",
+   "fieldtype": "Link",
+   "label": "Equipment Hire Income Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "equipment_hire_expense_account",
+   "fieldtype": "Link",
+   "label": "Equipment Hire Expense Account",
+   "options": "Account"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-06-30 16:00:16.682374",
+ "modified": "2023-06-22 17:48:10.449188",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Maintenance Settings",
@@ -89,6 +102,5 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
- "track_views": 1
+ "states": []
 }
