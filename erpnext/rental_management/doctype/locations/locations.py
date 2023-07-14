@@ -24,7 +24,7 @@ class Locations(Document):
 		if not self.description:
 			self.description = self.location
 		""" Validate duplicate entry """
-		self.validate_luc_duplicate()
+		# self.validate_luc_duplicate()
 		self.validate_duplicate_item_entry()
 		self.calc_total_prop_amount()
 	
@@ -56,6 +56,6 @@ class Locations(Document):
 			else:
 				frappe.throw("Duplicate data entry at #Row. {}".format(d.idx))
 
-	def validate_luc_duplicate(self):
-		for loc in frappe.db.get_all("Locations", {"luc_no": self.luc_no, "name": ("!=", self.name)}):
-			frappe.throw("Locaton {} already exist with LUC {}".format(frappe.get_desk_link("Locations", loc.name), self.luc_no))
+	# def validate_luc_duplicate(self):
+	# 	for loc in frappe.db.get_all("Locations", {"luc_no": self.luc_no, "name": ("!=", self.name)}):
+	# 		frappe.throw("Locaton {} already exist with LUC {}".format(frappe.get_desk_link("Locations", loc.name), self.luc_no))
