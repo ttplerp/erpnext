@@ -20,11 +20,11 @@ frappe.ui.form.on('EME Invoice', {
 				},__("Create"))
 			}
 		}
-		frm.add_custom_button(__('EME Bill Report'), function () {
+		frm.add_custom_button(__('Bill Report'), function () {
 			frappe.route_options = {
 					name: frm.doc.name
 			};
-			frappe.set_route("query-report", "EME Bill Report");
+			frappe.set_route("query-report", "Bill Report");
 		}, __("View"));
 
 		frm.add_custom_button(__('EME Invoice Details'), function () {

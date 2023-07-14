@@ -34,7 +34,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-04-17 12:12:41.277480",
+ "modified": "2023-01-11 15:25:28.485401",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "EME Invoice Entry Error",
@@ -42,6 +42,5 @@
  "permissions": [],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
- "track_views": 1
+ "states": []
 }

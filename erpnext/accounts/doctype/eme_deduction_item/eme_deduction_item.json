@@ -47,7 +47,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-04-17 12:13:10.419149",
+ "modified": "2022-11-05 20:06:12.398583",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "EME Deduction Item",
@@ -56,6 +56,5 @@
  "permissions": [],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
- "track_views": 1
+ "states": []
 }

@@ -285,19 +285,17 @@
   {
    "fieldname": "bill_no",
    "fieldtype": "Data",
-   "label": "Bill No",
-   "reqd": 1
+   "label": "Bill No"
   },
   {
    "fieldname": "bill_date",
    "fieldtype": "Date",
-   "label": "Bill Date",
-   "reqd": 1
+   "label": "Bill Date"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-17 12:12:28.512194",
+ "modified": "2023-03-21 14:48:38.029487",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "EME Invoice",
@@ -388,6 +386,5 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1,
- "track_views": 1
+ "track_changes": 1
 }

@@ -36,7 +36,6 @@ class EMEInvoiceEntry(Document):
 				"currency":self.currency,
 				"status":"Draft"
 			})
-			# frappe.enqueue(create_eme_invoice_for_owner, owner_list = owner_list, args = args)
 			create_eme_invoice_for_owner(owner_list = owner_list, args = args)
 	def get_owner_list(self):
 		owner = []
@@ -241,6 +240,7 @@ def create_eme_invoice_for_owner(owner_list, args, publish_progress = True):
 			try:
 				emi = frappe.get_doc(args)
 				emi.get_logbooks()
+				emi.flags.ignore_mandatory = True
 				emi.set("deduct_items",[])
 				for d in doc.deductions:
 					if d.supplier == owner:

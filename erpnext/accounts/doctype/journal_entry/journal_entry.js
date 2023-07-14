@@ -426,6 +426,7 @@ erpnext.accounts.JournalEntry = class JournalEntry extends frappe.ui.form.Contro
 cur_frm.script_manager.make(erpnext.accounts.JournalEntry);
 
 cur_frm.cscript.update_totals = function(doc) {
+	console.log("here")
 	var td=0.0; var tc =0.0; var tax_amount=0.0, tax_dr=0.0, tax_cr=0.0;
 	var accounts = doc.accounts || [];
 	for(var i in accounts) {
@@ -498,10 +499,12 @@ frappe.ui.form.on("Journal Entry Account", {
 	},
 
 	debit: function(frm, dt, dn) {
+		erpnext.journal_entry.set_bank_payment_amount(frm, dt, dn);
 		cur_frm.cscript.update_totals(frm.doc);
 	},
 
 	credit: function(frm, dt, dn) {
+		erpnext.journal_entry.set_bank_payment_amount(frm, dt, dn);
 		cur_frm.cscript.update_totals(frm.doc);
 	},
 
@@ -599,6 +602,53 @@ $.extend(erpnext.journal_entry, {
 			flt(flt(tax_amount)*row.exchange_rate, precision("tax_amount", row)));
 
 		cur_frm.cscript.update_totals(frm.doc);
+	},
+
+	set_bank_payment_amount: function(frm, cdt, cdn){
+		console.log("here")
+		var company_currency = frappe.get_doc(":Company", frm.doc.company).default_currency;
+		let payable_amount=0, tax_amount = 0;
+		let bank_entry=[], bank_amount = 0;
+		$.each(frm.doc.accounts || [], function(i, row){
+			if(row.account_type == "Bank"){
+				if (frm.doc.currency != company_currency){
+					bank_amount += (flt(row.debit_in_currency) - flt(row.credit_in_currency));	
+				} else {
+					bank_amount += (flt(row.debit_in_account_currency) - flt(row.credit_in_account_currency));
+				}
+				bank_entry.push([row.doctype, row.name]);
+			} else {
+				if (frm.doc.currency != company_currency){
+					payable_amount += (flt(row.debit_in_currency) - flt(row.credit_in_currency));
+					tax_amount += flt(row.tax_amount_in_currency);
+				} else {
+					payable_amount += (flt(row.debit_in_account_currency) - flt(row.credit_in_account_currency));
+					tax_amount += flt(row.tax_amount_in_account_currency);
+				}
+			}
+		})
+
+		if (bank_entry.length == 1 && Math.abs(bank_amount) != flt(Math.abs(payable_amount) - Math.abs(tax_amount))){
+			if (flt(payable_amount) > 0){
+				if(frm.doc.currency != company_currency){
+					frappe.model.set_value(bank_entry[0][0], bank_entry[0][1], 'debit_in_currency', 0);
+					frappe.model.set_value(bank_entry[0][0], bank_entry[0][1], 'credit_in_currency', Math.abs(payable_amount) - Math.abs(tax_amount));
+				} else {
+					frappe.model.set_value(bank_entry[0][0], bank_entry[0][1], 'debit_in_account_currency', 0);
+					frappe.model.set_value(bank_entry[0][0], bank_entry[0][1], 'credit_in_account_currency', Math.abs(payable_amount) - Math.abs(tax_amount));
+				}
+				
+			} else {
+				if(frm.doc.currency != company_currency){
+					frappe.model.set_value(bank_entry[0][0], bank_entry[0][1], 'debit_in_currency', Math.abs(payable_amount) - Math.abs(tax_amount));
+					frappe.model.set_value(bank_entry[0][0], bank_entry[0][1], 'credit_in_currency', 0);
+				} else {
+					frappe.model.set_value(bank_entry[0][0], bank_entry[0][1], 'debit_in_account_currency', Math.abs(payable_amount) - Math.abs(tax_amount));
+					frappe.model.set_value(bank_entry[0][0], bank_entry[0][1], 'credit_in_account_currency', 0);
+				}
+			}
+		} 
+		cur_frm.refresh_fields(["debit_in_currency","credit_in_currency"]);
 	},
 
 	// added by SHIV on 2022/09/21
