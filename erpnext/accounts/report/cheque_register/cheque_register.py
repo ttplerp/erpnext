@@ -60,7 +60,7 @@ def construct_query(filters=None):
 			pe.party_name as recipient, 
 			CASE pe.docstatus WHEN 2 THEN 'CANCELLED' ELSE null END AS cheque_status 
 		FROM `tabPayment Entry` pe 
-		WHERE pe.naming_series IN ('Bank Payment Voucher') 
+		WHERE pe.docstatus !=2 
 		AND IFNULL(pe.reference_no,'') != '' 
 		AND pe.posting_date BETWEEN '{from_date}' AND '{to_date}' 
 		AND NOT EXISTS (SELECT 1 from `tabPayment Entry` pe1 where pe1.amended_from = pe.name) 

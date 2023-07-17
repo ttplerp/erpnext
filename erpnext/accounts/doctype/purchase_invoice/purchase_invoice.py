@@ -761,7 +761,7 @@ class PurchaseInvoice(BuyingController):
 					item=self,
 				)
 			)
-
+		
 	def make_item_gl_entries(self, gl_entries):
 		# item gl entries
 		stock_items = self.get_stock_items()
@@ -807,13 +807,11 @@ class PurchaseInvoice(BuyingController):
 				account_currency = get_account_currency(item.expense_account)
 				if item.item_code:
 					asset_category = frappe.get_cached_value("Item", item.item_code, "asset_category")
-
 				if self.update_stock and self.auto_accounting_for_stock and item.item_code in stock_items:
 					# warehouse account
 					warehouse_debit_amount = self.make_stock_adjustment_entry(
 						gl_entries, item, voucher_wise_stock_value, account_currency
 					)
-
 					if item.from_warehouse:
 						gl_entries.append(
 							self.get_gl_dict(
@@ -1475,6 +1473,8 @@ class PurchaseInvoice(BuyingController):
 					{
 						"account": self.write_off_account,
 						"against": self.supplier,
+						"party_type": "Supplier",
+						"party": self.supplier,
 						"credit": flt(self.base_write_off_amount),
 						"credit_in_account_currency": self.base_write_off_amount
 						if write_off_account_currency == self.company_currency

@@ -401,6 +401,9 @@ scheduler_events = {
 		"erpnext.erpnext_integrations.doctype.plaid_settings.plaid_settings.automatic_synchronization",
 		"erpnext.projects.doctype.project.project.hourly_reminder",
 		"erpnext.projects.doctype.project.project.collect_project_status",
+		"erpnext.integrations.bps.download_bank_statement",
+		"erpnext.accounts.doctype.bank_statement_files.bank_statement_files.update_brs",
+		"erpnext.accounts.doctype.brs_entries.brs_entries.update_bank_clearance_date",
 	],
 	"hourly_long": [
 		"erpnext.stock.doctype.repost_item_valuation.repost_item_valuation.repost_entries",
