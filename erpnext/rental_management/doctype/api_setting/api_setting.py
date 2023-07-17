@@ -50,49 +50,27 @@ def get_cid_detail(cid=None):
 	url = doc.api_url + str(cid)
 	payload={}
 	doc = frappe.get_doc("API Setting", "API-2023-313")
-	bearer_token = doc.generate_bearer_token()
+	bearer_token = 'Bearer ' + doc.generate_bearer_token()
 	headers = {
-	'Authorization': 'Bearer {bearer_token}'
+	'Authorization': str(bearer_token)
 	}
-
-	response = requests.request("GET", url, headers=headers, data=payload)
-	return response
 	
-	'''
-	print(response.text)
-	data = {
-			"citizendetails": {
-				"citizendetail": [
-					{
-						"cidNumber": "10808003482",
-						"firstissueDate": "16/11/2022",
-						"gender": "F",
-						"dob": "31/05/2022",
-						"fatherName": "Thukten  Dendup",
-						"firstName": "Kinley ",
-						"middleName": "",
-						"lastName": "Choden",
-						"mobileNumber": null,
-						"motherName": "Tshering  Pelden",
-						"occupationDesc": "Dependent",
-						"dzongkhagSerialno": "8",
-						"gewogSerialno": "81",
-						"gewogName": "Shaba",
-						"permanentHouseno": "Nya-8-Nil/45",
-						"permanentThramno": "1423 (SHA-2933)",
-						"permanentVillageserialno": "1958",
-						"permanentVillagename": "Shungkarna",
-						"palceOfbirth": "H",
-						"countryName": null,
-						"firstNamebh": "ཀུན་ལེགས་ ཆོས་སྒྲོན།",
-						"middleNamebh": null,
-						"lastNamebh": null,
-						"householdNo": "080800237",
-						"dzongkhagName": "Paro"
-					}
-				]
-			}
-		}
-	return data
-	'''
+	response = requests.request("GET", url, headers=headers, data=payload)
+	data=response.json()
+	return data['citizendetails']['citizendetail']
 
+
+@frappe.whitelist(allow_guest=True)
+def get_civil_servant_detail(cid=None):
+	data=None
+	doc = frappe.get_doc("API Setting Item", {"parent":"API-2023-313", "api_name":"Civil Servant Detail"})
+	url = doc.api_url + str(cid)
+	payload={}
+	doc = frappe.get_doc("API Setting", "API-2023-313")
+	bearer_token = 'Bearer ' + doc.generate_bearer_token()
+	headers = {
+	'Authorization': str(bearer_token)
+	}
+	response = requests.request("GET", url, headers=headers, data=payload)
+	data=response.json()
+	return data['employeedetails']['employeedetail']
