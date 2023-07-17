@@ -1,0 +1,92 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:API-{YYYY}-{##}",
+ "creation": "2023-06-30 16:30:30.947240",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "url",
+  "username",
+  "password",
+  "column_break_4",
+  "bearer_token",
+  "generate_token",
+  "api_list_section",
+  "item"
+ ],
+ "fields": [
+  {
+   "fieldname": "url",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "URL",
+   "reqd": 1
+  },
+  {
+   "fieldname": "username",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Username",
+   "reqd": 1
+  },
+  {
+   "fieldname": "password",
+   "fieldtype": "Password",
+   "in_list_view": 1,
+   "label": "Password",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "bearer_token",
+   "fieldtype": "Small Text",
+   "label": "Access Token"
+  },
+  {
+   "fieldname": "generate_token",
+   "fieldtype": "Button",
+   "label": "Generate Access Token"
+  },
+  {
+   "fieldname": "api_list_section",
+   "fieldtype": "Section Break",
+   "label": "API List"
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Table",
+   "options": "API Setting Item"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-07-17 10:52:15.591512",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "API Setting",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
