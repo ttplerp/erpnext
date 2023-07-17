@@ -16,6 +16,7 @@ from erpnext.accounts.general_ledger import (
 	make_reverse_gl_entries,
 	merge_similar_entries,
 )
+from erpnext.accounts.party import get_party_account
 
 class HireChargeInvoice(AccountsController):
 	def validate(self):
@@ -90,6 +91,12 @@ class HireChargeInvoice(AccountsController):
 		if not self.remarks:
 			self.remarks = "Hire Charge payment to {0}".format(self.party)
 	
+	def set_credit_account(self):
+		if self.party:
+			account = get_party_account(self.party_type, self.party, self.company)
+			self.db_set("credit_account", account)
+		else:
+			frappe.msgprint(str("Pary is required."))
 	# fetch rate base on equipment hiring form
 	def get_rate(self, ehf):
 		rate = frappe.db.sql('''

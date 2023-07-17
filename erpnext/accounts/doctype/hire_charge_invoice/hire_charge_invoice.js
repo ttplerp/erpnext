@@ -44,6 +44,7 @@ frappe.ui.form.on('Hire Charge Invoice', {
 		cur_frm.page.set_inner_btn_group_as_primary(__('Create'));
 		cur_frm.page.set_inner_btn_group_as_primary(__('View'));
 	},
+	
 	post_journal_entry:function(frm){
 		frappe.call({
 			method:"post_journal_entry",
@@ -51,6 +52,7 @@ frappe.ui.form.on('Hire Charge Invoice', {
 			callback: function (r) {},
 		});
 	},
+
 	onload:function(frm){
 		frm.fields_dict['deduct_items'].grid.get_field('account').get_query = function(){
 			return {
@@ -58,6 +60,7 @@ frappe.ui.form.on('Hire Charge Invoice', {
 			}
 		}
 	},
+
 	is_internal_customer: function(frm){
 		if (frm.doc.party_type == "Customer"){
 			if (frm.doc.is_internal_customer == 1){
@@ -80,6 +83,7 @@ frappe.ui.form.on('Hire Charge Invoice', {
 			}
 		}
 	},
+
 	party:function(frm){
 		if (frm.doc.is_internal_customer == 0){
 			if (frm.doc.party){
@@ -89,8 +93,7 @@ frappe.ui.form.on('Hire Charge Invoice', {
 						party_type:frm.doc.party_type,
 						party:frm.doc.party,
 						company: frm.doc.company,
-					},
-					callback: function(r) {
+					}, callback: function(r) {
 						if(r.message) {
 							frm.set_value("credit_account",r.message)
 							frm.refresh_fields("credit_account")
@@ -101,6 +104,7 @@ frappe.ui.form.on('Hire Charge Invoice', {
 			frm.clear_table("items");
 		}
 	},
+
 	tds_percent:function(frm){
 		if (frm.doc.tds_percent){
 			frappe.call({

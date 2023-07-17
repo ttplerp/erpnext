@@ -6,6 +6,7 @@ from erpnext.custom_utils import check_future_date
 from frappe.utils import flt, cint,getdate,time_diff_in_hours
 from frappe import _, qb, throw
 from frappe.model.mapper import get_mapped_doc
+from erpnext.accounts.party import get_party_account
 
 class Logbook(Document):
 	def validate(self):
@@ -81,4 +82,26 @@ class Logbook(Document):
 		self.total_hours = round(total_hours,1)
 		self.total_km_reading = round(total_km,1)
 		self.total_idle_hour = round(tot_idle,1)
+
+@frappe.whitelist()
+def make_hire_charge_invoice(source_name, target_doc=None):
+	from frappe.model.mapper import get_mapped_doc
 	
+	def post_process(source, target):
+		target.reversal_of = source.name
+
+	party, party_type, company = frappe.db.get_value("Logbook", source_name, ['party','party_type','company'])
+	doclist = get_mapped_doc("Logbook",source_name,{
+				"Logbook": {
+				"doctype": "Hire Charge Invoice",
+				"field_map":{
+					"logbook":"name",
+				}
+			},
+		},
+		target_doc,
+		post_process,
+	)
+	account = get_party_account(party_type, party, company)
+	doclist.db_set("credit_account", account)
+	return doclist

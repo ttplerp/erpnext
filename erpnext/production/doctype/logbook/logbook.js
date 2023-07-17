@@ -2,9 +2,13 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Logbook', {
-	// refresh: function(frm) {
-
-	// }
+	refresh: function(frm) {
+		if(frm.doc.docstatus == 1 ){
+			cur_frm.add_custom_button(__('Create Hire Charge Invoice'), function() {
+					frm.events.make_hire_charge_invoice(frm)
+				}, __("Create"));
+		}
+	},
 	branch:function(frm){		
 		frm.set_query("equipment_hiring_form", function() {
 			return {
@@ -14,6 +18,13 @@ frappe.ui.form.on('Logbook', {
 					docstatus :1
 				}
 			}
+		})
+	},
+	make_hire_charge_invoice:function(frm){
+		frappe.model.open_mapped_doc({
+			method: "erpnext.production.doctype.logbook.logbook.make_hire_charge_invoice",
+			frm: cur_frm,
+			doc: frm
 		})
 	}
 });
