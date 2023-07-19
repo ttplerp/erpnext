@@ -18,6 +18,7 @@
   "column_break_2",
   "cost_center",
   "col_break_10",
+  "close",
   "section_break_10",
   "ehf_name",
   "business_activity",
@@ -342,11 +343,17 @@
    "fieldtype": "Data",
    "label": "Journal Entry",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "close",
+   "fieldtype": "Check",
+   "label": "Final Settlement?"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-10 15:33:43.980173",
+ "modified": "2023-07-19 16:08:38.163702",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Hire Charge Invoice",

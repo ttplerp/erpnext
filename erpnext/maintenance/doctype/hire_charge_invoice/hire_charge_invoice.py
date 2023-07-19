@@ -65,7 +65,7 @@ class HireChargeInvoice(AccountsController):
 
 		if self.close:
 			self.refund_of_excess_advance()
-		self.check_close()
+		# self.check_close()
 	
 	def consume_budget(self):
 		hire_expense_account = frappe.db.get_single_value("Maintenance Accounts Settings", "hire_expense_account")
@@ -125,7 +125,7 @@ class HireChargeInvoice(AccountsController):
 		if self.close:
 			self.check_advances()
 		self.update_vlogs(0)
-		self.check_close(1)
+		# self.check_close(1)
 		self.db_set("invoice_jv", "")
 		self.db_set("payment_jv", "")
 
