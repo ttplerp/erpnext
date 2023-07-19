@@ -25,12 +25,16 @@ def get_columns(filters):
 		]
 	else:
 		cols = [
+			("Transaction ID") + ":Link/Repair And Services:200",
 			("Branch") + ":Link/Branch:200",
 			("Posting Date") + ":Date:120",
+			("Repair and Services Type") + "::120",
 			("Equipment/Vehicle") + ":Link/Equipment:120",
 			("Equipment Type")+":Link/Equipment Type:130",
 			("Current KM")+":Data:100",
 			("KM Difference") + ":Data:100",
+			("Supplier") + ":Link/Supplier:120",
+			("Description") + "::120",
 			("Item")+":Link/Item:100",
 			("Item Name")+":Data:100",
 			("Rate")+":Currency:100",
@@ -58,9 +62,11 @@ def get_data(filters):
 		'''.format(conditions)
 	else:
 		query = '''
-			SELECT rs.branch, rs.posting_date,
+			SELECT rs.name, rs.branch, rs.posting_date,
+				rs.repair_and_services_type,
 				rs.equipment, rs.equipment_type,
 				rs.current_km, rs.km_difference,
+				rs.party, rs.fleet_comment,
 				rsi.item_code, rsi.item_name,
 				rsi.rate, rsi.qty, rsi.charge_amount,
 				rsi.last_service_date, rs.repair_and_services_type

@@ -143,7 +143,10 @@
   "default_unloading_account",
   "project_account_settings_section",
   "project_invoice_acc_customer",
+  "mr_ot_account",
+  "mr_payable_account",
   "column_break_135",
+  "mr_daily_wage_account",
   "project_invoice_acc_supplier",
   "coal_raising_settings_section",
   "coal_raising_credit_account",
@@ -1055,6 +1058,26 @@
    "fieldtype": "Link",
    "label": "Project Invoice Account (Supplier)",
    "options": "Account"
+  },
+  {
+   "fieldname": "mr_ot_account",
+   "fieldtype": "Link",
+   "label": "MR OT Account",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "mr_daily_wage_account",
+   "fieldtype": "Link",
+   "label": "MR Daily Wage Account",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "mr_payable_account",
+   "fieldtype": "Link",
+   "label": "MR Payable Account",
+   "options": "Account"
   }
  ],
  "icon": "fa fa-building",
@@ -1062,7 +1085,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2023-06-21 12:42:23.487409",
+ "modified": "2023-07-19 12:01:39.129189",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",

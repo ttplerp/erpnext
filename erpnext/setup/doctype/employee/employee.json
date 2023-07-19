@@ -1014,6 +1014,7 @@
    "options": "Employee"
   },
   {
+   "depends_on": "eval:doc.employee_group != \"Administration & Support\";",
    "fieldname": "eval_3",
    "fieldtype": "Link",
    "label": "Evaluator 3",
@@ -1038,6 +1039,7 @@
    "read_only": 1
   },
   {
+   "depends_on": "eval:doc.employee_group != \"Administration & Support\";",
    "fetch_from": "eval_3.employee_name",
    "fieldname": "eval_3_name",
    "fieldtype": "Data",
@@ -1054,7 +1056,7 @@
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-07-11 10:29:12.630561",
+ "modified": "2023-07-18 10:27:34.589125",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",

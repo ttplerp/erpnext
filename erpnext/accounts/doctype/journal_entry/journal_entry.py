@@ -1249,7 +1249,6 @@ class JournalEntry(AccountsController):
 
     def make_gl_entries(self, cancel=0, adv_adj=0):
         from erpnext.accounts.general_ledger import make_gl_entries
-
         gl_map = self.build_gl_map()
         if self.voucher_type in ("Deferred Revenue", "Deferred Expense"):
             update_outstanding = "No"
@@ -1680,11 +1679,13 @@ def get_against_jv(doctype, txt, searchfield, start, page_len, filters):
         ),
     )
 
+
 @frappe.whitelist()
 def get_cost_center(args):
     if isinstance(args, str):
         args = json.loads(args)
-    return frappe.db.get_value("Branch", args.get('branch'), 'cost_center')
+    return frappe.db.get_value("Branch", args.get("branch"), "cost_center")
+
 
 @frappe.whitelist()
 def get_outstanding(args):
@@ -1987,13 +1988,21 @@ def get_permission_query_conditions(user):
         user=user
     )
 
+
 @frappe.whitelist()
 def naming_series_query(entry_type):
-    return frappe.db.sql("""
+    return frappe.db.sql(
+        """
         SELECT je_series 
         FROM `tabJournal Entry Series` where entry_type = {0}
-    """.format(entry_type))
+    """.format(
+            entry_type
+        )
+    )
+
+
 # ePayment Begins
+
 
 @frappe.whitelist()
 def make_bank_payment(source_name, target_doc=None):

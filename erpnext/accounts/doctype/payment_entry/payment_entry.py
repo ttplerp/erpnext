@@ -1694,7 +1694,6 @@ def get_payment_entry(
 		frappe.msgprint(_("Can only make payment against unbilled {0}").format(dt), raise_exception=True)
 	if dt in ("Sales Order") and flt(doc.per_billed, 2) >= 100:
 		frappe.msgprint(_("Can only make payment against unbilled {0}").format(dt), raise_exception=True)
-
 	if not party_type:
 		party_type = set_party_type(dt)
 	party_account = set_party_account(dt, dn, doc, party_type,is_advance)

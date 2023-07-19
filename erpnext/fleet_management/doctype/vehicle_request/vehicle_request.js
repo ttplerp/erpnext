@@ -1,35 +1,111 @@
-// Copyright (c) 2016, Frappe Technologies Pvt. Ltd. and contributors
+// Copyright (c) 2022, Frappe Technologies Pvt. Ltd. and contributors
 // For license information, please see license.txt
 
-cur_frm.add_fetch('employee', 'branch', 'branch');
 frappe.ui.form.on('Vehicle Request', {
-    refresh: function (frm) {
-        if(frm.doc.workflow_state == "Waiting MTO Approval" || frm.doc.workflow_state == "Waiting DG Approval"){
-            cur_frm.toggle_display("section_break_003", frappe.user.has_role(["ADM User","CEO"]));
-        }else if(frm.doc.workflow_state == "Approved"){
-            cur_frm.toggle_display("section_break_003", 1);
-        }else{
-            cur_frm.toggle_display("section_break_003", 0);
+	refresh: function (frm) {
+        // if(frm.doc.workflow_state == "Waiting MTO Approval" || frm.doc.workflow_state == "Approved"){
+        //     frm.set_df_property('vehicle', 'reqd',  frappe.user.has_role(["ADM User","Branch Manager","Fleet Manager"]))
+        //     frm.set_df_property('kilometer_reading', 'reqd',  frappe.user.has_role(["ADM User","Branch Manager","Fleet Manager"]))
+        //     frm.toggle_display("fleet_details_section", frappe.user.has_role(["Fleet Manager","System Manager"]));
+        //     frm.refresh_fields();
+        // }
+        // else{
+        //     cur_frm.toggle_display("fleet_details_section", false);
+        // }
+        if (frm.doc.docstatus == 1 && frm.doc.status == "Booked"){
+            open_extension(frm)
+        }
+        frm.set_df_property("to_date", "allow_on_submit", frm.doc.status == "Booked" ? 1 : 0);
+
+        if (frm.doc.docstatus === 1 && frm.doc.status == "Booked" && (frappe.session.user == frm.doc.owner || frappe.user.has_role(["Fleet Manager","System Manager"]))){
+            frm.add_custom_button('Close', () => {
+                frappe.call({
+                    method:"open_the_vehicle_for_booking",
+                    doc: frm.doc,
+                    callback: function(r) {
+                        frm.refresh_field("status")
+                        frm.reload_doc();
+                    }
+                });
+            }).addClass("btn-primary");
         }
     },
-    setup: function (frm) {
-        frm.get_field('items').grid.editable_fields = [
-            { fieldname: 'employee', columns: 2 },
-            { fieldname: 'employee_name', columns: 2 },
-            { fieldname: 'designation', columns: 2 },
-            { fieldname: 'division', columns: 3 },
-        ];
+
+	// setup: function (frm) {
+    //     frm.get_field('items').grid.editable_fields = [
+    //         { fieldname: 'employee', columns: 2 },
+    //         { fieldname: 'employee_name', columns: 2 },
+    //         { fieldname: 'designation', columns: 2 },
+    //         { fieldname: 'division', columns: 3 },
+    //     ];
+    //     frappe.form.link_formatters['Employee'] = function(value) {
+    //             return value;
+    //     }
+    // },
+    from_date: function(frm){
+        get_date(frm);
     },
-})
+    to_date: function(frm){
+        check_date(frm);
+    },
+    vehicle: function(frm){
+        get_previous_km(frm)
+    },
+    
+	onload:function(frm){
+		frm.set_query('vehicle', () => {
+			return {
+				filters: {
+					equipment_type: frm.doc.vehicle_type,
+                    hired_equipment: 0
+				}
+			}
+		})
 
-//Returns own equipments
-cur_frm.fields_dict.equipment.get_query = function (doc) {}
+        frm.set_query('driver', () => {
+			return {
+				filters: {
+					designation: ["like", "driver"],
+				}
+			}
+		})
+	}
+});
 
-//Returns list of Active Employee
-/*cur_frm.fields_dict['items'].grid.get_field('employee').get_query = function(frm, cdt, cdn) {
-        var d = locals[cdt][cdn];
-        return {
-            query: "erpnext.controllers.queries.employee_query",
-            filters: {'branch': frm.branch}
+function open_extension(frm){
+    frm.add_custom_button('Extend', () => {
+        frappe.model.open_mapped_doc({
+            method: "erpnext.fleet_management.doctype.vehicle_request.vehicle_request.create_vr_extension",	
+            frm: cur_frm
+        });
+    })
+}
+
+function get_date(frm){
+    var get_date = frm.doc.from_date;
+    frappe.model.set_value("time_of_departure", get_date);
+}
+
+function check_date(frm){
+    frappe.call({
+        method:"erpnext.fleet_management.doctype.vehicle_request.vehicle_request.check_form_date_and_to_date",
+        args: {
+            'from_date': frm.doc.from_date,
+            'to_date': frm.doc.to_date
+        },
+    });
+}
+
+function get_previous_km(frm){
+    frappe.call({
+        method: "erpnext.fleet_management.doctype.vehicle_request.vehicle_request.get_previous_km",
+        args: {
+        'vehicle': frm.doc.vehicle,
+        'vehicle_number': frm.doc.vehicle_number,
+    },
+    callback: function(r){
+            console.log(r.message)
+            cur_frm.set_value("previous_km", r.message[0].km)
         }
-}*/
+    });
+}

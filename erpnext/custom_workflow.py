@@ -459,12 +459,13 @@ class CustomWorkflow:
                 },
                 self.field_list,
             )
-            self.hrgm = frappe.db.get_value(
+            self.fleet_mto = frappe.db.get_value(
                 "Employee",
-                frappe.db.get_single_value("Maintenance Settings", "mto_gm"),
+                {
+                    "user_id":frappe.db.get_single_value("Maintenance Settings", "fleet_mto"),
+                },
                 self.field_list,
-            )
-            
+            )            
         if self.doc.doctype == "Vehicle Request":
             if frappe.db.get_value("Employee", self.doc.employee, "expense_approver"):
                 self.expense_approver = frappe.db.get_value(
@@ -2292,14 +2293,19 @@ class CustomWorkflow:
 
     def repair_services(self):
         # Maintenance User -> Waiting for MTO GM Approval
+        # Maintenance User - Fleet Manager
         if self.new_state.lower() in ("Draft".lower()):
-            self.set_approver("HRGM")
+            if self.doc.owner != frappe.session.user:
+                frappe.throw("Only the document owner can Apply this rapair and service")
 
         elif self.new_state.lower() in ("Waiting for MTO GM Approval".lower()):
-            if self.doc.approver != frappe.session.user:
-                frappe.throw(
-                    "Only {} can forward this request".format(self.doc.approver)
-                )
+            if (
+                self.doc.owner != frappe.session.user
+                and self.new_state.lower() != self.old_state.lower()
+            ):
+                frappe.throw("Only the document owner can Apply this rapair and service")
+            self.set_approver("Fleet Manager")
+            
         elif self.new_state.lower() in ("Approved".lower()):
             if self.doc.approver != frappe.session.user:
                 frappe.throw(

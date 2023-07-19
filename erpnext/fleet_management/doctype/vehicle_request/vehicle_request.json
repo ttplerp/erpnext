@@ -1,8 +1,8 @@
 {
  "actions": [],
- "allow_import": 1,
- "autoname": "VR.MM.YY.####",
- "creation": "2019-04-02 21:45:43.207890",
+ "allow_rename": 1,
+ "autoname": "VR.YY.MM.DD.###",
+ "creation": "2022-11-03 16:21:12.928497",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -17,50 +17,39 @@
   "grade",
   "section_break003",
   "branch",
+  "cost_center",
+  "parent_cost_center",
   "column_break001",
   "posting_date",
+  "status",
   "travel_information",
   "from_date",
-  "equipment_type",
+  "vehicle_type",
+  "approver",
+  "total_days_and_hours",
   "columb_break04",
   "to_date",
+  "approver_id",
   "place",
   "column_break04",
   "purpose",
-  "section_break_003",
-  "rejection_reason",
+  "fleet_details_section",
+  "vehicle",
+  "vehicle_model",
+  "vehicle_number",
+  "kilometer_reading",
+  "previous_km",
   "cb01",
-  "equipment",
-  "column_break003",
-  "equipment_model",
-  "registration_number",
-  "column_break_30",
-  "operator",
-  "employee_name1",
-  "equipment_details",
-  "equipment_details_table",
-  "travel_schedule",
-  "travel_shedule_table",
-  "approval_detail",
-  "approval_detail_table",
-  "section_break_38",
-  "mto_remarks",
-  "column_break_40",
-  "dg_remarks",
-  "vehicle_reporting_time_and_location",
-  "vehicle_reporting",
-  "column_break_38",
-  "location",
-  "section_break_37",
+  "driver",
+  "driver_name",
+  "contact_number",
+  "time_of_departure",
+  "rejection_reason",
+  "section_break03",
   "items",
-  "section_break_48",
-  "verifier",
-  "column_break_50",
-  "approver",
-  "approver_designation",
-  "section_break_50",
-  "amended_from",
-  "workflow_state"
+  "reason_for_extension",
+  "workflow_state",
+  "amended_from"
  ],
  "fields": [
   {
@@ -72,7 +61,8 @@
    "fieldname": "employee",
    "fieldtype": "Link",
    "label": "Employee ",
-   "options": "Employee"
+   "options": "Employee",
+   "reqd": 1
   },
   {
    "fieldname": "column_break01",
@@ -82,6 +72,7 @@
    "fetch_from": "employee.employee_name",
    "fieldname": "employee_name",
    "fieldtype": "Read Only",
+   "in_list_view": 1,
    "label": "Employee Name"
   },
   {
@@ -109,9 +100,9 @@
    "fieldtype": "Section Break"
   },
   {
+   "fetch_from": "employee.branch",
    "fieldname": "branch",
    "fieldtype": "Link",
-   "ignore_user_permissions": 1,
    "label": "Branch",
    "options": "Branch",
    "read_only": 1
@@ -124,40 +115,51 @@
    "default": "Today",
    "fieldname": "posting_date",
    "fieldtype": "Date",
-   "in_list_view": 1,
    "label": "Request Date",
    "read_only": 1
   },
   {
    "fieldname": "travel_information",
    "fieldtype": "Section Break",
-   "hidden": 1,
    "label": "Travel Information"
   },
   {
    "fieldname": "from_date",
    "fieldtype": "Datetime",
-   "label": "From Date"
+   "label": "From Date Time",
+   "reqd": 1
   },
   {
-   "fieldname": "equipment_type",
-   "fieldtype": "Link",
-   "label": "Equipment Type",
-   "options": "Equipment Type"
+   "fieldname": "approver",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Approver",
+   "read_only": 1
   },
   {
    "fieldname": "columb_break04",
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "to_date",
    "fieldtype": "Datetime",
-   "label": "To Date"
+   "label": "To Date Time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "approver_id",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Approver ID",
+   "options": "User",
+   "read_only": 1
   },
   {
    "fieldname": "place",
    "fieldtype": "Data",
-   "label": "Place of Visit"
+   "label": "Place of Visit",
+   "reqd": 1
   },
   {
    "fieldname": "column_break04",
@@ -166,177 +168,35 @@
   {
    "fieldname": "purpose",
    "fieldtype": "Small Text",
-   "label": "Purpose"
-  },
-  {
-   "fieldname": "section_break_003",
-   "fieldtype": "Section Break",
-   "hidden": 1
+   "label": "Purpose",
+   "reqd": 1
   },
   {
    "fieldname": "rejection_reason",
    "fieldtype": "Small Text",
-   "label": "Reason For Rejection"
+   "label": "Remarks"
   },
   {
    "fieldname": "cb01",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "equipment",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Equipment",
-   "options": "Equipment"
-  },
-  {
-   "fieldname": "column_break003",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fetch_from": "equipment.equipment_model",
-   "fieldname": "equipment_model",
-   "fieldtype": "Data",
-   "label": "Equipment Model",
-   "read_only": 1
-  },
-  {
-   "fetch_from": "equipment.equipment_number",
-   "fieldname": "registration_number",
-   "fieldtype": "Data",
-   "label": "Registration Number",
-   "read_only": 1
-  },
-  {
-   "fieldname": "column_break_30",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "operator",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Operator",
-   "options": "Employee"
-  },
-  {
-   "fetch_from": "employee.employee_name",
-   "fieldname": "employee_name1",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "Employee Name",
-   "read_only": 1
-  },
-  {
-   "fieldname": "equipment_details",
-   "fieldtype": "Section Break",
-   "label": "Equipment details"
-  },
-  {
-   "fieldname": "equipment_details_table",
-   "fieldtype": "Table",
-   "options": "Equipment Details"
-  },
-  {
-   "fieldname": "travel_schedule",
-   "fieldtype": "Section Break",
-   "label": "Travel Schedule"
-  },
-  {
-   "fieldname": "travel_shedule_table",
-   "fieldtype": "Table",
-   "options": "Travel Schedule"
-  },
-  {
-   "fieldname": "approval_detail",
-   "fieldtype": "Section Break",
-   "label": "Approval Detail",
-   "permlevel": 1
-  },
-  {
-   "fieldname": "approval_detail_table",
-   "fieldtype": "Table",
-   "options": "Equipment Approval Detail"
-  },
-  {
-   "fieldname": "section_break_38",
+   "fieldname": "section_break03",
    "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "mto_remarks",
-   "fieldtype": "Small Text",
-   "label": "MTO Remarks"
-  },
-  {
-   "fieldname": "column_break_40",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "dg_remarks",
-   "fieldtype": "Small Text",
-   "label": "DG Remarks"
-  },
-  {
-   "fieldname": "vehicle_reporting_time_and_location",
-   "fieldtype": "Section Break",
-   "label": "Vehicle Reporting time and location"
-  },
-  {
-   "fieldname": "vehicle_reporting",
-   "fieldtype": "Datetime",
-   "label": "Date & Time"
-  },
-  {
-   "fieldname": "column_break_38",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "location",
-   "fieldtype": "Data",
-   "label": "Location"
-  },
-  {
-   "fieldname": "section_break_37",
-   "fieldtype": "Section Break",
-   "label": "Duty for (Name of the Official):"
   },
   {
    "bold": 1,
-   "description": "Duty for (Name of the Official):",
    "fieldname": "items",
    "fieldtype": "Table",
+   "label": "Duty for (Name of the Official):",
    "options": "Vehicle Request Item"
   },
   {
-   "collapsible": 1,
-   "depends_on": "eval:doc.workflow_state!=\"Draft\"",
-   "fieldname": "section_break_48",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "verifier",
-   "fieldtype": "Data",
-   "label": "Verifier",
-   "read_only": 1
-  },
-  {
-   "fieldname": "column_break_50",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "approver",
-   "fieldtype": "Data",
-   "label": "Approver",
-   "read_only": 1
-  },
-  {
-   "fieldname": "approver_designation",
-   "fieldtype": "Data",
-   "label": "Approver Designation",
-   "read_only": 1
-  },
-  {
-   "fieldname": "section_break_50",
-   "fieldtype": "Section Break"
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Workflow State",
+   "options": "Workflow State"
   },
   {
    "fieldname": "amended_from",
@@ -348,17 +208,124 @@
    "read_only": 1
   },
   {
-   "fieldname": "workflow_state",
+   "fetch_from": "driver.cell_number",
+   "fieldname": "contact_number",
+   "fieldtype": "Data",
+   "label": "Contact Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "kilometer_reading",
+   "fieldtype": "Data",
+   "label": "Kilometer Reading"
+  },
+  {
+   "fieldname": "time_of_departure",
+   "fieldtype": "Datetime",
+   "label": "Time Of Departure",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "vehicle.equipment_type",
+   "fieldname": "vehicle_type",
    "fieldtype": "Link",
+   "label": "Vehicle Type",
+   "options": "Equipment Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "vehicle",
+   "fieldtype": "Link",
+   "label": "Vehicle",
+   "options": "Equipment",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "vehicle.equipment_model",
+   "fieldname": "vehicle_model",
+   "fieldtype": "Link",
+   "label": "Vehicle Model",
+   "options": "Equipment Model",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "vehicle.registeration_number",
+   "fieldname": "vehicle_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Vehicle Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "driver",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Driver",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "driver.employee_name",
+   "fieldname": "driver_name",
+   "fieldtype": "Data",
+   "label": "Driver Name",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "reason_for_extension",
+   "fieldtype": "Small Text",
+   "ignore_user_permissions": 1,
+   "label": "Reason for Extension"
+  },
+  {
+   "fieldname": "total_days_and_hours",
+   "fieldtype": "Read Only",
+   "label": "Total Days & Hours",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.cost_center",
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "cost_center.parent_cost_center",
+   "fieldname": "parent_cost_center",
+   "fieldtype": "Data",
    "hidden": 1,
-   "label": "Workflow State",
-   "options": "Workflow State",
-   "print_hide": 1
+   "label": "Parent Cost Center",
+   "read_only": 1
+  },
+  {
+   "fieldname": "previous_km",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Previous KM",
+   "read_only": 1
+  },
+  {
+   "fieldname": "fleet_details_section",
+   "fieldtype": "Section Break",
+   "label": "Fleet Details"
+  },
+  {
+   "default": "Booked",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Free\nBooked",
+   "read_only": 1,
+   "reqd": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-05 16:46:32.346937",
+ "modified": "2023-07-04 16:41:22.299851",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Vehicle Request",
@@ -381,59 +348,14 @@
    "write": 1
   },
   {
-   "email": 1,
-   "export": 1,
-   "permlevel": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "ADM User",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "email": 1,
-   "export": 1,
-   "permlevel": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "CEO",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "email": 1,
-   "export": 1,
-   "permlevel": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Employee",
-   "share": 1
-  },
-  {
-   "cancel": 1,
    "create": 1,
+   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "CEO",
-   "share": 1,
-   "submit": 1,
-   "write": 1
-  },
-  {
-   "amend": 1,
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "ADM User",
+   "role": "System Manager",
    "share": 1,
    "submit": 1,
    "write": 1
@@ -446,11 +368,13 @@
    "read": 1,
    "report": 1,
    "role": "Employee",
+   "select": 1,
    "share": 1,
    "write": 1
   },
   {
    "create": 1,
+   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
@@ -458,24 +382,12 @@
    "report": 1,
    "role": "Fleet Manager",
    "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Fleet User",
-   "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "employee_name",
- "track_changes": 1,
- "track_seen": 1
+ "track_changes": 1
 }
