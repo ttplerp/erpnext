@@ -173,25 +173,10 @@ class CustomWorkflow:
                 # frappe.throw('{}'.format(self.adm_section_manager))
 
         if self.doc.doctype == "Performance Evaluation":
-            self.employee = frappe.db.get_value(
-                "Employee", self.doc.employee, self.field_list
-            )
-            self.reports_to = frappe.db.get_value(
-                "Employee",
-                frappe.db.get_value("Employee", self.doc.employee, "reports_to"),
-                self.field_list,
-            )
-            self.supervisors_supervisor = frappe.db.get_value(
-                "Employee",
-                frappe.db.get_value(
-                    "Employee",
-                    frappe.db.get_value(
-                        "Employee", {"user_id": self.doc.approver}, "name"
-                    ),
-                    "reports_to",
-                ),
-                self.field_list,
-            )
+            # self.employee = frappe.db.get_value("Employee", self.doc.employee, self.field_list)
+            self.eval_1 = frappe.db.get_value("Employee", frappe.db.get_value("Employee", self.doc.employee, "eval_1"), self.field_list)
+            self.eval_2 = frappe.db.get_value("Employee", frappe.db.get_value("Employee", self.doc.employee, "eval_3"), self.field_list)
+            self.eval_3 = frappe.db.get_value("Employee", frappe.db.get_value("Employee", self.doc.employee, "eval_3"), self.field_list)
 
         if self.doc.doctype == "Asset Movement":
             department = frappe.db.get_value(
@@ -1275,7 +1260,7 @@ class CustomWorkflow:
         elif self.doc.doctype == "Review":
             self.review_request()
         elif self.doc.doctype == "Performance Evaluation":
-            self.performance_evaluation_request()
+            self.performance_evaluation()
         elif self.doc.doctype == "PMS Appeal":
             self.pms_appeal_request()
         elif self.doc.doctype == "Employee Separation":
@@ -1570,12 +1555,13 @@ class CustomWorkflow:
                     )
                 )
 
-    def performance_evaluation_request(self):
+    def performance_evaluation(self):
+        frappe.throw('Here')
         if not self.new_state:
-            frappe.throw(
-                "Due to slow network/some other issue this document faced issue to save. Please reload the page and save again."
-            )
+            frappe.throw("Due to slow network/some other issue this document faced issue to save. Please reload the page and save again.")
+
         if self.new_state.lower() in ("Draft".lower()):
+            frappe.throw('Here')
             if (
                 self.doc.owner != frappe.session.user
                 and self.doc.approver != frappe.session.user

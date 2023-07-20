@@ -145,7 +145,7 @@ def make_mr(source_name, target_doc=None):
 				row.cost_center = a.cost_center
 				row.issue_to_equipment = source.equipment
 				row.amount = flt(a.charge_amount)
-				row.actual_qty = get_bin_details(a.item_code, a.warehouse,source.company).actual_qty
+				row.actual_qty = get_bin_details(a.item_code, a.warehouse,source.company)['actual_qty']
 	def update_item(obj, target, source_parent):
 		target.issue_to_equipment = source_parent.equipment
 		target.stock_uom = obj.uom
