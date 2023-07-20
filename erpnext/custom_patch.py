@@ -2,6 +2,17 @@ import frappe
 from erpnext.setup.doctype.employee.employee import create_user
 import pandas as pd
 
+def update_item_valuation_method():
+    items = frappe.db.sql("""
+        select name from `tabItem`
+    """,as_dict=1)
+    for a in items:
+        frappe.db.sql("""
+            update `tabItem` set valuation_method = 'Moving Average'
+            where name = '{}'
+        """.format(str(a.name)))
+        print(a.name)
+
 def cost_center_correction_budget():
     for d in frappe.db.get_list("Committed Budget",filters={"reference_type":"Journal Entry"},fields=["cost_center","name"]):
         parent_cost_center = frappe.db.get_value("Cost Center",{"name":d.cost_center,"use_budget_from_parent":1},["budget_cost_center"])
