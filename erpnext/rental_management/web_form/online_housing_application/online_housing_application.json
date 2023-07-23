@@ -8,7 +8,7 @@
  "allow_print": 0,
  "amount": 0.0,
  "amount_based_on_field": 0,
- "apply_document_permissions": 0,
+ "apply_document_permissions": 1,
  "banner_image": "",
  "button_label": "Submit",
  "client_script": "",
@@ -24,7 +24,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2023-07-17 17:26:21.910031",
+ "modified": "2023-07-23 11:28:49.417091",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "online-housing-application",
@@ -112,7 +112,7 @@
    "max_length": 0,
    "max_value": 0,
    "options": "Male\nFemale",
-   "read_only": 0,
+   "read_only": 1,
    "reqd": 0,
    "show_in_filter": 0
   },
@@ -164,7 +164,7 @@
    "max_length": 0,
    "max_value": 0,
    "options": "Dzongkhag",
-   "read_only": 0,
+   "read_only": 1,
    "reqd": 1,
    "show_in_filter": 0
   },
@@ -176,7 +176,7 @@
    "label": "Gewog",
    "max_length": 0,
    "max_value": 0,
-   "read_only": 0,
+   "read_only": 1,
    "reqd": 1,
    "show_in_filter": 0
   },
@@ -201,7 +201,7 @@
    "label": "Village",
    "max_length": 0,
    "max_value": 0,
-   "read_only": 0,
+   "read_only": 1,
    "reqd": 1,
    "show_in_filter": 0
   },
@@ -313,7 +313,7 @@
    "label": "Spouse Name",
    "max_length": 0,
    "max_value": 0,
-   "read_only": 0,
+   "read_only": 1,
    "reqd": 0,
    "show_in_filter": 0
   },
@@ -350,7 +350,7 @@
    "label": "Spouse Dzongkhag",
    "max_length": 0,
    "max_value": 0,
-   "read_only": 0,
+   "read_only": 1,
    "reqd": 0,
    "show_in_filter": 0
   },
@@ -374,7 +374,7 @@
    "label": "Spouse Village",
    "max_length": 0,
    "max_value": 0,
-   "read_only": 0,
+   "read_only": 1,
    "reqd": 0,
    "show_in_filter": 0
   },
@@ -627,7 +627,7 @@
    "max_length": 0,
    "max_value": 0,
    "read_only": 0,
-   "reqd": 1,
+   "reqd": 0,
    "show_in_filter": 0
   },
   {
@@ -639,7 +639,7 @@
    "max_length": 0,
    "max_value": 0,
    "read_only": 0,
-   "reqd": 1,
+   "reqd": 0,
    "show_in_filter": 0
   }
  ]
