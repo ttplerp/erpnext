@@ -304,7 +304,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Reports",
-   "link_count": 2,
+   "link_count": 4,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -327,9 +327,29 @@
    "link_type": "Report",
    "onboard": 1,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Rental Register",
+   "link_count": 0,
+   "link_to": "Rental Register",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Ageing Report",
+   "link_count": 0,
+   "link_to": "Rental Ageing Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-07-05 10:55:31.258175",
+ "modified": "2023-07-18 23:21:22.549677",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Management",
