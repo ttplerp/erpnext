@@ -56,8 +56,9 @@ def get_cid_detail(cid=None):
 	}
 	
 	response = requests.request("GET", url, headers=headers, data=payload)
-	data=response.json()
-	return data['citizendetails']['citizendetail']
+	data = response.json()
+	data = data['citizendetails']['citizendetail'] if data['citizendetails'] else data['citizendetails']
+	return data
 
 
 @frappe.whitelist(allow_guest=True)
@@ -72,5 +73,6 @@ def get_civil_servant_detail(cid=None):
 	'Authorization': str(bearer_token)
 	}
 	response = requests.request("GET", url, headers=headers, data=payload)
-	data=response.json()
-	return data['employeedetails']['employeedetail']
+	data = response.json()
+	data = data['employeedetails']['employeedetail'] if data['employeedetails'] else data['employeedetails']
+	return data

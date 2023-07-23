@@ -24,7 +24,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2023-07-23 11:28:49.417091",
+ "modified": "2023-07-23 12:03:00.341814",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "online-housing-application",
@@ -35,7 +35,7 @@
  "show_attachments": 0,
  "show_list": 0,
  "show_sidebar": 0,
- "success_message": "Thank you for Applying",
+ "success_message": "Thank you for Applying and You can track the status and rank of your application using your Citizenship ID No.",
  "success_title": "Success",
  "title": "Online Housing Application",
  "web_form_fields": [
@@ -60,6 +60,7 @@
    "max_length": 0,
    "max_value": 0,
    "read_only": 1,
+   "read_only_depends_on": "eval:doc.cid",
    "reqd": 0,
    "show_in_filter": 0
   },
@@ -113,6 +114,7 @@
    "max_value": 0,
    "options": "Male\nFemale",
    "read_only": 1,
+   "read_only_depends_on": "eval:doc.cid",
    "reqd": 0,
    "show_in_filter": 0
   },
@@ -165,6 +167,7 @@
    "max_value": 0,
    "options": "Dzongkhag",
    "read_only": 1,
+   "read_only_depends_on": "",
    "reqd": 1,
    "show_in_filter": 0
   },
@@ -177,6 +180,7 @@
    "max_length": 0,
    "max_value": 0,
    "read_only": 1,
+   "read_only_depends_on": "",
    "reqd": 1,
    "show_in_filter": 0
   },
@@ -202,6 +206,7 @@
    "max_length": 0,
    "max_value": 0,
    "read_only": 1,
+   "read_only_depends_on": "",
    "reqd": 1,
    "show_in_filter": 0
   },
@@ -314,6 +319,7 @@
    "max_length": 0,
    "max_value": 0,
    "read_only": 1,
+   "read_only_depends_on": "eval:doc.spouse_cid",
    "reqd": 0,
    "show_in_filter": 0
   },
@@ -326,6 +332,7 @@
    "max_length": 0,
    "max_value": 0,
    "read_only": 0,
+   "read_only_depends_on": "eval:doc.spouse_cid",
    "reqd": 0,
    "show_in_filter": 0
   },
@@ -351,6 +358,7 @@
    "max_length": 0,
    "max_value": 0,
    "read_only": 1,
+   "read_only_depends_on": "eval:doc.spouse_cid",
    "reqd": 0,
    "show_in_filter": 0
   },
@@ -363,6 +371,7 @@
    "max_length": 0,
    "max_value": 0,
    "read_only": 0,
+   "read_only_depends_on": "eval:doc.spouse_cid",
    "reqd": 0,
    "show_in_filter": 0
   },
@@ -375,6 +384,7 @@
    "max_length": 0,
    "max_value": 0,
    "read_only": 1,
+   "read_only_depends_on": "eval:doc.spouse_cid",
    "reqd": 0,
    "show_in_filter": 0
   },
@@ -407,6 +417,7 @@
   },
   {
    "allow_read_on_all_link_options": 0,
+   "depends_on": "eval:doc.spouse_employment_type==\"Civil Servant\"",
    "fieldname": "spouse_designation",
    "fieldtype": "Data",
    "hidden": 0,
@@ -414,6 +425,7 @@
    "max_length": 0,
    "max_value": 0,
    "read_only": 0,
+   "read_only_depends_on": "eval:doc.spouse_employment_type==\"Civil Servant\"",
    "reqd": 0,
    "show_in_filter": 0
   },
@@ -427,15 +439,31 @@
    "max_length": 0,
    "max_value": 0,
    "read_only": 0,
+   "read_only_depends_on": "eval:doc.spouse_employment_type==\"Civil Servant\"",
    "reqd": 0,
    "show_in_filter": 0
   },
   {
    "allow_read_on_all_link_options": 0,
+   "depends_on": "eval:doc.spouse_employment_type==\"Civil Servant\"",
    "fieldname": "spouse_ministry",
    "fieldtype": "Data",
    "hidden": 0,
    "label": "Spouse Ministry/Agency",
+   "max_length": 0,
+   "max_value": 0,
+   "read_only": 0,
+   "read_only_depends_on": "eval:doc.spouse_employment_type==\"Civil Servant\"",
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "depends_on": "eval:doc.spouse_employment_type!=\"Civil Servant\"",
+   "fieldname": "spouse_agency",
+   "fieldtype": "Data",
+   "hidden": 0,
+   "label": "Spouse Name of Agency",
    "max_length": 0,
    "max_value": 0,
    "read_only": 0,
@@ -465,6 +493,7 @@
    "max_length": 0,
    "max_value": 0,
    "read_only": 0,
+   "read_only_depends_on": "eval:doc.spouse_employment_type==\"Civil Servant\"",
    "reqd": 0,
    "show_in_filter": 0
   },
@@ -482,6 +511,7 @@
   },
   {
    "allow_read_on_all_link_options": 0,
+   "depends_on": "eval:doc.spouse_employment_type==\"Civil Servant\"",
    "fieldname": "spouse_provident_fund_no",
    "fieldtype": "Data",
    "hidden": 0,
@@ -627,7 +657,7 @@
    "max_length": 0,
    "max_value": 0,
    "read_only": 0,
-   "reqd": 0,
+   "reqd": 1,
    "show_in_filter": 0
   },
   {
@@ -639,6 +669,18 @@
    "max_length": 0,
    "max_value": 0,
    "read_only": 0,
+   "reqd": 1,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldtype": "HTML",
+   "hidden": 0,
+   "label": "Terms and Condition",
+   "max_length": 0,
+   "max_value": 0,
+   "options": "<h4>Terms &amp; Conditions</h4>\n<p>\nYou declare that all the information provided here is true and you agree to all the terms and conditions of NHDCL\n</p>",
+   "read_only": 1,
    "reqd": 0,
    "show_in_filter": 0
   }
