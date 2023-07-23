@@ -98,6 +98,7 @@
    "in_list_view": 1,
    "label": "Dzongkhag",
    "options": "Dzongkhag",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -105,19 +106,22 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Gewog",
+   "read_only": 1,
    "reqd": 1
   },
   {
    "fieldname": "village",
    "fieldtype": "Data",
    "label": "Village",
+   "read_only": 1,
    "reqd": 1
   },
   {
    "fieldname": "gender",
    "fieldtype": "Select",
    "label": "Gender",
-   "options": "Male\nFemale"
+   "options": "Male\nFemale",
+   "read_only": 1
   },
   {
    "fieldname": "work_station",
@@ -140,7 +144,7 @@
   },
   {
    "fieldname": "mobile_no",
-   "fieldtype": "Phone",
+   "fieldtype": "Data",
    "label": "Mobile No",
    "reqd": 1
   },
@@ -396,7 +400,8 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-30 16:07:10.626217",
+ "make_attachments_public": 1,
+ "modified": "2023-07-22 22:05:50.848117",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Housing Application",
