@@ -140,7 +140,6 @@
    "fieldtype": "Date",
    "in_list_view": 1,
    "label": "Posting Date",
-   "read_only": 1,
    "reqd": 1
   },
   {
@@ -782,7 +781,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-10 09:31:17.584788",
+ "modified": "2023-07-24 22:10:03.831339",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Payment Entry",
