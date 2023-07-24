@@ -1,0 +1,251 @@
+{
+ "actions": [],
+ "autoname": "RBE-.YY.-.MM.-.###",
+ "creation": "2023-07-13 13:54:41.295048",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sb_year_month",
+  "fiscal_year",
+  "cb_ym_1",
+  "month",
+  "cb_ym_2",
+  "posting_date",
+  "sb_select_tenant",
+  "branch",
+  "dzongkhag",
+  "cb_st_1",
+  "ministry_agency",
+  "tenant",
+  "sb_notify_email",
+  "send_email",
+  "sb_rental_process_status",
+  "number_of_rental_bills",
+  "successful",
+  "failed",
+  "cb_rps_1",
+  "bill_created",
+  "bill_submitted",
+  "bill_removed",
+  "sb_bill_details",
+  "items",
+  "sb_more_info",
+  "company",
+  "cb_mi_1",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "sb_year_month",
+   "fieldtype": "Section Break",
+   "label": "Select Rental Year and Month"
+  },
+  {
+   "fieldname": "fiscal_year",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Fiscal Year",
+   "options": "Fiscal Year",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_ym_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "month",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Month",
+   "options": "01\n02\n03\n04\n05\n06\n07\n08\n09\n10\n11\n12",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_ym_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sb_select_tenant",
+   "fieldtype": "Section Break",
+   "label": "Select Tenants"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fieldname": "dzongkhag",
+   "fieldtype": "Link",
+   "label": "Dzongkhag",
+   "options": "Dzongkhag"
+  },
+  {
+   "fieldname": "cb_st_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ministry_agency",
+   "fieldtype": "Link",
+   "label": "Ministry/Agency",
+   "options": "Ministry and Agency"
+  },
+  {
+   "fieldname": "tenant",
+   "fieldtype": "Link",
+   "label": "Tenant",
+   "options": "Tenant Information"
+  },
+  {
+   "fieldname": "sb_notify_email",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Notify Email"
+  },
+  {
+   "default": "0",
+   "fieldname": "send_email",
+   "fieldtype": "Check",
+   "label": "Send Email"
+  },
+  {
+   "fieldname": "sb_rental_process_status",
+   "fieldtype": "Section Break",
+   "label": "Rental Process Status"
+  },
+  {
+   "fieldname": "number_of_rental_bills",
+   "fieldtype": "Int",
+   "label": "Number of Rental Bills",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_rps_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "bill_created",
+   "fieldtype": "Check",
+   "label": "Bill Created",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "bill_submitted",
+   "fieldtype": "Check",
+   "label": "Bill Submitted",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "bill_removed",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Bill Removed",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_bill_details",
+   "fieldtype": "Section Break",
+   "label": "Bill Details"
+  },
+  {
+   "allow_bulk_edit": 1,
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Bill Details",
+   "options": "Rental Bill Entry Item"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "sb_more_info",
+   "fieldtype": "Section Break",
+   "label": "More Information"
+  },
+  {
+   "fieldname": "cb_mi_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Rental Bill Entry",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "successful",
+   "fieldtype": "Int",
+   "label": "Successful",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "failed",
+   "fieldtype": "Int",
+   "label": "Failed",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-07-17 15:14:26.919917",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Rental Bill Entry",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Rental Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

@@ -1,6 +1,6 @@
 {% extends "templates/web.html" %}
 
-{% block title %}{{ _("Book Appointment") }}{% endblock %}
+{% block title %}{{ _("Search Applicant") }}{% endblock %}
 
 {% block script %}
 <script src="assets/js/moment-bundle.min.js"></script>
@@ -10,23 +10,152 @@
 {% block page_content %}
 <div class="container">
     <div class="row mb-12">
-        <div class="col-sm-8">
+        <div class="col-sm-5">
             <form action="{{ route }}">
-                <div class="input-group">
-                    <input name="q" class="form-control" type="text" value="{{ query or ''}}"
-                        placeholder="{{ _('Search...') }}">
-                    <div class="input-group-append">
-                        <button type="submit" class="btn btn-sm btn-primary btn-search">
-                            {{ _('Search') }}
-                        </button>
+                <div class="row">
+                    <div class="col">
+                        <form action="{{ route }}" method="get" onsubmit="return validateForm()">
+                            <div class="input-group">
+                                <input name="cid" class="form-control" type="text" value="{{ frappe.form_dict.cid or '' }}"
+                                    placeholder="{{ _('Enter Applicant CID') }}" required pattern="[0-9]{11}">
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-sm btn-primary btn-search">
+                                        {{ _('Submit') }}
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="input-description">
+                                <span class="input-description-text">[Note: CID should be an integer with 11 digits.]</span>
+                            </div>
+                        </form>
+                        <script>
+                            function validateForm() {
+                                var cidInput = document.getElementsByName("cid")[0];
+                                var cidValue = parseInt(cidInput.value);
+                                if (!cidInput.checkValidity() || isNaN(cidValue) || cidValue.toString().length !== 11) {
+                                    alert("Please enter a valid 11-digit CID (numeric only).");
+                                    return false;
+                                }
+                                return true;
+                            }
+                        </script>
                     </div>
-                </div>
-                {% if frappe.form_dict.scope %}
-                    <input type="text" hidden name="scope" value="{{ frappe.sanitize_html(frappe.form_dict.scope) }}">
-                {% endif %}
+                </div>                
             </form>
         </div>
     </div>
-    
+
+    {% if applicant_info %}
+        <div class="row">
+            <div class="col">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped table-condensed table-custom-width">
+                        <colgroup>
+                            <col style="width: 50%;">
+                            <col style="width: 50%;">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th colspan="2" class="table-heading-one">{{ _("Applicant Information") }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for applicant in applicant_info %}
+                                <tr>
+                                    <td class="table-heading">{{ _("CID") }}</td>
+                                    <td>{{ applicant.cid }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="table-heading">{{ _("Applicant Name") }}</td>
+                                    <td>{{ applicant.applicant_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="table-heading">{{ _("Employment Type") }}</td>
+                                    <td>{{ applicant.employment_type }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="table-heading">{{ _("Applicant Rank") }}</td>
+                                    <td>{{ applicant.applicant_rank }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="table-heading">{{ _("Mobile No") }}</td>
+                                    <td>{{ applicant.mobile_no }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="table-heading">{{ _("Status") }}</td>
+                                    <td>{{ applicant.application_status }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col">
+                <p>{{ _("No Record found") }}</p>
+            </div>
+        </div>
+    {% endif %}
+
+    <style>
+        .table-bordered {
+            border: 1px solid #dee2e6;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #f9f9f9;
+        }
+
+        .table-heading {
+            font-weight: bold;
+            background-color: #f5f5f5;
+            text-align: left;
+            font-family: 'Times New Roman';
+        }
+
+        .table-heading-one {
+            font-weight: bold;
+            background-color: grey;
+            text-align: center;
+            color: white;
+            font-family: 'Times New Roman';
+            text-transform: uppercase;
+        }
+
+        .table-condensed td {
+            padding: 4px 8px;
+            vertical-align: top;
+            font-family: 'Times New Roman';
+        }
+
+        .table-condensed th {
+            padding: 8px;
+        }
+
+        .table-custom-width {
+            max-width: 400px;
+            width: 100%;
+            margin-left: 0;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        .input-description {
+            margin-top: 10px;
+            font-style: italic;
+            color: blue;
+            font-size: 14px;
+        }
+        /*
+        .input-description-text {
+            font-weight: bold;
+            text-decoration: underline;
+        } */
+    </style>
 </div>
 {% endblock %}
