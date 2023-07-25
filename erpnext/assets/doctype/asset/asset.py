@@ -66,7 +66,13 @@ class Asset(AccountsController):
 		make_reverse_gl_entries(voucher_type="Asset", voucher_no=self.name)
 		self.db_set("booked_fixed_asset", 0)
 	def fetch_default_account(self):
-		self.asset_account, self.credit_account, self.accumulated_depreciation_account = frappe.db.get_value('Asset Category Account',{'parent':self.asset_category},['fixed_asset_account','credit_account','accumulated_depreciation_account'])
+		# self.asset_account, self.credit_account, self.accumulated_depreciation_account = frappe.db.get_value('Asset Category Account',{'parent':self.asset_category},['fixed_asset_account','credit_account','accumulated_depreciation_account'])
+		asset_account, credit_account, accumulated_depreciation_account = frappe.db.get_value('Asset Category Account',{'parent':self.asset_category},['fixed_asset_account','credit_account','accumulated_depreciation_account'])
+		if not all((self.asset_account, self.credit_account, self.accumulated_depreciation_account)):
+			self.asset_account = asset_account if not self.asset_account else self.asset_account
+			self.credit_account = credit_account if not self.credit_account else self.credit_account
+			self.accumulated_depreciation_account = accumulated_depreciation_account if not self.accumulated_depreciation_account else self.accumulated_depreciation_account
+
 	def validate_asset_and_reference(self):
 		if self.purchase_invoice or self.purchase_receipt:
 			reference_doc = "Purchase Invoice" if self.purchase_invoice else "Purchase Receipt"
