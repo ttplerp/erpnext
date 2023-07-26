@@ -133,7 +133,7 @@
   {
    "fieldname": "engine_details_section",
    "fieldtype": "Section Break",
-   "label": "Engine Details"
+   "label": "Veh/ Machine Details"
   },
   {
    "fetch_from": "asset_issue_details.engine_no",
@@ -150,7 +150,7 @@
    "fetch_from": "asset_issue_details.chesis_no",
    "fieldname": "chasis_number",
    "fieldtype": "Data",
-   "label": "Chasis Number"
+   "label": "Chasis/Serial Number"
   },
   {
    "depends_on": "hired_equipment",
@@ -251,8 +251,7 @@
   {
    "fieldname": "purchase_rate",
    "fieldtype": "Currency",
-   "label": "Purchase Rate(Price)",
-   "read_only": 1
+   "label": "Purchase Rate(Price)"
   },
   {
    "default": "Today",
@@ -363,7 +362,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-26 13:41:33.445247",
+ "modified": "2023-07-25 12:57:40.826588",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment",
@@ -371,16 +370,14 @@
  "owner": "Administrator",
  "permissions": [
   {
-   "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "System Manager",
-   "share": 1,
-   "write": 1
+   "role": "Employee",
+   "select": 1,
+   "share": 1
   },
   {
    "create": 1,
@@ -405,14 +402,16 @@
    "write": 1
   },
   {
+   "create": 1,
+   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "Employee",
-   "select": 1,
-   "share": 1
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
   }
  ],
  "search_fields": "equipment_category,equipment_type, equipment_model",

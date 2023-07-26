@@ -2,10 +2,9 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('MB Entry', {
-	onload: function(frm){
-		calculate_totals(frm);
-	},
-	
+	// onload: function(frm){
+	// 	calculate_totals(frm);
+	// },
 	onload_post_render: function(frm){
 		cur_frm.refresh();
 	},
@@ -26,6 +25,23 @@ frappe.ui.form.on('MB Entry', {
 });
 
 frappe.ui.form.on("MB Entry BOQ",{
+	form_render:function(frm, cdt, cdn){
+		console.log("here "+String(item)+" docstatus: "+String(frm.doc.docstatus))
+		var item = locals[cdt][cdn];
+		var df = frappe.meta.get_docfield("MB Entry BOQ", "create_details", frm.doc.name);
+		if(frm.doc.docstatus == 0 && item.detailed_mb_id == undefined){
+			df.hidden = 0;
+			frm.refresh_fields();
+		}
+		else{
+			df.hidden = 1;
+			frm.refresh_fields();
+		}
+		console.log(String(df.reqd))
+	},
+	create_details: function(frm, cdt, cdn){
+		make_details(frm, cdt, cdn)
+	},
 	no: function (frm, cdt, cdn) {
 		calculate_entry_quantity(frm, cdt, cdn)
 	},
@@ -112,6 +128,17 @@ var calculate_total_amount = function(frm){
 		cur_frm.set_value("total_entry_amount",(total_entry_amount));
 		cur_frm.set_value("total_balance_amount",(parseFloat(total_entry_amount || 0)-parseFloat(frm.doc.total_received_amount || 0)));
 	}
+}
+
+var make_details =  function (frm, cdt, cdn) { 
+	var item = locals[cdt][cdn];
+	console.log(item.name)
+	frappe.model.open_mapped_doc({
+		method: "erpnext.projects.doctype.mb_entry.mb_entry.make_details",
+		args: {"item_code": item.boq_code, "child_ref": item.name},
+		frm: frm,
+		run_link_triggers: true
+	});
 }
 
 var check_uncheck_all = function(frm){

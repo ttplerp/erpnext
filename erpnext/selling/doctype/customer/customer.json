@@ -627,7 +627,7 @@
    "link_fieldname": "party"
   }
  ],
- "modified": "2023-04-17 12:12:11.042299",
+ "modified": "2023-07-25 10:28:12.110998",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Customer",
@@ -704,6 +704,17 @@
    "read": 1,
    "report": 1,
    "role": "Accounts Manager"
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Projects User",
+   "share": 1,
+   "write": 1
   }
  ],
  "search_fields": "customer_name,customer_group,territory, mobile_no,primary_address",

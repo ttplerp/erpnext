@@ -23,6 +23,7 @@
   "expected_end_date",
   "priority",
   "department",
+  "file_no",
   "customer_details",
   "party_type",
   "customer",
@@ -170,7 +171,8 @@
    "fieldname": "department",
    "fieldtype": "Link",
    "label": "Department",
-   "options": "Department"
+   "options": "Department",
+   "reqd": 1
   },
   {
    "fieldname": "customer_details",
@@ -530,6 +532,12 @@
    "label": "Project Invoice Item",
    "options": "Project Invoice Item",
    "read_only": 1
+  },
+  {
+   "fieldname": "file_no",
+   "fieldtype": "Data",
+   "label": "File No.",
+   "reqd": 1
   }
  ],
  "icon": "fa fa-puzzle-piece",
@@ -537,7 +545,7 @@
  "index_web_pages_for_search": 1,
  "links": [],
  "max_attachments": 4,
- "modified": "2023-06-29 11:07:06.025782",
+ "modified": "2023-07-25 11:26:57.440286",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project",
@@ -553,14 +561,9 @@
    "read": 1,
    "report": 1,
    "role": "Projects User",
+   "select": 1,
    "share": 1,
    "write": 1
-  },
-  {
-   "permlevel": 1,
-   "read": 1,
-   "report": 1,
-   "role": "All"
   },
   {
    "create": 1,

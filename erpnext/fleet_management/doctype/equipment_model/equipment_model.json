@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_rename": 1,
  "autoname": "field:model",
  "creation": "2022-10-17 14:01:59.176916",
  "doctype": "DocType",
@@ -35,7 +36,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-02 12:46:50.490048",
+ "modified": "2023-07-25 16:42:50.384445",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment Model",

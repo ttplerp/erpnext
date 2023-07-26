@@ -152,7 +152,7 @@
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2023-04-17 12:13:25.254013",
+ "modified": "2023-07-25 10:30:15.914500",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Customer Group",
@@ -211,6 +211,15 @@
    "report": 1,
    "role": "Customer",
    "select": 1,
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Projects User",
    "share": 1
   }
  ],

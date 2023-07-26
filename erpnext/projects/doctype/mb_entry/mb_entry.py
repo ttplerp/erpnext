@@ -4,10 +4,10 @@
 # project_invoice.py
 '''
 --------------------------------------------------------------------------------------------------------------------------
-Version          Author          CreatedOn          ModifiedOn          Remarks
+Version		  Author		  CreatedOn		  ModifiedOn		  Remarks
 ------------ --------------- ------------------ -------------------  -----------------------------------------------------
-1.0		  SHIV		 2017/09/21                            Original Version
---------------------------------------------------------------------------------------------------------------------------                                                                          
+1.0		  SHIV		 2017/09/21							Original Version
+--------------------------------------------------------------------------------------------------------------------------																		  
 '''
 
 from __future__ import unicode_literals
@@ -52,24 +52,24 @@ class MBEntry(Document):
 			   
 	def set_defaults(self):
 		if self.project:
-			base_project          = frappe.get_doc("Project", self.project)
-			self.company          = base_project.company
-			self.customer         = base_project.customer
-			self.branch           = base_project.branch
-			self.cost_center      = base_project.cost_center
+			base_project		  = frappe.get_doc("Project", self.project)
+			self.company		  = base_project.company
+			self.customer		 = base_project.customer
+			self.branch		   = base_project.branch
+			self.cost_center	  = base_project.cost_center
 
 		if base_project.status in ('Completed','Cancelled'):
 			frappe.throw(_("Operation not permitted on already {0} Project.").format(base_project.status),title="MB Entry: Invalid Operation")
 				
 		if self.boq:
-			base_boq              = frappe.get_doc("BOQ", self.boq)
-			self.cost_center      = base_boq.cost_center
-			self.branch           = base_boq.branch
-			self.boq_type         = base_boq.boq_type
+			base_boq			  = frappe.get_doc("BOQ", self.boq)
+			self.cost_center	  = base_boq.cost_center
+			self.branch		   = base_boq.branch
+			self.boq_type		 = base_boq.boq_type
 			
 	def validate_boq_items(self):
 		source_table = "Subcontract" if self.subcontract else "BOQ"
-		source       = self.subcontract if self.subcontract else self.boq
+		source	   = self.subcontract if self.subcontract else self.boq
 		
 		for rec in self.mb_entry_boq:
 			if rec.is_selected == 1 and flt(rec.entry_amount) > 0:
@@ -88,7 +88,7 @@ class MBEntry(Document):
 								
 	def update_boq(self):
 		source_table = "Subcontract" if self.subcontract else "BOQ"
-		source       = self.subcontract if self.subcontract else self.boq
+		source	   = self.subcontract if self.subcontract else self.boq
 
 		boq_list = frappe.db.sql("""
 						select
@@ -110,7 +110,7 @@ class MBEntry(Document):
 										end
 								) as entry_amount
 						from  `tabMB Entry BOQ` as meb
-						where meb.parent        = '{1}'
+						where meb.parent		= '{1}'
 						and   meb.is_selected   = 1
 						group by meb.boq_item_name
 						""".format(self.boq_type, self.name), as_dict=1)
@@ -120,11 +120,43 @@ class MBEntry(Document):
 					update `tab{3} Item`
 					set
 							booked_quantity  = ifnull(booked_quantity,0) + ifnull({1},0),
-							booked_amount    = ifnull(booked_amount,0) + ifnull({2},0),
+							booked_amount	= ifnull(booked_amount,0) + ifnull({2},0),
 							balance_quantity = ifnull(balance_quantity,0) - ifnull({1},0),
 							balance_amount   = ifnull(balance_amount,0) - ifnull({2},0)
 					where name = '{0}'
 					""".format(item.boq_item_name, flt(item.entry_quantity), flt(item.entry_amount), source_table))
+
+@frappe.whitelist()
+def make_details(source_name, target_doc=None, args=None):
+	if args is None:
+		args = {}
+	if isinstance(args, str):
+		args = json.loads(args)
+
+	def postprocess(source, target_doc):
+		target_doc.child_ref = frappe.flags.args.child_ref
+		frappe.msgprint(str(target_doc.child_ref))
+		# set_missing_values(source, target_doc)
+
+	# def select_item(d):
+	#	 filtered_items = args.get("filtered_children", [])
+	#	 child_filter = d.name in filtered_items if filtered_items else True
+
+	#	 return d.ordered_qty < d.stock_qty and child_filter
+
+	doclist = get_mapped_doc(
+		"MB Entry",
+		source_name,
+		{
+			"MB Entry": {
+				"doctype": "Detailed MB Entry BOQ",
+			}
+		},
+		target_doc,
+		postprocess,
+	)
+
+	return doclist
 
 @frappe.whitelist()
 def make_mb_invoice(source_name, target_doc=None):
@@ -132,7 +164,7 @@ def make_mb_invoice(source_name, target_doc=None):
 		#target_doc.project = source_doc.project
 		target_doc.invoice_title = str(target_doc.project) + "(Project Invoice)"
 		target_doc.reference_doctype = "MB Entry"
-		target_doc.reference_name    = source_doc.name
+		target_doc.reference_name	= source_doc.name
 
 	def update_reference(source_doc, target_doc, source_parent):
 			pass
@@ -148,4 +180,4 @@ def make_mb_invoice(source_name, target_doc=None):
 						"postprocess": update_master
 				},
 	}, target_doc)
-	return doclist        
+	return doclist		

@@ -141,7 +141,7 @@
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2023-06-12 11:00:44.297754",
+ "modified": "2023-07-25 11:01:49.090941",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Department",
@@ -156,6 +156,8 @@
    "read": 1,
    "report": 1,
    "role": "HR User",
+   "select": 1,
+   "set_user_permissions": 1,
    "share": 1,
    "write": 1
   },

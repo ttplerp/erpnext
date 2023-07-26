@@ -24,6 +24,7 @@
   "upload_path",
   "acknowledgement_path",
   "report_path",
+  "day_txn_file_name",
   "upload_path_html",
   "transaction_time_settings_section",
   "from_time",
@@ -161,13 +162,19 @@
    "fieldname": "to_time",
    "fieldtype": "Time",
    "label": "To Time"
+  },
+  {
+   "fieldname": "day_txn_file_name",
+   "fieldtype": "Data",
+   "label": "Day Transaction File Name(Bank Statement)"
   }
  ],
  "links": [],
- "modified": "2023-04-17 12:14:03.037740",
+ "modified": "2023-07-24 12:15:49.564739",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Bank Payment Settings",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {

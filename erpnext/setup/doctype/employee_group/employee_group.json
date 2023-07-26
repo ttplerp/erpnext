@@ -214,7 +214,7 @@
   }
  ],
  "links": [],
- "modified": "2023-06-07 11:44:46.668080",
+ "modified": "2023-07-25 11:30:02.290362",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee Group",
@@ -241,6 +241,18 @@
    "report": 1,
    "role": "Employee",
    "share": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR User",
+   "share": 1,
+   "write": 1
   }
  ],
  "quick_entry": 1,

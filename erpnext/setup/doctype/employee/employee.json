@@ -39,6 +39,7 @@
   "employee_qualification",
   "employment_status",
   "probation_end_date",
+  "temporary_end_date",
   "increment_cycle",
   "promotion_cycle",
   "promotion_due_date",
@@ -843,7 +844,7 @@
    "fieldname": "employment_status",
    "fieldtype": "Select",
    "label": "Employment Status",
-   "options": "\nIn Service\nEOL\nProbation\nLeft"
+   "options": "\nIn Service\nEOL\nProbation\nLeft\nTemporary"
   },
   {
    "fieldname": "increment_cycle",
@@ -1050,13 +1051,20 @@
    "fieldname": "evaluator_details_section",
    "fieldtype": "Section Break",
    "label": "PMS Evaluator Details"
+  },
+  {
+   "depends_on": "eval:doc.employment_status==\"Temporary\";",
+   "fieldname": "temporary_end_date",
+   "fieldtype": "Date",
+   "label": "Temporary End Date",
+   "mandatory_depends_on": "eval:doc.employment_status==\"Temporary\";"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-07-18 10:27:34.589125",
+ "modified": "2023-07-25 12:28:39.183272",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
@@ -1074,7 +1082,6 @@
    "read": 1,
    "report": 1,
    "role": "HR Manager",
-   "set_user_permissions": 1,
    "share": 1,
    "write": 1
   },

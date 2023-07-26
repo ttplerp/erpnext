@@ -52,7 +52,7 @@ class POLReceive(StockController):
 			frappe.throw(_("Amount should be greater than zero"))
 
 		credit_account = frappe.get_value("Company", self.company, "default_bank_account")
-		debit_account = frappe.db.get_value("Equipment Category", self.equipment_category, "pol_expense_account")
+		debit_account = frappe.db.get_value("Equipment Category", self.equipment_category, "r_m_expense_account")
 
 		# Posting Journal Entry
 		je = frappe.new_doc("Journal Entry")

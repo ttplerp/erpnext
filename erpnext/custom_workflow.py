@@ -170,7 +170,18 @@ class CustomWorkflow:
                     },
                     self.field_list,
                 )
-                # frappe.throw('{}'.format(self.adm_section_manager))
+                if self.doc.doctype == "Leave Application":
+                    self.leave_supervisor = frappe.db.get_value(
+                        "Employee",
+                        {
+                            "user_id": frappe.db.get_value(
+                                "Employee", self.doc.employee, "leave_approver"
+                            )
+                        },
+                            self.field_list,
+                        )
+                    if not self.leave_supervisor:
+                        frappe.throw('Plesse set leave approver under Attendence and Leave Details in the employee')
 
         if self.doc.doctype == "Performance Evaluation":
             # self.employee = frappe.db.get_value("Employee", self.doc.employee, self.field_list)
@@ -565,6 +576,21 @@ class CustomWorkflow:
                     vars(self.doc)[self.doc_approver[2]] = (
                         officiating[2] if officiating else self.expense_approver[2]
                     )
+            if self.doc.doctype  == "Leave Application":
+                officiating = get_officiating_employee(self.leave_supervisor[3])
+                if officiating:
+                    officiating = frappe.db.get_value(
+                        "Employee", officiating[0].officiate, self.field_list
+                    )
+                vars(self.doc)[self.doc_approver[0]] = (
+                    officiating[0] if officiating else self.reports_to[0]
+                )
+                vars(self.doc)[self.doc_approver[1]] = (
+                    officiating[1] if officiating else self.reports_to[1]
+                )
+                vars(self.doc)[self.doc_approver[2]] = (
+                    officiating[2] if officiating else self.reports_to[2]
+                )
             else:
                 if not self.reports_to:
                     frappe.throw(

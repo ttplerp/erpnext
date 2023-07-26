@@ -34,7 +34,10 @@
   "boq_item_name",
   "original_quantity",
   "original_rate",
-  "original_amount"
+  "original_amount",
+  "sb_references",
+  "create_details",
+  "detailed_mb_id"
  ],
  "fields": [
   {
@@ -210,12 +213,29 @@
    "fieldname": "height",
    "fieldtype": "Float",
    "label": "Height"
+  },
+  {
+   "fieldname": "sb_references",
+   "fieldtype": "Section Break",
+   "label": "Details"
+  },
+  {
+   "depends_on": "eval: parent.docstatus == 0 && !doc.detailed_mb_id;",
+   "fieldname": "create_details",
+   "fieldtype": "Button",
+   "label": "Create Detailed MB Entry"
+  },
+  {
+   "fieldname": "detailed_mb_id",
+   "fieldtype": "Data",
+   "label": "Detailed MB Entry BOQ ID",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-06-21 11:12:17.417786",
+ "modified": "2023-07-25 16:19:04.221092",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "MB Entry BOQ",

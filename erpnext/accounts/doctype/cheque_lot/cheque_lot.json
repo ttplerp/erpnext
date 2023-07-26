@@ -105,7 +105,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-17 12:13:22.688886",
+ "modified": "2023-07-25 12:14:03.986184",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Cheque Lot",
@@ -153,5 +153,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
+ "track_changes": 1,
  "track_views": 1
 }

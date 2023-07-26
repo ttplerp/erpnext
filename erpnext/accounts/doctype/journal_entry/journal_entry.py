@@ -1984,6 +1984,7 @@ def get_permission_query_conditions(user):
 			and ab.employee = e.name
 			and bi.parent = ab.name
 			and bi.branch = `tabJournal Entry`.branch)
+        or `tabJournal Entry`.owner = '{user}'
 	)""".format(
         user=user
     )

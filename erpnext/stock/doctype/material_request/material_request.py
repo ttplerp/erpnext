@@ -149,7 +149,7 @@ class MaterialRequest(BuyingController):
         # frappe.db.set(self, 'status', 'Submitted')
         self.update_requested_qty()
         self.update_requested_qty_in_production_plan()
-        if self.material_request_type == "Purchase":
+        if self.material_request_type == "Purchase/Requisition":
             self.validate_budget()
         notify_workflow_states(self)
 
@@ -227,7 +227,7 @@ class MaterialRequest(BuyingController):
         self.update_requested_qty_in_production_plan()
 
     def update_completed_qty(self, mr_items=None, update_modified=True):
-        if self.material_request_type == "Purchase":
+        if self.material_request_type == "Purchase/Requisition":
             return
 
         if not mr_items:
@@ -436,7 +436,7 @@ def make_purchase_order(source_name, target_doc=None, args=None):
                 "doctype": "Purchase Order",
                 "validation": {
                     "docstatus": ["=", 1],
-                    "material_request_type": ["=", "Purchase"],
+                    "material_request_type": ["=", "Purchase/Requisition"],
                 },
             },
             "Material Request Item": {
@@ -470,7 +470,7 @@ def make_request_for_quotation(source_name, target_doc=None):
                 "doctype": "Request for Quotation",
                 "validation": {
                     "docstatus": ["=", 1],
-                    "material_request_type": ["=", "Purchase"],
+                    "material_request_type": ["=", "Purchase/Requisition"],
                 },
             },
             "Material Request Item": {
@@ -577,7 +577,7 @@ def get_material_requests_based_on_supplier(
 		from `tabMaterial Request` mr, `tabMaterial Request Item` mr_item
 		where mr.name = mr_item.parent
 			and mr_item.item_code in ({0})
-			and mr.material_request_type = 'Purchase'
+			and mr.material_request_type = 'Purchase/Requisition'
 			and mr.per_ordered < 99.99
 			and mr.docstatus = 1
 			and mr.status != 'Stopped'
@@ -631,7 +631,7 @@ def make_supplier_quotation(source_name, target_doc=None):
                 "doctype": "Supplier Quotation",
                 "validation": {
                     "docstatus": ["=", 1],
-                    "material_request_type": ["=", "Purchase"],
+                    "material_request_type": ["=", "Purchase/Requisition"],
                 },
             },
             "Material Request Item": {
@@ -853,6 +853,13 @@ def get_permission_query_conditions(user):
                     e.user_id = `tabMaterial Request`.approver AND
 				    e.user_id = '{user}'
             )
+		or
+		exists(select 1
+			from `tabEmployee` e, `tabAssign Branch` ab, `tabBranch Item` bi
+			where e.user_id = '{user}'
+			and ab.employee = e.name
+			and bi.parent = ab.name
+			and bi.branch = `tabMaterial Request`.branch)
 		)""".format(
             user=user
         )

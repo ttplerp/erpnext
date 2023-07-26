@@ -66,7 +66,7 @@ class Asset(AccountsController):
 		make_reverse_gl_entries(voucher_type="Asset", voucher_no=self.name)
 		self.db_set("booked_fixed_asset", 0)
 	def fetch_default_account(self):
-		self.asset_account, self.credit_account, self.accumulated_depreciation_account = frappe.db.get_value('Asset Category Account',{'parent':self.asset_category},['fixed_asset_account','credit_account','accumulated_depreciation_account'])
+		self.asset_account, self.accumulated_depreciation_account = frappe.db.get_value('Asset Category Account',{'parent':self.asset_category},['fixed_asset_account','accumulated_depreciation_account'])
 	def validate_asset_and_reference(self):
 		if self.purchase_invoice or self.purchase_receipt:
 			reference_doc = "Purchase Invoice" if self.purchase_invoice else "Purchase Receipt"
@@ -891,8 +891,9 @@ class Asset(AccountsController):
 		if self.gross_purchase_amount:
 			je = frappe.new_doc("Journal Entry")
 			je.flags.ignore_permissions = 1 
-			je.naming_series = "Journal Voucher"
+			je.voucher_type = "Journal Entry"
 			je.mode_of_payment = "Cash"
+			je.naming_series = "Journal Voucher"
 
 			je.update({
 				"voucher_type": "Journal Entry",
@@ -924,6 +925,9 @@ class Asset(AccountsController):
 		if self.is_existing_asset:
 			je = frappe.new_doc("Journal Entry")
 			je.flags.ignore_permissions = 1 
+			je.voucher_type = "Journal Entry"
+			je.mode_of_payment = "Cash"
+			je.naming_series = "Journal Voucher"
 			je.update({
 				"voucher_type": "Journal Entry",
 				"company": self.company,
