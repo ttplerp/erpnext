@@ -53,8 +53,19 @@ class TenantInformation(Document):
 		self.create_customer()
 		if not self.customer_code:
 			frappe.throw("An issue occured with auto Customer creation, alert you System developer.")
+
+		self.update_flat_status()
 		
 		self.update_housing_application()
+
+	def on_update_after_submit(self):
+		self.update_flat_status()
+	
+	def update_flat_status(self):
+		if self.status in ['Surrendered', 'Under Maintenance', 'Allocated']:
+			doc = frappe.get_doc("Flat No", self.flat_no)
+			doc.status = self.status
+			doc.save()
 
 	def set_missing_values(self):
 		if self.building_category != "Pilot Housing" and not self.initial_rental_amount:
