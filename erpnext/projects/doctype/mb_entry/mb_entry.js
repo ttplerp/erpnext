@@ -135,7 +135,7 @@ var make_details =  function (frm, cdt, cdn) {
 	console.log(item.name)
 	frappe.model.open_mapped_doc({
 		method: "erpnext.projects.doctype.mb_entry.mb_entry.make_details",
-		args: {"item_code": item.boq_code, "child_ref": item.name},
+		args: {"item_name": item.item, "uom": item.uom, "child_ref": item.name},
 		frm: frm,
 		run_link_triggers: true
 	});

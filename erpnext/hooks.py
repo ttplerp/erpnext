@@ -467,7 +467,7 @@ payment_gateway_enabled = "erpnext.accounts.utils.create_payment_gateway_account
 
 communication_doctypes = ["Customer", "Supplier"]
 
-advance_payment_doctypes = ["Sales Order", "Purchase Order"]
+advance_payment_doctypes = ["Sales Order", "Purchase Order", "Employee Advance"]
 
 invoice_doctypes = ["Sales Invoice", "Purchase Invoice"]
 

@@ -10,6 +10,7 @@
   "sb_billing",
   "no",
   "length",
+  "cb_01",
   "breadth",
   "height",
   "quantity"
@@ -38,32 +39,40 @@
    "default": "1",
    "fieldname": "length",
    "fieldtype": "Float",
+   "in_list_view": 1,
    "label": "Length"
   },
   {
    "default": "1",
    "fieldname": "breadth",
    "fieldtype": "Float",
+   "in_list_view": 1,
    "label": "Breadth"
   },
   {
    "default": "1",
    "fieldname": "height",
    "fieldtype": "Float",
+   "in_list_view": 1,
    "label": "Height"
   },
   {
    "fieldname": "quantity",
    "fieldtype": "Float",
+   "in_list_view": 1,
    "label": "Quantity",
    "precision": "2",
    "read_only": 1
+  },
+  {
+   "fieldname": "cb_01",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-07-25 15:36:38.527562",
+ "modified": "2023-07-26 10:40:00.698265",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Detailed MB BOQ Item",

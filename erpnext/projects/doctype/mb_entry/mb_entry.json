@@ -222,7 +222,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-26 09:51:17.206559",
+ "modified": "2023-07-26 12:50:58.409251",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "MB Entry",
@@ -230,6 +230,7 @@
  "owner": "Administrator",
  "permissions": [
   {
+   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
@@ -239,9 +240,11 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
+   "cancel": 1,
    "create": 1,
    "email": 1,
    "export": 1,

@@ -1113,7 +1113,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Transaction &amp; General Ledger",
-   "link_count": 6,
+   "link_count": 7,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -1178,9 +1178,19 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Project Invoice",
+   "link_count": 0,
+   "link_to": "Project Invoice",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-07-25 16:09:18.845671",
+ "modified": "2023-07-26 12:17:28.113627",
  "modified_by": "pema.dhendup@thimphutechpark.bt",
  "module": "Accounts",
  "name": "Accounting",

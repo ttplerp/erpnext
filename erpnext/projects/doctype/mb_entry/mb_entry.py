@@ -126,16 +126,30 @@ class MBEntry(Document):
 					where name = '{0}'
 					""".format(item.boq_item_name, flt(item.entry_quantity), flt(item.entry_amount), source_table))
 
+	def calulate_total_amount(self):
+		total_entry_amount = total_balance_amount = 0
+		if self.docstatus != 1:
+			for a in self.mb_entry_boq:
+				if a.entry_amount and a.is_selected == 1:
+					total_entry_amount += flt(a.entry_amount)
+		total_balance_amount = flt(total_entry_amount - self.total_received_amount,2)
+		self.total_entry_amount = total_entry_amount
+		self.total_balance_amount = total_balance_amount
+		self.save()
+
+
 @frappe.whitelist()
 def make_details(source_name, target_doc=None, args=None):
-	if args is None:
-		args = {}
-	if isinstance(args, str):
-		args = json.loads(args)
+	from frappe.model.mapper import get_mapped_doc
+	# if args is None:
+	# 	args = {}
+	# if isinstance(args, str):
+	# 	args = json.loads(args)
 
-	def postprocess(source, target_doc):
-		target_doc.child_ref = frappe.flags.args.child_ref
-		frappe.msgprint(str(target_doc.child_ref))
+	def post_process(source, target):
+		target.child_ref = frappe.flags.args.child_ref
+		target.item_name = frappe.flags.args.item_name
+		target.uom = frappe.flags.args.uom
 		# set_missing_values(source, target_doc)
 
 	# def select_item(d):
@@ -153,7 +167,7 @@ def make_details(source_name, target_doc=None, args=None):
 			}
 		},
 		target_doc,
-		postprocess,
+		post_process,
 	)
 
 	return doclist

@@ -42,9 +42,8 @@
  "fields": [
   {
    "fieldname": "boq_code",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "label": "BOQ Code",
-   "options": "Item",
    "read_only": 1
   },
   {
@@ -235,7 +234,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-07-25 16:19:04.221092",
+ "modified": "2023-07-26 11:20:36.345774",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "MB Entry BOQ",

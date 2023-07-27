@@ -145,9 +145,14 @@
   "project_invoice_acc_customer",
   "mr_ot_account",
   "mr_payable_account",
+  "material_secure_advance_account",
+  "special_advance_account",
   "column_break_135",
   "mr_daily_wage_account",
   "project_invoice_acc_supplier",
+  "mobilization_advance_account",
+  "equipment_advance_account",
+  "other_advance_account",
   "coal_raising_settings_section",
   "coal_raising_credit_account",
   "coal_raising_expense_account",
@@ -1078,6 +1083,36 @@
    "fieldtype": "Link",
    "label": "MR Payable Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "mobilization_advance_account",
+   "fieldtype": "Link",
+   "label": "Mobilization Advance Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "material_secure_advance_account",
+   "fieldtype": "Link",
+   "label": "Material Secure Advance Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "special_advance_account",
+   "fieldtype": "Link",
+   "label": "Special Advance Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "equipment_advance_account",
+   "fieldtype": "Link",
+   "label": "Equipment Advance Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "other_advance_account",
+   "fieldtype": "Link",
+   "label": "Other Advance Account",
+   "options": "Account"
   }
  ],
  "icon": "fa fa-building",
@@ -1085,7 +1120,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2023-07-19 12:01:39.129189",
+ "modified": "2023-07-26 14:25:38.256473",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",
@@ -1148,5 +1183,5 @@
  "sort_order": "ASC",
  "states": [],
  "track_changes": 1,
- "track_views": 1
+ "track_seen": 1
 }

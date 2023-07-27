@@ -7,32 +7,23 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "location",
   "sb_item",
-  "boq_code",
-  "cb_01",
   "item_name",
+  "cb_01",
+  "boq_code",
   "cb_02",
   "entry_quantity",
   "uom",
   "sb_item_detail",
   "items",
   "sb_reference",
-  "chiid_ref",
+  "child_ref",
   "project",
   "mb_entry",
   "boq",
-  "remarks",
-  "amended_from"
+  "remarks"
  ],
  "fields": [
-  {
-   "fieldname": "location",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Location",
-   "reqd": 1
-  },
   {
    "fieldname": "sb_reference",
    "fieldtype": "Section Break",
@@ -53,16 +44,6 @@
    "in_list_view": 1,
    "label": "MB Entry",
    "options": "MB Entry",
-   "read_only": 1,
-   "reqd": 1
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Detailed MB Entry BOQ",
-   "print_hide": 1,
    "read_only": 1,
    "reqd": 1
   },
@@ -105,26 +86,19 @@
    "fieldtype": "Link",
    "label": "BOQ Code",
    "options": "Item",
-   "read_only": 1,
-   "reqd": 1
+   "read_only": 1
   },
   {
-   "fetch_from": "boq_code.item_name",
    "fieldname": "item_name",
    "fieldtype": "Data",
    "label": "Item Name",
-   "read_only": 1
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "fieldname": "remarks",
    "fieldtype": "Data",
    "label": "Remarks"
-  },
-  {
-   "fieldname": "chiid_ref",
-   "fieldtype": "Data",
-   "label": "Child Reference",
-   "read_only": 1
   },
   {
    "fieldname": "sb_item_detail",
@@ -134,12 +108,18 @@
    "fieldname": "items",
    "fieldtype": "Table",
    "options": "Detailed MB BOQ Item"
+  },
+  {
+   "fieldname": "child_ref",
+   "fieldtype": "Data",
+   "label": "Child Reference",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-25 15:38:42.994921",
+ "modified": "2023-07-26 11:26:19.157981",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Detailed MB Entry BOQ",
