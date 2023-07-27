@@ -178,10 +178,15 @@ frappe.ui.form.on("Item", {
 			frm.set_value("valuation_method", "SPECIFIC");
 			frm.set_value("has_serial_no", 1);
 		}
-		if(in_list(["Fixed Asset", "Consumable", "Service", "Export"], frm.doc.item_group)){
-			frm.toggle_reqd("parts_no", 0);
-		}else{
+		// if(in_list(["Fixed Asset", "Consumable", "Service", "Export"], frm.doc.item_group)){
+		// 	frm.toggle_reqd("parts_no", 0);
+		// }else{
+		// 	frm.toggle_reqd("parts_no", 1);
+		// }
+		if(in_list(["Vehicle and Machinery"], frm.doc.item_group)){
 			frm.toggle_reqd("parts_no", 1);
+		}else{
+			frm.toggle_reqd("parts_no", 0);
 		}
 	},
 	asset_category:function(frm){

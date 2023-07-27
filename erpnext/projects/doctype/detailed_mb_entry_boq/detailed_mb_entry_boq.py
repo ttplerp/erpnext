@@ -22,6 +22,8 @@ class DetailedMBEntryBOQ(Document):
 
 	def on_submit(self):
 		self.update_child_ref()
+		mb_doc = frappe.get_doc("MB Entry", self.mb_entry)
+		mb_doc.calulate_total_amount()
 
 	def update_child_ref(self):
 		frappe.db.sql("""

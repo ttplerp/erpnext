@@ -371,7 +371,7 @@
  "idx": 70,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-25 11:22:55.571093",
+ "modified": "2023-07-27 11:52:24.916920",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Material Request",
@@ -505,6 +505,18 @@
    "read": 1,
    "report": 1,
    "role": "MR Verifier",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "MR Master",
    "share": 1,
    "submit": 1,
    "write": 1

@@ -23,6 +23,7 @@
   "expected_end_date",
   "priority",
   "department",
+  "department_abbr",
   "file_no",
   "customer_details",
   "party_type",
@@ -538,6 +539,14 @@
    "fieldtype": "Data",
    "label": "File No.",
    "reqd": 1
+  },
+  {
+   "default": "0",
+   "fetch_from": "department.abbr",
+   "fieldname": "department_abbr",
+   "fieldtype": "Data",
+   "label": "Department Abbr",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-puzzle-piece",
@@ -545,7 +554,7 @@
  "index_web_pages_for_search": 1,
  "links": [],
  "max_attachments": 4,
- "modified": "2023-07-25 11:26:57.440286",
+ "modified": "2023-07-27 11:11:46.606081",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project",

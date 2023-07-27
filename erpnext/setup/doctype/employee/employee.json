@@ -999,6 +999,7 @@
   {
    "fieldname": "pms_group",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "PMS Group",
    "options": "PMS Group"
   },
@@ -1064,7 +1065,7 @@
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-07-25 12:28:39.183272",
+ "modified": "2023-07-27 11:47:46.537126",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",

@@ -1,13 +1,15 @@
 {
  "charts": [],
- "content": "[{\"type\":\"card\",\"data\":{\"card_name\":\"Transaction\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Master &amp;&amp; Setting\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Other Reports\",\"col\":4}}]",
+ "content": "[{\"id\":\"8Cb89vfLIm\",\"type\":\"card\",\"data\":{\"card_name\":\"Transaction\",\"col\":4}},{\"id\":\"6fs0WiZQ2p\",\"type\":\"card\",\"data\":{\"card_name\":\"Master &amp;&amp; Setting\",\"col\":4}},{\"id\":\"ZMAMgvEXyk\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}},{\"id\":\"WWQBs7RHJr\",\"type\":\"card\",\"data\":{\"card_name\":\"Other Reports\",\"col\":4}}]",
  "creation": "2022-09-09 09:42:40.191316",
+ "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
  "for_user": "",
  "hide_custom": 0,
  "icon": "color-rank",
  "idx": 0,
+ "is_hidden": 0,
  "label": "Budget Management",
  "links": [
   {
@@ -35,44 +37,6 @@
    "link_count": 0,
    "link_to": "Budget Settings",
    "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Reports",
-   "link_count": 3,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Budget Consumption Report",
-   "link_count": 0,
-   "link_to": "Budget Consumption Report",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Budget Variance Report",
-   "link_count": 0,
-   "link_to": "Budget Variance Report",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Detailed Budget Consumption Report",
-   "link_count": 0,
-   "link_to": "Detailed Budget Consumption Report",
-   "link_type": "Report",
    "onboard": 0,
    "type": "Link"
   },
@@ -171,12 +135,51 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Reports",
+   "link_count": 3,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Budget Consumption Report",
+   "link_count": 0,
+   "link_to": "Budget Consumption Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Budget Variance Report",
+   "link_count": 0,
+   "link_to": "Budget Variance Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Detailed Budget Consumption Report",
+   "link_count": 0,
+   "link_to": "Detailed Budget Consumption Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-06-30 10:27:16.329847",
+ "modified": "2023-07-27 13:05:46.016388",
  "modified_by": "Administrator",
  "module": "Budget",
  "name": "Budget Management",
+ "number_cards": [],
  "owner": "Administrator",
  "parent_page": "",
  "public": 1,

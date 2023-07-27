@@ -3,9 +3,8 @@
 import frappe
 from frappe import _, msgprint, scrub
 from frappe.model.document import Document
-from frappe.utils import cint, cstr, flt, fmt_money, formatdate, get_link_to_form, nowdate
+from frappe.utils import cint, cstr, flt, formatdate, nowdate
 from erpnext.budget.doctype.budget.budget import validate_expense_against_budget
-from erpnext.custom_workflow import validate_workflow_states, notify_workflow_states
 
 class BudgetReappropiation(Document):
 	def validate(self):
@@ -83,7 +82,7 @@ class BudgetReappropiation(Document):
 	# Added by Thukten on 13th September, 2022
 	def budget_appropriate(self, cancel=False):
 		if frappe.db.get_value("Fiscal Year", self.fiscal_year, "closed"):
-			frappe.throw("Fiscal Year " + fiscal_year + " has already been closed")
+			frappe.throw("Fiscal Year " + self.fiscal_year + " has already been closed")
 		else:
 			budget_against_field = frappe.scrub(self.budget_against)
 			from_budget_against = self.from_cost_center if self.budget_against == "Cost Center" else self.from_project
@@ -168,5 +167,5 @@ def get_permission_query_conditions(user):
 	return """(
 		`tabBudget Reappropiation`.owner = '{user}'
 		or
-		(`tabBudget Reappropiation`.approver = '{user}' and `tabBudget Reappropiation`.workflow_state not in  ('Draft','Approved','Rejected','Cancelled'))
+		(`tabBudget Reappropiation`.approver = '{user}')
 	)""".format(user=user)

@@ -2,6 +2,16 @@ import frappe
 from erpnext.setup.doctype.employee.employee import create_user
 import pandas as pd
 
+def delete_material_request():
+    mr = frappe.db.sql("""
+        select name from `tabGL Entry` where voucher_type in ('Stock Entry', 'Purchase Reciept', 'Purchase Invoice', 'Payment Entry')
+    """, as_dict=1)
+    for a in mr:
+        frappe.db.sql("""
+            delete from `tabGL Entry` where name = '{}'
+        """.format(a.name))
+        print(a.name)
+
 def update_item_valuation_method():
     items = frappe.db.sql("""
         select name from `tabItem`

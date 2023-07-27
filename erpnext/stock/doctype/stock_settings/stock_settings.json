@@ -59,7 +59,8 @@
   "role_allowed_to_create_edit_back_dated_transactions",
   "stock_auth_role",
   "stock_settings_tab",
-  "mr_approval"
+  "mr_approval",
+  "central_store_approval"
  ],
  "fields": [
   {
@@ -371,6 +372,12 @@
    "fieldtype": "Link",
    "label": "MR Approval",
    "options": "Employee"
+  },
+  {
+   "fieldname": "central_store_approval",
+   "fieldtype": "Link",
+   "label": "Central Store Approval",
+   "options": "Employee"
   }
  ],
  "icon": "icon-cog",
@@ -378,7 +385,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-06-30 12:08:43.225545",
+ "modified": "2023-07-27 11:01:41.417157",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Settings",

@@ -273,20 +273,20 @@
   {
    "fieldname": "bill_no",
    "fieldtype": "Data",
-   "label": "Bill No",
+   "label": "Bill No/Invoice No",
    "reqd": 1
   },
   {
    "fieldname": "bill_date",
    "fieldtype": "Date",
-   "label": "Bill Date",
+   "label": "Bill Date/ Invoice Date",
    "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-29 11:26:50.916601",
+ "modified": "2023-07-27 15:20:38.753615",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Repair And Service Invoice",

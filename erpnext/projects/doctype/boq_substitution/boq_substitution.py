@@ -120,7 +120,8 @@ class BOQSubstitution(Document):
 							"amount": "amount"
 						}
 					}
-				})
+				},ignore_permissions=True,
+				)
 				new_doclist.parentfield = 'initial_boq_item'
 				new_doclist.parent = self.name
 				new_doclist.parenttype = self.doctype
@@ -144,7 +145,8 @@ class BOQSubstitution(Document):
 									"parenttype": "parenttype",
 									}
 								}
-							})
+							}, ignore_permissions=True
+						)
 					new_doclist.parentfield = 'initial_boq_item'
 					new_doclist.ref_type = self.doctype
 					new_doclist.ref_name = d.name

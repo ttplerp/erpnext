@@ -961,7 +961,8 @@
   {
    "fieldname": "hsn_code",
    "fieldtype": "Data",
-   "label": "BTC / HSC Code"
+   "label": "Shielf Number",
+   "reqd": 1
   },
   {
    "fieldname": "parts_no",
@@ -988,7 +989,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-26 15:03:06.099618",
+ "modified": "2023-07-27 11:08:27.133905",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",

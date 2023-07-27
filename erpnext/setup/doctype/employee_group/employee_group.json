@@ -36,7 +36,13 @@
   "leave_encashment_months",
   "encashment_frequency",
   "sb_leavecredits",
-  "items"
+  "items",
+  "sb_payscale",
+  "lower_limit",
+  "columnt_break_31",
+  "increment",
+  "column_break_32",
+  "upper_limit"
  ],
  "fields": [
   {
@@ -211,10 +217,38 @@
    "fieldtype": "Table",
    "label": "Leave Credits",
    "options": "Employee Group Item"
+  },
+  {
+   "fieldname": "sb_payscale",
+   "fieldtype": "Section Break",
+   "label": "Payscale"
+  },
+  {
+   "fieldname": "lower_limit",
+   "fieldtype": "Currency",
+   "label": "Lower Limit"
+  },
+  {
+   "fieldname": "columnt_break_31",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "increment",
+   "fieldtype": "Currency",
+   "label": "Increment Value"
+  },
+  {
+   "fieldname": "column_break_32",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "upper_limit",
+   "fieldtype": "Currency",
+   "label": "Upper Limit"
   }
  ],
  "links": [],
- "modified": "2023-07-25 11:30:02.290362",
+ "modified": "2023-07-27 16:03:55.078204",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee Group",

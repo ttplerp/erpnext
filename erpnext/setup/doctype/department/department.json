@@ -3,12 +3,14 @@
  "allow_import": 1,
  "allow_rename": 1,
  "creation": "2013-02-05 11:48:26",
+ "description": "This is used in project to generate autonaming",
  "doctype": "DocType",
  "document_type": "Setup",
  "engine": "InnoDB",
  "field_order": [
   "department_name",
   "parent_department",
+  "abbr",
   "column_break_3",
   "company",
   "is_group",
@@ -135,13 +137,20 @@
    "fieldname": "is_unit",
    "fieldtype": "Check",
    "label": "Is Unit"
+  },
+  {
+   "fieldname": "abbr",
+   "fieldtype": "Data",
+   "label": "Department Abbreviation",
+   "mandatory_depends_on": "eval:doc.is_department == 1;",
+   "read_only_depends_on": "eval:doc.is_department == 1;"
   }
  ],
  "icon": "fa fa-sitemap",
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2023-07-25 11:01:49.090941",
+ "modified": "2023-07-27 10:43:58.679308",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Department",
