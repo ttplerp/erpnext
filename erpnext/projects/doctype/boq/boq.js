@@ -14,18 +14,18 @@ frappe.ui.form.on('BOQ', {
 				}, __("View"), true);
 			}
 			if (frappe.model.can_read("BOQ Substitution")) {
-								frm.add_custom_button(__("Substitutions"), function () {
-										frappe.route_options = { "boq": frm.doc.name }
-										frappe.set_route("List", "BOQ Substitution");
-								}, __("View"), true);
-						}
+				frm.add_custom_button(__("Substitutions"), function () {
+					frappe.route_options = { "boq": frm.doc.name }
+					frappe.set_route("List", "BOQ Substitution");
+				}, __("View"), true);
+			}
 
-			if (frappe.model.can_read("BOQ Addition")) {
-								frm.add_custom_button(__("Additions"), function () {
-										frappe.route_options = { "boq": frm.doc.name }
-										frappe.set_route("List", "BOQ Addition");
-								}, __("View"), true);
-						}
+			// if (frappe.model.can_read("BOQ Addition")) {
+			// 					frm.add_custom_button(__("Additions"), function () {
+			// 							frappe.route_options = { "boq": frm.doc.name }
+			// 							frappe.set_route("List", "BOQ Addition");
+			// 					}, __("View"), true);
+			// 			}
 
 			if (frappe.model.can_read("MB Entry")) {
 				frm.add_custom_button(__("MB Entries"), function () {
@@ -50,11 +50,11 @@ frappe.ui.form.on('BOQ', {
 				__("Make"), "icon-file-alt"
 			);			
 			frm.add_custom_button(__("BOQ Substitution"), function () { frm.trigger("make_boq_substitution") },
-								__("Make"), "icon-file-alt"
-						);
-			frm.add_custom_button(__("BOQ Addition"), function () { frm.trigger("make_additional_boq") },
-								__("Make"), "icon-file-alt"
-						);
+				__("Make"), "icon-file-alt"
+			);
+			// frm.add_custom_button(__("BOQ Addition"), function () { frm.trigger("make_additional_boq") },
+			// 					__("Make"), "icon-file-alt"
+			// 			);
 			
 			if (frm.doc.party_type !== "Supplier") {
 				frm.add_custom_button(__("Subcontract"), function () { frm.trigger("make_boq_subcontract") }, __("Make"), "icon-file-alt");
@@ -69,6 +69,14 @@ frappe.ui.form.on('BOQ', {
 				__("Make"), "icon-file-alt"
 			);
 		}
+        frm.set_query("boq_code", "boq_item", function () {
+            return {
+                filters: {
+                    is_service_item:1,
+                    disabled:0
+                }
+            };
+        });
 	},
 	make_boq_adjustment: function (frm) {
 		frappe.model.open_mapped_doc({

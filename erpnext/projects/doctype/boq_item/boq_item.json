@@ -64,9 +64,10 @@
   {
    "columns": 1,
    "fieldname": "boq_code",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "BOQ Code"
+   "label": "BOQ Code",
+   "options": "Item"
   },
   {
    "fetch_from": "boq_code.stock_uom",
@@ -389,7 +390,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-07-25 11:58:06.494990",
+ "modified": "2023-05-09 15:38:21.663099",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "BOQ Item",
