@@ -7,13 +7,18 @@
  "engine": "InnoDB",
  "field_order": [
   "block_no",
-  "flat_no",
+  "dzongkhag",
+  "location_name",
+  "town_category",
+  "building_classification",
   "house_no",
   "cb_1",
+  "flat_no",
   "building_category",
   "total_floor_area",
   "land_area",
-  "status"
+  "status",
+  "old_flat_no"
  ],
  "fields": [
   {
@@ -70,11 +75,48 @@
    "fieldtype": "Data",
    "label": "House No",
    "mandatory_depends_on": "eval: doc.building_category == 'Pilot Housing'"
+  },
+  {
+   "fetch_from": "block_no.dzongkhag",
+   "fieldname": "dzongkhag",
+   "fieldtype": "Link",
+   "label": "Dzongkhag",
+   "options": "Dzongkhag",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "block_no.location_name",
+   "fieldname": "location_name",
+   "fieldtype": "Data",
+   "label": "Location Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "block_no.town_category",
+   "fieldname": "town_category",
+   "fieldtype": "Link",
+   "label": "Town Category",
+   "options": "Town Category",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "block_no.building_classification",
+   "fieldname": "building_classification",
+   "fieldtype": "Link",
+   "label": "Building Classification",
+   "options": "Building Classification",
+   "read_only": 1
+  },
+  {
+   "fieldname": "old_flat_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Old Flat No"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-07-05 22:23:57.222750",
+ "modified": "2023-07-13 12:44:26.617533",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Flat No",
