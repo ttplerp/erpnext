@@ -235,3 +235,12 @@ def update_customer_code():
 	# log(data)
 		
 	# log(customer)
+
+def update_salary_structure_company():
+	name = frappe.db.sql("""
+		select name from `tabSalary Structure` where company !="National Housing Development Corporations Ltd."
+	""", as_dict=True)
+	if name:
+		for a in name:
+			frappe.db.sql("""update `tabSalary Structure`set company ="National Housing Development Corporations Ltd." where name = '{}'""".format(a.name))
+			print(a.name)
