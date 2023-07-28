@@ -50,14 +50,17 @@ frappe.query_reports["Detailed Budget Consumption Report"] = {
 						var cost_center = frappe.query_report.get_filter("cost_center"); cost_center.toggle(false);
 						var project = frappe.query_report.get_filter("project"); project.toggle(true);
 						var budget_type = frappe.query_report.get_filter("budget_type"); budget_type.toggle(false);	
+						var business_activity = frappe.query_report.get_filter("business_activity"); business_activity.toggle(false);	
 					}else if (budget_against == "Cost Center"){
 						var cost_center = frappe.query_report.get_filter("cost_center"); cost_center.toggle(true);
 						var project = frappe.query_report.get_filter("project"); project.toggle(false);	
 						var budget_type = frappe.query_report.get_filter("budget_type"); budget_type.toggle(true);			
+						var business_activity = frappe.query_report.get_filter("business_activity"); business_activity.toggle(true);			
 					}else{
 						var cost_center = frappe.query_report.get_filter("cost_center"); cost_center.toggle(false);
 						var project = frappe.query_report.get_filter("project"); project.toggle(false);	
 						var budget_type = frappe.query_report.get_filter("budget_type"); budget_type.toggle(false);	
+						var business_activity = frappe.query_report.get_filter("business_activity"); business_activity.toggle(false);	
 					}
 					query_report.refresh();	
 				},
@@ -104,6 +107,13 @@ frappe.query_reports["Detailed Budget Consumption Report"] = {
 				"label": __("Voucher No"),
 				"fieldtype": "Data"
 			},
+			{
+				"fieldname": "business_activity",
+				"label": __("Business Activity"),
+				"fieldtype": "Link",
+				"options": "Business Activity",
+				"reqd":1
+			}
 	],
 	onload: function(report) {
 		report.page.add_inner_button(__("Budget Consumption Report"), function() {
@@ -113,6 +123,7 @@ frappe.query_reports["Detailed Budget Consumption Report"] = {
 				"cost_center": filters.cost_center,
 				"project": filters.project,
 				"budget_type": filters.budget_type,
+				"business_activity": filters.business_activity,
 			};
 			frappe.set_route('query-report', 'Budget Consumption Report');
 		});

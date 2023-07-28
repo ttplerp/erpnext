@@ -28,8 +28,8 @@ def get_data(query, filters):
 			consumed = frappe.db.sql("select SUM(amount) from `tabConsumed Budget` where cost_center = %s and project = %s and reference_date BETWEEN %s and %s", (d.cost_center, d.project, filters.from_date, filters.to_date))[0][0]
 		else:
 			cost_center = d.cost_center
-			committed = frappe.db.sql("select SUM(amount) from `tabCommitted Budget` where cost_center = %s and account = %s and reference_date BETWEEN %s and %s", (d.cost_center, d.account, filters.from_date, filters.to_date))[0][0]
-			consumed = frappe.db.sql("select SUM(amount) from `tabConsumed Budget` where cost_center = %s and account = %s and reference_date BETWEEN %s and %s", (d.cost_center, d.account, filters.from_date, filters.to_date))[0][0]
+			committed = frappe.db.sql("select SUM(amount) from `tabCommitted Budget` where cost_center = %s and account = %s and reference_date BETWEEN %s and %s and business_activity = %s", (d.cost_center, d.account, filters.from_date, filters.to_date, filters.business_activity))[0][0]
+			consumed = frappe.db.sql("select SUM(amount) from `tabConsumed Budget` where cost_center = %s and account = %s and reference_date BETWEEN %s and %s and business_activity = %s", (d.cost_center, d.account, filters.from_date, filters.to_date, filters.business_activity))[0][0]
 		
 		if not committed:
 			committed = 0
@@ -103,6 +103,9 @@ def construct_query(filters=None):
 		condition += " and b.project = \'" + str(filters.project) + "\' "
 	else:
 		condition += " and b.cost_center = \'" + str(filters.cost_center) + "\' "
+
+	if filters.business_activity:
+		condition += " and b.business_activity = \'" + str(filters.business_activity) + "\' "
 	
 	if filters.budget_type:
 		condition += " and ba.budget_type = \'" + str(filters.budget_type) + "\' "

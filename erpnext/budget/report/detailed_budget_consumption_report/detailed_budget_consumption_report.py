@@ -24,6 +24,9 @@ def get_data(query, filters):
     elif filters.budget_against == "Cost Center" and filters.cost_center:
         condition = " and cost_center = '{0}'".format(filters.cost_center)
     
+    if filters.business_activity:
+        condition += " and business_activity = '{0}'".format(filters.business_activity)
+    
     if filters.voucher_no:
         condition += " and reference_no = '{0}'".format(filters.voucher_no)
 
@@ -156,6 +159,9 @@ def construct_query(filters=None):
             
     if filters.account:
         query += " and ba.account = \'" + str(filters.account) + "\' "
+
+    if filters.business_activity:
+        query += " and b.business_activity = \'" + str(filters.business_activity) + "\' "
         
     if filters.budget_against == "Project":
         query += " group by ba.account, b.cost_center"

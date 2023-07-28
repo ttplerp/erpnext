@@ -49,12 +49,14 @@ frappe.query_reports["Budget Consumption Report"] = {
 					var group_by_account = frappe.query_report.get_filter("group_by_account"); group_by_account.toggle(false);
 					var controllable = frappe.query_report.get_filter("controllable"); controllable.toggle(false);	
 					var budget_type = frappe.query_report.get_filter("budget_type"); budget_type.toggle(false);	
+					var business_activity = frappe.query_report.get_filter("business_activity"); business_activity.toggle(false);	
 				}else{
 					var cost_center = frappe.query_report.get_filter("cost_center"); cost_center.toggle(true);
 					var project = frappe.query_report.get_filter("project"); project.toggle(false);	
 					var group_by_account = frappe.query_report.get_filter("group_by_account"); group_by_account.toggle(true);
 					var controllable = frappe.query_report.get_filter("controllable"); controllable.toggle(true);
 					var budget_type = frappe.query_report.get_filter("budget_type"); budget_type.toggle(true);			
+					var business_activity = frappe.query_report.get_filter("business_activity"); business_activity.toggle(true);			
 				}
 				query_report.trigger_refresh();	
 			},
@@ -81,6 +83,13 @@ frappe.query_reports["Budget Consumption Report"] = {
 			"ignore_user_permissions":1
 		},
 		{
+			"fieldname": "business_activity",
+			"label": __("Business Activity"),
+			"fieldtype": "Link",
+			"options": "Business Activity",
+			"reqd":1
+		},
+		{
 			"fieldname": "group_by_account",
 			"label": __("Group By Account"),
 			"fieldtype": "Check",
@@ -95,6 +104,7 @@ frappe.query_reports["Budget Consumption Report"] = {
 				"cost_center": filters.cost_center,
 				"project": filters.project,
 				"budget_type": filters.budget_type,
+				"business_activity": filters.business_activity,
 			};
 			frappe.set_route('query-report', 'Detailed Budget Consumption Report');
 		});
