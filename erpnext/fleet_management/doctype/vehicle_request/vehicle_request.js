@@ -17,8 +17,8 @@ frappe.ui.form.on('Vehicle Request', {
         }
         frm.set_df_property("to_date", "allow_on_submit", frm.doc.status == "Booked" ? 1 : 0);
 
-        if (frm.doc.docstatus === 1 && frm.doc.status == "Booked" && frappe.session.user == frm.doc.owner){
-            frm.add_custom_button('Open', () => {
+        if (frm.doc.docstatus === 1 && frm.doc.status == "Booked" && (frappe.session.user == frm.doc.owner || frappe.user.has_role(["Fleet Manager","System Manager"]))){
+            frm.add_custom_button('Close', () => {
                 frappe.call({
                     method:"open_the_vehicle_for_booking",
                     doc: frm.doc,

@@ -13,6 +13,7 @@ class RevenueTarget(Document):
 		self.validate_mandatory()
 		self.calculate_targets()
 		self.validate_accounts()
+		self.set_initial_revenue_target()
 	
 	def validate_accounts(self):
 		account_list = []
@@ -51,6 +52,7 @@ class RevenueTarget(Document):
 
 		self.tot_target_amount     = tot_target_amount
 		# self.tot_net_target_amount = flt(tot_target_amount)
+	
 	@frappe.whitelist()
 	def get_accounts(self):
 		query = "select name as account, account_number from `tabAccount` where account_type in (\'Income Account\') and is_group = 0 and company = \'" + str(self.company) + "\' and (freeze_account is null or freeze_account != 'Yes') and disabled=0"
@@ -60,4 +62,13 @@ class RevenueTarget(Document):
 		for d in entries:
 			row = self.append('revenue_target_account', {})
 			row.update(d)
+	
+	@frappe.whitelist()
+	def set_initial_revenue_target(self):
+		total_target = 0
+		for d in self.revenue_target_account:
+			initial_target = flt(d.january) + flt(d.february) + flt(d.march) + flt(d.april)+ flt(d.may) +flt(d.june) +flt(d.july) +flt(d.august) + flt(d.september) +flt(d.october) +flt(d.november) +flt(d.december)
+			total_target += flt(initial_target)
+			d.db_set("target_amount", initial_target)
+			self.db_set("tot_target_amount", total_target)
 

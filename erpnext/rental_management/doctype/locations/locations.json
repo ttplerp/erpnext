@@ -16,7 +16,8 @@
   "description",
   "sb_property_mgt",
   "property_management_item",
-  "total_property_management_amount"
+  "total_property_management_amount",
+  "amended_from"
  ],
  "fields": [
   {
@@ -88,11 +89,20 @@
    "fieldname": "disabled",
    "fieldtype": "Check",
    "label": "Disabled"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Locations",
+   "print_hide": 1,
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-07-13 17:36:34.798816",
+ "modified": "2023-07-14 17:01:29.900621",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Locations",

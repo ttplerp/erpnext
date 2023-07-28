@@ -63,14 +63,6 @@ frappe.ui.form.on('Revenue Target', {
 });
 
 frappe.ui.form.on('Revenue Target Account',{
-	// target_amount: function(frm, doctype, name){
-	// 	calculate_total(frm);
-	// 	var d = locals[doctype][name];
-	// 	if(d.target_amount > 0){
-	// 		frappe.model.set_value(doctype, name, "net_target_amount", d.target_amount);
-	// 	}
-	// },	
-
 	"january": function(frm, cdt, cdn) {
 		set_initial_revenue_target(frm, cdt, cdn);
 	},
@@ -110,16 +102,25 @@ frappe.ui.form.on('Revenue Target Account',{
 });
 
 var set_initial_revenue_target=(frm,cdt,cdn)=>{
-	var item = locals[cdt][cdn]
-	item.target_amount = flt(item.january)+ flt(item.february) + flt(item.march) + flt(item.april)+ flt(item.may) +flt(item.june) +flt(item.july) +flt(item.august) + flt(item.september) +flt(item.october) +flt(item.november) +flt(item.december) 
+	frappe.call({
+		method:"set_initial_revenue_target",
+		doc: frm.doc,
+		callback: function(r) {
+			frm.refresh_field('target_amount');
+			frm.refresh_field('tot_target_amount');
+			frm.refresh_fields('revenue_target_account');
+		}
+	})
+	// var item = locals[cdt][cdn]
+	// item.target_amount = flt(item.january)+ flt(item.february) + flt(item.march) + flt(item.april)+ flt(item.may) +flt(item.june) +flt(item.july) +flt(item.august) + flt(item.september) +flt(item.october) +flt(item.november) +flt(item.december) 
 
-	frm.refresh_field('revenue_target_account')
+	// frm.refresh_field('revenue_target_account')
 
-	let amount = 0
-	frm.doc.revenue_target_account.forEach(row => {
-		amount += flt(row.target_amount)
+	// let amount = 0
+	// frm.doc.revenue_target_account.forEach(row => {
+	// 	amount += flt(row.target_amount)
 
-	});
-	frm.set_value('tot_target_amount', amount)
-	frm.refresh_field('tot_target_amount')
+	// });
+	// frm.set_value('tot_target_amount', amount)
+	// frm.refresh_field('tot_target_amount')
 }

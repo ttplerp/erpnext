@@ -57,7 +57,9 @@
   "cost_center",
   "sb_rental_payment_details",
   "rental_payment_details",
-  "amended_from"
+  "amended_from",
+  "sb_rental_bill_entry_section",
+  "rental_bill_entry"
  ],
  "fields": [
   {
@@ -384,12 +386,25 @@
    "fieldname": "property_management_amount",
    "fieldtype": "Currency",
    "label": "Property Management Amount"
+  },
+  {
+   "fieldname": "rental_bill_entry",
+   "fieldtype": "Link",
+   "label": "Rental Bill Entry",
+   "options": "Rental Bill Entry",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "sb_rental_bill_entry_section",
+   "fieldtype": "Section Break",
+   "label": "Rental Bill Entry Section"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-24 11:28:15.480861",
+ "modified": "2023-07-16 22:17:56.275659",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Bill",

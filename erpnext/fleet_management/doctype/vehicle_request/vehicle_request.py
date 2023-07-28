@@ -57,7 +57,7 @@ class VehicleRequest(Document):
 	@frappe.whitelist()
 	def open_the_vehicle_for_booking(self):
 		if self.docstatus == 1 and self.status == "Booked":
-			self.db_set("status", "Open")
+			self.db_set("status", "Closed")
 
 @frappe.whitelist()  
 def check_form_date_and_to_date(from_date, to_date):

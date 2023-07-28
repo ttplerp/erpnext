@@ -100,10 +100,10 @@ class Customer(TransactionBase):
 		self.customer_code = self.get_current_customer_code()
 
 	def get_current_customer_code(self):
-		customer_code = frappe.db.sql("""select customer_code from tabCustomer where customer_group=%s order by customer_code desc limit 1;""", self.customer_group);
+		customer_code = frappe.db.sql("""select customer_code from tabCustomer where customer_group=%s order by customer_code desc limit 1;""", self.customer_group)
 
-		if customer_code:
-			return str(int(customer_code[0][0]) + 1);
+		if customer_code and customer_code[0][0]:
+			return str(int(customer_code[0][0]) + 1)
 		else:
 			base = frappe.db.get_value("Customer Group", self.customer_group, "customer_code_base")
 			if not base:

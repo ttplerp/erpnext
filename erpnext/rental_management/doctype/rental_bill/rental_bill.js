@@ -3,7 +3,7 @@
 
 frappe.ui.form.on('Rental Bill', {
 	refresh: function(frm) {
-		frm.disable_save();
+		// frm.disable_save();
 		// frm.disable_amend();
 		
 		if(frm.doc.docstatus > 0) {

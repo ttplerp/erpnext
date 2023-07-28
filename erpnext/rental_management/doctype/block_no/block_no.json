@@ -11,11 +11,14 @@
   "town_category",
   "location_name",
   "building_classification",
+  "plot_no",
+  "disabled",
   "cb_1",
   "dzongkhag",
   "block_no",
   "asset",
   "description",
+  "old_block_no",
   "sb_1",
   "rate"
  ],
@@ -92,11 +95,28 @@
    "fieldtype": "Link",
    "label": "Asset",
    "options": "Asset"
+  },
+  {
+   "fieldname": "plot_no",
+   "fieldtype": "Data",
+   "label": "Plot No"
+  },
+  {
+   "default": "0",
+   "fieldname": "disabled",
+   "fieldtype": "Check",
+   "label": "Disabled"
+  },
+  {
+   "fieldname": "old_block_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Old Block No"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-07-05 22:22:45.197635",
+ "modified": "2023-07-13 17:37:10.734871",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Block No",

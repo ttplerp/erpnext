@@ -1,0 +1,46 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2023-07-26 11:45:55.328165",
+ "disable_prepared_report": 0,
+ "disabled": 1,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "NHDCL Letter Head",
+ "modified": "2023-07-26 11:45:55.328165",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Key Indicators Report",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "GL Entry",
+ "reference_report": "",
+ "report_name": "Key Indicators Report",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Employee"
+  },
+  {
+   "role": "Auditor"
+  },
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Rental User"
+  },
+  {
+   "role": "Maintenance User"
+  }
+ ]
+}

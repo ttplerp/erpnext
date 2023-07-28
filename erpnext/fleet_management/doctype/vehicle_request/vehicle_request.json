@@ -318,14 +318,14 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Status",
-   "options": "Free\nBooked",
+   "options": "Closed\nBooked",
    "read_only": 1,
    "reqd": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-04 16:41:22.299851",
+ "modified": "2023-07-20 11:01:02.792162",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Vehicle Request",

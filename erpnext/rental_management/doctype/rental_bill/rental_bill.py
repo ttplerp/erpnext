@@ -13,9 +13,13 @@ class RentalBill(AccountsController):
 	def autoname(self):
 		if not self.dzongkhag:
 			frappe.throw("Dzongkhag name is missing")
-		dz = self.dzongkhag
-		dzo_prefix = dz[:3]
-		prefix = dzo_prefix.upper()
+		if not frappe.db.get_value("Dzongkhag", self.dzongkhag, "rental_dzo_abbr"):
+			frappe.throw("Dzongkhag Abbr is missing in Dzongkhag master")
+
+		# dz = self.dzongkhag
+		# dzo_prefix = dz[:3]
+		abbr = frappe.db.get_value("Dzongkhag", self.dzongkhag, "rental_dzo_abbr")
+		prefix = abbr.upper()
 		
 		bill_code = "RB" + str(prefix) + "/" + str(formatdate(self.fiscal_year, "YY")) + str(self.month) + '/.####'
 		self.name = make_autoname(bill_code)
@@ -44,13 +48,17 @@ class RentalBill(AccountsController):
 			self.cost_center = frappe.db.get_value("Branch", self.branch, "cost_center")
 		if not self.company:
 			self.company = frappe.db.get_value("Branch", self.branch, "company")
-		for k in ['dzongkhag', 'ministry_agency']:
-			if not self.get(k):
-				frappe.msgprint(_("Missing value for {0}").format(_(self.meta.get_label(k))), raise_exception=True)
+		if self.employment_type == "Civil Servant":
+			for k in ['dzongkhag', 'ministry_agency']:
+				if not self.get(k):
+					frappe.msgprint(_("Missing value for {0}").format(_(self.meta.get_label(k))), raise_exception=True)
 
 		if not self.rental_focal:
-			focals = frappe.db.sql("""select rental_focal, focal_name from `tabRental Focal and Agency` r inner join `tabRental Focal and Agency Item` i On i.parent=r.name 
+			if self.employment_type == "Civil Servant":
+				focals = frappe.db.sql("""select rental_focal, focal_name from `tabRental Focal and Agency` r inner join `tabRental Focal and Agency Item` i On i.parent=r.name 
 							where r.is_active=1 and i.dzongkhag='{dzongkhag}' and i.ministry_and_agency='{ministry_and_agency}'""".format(dzongkhag=self.dzongkhag, ministry_and_agency=self.ministry_agency), as_dict=1)
+			# else:
+				
 			if not len(focals):
 				frappe.throw("Missing Rental Focal and Agency master for Dzongkhag: {0} and Ministry and Agency: {1} OR it's inactive.".format(self.dzongkhag, self.ministry_agency))
 			self.rental_focal = focals[0]['rental_focal']

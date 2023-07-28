@@ -124,21 +124,21 @@ class BudgetReappropiation(Document):
 						if from_month:
 							if from_month =="January":
 								if cancel:
-									sent = flt(from_budget_account.bs_jan) - flt(d.amount)
-									from_budget_account.db_set("bs_jan", flt(sent,2))
+									sent = flt(from_budget_account.bs_january) - flt(d.amount)
+									from_budget_account.db_set("bs_january", flt(sent,2))
 									from_budget_account.db_set("budget_amount", flt(total,2))
 								else:
-									sent = flt(from_budget_account.bs_jan) + flt(d.amount)
-									from_budget_account.db_set("bs_jan", flt(sent,2))
+									sent = flt(from_budget_account.bs_january) + flt(d.amount)
+									from_budget_account.db_set("bs_january", flt(sent,2))
 									from_budget_account.db_set("budget_amount", flt(total,2))
 							elif from_month =="Februery":
 								if cancel:
-									sent = flt(from_budget_account.bs_feb) - flt(d.amount)
-									from_budget_account.db_set("bs_feb", flt(sent,2))
+									sent = flt(from_budget_account.bs_february) - flt(d.amount)
+									from_budget_account.db_set("bs_february", flt(sent,2))
 									from_budget_account.db_set("budget_amount", flt(total,2))
 								else:
-									sent = flt(from_budget_account.bs_feb) + flt(d.amount)
-									from_budget_account.db_set("bs_feb", flt(sent,2))
+									sent = flt(from_budget_account.bs_february) + flt(d.amount)
+									from_budget_account.db_set("bs_february", flt(sent,2))
 									from_budget_account.db_set("budget_amount", flt(total,2))
 							elif from_month =="March":
 								if cancel:
@@ -187,48 +187,48 @@ class BudgetReappropiation(Document):
 									from_budget_account.db_set("budget_amount", flt(total,2))
 							elif from_month =="August":
 								if cancel:
-									sent = flt(from_budget_account.bs_aug) - flt(d.amount)
-									from_budget_account.db_set("bs_aug", flt(sent,2))
+									sent = flt(from_budget_account.bs_august) - flt(d.amount)
+									from_budget_account.db_set("bs_august", flt(sent,2))
 									from_budget_account.db_set("budget_amount", flt(total,2))
 								else:
-									sent = flt(from_budget_account.bs_aug) + flt(d.amount)
-									from_budget_account.db_set("bs_aug", flt(sent,2))
+									sent = flt(from_budget_account.bs_august) + flt(d.amount)
+									from_budget_account.db_set("bs_august", flt(sent,2))
 									from_budget_account.db_set("budget_amount", flt(total,2))
 							elif from_month =="September":
 								if cancel:
-									sent = flt(from_budget_account.bs_sep) - flt(d.amount)
-									from_budget_account.db_set("bs_sep", flt(sent,2))
+									sent = flt(from_budget_account.bs_september) - flt(d.amount)
+									from_budget_account.db_set("bs_september", flt(sent,2))
 									from_budget_account.db_set("budget_amount", flt(total,2))
 								else:
-									sent = flt(from_budget_account.bs_sep) + flt(d.amount)
-									from_budget_account.db_set("bs_sep", flt(sent,2))
+									sent = flt(from_budget_account.bs_september) + flt(d.amount)
+									from_budget_account.db_set("bs_september", flt(sent,2))
 									from_budget_account.db_set("budget_amount", flt(total,2))
 							elif from_month =="October":
 								if cancel:
-									sent = flt(from_budget_account.bs_oct) - flt(d.amount)
-									from_budget_account.db_set("bs_oct", flt(sent,2))
+									sent = flt(from_budget_account.bs_october) - flt(d.amount)
+									from_budget_account.db_set("bs_october", flt(sent,2))
 									from_budget_account.db_set("budget_amount", flt(total,2))
 								else:
-									sent = flt(from_budget_account.bs_oct) + flt(d.amount)
-									from_budget_account.db_set("bs_oct", flt(sent,2))
+									sent = flt(from_budget_account.bs_october) + flt(d.amount)
+									from_budget_account.db_set("bs_october", flt(sent,2))
 									from_budget_account.db_set("budget_amount", flt(total,2))
 							elif from_month =="November":
 								if cancel:
-									sent = flt(from_budget_account.bs_nov) - flt(d.amount)
-									from_budget_account.db_set("bs_nov", flt(sent,2))
+									sent = flt(from_budget_account.bs_november) - flt(d.amount)
+									from_budget_account.db_set("bs_november", flt(sent,2))
 									from_budget_account.db_set("budget_amount", flt(total,2))
 								else:
-									sent = flt(from_budget_account.bs_nov) + flt(d.amount)
-									from_budget_account.db_set("bs_nov", flt(sent,2))
+									sent = flt(from_budget_account.bs_november) + flt(d.amount)
+									from_budget_account.db_set("bs_november", flt(sent,2))
 									from_budget_account.db_set("budget_amount", flt(total,2))
 							else:
 								if cancel:
-									sent = flt(from_budget_account.bs_dec) - flt(d.amount)
-									from_budget_account.db_set("bs_dec", flt(sent,2))
+									sent = flt(from_budget_account.bs_december) - flt(d.amount)
+									from_budget_account.db_set("bs_december", flt(sent,2))
 									from_budget_account.db_set("budget_amount", flt(total,2))
 								else:
-									sent = flt(from_budget_account.bs_dec) + flt(d.amount)
-									from_budget_account.db_set("bs_dec", flt(sent,2))
+									sent = flt(from_budget_account.bs_december) + flt(d.amount)
+									from_budget_account.db_set("bs_december", flt(sent,2))
 									from_budget_account.db_set("budget_amount", flt(total,2))
 						else:
 							frappe.throw("Please Enter From Month")
@@ -259,21 +259,21 @@ class BudgetReappropiation(Document):
 						if to_month:
 							if to_month =="January":
 								if cancel:
-									received = flt(to_budget_account.br_jan) - flt(d.amount)
-									to_budget_account.db_set("br_jan", received)
+									received = flt(to_budget_account.br_january) - flt(d.amount)
+									to_budget_account.db_set("br_january", received)
 									to_budget_account.db_set("budget_amount", total)
 								else:
-									received = flt(to_budget_account.br_jan) + flt(d.amount)
-									to_budget_account.db_set("br_jan", received)
+									received = flt(to_budget_account.br_january) + flt(d.amount)
+									to_budget_account.db_set("br_january", received)
 									to_budget_account.db_set("budget_amount", total)
 							elif to_month =="Februery":
 								if cancel:
-									received = flt(to_budget_account.br_feb) - flt(d.amount)
-									to_budget_account.db_set("br_feb", received)
+									received = flt(to_budget_account.br_february) - flt(d.amount)
+									to_budget_account.db_set("br_february", received)
 									to_budget_account.db_set("budget_amount", total)
 								else:
-									received = flt(to_budget_account.br_feb) + flt(d.amount)
-									to_budget_account.db_set("br_feb", received)
+									received = flt(to_budget_account.br_february) + flt(d.amount)
+									to_budget_account.db_set("br_february", received)
 									to_budget_account.db_set("budget_amount", total)
 							elif to_month =="March":
 								if cancel:
@@ -322,48 +322,48 @@ class BudgetReappropiation(Document):
 									to_budget_account.db_set("budget_amount", total)
 							elif to_month =="August":
 								if cancel:
-									received = flt(to_budget_account.br_aug) - flt(d.amount)
-									to_budget_account.db_set("br_aug", received)
+									received = flt(to_budget_account.br_august) - flt(d.amount)
+									to_budget_account.db_set("br_august", received)
 									to_budget_account.db_set("budget_amount", total)
 								else:
-									received = flt(to_budget_account.br_aug) + flt(d.amount)
-									to_budget_account.db_set("br_aug", received)
+									received = flt(to_budget_account.br_august) + flt(d.amount)
+									to_budget_account.db_set("br_august", received)
 									to_budget_account.db_set("budget_amount", total)
 							elif to_month =="September":
 								if cancel:
-									received = flt(to_budget_account.br_sep) - flt(d.amount)
-									to_budget_account.db_set("br_sep", received)
+									received = flt(to_budget_account.br_september) - flt(d.amount)
+									to_budget_account.db_set("br_september", received)
 									to_budget_account.db_set("budget_amount", total)
 								else:
-									received = flt(to_budget_account.br_sep) + flt(d.amount)
-									to_budget_account.db_set("br_sep", received)
+									received = flt(to_budget_account.br_september) + flt(d.amount)
+									to_budget_account.db_set("br_september", received)
 									to_budget_account.db_set("budget_amount", total)
 							elif to_month =="October":
 								if cancel:
-									received = flt(to_budget_account.br_oct) - flt(d.amount)
-									to_budget_account.db_set("br_oct", received)
+									received = flt(to_budget_account.br_october) - flt(d.amount)
+									to_budget_account.db_set("br_october", received)
 									to_budget_account.db_set("budget_amount", total)
 								else:
-									received = flt(to_budget_account.br_oct) + flt(d.amount)
-									to_budget_account.db_set("br_oct", received)
+									received = flt(to_budget_account.br_october) + flt(d.amount)
+									to_budget_account.db_set("br_october", received)
 									to_budget_account.db_set("budget_amount", total)
 							elif to_month =="November":
 								if cancel:
-									received = flt(to_budget_account.br_nov) - flt(d.amount)
-									to_budget_account.db_set("br_nov", received)
+									received = flt(to_budget_account.br_november) - flt(d.amount)
+									to_budget_account.db_set("br_november", received)
 									to_budget_account.db_set("budget_amount", total)
 								else:
-									received = flt(to_budget_account.br_nov) + flt(d.amount)
-									to_budget_account.db_set("br_nov", received)
+									received = flt(to_budget_account.br_november) + flt(d.amount)
+									to_budget_account.db_set("br_november", received)
 									to_budget_account.db_set("budget_amount", total)
 							else:
 								if cancel:
-									received = flt(to_budget_account.br_dec) - flt(d.amount)
-									to_budget_account.db_set("br_dec", received)
+									received = flt(to_budget_account.br_december) - flt(d.amount)
+									to_budget_account.db_set("br_december", received)
 									to_budget_account.db_set("budget_amount", total)
 								else:
-									received = flt(to_budget_account.br_dec) + flt(d.amount)
-									to_budget_account.db_set("br_dec", received)
+									received = flt(to_budget_account.br_december) + flt(d.amount)
+									to_budget_account.db_set("br_december", received)
 									to_budget_account.db_set("budget_amount", total)
 						else:
 							frappe.throw("Please Enter To Month")

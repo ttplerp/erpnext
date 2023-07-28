@@ -678,7 +678,37 @@ class CustomWorkflow:
 
 
 	def material_request(self):
-		pass
+		division = frappe.db.get_value("Employee",self.doc.owner,"division")
+		section = frappe.db.get_value("Employee",self.doc.owner, "section")
+		unit = frappe.db.get_value("Employee",self.doc.owner, "unit")
+		if self.new_state.lower() in ("Draft".lower(), "Waiting Supervisor Approval".lower()):
+			if self.new_state.lower() == ("Waiting Supervisor Approval".lower()):
+				self.set_approver("Supervisor")	
+		
+		elif self.new_state.lower() == ("Waiting Approval".lower()):
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Approve this Leave".format(self.doc.approver_name))
+			if unit:
+				section_approver = frappe.db.get_value(
+					"Department Approver",
+					{"parent": section, "parentfield": "leave_approvers", "idx": 1},
+					"approver",
+				)
+				if section_approver:
+					self.set_approver("Section Approver")
+				else:
+					self.set_approver("Division Approver")
+			else:
+				self.set_approver("Division Approver")
+		elif self.new_state.lower() == ("Approved".lower()):
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Approve this Application".format(self.doc.approver_name))
+
+		elif self.new_state.lower() == ("Rejected".lower()):
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Reject this Application".format(self.doc.approver_name))
+		else:
+			frappe.throw(_("Invalid Workflow State {}").format(self.doc.workflow_state))
 
 	def employee_transfer(self):
 		if self.new_state.lower() in ("Draft".lower(), "Waiting Approval".lower()):

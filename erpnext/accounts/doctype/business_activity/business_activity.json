@@ -61,7 +61,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-21 19:24:01.684382",
+ "modified": "2023-07-06 10:10:04.807178",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Business Activity",
@@ -77,6 +77,16 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Employee",
    "share": 1,
    "write": 1
   }
