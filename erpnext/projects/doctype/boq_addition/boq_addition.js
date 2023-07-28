@@ -8,14 +8,14 @@ cur_frm.add_fetch("boq", "boq_type", "boq_type");
 frappe.ui.form.on('BOQ Addition', {
 	setup: function(frm){
 		frm.get_field('boq_item').grid.editable_fields = [
-                        { fieldname: 'boq_code', columns: 1 },
-                        { fieldname: 'item', columns: 3 },
-                        { fieldname: 'is_group', columns: 1 },
-                        { fieldname: 'uom', columns: 1 }, 
-                        { fieldname: 'quantity', columns: 1 },
-                        { fieldname: 'rate', columns: 1 },
-                        { fieldname: 'amount', columns: 2 }
-                ];
+			{ fieldname: 'boq_code', columns: 1 },
+			{ fieldname: 'item', columns: 3 },
+			{ fieldname: 'is_group', columns: 1 },
+			{ fieldname: 'uom', columns: 1 }, 
+			{ fieldname: 'quantity', columns: 1 },
+			{ fieldname: 'rate', columns: 1 },
+			{ fieldname: 'amount', columns: 2 }
+		];
 	
 	},
 	
@@ -53,62 +53,62 @@ frappe.ui.form.on('BOQ Addition', {
 
 frappe.ui.form.on("BOQ Addition Item", {
 	quantity: function (frm, cdt, cdn) {
-                calculate_amount(frm, cdt, cdn);
-        },
-        rate: function (frm, cdt, cdn) {
-                calculate_amount(frm, cdt, cdn);
-        },
+		calculate_amount(frm, cdt, cdn);
+	},
+	rate: function (frm, cdt, cdn) {
+		calculate_amount(frm, cdt, cdn);
+	},
 
-        amount: function (frm) {
-                calculate_total_amount(frm);
-        },
-        no: function (frm, cdt, cdn) {
-                child = locals[cdt][cdn];
-                var quant = child.no * child.coefficient * child.height * child.length * child.breath
-                frappe.model.set_value(cdt, cdn, 'quantity', parseFloat(quant));
-        },
-        breath: function (frm, cdt, cdn) {
-                child = locals[cdt][cdn];
-                var quant = child.no * child.coefficient * child.height * child.length * child.breath
-                frappe.model.set_value(cdt, cdn, 'quantity', parseFloat(quant));
-        },
-        height: function (frm, cdt, cdn) {
-                child = locals[cdt][cdn];
-                var quant = child.no * child.coefficient * child.height * child.length * child.breath
-                frappe.model.set_value(cdt, cdn, 'quantity', parseFloat(quant));
-        },
-        length: function (frm, cdt, cdn) {
-                child = locals[cdt][cdn];
-                var quant = child.no * child.coefficient * child.height * child.length * child.breath
-                frappe.model.set_value(cdt, cdn, 'quantity', parseFloat(quant));
-        },
-        coefficient: function (frm, cdt, cdn) {
-                child = locals[cdt][cdn];
-                var quant = child.no * child.coefficient * child.height * child.length * child.breath
-                frappe.model.set_value(cdt, cdn, 'quantity', parseFloat(quant));
-        }
+	amount: function (frm) {
+		calculate_total_amount(frm);
+	},
+	no: function (frm, cdt, cdn) {
+		child = locals[cdt][cdn];
+		var quant = child.no * child.coefficient * child.height * child.length * child.breath
+		frappe.model.set_value(cdt, cdn, 'quantity', parseFloat(quant));
+	},
+	breath: function (frm, cdt, cdn) {
+		child = locals[cdt][cdn];
+		var quant = child.no * child.coefficient * child.height * child.length * child.breath
+		frappe.model.set_value(cdt, cdn, 'quantity', parseFloat(quant));
+	},
+	height: function (frm, cdt, cdn) {
+		child = locals[cdt][cdn];
+		var quant = child.no * child.coefficient * child.height * child.length * child.breath
+		frappe.model.set_value(cdt, cdn, 'quantity', parseFloat(quant));
+	},
+	length: function (frm, cdt, cdn) {
+		child = locals[cdt][cdn];
+		var quant = child.no * child.coefficient * child.height * child.length * child.breath
+		frappe.model.set_value(cdt, cdn, 'quantity', parseFloat(quant));
+	},
+	coefficient: function (frm, cdt, cdn) {
+		child = locals[cdt][cdn];
+		var quant = child.no * child.coefficient * child.height * child.length * child.breath
+		frappe.model.set_value(cdt, cdn, 'quantity', parseFloat(quant));
+	}
 })
 
 var calculate_amount = function (frm, cdt, cdn) {
-        child = locals[cdt][cdn];
-        amount = 0.0;
+	child = locals[cdt][cdn];
+	amount = 0.0;
 
-        //if(child.quantity && child.rate){
-        amount = parseFloat(child.quantity) * parseFloat(child.rate)
-       	//}
+	//if(child.quantity && child.rate){
+	amount = parseFloat(child.quantity) * parseFloat(child.rate)
+	//}
 
-        frappe.model.set_value(cdt, cdn, 'amount', parseFloat(amount));
+	frappe.model.set_value(cdt, cdn, 'amount', parseFloat(amount));
 }
 
 var calculate_total_amount = function (frm) {
-        var bi = frm.doc.boq_item || [];
-        var total_amount = 0.0
+	var bi = frm.doc.boq_item || [];
+	var total_amount = 0.0
 
-        for (var i = 0; i < bi.length; i++) {
-                if (bi[i].amount) {
-                        total_amount += parseFloat(bi[i].amount);
-                }
-        }
-        frm.set_value("total_amount", total_amount);
+	for (var i = 0; i < bi.length; i++) {
+			if (bi[i].amount) {
+					total_amount += parseFloat(bi[i].amount);
+			}
+	}
+	frm.set_value("total_amount", total_amount);
 }
 

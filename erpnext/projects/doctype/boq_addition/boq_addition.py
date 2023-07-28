@@ -26,6 +26,8 @@ class BOQAddition(Document):
 		self.update_boq_and_project()
 
 	def update_defaults(self):
+		frappe.throw(str(self.boq_item))
+
 		item_group = ""
 		total_amount     = 0.0
 		for item in self.boq_item:
@@ -50,13 +52,13 @@ class BOQAddition(Document):
 				item.balance_rate     = flt(item.rate)
 				item.balance_amount   = flt(item.amount)
 				if item.amount <= 0:
-						frappe.throw("Amount Should be Greater Than Zero at Index '{0}'".format(item.idx))
+					frappe.throw("Amount Should be Greater Than Zero at Index '{0}'".format(item.idx))
 
-				total_amount    += flt(item.amount)
-			item.parent_item = item_group
+				total_amount  += flt(item.amount)
+				item.parent_item = item_group
 		self.total_amount = flt(total_amount)
 		if flt(self.total_amount) <= 0:
-				frappe.throw("Total Amount Should be Greater Than Zero")
+			frappe.throw("Total Amount Should be Greater Than Zero")
 
 	def validate_boq_and_items(self):
 		# validate adjustment date

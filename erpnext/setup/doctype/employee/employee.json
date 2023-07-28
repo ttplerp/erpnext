@@ -36,6 +36,7 @@
   "reports_to_name",
   "business_activity",
   "column_break_22",
+  "education_level",
   "employee_qualification",
   "employment_status",
   "probation_end_date",
@@ -991,10 +992,8 @@
   },
   {
    "fieldname": "employee_qualification",
-   "fieldtype": "Link",
-   "label": "Employee Qualification",
-   "options": "Education Level",
-   "reqd": 1
+   "fieldtype": "Data",
+   "label": "Employee Qualification"
   },
   {
    "fieldname": "pms_group",
@@ -1059,13 +1058,20 @@
    "fieldtype": "Date",
    "label": "Temporary End Date",
    "mandatory_depends_on": "eval:doc.employment_status==\"Temporary\";"
+  },
+  {
+   "fieldname": "education_level",
+   "fieldtype": "Link",
+   "label": "Education Level",
+   "options": "Education Level",
+   "reqd": 1
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-07-27 11:47:46.537126",
+ "modified": "2023-07-27 16:50:23.154256",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
