@@ -839,7 +839,7 @@ class JournalEntry(AccountsController):
 		currency = bank_account_currency = party_account_currency = pay_to_recd_from = None
 		party_type = None
 		for d in self.get("accounts"):
-			if d.party_type in ["Customer", "Supplier"] and d.party:
+			if d.party_type in ["Customer", "Supplier", "Employee"] and d.party:
 				party_type = d.party_type
 				if not pay_to_recd_from:
 					pay_to_recd_from = d.party
@@ -851,11 +851,10 @@ class JournalEntry(AccountsController):
 			elif frappe.db.get_value("Account", d.account, "account_type") in ["Bank", "Cash"]:
 				bank_amount += d.debit_in_account_currency or d.credit_in_account_currency
 				bank_account_currency = d.account_currency
-
+		
 		if party_type and pay_to_recd_from:
-			self.pay_to_recd_from = frappe.db.get_value(
-				party_type, pay_to_recd_from, "customer_name" if party_type == "Customer" else "supplier_name"
-			)
+			self.pay_to_recd_from = frappe.db.get_value(party_type, pay_to_recd_from, {"Employee": "employee_name", "Supplier": "supplier_name", "Customer": "customer_name"}.get(party_type))
+
 			if bank_amount:
 				total_amount = bank_amount
 				currency = bank_account_currency
