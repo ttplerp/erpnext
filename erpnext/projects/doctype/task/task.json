@@ -84,12 +84,14 @@
   {
    "fieldname": "issue",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Issue",
    "options": "Issue"
   },
   {
    "fieldname": "type",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Type",
    "options": "Task Type"
   },
@@ -98,6 +100,7 @@
    "default": "0",
    "fieldname": "is_group",
    "fieldtype": "Check",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Is Group"
   },
@@ -141,6 +144,7 @@
    "bold": 1,
    "fieldname": "parent_task",
    "fieldtype": "Link",
+   "hidden": 1,
    "ignore_user_permissions": 1,
    "label": "Parent Task",
    "options": "Task",
@@ -172,7 +176,8 @@
    "fieldname": "task_weight",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "Weight"
+   "label": "Weight",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_11",
@@ -198,6 +203,7 @@
    "default": "0",
    "fieldname": "is_milestone",
    "fieldtype": "Check",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Is Milestone"
   },
@@ -251,6 +257,7 @@
    "oldfieldtype": "Date"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "actual_time",
    "fieldtype": "Float",
    "label": "Actual Time (in Hours via Time Sheet)",
@@ -368,6 +375,7 @@
    "default": "0",
    "fieldname": "is_template",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Is Template"
   },
   {
@@ -419,7 +427,7 @@
  "is_submittable": 1,
  "links": [],
  "max_attachments": 5,
- "modified": "2023-06-29 17:18:51.292675",
+ "modified": "2023-08-01 14:25:51.979310",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Task",

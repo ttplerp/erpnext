@@ -1,9 +1,11 @@
+// Copyright (c) 2016, Frappe Technologies Pvt. Ltd. and contributors
+// For license information, please see license.txt
 
 cur_frm.add_fetch("project", "branch","branch");
 cur_frm.add_fetch("project", "cost_center","cost_center");
 cur_frm.add_fetch("boq", "boq_type", "boq_type");
 		
-frappe.ui.form.on('BOQ Addition', {
+frappe.ui.form.on('BOQ Addition A', {
 	setup: function(frm){
 		// frm.get_field('boq_item').grid.editable_fields = [
 		// 	{ fieldname: 'boq_code', columns: 1 },
@@ -49,7 +51,7 @@ frappe.ui.form.on('BOQ Addition', {
 });
 
 
-frappe.ui.form.on("BOQ Addition Item", {
+frappe.ui.form.on("BOQ Addition A Item", {
 	quantity: function (frm, cdt, cdn) {
 		calculate_amount(frm, cdt, cdn);
 	},

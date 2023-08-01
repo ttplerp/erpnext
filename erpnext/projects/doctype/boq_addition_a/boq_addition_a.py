@@ -1,15 +1,14 @@
-# Copyright (c) 2023, Frappe Technologies Pvt. Ltd. and contributors
+# -*- coding: utf-8 -*-
+# Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and contributors
 # For license information, please see license.txt
 
-# import frappe
 from __future__ import unicode_literals
-from frappe.model.document import Document
 import frappe
 from frappe import _
 from frappe.model.document import Document
 from frappe.utils import cstr, flt, getdate, today, now_datetime
 
-class BOQAddition(Document):
+class BOQAdditionA(Document):
 	def validate(self):
 		self.update_defaults()
 		self.validate_boq_and_items()
@@ -19,12 +18,12 @@ class BOQAddition(Document):
 		self.validate_boq_and_items()
 		self.update_boq_item(submit = True)
 		self.update_history()
-		# self.update_boq_and_project()
+		self.update_boq_and_project()
 
 	def on_cancel(self):
 		self.update_boq_item(submit = False)
 		self.update_history()
-		# self.update_boq_and_project()
+		self.update_boq_and_project()
 
 	def update_defaults(self):
 		item_group = ""
@@ -116,7 +115,7 @@ class BOQAddition(Document):
 			delete from `tabBOQ Addition History` where parent='{boq}' and  transaction_name = '{transaction_name}'
 		""".format(boq = self.boq, transaction_name=self.name))
 		else:
-			boq.append("boq_addition_item",{
+			boq.append("boq_addition_a_item",{
 				"transaction_type": self.doctype,
 				"transaction_date": self.addition_date,
 				"transaction_name": self.name,
@@ -148,3 +147,4 @@ class BOQAddition(Document):
 			pro_doc.flags.dont_sync_tasks = True
 			pro_doc.project_value = flt(pro_doc.project_value) + flt(self.total_amount) * flt(mul_factor)
 			pro_doc.save(ignore_permissions = True)
+

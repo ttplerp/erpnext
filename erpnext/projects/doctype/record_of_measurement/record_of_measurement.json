@@ -1,17 +1,20 @@
 {
  "actions": [],
- "autoname": "DMBE.-.YY.-.MM.-.####",
- "creation": "2023-07-25 14:33:37.612324",
+ "autoname": "RM.-.YY.-.MM.-.####",
+ "creation": "2023-07-31 11:48:03.881038",
  "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "posting_date",
   "sb_item",
   "item_name",
   "description",
+  "rate",
   "cb_01",
   "boq_code",
+  "amount",
   "cb_02",
   "entry_quantity",
   "uom",
@@ -20,50 +23,32 @@
   "sb_reference",
   "child_ref",
   "project",
-  "mb_entry",
   "boq",
   "remarks",
   "amended_from"
  ],
  "fields": [
   {
-   "fieldname": "sb_reference",
-   "fieldtype": "Section Break",
-   "label": "Reference"
-  },
-  {
-   "fieldname": "project",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Project",
-   "options": "Project",
-   "read_only": 1,
-   "reqd": 1
-  },
-  {
-   "fieldname": "mb_entry",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "MB Entry",
-   "options": "MB Entry",
-   "read_only": 1,
-   "reqd": 1
-  },
-  {
    "fieldname": "sb_item",
    "fieldtype": "Section Break",
    "label": "Item Details"
   },
   {
-   "fieldname": "boq",
-   "fieldtype": "Link",
-   "label": "BOQ",
-   "options": "BOQ",
-   "read_only": 1
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name",
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "fieldname": "cb_01",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "boq_code",
+   "fieldtype": "Data",
+   "label": "BOQ Code",
+   "read_only": 1
   },
   {
    "fieldname": "cb_02",
@@ -84,31 +69,18 @@
    "read_only": 1
   },
   {
-   "fieldname": "boq_code",
-   "fieldtype": "Data",
-   "label": "BOQ Code",
-   "read_only": 1
-  },
-  {
-   "fieldname": "item_name",
-   "fieldtype": "Data",
-   "label": "Item Name",
-   "read_only": 1,
-   "reqd": 1
-  },
-  {
-   "fieldname": "remarks",
-   "fieldtype": "Data",
-   "label": "Remarks"
-  },
-  {
    "fieldname": "sb_item_detail",
    "fieldtype": "Section Break"
   },
   {
    "fieldname": "items",
    "fieldtype": "Table",
-   "options": "Detailed MB BOQ Item"
+   "options": "Record Of Measurement Item"
+  },
+  {
+   "fieldname": "sb_reference",
+   "fieldtype": "Section Break",
+   "label": "Reference"
   },
   {
    "fieldname": "child_ref",
@@ -117,28 +89,70 @@
    "read_only": 1
   },
   {
-   "fieldname": "description",
-   "fieldtype": "Data",
-   "label": "Description",
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Project",
+   "options": "Project",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "boq",
+   "fieldtype": "Link",
+   "label": "BOQ",
+   "options": "BOQ",
    "read_only": 1
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Data",
+   "label": "Remarks"
   },
   {
    "fieldname": "amended_from",
    "fieldtype": "Link",
    "label": "Amended From",
    "no_copy": 1,
-   "options": "Detailed MB Entry BOQ",
+   "options": "Record Of Measurement",
    "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "label": "Rate",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "label": "Description",
    "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-31 15:13:57.695345",
+ "modified": "2023-07-31 16:55:41.726755",
  "modified_by": "Administrator",
  "module": "Projects",
- "name": "Detailed MB Entry BOQ",
+ "name": "Record Of Measurement",
  "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
@@ -195,5 +209,5 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "mb_entry"
+ "title_field": "boq"
 }

@@ -60,7 +60,10 @@
   "stock_auth_role",
   "stock_settings_tab",
   "mr_approval",
-  "central_store_approval"
+  "central_store_approval",
+  "column_break_lyi3d",
+  "qhse",
+  "qhse_gm"
  ],
  "fields": [
   {
@@ -378,6 +381,22 @@
    "fieldtype": "Link",
    "label": "Central Store Approval",
    "options": "Employee"
+  },
+  {
+   "fieldname": "qhse",
+   "fieldtype": "Link",
+   "label": "QHSE",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "column_break_lyi3d",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "qhse_gm",
+   "fieldtype": "Link",
+   "label": "QHSE GM",
+   "options": "Employee"
   }
  ],
  "icon": "icon-cog",
@@ -385,7 +404,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-07-27 11:01:41.417157",
+ "modified": "2023-07-31 12:03:03.489257",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Settings",

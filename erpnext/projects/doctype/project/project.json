@@ -28,12 +28,12 @@
   "customer_details",
   "party_type",
   "customer",
+  "project_value",
   "column_break_14",
   "party",
   "sales_order",
   "boq_section",
   "project_boq_item",
-  "project_advance_section",
   "project_advance_item",
   "project_invoice_section",
   "project_invoice_item",
@@ -511,11 +511,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "project_advance_section",
-   "fieldtype": "Section Break",
-   "label": "Project Advance"
-  },
-  {
    "fieldname": "project_advance_item",
    "fieldtype": "Table",
    "label": "Advance",
@@ -547,6 +542,11 @@
    "fieldtype": "Data",
    "label": "Department Abbr",
    "read_only": 1
+  },
+  {
+   "fieldname": "project_value",
+   "fieldtype": "Currency",
+   "label": "Project value"
   }
  ],
  "icon": "fa fa-puzzle-piece",
@@ -554,7 +554,7 @@
  "index_web_pages_for_search": 1,
  "links": [],
  "max_attachments": 4,
- "modified": "2023-07-27 11:11:46.606081",
+ "modified": "2023-07-28 12:18:07.220942",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project",

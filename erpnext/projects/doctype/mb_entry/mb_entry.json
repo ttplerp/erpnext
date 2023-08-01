@@ -19,6 +19,7 @@
   "column_break_15",
   "boq",
   "boq_type",
+  "claim_percent",
   "subcontract",
   "section_break_10",
   "check_all",
@@ -217,12 +218,19 @@
    "fieldname": "notes",
    "fieldtype": "Text Editor",
    "label": "notes"
+  },
+  {
+   "depends_on": "eval: doc.boq_type == 'Milestone Based'",
+   "fieldname": "claim_percent",
+   "fieldtype": "Percent",
+   "label": "Claim Percent",
+   "precision": "2"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-26 12:50:58.409251",
+ "modified": "2023-08-01 15:00:35.816869",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "MB Entry",

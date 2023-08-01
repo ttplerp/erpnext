@@ -74,6 +74,21 @@ class ProjectAdvance(Document):
 				"1": "Submitted",
 				"2": "Cancelled"
 		}[str(self.docstatus or 0)]
+
+	@frappe.whitelist()
+	def get_advance_account(self):
+		account = None
+		if self.advance_type == "Mobilization Advance":
+			account = frappe.db.get_value("Company", self.company, "mobilization_advance_account")
+		if self.advance_type == "Material Secure Advance":
+			account = frappe.db.get_value("Company", self.company, "material_secure_advance_account")
+		if self.advance_type == "Equipment Advance":
+			account = frappe.db.get_value("Company", self.company, "equipment_advance_account")
+		if self.advance_type == "Other Advance":
+			account = frappe.db.get_value("Company", self.company, "other_advance_account")
+		
+		return account
+
 	@frappe.whitelist()
 	def set_defaults(self):
 		if self.docstatus < 2:

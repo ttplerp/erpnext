@@ -61,7 +61,7 @@ class Item(Document):
 		# 	self.item_code = self.name = cstr(cint(prev_item[0][0]) + 1)
 		# else:
 		# 	self.item_code = self.name = make_autoname('ABC{}.#####'.format(frappe.db.get_value('Item Group',self.item_group,'item_code_base')))[3:]
-		abb = frappe.db.get_value('Item Group', self.item_group, 'item_group_abbreviation')
+		abb = frappe.db.get_value('Item Group', self.item_group, 'item_code_base')
 		if not abb:
 			frappe.throw('Set Item Group Abbreviation for item group {}'.format("<a href='/app/Form/Item Group/{0}'><b>{0}</b></a>").format(self.item_group))
 		self.item_code = make_autoname(('{}.######'.format(abb)))

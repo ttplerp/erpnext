@@ -95,12 +95,14 @@ class PaymentEntry(AccountsController):
 		self.set_status()
 		self.update_employee_advance()
 		self.update_expense_claim(submit=1)
+		self.update_outstanding()
 
 	def on_cancel(self):
 		check_clearance_date(self.doctype, self.name)
 		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
 		self.make_gl_entries(cancel=1)
 		self.update_outstanding_amounts()
+		self.update_outstanding(cancel=True)
 		self.update_advance_paid()
 		self.delink_advance_entry_references()
 		self.update_payment_schedule(cancel=1)
@@ -114,6 +116,32 @@ class PaymentEntry(AccountsController):
 
 	def update_outstanding_amounts(self):
 		self.set_missing_ref_details(force=True)
+
+	def update_outstanding(self, cancel=False):
+		for a in self.references:
+			if a.reference_doctype == "Project Invoice":
+				payment_status = ""
+				outstanding_amount = frappe.db.get_value("Project Invoice", a.reference_name, "outstanding_amount")
+				total_received_amount = frappe.db.get_value("Project Invoice", a.reference_name, "total_received_amount")
+				total_balance_amount = frappe.db.get_value("Project Invoice", a.reference_name, "total_balance_amount")
+				if not cancel:
+					outstanding_amount -= self.paid_amount
+					total_received_amount += self.paid_amount
+				else:
+					outstanding_amount += self.paid_amount
+					total_received_amount -= self.paid_amount
+				if outstanding_amount == 0:
+					payment_status = "Paid"
+				elif flt(outstanding_amount,2) < flt(total_balance_amount):
+					payment_status = "Partly Paid"
+				else:
+					payment_status = "Unpaid"
+					
+				frappe.db.sql("""
+					update `tabProject Invoice` set outstanding_amount = {}, total_received_amount = {}, payment_status = '{}'
+					where name = '{}'
+				""".format(flt(outstanding_amount,2), flt(total_received_amount,2), payment_status, a.reference_name))
+				frappe.msgprint("Updated Project Invoice {}".format(a.reference_name))
 
 	def update_employee_advance(self):
 		if self.references:

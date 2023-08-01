@@ -47,8 +47,8 @@ class ProjectInvoice(AccountsController):
 		self.update_boq()
 		self.update_mb_entries()
 		self.project_invoice_item_entry()
-		self.update_advance_balance()  
-		# self.cancel_consumed()  
+		self.update_advance_balance()
+		# self.cancel_consumed()
 
 	def set_status(self, update=False, status=None, update_modified=True):
 		if self.is_new():

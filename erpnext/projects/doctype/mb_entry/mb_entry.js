@@ -21,7 +21,11 @@ frappe.ui.form.on('MB Entry', {
 	
 	check_all: function(frm){
 		check_uncheck_all(frm);
-	}
+	},
+
+	claim_percent: function (frm) {
+		cal_entry_qty_for_milestone(frm)
+	},
 });
 
 frappe.ui.form.on("MB Entry BOQ",{
@@ -48,9 +52,11 @@ frappe.ui.form.on("MB Entry BOQ",{
 	breath: function (frm, cdt, cdn) {
 		calculate_entry_quantity(frm, cdt, cdn)
 	},
+
 	height: function (frm, cdt, cdn) {
 		calculate_entry_quantity(frm, cdt, cdn)
 	},
+
 	length: function (frm, cdt, cdn) {
 		calculate_entry_quantity(frm, cdt, cdn)
 	},
@@ -91,6 +97,15 @@ frappe.ui.form.on("MB Entry BOQ",{
 		calculate_total_amount(frm);
 	},
 });
+
+var cal_entry_qty_for_milestone = function (frm) {
+	frm.doc.mb_entry_boq.forEach(e => {
+		e.entry_quantity = (frm.doc.claim_percent/100) * e.act_quantity 
+		e.entry_amount = (frm.doc.claim_percent/100) * e.act_quantity * e.entry_rate 
+		// console.log(e.entry_quantity);
+	});
+	frm.refresh_field('mb_entry_boq')
+}
 
 var calculate_entry_quantity = function(frm, cdt, cdn) {
 	let child = locals[cdt][cdn];

@@ -238,10 +238,12 @@ class BOQSubstitution(Document):
 
 @frappe.whitelist()
 def get_boq_list(boq):
-	result = frappe.db.sql("""
+	result = frappe.db.sql(
+		"""
 			select *
-			from `tabBOQ Item`
-			where parent = '{boq}'
-			and docstatus = 1 and quantity = balance_quantity  order by idx asc
-			""".format(boq=boq) , as_dict=True)
+			from `tabBOQ Item` bi
+			where parent = '{boq}' and
+			(bi.ref_type IS NULL OR bi.ref_type = '' OR bi.ref_type LIKE '%BOQ Substitution%')
+			and bi.docstatus = 1 and bi.quantity = bi.balance_quantity  order by bi.idx asc
+		""".format(boq=boq) , as_dict=True)
 	return result

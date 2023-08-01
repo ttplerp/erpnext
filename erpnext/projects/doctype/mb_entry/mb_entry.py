@@ -22,6 +22,7 @@ class MBEntry(Document):
 		self.set_status()
 		self.default_validations()
 		self.set_defaults()
+		self.vilidate_milestone_based()
 				
 	def on_submit(self):
 		self.validate_boq_items()
@@ -39,7 +40,13 @@ class MBEntry(Document):
 				"1": "Uninvoiced",
 				"2": "Cancelled"
 		}[str(self.docstatus or 0)]
-			
+	
+	def vilidate_milestone_based(self):
+		if self.claim_percent:
+			for a in self.mb_entry_boq:
+				a.entry_quantity = (self.claim_percent/100)*a.act_quantity
+				a.entry_amount = (self.claim_percent/100)*a.act_quantity*a.entry_rate 
+
 	def default_validations(self):
 		for rec in self.mb_entry_boq:
 			# entry_amount = round(rec.entry_quantity, 2)*round(rec.entry_rate, 2)

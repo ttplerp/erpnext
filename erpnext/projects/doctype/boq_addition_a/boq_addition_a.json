@@ -1,9 +1,8 @@
 {
  "actions": [],
- "allow_rename": 1,
- "autoname": "BOQADD.YYYY.MM.####",
- "creation": "2023-07-28 10:04:37.766718",
- "default_view": "List",
+ "allow_import": 1,
+ "autoname": "BOQADDA.YYYY.MM.####",
+ "creation": "2021-12-01 11:57:33.292451",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -14,25 +13,25 @@
   "cost_center",
   "party_type",
   "party",
-  "column_break_i94kd",
+  "column_break_40",
   "boq",
   "boq_date",
   "boq_type",
   "remarks",
-  "section_break_yylvt",
+  "sb_totals",
   "boq_item",
   "total_amount",
-  "section_break_nij6z",
+  "section_break_20",
   "sb_notes",
   "notes",
   "amended_from"
  ],
  "fields": [
   {
+   "default": "Today",
    "fieldname": "addition_date",
    "fieldtype": "Date",
-   "in_list_view": 1,
-   "label": "Addtion Date",
+   "label": "Addition Date",
    "reqd": 1
   },
   {
@@ -41,79 +40,92 @@
    "in_list_view": 1,
    "label": "Project",
    "options": "Project",
-   "reqd": 1
+   "read_only": 1,
+   "reqd": 1,
+   "set_only_once": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "branch",
    "fieldtype": "Link",
    "label": "Branch",
-   "options": "Branch"
+   "options": "Branch",
+   "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "cost_center",
    "fieldtype": "Link",
    "label": "Cost Center",
-   "options": "Cost Center"
+   "options": "Cost Center",
+   "read_only": 1
   },
   {
    "fieldname": "party_type",
    "fieldtype": "Link",
    "label": "Party Type",
-   "options": "DocType"
+   "options": "DocType",
+   "read_only": 1
   },
   {
    "fieldname": "party",
    "fieldtype": "Dynamic Link",
    "label": "Party",
-   "options": "party_type"
+   "options": "party_type",
+   "read_only": 1
   },
   {
-   "fieldname": "column_break_i94kd",
+   "fieldname": "column_break_40",
    "fieldtype": "Column Break"
   },
   {
    "fieldname": "boq",
    "fieldtype": "Link",
    "label": "BOQ",
-   "options": "BOQ"
+   "options": "BOQ",
+   "read_only": 1
   },
   {
+   "default": "Today",
    "fieldname": "boq_date",
    "fieldtype": "Date",
    "label": "BOQ Date",
+   "read_only": 1,
    "reqd": 1
   },
   {
+   "default": "Item Based",
    "fieldname": "boq_type",
    "fieldtype": "Select",
-   "label": "Types of BOQ",
-   "options": "\nItem Based\nMilestone Based\nPiece Rate Work Based(PRW)"
+   "label": "Type of BOQ",
+   "options": "Item Based\nMilestone Based\nPiece Rate Work Based(PRW)",
+   "read_only": 1
   },
   {
    "fieldname": "remarks",
    "fieldtype": "Small Text",
+   "in_list_view": 1,
    "label": "Remarks"
   },
   {
-   "fieldname": "section_break_yylvt",
+   "fieldname": "sb_totals",
    "fieldtype": "Section Break"
   },
   {
-   "fieldname": "boq_item",
-   "fieldtype": "Table",
-   "label": "BOQ Item",
-   "options": "BOQ Addition Item"
-  },
-  {
+   "bold": 1,
    "fieldname": "total_amount",
    "fieldtype": "Float",
-   "label": "Total Amount(nu)"
+   "in_list_view": 1,
+   "label": "Total  Amount (Nu)",
+   "precision": "2",
+   "read_only": 1
   },
   {
-   "fieldname": "section_break_nij6z",
+   "fieldname": "section_break_20",
    "fieldtype": "Section Break"
   },
   {
+   "collapsible": 1,
    "fieldname": "sb_notes",
    "fieldtype": "Section Break",
    "label": "NOTES"
@@ -128,97 +140,30 @@
    "fieldtype": "Link",
    "label": "Amended From",
    "no_copy": 1,
-   "options": "BOQ Addition",
+   "options": "BOQ Addition A",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "boq_item",
+   "fieldtype": "Table",
+   "label": "BOQ Item",
+   "options": "BOQ Addition Item"
   }
  ],
- "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-28 10:57:11.308390",
+ "modified": "2023-07-28 10:14:21.041303",
  "modified_by": "Administrator",
  "module": "Projects",
- "name": "BOQ Addition",
+ "name": "BOQ Addition A",
  "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
+   "amend": 1,
+   "cancel": 1,
    "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "System Manager",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Projects GM",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Accounts Manager",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Projects User",
-   "share": 1,
-   "submit": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Accounts User",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Auditor",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
@@ -226,12 +171,83 @@
    "report": 1,
    "role": "CPBD",
    "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1
+  },
+  {
+   "amend": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Projects User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Auditor",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Projects GM",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Administrator",
+   "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
+ "title_field": "cost_center",
  "track_changes": 1,
- "track_seen": 1
+ "track_seen": 1,
+ "track_views": 1
 }

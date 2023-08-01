@@ -229,7 +229,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Reports",
-   "link_count": 10,
+   "link_count": 12,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -336,10 +336,30 @@
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Daily Record of Measurement",
+   "link_count": 0,
+   "link_to": "Daily Record of Measurement",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Daily Work Report",
+   "link_count": 0,
+   "link_to": "Daily Work Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-07-27 09:31:02.978514",
- "modified_by": "Administrator",
+ "modified": "2023-08-01 13:01:21.356783",
+ "modified_by": "dechen.lhaden@thimphutechpark.bt",
  "module": "Projects",
  "name": "Projects",
  "number_cards": [],

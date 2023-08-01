@@ -44,7 +44,6 @@
   "increment_cycle",
   "promotion_cycle",
   "promotion_due_date",
-  "pms_group",
   "erpnext_user",
   "create_user_permission",
   "create_user",
@@ -59,13 +58,7 @@
   "section",
   "unit",
   "evaluator_details_section",
-  "eval_1",
-  "eval_2",
-  "eval_3",
-  "column_break_52",
-  "eval_1_name",
-  "eval_2_name",
-  "eval_3_name",
+  "evaluators",
   "employment_details",
   "scheduled_confirmation_date",
   "column_break_32",
@@ -135,6 +128,8 @@
   "external_work_history",
   "history_in_company",
   "internal_work_history",
+  "family_details_tab",
+  "family_detail",
   "exit",
   "resignation_letter_date",
   "relieving_date",
@@ -996,58 +991,6 @@
    "label": "Employee Qualification"
   },
   {
-   "fieldname": "pms_group",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "PMS Group",
-   "options": "PMS Group"
-  },
-  {
-   "fieldname": "eval_1",
-   "fieldtype": "Link",
-   "label": "Evaluator 1",
-   "options": "Employee"
-  },
-  {
-   "fieldname": "eval_2",
-   "fieldtype": "Link",
-   "label": "Evaluator 2",
-   "options": "Employee"
-  },
-  {
-   "depends_on": "eval:doc.employee_group != \"Administration & Support\";",
-   "fieldname": "eval_3",
-   "fieldtype": "Link",
-   "label": "Evaluator 3",
-   "options": "Employee"
-  },
-  {
-   "fieldname": "column_break_52",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fetch_from": "eval_1.employee_name",
-   "fieldname": "eval_1_name",
-   "fieldtype": "Data",
-   "label": "Evaluator Name",
-   "read_only": 1
-  },
-  {
-   "fetch_from": "eval_2.employee_name",
-   "fieldname": "eval_2_name",
-   "fieldtype": "Data",
-   "label": "Evaluator Name",
-   "read_only": 1
-  },
-  {
-   "depends_on": "eval:doc.employee_group != \"Administration & Support\";",
-   "fetch_from": "eval_3.employee_name",
-   "fieldname": "eval_3_name",
-   "fieldtype": "Data",
-   "label": "Evaluator Name",
-   "read_only": 1
-  },
-  {
    "fieldname": "evaluator_details_section",
    "fieldtype": "Section Break",
    "label": "PMS Evaluator Details"
@@ -1065,13 +1008,29 @@
    "label": "Education Level",
    "options": "Education Level",
    "reqd": 1
+  },
+  {
+   "fieldname": "family_details_tab",
+   "fieldtype": "Tab Break",
+   "label": "Family Details"
+  },
+  {
+   "fieldname": "family_detail",
+   "fieldtype": "Table",
+   "label": "Family Detail",
+   "options": "Family Detail Item"
+  },
+  {
+   "fieldname": "evaluators",
+   "fieldtype": "Table",
+   "options": "Performance Evaluator"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-07-27 16:50:23.154256",
+ "modified": "2023-08-01 14:12:35.413385",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",

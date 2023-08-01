@@ -37,6 +37,15 @@ class ItemGroup(NestedSet, WebsiteGenerator):
 		self.make_route()
 		self.validate_item_group_defaults()
 		ECommerceSettings.validate_field_filters(self.filter_fields, enable_field_filters=True)
+		self.validate_item_code()
+
+	def validate_item_code(self):
+		if self.item_code_base:
+			code = frappe.db.sql("""
+				SELECT item_code_base from `tabItem Group` where item_code_base = '{}'
+			""".format(self.item_code_base), as_dict=1)
+			if code and code[0].item_code_base:
+				frappe.throw(str(" Item code already in use."))
 
 	def on_update(self):
 		NestedSet.on_update(self)

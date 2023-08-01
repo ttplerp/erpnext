@@ -350,6 +350,43 @@ def make_book_entry(source_name, target_doc=None):
 	return doclist
 
 @frappe.whitelist()
+def make_rm(source_name, target_doc=None, args=None):
+	from frappe.model.mapper import get_mapped_doc
+	# if args is None:
+	# 	args = {}
+	# if isinstance(args, str):
+	# 	args = json.loads(args)
+
+	def post_process(source, target):
+		target.child_ref = frappe.flags.args.child_ref
+		target.item_name = frappe.flags.args.item_name
+		target.boq_code = frappe.flags.args.boq_code
+		target.uom = frappe.flags.args.uom
+		target.rate = frappe.flags.args.rate
+		target.amount = frappe.flags.args.amount
+		# set_missing_values(source, target_doc)
+
+	# def select_item(d):
+	#	 filtered_items = args.get("filtered_children", [])
+	#	 child_filter = d.name in filtered_items if filtered_items else True
+
+	#	 return d.ordered_qty < d.stock_qty and child_filter
+
+	doclist = get_mapped_doc(
+		"BOQ",
+		source_name,
+		{
+			"BOQ": {
+				"doctype": "Record Of Measurement",
+			}
+		},
+		target_doc,
+		post_process,
+	)
+
+	return doclist
+
+@frappe.whitelist()
 def make_boq_advance(source_name, target_doc=None):
 	doclist = get_mapped_doc("BOQ", source_name, {
 		"BOQ": {

@@ -75,6 +75,7 @@ var get_boq_list = function (frm) {
                         cur_frm.clear_table("boq_item");
                         r.message.forEach(function (boq) {
                             var row = frappe.model.add_child(frm.doc, "BOQ Substitution Item", "boq_item");
+                            console.log(row)
                             row.boq_item_name = boq['name'];
                             row.boq_code = boq['boq_code'];
                             row.item = boq['item'];

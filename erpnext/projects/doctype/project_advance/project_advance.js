@@ -22,7 +22,18 @@ frappe.ui.form.on('Project Advance', {
 			// }
 		}
 	},
-	
+	advance_type: function(frm){
+		frappe.call({
+			method: "get_advance_account",
+			doc: frm.doc,
+			callback: function(r){
+				if(r.message){
+					frm.set_value("advance_account", r.message)
+					frm.refresh_fields()
+				}
+			}
+		})
+	},
 	project: function(frm){
 		set_defaults(frm.doc);
 	},

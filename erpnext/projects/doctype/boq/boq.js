@@ -69,14 +69,14 @@ frappe.ui.form.on('BOQ', {
 				__("Make"), "icon-file-alt"
 			);
 		}
-        frm.set_query("boq_code", "boq_item", function () {
-            return {
-                filters: {
-                    is_service_item:1,
-                    disabled:0
-                }
-            };
-        });
+        // frm.set_query("boq_code", "boq_item", function () {
+        //     return {
+        //         filters: {
+        //             is_service_item:1,
+        //             disabled:0
+        //         }
+        //     };
+        // });
 	},
 	make_boq_adjustment: function (frm) {
 		frappe.model.open_mapped_doc({
@@ -140,6 +140,9 @@ frappe.ui.form.on('BOQ', {
 });
 
 frappe.ui.form.on("BOQ Item", {
+	create_rm: function(frm, cdt, cdn){
+		make_rm(frm, cdt, cdn)
+	},
 	quantity: function (frm, cdt, cdn) {
 		calculate_amount(frm, cdt, cdn);
 	},
@@ -207,4 +210,20 @@ var calculate_total_amount = function (frm) {
 	cur_frm.set_value("total_amount", total_amount);
 	cur_frm.set_value("balance_amount", balance_amount);
 }
-
+var make_rm =  function (frm, cdt, cdn) { 
+	var item = locals[cdt][cdn];
+	console.log(item.name)
+	frappe.model.open_mapped_doc({
+		method: "erpnext.projects.doctype.boq.boq.make_rm",
+		args: {
+			"boq_code": item.boq_code,
+			"item_name": item.item,
+			"uom": item.uom,
+			"child_ref": item.name,
+			"rate": item.rate,
+			"amount": item.amount
+		},
+		frm: frm,
+		run_link_triggers: true
+	});
+}
