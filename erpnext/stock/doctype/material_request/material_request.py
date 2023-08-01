@@ -866,7 +866,7 @@ def get_permission_query_conditions(user):
     if "Administrator" in user_roles or "System Manager" in user_roles or "Purchase User" in user_roles: 
         return
 
-    # ceo_or_general_manager = 1 if 'General Manager' in user_roles or 'CEO' in user_roles else 0
+    ceo_or_general_manager = 1 if 'General Manager' in user_roles or 'CEO' in user_roles else 0
     
     return """(
             `tabMaterial Request`.owner = '{user}'
