@@ -633,21 +633,21 @@ class CustomWorkflow:
 				vars(self.doc)[self.doc_approver[2]] = (
 					officiating[2] if officiating else self.supervisor[2]
 				)
-			# else:
-			# 	officiating = get_officiating_employee(self.supervisor[3])
-			# 	if officiating:
-			# 		officiating = frappe.db.get_value(
-			# 			"Employee", officiating[0].officiate, self.field_list
-			# 		)
-			# 	vars(self.doc)[self.doc_approver[0]] = (
-			# 		officiating[0] if officiating else self.reports_to[0]
-			# 	)
-			# 	vars(self.doc)[self.doc_approver[1]] = (
-			# 		officiating[1] if officiating else self.reports_to[1]
-			# 	)
-			# 	vars(self.doc)[self.doc_approver[2]] = (
-			# 		officiating[2] if officiating else self.reports_to[2]
-			# 	)
+			else:
+				officiating = get_officiating_employee(self.reports_to[3])
+				if officiating:
+					officiating = frappe.db.get_value(
+						"Employee", officiating[0].officiate, self.field_list
+					)
+				vars(self.doc)[self.doc_approver[0]] = (
+					officiating[0] if officiating else self.reports_to[0]
+				)
+				vars(self.doc)[self.doc_approver[1]] = (
+					officiating[1] if officiating else self.reports_to[1]
+				)
+				vars(self.doc)[self.doc_approver[2]] = (
+					officiating[2] if officiating else self.reports_to[2]
+				)
 
 		elif approver_type == "POL Approver":
 			officiating = get_officiating_employee(self.pol_approver[3])
@@ -2114,7 +2114,6 @@ class CustomWorkflow:
 		# 	frappe.throw(_("Invalid Workflow State {}").format(self.doc.workflow_state))
 
 	def employee_transfer_request(self):
-		frappe.throw(str(self.new_state))
 		if self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
 			# if frappe.session.user != frappe.db.get_value("Employee", self.doc.employee, "user_id"):
 			# 	frappe.throw("Only {} can apply.".format(self.doc.employee))
@@ -2144,7 +2143,7 @@ class CustomWorkflow:
 		if self.new_state.lower() == "Waiting Approval".lower():
 			self.set_approver("HRGM")
 		elif self.new_state.lower() == "Approved".lower():
-			if self.doc.approver != frappe.session.user:
+			if self.doc.approver != frappe.session.user and "HR Manager" not in frappe.get_roles(frappe.session.user):
 				frappe.throw(
 					"Only {} can Approve this Encashment".format(self.doc.approver_name)
 				)
@@ -2258,7 +2257,7 @@ class CustomWorkflow:
 
 		if self.new_state.lower() in ("Waiting Approval".lower()):
 			if self.doc.advance_approver != frappe.session.user:
-				frappe.throw("Only {} can forward this request".format(self.doc.advance_approver_name))
+				frappe.throw("Only {} can forward this request".format(self.doc.advance_approver))
 			if self.doc.advance_type == "Imprest Advance":
 				self.set_approver("Imprest Approver")
 			else:
@@ -2268,7 +2267,7 @@ class CustomWorkflow:
 			if self.doc.advance_approver != frappe.session.user:
 				frappe.throw(
 					"Only {} can Approve this request".format(
-						self.doc.advance_approver_name
+						self.doc.advance_approver
 					)
 				)
 
@@ -2279,7 +2278,7 @@ class CustomWorkflow:
 			):
 				frappe.throw(
 					"Only {} can Reject this request".format(
-						self.doc.advance_approver_name
+						self.doc.advance_approver
 					)
 				)
 
@@ -2481,7 +2480,6 @@ class CustomWorkflow:
 				)
 			self.set_approver("HRGM")			
 		elif self.new_state.lower() in ("Waiting Approval".lower()):
-			# frappe.msgprint("You can forward the request only if the requested material is not available at your desk.")
 			if self.doc.approver != frappe.session.user:
 				frappe.throw(
 					"Only the {} can Approve this material request".format(
