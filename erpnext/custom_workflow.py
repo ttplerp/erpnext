@@ -102,12 +102,27 @@ class CustomWorkflow:
 		
 		if self.doc.doctype == "Material Request":
 			self.employee = frappe.db.get_value("Employee", {"user_id":self.doc.owner}, self.field_list)
+			division = frappe.db.get_value("Employee",self.employee,"division")
+			section = frappe.db.get_value("Employee",self.employee, "section")
+			unit = frappe.db.get_value("Employee",self.employee, "unit")
 			if self.doc.material_request_type == "Material Issue":
 				self.warehouse_manager = frappe.db.get_value("Employee",{'user_id':frappe.db.get_value("Warehouse",self.doc.set_warehouse,"email_id")},self.field_list)
 			elif self.doc.material_request_type == "Material Transfer":
 				self.warehouse_manager = frappe.db.get_value("Employee",{'user_id':frappe.db.get_value("Warehouse",self.doc.set_from_warehouse,"email_id")},self.field_list)
 			
 			self.reports_to	= frappe.db.get_value("Employee", frappe.db.get_value("Employee", {'user_id':self.doc.owner}, "reports_to"), self.field_list)
+			
+			self.section_approver = frappe.db.get_value("Employee",{"user_id":frappe.db.get_value(
+					"Department Approver",
+					{"parent": section, "parentfield": "leave_approvers", "idx": 1},
+					"approver",
+				)},self.field_list)
+
+			self.division_approver = frappe.db.get_value("Employee",{"user_id":frappe.db.get_value(
+					"Department Approver",
+					{"parent": division, "parentfield": "leave_approvers", "idx": 1},
+					"approver",
+				)},self.field_list)
 			
 		if self.doc.doctype == "Employee Benefits":
 			self.hrgm = frappe.db.get_value("Employee",frappe.db.get_single_value("HR Settings","hrgm"), self.field_list)	
@@ -170,9 +185,6 @@ class CustomWorkflow:
 
 	def set_approver(self, approver_type):
 		if approver_type == "Supervisor":
-			emp_reports_to = frappe.db.get_value("Employee",self.doc.employee,"reports_to")
-			if not emp_reports_to:
-				frappe.throw("Reports To not set for Employee {}".format(self.doc.employee if self.doc.employee else frappe.db.get_value("Employee",{"user_id",self.doc.owner},"name")))
 			officiating = get_officiating_employee(self.reports_to[3])
 			if officiating:
 				officiating = frappe.db.get_value("Employee", officiating[0].officiate, self.field_list)
