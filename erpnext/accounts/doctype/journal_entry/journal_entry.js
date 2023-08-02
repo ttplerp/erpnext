@@ -136,33 +136,32 @@ frappe.ui.form.on("Journal Entry", {
 
 		erpnext.accounts.dimensions.update_dimension(frm, frm.doctype);
 	},
+	//commented by Rinzin Not required for HNDCL (its smcl requirement)
+	// voucher_type: function(frm){
 
-	voucher_type: function(frm){
+	// 	if(!frm.doc.company) return null;
 
-		if(!frm.doc.company) return null;
-
-		if((!(frm.doc.accounts || []).length) || ((frm.doc.accounts || []).length === 1 && !frm.doc.accounts[0].account)) {
-			if(in_list(["Bank Entry", "Cash Entry"], frm.doc.voucher_type)) {
-				return frappe.call({
-					type: "GET",
-					method: "erpnext.accounts.doctype.journal_entry.journal_entry.get_default_bank_cash_account",
-					args: {
-						"account_type": (frm.doc.voucher_type=="Bank Entry" ?
-							"Bank" : (frm.doc.voucher_type=="Cash Entry" ? "Cash" : null)),
-						"company": frm.doc.company
-					},
-					callback: function(r) {
-						if(r.message) {
-							// If default company bank account not set
-							if(!$.isEmptyObject(r.message)){
-								update_jv_details(frm.doc, [r.message]);
-							}
-						}
-					}
-				});
-			}
-		}
-	},
+	// 	if((!(frm.doc.accounts || []).length) || ((frm.doc.accounts || []).length === 1 && !frm.doc.accounts[0].account)) {
+	// 		if(in_list(["Bank Entry", "Cash Entry"], frm.doc.voucher_type)) {
+	// 			return frappe.call({
+	// 				type: "GET",
+	// 				method: "erpnext.accounts.doctype.journal_entry.journal_entry.get_default_bank_cash_account",
+	// 				args: {
+	// 					"account_type": (frm.doc.voucher_type=="Bank Entry" ?
+	// 						"Bank" : (frm.doc.voucher_type=="Cash Entry" ? "Cash" : null)),
+	// 					"company": frm.doc.company
+	// 				},
+	// 				callback: function(r) {
+	// 					if(r.message) {
+	// 						if(!$.isEmptyObject(r.message)){
+	// 							update_jv_details(frm.doc, [r.message]);
+	// 						}
+	// 					}
+	// 				}
+	// 			});
+	// 		}
+	// 	}
+	// },
 
 	from_template: function(frm){
 		if (frm.doc.from_template){
