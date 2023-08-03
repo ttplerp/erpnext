@@ -45,7 +45,16 @@ def employee_query(doctype, txt, searchfield, start, page_len, filters):
 		{"txt": "%%%s%%" % txt, "_txt": txt.replace("%", ""), "start": start, "page_len": page_len},
 	)
 
-
+@frappe.whitelist()
+def filter_division_employees(doctype, txt, searchfield, start, page_len, filters):
+	# frappe.throw("here")
+	data = []
+	if not frappe.db.exists("Employee",{"user_id": filters.get("user")}):
+		frappe.throw("Logged in user not an Employee.")
+	division = frappe.db.get_value("Employee", {"user_id": filters.get("user")}, "division")
+	return frappe.db.sql("""
+        select name, employee_name, designation from `tabEmployee` where status = 'Active' and division = '{}'
+        """.format(division))
 @frappe.whitelist()
 def filter_advance_type(doctype, txt, searchfield, start, page_len, filters):
 	if not filters.get("employee"):
