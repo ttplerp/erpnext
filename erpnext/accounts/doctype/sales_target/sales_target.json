@@ -12,6 +12,7 @@
   "total_target_qty",
   "column_break_3",
   "fiscal_year",
+  "total_adjusted_qty",
   "target_details_section",
   "targets",
   "item_details_section",
@@ -100,12 +101,19 @@
    "in_list_view": 1,
    "label": "Total Target Qty",
    "read_only": 1
+  },
+  {
+   "default": "0.0",
+   "fieldname": "total_adjusted_qty",
+   "fieldtype": "Float",
+   "label": "Total Adjusted Qty",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-23 09:21:07.023288",
+ "modified": "2023-07-31 14:46:44.794089",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Sales Target",

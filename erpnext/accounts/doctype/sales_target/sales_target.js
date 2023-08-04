@@ -59,15 +59,36 @@ frappe.ui.form.on('Sales Target', {
 });
 
 frappe.ui.form.on('Sales Target Item', {
-	target_qty:function(frm){
+	target_qty:function(frm, cdt,cdn){
 		calculate_total_qty(frm)
+		calculate_total_target_qty(cdt,cdn)
+	},
+	adjusted_qty:function(frm, cdt,cdn){
+		calculate_total_qty(frm)
+		calculate_total_target_qty(cdt,cdn)
 	}
 })
 var calculate_total_qty = function(frm){
 	let total_qty = 0
 	$.each(frm.doc.targets, function(_i,e){
-		total_qty += flt(e.target_qty)
+		total_qty += flt(e.target_qty)+flt(e.adjusted_qty)
 	})
 	frm.set_value("total_target_qty",total_qty)
 	frm.refresh_field("total_target_qty")
+}
+function calculate_total_target_qty(cdt, cdn){
+	var item = locals[cdt][cdn];
+	frappe.call({
+		method: "erpnext.accounts.doctype.sales_target.sales_target.calculate_total_qty",
+		args: {
+			"target_qty": item.target_qty,
+			"adjusted_qty":item.adjusted_qty
+		},
+		callback: function(r) {
+			if(r.message) {
+				console.log(r.message)
+				frappe.model.set_value(cdt, cdn, "total_target_qty", flt(r.message))
+			}
+		}
+	})
 }

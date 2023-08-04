@@ -46,3 +46,8 @@ class SalesTarget(Document):
 		if not self.item_sub_group:
 			frappe.throw("Item sub group is required")
 		return frappe.db.sql("SELECT name as item_code, item_name, item_group, item_sub_group FROM `tabItem` WHERE item_sub_group = '{}'".format(self.item_sub_group), as_dict=True)
+	
+@frappe.whitelist()
+def calculate_total_qty(target_qty, adjusted_qty):
+	total = flt(target_qty)+flt(adjusted_qty)
+	return total
