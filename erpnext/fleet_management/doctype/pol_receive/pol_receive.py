@@ -50,22 +50,35 @@ class POLReceive(StockController):
 	def post_journal_entry(self):
 		if not self.total_amount:
 			frappe.throw(_("Amount should be greater than zero"))
-
 		credit_account = frappe.get_value("Company", self.company, "default_bank_account")
+		if self.settle_imprest_advance:
+			credit_account = frappe.get_value("Company", self.company, "imprest_advance_account")
 		debit_account = frappe.db.get_value("Equipment Category", self.equipment_category, "r_m_expense_account")
 
 		# Posting Journal Entry
 		je = frappe.new_doc("Journal Entry")
 		je.flags.ignore_permissions=1
 		accounts = []
-		accounts.append({
-				"account": credit_account,
-				"credit_in_account_currency": flt(self.total_amount,2),
-				"cost_center": self.cost_center,
-				"reference_type": "POL Receive",
-				"reference_name": self.name,
-				"business_activity": get_default_ba
-			})
+		if self.settle_imprest_advance == 0 or not self.settle_imprest_advance:
+			accounts.append({
+					"account": credit_account,
+					"credit_in_account_currency": flt(self.total_amount,2),
+					"cost_center": self.cost_center,
+					"reference_type": "POL Receive",
+					"reference_name": self.name,
+					"business_activity": get_default_ba
+				})
+		else:
+			accounts.append({
+					"account": credit_account,
+					"credit_in_account_currency": flt(self.total_amount,2),
+					"cost_center": self.cost_center,
+					"reference_type": "POL Receive",
+					"reference_name": self.name,
+					"party_type": "Employee",
+					"party": self.party,
+					"business_activity": get_default_ba
+				})
 		accounts.append({
 				"account": debit_account,
 				"debit_in_account_currency": flt(self.total_amount,2),

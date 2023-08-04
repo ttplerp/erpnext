@@ -17,6 +17,8 @@
   "party_type",
   "party_branch",
   "is_internal_customer",
+  "settle_imprest_advance",
+  "imprest_party",
   "column_break_11",
   "party",
   "party_cost_center",
@@ -336,11 +338,24 @@
    "label": "Party Cost Center",
    "options": "Cost Center",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "settle_imprest_advance",
+   "fieldtype": "Check",
+   "label": "Settle Imprest Advance Account"
+  },
+  {
+   "depends_on": "eval:doc.settle_imprest_advance == 1;",
+   "fieldname": "imprest_party",
+   "fieldtype": "Link",
+   "label": "Imprest Party",
+   "options": "Employee"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-27 10:14:08.507966",
+ "modified": "2023-08-04 12:12:05.542067",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Hire Charge Invoice",

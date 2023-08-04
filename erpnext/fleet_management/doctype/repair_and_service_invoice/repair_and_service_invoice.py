@@ -106,6 +106,12 @@ class RepairAndServiceInvoice(AccountsController):
 		make_gl_entries(gl_entries, update_outstanding="No", cancel=(self.docstatus == 2), merge_entries=False)
 
 	@frappe.whitelist()
+	def get_imprest_advance_account(self):
+		if not frappe.db.get_value("Company", self.company, "imprest_advance_account"):
+			frappe.throw("Please set Imprest Advance Account in Company Settings")
+		return frappe.db.get_value("Company", self.company, "imprest_advance_account")
+
+	@frappe.whitelist()
 	def post_journal_entry(self):
 		if self.journal_entry and frappe.db.exists("Journal Entry",{"name":self.journal_entry,"docstatus":("!=",2)}):
 			frappe.msgprint(_("Journal Entry Already Exists {}".format(frappe.get_desk_link("Journal Entry",self.journal_entry))))

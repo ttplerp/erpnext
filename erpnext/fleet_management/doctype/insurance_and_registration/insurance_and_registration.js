@@ -7,6 +7,12 @@ frappe.ui.form.on('Insurance and Registration', {
 			frm.set_value("posting_date", get_today());
 		}	
 	},
+	settle_imprest_advance: function(frm){
+		if(frm.doc.settle_imprest_advance == 0 || frm.doc.settle_imprest_advance == undefined){
+			frm.set_value("imprest_party", null);
+			frm.refresh_field("imprest_party");
+		}
+	},
 	refresh:function(frm){
 		frm.set_query("equipment",function(doc) {
 			return {

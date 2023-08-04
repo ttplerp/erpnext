@@ -437,6 +437,9 @@ class HireChargeInvoice(AccountsController):
 
 		remarks = ("").join(r) #User Remarks is not mandatory
 		bank_account = frappe.db.get_value("Company",self.company, "default_bank_account")
+		imprest_advance_account = frappe.db.get_value("Company",self.company, "imprest_advance_account")
+		if self.settle_imprest_advance == 1 and self.party_type == "Supplier" and not imprest_advance_account:
+			frappe.throw("Imprest Advance is not set in Company settings")
 		if not bank_account:
 			frappe.throw(_("Default bank account is not set in company {}".format(frappe.bold(self.company))))
 		
@@ -467,6 +470,7 @@ class HireChargeInvoice(AccountsController):
 				"reference_type": "Hire Charge Invoice",
 				"reference_name": self.name
 			})
+			if self.
 			je.append("accounts",{
 				"account": bank_account,
 				"credit_in_account_currency": flt(self.payable_amount,2),
@@ -483,11 +487,20 @@ class HireChargeInvoice(AccountsController):
 				"reference_type": "Hire Charge Invoice",
 				"reference_name": self.name
 			})
-			je.append("accounts",{
-				"account": bank_account,
-				"debit_in_account_currency": flt(self.payable_amount,2),
-				"cost_center": self.cost_center if cint(self.is_internal_customer) == 0 else self.party_cost_center
-			})
+			if self.settle_imprest_advance == 1:
+				je.append("accounts",{
+					"account": imprest_advance_account,
+					"debit_in_account_currency": flt(self.payable_amount,2),
+					"party_type": "Employee",
+					"party": self.imprest_party,
+					"cost_center": self.cost_center if cint(self.is_internal_customer) == 0 else self.party_cost_center
+				})
+			else:
+				je.append("accounts",{
+					"account": bank_account,
+					"debit_in_account_currency": flt(self.payable_amount,2),
+					"cost_center": self.cost_center if cint(self.is_internal_customer) == 0 else self.party_cost_center
+				})
 
 		je.insert()
 		#Set a reference to the claim journal entry

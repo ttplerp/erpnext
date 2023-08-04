@@ -8,6 +8,8 @@
  "engine": "InnoDB",
  "field_order": [
   "insurance_for",
+  "settoe_imprest_advance",
+  "imprest_party",
   "cb_1",
   "equipment",
   "asset",
@@ -189,11 +191,24 @@
    "fieldtype": "Link",
    "label": "Company",
    "options": "Company"
+  },
+  {
+   "default": "0",
+   "fieldname": "settoe_imprest_advance",
+   "fieldtype": "Check",
+   "label": "Settle Imprest Advance Account"
+  },
+  {
+   "depends_on": "eval:doc.settle_imprest_advance == 1;",
+   "fieldname": "imprest_party",
+   "fieldtype": "Link",
+   "label": "Imprest Party",
+   "options": "Employee"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-04-17 12:12:31.224382",
+ "modified": "2023-08-04 12:01:03.942285",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Insurance and Registration",

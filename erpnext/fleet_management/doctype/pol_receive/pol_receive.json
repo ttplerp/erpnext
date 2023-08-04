@@ -15,6 +15,8 @@
   "posting_date",
   "posting_time",
   "direct_consumption",
+  "settle_imprest_advance",
+  "party",
   "section_break_6",
   "out_sourced",
   "equipment",
@@ -382,12 +384,25 @@
   {
    "fieldname": "column_break_50",
    "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "settle_imprest_advance",
+   "fieldtype": "Check",
+   "label": "Settle Imprest Advance Account"
+  },
+  {
+   "depends_on": "eval:doc.settle_imprest_advance == 1;",
+   "fieldname": "party",
+   "fieldtype": "Link",
+   "label": "Party",
+   "options": "Employee"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-22 11:35:44.047036",
+ "modified": "2023-08-04 10:56:46.746018",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Receive",

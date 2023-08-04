@@ -20,6 +20,7 @@
   "party_type",
   "party",
   "credit_account",
+  "settle_imprest_advance",
   "section_break_2",
   "items",
   "checked_by",
@@ -281,12 +282,18 @@
    "fieldtype": "Date",
    "label": "Bill Date/ Invoice Date",
    "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "settle_imprest_advance",
+   "fieldtype": "Check",
+   "label": "Settle Imprest Advance Account"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-27 15:20:38.753615",
+ "modified": "2023-08-04 10:33:39.949341",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Repair And Service Invoice",

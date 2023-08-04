@@ -56,6 +56,21 @@ frappe.ui.form.on('Repair And Service Invoice', {
 			});
 		}
 	},
+	settle_imprest_advance: function(frm){
+		if(frm.doc.settle_imprest_advance==1){
+			frappe.call({
+				method: "get_imprest_advance_account",
+				doc: frm.doc,
+				callback: function(r){
+					frm.set_value("credit_account",r.message);
+				}
+			})
+		}
+		else{
+			frm.set_value("credit_account", null);
+		}
+		frm.refresh_field("credit_account");
+	}
 });
 frappe.ui.form.on('Repair And Services Invoice Item', {
 	rate:function(frm, cdt, cdn){

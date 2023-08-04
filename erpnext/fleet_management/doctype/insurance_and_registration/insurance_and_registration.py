@@ -44,7 +44,9 @@ class InsuranceandRegistration(Document):
 			frappe.throw(_("Amount should be greater than zero"))
 			
 		default_bank_account = frappe.db.get_value("Branch", self.branch,'expense_bank_account')
-
+		imprest_advance_account = frappe.db.get_value("company", self.company, "imprest_advance_account")
+		if self.settoe_imprest_advance == 1 and not imprest_advance_account:
+			frappe.throw("Please set Imprest Advance Account in company settings")
 		# Posting Journal Entry
 		je = frappe.new_doc("Journal Entry")
 		je.flags.ignore_permissions=1
@@ -80,11 +82,20 @@ class InsuranceandRegistration(Document):
 			"reference_type": self.doctype,
 			"reference_name": self.name
 			})
-		je.append("accounts",{
-			"account": default_bank_account,
-			"credit_in_account_currency": args.total_amount,
-			"cost_center": frappe.db.get_value('Branch',self.branch,'cost_center')
-		})
+		if self.settle_imprest_advance == 0:
+			je.append("accounts",{
+				"account": default_bank_account,
+				"credit_in_account_currency": args.total_amount,
+				"cost_center": frappe.db.get_value('Branch',self.branch,'cost_center')
+			})
+		else:
+			je.append("accounts",{
+				"account": imprest_advance_account,
+				"party_type": "Employee",
+				"party": self.imprest_party, 
+				"credit_in_account_currency": args.total_amount,
+				"cost_center": frappe.db.get_value('Branch',self.branch,'cost_center')
+			})
 		je.insert()
 		frappe.msgprint(_('Journal Entry {0} posted to accounts').format(frappe.get_desk_link("Journal Entry",je.name)))
 		return je.name

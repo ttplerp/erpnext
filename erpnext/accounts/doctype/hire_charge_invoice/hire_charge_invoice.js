@@ -44,7 +44,12 @@ frappe.ui.form.on('Hire Charge Invoice', {
 		cur_frm.page.set_inner_btn_group_as_primary(__('Create'));
 		cur_frm.page.set_inner_btn_group_as_primary(__('View'));
 	},
-	
+	settle_imprest_advance: function(frm){
+		if(frm.doc.settle_imprest_advance == 0 || frm.doc.settle_imprest_advance == undefined){
+			frm.set_value("imprest_party", null);
+			frm.refresh_field("imprest_party");
+		}
+	},
 	post_journal_entry:function(frm){
 		frappe.call({
 			method:"post_journal_entry",

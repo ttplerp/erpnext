@@ -47,6 +47,12 @@ frappe.ui.form.on('POL Receive', {
 	get_pol_expense:function(frm){
 		populate_child_table(frm)
 	},
+	settle_imprest_advance: function(frm){
+		if(frm.doc.settle_imprest_advance==0 || frm.doc.settle_imprest_advance == undefined){
+			frm.set_value("party",null);
+			frm.refresh_field("party");
+		}
+	},
 	branch:function(frm){
 		frm.set_query("equipment",function(){
 			return {
