@@ -5,7 +5,7 @@ frappe.ui.form.on('Budget Reappropiation', {
 	refresh: function(frm) {
 		apply_account_filter(frm)
 	},
-	onlaod:function(frm){
+	onload:function(frm){
 		apply_account_filter(frm)
 	},
 	budget_type:function(frm){
@@ -30,6 +30,7 @@ var apply_account_filter = function(frm){
 				company: frm.doc.company,
 				is_group: 0,
 				root_type:["in",["Expense","Asset"]],
+				budget_type:frm.doc.budget_type
 			}
 		};
 	});
