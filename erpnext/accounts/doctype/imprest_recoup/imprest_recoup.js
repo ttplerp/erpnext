@@ -11,6 +11,15 @@ frappe.ui.form.on('Imprest Recoup', {
 			};
 		});
 	},
+	refresh: function(frm){
+		frm.set_query("project", function() {
+			return {
+				"filters": {
+					"branch": frm.doc.branch
+				}
+			}
+		});
+	},
 
 	"get_imprest_advance":function(frm){
 		get_imprest_advance(frm)
@@ -31,7 +40,16 @@ frappe.ui.form.on('Imprest Recoup', {
 				}
 			};
 		});
-	}
+	},
+	project: function(frm){
+		frm.set_query("project", function() {
+			return {
+				"filters": {
+					"branch": frm.doc.branch
+				}
+			}
+		});
+	},
 });
 
 frappe.ui.form.on("Imprest Recoup Item", {

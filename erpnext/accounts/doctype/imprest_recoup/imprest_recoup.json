@@ -12,6 +12,7 @@
   "branch",
   "party_type",
   "imprest_type",
+  "project",
   "column_break_001",
   "cost_center",
   "posting_date",
@@ -239,12 +240,18 @@
    "label": "Approver Designation",
    "options": "Designation",
    "read_only": 1
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-07 12:13:50.178414",
+ "modified": "2023-08-07 11:14:37.829508",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Imprest Recoup",

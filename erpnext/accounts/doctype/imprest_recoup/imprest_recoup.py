@@ -240,12 +240,15 @@ class ImprestRecoup(Document):
 				"account": i.account,
 				"debit_in_account_currency": i.amount,
 				"cost_center": self.cost_center,
+				"project": self.project,
+
 			})
 		
 		je.append("accounts", {
 			"account": credit_account,
 			"credit_in_account_currency": self.total_amount,
 			"cost_center": self.cost_center,
+			"project": self.project,
 			"reference_type": "Imprest Recoup",
 			"reference_name": self.name,
 			"party_type": party_type,

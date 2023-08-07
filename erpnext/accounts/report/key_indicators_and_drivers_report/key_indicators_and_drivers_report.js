@@ -2,7 +2,20 @@
 // For license information, please see license.txt
 /* eslint-disable */
 
-frappe.query_reports["Key Indicators Report"] = {
+frappe.query_reports["Key Indicators and Drivers Report"] = {
+	onload: function(report) {
+		report.page.add_inner_button(__("Business Review Report"), function() {
+			var filters = report.get_values();
+			frappe.route_options = {
+				"current_from_date": filters.current_from_date,
+				"current_to_date": filters.current_to_date,
+				"comparison_from_date": filters.comparison_from_date,
+				"comparison_to_date": filters.comparison_to_date,
+				"include_default_book_entries": filters.include_default_book_entries,
+			};
+			frappe.set_route('query-report', 'Business Review Report');
+		});
+	},
 	"filters": [
 		{
 			"fieldname": "company",
@@ -67,7 +80,7 @@ frappe.query_reports["Key Indicators Report"] = {
 		if (data.account == "Key Indicators" && column.id == "account") {
 			value = "<span style='color:black!important; font-weight:bold'; font-style: italic !important;'>" + value + "</span>";
 		}
-		if (data.account == "Headcount" && column.id == "account") {
+		if (data.account == "Drivers" && column.id == "account") {
 			value = "<span style='color:black!important; font-weight:bold'; font-style: italic !important;'>" + value + "</span>";
 		}
 		return value;

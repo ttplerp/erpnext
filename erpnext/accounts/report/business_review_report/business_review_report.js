@@ -1,5 +1,18 @@
 frappe.require("assets/erpnext/js/financial_statements.js", function() {
     frappe.query_reports["Business Review Report"] = {
+        onload: function(report) {
+            report.page.add_inner_button(__("Key Indicators and Drivers Report"), function() {
+                var filters = report.get_values();
+                frappe.route_options = {
+                    "current_from_date": filters.current_from_date,
+                    "current_to_date": filters.current_to_date,
+                    "comparison_from_date": filters.comparison_from_date,
+                    "comparison_to_date": filters.comparison_to_date,
+                    "include_default_book_entries": filters.include_default_book_entries,
+                };
+                frappe.set_route('query-report', 'Key Indicators and Drivers Report');
+            });
+        },
         "filters": [
             {
                 "fieldname": "company",
@@ -21,14 +34,6 @@ frappe.require("assets/erpnext/js/financial_statements.js", function() {
                 "fieldtype": "Date",
                 "reqd": 1
             },
-            // {
-            //     "fieldname": "cost_center",
-            //     "label": __("Cost Center"),
-            //     "fieldtype": "MultiSelectList",
-            //     get_data: function(txt) {
-            //         return frappe.db.get_link_options('Cost Center', txt);
-            //     }
-            // },
             {
                 "fieldname": "include_default_book_entries",
                 "label": __("Include Default Book Entries"),

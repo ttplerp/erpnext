@@ -132,6 +132,7 @@ class ImprestAdvance(Document):
 			"account": debit_account,
 			"debit_in_account_currency": self.amount,
 			"cost_center": self.cost_center,
+			"project": self.project,
 			"reference_type": "Imprest Advance",
 			"reference_name": self.name,
 			"party_type": party_type,
@@ -142,6 +143,7 @@ class ImprestAdvance(Document):
 			"account": credit_account,
 			"credit_in_account_currency": self.amount,
 			"cost_center": self.cost_center,
+			"project": self.project,
 		})
 
 		je.insert()

@@ -11,6 +11,13 @@ frappe.ui.form.on('Imprest Advance', {
 				}
 			}
 		});
+		frm.set_query("project", function() {
+			return {
+				"filters": {
+					"branch": frm.doc.branch
+				}
+			}
+		 });
 	},
 	amount: function(frm){
 		if (frm.doc.amount > 0 ){
@@ -27,5 +34,14 @@ frappe.ui.form.on('Imprest Advance', {
 				}
 			}
 		 });
-	}
+	},
+	project: function(frm){
+		frm.set_query("project", function() {
+			return {
+				"filters": {
+					"branch": frm.doc.branch
+				}
+			}
+		 });
+	},
 });
