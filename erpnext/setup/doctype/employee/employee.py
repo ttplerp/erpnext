@@ -423,7 +423,7 @@ def get_overtime_rate(employee, posting_date ):
 		if is_holiday(employee=employee, date= posting_date):
 			return ((flt(basic[0].basic_pay) * 1.5) / (30 * 8))
 		else:
-			return (flt(basic[0].basic_pay) / (30 * 8))
+			return ((flt(basic[0].basic_pay) * 1.5) / (30 * 8))
 	else:
 		frappe.throw("No Salary Structure found for the employee")
 
