@@ -22,6 +22,7 @@
   "pick_list",
   "purchase_receipt_no",
   "technical_sanction",
+  "block_or_flat",
   "col2",
   "company",
   "posting_date",
@@ -675,8 +676,8 @@
   {
    "fieldname": "site_name",
    "fieldtype": "Link",
-   "label": "Site Name",
-   "options": "Site Name"
+   "label": "Site Name/Flat No",
+   "options": "Flat No"
   },
   {
    "depends_on": "eval: doc.purpose == 'Material Issue'",
@@ -710,6 +711,13 @@
    "fieldname": "vehicle_dispatch_date",
    "fieldtype": "Date",
    "label": "Vehicle dispatch date"
+  },
+  {
+   "depends_on": "eval: doc.purpose == 'Material Issue'",
+   "description": "Used only for the issue of Maintenance Purpose without Technical sanction",
+   "fieldname": "block_or_flat",
+   "fieldtype": "Data",
+   "label": "Block No/Flat No"
   }
  ],
  "icon": "fa fa-file-text",
@@ -717,7 +725,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-06 13:09:54.754650",
+ "modified": "2023-08-07 15:10:16.399477",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Entry",

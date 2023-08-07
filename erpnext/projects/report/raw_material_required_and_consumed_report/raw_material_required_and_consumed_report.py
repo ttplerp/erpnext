@@ -94,6 +94,12 @@ def get_columns():
 			"label": "Balance Qty",
 			"fieldtype": "Float",
 			"width": 100
+		},
+		{
+			"fieldname": "con_percent",
+			"label": "Consumed %",
+			"fieldtype": "Percent",
+			"width": 120
 		}
 	]
 
@@ -135,6 +141,7 @@ def get_data(query, filters):
 				"reqd_qty":  flt(row.total_req_qty) if row.total_req_qty else 0,
 				"cons_qty":  flt(row.consumed) if row.consumed else 0,
 				"bal_qty":  flt(row.total_req_qty) - flt(row.consumed),
+				"con_percent":  flt(row.consumed) / flt(row.total_req_qty) * 100,
 			}
 			data.append(row)
 	return data

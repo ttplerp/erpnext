@@ -189,16 +189,17 @@ class StockEntry(StockController):
 
 		if self.work_order and self.purpose == "Manufacture":
 			self.update_so_in_serial_number()
-		# frappe.throw("there")
 		if self.purpose == "Material Transfer" and self.add_to_transit:
 			self.set_material_request_transfer_status("In Transit")
 		if self.purpose == "Material Transfer" and self.outgoing_stock_entry:
 			self.set_material_request_transfer_status("Completed")
+
 	def validate_received_qty(self):
 		if self.stock_entry_type == "Material Transfer":
 			for item in self.items:
 				if flt(item.received_qty) <= 0:
 					frappe.throw(_("Row {0}: Received Qty cannot be less than or equal to <b>0</b>").format(item.idx), title=_("Zero recived quantity"))
+					
 	def on_cancel(self):
 		self.update_subcontract_order_supplied_items()
 		self.update_subcontracting_order_status()

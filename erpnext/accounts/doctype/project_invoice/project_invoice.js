@@ -433,6 +433,7 @@ function get_advance_list(frm) {
 						var row = frappe.model.add_child(frm.doc, "Project Invoice Advance", "advances");
 						row.reference_doctype = "Project Advance";
 						row.reference_name = adv['name'];
+						row.advance_account = adv['advance_account'];
 						row.total_amount = flt(adv['balance_amount']);
                         row.advance_account = adv['advance_account']
 						row.allocated_amount = 0.00;

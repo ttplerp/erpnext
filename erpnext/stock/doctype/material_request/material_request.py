@@ -146,9 +146,10 @@ class MaterialRequest(BuyingController):
 				
 				if data:
 					for row in data:
+						exceed_percent = round(flt(row.consumed) + flt(d.qty) / flt(row.total_req_qty) * 100, 2)
 						if flt(d.qty) > (flt(row.total_req_qty) - flt(row.consumed)):
 							frappe.msgprint(
-									_("Row <b>{}</b>: Quantity Requested exceeds the defined Qty in <b>{}</b> for Item Code <b>{}</b>").format(idx+1, row.name, d.item_code),
+									_("Row <b>{}</b>: Quantity Requested exceeds the defined Quantity in <b>{}</b> for Item Code <b>{}</b>. The  Qty consumed percent is <b>{} %</b>").format(idx+1, row.name, d.item_code, exceed_percent),
 									indicator="red",
 									title=_("Warning")
 								)

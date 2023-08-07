@@ -40,7 +40,7 @@ class ProjectInvoice(AccountsController):
 	#     self.set_status()
 
 	def on_cancel(self):
-			# check_tds_remittance(self.name)
+		# check_tds_remittance(self.name)
 		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
 		self.make_gl_entry()
 		self.update_boq_item()
@@ -457,26 +457,28 @@ class ProjectInvoice(AccountsController):
 				"posting_date":self.invoice_date
 			}, self.currency)
 		)
+
 	def make_advance_gl_entry(self, gl_entries):
 		for adv in self.advances:
-				advance_account_type = frappe.db.get_value(doctype="Account", filters=adv.advance_account, fieldname=["account_type"])                   
+			advance_account_type = frappe.db.get_value(doctype="Account", filters=adv.advance_account, fieldname=["account_type"])                   
 
-				gl_entries.append(
-					self.get_gl_dict({"account": adv.advance_account,
-						"credit" if self.party_type == "Supplier" else "debit": flt(adv.allocated_amount),
-						"credit_in_account_currency" if self.party_type == "Supplier" else "debit_in_account_currency": flt(adv.allocated_amount),
-						"cost_center": self.cost_center,
-						"party_check": 1 if advance_account_type in ("Payable","Receivable") else 0,
-						"party_type": self.party_type,
-						"party": self.party,
-						"account_type": advance_account_type,
-						"is_advance": "No",
-						"reference_type": self.doctype,
-						"reference_name": self.name,
-						"project": self.project,
-						"posting_date":self.invoice_date
-					},self.currency)
-				)
+			gl_entries.append(
+				self.get_gl_dict({"account": adv.advance_account,
+					"credit" if self.party_type == "Supplier" else "debit": flt(adv.allocated_amount),
+					"credit_in_account_currency" if self.party_type == "Supplier" else "debit_in_account_currency": flt(adv.allocated_amount),
+					"cost_center": self.cost_center,
+					"party_check": 1 if advance_account_type in ("Payable","Receivable") else 0,
+					"party_type": self.party_type,
+					"party": self.party,
+					"account_type": advance_account_type,
+					"is_advance": "No",
+					"reference_type": self.doctype,
+					"reference_name": self.name,
+					"project": self.project,
+					"posting_date":self.invoice_date
+				},self.currency)
+			)
+
 	def make_other_deduction_gl_entry(self, gl_entries):
 		for ded in self.deductions:
 			if flt(ded.amount) > 0:
