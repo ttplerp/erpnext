@@ -787,9 +787,9 @@ class NotifyCustomWorkflow:
 		args = parent_doc.as_dict()
 
 		if self.doc.doctype == "Leave Application":
-			template = frappe.db.get_single_value('HR Settings', 'leave_status_notification_template')
+			template = frappe.db.get_single_value('HR Settings', 'leave_application_status_notification_template')
 			if not template:
-				frappe.msgprint(_("Please set default template for Leave Status Notification in HR Settings."))
+				frappe.msgprint(_("Please set default template for Leave Application Status Notification in HR Settings."))
 				return
 		elif self.doc.doctype == "Leave Encashment":
 			template = frappe.db.get_single_value('HR Settings', 'encashment_status_notification_template')
@@ -826,11 +826,11 @@ class NotifyCustomWorkflow:
 			if not template:
 				frappe.msgprint(_("Please set default template for Material Request Status Notification in HR Settings."))
 				return
-		elif self.doc.doctype == "Asset Issue Details":
-			template = frappe.db.get_single_value('HR Settings', 'asset_issue_status_notification_template')
-			if not template:
-				frappe.msgprint(_("Please set default template for Asset Issue Status Notification in HR Settings."))
-				return
+		# elif self.doc.doctype == "Asset Issue Details":
+		# 	template = frappe.db.get_single_value('HR Settings', 'asset_issue_status_notification_template')
+		# 	if not template:
+		# 		frappe.msgprint(_("Please set default template for Asset Issue Status Notification in HR Settings."))
+		# 		return
 		
 		elif self.doc.doctype == "Imprest Advance":
 			template = frappe.db.get_single_value('HR Settings', 'imprest_advance_status_notification_template')
@@ -872,7 +872,7 @@ class NotifyCustomWorkflow:
 			parent_doc = frappe.get_doc(self.doc.doctype, self.doc.name)
 			args = parent_doc.as_dict()
 			if self.doc.doctype == "Leave Application":
-				template = frappe.db.get_single_value('HR Settings', 'leave_approval_notification_template')
+				template = frappe.db.get_single_value('HR Settings', 'leave_application_approval_notification_template')
 				if not template:
 					frappe.msgprint(_("Please set default template for Leave Approval Notification in HR Settings."))
 					return
@@ -907,16 +907,16 @@ class NotifyCustomWorkflow:
 					frappe.msgprint(_("Please set default template for Employee Separation Approval Notification in HR Settings."))
 					return
 			elif self.doc.doctype == "Material Request":
-				template = frappe.db.get_single_value('HR Settings', 'material_settings_approval_notification_template')
+				template = frappe.db.get_single_value('HR Settings', 'material_request_approval_notification_template')
 				if not template:
 					frappe.msgprint(_("Please set default template for Material Request Approval Notification in HR Settings."))
 					return
 
-			elif self.doc.doctype == "Asset Issue Details":
-				template = frappe.db.get_single_value('HR Settings', 'asset_issue_approval_notification_template')
-				if not template:
-					frappe.msgprint(_("Please set default template for Asset Issue Approval Notification in HR Settings."))
-					return
+			# elif self.doc.doctype == "Asset Issue Details":
+			# 	template = frappe.db.get_single_value('HR Settings', 'asset_issue_approval_notification_template')
+			# 	if not template:
+			# 		frappe.msgprint(_("Please set default template for Asset Issue Approval Notification in HR Settings."))
+			# 		return
 			
 			elif self.doc.doctype == "Imprest Advance":
 				template = frappe.db.get_single_value('HR Settings', 'imprest_advance_approval_notification_template')
