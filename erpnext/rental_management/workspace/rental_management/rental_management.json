@@ -255,8 +255,56 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Reports",
+   "label": "Tenant Transactions",
    "link_count": 4,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Tenant Information",
+   "link_count": 0,
+   "link_to": "Tenant Information",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Rental Bill Entry",
+   "link_count": 0,
+   "link_to": "Rental Bill Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Rental Bill",
+   "link_count": 0,
+   "link_to": "Rental Bill",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Rental Payment",
+   "link_count": 0,
+   "link_to": "Rental Payment",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Reports",
+   "link_count": 5,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -302,54 +350,16 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
-   "label": "Tenant Transactions",
-   "link_count": 4,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Tenant Information",
+   "is_query_report": 1,
+   "label": "Maintenance Report",
    "link_count": 0,
-   "link_to": "Tenant Information",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Rental Bill Entry",
-   "link_count": 0,
-   "link_to": "Rental Bill Entry",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Rental Bill",
-   "link_count": 0,
-   "link_to": "Rental Bill",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Rental Payment",
-   "link_count": 0,
-   "link_to": "Rental Payment",
-   "link_type": "DocType",
+   "link_to": "Maintenance Report",
+   "link_type": "Report",
    "onboard": 0,
    "type": "Link"
   }
  ],
- "modified": "2023-07-24 10:40:33.237825",
+ "modified": "2023-08-08 12:05:56.987632",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Management",
