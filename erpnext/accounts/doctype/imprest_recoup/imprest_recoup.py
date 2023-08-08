@@ -26,7 +26,7 @@ class ImprestRecoup(Document):
 
 	def calculate_amount(self):
 		tot_bal_amt = sum(d.balance_amount for d in self.imprest_advance_list)
-		total_payable_amt = sum(d.amount for d in self.items)
+		total_payable_amt = sum(d.amount for d in self.items) if self.items else 0
 		self.total_amount = total_payable_amt
 		self.opening_balance = sum(d.advance_amount for d in self.imprest_advance_list)
 		self.balance_amount = flt(self.opening_balance) - flt(self.total_amount)
@@ -114,12 +114,14 @@ class ImprestRecoup(Document):
 			"account": debit_account,
 			"debit_in_account_currency": flt(total_balance),
 			"cost_center": self.cost_center,
+			"project": self.project,
 		})
 		
 		je.append("accounts", {
 			"account": credit_account,
 			"credit_in_account_currency": flt(total_balance),
 			"cost_center": self.cost_center,
+			"project": self.project,
 			"reference_type": "Imprest Recoup",
 			"reference_name": self.name,
 			"party_type": party_type,
@@ -137,19 +139,36 @@ class ImprestRecoup(Document):
 			frappe.throw("Please insert the mandatory fields")
 		else:
 			self.set('imprest_advance_list', [])
-			query = """
-				SELECT 
-					a.name, a.amount, a.balance_amount, a.journal_entry, a.is_opening
-				FROM `tabImprest Advance` a
-				WHERE a.docstatus = 1 
-					AND a.branch = '{branch}'
-					AND a.posting_date <= '{date}'
-					AND a.balance_amount > 0
-					AND a.imprest_type = '{imprest_type}'
-					AND a.party = '{party}'
-					AND CASE WHEN a.is_opening = 0 THEN EXISTS (SELECT 1 FROM `tabJournal Entry` WHERE name = a.journal_entry AND docstatus = 1) ELSE a.is_opening END
-				ORDER BY a.posting_date
-			""".format(branch=self.branch, date=self.posting_date, imprest_type=self.imprest_type, party=self.party)
+			if self.project:
+				query = """
+					SELECT 
+						a.name, a.amount, a.balance_amount, a.journal_entry, a.is_opening, a.project
+					FROM `tabImprest Advance` a
+					WHERE a.docstatus = 1 
+						AND a.branch = '{branch}'
+						AND a.posting_date <= '{date}'
+						AND a.balance_amount > 0
+						AND a.imprest_type = '{imprest_type}'
+						AND a.party = '{party}'
+						AND a.project = '{project}'
+						AND CASE WHEN a.is_opening = 0 THEN EXISTS (SELECT 1 FROM `tabJournal Entry` WHERE name = a.journal_entry AND docstatus = 1) ELSE a.is_opening END
+					ORDER BY a.posting_date
+				""".format(branch=self.branch, date=self.posting_date, imprest_type=self.imprest_type, party=self.party, project=self.project)
+			else:
+				query = """
+					SELECT 
+						a.name, a.amount, a.balance_amount, a.journal_entry, a.is_opening, a.project
+					FROM `tabImprest Advance` a
+					WHERE a.docstatus = 1 
+						AND a.branch = '{branch}'
+						AND a.posting_date <= '{date}'
+						AND a.balance_amount > 0
+						AND a.imprest_type = '{imprest_type}'
+						AND a.party = '{party}'
+						AND CASE WHEN a.is_opening = 0 THEN EXISTS (SELECT 1 FROM `tabJournal Entry` WHERE name = a.journal_entry AND docstatus = 1) ELSE a.is_opening END
+					ORDER BY a.posting_date
+				""".format(branch=self.branch, date=self.posting_date, imprest_type=self.imprest_type, party=self.party)
+
 			data = frappe.db.sql(query, as_dict=True)
 
 			if not data:
@@ -159,6 +178,9 @@ class ImprestRecoup(Document):
 			total_amount_adjusted = 0
 
 			for d in data:
+				if d.project and not self.project:
+					frappe.throw("You have not selected the Project")
+
 				row = self.append('imprest_advance_list', {
 					'imprest_advance': d.name,
 					'advance_amount': d.amount,
@@ -197,69 +219,70 @@ class ImprestRecoup(Document):
 			doc.save(ignore_permissions=True)
 
 	def post_journal_entry(self):
-		if not self.total_amount:
-			frappe.throw(_("Total Payable Amount should be greater than zero"))
+		if self.items:
+			if not self.total_amount:
+				frappe.throw(_("Total Payable Amount should be greater than zero"))
 
-		credit_account = frappe.db.get_value('Company', self.company, 'imprest_advance_account')
-		if not credit_account:
-			frappe.throw("Setup Default Imprest Advance Account in Company Settings")
+			credit_account = frappe.db.get_value('Company', self.company, 'imprest_advance_account')
+			if not credit_account:
+				frappe.throw("Setup Default Imprest Advance Account in Company Settings")
 
-		voucher_type = "Journal Entry"
-		voucher_series = "Journal Voucher"
-		party_type = ""
-		party = ""
+			voucher_type = "Journal Entry"
+			voucher_series = "Journal Voucher"
+			party_type = ""
+			party = ""
 
-		account_type = frappe.db.get_value("Account", credit_account, "account_type")
-		if account_type == "Bank":
-			voucher_type = "Bank Entry"
-			voucher_series = "Bank Payment Voucher"
-		elif account_type == "Payable" or account_type == "Receivable":
-			party_type = self.party_type
-			party = self.party
+			account_type = frappe.db.get_value("Account", credit_account, "account_type")
+			if account_type == "Bank":
+				voucher_type = "Bank Entry"
+				voucher_series = "Bank Payment Voucher"
+			elif account_type == "Payable" or account_type == "Receivable":
+				party_type = self.party_type
+				party = self.party
 
-		remarks = []
-		if self.remarks:
-			remarks.append(_("Note: {0}").format(self.remarks))
-		remarks_str = " ".join(remarks)
+			remarks = []
+			if self.remarks:
+				remarks.append(_("Note: {0}").format(self.remarks))
+			remarks_str = " ".join(remarks)
 
-		# Posting Journal Entry
-		je = frappe.new_doc("Journal Entry")
-		je.update({
-			"voucher_type": voucher_type,
-			"naming_series": voucher_series,
-			"title": f"Imprest Recoup - {self.name}",
-			"user_remark": remarks_str if remarks_str else f"Note: Imprest Recoup - {self.name}",
-			"posting_date": self.posting_date,
-			"company": self.company,
-			"total_amount_in_words": money_in_words(self.total_amount),
-			"branch": self.branch
-		})
+			# Posting Journal Entry
+			je = frappe.new_doc("Journal Entry")
+			je.update({
+				"voucher_type": voucher_type,
+				"naming_series": voucher_series,
+				"title": f"Imprest Recoup - {self.name}",
+				"user_remark": remarks_str if remarks_str else f"Note: Imprest Recoup - {self.name}",
+				"posting_date": self.posting_date,
+				"company": self.company,
+				"total_amount_in_words": money_in_words(self.total_amount),
+				"branch": self.branch
+			})
 
-		for i in self.items:
+			for i in self.items:
+				je.append("accounts", {
+					"account": i.account,
+					"debit_in_account_currency": i.amount,
+					"cost_center": self.cost_center,
+					"project": self.project,
+
+				})
+			
 			je.append("accounts", {
-				"account": i.account,
-				"debit_in_account_currency": i.amount,
+				"account": credit_account,
+				"credit_in_account_currency": self.total_amount,
 				"cost_center": self.cost_center,
 				"project": self.project,
-
+				"reference_type": "Imprest Recoup",
+				"reference_name": self.name,
+				"party_type": party_type,
+				"party": party,
 			})
-		
-		je.append("accounts", {
-			"account": credit_account,
-			"credit_in_account_currency": self.total_amount,
-			"cost_center": self.cost_center,
-			"project": self.project,
-			"reference_type": "Imprest Recoup",
-			"reference_name": self.name,
-			"party_type": party_type,
-			"party": party,
-		})
 
-		je.insert()
+			je.insert()
 
-		# Set a reference to the claim journal entry
-		self.db_set("journal_entry", je.name)
-		frappe.msgprint("Journal Entry created. {}".format(frappe.get_desk_link("Journal Entry", je.name)))
+			# Set a reference to the claim journal entry
+			self.db_set("journal_entry", je.name)
+			frappe.msgprint("Journal Entry created. {}".format(frappe.get_desk_link("Journal Entry", je.name)))
 
 	def create_auto_imprest_advance(self):
 		if self.total_amount:
@@ -276,7 +299,8 @@ class ImprestRecoup(Document):
 				"party": self.party,
 				"amount": self.total_amount,
 				"imprest_recoup_id": self.name,
-				"balance_amount": self.total_amount
+				"balance_amount": self.total_amount,
+				"project": self.project
 			})
 			ima.insert()
 			ima.submit()

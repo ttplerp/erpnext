@@ -24,28 +24,59 @@ class ImprestAdvance(Document):
 		date_obj = datetime.datetime.strptime(str(self.posting_date), "%Y-%m-%d")
 		year = date_obj.year
 
-		for d in frappe.db.get_list("Imprest Advance",filters={"branch": self.branch, "imprest_type": self.imprest_type, "docstatus": 1}, fields=["posting_date"]):
+		filters = {
+			"branch": self.branch,
+			"imprest_type": self.imprest_type,
+			"docstatus": 1
+		}
+
+		if self.project:
+			filters["project"] = self.project
+
+		for d in frappe.db.get_list("Imprest Advance", filters=filters, fields=["posting_date"]):
 			date_obj = datetime.datetime.strptime(str(d.posting_date), "%Y-%m-%d")
 			year_old = date_obj.year
 			if str(year) == str(year_old):
-				frappe.throw("Imprest Advance already taken for branch <b>{}</b> and imprest type <b>{}</b>".format(self.branch, self.imprest_type))
+				frappe.throw("Imprest Advance already taken for branch <b>{}</b>, imprest type <b>{}</b>{}".format(
+					self.branch,
+					self.imprest_type,
+					", and project <b>{}</b>".format(self.project) if self.project else ""
+				))
 
 	def check_imprest_amount(self):
 		query = """
-			SELECT imp.imprest_limit
+			SELECT imp.imprest_limit, imp.project
 			FROM `tabBranch Imprest Item` imp
-			WHERE imp.parent = %(branch)s and imp.imprest_type = %(imprest_type)s
+			WHERE imp.parent = %(branch)s
+				AND imp.imprest_type = %(imprest_type)s
+				{project_condition}
 		"""
-		result = frappe.db.sql(query, {'branch': self.branch, 'imprest_type': self.imprest_type}, as_dict=True)
-		
+		query_params = {'branch': self.branch, 'imprest_type': self.imprest_type}
+		project_condition = ''
+
+		if self.project:
+			project_condition = 'AND imp.project = %(project)s'
+			query_params['project'] = self.project
+
+		query = query.format(project_condition=project_condition)
+		result = frappe.db.sql(query, query_params, as_dict=True)
+
 		if not result or not result[0].get('imprest_limit'):
 			branch_link = frappe.utils.get_link_to_form('Branch', self.branch)
 			frappe.throw('Please assign Imprest Limit in Branch: {} under Imprest Settings Section'.format(branch_link))
 		
+		for d in result:
+			if d.project and not self.project:
+				frappe.throw("This imprest type <b>{}</b> is assigned to a Project but you have not selected a Project".format(self.imprest_type))
+		
 		imprest_limit = result[0].get('imprest_limit')
 		
+		message = "Amount requested cannot be greater than Imprest Limit <b>{}</b> for branch <b>{}</b> and imprest type <b>{}</b>".format(imprest_limit, self.branch, self.imprest_type)
+		if self.project:
+			message += " and project <b>{}</b>".format(self.project)
+
 		if self.amount > imprest_limit:
-			frappe.throw("Amount requested cannot be greater than Imprest Limit <b>{}</b> for branch <b>{}</b>".format(imprest_limit, self.branch))
+			frappe.throw(message)
 
 	def before_cancel(self):
 		if self.journal_entry:
