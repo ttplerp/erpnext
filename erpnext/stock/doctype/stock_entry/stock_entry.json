@@ -22,7 +22,6 @@
   "pick_list",
   "purchase_receipt_no",
   "technical_sanction",
-  "block_or_flat",
   "col2",
   "company",
   "posting_date",
@@ -32,6 +31,7 @@
   "from_bom",
   "apply_putaway_rule",
   "in_transit",
+  "rental_site",
   "site_name",
   "sb1",
   "bom_no",
@@ -674,10 +674,12 @@
    "fieldtype": "Column Break"
   },
   {
+   "depends_on": "eval: doc.purpose == 'Material Issue' && doc.rental_site;",
+   "description": "Used only for the issue of Maintenance Purpose without Technical sanction",
    "fieldname": "site_name",
-   "fieldtype": "Link",
-   "label": "Site Name/Flat No",
-   "options": "Flat No"
+   "fieldtype": "Dynamic Link",
+   "label": "Block No/Flat No/Locations",
+   "options": "rental_site"
   },
   {
    "depends_on": "eval: doc.purpose == 'Material Issue'",
@@ -713,11 +715,10 @@
    "label": "Vehicle dispatch date"
   },
   {
-   "depends_on": "eval: doc.purpose == 'Material Issue'",
-   "description": "Used only for the issue of Maintenance Purpose without Technical sanction",
-   "fieldname": "block_or_flat",
-   "fieldtype": "Data",
-   "label": "Block No/Flat No"
+   "fieldname": "rental_site",
+   "fieldtype": "Select",
+   "label": "Rental Type",
+   "options": "\nFlat No\nBlock No\nLocations"
   }
  ],
  "icon": "fa fa-file-text",
@@ -725,7 +726,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-08-07 15:10:16.399477",
+ "modified": "2023-08-09 12:26:46.689528",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Entry",
