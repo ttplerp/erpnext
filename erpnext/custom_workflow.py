@@ -103,27 +103,9 @@ class CustomWorkflow:
 		if self.doc.doctype == "Material Request":
 			self.employee = frappe.db.get_value("Employee", {"user_id":self.doc.owner}, self.field_list)
 			division = frappe.db.get_value("Employee",self.employee,"division")
-			section = frappe.db.get_value("Employee",self.employee, "section")
-			unit = frappe.db.get_value("Employee",self.employee, "unit")
-			if self.doc.material_request_type == "Material Issue":
-				self.warehouse_manager = frappe.db.get_value("Employee",{'user_id':frappe.db.get_value("Warehouse",self.doc.set_warehouse,"email_id")},self.field_list)
-			elif self.doc.material_request_type == "Material Transfer":
-				self.warehouse_manager = frappe.db.get_value("Employee",{'user_id':frappe.db.get_value("Warehouse",self.doc.set_from_warehouse,"email_id")},self.field_list)
-			
 			self.reports_to	= frappe.db.get_value("Employee", frappe.db.get_value("Employee", {'user_id':self.doc.owner}, "reports_to"), self.field_list)
-			
-			self.section_approver = frappe.db.get_value("Employee",{"user_id":frappe.db.get_value(
-					"Department Approver",
-					{"parent": section, "parentfield": "leave_approvers", "idx": 1},
-					"approver",
-				)},self.field_list)
 
-			self.division_approver = frappe.db.get_value("Employee",{"user_id":frappe.db.get_value(
-					"Department Approver",
-					{"parent": division, "parentfield": "leave_approvers", "idx": 1},
-					"approver",
-				)},self.field_list)
-			
+			self.division_approver = frappe.db.get_value("Employee",frappe.db.get_value("Department",division,"approver"),self.field_list)
 		if self.doc.doctype == "Employee Benefits":
 			self.hrgm = frappe.db.get_value("Employee",frappe.db.get_single_value("HR Settings","hrgm"), self.field_list)	
 		
@@ -691,8 +673,6 @@ class CustomWorkflow:
 
 	def material_request(self):
 		division = frappe.db.get_value("Employee",self.doc.owner,"division")
-		section = frappe.db.get_value("Employee",self.doc.owner, "section")
-		unit = frappe.db.get_value("Employee",self.doc.owner, "unit")
 		if self.new_state.lower() in ("Draft".lower(), "Waiting Supervisor Approval".lower()):
 			if self.new_state.lower() == ("Waiting Supervisor Approval".lower()):
 				self.set_approver("Supervisor")	
@@ -700,18 +680,7 @@ class CustomWorkflow:
 		elif self.new_state.lower() == ("Waiting Approval".lower()):
 			if self.doc.approver != frappe.session.user:
 				frappe.throw("Only {} can Approve this Leave".format(self.doc.approver_name))
-			if unit:
-				section_approver = frappe.db.get_value(
-					"Department Approver",
-					{"parent": section, "parentfield": "leave_approvers", "idx": 1},
-					"approver",
-				)
-				if section_approver:
-					self.set_approver("Section Approver")
-				else:
-					self.set_approver("Division Approver")
-			else:
-				self.set_approver("Division Approver")
+			self.set_approver("Division Approver")
 		elif self.new_state.lower() == ("Approved".lower()):
 			if self.doc.approver != frappe.session.user:
 				frappe.throw("Only {} can Approve this Application".format(self.doc.approver_name))
@@ -721,7 +690,6 @@ class CustomWorkflow:
 				frappe.throw("Only {} can Reject this Application".format(self.doc.approver_name))
 		else:
 			frappe.throw(_("Invalid Workflow State {}").format(self.doc.workflow_state))
-
 	def employee_transfer(self):
 		if self.new_state.lower() in ("Draft".lower(), "Waiting Approval".lower()):
 			if self.new_state.lower() == "Waiting Approval".lower():
