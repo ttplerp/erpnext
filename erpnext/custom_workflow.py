@@ -101,8 +101,8 @@ class CustomWorkflow:
 			self.hr_approver	= frappe.db.get_value("Employee", frappe.db.get_single_value("HR Settings", "hr_approver"), self.field_list)
 		
 		if self.doc.doctype == "Material Request":
-			self.employee = frappe.db.get_value("Employee", {"user_id":self.doc.owner}, self.field_list)
-			division = frappe.db.get_value("Employee",self.employee,"division")
+			employee = frappe.db.get_value("Employee", {"user_id":self.doc.owner},"name")
+			division = frappe.db.get_value("Employee",employee,"division")
 			self.reports_to	= frappe.db.get_value("Employee", frappe.db.get_value("Employee", {'user_id':self.doc.owner}, "reports_to"), self.field_list)
 
 			self.division_approver = frappe.db.get_value("Employee",frappe.db.get_value("Department",division,"approver"),self.field_list)
@@ -672,7 +672,6 @@ class CustomWorkflow:
 
 
 	def material_request(self):
-		division = frappe.db.get_value("Employee",self.doc.owner,"division")
 		if self.new_state.lower() in ("Draft".lower(), "Waiting Supervisor Approval".lower()):
 			if self.new_state.lower() == ("Waiting Supervisor Approval".lower()):
 				self.set_approver("Supervisor")	
