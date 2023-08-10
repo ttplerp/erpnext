@@ -48,9 +48,14 @@ def get_data(filters, period_list):
 	item_cond = " AND si.item_code {}".format("IN {}".format(tuple(items)) if len(items) > 1 else "= '{}'".format(items[0])) 
 
 	target_qty_row = frappe._dict({
-		"particulars":"Target Qty(MT)", "total":0})
+		"particulars":"Total Target Qty(MT)", "total":0
+	})
+	adjusted_qty_row = frappe._dict({
+		"particulars":"Adjusted Qty(MT)", "total":0
+	})
 	achieved_qty_row = frappe._dict({
-		"particulars":"Achieved Qty (MT)","total":0})
+		"particulars":"Achieved Qty (MT)","total":0
+	})
 	progress = frappe._dict({
 		"particulars":"Progress(%)","total":0
 	})
@@ -60,10 +65,11 @@ def get_data(filters, period_list):
 	cumulative_progress_row=frappe._dict({
 		"particulars":"Cumulative Sales Progress(%)", "total":0
 	})
+	# frappe.throw(str(period_list))
 	for p in period_list:
 		# get targeted qty
 		target_qty = frappe.db.sql('''
-			SELECT SUM(IFNULL(si.target_qty,0)), s.total_target_qty FROM `tabSales Target` s INNER JOIN `tabSales Target Item` si
+			SELECT SUM(IFNULL(si.total_target_qty,0)), s.total_target_qty,SUM(IFNULL(si.adjusted_qty,0)), s.total_adjusted_qty FROM `tabSales Target` s INNER JOIN `tabSales Target Item` si
 			ON si.parent = s.name
 			WHERE s.item_sub_group = '{item_sub_group}' AND s.fiscal_year = '{fiscal_year}' 
 			AND si.from_date >= '{from_date}' AND si.to_date <= '{to_date}' AND s.docstatus = 1
@@ -72,8 +78,12 @@ def get_data(filters, period_list):
 		if target_qty[0][0]:
 			target_qty_row[str(p.key)] = flt(target_qty[0][0],2)
 			target_qty_row["total"] = flt(target_qty[0][1],2)
+			adjusted_qty_row[str(p.key)] = flt(target_qty[0][2],2)
+			adjusted_qty_row["total"] = flt(target_qty[0][3],2)
 		else:
 			target_qty_row[str(p.key)] = 0
+			adjusted_qty_row[str(p.key)] = 0
+
 
 		# get achieved qty
 		achieved_qty = frappe.db.sql('''
@@ -108,6 +118,7 @@ def get_data(filters, period_list):
 			progress[str(p.key)] = 0
 
 	data.append(target_qty_row)
+	data.append(adjusted_qty_row)
 	data.append(achieved_qty_row)
 	data.append(progress)
 	data.append(cumulative_sale_row)
