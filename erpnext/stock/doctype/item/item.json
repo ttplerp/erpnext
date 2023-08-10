@@ -929,6 +929,7 @@
    "label": "Is Production Item"
   },
   {
+   "depends_on": "is_bsr_service_item",
    "description": "Item Old Code /or BSR Code for BSR Service Item",
    "fieldname": "item_old_code",
    "fieldtype": "Data",
@@ -984,7 +985,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-07-06 19:38:12.722230",
+ "modified": "2023-08-10 12:10:30.569112",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",
