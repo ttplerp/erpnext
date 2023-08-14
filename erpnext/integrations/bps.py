@@ -134,6 +134,20 @@ def get_files_waiting_ack():
 	frappe.db.commit()
 	return waiting_ack_formatted
 
+@frappe.whitelist()
+def download_bs(bank='BOBL', bs_date=None):
+	if bs_date:
+		download_bank_statement(bank='BOBL', bs_date=bs_date)
+	else:
+		bs_date_month = getdate().month if getdate().month > 9 else "0"+str(getdate().month)
+		bs_date_year = getdate().year
+		bs_date_day = getdate().day
+		for i in range(1, bs_date_day+1):
+			day = i if i > 9 else "0"+str(i)
+			bs_date = str(bs_date_year) + "-" + str(bs_date_month) + "-" + str(day)
+			if not frappe.db.exists("Bank Statement Files",{"bank_statement_date":bs_date}):
+				download_bank_statement(bank='BOBL', bs_date=bs_date)
+
 ''' download the bank statement files from bank and make BRS Entry accordingly '''
 @frappe.whitelist()
 def download_bank_statement(bank='BOBL', bs_date=None):
