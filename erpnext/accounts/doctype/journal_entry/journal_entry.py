@@ -1149,7 +1149,7 @@ class JournalEntry(AccountsController):
 	@frappe.whitelist()
 	def set_cost_center_in_item(self):
 		if not self.branch:
-			frappe.thrwo("Set branch first")
+			frappe.throw("Set branch first")
 		cost_center = frappe.db.get_value("Branch",self.branch,"cost_center")
 		return cost_center
 

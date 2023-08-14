@@ -783,15 +783,17 @@ frappe.ui.form.on("Journal Entry Account", {
 }); 
 function set_cost_center_in_item(frm, cdt, cdn){
 	var item = locals[cdt][cdn];
-	frappe.call({
-		method:"set_cost_center_in_item",
-		doc: frm.doc,
-		callback: function(r) {
-			if(r.message) {
-				frappe.model.set_value(cdt, cdn, "cost_center", r.message)
-				refresh_field('cost_center');
+	if (item.reference_type != "Expense Claim"){
+		frappe.call({
+			method:"set_cost_center_in_item",
+			doc: frm.doc,
+			callback: function(r) {
+				if(r.message) {
+					frappe.model.set_value(cdt, cdn, "cost_center", r.message)
+					refresh_field('cost_center');
+				}
 			}
-		}
-	})
+		})
+	}
 }
 /* ePayment Ends */
