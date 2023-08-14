@@ -103,9 +103,10 @@ class CustomWorkflow:
 		if self.doc.doctype == "Material Request":
 			employee = frappe.db.get_value("Employee", {"user_id":self.doc.owner},"name")
 			division = frappe.db.get_value("Employee",employee,"division")
+			unit = frappe.db.get_value("Employee",employee,"unit")
 			self.reports_to	= frappe.db.get_value("Employee", frappe.db.get_value("Employee", {'user_id':self.doc.owner}, "reports_to"), self.field_list)
-
 			self.division_approver = frappe.db.get_value("Employee",frappe.db.get_value("Department",division,"approver"),self.field_list)
+			self.unit_approver = frappe.db.get_value("Employee",frappe.db.get_value("Department",unit,"approver"),self.field_list)
 		if self.doc.doctype == "Employee Benefits":
 			self.hrgm = frappe.db.get_value("Employee",frappe.db.get_single_value("HR Settings","hrgm"), self.field_list)	
 		
@@ -197,7 +198,13 @@ class CustomWorkflow:
 			vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.division_approver[0]
 			vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.division_approver[1]
 			vars(self.doc)[self.doc_approver[2]] = officiating[2] if officiating else self.division_approver[2]
-		
+		elif approver_type =="Unit Approver":
+			officiating = get_officiating_employee(self.unit_approver[3])
+			if officiating:
+				officiating = frappe.db.get_value("Employee", officiating[0].officiate, self.field_list)
+			vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.unit_approver[0]
+			vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.unit_approver[1]
+			vars(self.doc)[self.doc_approver[2]] = officiating[2] if officiating else self.unit_approver[2]
 		elif approver_type =="Imprest Verifier":
 			officiating = get_officiating_employee(self.imprest_verifier[3])
 			if officiating:
@@ -672,14 +679,18 @@ class CustomWorkflow:
 
 
 	def material_request(self):
+		employee = frappe.db.get_value("Employee",{"user_id":self.doc.owner},"name")
+		division = frappe.db.get_value("Employee",employee,"division")
 		if self.new_state.lower() in ("Draft".lower(), "Waiting Supervisor Approval".lower()):
 			if self.new_state.lower() == ("Waiting Supervisor Approval".lower()):
 				self.set_approver("Supervisor")	
-		
 		elif self.new_state.lower() == ("Waiting Approval".lower()):
 			if self.doc.approver != frappe.session.user:
 				frappe.throw("Only {} can Approve this Leave".format(self.doc.approver_name))
-			self.set_approver("Division Approver")
+			if division =="Corporate Office - NHDCL":
+				self.set_approver("Unit Approver")
+			else:
+				self.set_approver("Division Approver")
 		elif self.new_state.lower() == ("Approved".lower()):
 			if self.doc.approver != frappe.session.user:
 				frappe.throw("Only {} can Approve this Application".format(self.doc.approver_name))

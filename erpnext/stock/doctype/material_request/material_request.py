@@ -170,8 +170,8 @@ class MaterialRequest(BuyingController):
 		# frappe.db.set(self, 'status', 'Submitted')
 		self.update_requested_qty()
 		self.update_requested_qty_in_production_plan()
-		if self.material_request_type == "Purchase":
-			self.validate_budget()
+		# if self.material_request_type == "Purchase":
+		# 	self.validate_budget()
 		# notify_workflow_states(self)
 		
 	def before_save(self):
