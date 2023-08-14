@@ -54,7 +54,7 @@ class SftpClient:
 		if self.file_exists(remote_path) or retry == 0:
 			self._connection.get(remote_path, local_path, callback=None)
 		elif retry > 0:
-			time.sleep(5)
+			sleep(5)
 			retry = retry - 1
 			self.download(remote_path, local_path, retry=retry)
 
