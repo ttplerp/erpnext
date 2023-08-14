@@ -569,8 +569,13 @@ class CustomWorkflow:
 		elif self.new_state.lower() in ("Waiting HR Approval".lower()):
 			if self.doc.supervisor != frappe.session.user:
 				frappe.throw("Only {} can Apply or Forward this Application".format(self.doc.supervisor_name))
-			self.set_approver("HR")	
-
+			self.set_approver("HR")
+		
+		elif self.new_state.lower() in ("Waiting GM Approval".lower()):
+			if self.doc.supervisor != frappe.session.user:
+				frappe.throw("Only {} can Apply or Forward this Application".format(self.doc.supervisor_name))
+			self.set_approver("HRGM")		
+			
 		elif self.new_state.lower() == ("Approved".lower()):
 			if self.doc.supervisor != frappe.session.user:
 				frappe.throw("Only {} can Approve this Application".format(self.doc.supervisor_name))
