@@ -872,7 +872,7 @@ def get_permission_query_conditions(user):
     return """(
             `tabMaterial Request`.owner = '{user}'
             or
-            (`tabMaterial Request`.approver = '{user}' and `tabMaterial Request`.workflow_state not in  ('Draft','Approved','Rejected','Cancelled'))
+            (`tabMaterial Request`.approver = '{user}' and `tabMaterial Request`.workflow_state not in  ('Draft','Rejected','Cancelled'))
             or 
             (
                 {ceo_or_general_manager} = 0
@@ -884,7 +884,7 @@ def get_permission_query_conditions(user):
                     and wb.branch = e.branch
                     and w.name = wb.parent
                     and (`tabMaterial Request`.set_from_warehouse = w.name or `tabMaterial Request`.set_warehouse = w.name) 
-                    and `tabMaterial Request`.workflow_state not in  ('Draft','Rejected','Cancelled')
+                    and `tabMaterial Request`.workflow_state not in  ('Draft','Cancelled')
                 )
             )
     )""".format(user = user, ceo_or_general_manager = ceo_or_general_manager)
