@@ -104,7 +104,11 @@ def get_permission_query_conditions(user):
 
 	if user == "Administrator" or "System Manager" in user_roles: 
 		return
-	if "ADM User" in user_roles or  "Branch Manager" in user_roles or "Fleet Manager" in user_roles:
+		
+	if "Fleet Manager" in user_roles:
+		return
+
+	if "ADM User" in user_roles or "Fleet User" in user_roles:
 		return """(
 			exists(select 1
 				from `tabEmployee` as e

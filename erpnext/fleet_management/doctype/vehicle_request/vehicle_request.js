@@ -4,8 +4,8 @@
 frappe.ui.form.on('Vehicle Request', {
 	refresh: function (frm) {
         // if(frm.doc.workflow_state == "Waiting MTO Approval" || frm.doc.workflow_state == "Approved"){
-        //     frm.set_df_property('vehicle', 'reqd',  frappe.user.has_role(["ADM User","Branch Manager","Fleet Manager"]))
-        //     frm.set_df_property('kilometer_reading', 'reqd',  frappe.user.has_role(["ADM User","Branch Manager","Fleet Manager"]))
+        //     frm.set_df_property('vehicle', 'reqd',  frappe.user.has_role(["ADM User","Fleet Manager"]))
+        //     frm.set_df_property('kilometer_reading', 'reqd',  frappe.user.has_role(["ADM User","Fleet Manager"]))
         //     frm.toggle_display("fleet_details_section", frappe.user.has_role(["Fleet Manager","System Manager"]));
         //     frm.refresh_fields();
         // }
@@ -17,7 +17,7 @@ frappe.ui.form.on('Vehicle Request', {
         }
         frm.set_df_property("to_date", "allow_on_submit", frm.doc.status == "Booked" ? 1 : 0);
 
-        if (frm.doc.docstatus === 1 && frm.doc.status == "Booked" && (frappe.session.user == frm.doc.owner || frappe.user.has_role(["Fleet Manager","System Manager"]))){
+        if (frm.doc.docstatus === 1 && frm.doc.status == "Booked" && (frappe.session.user == frm.doc.owner || frappe.user.has_role(["Fleet Manager", "System Manager"]))){
             frm.add_custom_button('Close', () => {
                 frappe.call({
                     method:"open_the_vehicle_for_booking",
