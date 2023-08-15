@@ -22,7 +22,12 @@
   "old_parent",
   "approver",
   "approver_name",
-  "approver_level"
+  "approver_level",
+  "vehicle_request_approver_section",
+  "v_approver",
+  "v_approver_name",
+  "column_break_20",
+  "approver_id"
  ],
  "fields": [
   {
@@ -135,13 +140,41 @@
    "fieldname": "is_unit",
    "fieldtype": "Check",
    "label": "Is Unit"
+  },
+  {
+   "fieldname": "vehicle_request_approver_section",
+   "fieldtype": "Section Break",
+   "label": "Vehicle Request Approver"
+  },
+  {
+   "fieldname": "v_approver",
+   "fieldtype": "Link",
+   "label": "Vehicle Request Approver",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "v_approver.employee_name",
+   "fieldname": "v_approver_name",
+   "fieldtype": "Data",
+   "label": "Approver Name"
+  },
+  {
+   "fetch_from": "v_approver.user_id",
+   "fieldname": "approver_id",
+   "fieldtype": "Link",
+   "label": "Approver ID",
+   "options": "User"
+  },
+  {
+   "fieldname": "column_break_20",
+   "fieldtype": "Column Break"
   }
  ],
  "icon": "fa fa-sitemap",
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2022-11-26 12:53:18.399996",
+ "modified": "2023-08-15 14:57:23.633028",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Department",
