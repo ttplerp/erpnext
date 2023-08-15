@@ -20,7 +20,10 @@
   "description",
   "old_block_no",
   "sb_1",
-  "rate"
+  "rate",
+  "sb_property_mgt",
+  "property_management_item",
+  "total_property_management_amount"
  ],
  "fields": [
   {
@@ -112,11 +115,27 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Old Block No"
+  },
+  {
+   "fieldname": "sb_property_mgt",
+   "fieldtype": "Section Break",
+   "label": "Property Management Detail"
+  },
+  {
+   "fieldname": "property_management_item",
+   "fieldtype": "Table",
+   "label": "Property Management Detail",
+   "options": "Property Management Item"
+  },
+  {
+   "fieldname": "total_property_management_amount",
+   "fieldtype": "Currency",
+   "label": "Total Property Management Amount"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-07-13 17:37:10.734871",
+ "modified": "2023-08-15 12:30:30.620371",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Block No",

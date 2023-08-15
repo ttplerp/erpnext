@@ -65,7 +65,7 @@ class RentalBillEntry(Document):
 			row = self.append('items', {})
 			row.update(d)
 		
-		# self.number_of_rental_bills = len(tenant_list)
+		self.db_set("number_of_rental_bills", len(tenant_list))
 		# return self.number_of_rental_bills
 
 	@frappe.whitelist()
@@ -88,7 +88,7 @@ class RentalBillEntry(Document):
 			error=''
 			try:
 				query = """
-					select tenant_cid, tenant_name, customer, block, flat, 
+					select tenant_cid, tenant_name, customer, block, flat, block_no,
 					ministry_and_agency, location_name, branch, tenant_department_name, dzongkhag, 
 					town_category, building_category, is_nhdcl_employee, rental_amount, building_classification,
 					phone_no, allocated_date, locations
@@ -121,9 +121,9 @@ class RentalBillEntry(Document):
 						if not self.company:
 							self.company = frappe.db.get_value("Branch", d.branch, "company")
 						""" calc. property mgt. amount """
-						total_property_mgt_amount = frappe.db.get_value("Locations", d.locations, "total_property_management_amount")
+						total_property_mgt_amount = frappe.db.get_value("Block No", d.block_no, "total_property_management_amount")
 						prop_mgt_amount = 0
-						for pm_item in frappe.db.sql("select * from `tabProperty Management Item` where is_percent=1 and parent='{}'".format(d.locations), as_dict=1):
+						for pm_item in frappe.db.sql("select * from `tabProperty Management Item` where is_percent=1 and parent='{}'".format(d.block_no), as_dict=1):
 							prop_mgt_amount = flt(d.rental_amount * (pm_item.percent / 100), 2)
 							total_property_mgt_amount += prop_mgt_amount
 						total_property_management_amount = total_property_mgt_amount if total_property_mgt_amount > 0 else 0
