@@ -6,9 +6,6 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "tb_notification",
-  "vehicle_request_approval_notification_template",
-  "vehicle_request_status_notification_template",
   "sb_approver",
   "fleet_mto",
   "fleet_mto_name",
@@ -17,11 +14,6 @@
   "equipment_hire_expense_account"
  ],
  "fields": [
-  {
-   "fieldname": "tb_notification",
-   "fieldtype": "Tab Break",
-   "label": "Notification Templates"
-  },
   {
    "fieldname": "sb_approver",
    "fieldtype": "Tab Break",
@@ -39,18 +31,6 @@
    "fieldtype": "Data",
    "label": "Fleet MTO Name",
    "read_only": 1
-  },
-  {
-   "fieldname": "vehicle_request_approval_notification_template",
-   "fieldtype": "Link",
-   "label": "Vehicle Request Approval Notification Template",
-   "options": "Email Template"
-  },
-  {
-   "fieldname": "vehicle_request_status_notification_template",
-   "fieldtype": "Link",
-   "label": "Vehicle Request Status Notification Template",
-   "options": "Email Template"
   },
   {
    "fieldname": "account_settings_tab",
@@ -73,7 +53,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-06-22 17:48:10.449188",
+ "modified": "2023-08-15 16:22:04.820605",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Maintenance Settings",

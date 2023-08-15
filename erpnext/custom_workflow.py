@@ -324,15 +324,16 @@ class CustomWorkflow:
 	def vehicle_request(self):
 		if self.new_state.lower() in ("Draft".lower()):
 			if self.doc.owner != frappe.session.user:
-				frappe.throw("Only {} can Apply this material request".format(self.doc.owner))
+				frappe.throw("Only {} can Apply this Vehicle Request".format(self.doc.owner))
 			self.set_approver("Fleet Manager")
 		elif self.new_state.lower() in ("Waiting MTO Approval".lower()):
-			if self.doc.approver_id != frappe.session.user:
-				frappe.throw("Only {} can forward this request".format(self.doc.approver_id))
+			if self.doc.owner != frappe.session.user:
+				frappe.throw("Only {} can forward this Vehicle Request".format(self.doc.employee_name))
 			self.set_approver("Fleet Manager")
 		elif self.new_state.lower() in ("Approved".lower()):
 			if self.doc.approver_id != frappe.session.user:
-				frappe.throw("Only {} can Approve this Vehicle Request".format(self.doc.approver_id))
+				frappe.throw("Only {} can Approve this Vehicle Request".format(self.doc.approver))
+				
 	def target_setup_request(self):
 		pass
 
@@ -828,7 +829,7 @@ class NotifyCustomWorkflow:
 				return
 		
 		elif self.doc.doctype == "Vehicle Request":
-			template = frappe.db.get_single_value('Maintenance Settings', 'vehicle_request_status_notification_template')
+			template = frappe.db.get_single_value('HR Settings', 'vehicle_request_status_notification_template')
 			if not template:
 				frappe.msgprint(_("Please set default template for Vehicle Request Status Notification in Maintenance Settings."))
 				return
