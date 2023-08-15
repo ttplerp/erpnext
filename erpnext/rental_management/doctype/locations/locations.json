@@ -58,6 +58,7 @@
   {
    "fieldname": "sb_property_mgt",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Property Management Detail"
   },
   {
@@ -102,7 +103,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-07-14 17:01:29.900621",
+ "modified": "2023-08-15 12:46:53.975607",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Locations",
