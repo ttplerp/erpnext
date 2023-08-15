@@ -26,6 +26,11 @@ def update_brs():
 				for i in reader:
 					if row > 1:
 						date_string = str(i[0])
+						date_str = date_string.split("-")
+						if len(date_str[2]) == 4:
+							datetime_obj = datetime.strptime(date_string,'%d-%b-%Y')
+						else:
+							datetime_obj = datetime.strptime(date_string,'%d-%b-%y')
 						datetime_obj = datetime.strptime(date_string,'%d-%b-%Y')
 						correct_date_format = datetime_obj.strftime('%Y-%m-%d')
 						doc = frappe.get_doc({
