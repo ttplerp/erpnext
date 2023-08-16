@@ -46,8 +46,8 @@ class POLAdvance(AccountsController):
 				
 	def on_cancel(self):
 		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
-		if cint(self.use_common_fuelbook) == 0:
-			self.make_gl_entries()
+		# if cint(self.use_common_fuelbook) == 0:
+		# 	self.make_gl_entries()
 
 	@frappe.whitelist()
 	def set_advance_limit(self):
