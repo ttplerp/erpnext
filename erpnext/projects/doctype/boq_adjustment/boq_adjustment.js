@@ -36,25 +36,18 @@ var calculate_amount = function(frm, cdt, cdn){
 	let child = locals[cdt][cdn];
 	let amount = 0.0;
 	
-	if(child.is_group){
-		if(parseFloat(child.adjustment_quantity) || parseFloat(child.adjustment_amount)) {
-			frappe.msgprint("Adjustments against group items not permitted.");
-		}
+	if(frm.doc.boq_type != "Milestone Based"){
+		amount = parseFloat(child.adjustment_quantity)*parseFloat(child.rate);
+		frappe.model.set_value(cdt, cdn, 'adjustment_amount', parseFloat(amount));
 	}
 	else {
-		if(frm.doc.boq_type != "Milestone Based"){
-			amount = parseFloat(child.adjustment_quantity)*parseFloat(child.rate);
-			frappe.model.set_value(cdt, cdn, 'adjustment_amount', parseFloat(amount));
+		if(child.adjustment_quantity){
+			frappe.model.set_value(cdt, cdn, 'adjustment_quantity', 0.0);
 		}
-		else {
-			if(child.adjustment_quantity){
-				frappe.model.set_value(cdt, cdn, 'adjustment_quantity', 0.0);
-			}
-		}
-		
-		if ((parseFloat(child.balance_amount || 0.0)+parseFloat(child.adjustment_amount || 0.0)) < 0) {
-			frappe.msgprint("Adjustment beyond available balance is not allowed.");
-		}
+	}
+	
+	if ((parseFloat(child.balance_amount || 0.0)+parseFloat(child.adjustment_amount || 0.0)) < 0) {
+		frappe.msgprint("Adjustment beyond available balance is not allowed.");
 	}
 }
 

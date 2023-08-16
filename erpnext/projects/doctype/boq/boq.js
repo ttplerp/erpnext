@@ -52,9 +52,9 @@ frappe.ui.form.on('BOQ', {
 			frm.add_custom_button(__("BOQ Substitution"), function () { frm.trigger("make_boq_substitution") },
 				__("Make"), "icon-file-alt"
 			);
-			// frm.add_custom_button(__("BOQ Addition"), function () { frm.trigger("make_additional_boq") },
-			// 					__("Make"), "icon-file-alt"
-			// 			);
+			frm.add_custom_button(__("BOQ Addition"), function () { frm.trigger("make_additional_boq") },
+				__("Make"), "icon-file-alt"
+			);
 			
 			if (frm.doc.party_type !== "Supplier") {
 				frm.add_custom_button(__("Subcontract"), function () { frm.trigger("make_boq_subcontract") }, __("Make"), "icon-file-alt");
@@ -93,11 +93,11 @@ frappe.ui.form.on('BOQ', {
 	},
 
 	make_additional_boq: function (frm) {
-            frappe.model.open_mapped_doc({
-                method: "make_additional_boq",
-                frm: frm
-            });
-		},
+		frappe.model.open_mapped_doc({
+			method: "erpnext.projects.doctype.boq.boq.make_additional_boq",
+			frm: frm
+		});
+	},
 	//Logic Ends
 	make_direct_invoice: function (frm) {
 		frappe.model.open_mapped_doc({

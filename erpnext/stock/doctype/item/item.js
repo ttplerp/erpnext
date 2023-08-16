@@ -199,6 +199,14 @@ frappe.ui.form.on("Item", {
 		frm.set_value('is_fixed_asset',0)
 		frm.toggle_enable(['has_serial_no', 'serial_no_series','is_stock_item','is_fixed_asset'], false);
 	},
+	is_bsr_service_item: function(frm) {
+		frm.set_value('has_serial_no', 0);
+		frm.set_value('has_batch_no', 0);
+        frm.set_value("is_stock_item", 0);
+		frm.set_value('is_fixed_asset',0)
+		frm.set_value('is_service_item', 1)
+		frm.toggle_enable(['has_serial_no', 'serial_no_series','is_stock_item','is_fixed_asset'], false);
+	},
 	set_asset_naming_series: function(frm, asset_naming_series) {
 		if ((frm.doc.__onload && frm.doc.__onload.asset_naming_series) || asset_naming_series) {
 			let naming_series = (frm.doc.__onload && frm.doc.__onload.asset_naming_series) || asset_naming_series;

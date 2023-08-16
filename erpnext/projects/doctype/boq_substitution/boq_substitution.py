@@ -53,23 +53,9 @@ class BOQSubstitution(Document):
 		idx = 0
 		for item in self.boq_item:
 			idx += 1
-			if item.is_group:
-				item_group              = item.item
-				item.quantity           = 0.0
-				item.rate               = 0.0
-				item.amount             = 0.0
-				item.initial_amount     = 0.0
-				item.implication_amount = 0.0
-				item.claimed_quantity   = 0.0
-				item.claimed_amount     = 0.0
-				item.booked_quantity    = 0.0
-				item.booked_amount      = 0.0
-				item.balance_quantity   = 0.0
-				item.balance_amount     = 0.0
-			else:
-				item.amount             = flt(item.quantity)*flt(item.rate)
-				item.implication_amount = flt(item.amount) - flt(item.initial_amount)
-				item.initial_amount     = flt(frappe.get_doc("BOQ Item", item.boq_item_name).amount)
+			item.amount             = flt(item.quantity)*flt(item.rate)
+			item.implication_amount = flt(item.amount) - flt(item.initial_amount)
+			item.initial_amount     = flt(frappe.get_doc("BOQ Item", item.boq_item_name).amount)
 			if item.amount <= 0:
 				frappe.throw("Amount Should be Greater Than Zero at Index '{0}'".format(item.idx))
 
@@ -103,12 +89,8 @@ class BOQSubstitution(Document):
 		# validate items
 		for i in self.boq_item:
 			if i.substitute:
-				if i.is_group:
-					if flt(i.quantity) or flt(i.amount):
-						frappe.throw(_("Row#{0} : Quantity/Amount against group items not permitted.").format(i.idx), title="Not permitted")	
-				else:
-					if not flt(i.quantity) or not flt(i.amount):
-						frappe.throw(_("ROw#{0} : Quantity/Amount/Rate Cannot be Zero.").format(i.idx), title="Invalid Data")
+				if not flt(i.quantity) or not flt(i.amount):
+					frappe.throw(_("ROw#{0} : Quantity/Amount/Rate Cannot be Zero.").format(i.idx), title="Invalid Data")
 
 	def append_substituted_boq(self):
 		for d in self.boq_item:
@@ -166,7 +148,6 @@ class BOQSubstitution(Document):
 					boq_item.boq_code = d.boq_code
 					boq_item.item = d.item
 					boq_item.uom = d.uom
-					boq_item.is_group = d.is_group
 					boq_item.no =  d.no
 					boq_item.length = d.length
 					boq_item.height = d.height
@@ -197,7 +178,7 @@ class BOQSubstitution(Document):
 		boq = frappe.get_doc("BOQ", self.boq)
 		if self.docstatus == 2:
 			frappe.db.sql(""" 
-					delete from `tabBOQ Substitution History` where parent='{boq}' and  transaction_name = '{transaction_name}'
+					delete from `tabBOQ Substitution History` where parent='{boq}' and transaction_name = '{transaction_name}'
 			""".format(boq = self.boq, transaction_name=self.name))
 		else:
 			boq.append("boq_substitution_item",{

@@ -37,12 +37,6 @@ class BOQAdjustment(Document):
 				frappe.throw(_("Row#{0} : Adding new items not permitted.").format(i.idx), title="Not permitted")
 				pass
 					
-					
-					
-			if i.is_group:
-				if flt(i.adjustment_quantity) or flt(i.adjustment_amount):
-					frappe.throw(_("Row#{0} : Adjustments against group items not permitted.").format(i.idx), title="Not permitted")
-
 			i.balance_quantity, i.balance_amount = frappe.db.get_value("BOQ Item", i.boq_item_name, ["balance_quantity","balance_amount"])
 			if (flt(i.balance_amount)+flt(i.adjustment_amount)) < 0:
 				msg = '<b>Reference# : <a href="#Form/BOQ/{0}">{0}</a></b>'.format(self.boq)

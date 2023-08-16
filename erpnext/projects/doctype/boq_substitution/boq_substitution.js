@@ -1,7 +1,16 @@
 // Copyright (c) 2016, Frappe Technologies Pvt. Ltd. and contributors
 // For license information, please see license.txt
 frappe.ui.form.on('BOQ Substitution', {
-	setup: function(frm){},
+	refresh: function(frm){
+        frm.set_query("boq_code", "boq_item", function () {
+            return {
+                filters: {
+                    is_service_item:1,
+                    disabled:0
+                }
+            };
+        });
+    },
 	onload: function(frm){
 		frm.fields_dict.boq.get_query = function(){
 			return {
@@ -79,7 +88,6 @@ var get_boq_list = function (frm) {
                             row.boq_code = boq['boq_code'];
                             row.item = boq['item'];
                             row.uom = boq['uom'];
-                            row.is_group = boq['is_group'];
                             row.balance_quantity = boq['balance_quantity'];
                             row.balance_rate = boq['balance_rate'];
                             row.balance_amount = boq['balance_amount'];

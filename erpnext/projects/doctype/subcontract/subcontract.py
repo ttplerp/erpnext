@@ -25,16 +25,15 @@ class Subcontract(Document):
 		for i in self.boq_item:
 			if i.is_selected and flt(i.amount) and i.boq_item_name:
 				doc = frappe.get_doc("BOQ Item", i.boq_item_name)
-				if not doc.is_group:
-					current_quantity = flt(doc.subcontract_quantity)
-					current_amount   = flt(doc.subcontract_amount)
-					new_quantity     = flt(current_quantity)+(factor*flt(0 if self.boq_type == "Milestone Based" else i.quantity))
-					new_amount       = flt(current_amount)+(factor*flt(i.amount))
-					new_rate         = new_amount / (new_quantity if flt(new_quantity) else 1)
-					doc.subcontract_quantity = new_quantity if flt(new_quantity) > 0 else 0
-					doc.subcontract_rate     = new_rate if flt(new_rate) > 0 else 0
-					doc.subcontract_amount   = new_amount if flt(new_amount) > 0 else 0
-					doc.save(ignore_permissions=True)
+				current_quantity = flt(doc.subcontract_quantity)
+				current_amount   = flt(doc.subcontract_amount)
+				new_quantity     = flt(current_quantity)+(factor*flt(0 if self.boq_type == "Milestone Based" else i.quantity))
+				new_amount       = flt(current_amount)+(factor*flt(i.amount))
+				new_rate         = new_amount / (new_quantity if flt(new_quantity) else 1)
+				doc.subcontract_quantity = new_quantity if flt(new_quantity) > 0 else 0
+				doc.subcontract_rate     = new_rate if flt(new_rate) > 0 else 0
+				doc.subcontract_amount   = new_amount if flt(new_amount) > 0 else 0
+				doc.save(ignore_permissions=True)
 					
 	def update_boq_history(self):
 			# removing entries which are copied via "Duplicate" option
@@ -80,30 +79,18 @@ class Subcontract(Document):
 		self.balance_amount   = 0.0
 
 		for item in self.boq_item:
-			if item.is_group:
-				item_group              = item.item
-				item.quantity           = 0.0
-				item.rate               = 0.0
-				item.amount             = 0.0
-				item.claimed_quantity   = 0.0
-				item.claimed_amount     = 0.0
-				item.booked_quantity    = 0.0
-				item.booked_amount      = 0.0
-				item.balance_quantity   = 0.0
-				item.balance_amount     = 0.0
-			else:
-				item.amount           = flt(item.quantity)*flt(item.rate)
-				item.claimed_quantity = 0.0
-				item.claimed_amount   = 0.0
-				item.booked_quantity  = 0.0
-				item.booked_amount    = 0.0
-				item.balance_quantity = flt(item.quantity)
-				item.balance_rate     = flt(item.rate)
-				item.balance_amount   = flt(item.amount)
+			item.amount           = flt(item.quantity)*flt(item.rate)
+			item.claimed_quantity = 0.0
+			item.claimed_amount   = 0.0
+			item.booked_quantity  = 0.0
+			item.booked_amount    = 0.0
+			item.balance_quantity = flt(item.quantity)
+			item.balance_rate     = flt(item.rate)
+			item.balance_amount   = flt(item.amount)
 
-				if item.is_selected and flt(item.amount):
-					self.total_amount    += flt(item.amount)
-					self.balance_amount  += flt(item.amount)
+			if item.is_selected and flt(item.amount):
+				self.total_amount    += flt(item.amount)
+				self.balance_amount  += flt(item.amount)
 
 			item.parent_item = item_group
 

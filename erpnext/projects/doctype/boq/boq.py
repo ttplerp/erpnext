@@ -97,12 +97,7 @@ class BOQ(Document):
 		item_group = ""
 		self.total_amount = self.price_adjustment = self.claimed_amount = self.received_amount = self.balance_amount = 0.0
 		
-		group_items = [item for item in self.boq_item if item.is_group]
-		for item in group_items:
-			item_group = item.item
-			item.quantity = item.rate = item.amount = item.claimed_quantity = item.claimed_amount = item.booked_quantity = item.booked_amount = item.balance_quantity = item.balance_amount = 0.0
-		
-		non_group_items = [item for item in self.boq_item if not item.is_group]
+		non_group_items = [item for item in self.boq_item]
 		for item in non_group_items:
 			item.amount = flt(item.quantity) * flt(item.rate)
 			item.claimed_quantity = item.claimed_amount = item.booked_quantity = item.booked_amount = 0.0
