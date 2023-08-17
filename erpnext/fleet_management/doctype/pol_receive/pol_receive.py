@@ -26,14 +26,16 @@ class POLReceive(StockController):
 	def on_submit(self):
 		if cint(self.is_opening) == 0:
 			self.update_pol_expense()
-			self.make_gl_entries()
+			if self.use_common_fuelbook and not self.direct_consumption:
+				self.make_gl_entries()
 		self.make_pol_entry()
 		
 	def on_cancel(self):
 		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry", "POL Entry")
 		if cint(self.is_opening) == 0:
 			self.update_pol_expense()
-			self.make_gl_entries()
+			if self.use_common_fuelbook and not self.direct_consumption:
+				self.make_gl_entries()
 		self.delete_pol_entry()
 	def remove_unallocated_rows(self):
 		items = []
