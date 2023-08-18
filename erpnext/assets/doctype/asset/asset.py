@@ -924,7 +924,7 @@ class Asset(AccountsController):
 				"cost_center": self.cost_center
 				})
 			je.submit()
-		if self.is_existing_asset:
+		if self.is_existing_asset and self.asset_category != "Investment Property":
 			je = frappe.new_doc("Journal Entry")
 			je.flags.ignore_permissions = 1 
 			je.update({
