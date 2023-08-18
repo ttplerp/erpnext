@@ -436,7 +436,6 @@ def get_accounts(company, root_type):
 		as_dict=True,
 	)
 
-
 def filter_accounts(accounts, depth=20):
 	parent_children_map = {}
 	accounts_by_name = {}
