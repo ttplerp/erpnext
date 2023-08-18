@@ -63,9 +63,12 @@ def get_data(filters):
 		if filter_data['closing_debit'] > filter_data['closing_credit']:
 			filter_data['closing_debit'] = flt(filter_data['closing_debit'] - filter_data['closing_credit'],2)
 			filter_data['closing_credit'] = 0
-		else:
+		elif filter_data['closing_debit'] < filter_data['closing_credit']:
 			filter_data['closing_debit'] = 0
 			filter_data['closing_credit'] = flt(filter_data['closing_credit'] - filter_data['closing_debit'],2)
+		else:
+			filter_data['closing_debit'] = 0
+			filter_data['closing_credit'] = 0
 		
 		row.append(filter_data)
 
