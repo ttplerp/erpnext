@@ -118,7 +118,16 @@ def create_users():
 				print("User created for employee {}".format(a.name))
 				employee.db_set("user_id", employee.company_email)
 	frappe.db.commit()
-
+def update_flat_no():
+	flat_no = frappe.db.sql("""
+			select name, block_no 
+			from `tabFlat No`
+			where building_category ='Residential'
+		""",as_dict=True)
+	for d in flat_no:
+		dzongkhag = frappe.db.get_value("Block No",d.block_no,"dzongkhag")
+		frappe.db.sql("""update `tabFlat No` set dzongkhag='{0}' where name='{1}'""".format(dzongkhag,d.name))
+		print(dzongkhag)
 def update_employee_user_id():
 	print()
 	users = frappe.db.sql("""
