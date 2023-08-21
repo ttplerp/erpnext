@@ -79,7 +79,7 @@ def construct_query(filters=None):
 	conditions, filters = get_conditions(filters)
 	query = ("""
 			select 
-				f.name as name, f.block_no as block_no, f.flat_no as flat_no,f.location_name as location_name,f.building_category as building_category, f.status as status, f.town_category as town_category, f.building_classification as building_classification
+				f.name as name, f.block_no as block_no, f.flat_no as flat_no,f.building_category as building_category, f.status as status, f.town_category as town_category
 			from `tabFlat No` f 
 			where f.docstatus != 2
 			{}
@@ -91,15 +91,19 @@ def get_data(query, filters):
 	datas = frappe.db.sql(query, as_dict=True)
 	for d in datas:
 		location = frappe.db.get_value("Block No",d.block_no,"location")
+		location_name = frappe.db.get_value("Block No",d.block_no,"location_name")
+		building_classification = frappe.db.get_value("Block No",d.block_no,"building_classification")
+		town_category = frappe.db.get_value("Block No",d.block_no,"town_category")
+
 		row = {
-			"location_name":d.location_name,
+			"location_name":location_name,
 			"location":	location,
 			"block_no": d.block_no,
 			"flat_id": d.name,
 			"flat_no": d.flat_no,
 			"b_category": d.building_category,
-			"b_classification":d.building_classification,
-			"town_category": d.town_category,
+			"b_classification":building_classification,
+			"town_category": town_category,
 			"status":d.status
 		}
 		data.append(row)

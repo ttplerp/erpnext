@@ -13,7 +13,7 @@ frappe.query_reports["Rental Location Details"] = {
 			"fieldname": "status",
 			"label": __("Status"),
 			"fieldtype": "Select",
-			"options": ["Allocated","Unallocated"]
+			"options": ["","Allocated","Unallocated"]
 		},
 		{
 			"fieldname": "block_no",
