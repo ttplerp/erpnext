@@ -14,6 +14,13 @@ def execute(filters=None):
 def get_columns(data):
 	return [
 		{
+			"fieldname": "dzongkhag",
+			"label": "Dzongkhag",
+			"fieldtype": "Link",
+			"options": "Dzongkhag",
+			"width": 150
+		},
+		{
 			"fieldname": "location_name",
 			"label": "Locations Name",
 			"fieldtype": "Data",
@@ -79,7 +86,7 @@ def construct_query(filters=None):
 	conditions, filters = get_conditions(filters)
 	query = ("""
 			select 
-				f.name as name, f.block_no as block_no, f.flat_no as flat_no,f.building_category as building_category, f.status as status, f.town_category as town_category
+				f.name as name, f.block_no as block_no, f.flat_no as flat_no,f.building_category as building_category, f.status as status, f.town_category as town_category, f.dzongkhag as dzongkhag
 			from `tabFlat No` f 
 			where f.docstatus != 2
 			{}
@@ -96,6 +103,7 @@ def get_data(query, filters):
 		town_category = frappe.db.get_value("Block No",d.block_no,"town_category")
 
 		row = {
+			"dzongkhag":d.dzongkhag,
 			"location_name":location_name,
 			"location":	location,
 			"block_no": d.block_no,
@@ -114,5 +122,7 @@ def get_conditions(filters):
 		conditions += """and f.status ='{}'""".format(filters.get("status"))
 	if filters.get("block_no"):
 		conditions += """and f.block_no ='{}'""".format(filters.get("block_no"))
+	if filters.get("dzongkhag"):
+		conditions += """and f.dzongkhag ='{}'""".format(filters.get("dzongkhag"))
 
 	return conditions, filters
