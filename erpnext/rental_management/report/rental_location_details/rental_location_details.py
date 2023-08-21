@@ -114,7 +114,5 @@ def get_conditions(filters):
 		conditions += """and f.status ='{}'""".format(filters.get("status"))
 	if filters.get("block_no"):
 		conditions += """and f.block_no ='{}'""".format(filters.get("block_no"))
-	if filters.get("location"):
-		conditions += """and f.location_name ='{}'""".format(filters.get("location"))
 
 	return conditions, filters
