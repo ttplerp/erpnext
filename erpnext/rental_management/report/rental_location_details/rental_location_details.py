@@ -79,7 +79,7 @@ def construct_query(filters=None):
 	conditions, filters = get_conditions(filters)
 	query = ("""
 			select 
-				f.name as name, f.block_no as block_no, f.flat_no as flat_no, f.building_category as building_category, f.status as status
+				f.name as name, f.block_no as block_no, f.flat_no as flat_no,f.location_name as location_name,f.building_category as building_category, f.status as status, f.town_category as town_category, f.building_classification as building_classification
 			from `tabFlat No` f 
 			where f.docstatus != 2
 			{}
@@ -87,32 +87,22 @@ def construct_query(filters=None):
 	return query	
 def get_data(query, filters):
 	conditions = ""
-	if filters.get("location"):
-		conditions += """and b.location ='{}'""".format(filters.get("location"))
 	data = []
 	datas = frappe.db.sql(query, as_dict=True)
 	for d in datas:
-		block = frappe.db.sql("""
-			select
-				b.location as location,b.location_name as location_name, b.town_category as town_category, b.building_classification as building_classification
-			from
-				`tabBlock No` b
-			where b.name != '{name}'
-			{cond}
-		""".format(name=d.name,cond=conditions),as_dict=True)
-		for x in block:
-			row = {
-				"location_name":x.location_name,
-				"location": x.location,
-				"block_no": d.block_no,
-				"flat_id": d.name,
-				"flat_no": d.flat_no,
-				"b_category": d.building_category,
-				"b_classification":x.building_classification,
-				"town_category": x.town_category,
-				"status":d.status
-			}
-			data.append(row)
+		location = frappe.db.get_value("Block No",d.block_no,"location")
+		row = {
+			"location_name":d.location_name,
+			"location":	location,
+			"block_no": d.block_no,
+			"flat_id": d.name,
+			"flat_no": d.flat_no,
+			"b_category": d.building_category,
+			"b_classification":d.building_classification,
+			"town_category": d.town_category,
+			"status":d.status
+		}
+		data.append(row)
 	return data
 def get_conditions(filters):
 	conditions = ""
@@ -120,5 +110,7 @@ def get_conditions(filters):
 		conditions += """and f.status ='{}'""".format(filters.get("status"))
 	if filters.get("block_no"):
 		conditions += """and f.block_no ='{}'""".format(filters.get("block_no"))
+	if filters.get("location"):
+		conditions += """and f.location_name ='{}'""".format(filters.get("location"))
 
 	return conditions, filters

@@ -6,9 +6,8 @@ frappe.query_reports["Rental Location Details"] = {
 	"filters": [
 		{
 			"fieldname": "location",
-			"label": __("Location ID"),
-			"fieldtype": "Link",
-			"options": "Locations"
+			"label": __("Location Name"),
+			"fieldtype": "Data"
 		},
 		{
 			"fieldname": "status",
