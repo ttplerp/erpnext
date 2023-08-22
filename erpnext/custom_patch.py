@@ -67,6 +67,18 @@ def delete_asset_gl():
 	# 	asset.cancel()
 	print("Done")
 	frappe.db.commit()
+def detete_pol_receive_gl():
+	name = frappe.db.sql("""select name
+			from `tabPOL Receive`
+			where direct_consumption=1
+			and use_common_fuelbook =1
+			and is_opening =0
+			and docstatus=1
+		""",as_dict=True)
+	for x in name:
+		frappe.db.sql("delete from `tabGL Entry` where against_voucher_type='POL Receive' and against_voucher= '{}'".format(x.name))
+		print(x.name)
+
 def pol_entry_correction():
 	for d in frappe.bd.sql("select name,reference_type,reference,equipment from `tabPOL Entry` where rate <= 0"):
 		if d.reference_type == "POL Receive":
@@ -319,3 +331,9 @@ def earned_leave_deletion_manual():
 		frappe.db.sql("delete from `tabLeave Ledger Entry` where from_date='2023-06-21' and name='{}'".format(d.name))
 		count+=1
 	print(str(count))
+
+# def update_sales_target():
+# 	name= frappe.db.sql(""" 
+# 			select name from `tabSales Target Item` where parent="Dolomite-2022-2036"
+# 		""")
+# 	frappe.print(str(name))
