@@ -158,7 +158,7 @@ class Asset(AccountsController):
 		if not self.asset_category:
 			self.asset_category = frappe.get_cached_value("Item", self.item_code, "asset_category")
 
-		if not flt(self.gross_purchase_amount):
+		if not flt(self.gross_purchase_amount) and self.asset_category != "Investment Property":
 			frappe.throw(_("Gross Purchase Amount is mandatory"), frappe.MandatoryError)
 
 		if is_cwip_accounting_enabled(self.asset_category):
@@ -895,6 +895,7 @@ class Asset(AccountsController):
 				raise
 
 		return cwip_account
+
 	def make_asset_je_entry(self):
 		if self.gross_purchase_amount:
 			je = frappe.new_doc("Journal Entry")
