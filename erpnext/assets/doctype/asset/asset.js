@@ -123,7 +123,7 @@ frappe.ui.form.on('Asset', {
 				}, __("Manage"));
 			}
 
-			if (!frm.doc.calculate_depreciation) {
+			if (!frm.doc.calculate_depreciation && frm.doc.asset_category != "Investment Property") {
 				frm.add_custom_button(__("Create Depreciation Entry"), function() {
 					frm.trigger("make_journal_entry");
 				}, __("Manage"));
