@@ -71,7 +71,7 @@ class Item(Document):
 					numeric_prev_item = frappe.db.sql("SELECT name FROM `tabItem` WHERE item_group = '{}' AND name REGEXP '^[0-9]+$' ORDER BY name DESC LIMIT 1".format(self.item_group))
 					new_item_code = cstr(cint(numeric_prev_item[0][0]) + 1) if numeric_prev_item else None
 			else:
-				new_item_code = None
+				new_item_code = cstr(cint(prev_item[0][0]) + 1)
 
 			if new_item_code is not None:
 				self.item_code = self.name = new_item_code
