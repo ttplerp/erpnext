@@ -59,13 +59,28 @@ class Item(Document):
 		if self.item_old_code:
 			self.item_code = self.name = self.item_old_code
 			return
-		else:
-			if frappe.db.exists("Item",{"item_group":self.item_group}):
-				prev_item = frappe.db.sql("select name from `tabItem` where item_group = '{}' order by name desc limit 1".format(self.item_group))
-				self.item_code = self.name = cstr(cint(prev_item[0][0]) + 1)
-			else:
-				self.item_code = self.name = make_autoname('ABC{}.#####'.format(frappe.db.get_value('Item Group',self.item_group,'item_code_base')))[3:]
 
+		if frappe.db.exists("Item", {"item_group": self.item_group}):
+			prev_item = frappe.db.sql("SELECT name FROM `tabItem` WHERE item_group = '{}' ORDER BY name DESC LIMIT 1".format(self.item_group))
+			prev_item_code = prev_item[0][0] if prev_item else None
+
+			if cint(self.is_service_item) == 1 and cint(self.is_bsr_service_item) == 0:
+				if prev_item_code and prev_item_code.isnumeric():
+					new_item_code = cstr(cint(prev_item_code) + 1)
+				else:
+					numeric_prev_item = frappe.db.sql("SELECT name FROM `tabItem` WHERE item_group = '{}' AND name REGEXP '^[0-9]+$' ORDER BY name DESC LIMIT 1".format(self.item_group))
+					new_item_code = cstr(cint(numeric_prev_item[0][0]) + 1) if numeric_prev_item else None
+			else:
+				new_item_code = None
+
+			if new_item_code is not None:
+				self.item_code = self.name = new_item_code
+			else:
+				self.item_code = self.name = make_autoname('ABC{}.#####'.format(frappe.db.get_value('Item Group', self.item_group, 'item_code_base')))[3:]
+		else:
+			self.item_code = self.name = make_autoname('ABC{}.#####'.format(frappe.db.get_value('Item Group', self.item_group, 'item_code_base')))[3:]
+
+			
 	def after_insert(self):
 		"""set opening stock and item price"""
 		if self.standard_rate:
