@@ -18,7 +18,7 @@ def update_item_valuation_method():
     """,as_dict=1)
     for a in items:
         frappe.db.sql("""
-            update `tabItem` set valuation_method = 'Moving Average'
+            update `tabItem` set valuation_method = 'FIFO'
             where name = '{}'
         """.format(str(a.name)))
         print(a.name)

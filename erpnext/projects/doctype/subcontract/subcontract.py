@@ -13,6 +13,7 @@ class Subcontract(Document):
 		self.update_defaults()
 		self.validate_defaults()
 		self.update_boq_history()
+		self.validate_selected_items()
 
 	def on_submit(self):
 		self.update_boq()
@@ -35,6 +36,13 @@ class Subcontract(Document):
 					doc.subcontract_rate     = new_rate if flt(new_rate) > 0 else 0
 					doc.subcontract_amount   = new_amount if flt(new_amount) > 0 else 0
 					doc.save(ignore_permissions=True)
+
+	def validate_selected_items(self):
+		for a in self.boq_item:
+			if a.is_selected == 0 or not a.is_selected:
+				frappe.db.sql("""
+				 delete from `tabSubcontract Item` where name = '{}' 
+				""".format(str(a.name)))
 					
 	def update_boq_history(self):
 			# removing entries which are copied via "Duplicate" option

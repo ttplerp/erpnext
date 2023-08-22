@@ -38,7 +38,13 @@
   "reference_type",
   "column_break_28",
   "party",
-  "reference_no"
+  "reference_no",
+  "section_break_x9d50",
+  "imprest_settlement",
+  "imprest_party",
+  "make_journal_entry",
+  "reference_section",
+  "journal_entry"
  ],
  "fields": [
   {
@@ -286,12 +292,46 @@
    "fieldtype": "Currency",
    "label": "Amount Paid to Different Vendors (BTN)",
    "mandatory_depends_on": "eval:doc.category == \"Valuation\" && doc.payable_to_different_vendor"
+  },
+  {
+   "fieldname": "section_break_x9d50",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "imprest_settlement",
+   "fieldtype": "Check",
+   "label": "Imprest Settlement"
+  },
+  {
+   "depends_on": "eval:doc.imprest_settlement == 1",
+   "fieldname": "imprest_party",
+   "fieldtype": "Link",
+   "label": "Imprest Party",
+   "mandatory_depends_on": "eval:doc.imprest_settlement == 1",
+   "options": "Employee"
+  },
+  {
+   "depends_on": "eval:doc.imprest_settlement == 1",
+   "fieldname": "make_journal_entry",
+   "fieldtype": "Button",
+   "label": "Make Journal Entry"
+  },
+  {
+   "fieldname": "reference_section",
+   "fieldtype": "Section Break",
+   "label": "Reference"
+  },
+  {
+   "fieldname": "journal_entry",
+   "fieldtype": "Data",
+   "label": "Journal Entry"
   }
  ],
  "idx": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-04-17 12:12:02.060094",
+ "modified": "2023-08-22 09:13:24.957211",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Purchase Taxes and Charges",

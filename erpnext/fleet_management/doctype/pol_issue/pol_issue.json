@@ -19,9 +19,11 @@
   "item_name",
   "stock_uom",
   "column_break_10",
+  "receive_in_barrel",
   "tanker",
   "total_quantity",
   "section_break_3",
+  "journal_entry",
   "items",
   "section_break_5",
   "remarks",
@@ -94,6 +96,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "depends_on": "eval:doc.receive_in_barrel == 0;",
    "fieldname": "tanker",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -109,10 +112,11 @@
    "read_only": 1
   },
   {
+   "depends_on": "eval:doc.receive_in_barrel == 1;",
    "fieldname": "warehouse",
    "fieldtype": "Link",
-   "hidden": 1,
    "label": "Warehouse",
+   "mandatory_depends_on": "eval:doc.receive_in_barrel == 1;",
    "options": "Warehouse"
   },
   {
@@ -147,12 +151,24 @@
    "options": "POL Issue",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "receive_in_barrel",
+   "fieldtype": "Check",
+   "label": "Issue in Barrel"
+  },
+  {
+   "fieldname": "journal_entry",
+   "fieldtype": "Data",
+   "label": "Journal Entry",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-17 12:12:46.610866",
+ "modified": "2023-08-18 15:37:22.905042",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Issue",

@@ -27,28 +27,28 @@ frappe.ui.form.on("Purchase Receipt", {
 			'Purchase Invoice': 'Purchase Invoice'
 		};
 
-		frm.set_query("expense_account", "items", function() {
+		frm.set_query("expense_account", "items", function () {
 			return {
 				query: "erpnext.controllers.queries.get_expense_account",
-				filters: {'company': frm.doc.company }
+				filters: { 'company': frm.doc.company }
 			}
 		});
 
-		frm.set_query("taxes_and_charges", function() {
+		frm.set_query("taxes_and_charges", function () {
 			return {
-				filters: {'company': frm.doc.company }
+				filters: { 'company': frm.doc.company }
 			}
 		});
 
 	},
-	onload: function(frm) {
-		erpnext.queries.setup_queries(frm, "Warehouse", function() {
+	onload: function (frm) {
+		erpnext.queries.setup_queries(frm, "Warehouse", function () {
 			return erpnext.queries.warehouse(frm.doc);
 		});
 	},
 
-	refresh: function(frm) {
-		if(frm.doc.company) {
+	refresh: function (frm) {
+		if (frm.doc.company) {
 			frm.trigger("toggle_display_account_head");
 		}
 
@@ -56,13 +56,13 @@ frappe.ui.form.on("Purchase Receipt", {
 
 		for (var i in frm.doc.taxes) {
 			var tax = frm.doc.taxes[i];
-			if (tax.payable_to_different_vendor === 1 && !tax.reference_no){
+			if (tax.payable_to_different_vendor === 1 && !tax.reference_no) {
 				other_vendor_payment = true;
 			}
 		}
 
 		if (frm.doc.docstatus === 1 && frm.doc.is_return === 1 && frm.doc.per_billed !== 100) {
-			frm.add_custom_button(__('Debit Note'), function() {
+			frm.add_custom_button(__('Debit Note'), function () {
 				frappe.model.open_mapped_doc({
 					method: "erpnext.stock.doctype.purchase_receipt.purchase_receipt.make_purchase_invoice",
 					frm: cur_frm,
@@ -70,9 +70,17 @@ frappe.ui.form.on("Purchase Receipt", {
 			}, __('Create'));
 			frm.page.set_inner_btn_group_as_primary(__('Create'));
 		}
+		if (frm.doc.docstatus == 1 && frm.doc.settle_project_imprest == 1) {
+			frm.add_custom_button(__('Make Journal Entry'), () => {
+				frappe.model.open_mapped_doc({
+					method: "erpnext.stock.doctype.purchase_receipt.purchase_receipt.post_journal_entry",
+					frm: cur_frm,
+				})
+			}, __('Create'));
+		}
 
 		if (frm.doc.docstatus === 1 && frm.doc.is_internal_supplier && !frm.doc.inter_company_reference) {
-			frm.add_custom_button(__('Delivery Note'), function() {
+			frm.add_custom_button(__('Delivery Note'), function () {
 				frappe.model.open_mapped_doc({
 					method: 'erpnext.stock.doctype.purchase_receipt.purchase_receipt.make_inter_company_delivery_note',
 					frm: cur_frm,
@@ -81,18 +89,18 @@ frappe.ui.form.on("Purchase Receipt", {
 		}
 
 		if (frm.doc.docstatus == 1 && other_vendor_payment) {
-			frm.add_custom_button( __('Payment for Charges'), () => {
+			frm.add_custom_button(__('Payment for Charges'), () => {
 				frappe.model.open_mapped_doc({
 					method: "erpnext.stock.doctype.purchase_receipt.purchase_receipt.make_charges_advance_payment",
 					frm: cur_frm
 				});
-				}, __('Create'));	
+			}, __('Create'));
 		}
 
 		frm.events.add_custom_buttons(frm);
 	},
 
-	add_custom_buttons: function(frm) {
+	add_custom_buttons: function (frm) {
 		if (frm.doc.docstatus == 0) {
 			frm.add_custom_button(__('Purchase Invoice'), function () {
 				if (!frm.doc.supplier) {
@@ -118,12 +126,12 @@ frappe.ui.form.on("Purchase Receipt", {
 		}
 	},
 
-	company: function(frm) {
+	company: function (frm) {
 		frm.trigger("toggle_display_account_head");
 		erpnext.accounts.dimensions.update_dimension(frm, frm.doctype);
 	},
 
-	toggle_display_account_head: function(frm) {
+	toggle_display_account_head: function (frm) {
 		var enabled = erpnext.is_perpetual_inventory_enabled(frm.doc.company)
 		frm.fields_dict["items"].grid.set_column_disp(["cost_center"], enabled);
 	},
@@ -138,19 +146,19 @@ erpnext.stock.PurchaseReceiptController = class PurchaseReceiptController extend
 	refresh() {
 		var me = this;
 		super.refresh();
-		if(this.frm.doc.docstatus > 0) {
+		if (this.frm.doc.docstatus > 0) {
 			this.show_stock_ledger();
 			//removed for temporary
 			this.show_general_ledger();
 
-			this.frm.add_custom_button(__('Asset'), function() {
+			this.frm.add_custom_button(__('Asset'), function () {
 				frappe.route_options = {
 					purchase_receipt: me.frm.doc.name,
 				};
 				frappe.set_route("List", "Asset");
 			}, __("View"));
 
-			this.frm.add_custom_button(__('Asset Movement'), function() {
+			this.frm.add_custom_button(__('Asset Movement'), function () {
 				frappe.route_options = {
 					reference_name: me.frm.doc.name,
 				};
@@ -158,7 +166,7 @@ erpnext.stock.PurchaseReceiptController = class PurchaseReceiptController extend
 			}, __("View"));
 		}
 
-		if(!this.frm.doc.is_return && this.frm.doc.status!="Closed") {
+		if (!this.frm.doc.is_return && this.frm.doc.status != "Closed") {
 			if (this.frm.doc.docstatus == 0) {
 				this.frm.add_custom_button(__('Purchase Order'),
 					function () {
@@ -186,7 +194,7 @@ erpnext.stock.PurchaseReceiptController = class PurchaseReceiptController extend
 					}, __("Get Items From"));
 			}
 
-			if(this.frm.doc.docstatus == 1 && this.frm.doc.status!="Closed") {
+			if (this.frm.doc.docstatus == 1 && this.frm.doc.status != "Closed") {
 				if (this.frm.has_perm("submit")) {
 					cur_frm.add_custom_button(__("Close"), this.close_purchase_receipt, __("Status"))
 				}
@@ -195,7 +203,7 @@ erpnext.stock.PurchaseReceiptController = class PurchaseReceiptController extend
 
 				cur_frm.add_custom_button(__('Make Stock Entry'), cur_frm.cscript['Make Stock Entry'], __('Create'));
 
-				if(flt(this.frm.doc.per_billed) < 100) {
+				if (flt(this.frm.doc.per_billed) < 100) {
 					cur_frm.add_custom_button(__('Purchase Invoice'), this.make_purchase_invoice, __('Create'));
 				}
 				// cur_frm.add_custom_button(__('Retention Stock Entry'), this.make_retention_stock_entry, __('Create'));
@@ -211,7 +219,7 @@ erpnext.stock.PurchaseReceiptController = class PurchaseReceiptController extend
 		}
 
 
-		if(this.frm.doc.docstatus==1 && this.frm.doc.status === "Closed" && this.frm.has_perm("submit")) {
+		if (this.frm.doc.docstatus == 1 && this.frm.doc.status === "Closed" && this.frm.has_perm("submit")) {
 			cur_frm.add_custom_button(__('Reopen'), this.reopen_purchase_receipt, __("Status"))
 		}
 
@@ -243,7 +251,7 @@ erpnext.stock.PurchaseReceiptController = class PurchaseReceiptController extend
 	make_retention_stock_entry() {
 		frappe.call({
 			method: "erpnext.stock.doctype.stock_entry.stock_entry.move_sample_to_retention_warehouse",
-			args:{
+			args: {
 				"company": cur_frm.doc.company,
 				"items": cur_frm.doc.items
 			},
@@ -264,65 +272,67 @@ erpnext.stock.PurchaseReceiptController = class PurchaseReceiptController extend
 		var dialog = new frappe.ui.Dialog({
 			title: __("For Issuing Asset"),
 			fields: [
-				{	"fieldtype": "Select",
+				{
+					"fieldtype": "Select",
 					"label": __("Material Name"),
 					"fieldname": "item_name",
 					"options": doc.items.map(d => d.item_name),
-					"reqd": 1 
+					"reqd": 1
 				},
-				{	"fieldtype": "Button", "label": __('Issue Asset'),
+				{
+					"fieldtype": "Button", "label": __('Issue Asset'),
 					"fieldname": "make_asset_issue_entry", "cssClass": "btn-primary"
 				},
 			]
 		});
-		
-		dialog.fields_dict.make_asset_issue_entry.$input.click(function() {
+
+		dialog.fields_dict.make_asset_issue_entry.$input.click(function () {
 			var args = dialog.get_values();
 
 			frappe.call({
-				method:'frappe.client.get_value',
-				args:{
-					'doctype':'Item',
-					fieldname:"is_fixed_asset",
+				method: 'frappe.client.get_value',
+				args: {
+					'doctype': 'Item',
+					fieldname: "is_fixed_asset",
 					filters: {
 						"item_name": args.item_name,
-						"is_fixed_asset":1
+						"is_fixed_asset": 1
 					}
 				},
-				callback:(r)=>{
-					if(r.message){
-						if ( !r.message.is_fixed_asset){
+				callback: (r) => {
+					if (r.message) {
+						if (!r.message.is_fixed_asset) {
 							frappe.msgprint('Item selected is not a fixed asset')
 							dialog.hide();
 							return;
 						}
-	
-						if(!args) return;
+
+						if (!args) return;
 						dialog.hide();
-	
+
 						let business_activity = ''
 						let item_code = ''
 						let asset_rate = ''
 						cur_frm.doc.items.map(d => {
-							if (d.item_name == args.item_name){
+							if (d.item_name == args.item_name) {
 								business_activity = d.business_activity;
 								item_code = d.item_code;
 								asset_rate = d.valuation_rate;
 							}
-	
+
 						})
-	
+
 						var new_doc = frappe.model.get_new_doc('Asset Issue Details');
 						new_doc.branch = cur_frm.doc.branch;
 						new_doc.business_activity = business_activity;
-						new_doc.entry_date = new Date().toJSON().slice(0,10).replace(/-/g,'-');
+						new_doc.entry_date = new Date().toJSON().slice(0, 10).replace(/-/g, '-');
 						new_doc.item_code = item_code;
 						new_doc.purchase_receipt = cur_frm.docname;
 						new_doc.asset_rate = asset_rate
 						new_doc.qty = 1;
 						new_doc.amount = asset_rate * new_doc.qty
 						frappe.set_route('Form', 'Asset Issue Details', new_doc.name);
-					} else{
+					} else {
 						frappe.msgprint('There no such item')
 						dialog.hide();
 						return;
@@ -341,24 +351,24 @@ erpnext.stock.PurchaseReceiptController = class PurchaseReceiptController extend
 };
 
 // for backward compatibility: combine new and previous states
-extend_cscript(cur_frm.cscript, new erpnext.stock.PurchaseReceiptController({frm: cur_frm}));
+extend_cscript(cur_frm.cscript, new erpnext.stock.PurchaseReceiptController({ frm: cur_frm }));
 
-cur_frm.cscript.update_status = function(status) {
+cur_frm.cscript.update_status = function (status) {
 	frappe.ui.form.is_saving = true;
 	frappe.call({
-		method:"erpnext.stock.doctype.purchase_receipt.purchase_receipt.update_purchase_receipt_status",
-		args: {docname: cur_frm.doc.name, status: status},
-		callback: function(r){
-			if(!r.exc)
+		method: "erpnext.stock.doctype.purchase_receipt.purchase_receipt.update_purchase_receipt_status",
+		args: { docname: cur_frm.doc.name, status: status },
+		callback: function (r) {
+			if (!r.exc)
 				cur_frm.reload_doc();
 		},
-		always: function(){
+		always: function () {
 			frappe.ui.form.is_saving = false;
 		}
 	})
 }
 
-cur_frm.fields_dict['items'].grid.get_field('project').get_query = function(doc, cdt, cdn) {
+cur_frm.fields_dict['items'].grid.get_field('project').get_query = function (doc, cdt, cdn) {
 	return {
 		filters: [
 			['Project', 'status', 'not in', 'Completed, Cancelled']
@@ -366,7 +376,7 @@ cur_frm.fields_dict['items'].grid.get_field('project').get_query = function(doc,
 	}
 }
 
-cur_frm.fields_dict['select_print_heading'].get_query = function(doc, cdt, cdn) {
+cur_frm.fields_dict['select_print_heading'].get_query = function (doc, cdt, cdn) {
 	return {
 		filters: [
 			['Print Heading', 'docstatus', '!=', '2']
@@ -374,7 +384,7 @@ cur_frm.fields_dict['select_print_heading'].get_query = function(doc, cdt, cdn) 
 	}
 }
 
-cur_frm.fields_dict['items'].grid.get_field('bom').get_query = function(doc, cdt, cdn) {
+cur_frm.fields_dict['items'].grid.get_field('bom').get_query = function (doc, cdt, cdn) {
 	var d = locals[cdt][cdn]
 	return {
 		filters: [
@@ -387,7 +397,7 @@ cur_frm.fields_dict['items'].grid.get_field('bom').get_query = function(doc, cdt
 
 frappe.provide("erpnext.buying");
 
-frappe.ui.form.on("Purchase Receipt", "is_subcontracted", function(frm) {
+frappe.ui.form.on("Purchase Receipt", "is_subcontracted", function (frm) {
 	if (frm.doc.is_old_subcontracting_flow) {
 		erpnext.buying.get_default_bom(frm);
 	}
@@ -396,32 +406,32 @@ frappe.ui.form.on("Purchase Receipt", "is_subcontracted", function(frm) {
 });
 
 frappe.ui.form.on('Purchase Receipt Item', {
-	item_code: function(frm, cdt, cdn) {
+	item_code: function (frm, cdt, cdn) {
 		var d = locals[cdt][cdn];
-		frappe.db.get_value('Item', {name: d.item_code}, 'sample_quantity', (r) => {
+		frappe.db.get_value('Item', { name: d.item_code }, 'sample_quantity', (r) => {
 			frappe.model.set_value(cdt, cdn, "sample_quantity", r.sample_quantity);
 			validate_sample_quantity(frm, cdt, cdn);
 		});
 	},
-	qty: function(frm, cdt, cdn) {
+	qty: function (frm, cdt, cdn) {
 		validate_sample_quantity(frm, cdt, cdn);
 	},
-	sample_quantity: function(frm, cdt, cdn) {
+	sample_quantity: function (frm, cdt, cdn) {
 		validate_sample_quantity(frm, cdt, cdn);
 	},
-	batch_no: function(frm, cdt, cdn) {
+	batch_no: function (frm, cdt, cdn) {
 		validate_sample_quantity(frm, cdt, cdn);
 	},
 });
 
-cur_frm.cscript['Make Stock Entry'] = function() {
+cur_frm.cscript['Make Stock Entry'] = function () {
 	frappe.model.open_mapped_doc({
 		method: "erpnext.stock.doctype.purchase_receipt.purchase_receipt.make_stock_entry",
 		frm: cur_frm,
 	})
 }
 
-var validate_sample_quantity = function(frm, cdt, cdn) {
+var validate_sample_quantity = function (frm, cdt, cdn) {
 	var d = locals[cdt][cdn];
 	if (d.sample_quantity && d.qty) {
 		frappe.call({
@@ -438,3 +448,42 @@ var validate_sample_quantity = function(frm, cdt, cdn) {
 		});
 	}
 };
+
+
+frappe.ui.form.on('Purchase Taxes and Charges', {
+	make_journal_entry: function (frm, cdt, cdn) {
+		let row = locals[cdt][cdn]
+		frappe.call({
+			method: "make_journal_entry",
+			doc: frm.doc,
+			args: row,
+			callback: function (r) {
+				if (r.message) {
+					console.log(r.message)
+					frappe.model.set_value(cdt, cdn, "journal_entry", r.message);
+					frm.refresh_field("taxes")
+					frm.dirty()
+				}
+			}
+		})
+	},
+
+
+	// item_code: function (frm, cdt, cdn) {
+	// 	var d = locals[cdt][cdn];
+	// 	frappe.db.get_value('Item', { name: d.item_code }, 'sample_quantity', (r) => {
+	// 		frappe.model.set_value(cdt, cdn, "sample_quantity", r.sample_quantity);
+	// 		validate_sample_quantity(frm, cdt, cdn);
+	// 	});
+	// },
+
+	// qty: function (frm, cdt, cdn) {
+	// 	validate_sample_quantity(frm, cdt, cdn);
+	// },
+	// sample_quantity: function (frm, cdt, cdn) {
+	// 	validate_sample_quantity(frm, cdt, cdn);
+	// },
+	// batch_no: function (frm, cdt, cdn) {
+	// 	validate_sample_quantity(frm, cdt, cdn);
+	// },
+});

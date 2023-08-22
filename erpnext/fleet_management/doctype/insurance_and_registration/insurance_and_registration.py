@@ -44,8 +44,8 @@ class InsuranceandRegistration(Document):
 			frappe.throw(_("Amount should be greater than zero"))
 			
 		default_bank_account = frappe.db.get_value("Branch", self.branch,'expense_bank_account')
-		imprest_advance_account = frappe.db.get_value("company", self.company, "imprest_advance_account")
-		if self.settoe_imprest_advance == 1 and not imprest_advance_account:
+		imprest_advance_account = frappe.db.get_value("Company", self.company, "imprest_advance_account")
+		if self.settle_imprest_advance == 1 and not imprest_advance_account:
 			frappe.throw("Please set Imprest Advance Account in company settings")
 		# Posting Journal Entry
 		je = frappe.new_doc("Journal Entry")
@@ -63,8 +63,8 @@ class InsuranceandRegistration(Document):
 		posting_date
 		je.update({
 			"doctype": "Journal Entry",
-			"voucher_type": "Bank Entry",
-			"naming_series": "Bank Payment Voucher",
+			"voucher_type": "Bank Entry" if self.settle_imprest_advance == 0 else "Journal Entry",
+			"naming_series": "Bank Payment Voucher" if self.settle_imprest_advance == 0 else "Journal Voucher",
 			"title": args.type + " Charge - " + self.equipment,
 			"user_remark": "Note: " + args.type + " Charge paid against Vehicle " + self.equipment,
 			"posting_date": posting_date,

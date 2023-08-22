@@ -365,7 +365,7 @@ class StockController(AccountsController):
 				"fiscal_year": get_fiscal_year(self.posting_date, company=self.company)[0],
 				"voucher_type": self.doctype,
 				"voucher_no": self.name,
-				"voucher_detail_no": d.name,
+				"voucher_detail_no": d.get("name"),
 				"actual_qty": (self.docstatus == 1 and 1 or -1) * flt(d.get("stock_qty")),
 				"stock_uom": frappe.db.get_value(
 					"Item", args.get("item_code") or d.get("item_code"), "stock_uom"
@@ -388,7 +388,8 @@ class StockController(AccountsController):
 		# To handle delivery note and sales invoice
 		if row.get("item_row"):
 			row = row.get("item_row")
-
+		if self.doctype in ("POL Receive","POL Issue"):
+			row = self
 		dimensions = get_evaluated_inventory_dimension(row, sl_dict, parent_doc=self)
 		for dimension in dimensions:
 			if not dimension:

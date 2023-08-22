@@ -15,6 +15,8 @@
   "dv_no",
   "tax_id",
   "tax_withholding_category",
+  "settle_project_imprest",
+  "imprest_party",
   "column_break1",
   "title",
   "company",
@@ -1456,13 +1458,30 @@
    "fieldname": "dv_no",
    "fieldtype": "Data",
    "label": "DRC No."
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "description": "To settle project imprest.",
+   "fieldname": "settle_project_imprest",
+   "fieldtype": "Check",
+   "label": "Settle Project Imprest"
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.settle_project_imprest == 1",
+   "fieldname": "imprest_party",
+   "fieldtype": "Link",
+   "label": "Imprest Party",
+   "mandatory_depends_on": "eval:doc.settle_project_imprest == 1",
+   "options": "Employee"
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 204,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-18 09:24:24.246956",
+ "modified": "2023-08-17 09:50:47.896199",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Purchase Invoice",

@@ -42,6 +42,7 @@
   "probation_end_date",
   "temporary_end_date",
   "increment_cycle",
+  "signature",
   "promotion_cycle",
   "promotion_due_date",
   "erpnext_user",
@@ -1024,13 +1025,18 @@
    "fieldname": "evaluators",
    "fieldtype": "Table",
    "options": "Performance Evaluator"
+  },
+  {
+   "fieldname": "signature",
+   "fieldtype": "Attach Image",
+   "label": "Signature"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-08-01 14:12:35.413385",
+ "modified": "2023-08-17 14:56:32.821188",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",

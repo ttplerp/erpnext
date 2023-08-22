@@ -27,6 +27,9 @@ class MBEntry(Document):
 	def on_submit(self):
 		self.validate_boq_items()
 		self.update_boq()
+	
+	# def before_update_after_submit(self):
+	# 	frappe.throw("Here")
 
 	def before_cancel(self):
 		self.set_status()

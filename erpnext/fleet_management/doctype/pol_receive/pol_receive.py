@@ -26,19 +26,74 @@ class POLReceive(StockController):
 		# self.balance_check()
 
 	def on_submit(self):
+		if self.direct_consumption == 0 and self.receive_in_barrel == 1:
+			self.update_stock_ledger()
 		self.update_pol_expense()
 		self.make_pol_entry()
 		self.post_journal_entry()
 		# self.make_gl_entries()
 		
 	def before_cancel(self):
+		if self.direct_consumption == 0 and self.receive_in_barrel == 1:
+			self.update_stock_ledger()
+			self.cancel_je()
 		self.delete_pol_entry()
+
+	def cancel_je(self):
+		if self.journal_entry:
+			je = frappe.get_doc("Journal Entry", self.journal_entry)
+			if frappe.db.get_value("Journal Entry", self.journal_entry, "docstatus") == 1:
+				je.flags.ignore_permissions = 1
+				je.cancel()
+			elif frappe.db.get_value("Journal Entry", self.journal_entry, "docstatus") == 0:
+				for a in je.accounts:
+					child_doc = frappe.get_doc("Journal Entry Account", a.name)
+					child_doc.db_set("reference_type", None)
+					child_doc.db_set("reference_name", None)
+				frappe.db.commit()
+				frappe.db.sql("""
+					delete from `tabJournal Entry` where name = '{}'
+				""".format(self.journal_entry))
+				frappe.db.sql("""
+					delete from `tabJournal Entry Account` where parent = '{}'
+				""".format(self.journal_entry))
+
+
 
 	def on_cancel(self):
 		self.update_pol_expense()
 		self.delete_pol_entry()
-		self.post_journal_entry()
 		# self.make_gl_entries()
+
+	def update_stock_ledger(self):
+		sl_entries = []
+		# finished_item_row = self.get_finished_item_row()
+
+		# make sl entries for source warehouse first
+		# self.get_sle_for_source_warehouse(sl_entries, finished_item_row)
+
+		# SLE for target warehouse
+		self.get_sle_for_target_warehouse(sl_entries)
+
+		# reverse sl entries if cancel
+		if self.docstatus == 2:
+			sl_entries.reverse()
+
+		self.make_sl_entries(sl_entries)
+
+	def get_sle_for_target_warehouse(self, sl_entries):
+			if cstr(self.warehouse):
+				sle = self.get_sl_entries(
+					{"item_code":self.pol_type, "name":self.name},
+					{
+						"warehouse": cstr(self.warehouse),
+						"actual_qty": flt(self.qty),
+						"incoming_rate": flt(self.rate),
+						"valuation_rate":flt(self.rate),
+					},
+				)
+
+				sl_entries.append(sle)
 
 	# def balance_check(self):
 	# 	total_balance = 0
@@ -51,10 +106,11 @@ class POLReceive(StockController):
 		if not self.total_amount:
 			frappe.throw(_("Amount should be greater than zero"))
 		credit_account = frappe.get_value("Company", self.company, "default_bank_account")
-		if self.settle_imprest_advance:
+		if self.settle_imprest_advance == 1:
 			credit_account = frappe.get_value("Company", self.company, "imprest_advance_account")
 		debit_account = frappe.db.get_value("Equipment Category", self.equipment_category, "r_m_expense_account")
-
+		if not debit_account and self.receive_in_barrel==1:
+			debit_account = frappe.db.get_value("Warehouse", self.warehouse, "account")
 		# Posting Journal Entry
 		je = frappe.new_doc("Journal Entry")
 		je.flags.ignore_permissions=1
@@ -63,6 +119,7 @@ class POLReceive(StockController):
 			accounts.append({
 					"account": credit_account,
 					"credit_in_account_currency": flt(self.total_amount,2),
+					"credit": flt(self.total_amount,2),
 					"cost_center": self.cost_center,
 					"reference_type": "POL Receive",
 					"reference_name": self.name,
@@ -72,6 +129,7 @@ class POLReceive(StockController):
 			accounts.append({
 					"account": credit_account,
 					"credit_in_account_currency": flt(self.total_amount,2),
+					"credit": flt(self.total_amount,2),
 					"cost_center": self.cost_center,
 					"reference_type": "POL Receive",
 					"reference_name": self.name,
@@ -82,6 +140,7 @@ class POLReceive(StockController):
 		accounts.append({
 				"account": debit_account,
 				"debit_in_account_currency": flt(self.total_amount,2),
+				"debit": flt(self.total_amount,2),
 				"cost_center": self.cost_center,
 				"business_activity": get_default_ba
 			})
@@ -89,16 +148,17 @@ class POLReceive(StockController):
 		je.update({
 			"doctype": "Journal Entry",
 			"voucher_type": "Journal Entry",
-			"naming_series": "Bank Payment Voucher",
-			"title": "POL Receive - " + self.equipment,
-			"user_remark": "Note: " + "POL Receive - " + self.equipment,
+			"naming_series": "Bank Payment Voucher" if self.settle_imprest_advance == 0 else "Journal Voucher",
+			"title": "POL Receive - " + self.equipment if self.receive_in_barrel == 0 else "",
+			"user_remark": "Note: " + "POL Receive - " + self.equipment if self.receive_in_barrel == 0 else "",
 			"posting_date": self.posting_date,
 			"company": self.company,
 			"total_amount_in_words": money_in_words(self.total_amount),
 			"branch": self.branch,
-			"accounts":accounts
+			"accounts":accounts,
+			"total_debit": flt(self.total_amount,2),
+			"total_credit": flt(self.total_amount,2)
 		})
-
 		# frappe.throw('{}'.format(accounts))
 		je.insert()
 		#Set a reference to the claim journal entry
@@ -215,7 +275,7 @@ class POLReceive(StockController):
 		if flt(self.qty) <= 0 or flt(self.rate) <= 0:
 			frappe.throw("Quantity and Rate should be greater than 0")
 
-		if not self.equipment_category:
+		if not self.equipment_category and self.receive_in_barrel == 0:
 			frappe.throw("Vehicle Category Missing")
 
 	@frappe.whitelist()
@@ -271,7 +331,7 @@ class POLReceive(StockController):
 	
 	def make_pol_entry(self):
 		container = frappe.db.get_value("Equipment Type",self.equipment_type, "is_container")
-		if not self.direct_consumption and not container:
+		if not self.direct_consumption and not container and self.receive_in_barrel == 0:
 			frappe.throw("Equipment {} is not a container".format(frappe.bold(self.equipment)))
 
 		if self.direct_consumption:

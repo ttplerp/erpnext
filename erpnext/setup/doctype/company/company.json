@@ -36,6 +36,7 @@
   "section_break_28",
   "create_chart_of_accounts_based_on",
   "existing_company",
+  "seal",
   "column_break_26",
   "chart_of_accounts",
   "charts_section",
@@ -1106,6 +1107,11 @@
    "fieldtype": "Link",
    "label": "Other Advance Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "seal",
+   "fieldtype": "Attach Image",
+   "label": "Company Seal"
   }
  ],
  "icon": "fa fa-building",
@@ -1113,7 +1119,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2023-08-01 10:58:26.529932",
+ "modified": "2023-08-18 14:49:55.230921",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",

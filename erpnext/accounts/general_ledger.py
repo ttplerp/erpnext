@@ -75,8 +75,7 @@ def validate_disabled_accounts(gl_map):
 
 
 def validate_accounting_period(gl_map):
-	accounting_periods = frappe.db.sql(
-		""" SELECT
+	sql = """ SELECT
 			ap.name as name
 		FROM
 			`tabAccounting Period` ap, `tabClosed Document` cd
@@ -86,8 +85,23 @@ def validate_accounting_period(gl_map):
 			AND cd.closed = 1
 			AND cd.document_type = %(voucher_type)s
 			AND %(date)s between ap.start_date and ap.end_date
-			""",
-		{
+		""", {
+			"date": gl_map[0].posting_date,
+			"company": gl_map[0].company,
+			"voucher_type": gl_map[0].voucher_type,
+		}
+	accounting_periods = frappe.db.sql(
+	""" SELECT
+			ap.name as name
+		FROM
+			`tabAccounting Period` ap, `tabClosed Document` cd
+		WHERE
+			ap.name = cd.parent
+			AND ap.company = %(company)s
+			AND cd.closed = 1
+			AND cd.document_type = %(voucher_type)s
+			AND %(date)s between ap.start_date and ap.end_date
+		""", {
 			"date": gl_map[0].posting_date,
 			"company": gl_map[0].company,
 			"voucher_type": gl_map[0].voucher_type,

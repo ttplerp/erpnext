@@ -82,7 +82,11 @@ class Logbook(Document):
 		self.total_hours = round(total_hours,1)
 		self.total_km_reading = round(total_km,1)
 		self.total_idle_hour = round(tot_idle,1)
-
+	
+	@frappe.whitelist()
+	def get_project(self):
+		frappe.msgprint(str(self.branch))
+		pass
 @frappe.whitelist()
 def make_hire_charge_invoice(source_name, target_doc=None):
 	from frappe.model.mapper import get_mapped_doc

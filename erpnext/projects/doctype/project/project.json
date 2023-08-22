@@ -117,11 +117,11 @@
    "options": "Yes\nNo"
   },
   {
-   "default": "Task Completion",
+   "default": "Task Weight",
    "fieldname": "percent_complete_method",
    "fieldtype": "Select",
    "label": "% Complete Method",
-   "options": "Manual\nTask Completion\nTask Progress\nTask Weight"
+   "options": "Task Weight\nTash Completion"
   },
   {
    "bold": 1,
@@ -384,6 +384,7 @@
    "collapsible": 1,
    "fieldname": "monitor_progress",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Monitor Progress"
   },
   {
@@ -546,6 +547,7 @@
   {
    "fieldname": "project_value",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Project value"
   }
  ],
@@ -554,7 +556,7 @@
  "index_web_pages_for_search": 1,
  "links": [],
  "max_attachments": 4,
- "modified": "2023-07-28 12:18:07.220942",
+ "modified": "2023-08-04 15:10:26.073965",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project",

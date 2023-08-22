@@ -21,6 +21,7 @@
   "party",
   "credit_account",
   "settle_imprest_advance",
+  "imprest_party",
   "section_break_2",
   "items",
   "checked_by",
@@ -250,7 +251,7 @@
    "fieldname": "repair_and_services_type",
    "fieldtype": "Select",
    "label": "Repair and Services Type",
-   "options": "\nPreventive Maintenance\nProactive Maintenance\nBreakdown Maintenance"
+   "options": "\nPreventive Maintenance\nRegular Maintenance\nBreakdown Maintenance"
   },
   {
    "fetch_from": "equipment.equipment_category",
@@ -288,12 +289,19 @@
    "fieldname": "settle_imprest_advance",
    "fieldtype": "Check",
    "label": "Settle Imprest Advance Account"
+  },
+  {
+   "depends_on": "eval:doc.settle_imprest_advance == 1;",
+   "fieldname": "imprest_party",
+   "fieldtype": "Link",
+   "label": "Imprest Party",
+   "options": "Employee"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-08-04 10:33:39.949341",
+ "modified": "2023-08-15 15:16:47.497721",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Repair And Service Invoice",

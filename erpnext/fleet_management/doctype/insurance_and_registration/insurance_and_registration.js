@@ -2,50 +2,50 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Insurance and Registration', {
-	onload: function(frm) {
+	onload: function (frm) {
 		if (!frm.doc.posting_date) {
 			frm.set_value("posting_date", get_today());
-		}	
+		}
 	},
-	settle_imprest_advance: function(frm){
-		if(frm.doc.settle_imprest_advance == 0 || frm.doc.settle_imprest_advance == undefined){
+	settle_imprest_advance: function (frm) {
+		if (frm.doc.settle_imprest_advance == 0 || frm.doc.settle_imprest_advance == undefined) {
 			frm.set_value("imprest_party", null);
 			frm.refresh_field("imprest_party");
 		}
 	},
-	refresh:function(frm){
-		frm.set_query("equipment",function(doc) {
+	refresh: function (frm) {
+		frm.set_query("equipment", function (doc) {
 			return {
 				filters: {
 					"hired_equipment": 0,
 					"company": doc.company,
-					"enabled":1
+					"enabled": 1
 				}
 			}
 		})
 		frm.add_custom_button(
 			__("Journal Entry"),
 			function () {
-			  frappe.route_options = {
-				"Journal Entry Account.reference_type": frm.doc.doctype,
-				"Journal Entry Account.reference_name": frm.doc.name,
-				company: frm.doc.company,
-			  };
-			  frappe.set_route("List", "Journal Entry");
+				frappe.route_options = {
+					"Journal Entry Account.reference_type": frm.doc.doctype,
+					"Journal Entry Account.reference_name": frm.doc.name,
+					company: frm.doc.company,
+				};
+				frappe.set_route("List", "Journal Entry");
 			},
 			__("View")
-		  );
+		);
 	},
 });
-frappe.ui.form.on("Insurance Details", {	
-	"post_bank_entry":function(frm, cdt, cdn){
+frappe.ui.form.on("Insurance Details", {
+	"post_bank_entry": function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn]
 		frappe.call({
-			method:"create_je",
-			doc:frm.doc,
-			args:row,
-			callback:function(r){
-				if (r.message){
+			method: "create_je",
+			doc: frm.doc,
+			args: row,
+			callback: function (r) {
+				if (r.message) {
 					frappe.model.set_value(cdt, cdn, "journal_entry", r.message);
 					frm.refresh_field("insurance_item")
 					frm.dirty()
@@ -54,21 +54,21 @@ frappe.ui.form.on("Insurance Details", {
 		})
 	},
 });
-frappe.ui.form.on("Bluebook and Emission", {	
-	"amount": function(frm, cdt, cdn) {
+frappe.ui.form.on("Bluebook and Emission", {
+	"amount": function (frm, cdt, cdn) {
 		set_total_amount(frm, cdt, cdn);
 	},
-	"penalty_amount": function(frm, cdt, cdn){
+	"penalty_amount": function (frm, cdt, cdn) {
 		set_total_amount(frm, cdt, cdn);
 	},
-	"post_bank_entry":function(frm, cdt, cdn){
+	"post_bank_entry": function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn]
 		frappe.call({
-			method:"create_je",
-			doc:frm.doc,
-			args:row,
-			callback:function(r){
-				if (r.message){
+			method: "create_je",
+			doc: frm.doc,
+			args: row,
+			callback: function (r) {
+				if (r.message) {
 					frappe.model.set_value(cdt, cdn, "journal_entry", r.message);
 					frm.refresh_field("items")
 					frm.dirty()
@@ -93,19 +93,19 @@ frappe.ui.form.on("Bluebook and Emission", {
 	// 			}})
 	// 	}
 	// }
-}); 
-var set_total_amount = function(frm, cdt, cdn){
+});
+var set_total_amount = function (frm, cdt, cdn) {
 	var item = locals[cdt][cdn];
-	if(flt(item.amount) > 0){
-		if (flt(item.penalty_amount) > 0){
+	if (flt(item.amount) > 0) {
+		if (flt(item.penalty_amount) > 0) {
 			var total = 0
-			total = flt(item.amount)+flt(item.penalty_amount)
+			total = flt(item.amount) + flt(item.penalty_amount)
 			frappe.model.set_value(cdt, cdn, "total_amount", total);
 		}
-		else{
+		else {
 			frappe.model.set_value(cdt, cdn, "total_amount", item.amount);
 		}
-	}else{
+	} else {
 		frappe.throw("Amount Cannot be less than 0")
 	}
 

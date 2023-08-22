@@ -276,12 +276,12 @@
   {
    "fieldname": "sec_break",
    "fieldtype": "Section Break",
-   "label": "Rebate / Material Adjustment"
+   "label": "Price Adjustment"
   },
   {
    "fieldname": "rebate",
    "fieldtype": "Table",
-   "label": "Rebate",
+   "label": "Price Adjustments",
    "options": "Project Invoice Rebate Item"
   },
   {
@@ -457,7 +457,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-26 09:56:51.260425",
+ "modified": "2023-08-17 11:21:59.237861",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Project Invoice",

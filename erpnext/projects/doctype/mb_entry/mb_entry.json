@@ -21,6 +21,7 @@
   "boq_type",
   "claim_percent",
   "subcontract",
+  "change_by_customer",
   "section_break_10",
   "check_all",
   "mb_entry_boq",
@@ -225,12 +226,19 @@
    "fieldtype": "Percent",
    "label": "Claim Percent",
    "precision": "2"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "change_by_customer",
+   "fieldtype": "Check",
+   "label": "Change By Customer"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-08-01 15:00:35.816869",
+ "modified": "2023-08-17 11:50:47.916269",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "MB Entry",

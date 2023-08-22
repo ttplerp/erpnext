@@ -448,8 +448,8 @@ class HireChargeInvoice(AccountsController):
 		je.flags.ignore_permissions=1
 		je.update({
 			"doctype": "Journal Entry",
-			"voucher_type": "Bank Entry",
-			"naming_series": "Bank Payment Voucher",
+			"voucher_type": "Bank Entry" if self.settle_imprest_advance == 0 else "Journal Entry",
+			"naming_series": "Bank Payment Voucher" if self.settle_imprest_advance == 0 else "Journal Voucher",
 			"title": "Hire Charge Invoice "+ self.party,
 			"user_remark": "Note: " + "Hire Charge Payment - " + self.party if self.party_type=="Supplier" else "Note: " + "Hire Charge Receivable - " + self.party,
 			"posting_date": self.posting_date,
@@ -470,12 +470,20 @@ class HireChargeInvoice(AccountsController):
 				"reference_type": "Hire Charge Invoice",
 				"reference_name": self.name
 			})
-			if self.
-			je.append("accounts",{
-				"account": bank_account,
-				"credit_in_account_currency": flt(self.payable_amount,2),
-				"cost_center": self.cost_center
-			})
+			if self.settle_imprest_advance == 0:
+				je.append("accounts",{
+					"account": bank_account,
+					"credit_in_account_currency": flt(self.payable_amount,2),
+					"cost_center": self.cost_center
+				})
+			else:
+				je.append("accounts",{
+					"account": imprest_advance_account,
+					"party_type": "Employee",
+					"party": self.imprest_party,
+					"credit_in_account_currency": flt(self.payable_amount,2),
+					"cost_center": self.cost_center
+				})
 		else:
 			je.append("accounts",{
 				"account": credit_account,
@@ -487,20 +495,11 @@ class HireChargeInvoice(AccountsController):
 				"reference_type": "Hire Charge Invoice",
 				"reference_name": self.name
 			})
-			if self.settle_imprest_advance == 1:
-				je.append("accounts",{
-					"account": imprest_advance_account,
-					"debit_in_account_currency": flt(self.payable_amount,2),
-					"party_type": "Employee",
-					"party": self.imprest_party,
-					"cost_center": self.cost_center if cint(self.is_internal_customer) == 0 else self.party_cost_center
-				})
-			else:
-				je.append("accounts",{
-					"account": bank_account,
-					"debit_in_account_currency": flt(self.payable_amount,2),
-					"cost_center": self.cost_center if cint(self.is_internal_customer) == 0 else self.party_cost_center
-				})
+			je.append("accounts",{
+				"account": bank_account,
+				"debit_in_account_currency": flt(self.payable_amount,2),
+				"cost_center": self.cost_center if cint(self.is_internal_customer) == 0 else self.party_cost_center
+			})
 
 		je.insert()
 		#Set a reference to the claim journal entry

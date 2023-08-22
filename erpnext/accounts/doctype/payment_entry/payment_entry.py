@@ -320,7 +320,7 @@ class PaymentEntry(AccountsController):
 
 	def validate_account_type(self, account, account_types):
 		account_type = frappe.db.get_value("Account", account, "account_type")
-		if account_type not in account_types:
+		if account_type not in account_types and not self.settle_project_imprest:
 			frappe.msgprint(_("Account Type for {0} must be {1}").format(account, comma_or(account_types)),raise_exception=True)
 
 	def set_exchange_rate(self, ref_doc=None):
@@ -948,13 +948,13 @@ class PaymentEntry(AccountsController):
 				gl_entries.append(gle)
 
 	def add_bank_gl_entries(self, gl_entries):
-		if self.payment_type in ("Pay", "Internal Transfer"):
+		if cint(self.settle_project_imprest) == 1:
 			gl_entries.append(
 				self.get_gl_dict(
 					{
 						"account": self.paid_from,
 						"account_currency": self.paid_from_account_currency,
-						"against": self.party if self.payment_type == "Pay" else self.paid_to,
+						"against": self.imprest_party,
 						"credit_in_account_currency": self.paid_amount,
 						"credit": self.base_paid_amount,
 						"cost_center": self.cost_center,
@@ -963,20 +963,36 @@ class PaymentEntry(AccountsController):
 					item=self,
 				)
 			)
-		if self.payment_type in ("Receive", "Internal Transfer"):
-			gl_entries.append(
-				self.get_gl_dict(
-					{
-						"account": self.paid_to,
-						"account_currency": self.paid_to_account_currency,
-						"against": self.party if self.payment_type == "Receive" else self.paid_from,
-						"debit_in_account_currency": self.received_amount,
-						"debit": self.base_received_amount,
-						"cost_center": self.cost_center,
-					},
-					item=self,
+		else:
+			if self.payment_type in ("Pay", "Internal Transfer"):
+				gl_entries.append(
+					self.get_gl_dict(
+						{
+							"account": self.paid_from,
+							"account_currency": self.paid_from_account_currency,
+							"against": self.party if self.payment_type == "Pay" else self.paid_to,
+							"credit_in_account_currency": self.paid_amount,
+							"credit": self.base_paid_amount,
+							"cost_center": self.cost_center,
+							"post_net_value": True,
+						},
+						item=self,
+					)
 				)
-			)
+			if self.payment_type in ("Receive", "Internal Transfer"):
+				gl_entries.append(
+					self.get_gl_dict(
+						{
+							"account": self.paid_to,
+							"account_currency": self.paid_to_account_currency,
+							"against": self.party if self.payment_type == "Receive" else self.paid_from,
+							"debit_in_account_currency": self.received_amount,
+							"debit": self.base_received_amount,
+							"cost_center": self.cost_center,
+						},
+						item=self,
+					)
+				)
 
 	def add_tax_gl_entries(self, gl_entries):
 		for d in self.get("taxes"):

@@ -7,6 +7,6 @@ def get_data():
 			"Repair And Service": "repair_and_services",
 		},
 		"transactions": [
-			{"label": _("Related Transaction"), "items": ["Payment Entry","Repair And Service"]},
+			{"label": _("Related Transaction"), "items": ["Payment Entry","Journal Entry","Repair And Service"]},
 		],
 	}

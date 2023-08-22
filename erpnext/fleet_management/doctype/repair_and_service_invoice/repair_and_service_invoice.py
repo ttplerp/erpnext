@@ -19,15 +19,25 @@ class RepairAndServiceInvoice(AccountsController):
 			self.credit_account = get_party_account(self.party_type,self.party,self.company)
 
 	def on_submit(self):
-		self.make_gl_entry()
+		# self.make_gl_entry()
 		self.update_repair_and_service()
-		# self.post_journal_entry()
+		self.post_journal_entry()
+
+	def before_cancel(self):
+		self.check_journal_entry()
 
 	def on_cancel(self):
 		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
-		self.make_gl_entry()
+		# self.make_gl_entry()
 		self.update_repair_and_service()
 
+	def check_journal_entry(self):
+		if self.journal_entry:
+			if frappe.db.get_value("Journal Entry", self.journal_entry, "docstatus") < 2:
+				je = frappe.get_doc("journal Entry", self.journal_entry)
+				je.flags.ignore_permissions = True
+				je.cancel()
+	
 	def update_repair_and_service(self):
 		if not self.repair_and_services:
 			return
@@ -124,15 +134,23 @@ class RepairAndServiceInvoice(AccountsController):
 			frappe.throw("Credit Account is mandatory")
 	
 		bank_account = frappe.db.get_value("Branch",self.branch, "expense_bank_account")
+		expense_account = frappe.db.get_value("Equipment Category", self.equipment_category, "r_m_expense_account")
+		if not expense_account:
+			expense_account = frappe.db.get_value("Company", self.company, "repair_and_service_expense_account")
+		imprest_advance_account = frappe.db.get_value("Company",self.company, "imprest_advance_account")
+		if not expense_account:
+			frappe.throw(_("Default Repair and Service expense account is not set in company {}".format(frappe.bold(self.company))))
 		if not bank_account:
 			frappe.throw(_("Default bank account is not set in company {}".format(frappe.bold(self.company))))
 		# Posting Journal Entry
+		if self.settle_imprest_advance == 1 and not imprest_advance_account:
+			frappe.throw("Imprest Advance is not set in Company settings")
 		je = frappe.new_doc("Journal Entry")
 		je.flags.ignore_permissions=1
 		je.update({
 			"doctype": "Journal Entry",
-			"voucher_type": "Bank Entry",
-			"naming_series": "Bank Payment Voucher",
+			"voucher_type": "Bank Entry" if self.settle_imprest_advance == 0 else "Journal Entry",
+			"naming_series": "Bank Payment Voucher" if self.settle_imprest_advance == 0 else "Journal Voucher",
 			"title": "Transporter Payment "+ self.party,
 			"user_remark": "Note: " + "Repair And Service - " + self.party,
 			"posting_date": self.posting_date,
@@ -143,7 +161,7 @@ class RepairAndServiceInvoice(AccountsController):
 			"referece_doctype":self.name
 		})
 		je.append("accounts",{
-			"account": credit_account,
+			"account": expense_account,
 			"debit_in_account_currency": self.outstanding_amount,
 			"cost_center": self.cost_center,
 			"party_check": 1,
@@ -153,7 +171,9 @@ class RepairAndServiceInvoice(AccountsController):
 			"reference_name": self.name
 		})
 		je.append("accounts",{
-			"account": bank_account,
+			"account": bank_account if self.settle_imprest_advance == 0 else imprest_advance_account,
+			"party_type": "Employee" if self.settle_imprest_advance == 1 else None,
+			"party": self.imprest_party if self.settle_imprest_advance == 1 else None,
 			"credit_in_account_currency": self.outstanding_amount,
 			"cost_center": self.cost_center
 		})

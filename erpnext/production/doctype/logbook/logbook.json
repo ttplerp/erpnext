@@ -9,6 +9,7 @@
  "field_order": [
   "equipment_hiring_form",
   "branch",
+  "project",
   "from_date",
   "column_break_2",
   "posting_date",
@@ -224,11 +225,17 @@
    "fieldtype": "Data",
    "label": "Company",
    "read_only": 1
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "project",
+   "options": "Project"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-17 10:59:37.796281",
+ "modified": "2023-08-02 10:01:07.768391",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Logbook",

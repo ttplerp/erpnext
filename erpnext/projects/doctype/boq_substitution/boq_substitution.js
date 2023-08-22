@@ -78,7 +78,7 @@ var get_boq_list = function (frm) {
                             console.log(row)
                             row.boq_item_name = boq['name'];
                             row.boq_code = boq['boq_code'];
-                            row.item = boq['item'];
+                            row.item_name = boq['item'];
                             row.uom = boq['uom'];
                             row.is_group = boq['is_group'];
                             row.balance_quantity = boq['balance_quantity'];

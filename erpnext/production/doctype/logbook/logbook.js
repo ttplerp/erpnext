@@ -7,18 +7,37 @@ frappe.ui.form.on('Logbook', {
 			cur_frm.add_custom_button(__('Create Hire Charge Invoice'), function() {
 					frm.events.make_hire_charge_invoice(frm)
 				}, __("Create"));
-		}
+		};
 	},
+	// onload: function (frm) { 
+	// 	project = frappe.db.get_value("Project",{'branch':doc.frm.branch})
+	// },
 	branch:function(frm){		
-		frm.set_query("equipment_hiring_form", function() {
+		frm.set_query("equipment_hiring_form", function () {
 			return {
 				filters: {
-					branch : frm.doc.branch,
-					disabled:0,
-					docstatus :1
+					branch: frm.doc.branch,
+					disabled: 0,
+					docstatus: 1
 				}
 			}
-		})
+		});
+		frm.set_query("project", function () {
+			return {
+				filters: {
+					branch: frm.doc.branch
+				}
+			}
+		});
+		return frappe.call({
+			method: "get_project",
+			doc: frm.doc,
+			callback: function (r) {
+				frm.set_value("project", r.message);
+				frm.refresh_fields();
+			}
+		});
+		
 	},
 	make_hire_charge_invoice:function(frm){
 		frappe.model.open_mapped_doc({

@@ -166,7 +166,7 @@ class BOQSubstitution(Document):
 				else:
 					boq_item = frappe.get_doc("BOQ Item", d.boq_item_name)
 					boq_item.boq_code = d.boq_code
-					boq_item.item = d.item
+					boq_item.item = d.item_name
 					boq_item.uom = d.uom
 					boq_item.is_group = d.is_group
 					boq_item.no =  d.no

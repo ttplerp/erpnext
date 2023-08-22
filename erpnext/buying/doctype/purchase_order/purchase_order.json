@@ -239,7 +239,7 @@
    "depends_on": "eval:doc.docstatus===1",
    "fieldname": "order_confirmation_no",
    "fieldtype": "Data",
-   "label": "Order Confirmation No"
+   "label": "Dispatch No."
   },
   {
    "allow_on_submit": 1,
@@ -1197,7 +1197,7 @@
    "fieldtype": "Column Break"
   },
   {
-   "default": "Thanking You<br>\nYours Sincerely<br><br><br>\n\n\n\n\nTest Name<br>\nGeneral Manager-HRAD<br><br>\n\n\n\nCc:<br>\n<ol>\n  <li>GM, HRAD/PMD/RSLO for information;</li>\n  <li>Sr. Mines Manager, KGM for information;</li>\n  <li>Asst. Manager, AFD, RSLO, S/J for information;</li>\n <li>Procurement/Store Asst. for necessary action.</li>\n</ol>",
+   "default": "Test Name<br>\nGeneral Manager-HRAD<br><br>\n\n\n\nCc:<br>\n<ol>\n  <li>GM, HRAD/PMD/RSLO for information;</li>\n  <li>Sr. Mines Manager, KGM for information;</li>\n  <li>Asst. Manager, AFD, RSLO, S/J for information;</li>\n <li>Procurement/Store Asst. for necessary action.</li>\n</ol>",
    "fieldname": "po_footer_text",
    "fieldtype": "Text Editor",
    "label": "Purchase Order Footer"
@@ -1235,7 +1235,7 @@
  "idx": 105,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-27 15:40:47.549213",
+ "modified": "2023-08-18 15:02:32.528843",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Purchase Order",

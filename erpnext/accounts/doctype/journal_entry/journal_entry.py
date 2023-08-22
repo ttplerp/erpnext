@@ -99,35 +99,36 @@ class JournalEntry(AccountsController):
 
         self.clearance_date = None
 
-        self.validate_party()
-        self.validate_entries_for_advance()
-        self.validate_multi_currency()
-        self.set_amounts_in_company_currency()
-        self.validate_debit_credit_amount()
+        # self.validate_party()
+        # self.validate_entries_for_advance()
+        # self.validate_multi_currency()
+        # self.set_amounts_in_company_currency()
+        # self.validate_debit_credit_amount()
+        # self.validate_settlement()
 
-        # Do not validate while importing via data import
-        if not frappe.flags.in_import:
-            self.validate_total_debit_and_credit()
+        # # Do not validate while importing via data import
+        # if not frappe.flags.in_import:
+        #     self.validate_total_debit_and_credit()
 
-        if not frappe.flags.is_reverse_depr_entry:
-            self.validate_against_jv()
-            self.validate_stock_accounts()
+        # if not frappe.flags.is_reverse_depr_entry:
+        #     self.validate_against_jv()
+        #     self.validate_stock_accounts()
 
-        self.validate_reference_doc()
-        if self.docstatus == 0:
-            self.set_against_account()
-        self.create_remarks()
-        self.set_print_format_fields()
-        self.validate_credit_debit_note()
-        self.validate_empty_accounts_table()
-        self.set_account_and_party_balance()
-        self.validate_inter_company_accounts()
+        # self.validate_reference_doc()
+        # if self.docstatus == 0:
+        #     self.set_against_account()
+        # self.create_remarks()
+        # self.set_print_format_fields()
+        # self.validate_credit_debit_note()
+        # self.validate_empty_accounts_table()
+        # self.set_account_and_party_balance()
+        # self.validate_inter_company_accounts()
 
-        if self.docstatus == 0:
-            self.apply_tax_withholding()
+        # if self.docstatus == 0:
+        #     self.apply_tax_withholding()
 
-        if not self.title:
-            self.title = self.get_title()
+        # if not self.title:
+        #     self.title = self.get_title()
 
     def before_submit(self):
         self.update_transporter_invoice()
@@ -166,6 +167,25 @@ class JournalEntry(AccountsController):
 
     def get_title(self):
         return self.pay_to_recd_from or self.accounts[0].account
+
+    def validate_settlement(self):
+        for a in self.accounts:
+            if a.reference_type in (
+                "Insurance and Registration",
+                "Hire Charge Invoice",
+                "Repair And Service Invoice",
+                "POL Receive",
+            ):
+                if (
+                    frappe.db.get_value(
+                        a.reference_type, a.reference_name, "settle_imprest_advance"
+                    )
+                    == 1
+                    and self.mode_of_payment
+                ):
+                    frappe.throw(
+                        "Mode of Payment not applicable for settlement transaction"
+                    )
 
     def update_reference_document(self, cancel=0):
         if cint(cancel) == 0:
@@ -1249,6 +1269,7 @@ class JournalEntry(AccountsController):
 
     def make_gl_entries(self, cancel=0, adv_adj=0):
         from erpnext.accounts.general_ledger import make_gl_entries
+
         gl_map = self.build_gl_map()
         if self.voucher_type in ("Deferred Revenue", "Deferred Expense"):
             update_outstanding = "No"
