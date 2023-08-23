@@ -62,8 +62,9 @@ class PaymentEntry(AccountsController):
 		self.setup_party_account_field()
 		self.set_missing_values()
 		self.validate_payment_type()
-		self.validate_party_details()
-		self.validate_bank_accounts()
+		if self.mode_of_payment in ('Cash','Bank Payment', 'Cheque', 'ePayment'):
+			self.validate_party_details()
+			self.validate_bank_accounts()
 		self.set_exchange_rate()
 		self.validate_mandatory()
 		self.validate_reference_documents()
@@ -84,6 +85,7 @@ class PaymentEntry(AccountsController):
 		self.ensure_supplier_is_not_blocked()
 		self.set_status()
 		self.update_expense_claim()
+		self.validate_cost_center() # added for Mode of Payment Adjustment where cost center is changed
 
 	def on_submit(self):
 		if self.difference_amount:
@@ -95,6 +97,7 @@ class PaymentEntry(AccountsController):
 		self.set_status()
 		self.update_employee_advance()
 		self.update_expense_claim(submit=1)
+		# frappe.throw('STOP')
 
 	def on_cancel(self):
 		check_clearance_date(self.doctype, self.name)
@@ -114,6 +117,10 @@ class PaymentEntry(AccountsController):
 
 	def update_outstanding_amounts(self):
 		self.set_missing_ref_details(force=True)
+	
+	def validate_cost_center(self):
+		if self.mode_of_payment != "Adjustment":
+			self.cost_center = frappe.db.get_value('Branch', {'name': self.branch}, 'cost_center')
 
 	def update_employee_advance(self):
 		if self.references:
@@ -419,8 +426,7 @@ class PaymentEntry(AccountsController):
 				)
 				+ "<br><br>"
 				+ _("If this is undesirable please cancel the corresponding Payment Entry."),
-				title=_("Warning"),
-				indicator="orange",
+				title=_("Warning")
 			)
 		# msgprint changed to throw to prevent negative outstanding_amount
 		# for k, v in no_oustanding_refs.items():
@@ -873,7 +879,6 @@ class PaymentEntry(AccountsController):
 				},
 				item=self,
 			)
-
 			dr_or_cr = (
 				"credit" if erpnext.get_party_account_type(self.party_type) == "Receivable" else "debit"
 			)
@@ -882,6 +887,8 @@ class PaymentEntry(AccountsController):
 				cost_center = self.cost_center
 				if d.reference_doctype == "Sales Invoice" and not cost_center:
 					cost_center = frappe.db.get_value(d.reference_doctype, d.reference_name, "cost_center")
+				if d.reference_doctype == "Sales Invoice" and self.mode_of_payment == "Adjustment":
+					cost_center  = frappe.db.get_value("Branch", {"name": self.branch}, "cost_center")
 				gle = party_gl_dict.copy()
 				gle.update(
 					{
@@ -890,7 +897,7 @@ class PaymentEntry(AccountsController):
 						"cost_center": cost_center,
 					}
 				)
-
+				# frappe.throw(str(cost_center))
 				allocated_amount_in_company_currency = flt(
 					flt(d.allocated_amount) * flt(d.exchange_rate), self.precision("paid_amount")
 				)

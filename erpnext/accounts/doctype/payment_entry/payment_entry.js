@@ -81,12 +81,22 @@ frappe.ui.form.on('Payment Entry', {
 
 			var account_types = in_list(["Receive", "Internal Transfer"], frm.doc.payment_type) ?
 				["Bank", "Cash","Receivable"] : [frappe.boot.party_account_types[frm.doc.party_type]];
-			return {
-				filters: {
-					// "account_type": ["in", account_types],
-					"account_type": ["in", ["Bank", "Cash", "Payable", "Receivable"]],
-					"is_group": 0,
-					"company": frm.doc.company
+			if (frm.doc.mode_of_payment != "Adjustment"){
+				return {
+					filters: {
+						// "account_type": ["in", account_types],
+						"account_type": ["in", ["Bank", "Cash", "Payable", "Receivable"]],
+						"is_group": 0,
+						"company": frm.doc.company
+					}
+				}
+			}else{
+				return {
+					filters: {
+						"account_type": ["not in", ["Cash", "Bank"]],
+						"is_group": 0,
+						"company": frm.doc.company
+					}
 				}
 			}
 		});
@@ -296,6 +306,19 @@ frappe.ui.form.on('Payment Entry', {
 			if(frm.doc.mode_of_payment) {
 				frm.events.mode_of_payment(frm);
 			}
+		}
+	},
+	mode_of_payment: function (frm) {
+		if (frm.doc.mode_of_payment == 'Adjustment') {
+			frm.set_df_property("paid_from", "reqd", 0);
+			frm.set_df_property("paid_from_account_currency", "reqd", 0);
+			frm.refresh_field('paid_from');
+		} else {
+			frm.set_df_property("paid_from", "reqd", 1);
+			frm.set_df_property("paid_from_account_currency", "reqd", 1);
+			frm.toggle_display("paid_from", 1);
+			frm.toggle_display("paid_from_account_currency", 1);
+			frm.refresh_field('paid_from');
 		}
 	},
 
