@@ -372,6 +372,7 @@
   {
    "fieldname": "branch",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Branch",
    "oldfieldname": "branch",
    "oldfieldtype": "Link",
@@ -1037,7 +1038,7 @@
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-06-30 11:32:15.773606",
+ "modified": "2023-08-23 10:18:01.535151",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
@@ -1079,7 +1080,7 @@
    "write": 1
   }
  ],
- "search_fields": "employee_name, gender, designation, employment_type",
+ "search_fields": "employee_name, gender, designation, branch",
  "show_name_in_global_search": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
