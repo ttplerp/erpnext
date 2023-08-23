@@ -244,19 +244,19 @@ def get_columns():
 			"label": _("Net Block"),
 			"fieldtype": "Currency",
 			"width": 150
-		},
-		{
-			"fieldname": "opening_income_tax",
-			"label": _("Open IT Dep."),
-			"fieldtype": "Currency",
-			"width": 150
-		},
-		{
-			"fieldname": "it_dep_addition",
-			"label": _("IT Dep. During the Year"),
-			"fieldtype": "Currency",
-			"width": 150
-		},
+		}
+		# {
+		# 	"fieldname": "opening_income_tax",
+		# 	"label": _("Open IT Dep."),
+		# 	"fieldtype": "Currency",
+		# 	"width": 150
+		# },
+		# {
+		# 	"fieldname": "it_dep_addition",
+		# 	"label": _("IT Dep. During the Year"),
+		# 	"fieldtype": "Currency",
+		# 	"width": 150
+		# },
 ]
 
 #
