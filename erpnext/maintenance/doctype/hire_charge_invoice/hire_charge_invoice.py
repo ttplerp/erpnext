@@ -60,7 +60,7 @@ class HireChargeInvoice(AccountsController):
 		# if self.owned_by == "Own Company":
 		self.post_journal_entry()
 		# else:
-		self.consume_budget()
+		# self.consume_budget()
 		self.make_gl_entries()
 
 		if self.close:
@@ -420,6 +420,13 @@ class HireChargeInvoice(AccountsController):
 
 			frappe.msgprint("Bill processed to accounts through journal voucher " + je.name)
 
+	@frappe.whitelist()
+	def get_tax_details(self):
+		tax_account = frappe.db.get_value("Tax Withholding Account", {"parent": self.tax_withholding_category, "company": self.company}, "account")
+		tax_rate = frappe.db.get_value("Tax Withholding Rate", {"parent": self.tax_withholding_category}, "tax_withholding_rate")
+
+		return {"account": tax_account, "rate": tax_rate}
+
 @frappe.whitelist()
 def get_vehicle_logs(form=None, branch=None):
 	if form:
@@ -481,23 +488,6 @@ def get_advances(hire_name):
 	else:
 		frappe.throw("Select Equipment Hiring Form first!")
 
-@frappe.whitelist()
-def get_tds_account(percent):
-	if percent:
-		if cint(percent) == 0:
-			return
-		elif cint(percent) == 2:
-			field = "tds_2_account"
-		elif cint(percent) == 3:
-			field = "tds_3_account"
-		elif cint(percent) == 5:
-			field = "tds_5_account"
-		elif cint(percent) == 10:
-			field = "tds_10_account"
-		else:
-			frappe.throw(
-				"Set TDS Accounts in Accounts Settings and try again")
-		return frappe.db.get_single_value("Accounts Settings", field)
 
 ''' commented by Dendup Chophel, hire charge invoice redirected to JE'''
 # Added by Kinley Dorji to update the payment status on august 03/08/2021

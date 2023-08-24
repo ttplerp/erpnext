@@ -90,19 +90,30 @@ frappe.ui.form.on('Hire Charge Invoice', {
 			});
 		}
 	},
-	"tds_percentage": function (frm) {
-		if (frm.doc.tds_percentage != "") {
-			frm.set_value("tds_amount", frm.doc.tds_percentage / 100 * frm.doc.total_invoice_amount)
-			cur_frm.refresh_field("tds_amount")
-			calculate_balance(frm)
-			check_tds_account(frm, frm.doc.tds_percentage)
-		}
-		else {
-			cur_frm.refresh_field("tds_amount")
-			calculate_balance(frm)
-			check_tds_account(frm, frm.doc.tds_percentage)
-		}
+	tax_withholding_category: function(frm) {
+		frappe.call({
+			method: "get_tax_details",
+			doc: frm.doc,
+			callback: function(r) {
+				console.log(r.message.account);
+				frm.set_value("tds_account", r.message.account);
+				frm.set_value("tds_amount", flt(cur_frm.doc.total_invoice_amount * flt(r.message.rate / 100)));
+				frm.refresh();
+				calculate_balance(frm)
+			}
+		});
 	},
+	// "tds_percentage": function (frm) {
+	// 	if (frm.doc.tds_percentage != "") {
+	// 		frm.set_value("tds_amount", frm.doc.tds_percentage / 100 * frm.doc.total_invoice_amount)
+	// 		cur_frm.refresh_field("tds_amount")
+	// 		calculate_balance(frm)
+	// 	}
+	// 	else {
+	// 		cur_frm.refresh_field("tds_amount")
+	// 		calculate_balance(frm)
+	// 	}
+	// },
 	"get_vehicle_logbooks": function (frm) {
 		get_vehicle_logs(frm.doc.ehf_name, frm.doc.branch)
 	},
@@ -136,22 +147,6 @@ frappe.ui.form.on('Hire Charge Invoice', {
 	}
 });
 
-// fetch the tds account specific to the percentage
-// added by phuntsho on march 16 2021
-function check_tds_account(frm, percentage) {
-	frappe.call({
-		method: "erpnext.maintenance.doctype.hire_charge_invoice.hire_charge_invoice.get_tds_account",
-		args: {
-			percent: frm.doc.tds_percentage,
-		},
-		callback: function(r) {
-			if(r.message) {
-				frm.set_value("tds_account", r.message);
-				cur_frm.refresh_field("tds_account");
-			}
-		}
-	})
-}
 
 function calculate_balance(frm) {
 	if (frm.doc.total_invoice_amount) {
