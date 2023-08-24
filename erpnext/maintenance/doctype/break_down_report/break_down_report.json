@@ -190,8 +190,6 @@
    "reqd": 1
   },
   {
-   "depends_on": "eval:doc.equipment",
-   "fetch_from": "equipment.business_activity",
    "fieldname": "business_activity",
    "fieldtype": "Link",
    "label": "Business Activity",
@@ -235,10 +233,9 @@
   },
   {
    "fieldname": "job_card",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Job Card",
-   "options": "Job Card",
    "read_only": 1
   },
   {
@@ -336,7 +333,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-12 13:03:20.013360",
+ "modified": "2023-08-24 17:35:33.963261",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Break Down Report",
