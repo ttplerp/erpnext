@@ -13,7 +13,10 @@ class AssetIssueDetails(Document):
 
     def on_submit(self):
         self.check_qty_balance()
-        for i in range(cint(self.qty)):
+        if not self.create_single_asset:
+            for i in range(cint(self.qty)):
+                self.make_asset(1)
+        else:
             self.make_asset(1)
 
     def on_cancel(self):
@@ -46,7 +49,7 @@ class AssetIssueDetails(Document):
         if flt(self.qty) > flt(balance_qty):
             frappe.throw(_("Issuing Quantity cannot be greater than Balance Quantity i.e., {}").format(flt(balance_qty)), title="Insufficient Balance")
 
-    def make_asset(self, qty):       
+    def make_asset(self, qty):
         item_doc = frappe.get_doc("Item",self.item_code)
         if not cint(item_doc.is_fixed_asset):
             frappe.throw(_("Item selected is not a fixed asset"))
@@ -70,36 +73,67 @@ class AssetIssueDetails(Document):
             "Item", self.item_code, ["asset_naming_series", "asset_category","asset_sub_category"], as_dict=1
         )
         asset_abbr = frappe.db.get_value('Asset Category',item_data.get("asset_category"),'abbr')
-        asset = frappe.get_doc(
-            {
-                "doctype": "Asset",
-                "item_code": self.item_code,
-                "asset_name": self.item_name,
-                "naming_series": item_data.get("asset_naming_series") or "AST",
-                "asset_category": item_data.get("asset_category"),
-                "asset_sub_category":item_data.get("asset_sub_category"),
-                "abbr": asset_abbr,
-                "cost_center": frappe.db.get_value("Branch", self.branch, "cost_center"),
-                "company": self.company,
-                "purchase_date": self.issued_date,
-                "calculate_depreciation": 1,
-                "asset_rate": self.asset_rate,
-                "purchase_receipt_amount": self.asset_rate,
-                "gross_purchase_amount": flt(self.asset_rate) * flt(qty),
-                "asset_quantity": qty,
-                "purchase_receipt": self.purchase_receipt,
-                "location": self.location,
-                "branch": self.branch,
-                "custodian": self.issued_to,
-                "custodian_name": self.employee_name,
-                "available_for_use_date": self.issued_date,
-                "asset_account": fixed_asset_account,
-                "credit_account": credit_account,
-                "asset_issue_details":self.name,
-                "serial_number":self.reg_number
-            }
-        )
-
+        if not self.create_single_asset:
+            asset = frappe.get_doc(
+                {
+                    "doctype": "Asset",
+                    "item_code": self.item_code,
+                    "asset_name": self.item_name,
+                    "naming_series": item_data.get("asset_naming_series") or "AST",
+                    "asset_category": item_data.get("asset_category"),
+                    "asset_sub_category":item_data.get("asset_sub_category"),
+                    "abbr": asset_abbr,
+                    "cost_center": frappe.db.get_value("Branch", self.branch, "cost_center"),
+                    "company": self.company,
+                    "purchase_date": self.issued_date,
+                    "calculate_depreciation": 1,
+                    "asset_rate": self.asset_rate,
+                    "purchase_receipt_amount": self.asset_rate,
+                    "gross_purchase_amount": flt(self.asset_rate) * flt(qty),
+                    "asset_quantity": qty,
+                    "purchase_receipt": self.purchase_receipt,
+                    "location": self.location,
+                    "branch": self.branch,
+                    "custodian": self.issued_to,
+                    "custodian_name": self.employee_name,
+                    "available_for_use_date": self.issued_date,
+                    "asset_account": fixed_asset_account,
+                    "credit_account": credit_account,
+                    "asset_issue_details":self.name,
+                    "serial_number":self.reg_number
+                }
+            )
+        else:
+            asset = frappe.get_doc(
+                {
+                    "doctype": "Asset",
+                    "item_code": self.item_code,
+                    "asset_name": self.item_name,
+                    "naming_series": item_data.get("asset_naming_series") or "AST",
+                    "asset_category": item_data.get("asset_category"),
+                    "asset_sub_category":item_data.get("asset_sub_category"),
+                    "abbr": asset_abbr,
+                    "cost_center": frappe.db.get_value("Branch", self.branch, "cost_center"),
+                    "company": self.company,
+                    "purchase_date": self.issued_date,
+                    "calculate_depreciation": 1,
+                    "asset_rate": self.asset_rate,
+                    "purchase_receipt_amount": self.asset_rate,
+                    "gross_purchase_amount": flt(self.asset_rate) * flt(self.qty),
+                    "asset_quantity": self.qty,
+                    "purchase_receipt": self.purchase_receipt,
+                    "location": self.location,
+                    "branch": self.branch,
+                    "custodian": self.issued_to,
+                    "custodian_name": self.employee_name,
+                    "available_for_use_date": self.issued_date,
+                    "asset_account": fixed_asset_account,
+                    "credit_account": credit_account,
+                    "asset_issue_details":self.name,
+                    "serial_number":self.reg_number,
+                    "is_single_asset":1
+                }
+            )
         asset.flags.ignore_validate = True
         asset.flags.ignore_mandatory = True
         asset.set_missing_values()

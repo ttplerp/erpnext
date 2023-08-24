@@ -723,7 +723,7 @@ class PurchaseReceipt(BuyingController):
 		asset_amount = flt(item.net_amount) + flt(item.item_tax_amount / self.conversion_rate)
 		base_asset_amount = flt(item.base_net_amount + item.item_tax_amount)
 		remarks = self.get("remarks") or _("Accounting Entry for Asset")
-
+		# frappe.throw(str(cwip_account))
 		cwip_account_currency = get_account_currency(cwip_account)
 		# debit cwip account
 		debit_in_account_currency = (

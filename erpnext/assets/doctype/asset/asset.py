@@ -193,7 +193,8 @@ class Asset(AccountsController):
 	def validate_gross_and_purchase_amount(self):
 		if self.is_existing_asset:
 			return
-
+		if self.is_single_asset:
+			return
 		if self.gross_purchase_amount and self.gross_purchase_amount != self.purchase_receipt_amount:
 			error_message = _(
 				"Gross Purchase Amount should be <b>equal</b> to purchase amount of one single Asset."
