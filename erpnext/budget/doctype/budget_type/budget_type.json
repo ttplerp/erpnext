@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_rename": 1,
  "autoname": "field:budget_type",
  "creation": "2022-09-09 15:41:47.066335",
  "doctype": "DocType",
@@ -26,7 +27,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-06 13:49:05.176612",
+ "modified": "2023-08-24 11:58:51.724630",
  "modified_by": "Administrator",
  "module": "Budget",
  "name": "Budget Type",
