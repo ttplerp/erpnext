@@ -9,6 +9,6 @@ def get_data():
 		# 	"Technical Sanction Bill": "technical_sanction",
 		# },
 		"transactions": [
-			{"label": _("Related"), "items": ["Stock Entry", "Technical Sanction Bill"]},
+			{"label": _("Related"), "items": ["Stock Entry", "Technical Sanction Bill", "Material Request"]},
 		],
 	}
