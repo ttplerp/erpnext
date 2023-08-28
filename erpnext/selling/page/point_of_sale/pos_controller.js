@@ -642,6 +642,7 @@ erpnext.PointOfSale.Controller = class {
 	}
 
 	async check_stock_availability(item_row, qty_needed, warehouse) {
+		return;
 		const resp = (await this.get_available_stock(item_row.item_code, warehouse)).message;
 		const available_qty = resp[0];
 		const is_stock_item = resp[1];
