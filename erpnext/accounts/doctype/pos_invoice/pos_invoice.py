@@ -211,6 +211,7 @@ class POSInvoice(SalesInvoice):
 			frappe.throw(error_msg, title=_("Invalid Item"), as_list=True)
 
 	def validate_stock_availablility(self):
+		return
 		if self.is_return:
 			return
 

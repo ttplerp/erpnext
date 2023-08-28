@@ -53,8 +53,9 @@
   "tax_category",
   "apply_discount_on",
   "accounting_dimensions_section",
-  "cost_center",
-  "dimension_col_break"
+  "branch",
+  "dimension_col_break",
+  "cost_center"
  ],
  "fields": [
   {
@@ -249,6 +250,7 @@
    "print_hide": 1
   },
   {
+   "fetch_from": "branch.cost_center",
    "fieldname": "cost_center",
    "fieldtype": "Link",
    "label": "Cost Center",
@@ -293,14 +295,12 @@
    "options": "Print Format"
   },
   {
-   "depends_on": "update_stock",
    "fieldname": "warehouse",
    "fieldtype": "Link",
    "label": "Warehouse",
    "oldfieldname": "warehouse",
    "oldfieldtype": "Link",
-   "options": "Warehouse",
-   "reqd": 1
+   "options": "Warehouse"
   },
   {
    "default": "0",
@@ -309,7 +309,7 @@
    "label": "Ignore Pricing Rule"
   },
   {
-   "default": "1",
+   "default": "0",
    "fieldname": "update_stock",
    "fieldtype": "Check",
    "hidden": 1,
@@ -375,6 +375,13 @@
    "fieldname": "disable_rounded_total",
    "fieldtype": "Check",
    "label": "Disable Rounded Total"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
   }
  ],
  "icon": "icon-cog",
@@ -402,7 +409,7 @@
    "link_fieldname": "pos_profile"
   }
  ],
- "modified": "2022-08-10 12:57:06.241439",
+ "modified": "2023-08-20 14:36:37.643598",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "POS Profile",

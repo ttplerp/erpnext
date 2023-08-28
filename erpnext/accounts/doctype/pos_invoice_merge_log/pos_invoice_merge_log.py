@@ -96,6 +96,7 @@ class POSInvoiceMergeLog(Document):
 
 		sales_invoice = self.merge_pos_invoice_into(sales_invoice, data)
 
+		sales_invoice.branch = frappe.db.get_value("POS Closing Entry", self.pos_closing_entry, "branch")
 		sales_invoice.is_consolidated = 1
 		sales_invoice.set_posting_time = 1
 		sales_invoice.posting_date = getdate(self.posting_date)

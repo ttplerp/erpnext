@@ -22,6 +22,13 @@ class POSClosingEntry(StatusUpdater):
 			frappe.throw(_("Selected POS Opening Entry should be open."), title=_("Invalid Opening Entry"))
 
 		self.validate_pos_invoices()
+		self.update_branch_cost_center()
+
+	def update_branch_cost_center(self):
+		if not self.branch:
+			self.branch = frappe.db.get_value("POS Profile", self.pos_profile, "branch")
+		if not self.cost_center:
+			self.cost_center = frappe.db.get_value("POS Profile", self.pos_profile, "cost_center")
 
 	def validate_pos_invoices(self):
 		invalid_rows = []
