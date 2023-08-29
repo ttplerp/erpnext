@@ -1,4 +1,4 @@
-# Copyright (c) 2022, Frappe Technologies Pvt. Ltd. and contributors
+# Copyright (c) 2013, Frappe Technologies Pvt. Ltd. and contributors
 # For license information, please see license.txt
 
 from __future__ import unicode_literals
@@ -43,7 +43,7 @@ def get_data(filters):
 		data = frappe.db.sql('''
 						SELECT name as coa_acc
 						FROM `tabAccount` a
-						WHERE NOT EXISTS (select 1 from `tabDHI GCOA Mapper` b, `tabDHI Mapper Item` c where c.account = a.name and b.name = c.parent {})
+						WHERE NOT EXISTS (	select 1 from `tabDHI GCOA Mapper` b, `tabDHI Mapper Item` c where c.account = a.name {})
 						AND a.is_group != 1
 						 '''.format(cond),as_dict=1)
 	return data

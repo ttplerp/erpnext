@@ -1,6 +1,5 @@
-// Copyright (c) 2022, Frappe Technologies Pvt. Ltd. and contributors
+// Copyright (c) 2016, Frappe Technologies Pvt. Ltd. and contributors
 // For license information, please see license.txt
-/* eslint-disable */
 
 frappe.query_reports["DHI GCOA Mapper Report"] = {
 	"filters": [
@@ -35,4 +34,4 @@ frappe.query_reports["DHI GCOA Mapper Report"] = {
 			"default":1
 		}
 	]
-};
+}

@@ -1,10 +1,9 @@
-# Copyright (c) 2022, Frappe Technologies Pvt. Ltd. and contributors
+# Copyright (c) 2013, Frappe Technologies Pvt. Ltd. and contributors
 # For license information, please see license.txt
 
 from __future__ import unicode_literals
 import frappe
 from frappe.utils import flt, getdate
-
 
 def execute(filters=None):
 	filter = frappe._dict({
@@ -48,90 +47,19 @@ def get_data(filters,from_rest_api=None):
 
 def get_columns():
 	return [
-		{
-			"fieldname":"account_code",
-			"label":"Account Code",
-			"fieldtype":"Data",
-			"width":80
-		},
-		{
-			"fieldname":"account",
-			"label":"Account",
-			"fieldtype":"Link",
-			"options":"DHI GCOA Mapper",
-			"width":250
-		},
-		{
-			"fieldname":"entity",
-			"label":"Entity",
-			"fieldtype":"Data",
-			"width":60
-		},
-		{
-			"fieldname":"segment",
-			"label":"Segment",
-			"fieldtype":"Data",
-			"width":60
-		},
-		{
-			"fieldname":"flow",
-			"label":"Flow",
-			"fieldtype":"Data",
-			"width":60
-		},
-		{
-			"fieldname":"interco",
-			"label":"Interco",
-			"fieldtype":"Data",
-			"width":60
-		},
-		{
-			"fieldname":"time",
-			"label":"Time",
-			"fieldtype":"Data",
-			"width":80
-		},
-		{
-			"fieldname":"from_date",
-			"label":"From Date",
-			"fieldtype":"Date",
-			"width":80
-		},
-		{
-			"fieldname":"to_date",
-			"label":"To Date",
-			"fieldtype":"Date",
-			"width":80
-		},
-		{
-			"fieldname":"opening_debit",
-			"label":"Opening(Dr)",
-			"fieldtype":"Currency",
-			"width":130
-		},
-		{
-			"fieldname":"opening_credit",
-			"label":"Opening(Cr)",
-			"fieldtype":"Currency",
-			"width":130
-		},
-		{
-			"fieldname":"debit",
-			"label":"Debit",
-			"fieldtype":"Currency",
-			"width":150
-		},
-		{
-			"fieldname":"credit",
-			"label":"Credit",
-			"fieldtype":"Currency",
-			"width":150
-		},
-		{
-			"fieldname":"amount",
-			"label":"Amount",
-			"fieldtype":"Currency",
-			"width":150
-		},
+		{"fieldname":"account_code","label":"Account Code","fieldtype":"Data","width":80},
+		{"fieldname":"account","label":"Account","fieldtype":"Link","options":"DHI GCOA Mapper","width":250},
+		{"fieldname":"entity","label":"Entity","fieldtype":"Data","width":60},
+		{"fieldname":"segment","label":"Segment","fieldtype":"Data","width":60},
+		{"fieldname":"flow","label":"Flow","fieldtype":"Data","width":60},
+		{"fieldname":"interco","label":"Interco","fieldtype":"Data","width":60},
+		{"fieldname":"time","label":"Time","fieldtype":"Data","width":80},
+		{"fieldname":"from_date","label":"From Date","fieldtype":"Date","width":80},
+		{"fieldname":"to_date","label":"To Date","fieldtype":"Date","width":80},
+		{"fieldname":"opening_debit","label":"Opening(Dr)","fieldtype":"Currency","width":130},
+		{"fieldname":"opening_credit","label":"Opening(Cr)","fieldtype":"Currency","width":130},
+		{"fieldname":"debit","label":"Debit","fieldtype":"Currency","width":150},
+		{"fieldname":"credit","label":"Credit","fieldtype":"Currency","width":150},
+		{"fieldname":"amount","label":"Amount","fieldtype":"Currency","width":150},
 	]
 

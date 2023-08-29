@@ -1,10 +1,11 @@
-# Copyright (c) 2022, Frappe Technologies Pvt. Ltd. and contributors
+# Copyright (c) 2013, Frappe Technologies Pvt. Ltd. and contributors
 # For license information, please see license.txt
 
 from __future__ import unicode_literals
 import frappe
 from frappe.utils import flt,getdate,nowdate,cint,add_days
 from frappe.utils.data import get_first_day
+from erpnext.accounts.utils import get_fiscal_year
 
 def execute(filters=None):
 	filter 					= {}
@@ -49,39 +50,50 @@ def from_gl_applicable_for_doc(coa,filters):
 	value = frappe._dict({'opening_debit':0,'opening_credit':0,'debit':0,'credit':0,'amount':0,'data':[]})
 	doc = frappe.get_doc('DHI Setting')
 	total_debit = total_credit = 0
-	query = """
-				SELECT  SUM(CASE WHEN posting_date < '{0}' THEN debit ELSE 0 END) AS opening_debit,
-						SUM(CASE WHEN posting_date < '{0}' THEN credit ELSE 0 END) AS opening_credit,
-						SUM(CASE WHEN posting_date >= "{0}" AND posting_date <="{1}" THEN debit ELSE 0 END) AS debit,
-						SUM(CASE WHEN posting_date >= "{0}" AND posting_date <="{1}" THEN credit ELSE 0 END) AS credit
+	if coa.root_type in ['Income','Expense']:
+		query = """
+				SELECT  
+						SUM(ifnull(debit,0)) AS debit,
+						SUM(ifnull(credit,0)) AS credit
 				FROM `tabGL Entry` where account = "{2}"
 				AND (credit IS NOT NULL OR debit IS NOT NULL)
-				AND posting_date <= '{1}'
-			""".format(filters['from_date'],filters['to_date'],coa.account)
+				AND posting_date BETWEEN '{0}' AND '{1}'
+					""".format(filters['from_date'],filters['to_date'],coa.account)
+	else:
+		query = """
+					SELECT  SUM(CASE WHEN posting_date < '{0}' THEN debit ELSE 0 END) AS opening_debit,
+							SUM(CASE WHEN posting_date < '{0}' THEN credit ELSE 0 END) AS opening_credit,
+							SUM(CASE WHEN posting_date >= "{0}" AND posting_date <="{1}" THEN debit ELSE 0 END) AS debit,
+							SUM(CASE WHEN posting_date >= "{0}" AND posting_date <="{1}" THEN credit ELSE 0 END) AS credit
+					FROM `tabGL Entry` where account = "{2}"
+					AND (credit IS NOT NULL OR debit IS NOT NULL)
+					AND posting_date <= '{1}'
+						""".format(filters['from_date'],filters['to_date'],coa.account)
+      
 	for d in frappe.db.sql(query, as_dict = True):
 		total_debit 	= flt(flt(d.debit) + flt(d.opening_debit))
 		total_credit 	= flt(flt(d.credit) + flt(d.opening_credit))
 		d['amount'] 	= total_debit - total_credit if coa.root_type in ['Asset','Expense'] else flt(total_credit - total_debit) * -1
-		if d.amount or total_credit or total_debit or d.debit or d.credit:
-			if flt(d.opening_debit) > flt(d.opening_credit):
-				d.opening_debit 	= flt(d.opening_debit) - flt(d.opening_credit)
-				d.opening_credit 	= 0
-			elif flt(d.opening_credit) > flt(d.opening_debit):
-				d.opening_credit 	= flt(d.opening_credit) - flt(d.opening_debit)
-				d.opening_debit 	= 0
-			else:
-				d.opening_credit 	= 0
-				d.opening_debit 	= 0
-			value.opening_debit 	+= flt(d.opening_debit)
-			value.opening_credit 	+= flt(d.opening_credit)
-			value.debit 			+= flt(d.debit)
-			value.credit 			+= flt(d.credit)
-			value.amount 			+= flt(d.amount)
-			value.data.append({
-							'opening_debit': value['opening_debit'],'opening_credit':value['opening_credit'],
-							'account':coa.account,'entity':doc.entity,'segment':doc.segment,'flow':doc.flow,
-							'interco':'I_'+coa.doc_company,'time':filters['time'],'debit':value['debit'],
-							'credit':value['credit'],'amount':value['amount'],})
+		# if d.amount or total_credit or total_debit or d.debit or d.credit:
+		if flt(d.opening_debit) > flt(d.opening_credit):
+			d.opening_debit 	= flt(d.opening_debit) - flt(d.opening_credit)
+			d.opening_credit 	= 0
+		elif flt(d.opening_credit) > flt(d.opening_debit):
+			d.opening_credit 	= flt(d.opening_credit) - flt(d.opening_debit)
+			d.opening_debit 	= 0
+		else:
+			d.opening_credit 	= 0
+			d.opening_debit 	= 0
+		value.opening_debit 	+= flt(d.opening_debit)
+		value.opening_credit 	+= flt(d.opening_credit)
+		value.debit 			+= flt(d.debit)
+		value.credit 			+= flt(d.credit)
+		value.amount 			+= flt(d.amount)
+		value.data.append({
+						'opening_debit': value['opening_debit'],'opening_credit':value['opening_credit'],
+						'account':coa.account,'entity':doc.entity,'segment':doc.segment,'flow':doc.flow,
+						'interco':'I_'+coa.doc_company,'time':filters['time'],'debit':value['debit'],
+						'credit':value['credit'],'amount':value['amount'],})
 	return value
 
 # when gl is used for both inter and none inter companies
@@ -93,7 +105,16 @@ def from_gl_applicable_for_both(is_inter_company,coa,filters):
 							'entity':doc.entity,'segment':doc.segment,'flow':doc.flow,
 							'interco':'I_NONE','time':filters['time'],'debit':0,'credit':0,'amount':0,
 							})
-	if coa.account_type in ['Payable','Receivable']:
+	if coa.root_type in ['Income','Expense']:
+		query = """SELECT 
+						SUM(ifnull(debit,0)) AS debit,
+						SUM(ifnull(credit,0)) AS credit, 
+						'' AS party, '' AS party_type
+					FROM `tabGL Entry` where posting_date BETWEEN '{0}' AND '{1}'
+					AND account = "{2}" 
+					AND (credit IS NOT NULL OR debit IS NOT NULL)
+					""".format(filters['from_date'],filters['to_date'],coa.account)
+	else:		
 		query = """SELECT 
 					SUM(CASE WHEN posting_date < '{0}' THEN debit ELSE 0 END) AS opening_debit,
 					SUM(CASE WHEN posting_date < '{0}' THEN credit ELSE 0 END) AS opening_credit,
@@ -104,17 +125,6 @@ def from_gl_applicable_for_both(is_inter_company,coa,filters):
 				AND account = "{2}" 
 				AND (credit IS NOT NULL OR debit IS NOT NULL)
 				GROUP BY party
-				""".format(filters['from_date'],filters['to_date'],coa.account)
-	else:
-		query = """SELECT 
-					SUM(CASE WHEN posting_date < '{0}' THEN debit ELSE 0 END) AS opening_debit,
-					SUM(CASE WHEN posting_date < '{0}' THEN credit ELSE 0 END) AS opening_credit,
-					SUM(CASE WHEN posting_date >= "{0}" AND posting_date <="{1}" THEN debit ELSE 0 END) AS debit,
-					SUM(CASE WHEN posting_date >= "{0}" AND posting_date <="{1}" THEN credit ELSE 0 END) AS credit, 
-					'' AS party, '' AS party_type
-				FROM `tabGL Entry` where posting_date <= "{1}" 
-				AND account = "{2}" 
-				AND (credit IS NOT NULL OR debit IS NOT NULL)
 				""".format(filters['from_date'],filters['to_date'],coa.account)
 	total_debit = total_credit = 0
 	for a in frappe.db.sql(query,as_dict=True) :
@@ -127,47 +137,47 @@ def from_gl_applicable_for_both(is_inter_company,coa,filters):
 		else:
 			a.opening_credit 	= 0
 			a.opening_debit 	= 0
-		if flt(a.debit) > 0 or flt(a.credit) > 0 or flt(a.opening_debit) > 0 or flt(a.opening_credit) > 0:
-			total_debit 	= flt(flt(a.debit) + flt(a.opening_debit))
-			total_credit 	= flt(flt(a.credit) + flt(a.opening_credit))
-			a['amount'] 	= total_debit - total_credit if coa.root_type in ['Asset','Expense'] else flt(total_credit - total_debit) * -1
-			# if a.debit or a.credit or a.opening_debit or a.opening_credit or a.amount:
-			dhi_company_code =''
-			# fetch company code base on party for dhi companies
-			if a.party_type == 'Supplier':
-				dhi_company_code 	= frappe.db.get_value('Supplier',{'name':a.party,'inter_company':1,'disabled':0},['company_code'])
-			elif a.party_type == 'Customer':
-				dhi_company_code 	= frappe.db.get_value('Customer',{'name':a.party,'inter_company':1,'disabled':0},['company_code'])
-			if dhi_company_code and is_inter_company:
-				# create row for each dhi companies base company code
-				if dhi_company_code in inter_company.keys():
-					inter_company[dhi_company_code]["opening_debit"] 	+= flt(a.opening_debit)
-					inter_company[dhi_company_code]["opening_credit"] 	+= flt(a.opening_credit)
-					inter_company[dhi_company_code]["debit"] 			+= flt(a.debit)
-					inter_company[dhi_company_code]["credit"] 			+= flt(a.credit)
-					inter_company[dhi_company_code]["amount"] 			+= flt(a.amount)
-				else:
-					inter_company.setdefault(dhi_company_code,{'opening_debit': a.opening_debit,'opening_credit': a.opening_credit,'account':coa.account,
-																'entity':doc.entity,'segment':doc.segment,'flow':doc.flow,'interco':str('I_'+dhi_company_code),
-																'time':filters['time'],'debit':a.debit,'credit':a.credit,'amount':a.amount,
-															}) 
-				
-				value['debit'] 				+= flt(a.debit)
-				value['credit'] 			+= flt(a.credit)
-				value['amount'] 			+= flt(a.amount)
-			elif not dhi_company_code and not is_inter_company:
-				value['debit'] 				+= flt(a.debit)
-				value['credit'] 			+= flt(a.credit)
-				value['amount'] 			+= flt(a.amount)
-				i_none['opening_debit'] 	+= flt(a.opening_debit)
-				i_none['opening_credit'] 	+= flt(a.opening_credit)
-				i_none['debit'] 			+= flt(a.debit)
-				i_none['credit'] 			+= flt(a.credit)
-				i_none['amount'] 			+= flt(a.amount)
+		# if flt(a.debit) > 0 or flt(a.credit) > 0 or flt(a.opening_debit) > 0 or flt(a.opening_credit) > 0:
+		total_debit 	= flt(flt(a.debit) + flt(a.opening_debit))
+		total_credit 	= flt(flt(a.credit) + flt(a.opening_credit))
+		a['amount'] 	= total_debit - total_credit if coa.root_type in ['Asset','Expense'] else flt(total_credit - total_debit) * -1
+		# if a.debit or a.credit or a.opening_debit or a.opening_credit or a.amount:
+		dhi_company_code =''
+		# fetch company code base on party for dhi companies
+		if a.party_type == 'Supplier':
+			dhi_company_code 	= frappe.db.get_value('Supplier',{'name':a.party,'inter_company':1,'disabled':0},['company_code'])
+		elif a.party_type == 'Customer':
+			dhi_company_code 	= frappe.db.get_value('Customer',{'name':a.party,'inter_company':1,'disabled':0},['company_code'])
+		if dhi_company_code and is_inter_company:
+			# create row for each dhi companies base company code
+			if dhi_company_code in inter_company.keys():
+				inter_company[dhi_company_code]["opening_debit"] 	+= flt(a.opening_debit)
+				inter_company[dhi_company_code]["opening_credit"] 	+= flt(a.opening_credit)
+				inter_company[dhi_company_code]["debit"] 			+= flt(a.debit)
+				inter_company[dhi_company_code]["credit"] 			+= flt(a.credit)
+				inter_company[dhi_company_code]["amount"] 			+= flt(a.amount)
+			else:
+				inter_company.setdefault(dhi_company_code,{'opening_debit': a.opening_debit,'opening_credit': a.opening_credit,'account':coa.account,
+															'entity':doc.entity,'segment':doc.segment,'flow':doc.flow,'interco':str('I_'+dhi_company_code),
+															'time':filters['time'],'debit':a.debit,'credit':a.credit,'amount':a.amount,
+														}) 
+			
+			value['debit'] 				+= flt(a.debit)
+			value['credit'] 			+= flt(a.credit)
+			value['amount'] 			+= flt(a.amount)
+		elif not dhi_company_code and not is_inter_company:
+			value['debit'] 				+= flt(a.debit)
+			value['credit'] 			+= flt(a.credit)
+			value['amount'] 			+= flt(a.amount)
+			i_none['opening_debit'] 	+= flt(a.opening_debit)
+			i_none['opening_credit'] 	+= flt(a.opening_credit)
+			i_none['debit'] 			+= flt(a.debit)
+			i_none['credit'] 			+= flt(a.credit)
+			i_none['amount'] 			+= flt(a.amount)
 	for key, item in inter_company.items():
 		value.data.append(item)
-	if flt(i_none['amount']) != 0:
-		value.data.append(i_none)
+	# if flt(i_none['amount']) != 0:
+	value.data.append(i_none)
 	for a in value.data:
 		if flt(a['opening_debit']) > flt(a['opening_credit']):
 			a['opening_debit'] 	= flt(a['opening_debit']) - flt(a['opening_credit'])
@@ -253,71 +263,15 @@ def create_transaction(is_monthly_report=None):
 	
 def get_columns():
 	return [
-     		{
-				"fieldname":"account",
-				"label":"Account",
-				"fieldtype":"Link",
-				"options":"Account",
-				"width":180
-			},
-			{
-				"fieldname":"entity",
-				"label":"Entity",
-				"fieldtype":"Data",
-				"width":60
-			},
-			{
-				"fieldname":"segment",
-				"label":"Segment",
-				"fieldtype":"Data",
-				"width":60
-			},
-			{
-				"fieldname":"flow",
-				"label":"Flow",
-				"fieldtype":"Data",
-				"width":60
-			},
-			{
-				"fieldname":"interco",
-				"label":"Interco",
-				"fieldtype":"Data",
-				"width":60
-			},
-			{
-				"fieldname":"time",
-				"label":"Time",
-				"fieldtype":"Data",
-				"width":100
-			},
-			{
-				"fieldname":"opening_debit",
-				"label":"Opening(Dr)",
-				"fieldtype":"Currency",
-				"width":100
-			},
-			{
-				"fieldname":"opening_credit",
-				"label":"Opening(Cr)",
-				"fieldtype":"Currency",
-				"width":100
-			},
-			{
-				"fieldname":"debit",
-				"label":"Debit",
-				"fieldtype":"Currency",
-				"width":100
-			},
-			{
-				"fieldname":"credit",
-				"label":"Credit",
-				"fieldtype":"Currency",
-				"width":100
-			},
-			{
-				"fieldname":"amount",
-				"label":"Amount",
-				"fieldtype":"Currency",
-				"width":120
-			},
+     		{"fieldname":"account","label":"Account","fieldtype":"Link","options":"Account","width":180},
+			{"fieldname":"entity","label":"Entity","fieldtype":"Data","width":60},
+			{"fieldname":"segment","label":"Segment","fieldtype":"Data","width":60},
+			{"fieldname":"flow","label":"Flow","fieldtype":"Data","width":60},
+			{"fieldname":"interco","label":"Interco","fieldtype":"Data","width":60},
+			{"fieldname":"time","label":"Time","fieldtype":"Data","width":100},
+			{"fieldname":"opening_debit","label":"Opening(Dr)","fieldtype":"Currency","width":100},
+			{"fieldname":"opening_credit","label":"Opening(Cr)","fieldtype":"Currency","width":100},
+			{"fieldname":"debit","label":"Debit","fieldtype":"Currency","width":100},
+			{"fieldname":"credit","label":"Credit","fieldtype":"Currency","width":100},
+			{"fieldname":"amount","label":"Amount","fieldtype":"Currency","width":120},
 		]
