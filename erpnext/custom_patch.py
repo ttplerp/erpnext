@@ -12,6 +12,16 @@ def delete_material_request():
         """.format(a.name))
         print(a.name)
 
+def clear_stock_ledger():
+    sl = frappe.db.sql("""
+        select name from `tabStock Ledger Entry` where item_code = '00003'
+    """,as_dict=1)
+    for a in sl:
+        frappe.db.sql("""
+            delete from `tabStock Ledger Entry` where name = '{}'
+        """.format(str(a.name)))
+        print(a.name)
+
 def update_item_valuation_method():
     items = frappe.db.sql("""
         select name from `tabItem`

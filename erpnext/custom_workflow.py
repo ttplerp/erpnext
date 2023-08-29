@@ -170,13 +170,22 @@ class CustomWorkflow:
                     },
                     self.field_list,
                 )
-                self.project_head = frappe.db.get_value(
-                    "Employee",
-                    frappe.db.get_value(
-                        "Employee", {"user_id": self.doc.leave_approver}, "reports_to"
-                    ),
-                    self.field_list,
-                )
+                if self.doc.doctype == 'Leave Application':
+                    self.project_head = frappe.db.get_value(
+                        "Employee",
+                        frappe.db.get_value(
+                            "Employee", {"user_id": self.doc.leave_approver}, "reports_to"
+                        ),
+                        self.field_list,
+                    )
+                elif self.doc.doctype == "Leave Encashment":
+                    self.project_head = frappe.db.get_value(
+                        "Employee",
+                        frappe.db.get_value(
+                            "Employee", {"user_id": self.doc.approver}, "reports_to"
+                        ),
+                        self.field_list,
+                    )
                 self.hrgm = frappe.db.get_value(
                     "Employee",
                     frappe.db.get_single_value("HR Settings", "hrgm"),
@@ -230,6 +239,17 @@ class CustomWorkflow:
                     )
                     if not self.hrgm:
                         frappe.throw("Plesse set HRGM in HR Settings")
+
+        if self.doc.doctype == "Expense Claim":
+            self.expense_approver = frappe.db.get_value(
+                "Employee",
+                {
+                    "user_id": frappe.db.get_value(
+                        "Employee", {"user_id": self.doc.owner}, "reports_to"
+                    )
+                },
+                self.field_list,
+            )
         if self.doc.doctype == "Performance Evaluation":
             # self.employee = frappe.db.get_value("Employee", self.doc.employee, self.field_list)
             self.eval_1 = frappe.db.get_value(
@@ -389,6 +409,12 @@ class CustomWorkflow:
                     )
                 )
         if self.doc.doctype == "Employee Advance":
+            self.advance_supervisor = frappe.db.get_value(
+                "Employee",
+                frappe.db.get_value("Employee", self.doc.employee, "advance_approver"),
+                self.field_list,
+            )
+
             self.reports_to = frappe.db.get_value(
                 "Employee",
                 frappe.db.get_value("Employee", self.doc.employee, "reports_to"),
@@ -671,6 +697,7 @@ class CustomWorkflow:
                 "Material Request",
                 "Repair And Services",
                 "Overtime Application",
+                "Expense Claim",
             ):
                 officiating = get_officiating_employee(self.expense_approver[3])
                 if officiating:
@@ -687,7 +714,7 @@ class CustomWorkflow:
                     vars(self.doc)[self.doc_approver[2]] = (
                         officiating[2] if officiating else self.expense_approver[2]
                     )
-            if self.doc.doctype == "Leave Application":
+            elif self.doc.doctype == "Leave Application":
                 officiating = get_officiating_employee(self.leave_supervisor[3])
                 if officiating:
                     officiating = frappe.db.get_value(
@@ -702,8 +729,23 @@ class CustomWorkflow:
                 vars(self.doc)[self.doc_approver[2]] = (
                     officiating[2] if officiating else self.reports_to[2]
                 )
+            elif self.doc.doctype == "Employee Advance":
+                officiating = get_officiating_employee(self.advance_supervisor[3])
+                if officiating:
+                    officiating = frappe.db.get_value(
+                        "Employee", officiating[0].officiate, self.field_list
+                    )
+                vars(self.doc)[self.doc_approver[0]] = (
+                    officiating[0] if officiating else self.advance_supervisor[0]
+                )
+                vars(self.doc)[self.doc_approver[1]] = (
+                    officiating[1] if officiating else self.advance_supervisor[1]
+                )
+                vars(self.doc)[self.doc_approver[2]] = (
+                    officiating[2] if officiating else self.advance_supervisor[2]
+                )
             elif self.doc.doctype == "Employee Transfer Request":
-                officiating = get_officiating_employee(self.supervisor[3])
+                officiating = get_officiating_employee(self.advance_supervisor[3])
                 if officiating:
                     officiating = frappe.db.get_value(
                         "Employee", officiating[0].officiate, self.field_list
@@ -1485,6 +1527,8 @@ class CustomWorkflow:
             self.compile_budget()
         elif self.doc.doctype == "Asset Movement":
             self.asset_movement()
+        elif self.doc.doctype == "Expense Claim":
+            self.expense_claim()
         else:
             frappe.throw(_("Workflow not defined for {}").format(self.doc.doctype))
 
@@ -2471,18 +2515,16 @@ class CustomWorkflow:
                     "Only {} can Apply this Vehicle Request".format(self.doc.owner)
                 )
             self.set_approver("Supervisor")
-        elif self.new_state.lower() in ("Waiting MTO Approval".lower()):
-            if self.doc.approver_id != frappe.session.user:
+        elif self.new_state.lower() in ("Waiting for MTO GM Approval".lower()):
+            if self.doc.approver != frappe.session.user:
                 frappe.throw(
                     "Only {} can forward this request".format(self.doc.approver_id)
                 )
             self.set_approver("Fleet Manager")
         elif self.new_state.lower() in ("Approved".lower()):
-            if self.doc.approver_id != frappe.session.user:
+            if self.doc.approver != frappe.session.user:
                 frappe.throw(
-                    "Only {} can Approve this Vehicle Request".format(
-                        self.doc.approver_id
-                    )
+                    "Only {} can Approve this Vehicle Request".format(self.doc.approver)
                 )
 
     def asset_movement(self):
@@ -2494,6 +2536,24 @@ class CustomWorkflow:
         if self.new_state.lower() in ("Waiting for Verification".lower()):
             if self.doc.owner != frappe.session.user:
                 frappe.throw("Only {} can Apply this request".format(self.doc.owner))
+
+    def expense_claim(self):
+        if self.new_state.lower() in (
+            "Draft".lower(),
+            "Waiting Supervisor Approval".lower(),
+        ):
+            self.set_approver("Supervisor")
+        elif self.new_state.lower() == "Approved".lower():
+            if self.doc.approver != frappe.session.user:
+                frappe.throw(
+                    "Only {} can Approve this request".format(self.doc.approver_name)
+                )
+            self.doc.approval_status = "Approved"
+        elif self.new_state.lower() == "Cancelled".lower():
+            if self.doc.approver != frappe.session.user:
+                frappe.throw(
+                    "Only {} can Cancel this request".format(self.doc.approver_name)
+                )
 
     def budget_reappropiation(self):
         user_roles = frappe.get_roles(frappe.session.user)
@@ -3802,13 +3862,14 @@ def get_field_map():
             "advance_approver_name",
             "advance_approver_designation",
         ],
-        "Vehicle Request": ["approver_id", "approver"],
+        "Vehicle Request": ["approver", "approver_name", "aprover_designation"],
         "Repair And Services": ["approver", "approver_name", "aprover_designation"],
         "Overtime Application": ["approver", "approver_name", "approver_designation"],
         "POL Expense": ["approver", "approver_name", "approver_designation"],
         "Material Request": ["approver", "approver_name", "approver_designation"],
         "Asset Movement": ["approver", "approver_name", "approver_designation"],
         "Budget Reappropiation": ["approver", "approver_name", "approver_designation"],
+        "Expense Claim": ["approver", "approver_name", "approver_designation"],
         "Festival Advance": [
             "advance_approver",
             "advance_approver_name",

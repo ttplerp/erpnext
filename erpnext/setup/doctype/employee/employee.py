@@ -74,7 +74,8 @@ class Employee(NestedSet):
 			self.update_user()
 			self.update_user_permissions()
 		self.reset_employee_emails_cache()
-		self.post_casual_leave()
+		if self.employment_status != 'Probation':
+			self.post_casual_leave()
 
 	def post_casual_leave(self):
 		from_date = getdate(self.date_of_joining)

@@ -25,14 +25,22 @@ def get_columns(filters):
 			_("Description of works") + ":Data:250" 
 			
 		]
-	if filters.report_type == "Machinaries and Equipment":
+	elif filters.report_type == "Machinaries and Equipment":
 		columns = [
 			_("Equipment Type") + ":Data:250",
 			_("Equipment Name") + ":Data:250",  
 			_("Hours") 	+ ":Float:100", 
-			_("Rate") 	+ ":Float:100", 
-			_("Amount") + ":Currency:150",
-			_("Description of works") + ":Data:250"			
+			_("Rate") 	+ "::100", 
+			_("Amount") + ":Currency:150"
+		]
+	elif filters.report_type == "Material Consumption":
+		columns = [
+			_("Material Code") + ":Link/Item:250",
+			_("Material Name") + ":Data:250",  
+			_("Quantity") 	+ ":Float:100", 
+			_("Uom") 	+ "::100", 
+			_("Rate") 	+ "::100", 
+			_("Amount") + ":Currency:150"
 		]
 	return columns
 
@@ -97,14 +105,31 @@ def get_data(filters):
 				eq.equipment_type,
 				eq.equipment_name, 
 				lbi.hours,
-				eq.rate,
-				(lbi.hours * eq.rate) as amount
+				ehf.hiring_rate as rate,
+				(lbi.hours * ehf.hiring_rate) as amount
 			FROM `tabEquipment` eq,
 				`tabLogbook` lb,
-				`tabLogbook Item` lbi
+				`tabLogbook Item` lbi,
+				`tabEHF Rate` ehf
 			WHERE  eq.name=lb.equipment and
-				lbi.equipment = lb.equipment and 
-				lb.posting_date = '{}';
+				lbi.equipment = lb.equipment
+				and lb.equipment_hiring_form = ehf.parent 
+				and lb.posting_date = '{}';
+			""".format(filters.date)
+		data = frappe.db.sql(equipment, as_dict=1)
+	if filters.report_type == "Material Consumption":
+		equipment = """
+			SELECT
+				eq.equipment_type,
+				eq.equipment_name, 
+				lbi.hours,
+				ehf.hiring_rate as rate,
+				(lbi.hours * ehf.hiring_rate) as amount
+			FROM `tabStock Entry` se,
+				`tabStock Entry Detail` sed
+			WHERE  se.name=sed.parent and
+				se.docstatus = 1
+				and se.posting_date = '{}';
 			""".format(filters.date)
 		data = frappe.db.sql(equipment, as_dict=1)
 	return data

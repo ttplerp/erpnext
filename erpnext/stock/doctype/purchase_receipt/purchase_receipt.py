@@ -982,7 +982,7 @@ class PurchaseReceipt(BuyingController):
                 ),
                 "party_check": 0,
                 "party_type": "Supplier",
-                "party": self.supplier,
+                "party": args.party,
                 "reference_type": self.doctype,
                 "reference_name": self.name,
             },

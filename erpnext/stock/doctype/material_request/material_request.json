@@ -276,6 +276,7 @@
    "label": "Warehouse"
   },
   {
+   "default": "Central Store (VCSC)",
    "fieldname": "set_warehouse",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -371,7 +372,7 @@
  "idx": 70,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-27 11:52:24.916920",
+ "modified": "2023-08-24 10:19:58.157340",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Material Request",

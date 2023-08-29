@@ -63,6 +63,8 @@ class POLReceive(StockController):
 	def on_cancel(self):
 		self.update_pol_expense()
 		self.delete_pol_entry()
+		if self.direct_consumption == 0 and self.receive_in_barrel == 1:
+			self.update_stock_ledger()
 		# self.make_gl_entries()
 
 	def update_stock_ledger(self):

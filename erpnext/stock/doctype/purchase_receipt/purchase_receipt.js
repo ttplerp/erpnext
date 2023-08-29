@@ -70,14 +70,14 @@ frappe.ui.form.on("Purchase Receipt", {
 			}, __('Create'));
 			frm.page.set_inner_btn_group_as_primary(__('Create'));
 		}
-		if (frm.doc.docstatus == 1 && frm.doc.settle_project_imprest == 1) {
-			frm.add_custom_button(__('Make Journal Entry'), () => {
-				frappe.model.open_mapped_doc({
-					method: "erpnext.stock.doctype.purchase_receipt.purchase_receipt.post_journal_entry",
-					frm: cur_frm,
-				})
-			}, __('Create'));
-		}
+		// if (frm.doc.docstatus == 1 && frm.doc.settle_project_imprest == 1) {
+		// 	frm.add_custom_button(__('Make Journal Entry'), () => {
+		// 		frappe.model.open_mapped_doc({
+		// 			method: "erpnext.stock.doctype.purchase_receipt.purchase_receipt.post_journal_entry",
+		// 			frm: cur_frm,
+		// 		})
+		// 	}, __('Create'));
+		// }
 
 		if (frm.doc.docstatus === 1 && frm.doc.is_internal_supplier && !frm.doc.inter_company_reference) {
 			frm.add_custom_button(__('Delivery Note'), function () {
@@ -459,7 +459,6 @@ frappe.ui.form.on('Purchase Taxes and Charges', {
 			args: row,
 			callback: function (r) {
 				if (r.message) {
-					console.log(r.message)
 					frappe.model.set_value(cdt, cdn, "journal_entry", r.message);
 					frm.refresh_field("taxes")
 					frm.dirty()
@@ -468,7 +467,6 @@ frappe.ui.form.on('Purchase Taxes and Charges', {
 		})
 	},
 
-
 	// item_code: function (frm, cdt, cdn) {
 	// 	var d = locals[cdt][cdn];
 	// 	frappe.db.get_value('Item', { name: d.item_code }, 'sample_quantity', (r) => {
@@ -476,10 +474,10 @@ frappe.ui.form.on('Purchase Taxes and Charges', {
 	// 		validate_sample_quantity(frm, cdt, cdn);
 	// 	});
 	// },
-
-	// qty: function (frm, cdt, cdn) {
-	// 	validate_sample_quantity(frm, cdt, cdn);
-	// },
+	payable_to_different_vendor: function (frm, cdt, cdn) {
+		let row = locals[cdt][cdn]
+		frappe.model.set_value(cdt, cdn, "amount_paid_to_different_vendors", row.tax_amount);
+	},
 	// sample_quantity: function (frm, cdt, cdn) {
 	// 	validate_sample_quantity(frm, cdt, cdn);
 	// },

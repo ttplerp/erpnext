@@ -25,11 +25,9 @@
   "travel_information",
   "from_date",
   "vehicle_type",
-  "approver",
   "total_days_and_hours",
   "columb_break04",
   "to_date",
-  "approver_id",
   "place",
   "column_break04",
   "purpose",
@@ -49,7 +47,12 @@
   "items",
   "reason_for_extension",
   "workflow_state",
-  "amended_from"
+  "amended_from",
+  "approval_details_section",
+  "approver",
+  "approver_designation",
+  "column_break_zeomu",
+  "approver_name"
  ],
  "fields": [
   {
@@ -131,10 +134,9 @@
   },
   {
    "fieldname": "approver",
-   "fieldtype": "Data",
-   "hidden": 1,
+   "fieldtype": "Link",
    "label": "Approver",
-   "read_only": 1
+   "options": "User"
   },
   {
    "fieldname": "columb_break04",
@@ -146,14 +148,6 @@
    "fieldtype": "Datetime",
    "label": "To Date Time",
    "reqd": 1
-  },
-  {
-   "fieldname": "approver_id",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Approver ID",
-   "options": "User",
-   "read_only": 1
   },
   {
    "fieldname": "place",
@@ -237,8 +231,7 @@
    "fieldname": "vehicle",
    "fieldtype": "Link",
    "label": "Vehicle",
-   "options": "Equipment",
-   "reqd": 1
+   "options": "Equipment"
   },
   {
    "fetch_from": "vehicle.equipment_model",
@@ -261,8 +254,7 @@
    "fieldtype": "Link",
    "ignore_user_permissions": 1,
    "label": "Driver",
-   "options": "Employee",
-   "reqd": 1
+   "options": "Employee"
   },
   {
    "fetch_from": "driver.employee_name",
@@ -321,11 +313,33 @@
    "options": "Free\nBooked",
    "read_only": 1,
    "reqd": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "approval_details_section",
+   "fieldtype": "Section Break",
+   "label": "Approval Details"
+  },
+  {
+   "fieldname": "approver_designation",
+   "fieldtype": "Data",
+   "label": "Approver Designation",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_zeomu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "approver_name",
+   "fieldtype": "Data",
+   "label": "Approver name",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-04 16:41:22.299851",
+ "modified": "2023-08-24 14:38:44.228561",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Vehicle Request",

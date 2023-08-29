@@ -578,7 +578,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Fleet Report",
-   "link_count": 5,
+   "link_count": 7,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -631,10 +631,30 @@
    "link_type": "Report",
    "onboard": 1,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Vehicle Expense Report",
+   "link_count": 0,
+   "link_to": "Vehicle Expense Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Fuel Expense Report",
+   "link_count": 0,
+   "link_to": "Fuel Expense Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-08-22 11:15:20.534904",
- "modified_by": "tshering.lham@thimphutechpark.bt",
+ "modified": "2023-08-29 11:09:31.708672",
+ "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Fleet Management",
  "number_cards": [],

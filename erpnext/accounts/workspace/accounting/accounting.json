@@ -640,111 +640,6 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Reports",
-   "link_count": 9,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "dependencies": "GL Entry",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Trial Balance for Party",
-   "link_count": 0,
-   "link_to": "Trial Balance for Party",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "Journal Entry",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Payment Period Based On Invoice Date",
-   "link_count": 0,
-   "link_to": "Payment Period Based On Invoice Date",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "Sales Invoice",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Sales Partners Commission",
-   "link_count": 0,
-   "link_to": "Sales Partners Commission",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "Customer",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Customer Credit Balance",
-   "link_count": 0,
-   "link_to": "Customer Credit Balance",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "Sales Invoice",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Sales Payment Summary",
-   "link_count": 0,
-   "link_to": "Sales Payment Summary",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "Address",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Address And Contacts",
-   "link_count": 0,
-   "link_to": "Address And Contacts",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "GL Entry",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Tax Detail",
-   "link_count": 0,
-   "link_to": "Tax Detail",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Customer Ledger Summary",
-   "link_count": 0,
-   "link_to": "Customer Ledger Summary",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Supplier Ledger Summary",
-   "link_count": 0,
-   "link_to": "Supplier Ledger Summary",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Accounts Payable",
    "link_count": 9,
    "onboard": 0,
@@ -1206,9 +1101,124 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Reports",
+   "link_count": 10,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "GL Entry",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Trial Balance for Party",
+   "link_count": 0,
+   "link_to": "Trial Balance for Party",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "Journal Entry",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Payment Period Based On Invoice Date",
+   "link_count": 0,
+   "link_to": "Payment Period Based On Invoice Date",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "Sales Invoice",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Sales Partners Commission",
+   "link_count": 0,
+   "link_to": "Sales Partners Commission",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "Customer",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Customer Credit Balance",
+   "link_count": 0,
+   "link_to": "Customer Credit Balance",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "Sales Invoice",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Sales Payment Summary",
+   "link_count": 0,
+   "link_to": "Sales Payment Summary",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "Address",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Address And Contacts",
+   "link_count": 0,
+   "link_to": "Address And Contacts",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "GL Entry",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Tax Detail",
+   "link_count": 0,
+   "link_to": "Tax Detail",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Customer Ledger Summary",
+   "link_count": 0,
+   "link_to": "Customer Ledger Summary",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Supplier Ledger Summary",
+   "link_count": 0,
+   "link_to": "Supplier Ledger Summary",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Project Imprest settlement Report",
+   "link_count": 0,
+   "link_to": "Project Imprest settlement Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-08-17 14:51:48.212388",
+ "modified": "2023-08-28 11:08:45.056838",
  "modified_by": "pema.dhendup@thimphutechpark.bt",
  "module": "Accounts",
  "name": "Accounting",

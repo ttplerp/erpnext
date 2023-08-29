@@ -71,8 +71,7 @@ def make_sl_entries(sl_entries, allow_negative_stock=False, via_landed_cost_vouc
 
 			if sle.get("actual_qty") or sle.get("voucher_type") == "Stock Reconciliation":
 				sle_doc = make_entry(sle, allow_negative_stock, via_landed_cost_voucher)
-
-			args = sle_doc.as_dict()
+				args = sle_doc.as_dict()
 
 			if sle.get("voucher_type") == "Stock Reconciliation":
 				# preserve previous_qty_after_transaction for qty reposting
@@ -907,7 +906,10 @@ class update_entries_after(object):
 			)
 
 		if self.wh_data.qty_after_transaction:
-			self.wh_data.valuation_rate = self.wh_data.stock_value / self.wh_data.qty_after_transaction
+			if self.valuation_method == "FIFO":
+				self.wh_data.valuation_rate = sle.valuation_rate
+			else:
+				self.wh_data.valuation_rate = self.wh_data.stock_value / self.wh_data.qty_after_transaction
 
 	def update_batched_values(self, sle):
 		incoming_rate = flt(sle.incoming_rate)

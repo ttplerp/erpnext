@@ -20,7 +20,7 @@ class Warehouse(NestedSet):
 		if self.company:
 			suffix = " - " + frappe.get_cached_value("Company", self.company, "abbr")
 			if not self.warehouse_name.endswith(suffix):
-				self.name = self.warehouse_name + suffix
+				self.name = self.warehouse_name
 				return
 
 		self.name = self.warehouse_name

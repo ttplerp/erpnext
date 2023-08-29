@@ -293,6 +293,7 @@ def get_incoming_rate(args, raise_error_if_no_rate=True):
 					if previous_stock_queue
 					else 0
 				)
+
 		elif valuation_method == "Moving Average":
 			in_rate = previous_sle.get("valuation_rate") or 0
 
@@ -350,6 +351,7 @@ def _get_fifo_lifo_rate(previous_stock_queue, qty, method):
 	ValuationKlass = LIFOValuation if method == "LIFO" else FIFOValuation
 
 	stock_queue = ValuationKlass(previous_stock_queue)
+
 	if flt(qty) >= 0:
 		total_qty, total_value = stock_queue.get_total_stock_and_value()
 		return total_value / total_qty if total_qty else 0.0

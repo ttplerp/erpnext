@@ -108,6 +108,7 @@
   "pf_tiers",
   "gis_number",
   "gis_policy_number",
+  "advance_approver",
   "personal_details",
   "marital_status",
   "family_background",
@@ -1030,13 +1031,19 @@
    "fieldname": "signature",
    "fieldtype": "Attach Image",
    "label": "Signature"
+  },
+  {
+   "fieldname": "advance_approver",
+   "fieldtype": "Link",
+   "label": "Advance Approver",
+   "options": "Employee"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-08-17 14:56:32.821188",
+ "modified": "2023-08-29 14:11:17.333160",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",

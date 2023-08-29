@@ -240,36 +240,98 @@ class POLIssue(StockController):
 		self.make_sl_entries(sl_entries)
 
 	def get_sle_for_source_warehouse(self, sl_entries):
+		stock_balances = {}
 		if cstr(self.warehouse):
+			if self.pol_type and self.receive_in_barrel and self.warehouse:
+				stock_balances = self.get_balance(self.pol_type, self.warehouse)
 			for a in self.items:
-				sle = self.get_sl_entries(
-					{"item_code":self.pol_type, "name":self.name},
-					{
-						"warehouse": cstr(self.warehouse),
-						"actual_qty": -1*flt(a.qty),
-						"incoming_rate": flt(a.rate),
-						"valuation_rate":flt(a.rate),
-					},
-				)
+				quantity = a.qty
+				for bal in stock_balances:
+					if stock_balances[bal]["balance"] > 0:
+						if flt(quantity) <= flt(stock_balances[bal]['balance']):
+							sle = self.get_sl_entries(
+								{"item_code":self.pol_type, "name":self.name},
+								{
+									"warehouse": cstr(self.warehouse),
+									"actual_qty": -1*flt(quantity),
+									# "incoming_rate": flt(bal),
+									"valuation_rate":flt(bal),
+								},
+							)
+							a.amount += flt(bal)*flt(quantity)
+							frappe.db.sql("""
+								update `tabPOL Issue Items` set amount = '{}' where name = '{}'
+							""".format(a.amount, a.name))
+							sl_entries.append(sle)
+							quantity = 0
+						else:
+							sle = self.get_sl_entries(
+								{"item_code":self.pol_type, "name":self.name},
+								{
+									"warehouse": cstr(self.warehouse),
+									"actual_qty": -1*flt(stock_balances[bal]['balance']),
+									# "incoming_rate": flt(),
+									"valuation_rate":flt(bal),
+								},
+							)
+							a.amount += flt(bal)*flt(quantity)
+							frappe.db.sql("""
+								update `tabPOL Issue Items` set amount = '{}' where name = '{}'
+							""".format(a.amount, a.name))
+							quantity -= flt(stock_balances[bal]['balance'])
+							sl_entries.append(sle)
 
-				sl_entries.append(sle)
+
+	@frappe.whitelist()
+	def get_balance(pol_type, warehouse):
+		stock_balances = {}
+		sle_in = frappe.db.sql("""
+			select valuation_rate, actual_qty from `tabStock Ledger Entry` where
+			item_code = '{}' and warehouse = '{}' and actual_qty > 0 and is_cancelled = 0 order by posting_date, posting_time asc
+		""".format(pol_type, warehouse), as_dict=1)
+		sle_out = frappe.db.sql("""
+			select sum(actual_qty) from `tabStock Ledger Entry` where item_code = '{}' and warehouse = '{}' and actual_qty < 0
+			and is_cancelled = 0
+		""".format(pol_type, warehouse),as_dict=1)
+		stock_balances = {}
+		for s1 in sle_in:
+			if str(s1.valuation_rate) not in stock_balances:
+				stock_balances.update({str(s1.valuation_rate): {"balance": flt(s1.actual_qty)}})
+			else:
+				stock_balances[str(s1.valuation_rate)]["balance"] += s1.actual_qty
+		for b in sle_out:
+			remaining = 0
+			for c in stock_balances:
+				if remaining == 0:
+					if flt(stock_balances[c]["balance"]) > flt(b.actual_qty):
+						stock_balances[c]['balance'] -= flt(b.actual_qty)
+					elif flt(stock_balances[c]["balance"]) > 0 and flt(stock_balances[c]["balance"]) < flt(b.actual_qty):
+						remaining = -1*(flt(stock_balances[c]['balance']) - flt(b.actual_qty))
+						stock_balances[c]['balance'] = 0
+				else:
+					if flt(stock_balances[c]["balance"]) > flt(remaining):
+						stock_balances[c]['balance'] -= flt(remaining)
+						remaining = 0
+					elif flt(stock_balances[c]["balance"]) > 0 and flt(stock_balances[c]["balance"]) < flt(remaining):
+						remaining = -1(flt(stock_balances[c]['balance']) - flt(remaining))
+						stock_balances[c]['balance'] = 0
+		return stock_balances
 
 	@frappe.whitelist()
 	def get_rate(self):
-		from erpnext.stock.utils import get_incoming_rate
-		if self.pol_type and self.receive_in_barrel and self.warehouse:
-			args = frappe._dict(
-				{
-					"item_code": self.pol_type,
-					"warehouse": self.warehouse,
-					"posting_date": self.posting_date,
-					"posting_time": self.posting_time,
-					"voucher_type": self.doctype,
-					"voucher_no": self.name
-				}
-			)
-			rate = get_incoming_rate(args, True)
-			return rate
+		pass
+		# args = frappe._dict(
+		# 	{
+		# 		"item_code": self.pol_type,
+		# 		"warehouse": self.warehouse,
+		# 		"posting_date": self.posting_date,
+		# 		"posting_time": self.posting_time,
+		# 		"voucher_type": self.doctype,
+		# 		"voucher_no": self.name,
+		# 	}
+		# )
+		# rate = get_incoming_rate(args, True)
+		# return rate
 
 
 	# def update_stock_ledger(self):
