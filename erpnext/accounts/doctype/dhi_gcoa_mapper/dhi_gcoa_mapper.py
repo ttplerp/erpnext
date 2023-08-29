@@ -6,7 +6,18 @@ import frappe
 from frappe.model.document import Document
 
 class DHIGCOAMapper(Document):
-	pass
+	def validate(self):
+		self.check_for_duplicate_gl_in_child_table()
+	
+	def check_for_duplicate_gl_in_child_table(self):
+		account_set = set()  # Create a set to store encountered account values
+		
+		for d in self.items:
+			if d.account in account_set:
+				frappe.throw("Duplicate account found in the child table.")
+			
+			# Add the current account to the set
+			account_set.add(d.account)
 
 @frappe.whitelist()
 def filter_account(doctype, txt, searchfield, start, page_len, filters):
