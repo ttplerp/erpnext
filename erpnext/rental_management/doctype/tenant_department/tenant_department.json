@@ -18,8 +18,7 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Department",
-   "reqd": 1,
-   "unique": 1
+   "reqd": 1
   },
   {
    "fieldname": "description",
@@ -41,7 +40,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-06 14:01:23.986276",
+ "modified": "2023-08-29 09:37:11.651024",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Tenant Department",
