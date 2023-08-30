@@ -12,9 +12,9 @@ class DHIGCOAMapper(Document):
 	def check_for_duplicate_gl_in_child_table(self):
 		account_set = set()  # Create a set to store encountered account values
 		
-		for d in self.items:
+		for idx, d in enumerate(self.items):
 			if d.account in account_set:
-				frappe.throw("Duplicate account found in the child table.")
+				frappe.throw("Duplicate account found in the child table at <b>Row: {}</b> and account name is <b>{}</b>".format(idx+1, d.account))
 			
 			# Add the current account to the set
 			account_set.add(d.account)
