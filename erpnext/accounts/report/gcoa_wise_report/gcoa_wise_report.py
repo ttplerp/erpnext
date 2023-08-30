@@ -57,6 +57,7 @@ def from_gl_applicable_for_doc(coa,filters):
 						SUM(ifnull(credit,0)) AS credit
 				FROM `tabGL Entry` where account = "{2}"
 				AND (credit IS NOT NULL OR debit IS NOT NULL)
+				AND is_cancelled = 0
 				AND posting_date BETWEEN '{0}' AND '{1}'
 					""".format(filters['from_date'],filters['to_date'],coa.account)
 	else:
@@ -67,6 +68,7 @@ def from_gl_applicable_for_doc(coa,filters):
 							SUM(CASE WHEN posting_date >= "{0}" AND posting_date <="{1}" THEN credit ELSE 0 END) AS credit
 					FROM `tabGL Entry` where account = "{2}"
 					AND (credit IS NOT NULL OR debit IS NOT NULL)
+					AND is_cancelled = 0
 					AND posting_date <= '{1}'
 						""".format(filters['from_date'],filters['to_date'],coa.account)
       
@@ -113,6 +115,7 @@ def from_gl_applicable_for_both(is_inter_company,coa,filters):
 					FROM `tabGL Entry` where posting_date BETWEEN '{0}' AND '{1}'
 					AND account = "{2}" 
 					AND (credit IS NOT NULL OR debit IS NOT NULL)
+					AND is_cancelled = 0
 					""".format(filters['from_date'],filters['to_date'],coa.account)
 	else:		
 		query = """SELECT 
@@ -124,6 +127,7 @@ def from_gl_applicable_for_both(is_inter_company,coa,filters):
 				FROM `tabGL Entry` where posting_date <= "{1}" 
 				AND account = "{2}" 
 				AND (credit IS NOT NULL OR debit IS NOT NULL)
+				AND is_cancelled = 0
 				GROUP BY party
 				""".format(filters['from_date'],filters['to_date'],coa.account)
 	total_debit = total_credit = 0
