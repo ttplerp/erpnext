@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "CONS.YYYY.MM.DD.##",
  "creation": "2022-12-15 10:10:22.083870",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -51,10 +52,11 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-16 10:30:13.024665",
+ "modified": "2023-08-30 09:56:05.143789",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Consolidation Transaction",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
