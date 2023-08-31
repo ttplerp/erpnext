@@ -418,7 +418,7 @@ def get_account_autoname(account_number, account_name, company):
     if not company:
         frappe.throw(_("Company {0} does not exist").format(company))
 
-    parts = [account_name.strip(), company.abbr]
+    parts = [account_name.strip()]
     if cstr(account_number).strip():
         parts.insert(0, cstr(account_number).strip())
     return " - ".join(parts)
