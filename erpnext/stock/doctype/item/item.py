@@ -140,9 +140,10 @@ class Item(Document):
 	def validate_duplicate_item_name(self):
 		duplicate = frappe.db.sql("""
 			select name from `tabItem` where lower(item_name) = '{}'
-		""".format(str(self.item_name).lower()),as_dict=1)
+			and name != '{}'
+		""".format(str(self.item_name).lower(), self.name),as_dict=1)
 		for a in duplicate:
-			frappe.throw("Duplicate Item exists for Item Name '{}'. Existing Item: {} and name != {}".format(self.item_name, a.name, self.name))
+			frappe.throw("Duplicate Item exists for Item Name '{}'. Existing Item: {}".format(self.item_name, a.name))
 
 	def add_price(self, price_list=None):
 		"""Add a new price"""
