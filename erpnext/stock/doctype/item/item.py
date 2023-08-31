@@ -141,7 +141,7 @@ class Item(Document):
 		duplicate = frappe.db.sql("""
 			select name from `tabItem` where lower(item_name) = '{}'
 		""".format(str(self.item_name).lower()),as_dict)
-		for a in in duplicate:
+		for a in duplicate:
 			frappe.throw("Duplicate Item exists for Item Name '{}'. Existing Item: {}".format(self.item_name. a.name))
 
 	def add_price(self, price_list=None):
