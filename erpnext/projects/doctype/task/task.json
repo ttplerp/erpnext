@@ -156,7 +156,7 @@
   {
    "fieldname": "exp_start_date",
    "fieldtype": "Date",
-   "label": "Expected Start Date",
+   "label": "Planned Start Date",
    "oldfieldname": "exp_start_date",
    "oldfieldtype": "Date"
   },
@@ -164,7 +164,7 @@
    "default": "0",
    "fieldname": "expected_time",
    "fieldtype": "Float",
-   "label": "Expected Time (in hours)",
+   "label": "Planned Time (in hours)",
    "oldfieldname": "exp_total_hrs",
    "oldfieldtype": "Data"
   },
@@ -182,7 +182,7 @@
    "bold": 1,
    "fieldname": "exp_end_date",
    "fieldtype": "Date",
-   "label": "Expected End Date",
+   "label": "Planned End Date",
    "oldfieldname": "exp_end_date",
    "oldfieldtype": "Date",
    "search_index": 1
@@ -418,7 +418,7 @@
  "is_tree": 1,
  "links": [],
  "max_attachments": 5,
- "modified": "2023-06-27 16:02:33.287943",
+ "modified": "2023-08-31 16:29:09.942085",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Task",
