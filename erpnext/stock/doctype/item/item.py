@@ -95,6 +95,7 @@ class Item(Document):
 		self.validate_barcode()
 		self.validate_warehouse_for_reorder()
 		self.update_bom_item_desc()
+		self.validate_duplicate_item_name()
 
 		self.validate_has_variants()
 		self.validate_attributes_in_variants()
@@ -135,6 +136,13 @@ class Item(Document):
 			if self.valuation_rate:
 				frappe.throw(_('"Customer Provided Item" cannot have Valuation Rate'))
 			self.default_material_request_type = "Customer Provided"
+
+	def validate_duplicate_item_name(self):
+		duplicate = frappe.db.sql("""
+			select name from `tabItem` where lower(item_name) = '{}'
+		""".format(str(self.item_name).lower()),as_dict)
+		for a in in duplicate:
+			frappe.throw("Duplicate Item exists for Item Name '{}'. Existing Item: {}".format(self.item_name. a.name))
 
 	def add_price(self, price_list=None):
 		"""Add a new price"""
