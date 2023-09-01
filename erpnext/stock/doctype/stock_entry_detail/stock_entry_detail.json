@@ -31,6 +31,7 @@
   "description",
   "column_break_10",
   "item_group",
+  "item_sub_group",
   "image",
   "image_view",
   "quantity_section",
@@ -156,7 +157,7 @@
   },
   {
    "fieldname": "item_name",
-   "fieldtype": "Data",
+   "fieldtype": "Text",
    "in_global_search": 1,
    "label": "Item Name",
    "print_hide": 1,
@@ -758,13 +759,20 @@
    "fieldtype": "Select",
    "label": "Stock Entry Category",
    "options": "\nStore\nPurchased"
+  },
+  {
+   "fetch_from": "item_code.item_sub_group",
+   "fieldname": "item_sub_group",
+   "fieldtype": "Data",
+   "label": "Item Sub Group",
+   "read_only": 1
   }
  ],
  "idx": 1,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-06-26 16:27:25.023360",
+ "modified": "2023-09-01 15:13:39.519136",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Entry Detail",
