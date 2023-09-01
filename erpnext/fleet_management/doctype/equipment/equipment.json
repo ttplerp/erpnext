@@ -272,6 +272,7 @@
    "fetch_from": "asset_code.gross_purchase_amount",
    "fieldname": "rate",
    "fieldtype": "Currency",
+   "in_list_view": 1,
    "label": "Rate",
    "read_only": 1
   },
@@ -362,7 +363,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-07-28 12:54:07.488014",
+ "modified": "2023-08-30 15:30:08.925666",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment",

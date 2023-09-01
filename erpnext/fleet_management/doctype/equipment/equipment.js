@@ -52,3 +52,20 @@ frappe.ui.form.on('Equipment', {
 		})
 	}
 });
+
+frappe.ui.form.on('Equipment Operator', {
+	operator: function(frm, cdt, cdn){
+		var row = locals[cdt][cdn];
+		frappe.call({
+			method: "get_operator_name",
+			doc: frm.doc,
+			args:{"employee_type":row.employee_type, "employee":row.employee},
+			callback: function(r){
+				if(r.message){
+					frappe.model.set_value(cdt, cdn, "operator_name", r.message);
+					frappe.refresh_fields();
+				}
+			}
+		})
+	}
+});

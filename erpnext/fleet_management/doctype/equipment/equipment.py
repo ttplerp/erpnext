@@ -70,3 +70,10 @@ class Equipment(Document):
 					getdate(self.equipment_history[a + 1].from_date), -1)
 		else:
 			self.equipment_history[0].to_date = None
+	@frappe.whitelist()
+	def get_operator_name(self, employee_type, employee):
+		if employee_type and employee:
+			if employee_type == "Muster Roll Employee":
+				return frappe.db.get_value(employee_type, employee, "person_name")
+			elif employee_type == "Employee":
+				return frappe.db.get_value(employee_type, employee, "employee_name")
