@@ -1054,6 +1054,22 @@ class CustomWorkflow:
                 officiating[2] if officiating else self.project_head[2]
             )
 
+        elif approver_type == "Leave Approver":
+            officiating = get_officiating_employee(self.leave_approver[3])
+            if officiating:
+                officiating = frappe.db.get_value(
+                    "Employee", officiating[0].officiate, self.field_list
+                )
+            vars(self.doc)[self.doc_approver[0]] = (
+                officiating[0] if officiating else self.leave_approver[0]
+            )
+            vars(self.doc)[self.doc_approver[1]] = (
+                officiating[1] if officiating else self.leave_approver[1]
+            )
+            vars(self.doc)[self.doc_approver[2]] = (
+                officiating[2] if officiating else self.leave_approver[2]
+            )
+
         elif approver_type == "TravelAdmin":
             officiating = get_officiating_employee(self.ta_approver[3])
             if officiating:
