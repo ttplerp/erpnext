@@ -385,7 +385,7 @@ class PurchaseOrder(BuyingController):
         self.update_prevdoc_status()
         self.update_requested_qty()
         self.update_ordered_qty()
-        self.validate_budget()
+        # self.validate_budget()
         self.update_reserved_qty_for_subcontract()
 
         frappe.get_doc("Authorization Control").validate_approving_authority(
@@ -424,7 +424,7 @@ class PurchaseOrder(BuyingController):
             self.doctype, self.name, self.inter_company_order_reference
         )
 
-        self.removed_committed_budget()
+        # self.removed_committed_budget()
 
     def removed_committed_budget(self):
         frappe.db.sql(

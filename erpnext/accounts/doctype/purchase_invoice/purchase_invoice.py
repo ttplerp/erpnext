@@ -637,7 +637,7 @@ class PurchaseInvoice(BuyingController):
         self.update_advance_tax_references()
 
         self.process_common_party_accounting()
-        self.consume_budget(cancel=False)
+        # self.consume_budget(cancel=False)
         self.update_tds_receipt_entry()
 
     def update_tds_receipt_entry(self):
@@ -1899,7 +1899,7 @@ class PurchaseInvoice(BuyingController):
             "Payment Ledger Entry",
         )
         self.update_advance_tax_references(cancel=1)
-        self.consume_budget(cancel=True)
+        # self.consume_budget(cancel=True)
 
     def update_project(self):
         project_list = []

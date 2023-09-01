@@ -9,6 +9,7 @@ from frappe.utils import flt, cint, cstr, money_in_words
 from erpnext.controllers.stock_controller import StockController
 from erpnext.fleet_management.fleet_utils import get_pol_till, get_pol_till, get_previous_km
 from erpnext.accounts.doctype.business_activity.business_activity import get_default_ba
+from erpnext.stock.utils import get_bin, get_incoming_rate
 
 class POLIssue(StockController):
 	def __init__(self, *args, **kwargs):
@@ -216,12 +217,12 @@ class POLIssue(StockController):
 			a.warehouse = self.warehouse
 			# Expense Account
 			a.equipment_category = frappe.db.get_value("Equipment", a.equipment, "equipment_category")
-			budget_account = frappe.db.get_value("Equipment Category", a.equipment_category, "budget_account")
-			if not budget_account:
-				budget_account = frappe.db.get_value("Item Default", {'parent':self.pol_type}, "expense_account")
-			if not budget_account:
-				frappe.throw("Set Budget Account in Equipment Category")
-			a.expense_account = budget_account
+			# budget_account = frappe.db.get_value("Equipment Category", a.equipment_category, "budget_account")
+			# if not budget_account:
+			# 	budget_account = frappe.db.get_value("Item Default", {'parent':self.pol_type}, "expense_account")
+			# if not budget_account:
+			# 	frappe.throw("Set Budget Account in Equipment Category")
+			# a.expense_account = budget_account
 
 	def update_stock_ledger(self):
 		sl_entries = []
@@ -236,51 +237,69 @@ class POLIssue(StockController):
 		# reverse sl entries if cancel
 		if self.docstatus == 2:
 			sl_entries.reverse()
-
+		# frappe.throw(str(sl_entries))
 		self.make_sl_entries(sl_entries)
 
 	def get_sle_for_source_warehouse(self, sl_entries):
-		stock_balances = {}
-		if cstr(self.warehouse):
-			if self.pol_type and self.receive_in_barrel and self.warehouse:
-				stock_balances = self.get_balance(self.pol_type, self.warehouse)
-			for a in self.items:
-				quantity = a.qty
-				for bal in stock_balances:
-					if stock_balances[bal]["balance"] > 0:
-						if flt(quantity) <= flt(stock_balances[bal]['balance']):
-							sle = self.get_sl_entries(
-								{"item_code":self.pol_type, "name":self.name},
-								{
-									"warehouse": cstr(self.warehouse),
-									"actual_qty": -1*flt(quantity),
-									# "incoming_rate": flt(bal),
-									"valuation_rate":flt(bal),
-								},
-							)
-							a.amount += flt(bal)*flt(quantity)
-							frappe.db.sql("""
-								update `tabPOL Issue Items` set amount = '{}' where name = '{}'
-							""".format(a.amount, a.name))
-							sl_entries.append(sle)
-							quantity = 0
-						else:
-							sle = self.get_sl_entries(
-								{"item_code":self.pol_type, "name":self.name},
-								{
-									"warehouse": cstr(self.warehouse),
-									"actual_qty": -1*flt(stock_balances[bal]['balance']),
-									# "incoming_rate": flt(),
-									"valuation_rate":flt(bal),
-								},
-							)
-							a.amount += flt(bal)*flt(quantity)
-							frappe.db.sql("""
-								update `tabPOL Issue Items` set amount = '{}' where name = '{}'
-							""".format(a.amount, a.name))
-							quantity -= flt(stock_balances[bal]['balance'])
-							sl_entries.append(sle)
+		# stock_balances = {}
+		# if cstr(self.warehouse):
+		# 	if self.pol_type and self.receive_in_barrel and self.warehouse:
+		# 		stock_balances = self.get_balance(self.pol_type, self.warehouse)
+		# 	for a in self.items:
+		# 		quantity = a.qty
+		# 		for bal in stock_balances:
+		# 			if stock_balances[bal]["balance"] > 0:
+		# 				if flt(quantity) <= flt(stock_balances[bal]['balance']):
+		# 					sle = self.get_sl_entries(
+		# 						{"item_code":self.pol_type, "name":self.name},
+		# 						{
+		# 							"warehouse": cstr(self.warehouse),
+		# 							"actual_qty": -1*flt(quantity),
+		# 							# "incoming_rate": flt(bal),
+		# 							"valuation_rate":flt(bal),
+		# 						},
+		# 					)
+		# 					a.amount += flt(bal)*flt(quantity)
+		# 					frappe.db.sql("""
+		# 						update `tabPOL Issue Items` set amount = '{}' where name = '{}'
+		# 					""".format(a.amount, a.name))
+		# 					sl_entries.append(sle)
+		# 					quantity = 0
+		# 				else:
+		# 					sle = self.get_sl_entries(
+		# 						{"item_code":self.pol_type, "name":self.name},
+		# 						{
+		# 							"warehouse": cstr(self.warehouse),
+		# 							"actual_qty": -1*flt(stock_balances[bal]['balance']),
+		# 							# "incoming_rate": flt(),
+		# 							"valuation_rate":flt(bal),
+		# 						},
+		# 					)
+		# 					a.amount += flt(bal)*flt(quantity)
+		# 					frappe.db.sql("""
+		# 						update `tabPOL Issue Items` set amount = '{}' where name = '{}'
+		# 					""".format(a.amount, a.name))
+		# 					quantity -= flt(stock_balances[bal]['balance'])
+		# 					sl_entries.append(sle)
+		# stock_balances = {}
+		for a in self.items:
+			if cstr(self.warehouse):
+				# if self.stock_entry_type == "Material Transfer" and flt(d.difference_qty) < 0:
+				# 	sle = self.get_sl_entries(
+				# 		d, {"warehouse": cstr(d.s_warehouse), 
+				# 			"actual_qty": -(flt(d.transfer_qty) - flt(d.difference_qty)),
+				# 			"incoming_rate": 0
+				# 			})
+				# else:
+				sle = self.get_sl_entries(
+					{"item_code":a.item_code, "name":self.name}
+					, {"warehouse": cstr(self.warehouse),
+						"actual_qty": -1*flt(a.qty),
+						"incoming_rate": 0,
+						"valuation_rate":a.rate
+						})
 
+				sl_entries.append(sle)
 
 	@frappe.whitelist()
 	def get_balance(pol_type, warehouse):
@@ -319,19 +338,18 @@ class POLIssue(StockController):
 
 	@frappe.whitelist()
 	def get_rate(self):
-		pass
-		# args = frappe._dict(
-		# 	{
-		# 		"item_code": self.pol_type,
-		# 		"warehouse": self.warehouse,
-		# 		"posting_date": self.posting_date,
-		# 		"posting_time": self.posting_time,
-		# 		"voucher_type": self.doctype,
-		# 		"voucher_no": self.name,
-		# 	}
-		# )
-		# rate = get_incoming_rate(args, True)
-		# return rate
+		args = frappe._dict(
+			{
+				"item_code": self.pol_type,
+				"warehouse": self.warehouse,
+				"posting_date": self.posting_date,
+				"posting_time": self.posting_time,
+				"voucher_type": self.doctype,
+				"voucher_no": self.name,
+			}
+		)
+		rate = get_incoming_rate(args, True)
+		return rate
 
 
 	# def update_stock_ledger(self):
