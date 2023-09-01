@@ -47,6 +47,7 @@ class BSRService(Document):
 	def on_cancel(self):
 		frappe.db.sql("delete from `tabPrice List` where name = \'" + str(self.price_list) + "\'")
 		frappe.db.sql("delete from `tabItem Price` where price_list = \'" + str(self.price_list) + "\'")
+		self.db_set('price_list', '')
 
 	def get_item_list(self):
 		items = frappe.db.sql("""Select * from tabItem where disabled=0 and is_bsr_service_item=1""",as_dict=1)
