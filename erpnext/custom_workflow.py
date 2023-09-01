@@ -181,7 +181,7 @@ class CustomWorkflow:
                     self.leave_approver = frappe.db.get_value(
                         "Employee",
                         frappe.db.get_value(
-                            "Employee", {"user_id": self.doc.employee}, "leave_approver"
+                            "Employee", self.doc.employee, "leave_approver"
                         ),
                         self.field_list,
                     )
