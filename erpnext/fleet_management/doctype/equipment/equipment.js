@@ -59,7 +59,7 @@ frappe.ui.form.on('Equipment Operator', {
 		frappe.call({
 			method: "get_operator_name",
 			doc: frm.doc,
-			args:{"employee_type":row.employee_type, "employee":row.employee},
+			args:{"employee_type":row.employee_type, "employee":row.operator},
 			callback: function(r){
 				if(r.message){
 					frappe.model.set_value(cdt, cdn, "operator_name", r.message);
