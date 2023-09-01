@@ -213,9 +213,10 @@ class CustomWorkflow:
                     )
                     self.leave_approver = frappe.db.get_value(
                         "Employee",
+                        {"user_id":
                         frappe.db.get_value(
-                            "Employee", {"user_id":self.doc.employee}, "leave_approver"
-                        ),
+                            "Employee", self.doc.employee, "leave_approver"
+                        )},
                         self.field_list,
                     )
                     self.hrgm = frappe.db.get_value(
