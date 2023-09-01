@@ -170,22 +170,8 @@ class CustomWorkflow:
                     },
                     self.field_list,
                 )
-                if self.doc.doctype == 'Leave Application':
-                    self.project_head = frappe.db.get_value(
-                        "Employee",
-                        frappe.db.get_value(
-                            "Employee", {"user_id": self.doc.leave_approver}, "reports_to"
-                        ),
-                        self.field_list,
-                    )
-                    self.leave_approver = frappe.db.get_value(
-                        "Employee",
-                        frappe.db.get_value(
-                            "Employee", self.doc.employee, "leave_approver"
-                        ),
-                        self.field_list,
-                    )
-                elif self.doc.doctype == "Leave Encashment":
+
+                if self.doc.doctype == "Leave Encashment":
                     self.project_head = frappe.db.get_value(
                         "Employee",
                         frappe.db.get_value(
@@ -218,6 +204,20 @@ class CustomWorkflow:
                                 self.employee
                             )
                         )
+                    self.project_head = frappe.db.get_value(
+                        "Employee",
+                        frappe.db.get_value(
+                            "Employee", {"user_id": self.doc.leave_approver}, "reports_to"
+                        ),
+                        self.field_list,
+                    )
+                    self.leave_approver = frappe.db.get_value(
+                        "Employee",
+                        frappe.db.get_value(
+                            "Employee", {"user_id":self.doc.employee}, "leave_approver"
+                        ),
+                        self.field_list,
+                    )
                     self.hrgm = frappe.db.get_value(
                         "Employee",
                         frappe.db.get_single_value("HR Settings", "hrgm"),
