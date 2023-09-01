@@ -219,6 +219,10 @@ class CustomWorkflow:
                         )},
                         self.field_list,
                     )
+                    if not self.leave_approver:
+                        frappe.throw("""
+                            Please set Leave Approver for employee {}
+                        """.format(self.doc.employee))
                     self.hrgm = frappe.db.get_value(
                         "Employee",
                         frappe.db.get_single_value("HR Settings", "hrgm"),
