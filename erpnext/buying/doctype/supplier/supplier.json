@@ -484,7 +484,6 @@
    "fieldname": "supplier_tpn_no",
    "fieldtype": "Data",
    "label": "Supplier TPN No",
-   "reqd": 1,
    "unique": 1
   },
   {
@@ -693,7 +692,7 @@
    "link_fieldname": "party"
   }
  ],
- "modified": "2023-08-31 16:31:13.599198",
+ "modified": "2023-09-01 15:23:52.265052",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Supplier",
