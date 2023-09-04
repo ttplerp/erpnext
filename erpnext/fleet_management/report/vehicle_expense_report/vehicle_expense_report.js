@@ -15,7 +15,7 @@ frappe.query_reports["Vehicle Expense Report"] = {
 			"fieldname": "type",
 			"fieldtype": "Select",
 			"label": __("Type"),
-			"options": "\nPOL Receive\nPOL Issue\nBluebook\nEmission\nFitness"
+			"options": "\nPOL Receive\nPOL Issue\nBluebook\nEmission\nFitness\nRepair And Services"
 		},
 		{
 			"fieldname": "consolidate",

@@ -73,6 +73,18 @@ def construct_query(cond, filters):
             amount
         FROM (
                 SELECT
+                    rs.posting_date,
+                    rs.equipment, 
+                    'Repair And Services' AS type, 
+                    rs.total_amount as amount
+                FROM 
+                    `tabRepair And Services` rs
+                WHERE 
+                    rs.docstatus = 1 
+
+                UNION ALL
+                
+                SELECT
                     ir.posting_date,
                     ir.equipment, 
                     be.type, 

@@ -12,6 +12,7 @@
   "cost_center",
   "region",
   "disabled",
+  "imprest_approver",
   "cb_3",
   "company",
   "letter_head",
@@ -113,12 +114,18 @@
    "fieldname": "branch_bank_account",
    "fieldtype": "Table",
    "options": "Branch Bank Account"
+  },
+  {
+   "fieldname": "imprest_approver",
+   "fieldtype": "Link",
+   "label": "Imprest Approver",
+   "options": "User"
   }
  ],
  "icon": "fa fa-code-fork",
  "idx": 1,
  "links": [],
- "modified": "2023-07-03 16:35:57.487138",
+ "modified": "2023-08-30 13:12:41.757938",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Branch",

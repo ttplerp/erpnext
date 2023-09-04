@@ -78,7 +78,7 @@ class Employee(NestedSet):
 			self.post_casual_leave()
 
 	def post_casual_leave(self):
-		from_date = getdate(self.date_of_joining)
+		from_date = getdate(self.probation_end_date)
 		to_date = get_year_end_date(from_date)
 
 		if not cint(self.casual_leave_allocated):

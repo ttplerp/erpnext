@@ -61,6 +61,12 @@
   "journal_entry",
   "journal_entry_status",
   "column_break_50",
+  "section_break_qmfkp",
+  "approver",
+  "column_break_fdusf",
+  "approver_name",
+  "column_break_zja4w",
+  "approver_designation",
   "amended_from"
  ],
  "fields": [
@@ -415,12 +421,43 @@
    "label": "Destination Warehouse",
    "mandatory_depends_on": "eval:doc.receive_in_barrel == 1;",
    "options": "Warehouse"
+  },
+  {
+   "fieldname": "section_break_qmfkp",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "approver",
+   "fieldtype": "Link",
+   "label": "Approver",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "approver_name",
+   "fieldtype": "Data",
+   "label": "Approver Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "approver_designation",
+   "fieldtype": "Data",
+   "label": "Approver Designation",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_fdusf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_zja4w",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-08-28 15:05:43.770784",
+ "modified": "2023-09-04 19:09:40.755729",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Receive",
