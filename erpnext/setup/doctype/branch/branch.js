@@ -3,6 +3,12 @@
 
 frappe.ui.form.on('Branch', {
 	refresh: function(frm) {
-
+		frm.set_query("project", "items", (doc) => {
+			return {
+				"filters": {
+					"branch": doc.name,
+				},
+			};
+		});
 	}
 });
