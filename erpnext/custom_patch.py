@@ -2,6 +2,30 @@ import frappe
 from erpnext.setup.doctype.employee.employee import create_user
 import pandas as pd
 
+def update_evaluator():
+    for a in frappe.db.sql("""
+        select name from `tabEmployee PMS Evaluator Mapper`
+    """,as_dict=1):
+        doc = frappe.get_doc("Employee PMS Evaluator Mapper", a.name)
+        emps = []
+        for b in doc.employees:
+            emps.append(b.employee)
+            emp = frappe.get_doc("Employee", b.employee)
+            if not frappe.db.exists("Performance Evaluator", {"parent": b.employee, "evaluator": doc.evaluator}):
+                row = emp.append("evaluators", {})
+                row.evaluator = doc.evaluator
+                row.evaluator_name = doc.evaluator_name
+            emp.save(ignore_permissions=1)
+        for b in frappe.db.sql("""
+            select pe.name from `tabPerformance Evaluator` pe, `tabEmployee` e where pe.parent = e.name and
+            e.name not in ({})
+        """.format(", ".join("'"+em+"'" for em in emps)), as_dict=1):
+            frappe.db.sql("""
+                delete from `tabPerformance Evaluator` where name = '{}'
+            """.format(b.name))
+        print("Updated Evaluator Information in Employees")
+        
+
 
 def update_department_abbr():
     deps = frappe.db.sql(
@@ -36,15 +60,15 @@ def update_department_abbr():
 def update_branch():
     branch = frappe.db.sql(
         """
-		select name from `tabBranch`
-	""",
+        select name from `tabBranch`
+    """,
         as_dict=1,
     )
     for a in branch:
         frappe.db.sql(
             """
-			update `tabBranch` set expense_bank_account= NULL where name = '{}'
-		""".format(
+            update `tabBranch` set expense_bank_account= NULL where name = '{}'
+        """.format(
                 a.name
             )
         )
@@ -418,3 +442,26 @@ def update_ref_doc():
                 reference[0][0], a[0]
             )
         )
+
+def update_advance_approver_name():
+    for a in frappe.db.sql("""
+        select 
+            e.name 
+        from 
+            `tabEmployee` e
+        """, as_dict=1
+    ):
+        for n in frappe.db.sql("""
+            select e.employee_name 
+            from 
+                `tabEmployee` e 
+            where 
+                e.advance_approver = {}
+            """.format(a.name), as_dict=1
+        ):
+            print(n.employee_name)
+            print(a.name)
+
+
+    print("sss")
+    
