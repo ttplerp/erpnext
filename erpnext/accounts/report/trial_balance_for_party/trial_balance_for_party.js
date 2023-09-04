@@ -87,6 +87,12 @@ frappe.query_reports["Trial Balance for Party"] = {
 			"options":"Cost Center"
 		},
 		{
+			"fieldname":"project",
+			"label":__("Project"),
+			"fieldtype":"Link",
+			"options":"Project"
+		},
+		{
 			"fieldname":"party_group",
 			"label": __("Party Group"),
 			"fieldtype": "Dynamic Link",
@@ -102,6 +108,11 @@ frappe.query_reports["Trial Balance for Party"] = {
 			"fieldname": "show_zero_values",
 			"label": __("Show zero values"),
 			"fieldtype": "Check"
+		},
+		{
+			"fieldname":"group_by_party",
+			"label": __("Group by party?"),
+			"fieldtype": "Check",
 		}
 	]
 }
