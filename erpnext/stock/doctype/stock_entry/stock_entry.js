@@ -268,7 +268,7 @@ frappe.ui.form.on('Stock Entry', {
 			}, __("Get Items From"));
 
 			frm.add_custom_button(__('Material Request'), function () {
-				const allowed_request_types = ["Material Transfer", "Material Issue", "Customer Provided"];
+				const allowed_request_types = ["Material Transfer", "Material Issue", "Purchase/Requisition","Customer Provided"];
 				const depends_on_condition = "eval:doc.material_request_type==='Customer Provided'";
 				const d = erpnext.utils.map_current_doc({
 					method: "erpnext.stock.doctype.material_request.material_request.make_stock_entry",
