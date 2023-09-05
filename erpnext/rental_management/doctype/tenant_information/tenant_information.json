@@ -144,7 +144,6 @@
   },
   {
    "allow_on_submit": 1,
-   "depends_on": "eval:doc.employment_type==\"Civil Servant\"",
    "fieldname": "ministry_and_agency",
    "fieldtype": "Link",
    "label": "Ministry and Agency",
@@ -209,6 +208,7 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "depends_on": "eval: doc.building_category != 'Pilot Housing' && doc.total_floor_area > 0",
    "fieldname": "rate_per_sqft",
    "fieldtype": "Currency",
@@ -223,6 +223,7 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "depends_on": "eval: doc.building_category != 'Pilot Housing'",
    "fetch_from": "flat_no.total_floor_area",
    "fieldname": "total_floor_area",
@@ -239,7 +240,6 @@
   },
   {
    "allow_on_submit": 1,
-   "depends_on": "eval:doc.employment_type==\"Civil Servant\"",
    "fieldname": "tenant_department",
    "fieldtype": "Link",
    "label": "Tenant Department ID",
@@ -508,7 +508,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-28 10:46:53.996705",
+ "modified": "2023-09-05 16:31:41.247731",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Tenant Information",
