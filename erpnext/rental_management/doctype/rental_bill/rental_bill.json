@@ -20,6 +20,7 @@
   "department",
   "dzongkhag",
   "location",
+  "employment_type",
   "cb_2",
   "town_category",
   "building_category",
@@ -399,12 +400,19 @@
    "fieldname": "sb_rental_bill_entry_section",
    "fieldtype": "Section Break",
    "label": "Rental Bill Entry Section"
+  },
+  {
+   "fieldname": "employment_type",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Employment Type",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-16 22:17:56.275659",
+ "modified": "2023-09-05 15:26:36.435305",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Bill",

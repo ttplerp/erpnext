@@ -91,7 +91,7 @@ class RentalBillEntry(Document):
 					select tenant_cid, tenant_name, customer, block, flat, block_no,
 					ministry_and_agency, location_name, branch, tenant_department_name, dzongkhag, 
 					town_category, building_category, is_nhdcl_employee, rental_amount, building_classification,
-					phone_no, allocated_date, locations
+					phone_no, allocated_date, locations, employment_type
 					from `tabTenant Information` t 
 					inner join `tabTenant Rental Charges` r 
 					on t.name = r.parent 
@@ -154,6 +154,7 @@ class RentalBillEntry(Document):
 							"is_nhdcl_employee": d.is_nhdcl_employee,
 							"property_management_amount": total_property_management_amount,
 							"rental_bill_entry": self.name,
+							"employment_type": d.employment_type,
 						})
 						rb.insert()
 						successful += 1
