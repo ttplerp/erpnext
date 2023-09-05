@@ -219,7 +219,7 @@ def crate_invoice_entries( invoice_entry, args, publish_progress=True):
 
 	if failed > 0 and failed < successful :
 		invoice_entry.db_set("invoice_created",1)
-	elif failed == 0 and successful > 0:
+	elif successful > 0:
 		invoice_entry.db_set("invoice_created",1)
 	elif successful == 0 and failed > 0:
 		invoice_entry.db_set("invoice_created",0)
