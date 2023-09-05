@@ -18,15 +18,15 @@ frappe.ui.form.on("Supplier", {
 				}
 			}
 		});
-		frm.set_query("default_bank_account", function() {
+		frm.set_query("default_bank_account", function () {
 			return {
 				filters: {
-					"is_company_account":1
+					"is_company_account": 1
 				}
 			}
 		});
 
-		frm.set_query("supplier_primary_contact", function(doc) {
+		frm.set_query("supplier_primary_contact", function (doc) {
 			return {
 				query: "erpnext.buying.doctype.supplier.supplier.get_supplier_primary_contact",
 				filters: {
@@ -35,7 +35,7 @@ frappe.ui.form.on("Supplier", {
 			};
 		});
 
-		frm.set_query("supplier_primary_address", function(doc) {
+		frm.set_query("supplier_primary_address", function (doc) {
 			return {
 				filters: {
 					"link_doctype": "Supplier",
@@ -55,11 +55,11 @@ frappe.ui.form.on("Supplier", {
 		}
 		frm.events.set_filter(frm)
 		if (frm.doc.__islocal) {
-			hide_field(['address_html','contact_html']);
+			hide_field(['address_html', 'contact_html']);
 			frappe.contacts.clear_address_and_contact(frm);
 		}
 		else {
-			unhide_field(['address_html','contact_html']);
+			unhide_field(['address_html', 'contact_html']);
 			frappe.contacts.render_address_and_contact(frm);
 
 			// custom buttons
@@ -94,69 +94,69 @@ frappe.ui.form.on("Supplier", {
 			erpnext.utils.set_party_dashboard_indicators(frm);
 		}
 	},
-	dzongkhag:function(frm){
+	dzongkhag: function (frm) {
 		frm.events.set_filter(frm)
 	},
-	gewog:function(frm){
+	gewog: function (frm) {
 		frm.events.set_filter(frm)
 	},
-	supplier_type:function(frm){
-		if (frm.doc.supplier_type === "Domestic Vendor"){
-			frm.toggle_reqd("supplier_tpn_no", 1)
+	supplier_type: function (frm) {
+		if (frm.doc.supplier_type === "Domestic Vendor") {
+			// frm.toggle_reqd("supplier_tpn_no", 1)
 			frm.toggle_reqd("supplier_registration_no", 0)
 		} else {
-			frm.toggle_reqd("supplier_registration_no", 1)
+			// frm.toggle_reqd("supplier_registration_no", 1)
 			frm.toggle_reqd("supplier_tpn_no", 0)
 
 		}
 
 	},
-	set_filter:function(frm){
-		frm.set_query("dzongkhag",function(){
+	set_filter: function (frm) {
+		frm.set_query("dzongkhag", function () {
 			return {
-				filters:{
-					disabled:0,
-					is_dzongkhag:1
+				filters: {
+					disabled: 0,
+					is_dzongkhag: 1
 				}
 			}
 		})
-		frm.set_query("gewog",function(){
+		frm.set_query("gewog", function () {
 			return {
-				filters:{
-					disabled:0,
-					is_gewog:1,
-					parent_dzongkhag:frm.doc.dzongkhag
+				filters: {
+					disabled: 0,
+					is_gewog: 1,
+					parent_dzongkhag: frm.doc.dzongkhag
 				}
 			}
 		})
-		frm.set_query("village",function(){
+		frm.set_query("village", function () {
 			return {
-				filters:{
-					disabled:0,
-					is_village:1,
-					parent_dzongkhag:frm.doc.gewog
+				filters: {
+					disabled: 0,
+					is_village: 1,
+					parent_dzongkhag: frm.doc.gewog
 				}
 			}
 		})
 	},
-	get_supplier_group_details: function(frm) {
+	get_supplier_group_details: function (frm) {
 		frappe.call({
 			method: "get_supplier_group_details",
 			doc: frm.doc,
-			callback: function() {
+			callback: function () {
 				frm.refresh();
 			}
 		});
 	},
 
-	supplier_primary_address: function(frm) {
+	supplier_primary_address: function (frm) {
 		if (frm.doc.supplier_primary_address) {
 			frappe.call({
 				method: 'frappe.contacts.doctype.address.address.get_address_display',
 				args: {
 					"address_dict": frm.doc.supplier_primary_address
 				},
-				callback: function(r) {
+				callback: function (r) {
 					frm.set_value("primary_address", r.message);
 				}
 			});
@@ -166,14 +166,14 @@ frappe.ui.form.on("Supplier", {
 		}
 	},
 
-	supplier_primary_contact: function(frm) {
+	supplier_primary_contact: function (frm) {
 		if (!frm.doc.supplier_primary_contact) {
 			frm.set_value("mobile_no", "");
 			frm.set_value("email_id", "");
 		}
 	},
 
-	is_internal_supplier: function(frm) {
+	is_internal_supplier: function (frm) {
 		if (frm.doc.is_internal_supplier == 1) {
 			frm.toggle_reqd("represents_company", true);
 		}
@@ -181,14 +181,14 @@ frappe.ui.form.on("Supplier", {
 			frm.toggle_reqd("represents_company", false);
 		}
 	},
-	show_party_link_dialog: function(frm) {
+	show_party_link_dialog: function (frm) {
 		const dialog = new frappe.ui.Dialog({
 			title: __('Select a Customer'),
 			fields: [{
 				fieldtype: 'Link', label: __('Customer'),
 				options: 'Customer', fieldname: 'customer', reqd: 1
 			}],
-			primary_action: function({ customer }) {
+			primary_action: function ({ customer }) {
 				frappe.call({
 					method: 'erpnext.accounts.doctype.party_link.party_link.create_party_link',
 					args: {
@@ -197,14 +197,14 @@ frappe.ui.form.on("Supplier", {
 						secondary_party: customer
 					},
 					freeze: true,
-					callback: function() {
+					callback: function () {
 						dialog.hide();
 						frappe.msgprint({
 							message: __('Successfully linked to Customer'),
 							alert: true
 						});
 					},
-					error: function() {
+					error: function () {
 						dialog.hide();
 						frappe.msgprint({
 							message: __('Linking to Customer Failed. Please try again.'),
