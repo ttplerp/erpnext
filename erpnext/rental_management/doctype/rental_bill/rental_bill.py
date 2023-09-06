@@ -137,10 +137,15 @@ class RentalBill(AccountsController):
 
 	def make_gl_entry(self):
 		revenue_claim_account = frappe.db.get_single_value("Rental Account Setting", "revenue_claim_account")
+		if not revenue_claim_account:
+			frappe.throw("Revenue Claim Account missing in Rental Account Setting")
 		gl_entries = []
 		pre_rent_account = frappe.db.get_single_value("Rental Account Setting", "pre_rent_account")
+		if not pre_rent_account:
+			frappe.throw("Pre Rent Account missing in Rental Account Setting")
 		acc_property_management = frappe.db.get_single_value("Rental Account Setting", "property_management_account")
-		self.db_set("gl_entry", 1)
+		if not acc_property_management:
+			frappe.throw("Property Management Account missing in Rental Account Setting")
 
 		if self.adjusted_amount > 0:
 			gl_entries.append(
@@ -210,6 +215,7 @@ class RentalBill(AccountsController):
 			)
 		# frappe.throw("<pre>{}</pre>".format(frappe.as_json(gl_entries)))
 		make_gl_entries(gl_entries, cancel=(self.docstatus == 2), update_outstanding="No", merge_entries=True)
+		self.db_set("gl_entry", 1)
 
 		# cost_center = frappe.db.get_value("Branch", self.branch, "cost_center")
 		# revenue_claim_account = frappe.db.get_single_value("Rental Account Setting", "revenue_claim_account")
