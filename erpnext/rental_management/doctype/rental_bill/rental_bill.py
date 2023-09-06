@@ -54,6 +54,7 @@ class RentalBill(AccountsController):
 					frappe.msgprint(_("Missing value for {0}").format(_(self.meta.get_label(k))), raise_exception=True)
 
 		if not self.rental_focal:
+			focals = []
 			if self.employment_type == "Civil Servant":
 				focals = frappe.db.sql("""select rental_focal, focal_name from `tabRental Focal and Agency` r inner join `tabRental Focal and Agency Item` i On i.parent=r.name 
 							where r.is_active=1 and i.dzongkhag='{dzongkhag}' and i.ministry_and_agency='{ministry_and_agency}'""".format(dzongkhag=self.dzongkhag, ministry_and_agency=self.ministry_agency), as_dict=1)
