@@ -119,15 +119,34 @@ def get_entries(filters):
 
 	loan_entries = get_loan_entries(filters)
 
+	tds_remittances = get_tds_remittance(filters)
+
 	pos_entries = []
 	if filters.include_pos_transactions:
 		pos_entries = get_pos_entries(filters)
 
 	return sorted(
-		list(payment_entries) + list(journal_entries + list(pos_entries) + list(loan_entries)),
+		list(payment_entries) + list(journal_entries) + list(pos_entries) + list(loan_entries) + list(tds_remittances) ,
 		key=lambda k: getdate(k["posting_date"]),
 	)
 
+
+def get_tds_remittance(filters):
+	return frappe.db.sql(
+		"""
+		select "TDS Remittance" as payment_document, tds.posting_date,
+			tds.name as payment_entry, 0 as debit,
+			tds.total_amount as credit, tds.credit_account,
+			tds.cheque_no as reference_no, tds.cheque_date as ref_date, tds.clearance_date
+		from
+			`tabTDS Remittance` tds
+		where tds.docstatus=1
+			and tds.credit_account = %(account)s and tds.posting_date <= %(report_date)s
+			and ifnull(tds.clearance_date, '4000-01-01') > %(report_date)s
+			""",
+		filters,
+		as_dict=1,
+	)
 
 def get_journal_entries(filters):
 	return frappe.db.sql(
