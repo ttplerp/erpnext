@@ -27,7 +27,8 @@ class ImprestAdvance(Document):
 		filters = {
 			"branch": self.branch,
 			"imprest_type": self.imprest_type,
-			"docstatus": 1
+			"docstatus": 1,
+			"party": self.party
 		}
 
 		if self.project:
