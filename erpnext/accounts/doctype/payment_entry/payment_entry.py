@@ -897,7 +897,6 @@ class PaymentEntry(AccountsController):
 						"cost_center": cost_center,
 					}
 				)
-				# frappe.throw(str(cost_center))
 				allocated_amount_in_company_currency = flt(
 					flt(d.allocated_amount) * flt(d.exchange_rate), self.precision("paid_amount")
 				)
@@ -952,6 +951,7 @@ class PaymentEntry(AccountsController):
 						"debit_in_account_currency": self.received_amount,
 						"debit": self.base_received_amount,
 						"cost_center": self.cost_center,
+						"post_net_value": True,
 					},
 					item=self,
 				)
