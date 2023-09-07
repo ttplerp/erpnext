@@ -26,9 +26,7 @@ class BankPayment(Document):
         self.update_totals()
         self.get_bank_available_balance()
         self.check_one_one_or_bulk_payment()
-        if self.transaction_type == "Leave Travel Concession":
-            self.validate_je()
-        
+        self.validate_approver()
 
     def before_submit(self):
         self.validate_timing()
@@ -43,7 +41,17 @@ class BankPayment(Document):
         self.check_for_transactions_in_progress()
         self.update_status()
         self.update_transaction_status(cancel=True)
-  
+    
+    def validate_approver(self):
+        if self.workflow_state == "Approved":
+            approver_dtl = frappe.db.sql("""select approver_user_id, approver_name, approver_employee
+                                            from `tabBank Payment Approver` 
+                                            where  minimum <= {0} and maximum >= {0};
+                                            limit 1
+                                        """.format(self.total_amount), as_dict=True)
+            if frappe.session.user != approver_dtl[0]['approver_user_id']:
+                frappe.throw("As per the Bank Payment Settings, {0}({1}) is designated to approved this payment".format(approver_dtl[0]['approver_name'],approver_dtl[0]['approver_user_id']))
+        
     def update_pi_number(self):
         if self.payment_type == "One-One Payment":
             for a in self.get("items"):
@@ -73,15 +81,17 @@ class BankPayment(Document):
         for rec in self.items:
             rec.status = status
             
-    #added by cety on 9/08/2021 to not allow transaction for more than 10 records.
     def check_one_one_or_bulk_payment(self):
         get_max_transaction = frappe.db.get_value('Bank Payment Settings', "BOBL", 'transaction_limit')
-        get_transaction = frappe.db.sql("""select count(bpi.employee) from `tabBank Payment` bp, `tabBank Payment Item` bpi where bp.name=bpi.parent and bp.name='{}'""".format(self.name))
-        if self.transaction_type == "Salary" and self.payment_type == "One-One Payment" and get_transaction[0][0] > get_max_transaction:
-            frappe.throw("For transaction more than 10 records, Please select Payment Type to Bulk Payment!")
+        get_transaction = frappe.db.sql("""select count(bpi.employee) 
+                                        from `tabBank Payment` bp, `tabBank Payment Item` bpi 
+                                        where bp.name=bpi.parent 
+                                    and bp.name='{}'""".format(self.name))
+        if self.payment_type == "One-One Payment" and get_transaction[0][0] > get_max_transaction:
+            frappe.throw("For transaction more than {0} records, Please select Payment Type to Bulk Payment!".format(get_max_transaction))
         else:
             pass
-    #added by cety on 15/09/2021 to not allow transaction after office hour.
+
     #Modified by Thukten to restrict timing only for Inter Bank Transaction
     def validate_timing(self):
         inter_transaction = frappe.db.sql("""select count(*) as transaction
@@ -102,13 +112,6 @@ class BankPayment(Document):
                 pass
             else:
                 frappe.throw("<b>Inter Bank Transaction</b> are only allowed between from <b>{}</b> till <b>{} </b>!".format(start_time, end_time), title="Transaction Restricted!")
-
-    #added by kinley on 2021-12-16
-    def validate_je(self):
-        doc = frappe.get_doc("Leave Travel Concession", self.transaction_no)
-        je = frappe.get_doc("Journal Entry",str(doc.journal_entry))
-        if je.docstatus != 1:
-            frappe.throw("Journal Entry {} linked wih Leave Travel Concession {} is not submitted".format(je.name,self.transaction_no))
         
     def get_bank_available_balance(self):
         ''' get paying bank balance '''

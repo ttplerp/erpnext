@@ -29,7 +29,9 @@
   "transaction_time_settings_section",
   "from_time",
   "column_break_22",
-  "to_time"
+  "to_time",
+  "epayment_approver_detail_section",
+  "item"
  ],
  "fields": [
   {
@@ -167,10 +169,20 @@
    "fieldname": "day_txn_file_name",
    "fieldtype": "Data",
    "label": "Day Transaction File Name(Bank Statement)"
+  },
+  {
+   "fieldname": "epayment_approver_detail_section",
+   "fieldtype": "Section Break",
+   "label": "ePayment Approver Detail"
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Table",
+   "options": "Bank Payment Approver"
   }
  ],
  "links": [],
- "modified": "2023-07-24 12:15:49.564739",
+ "modified": "2023-09-07 12:21:02.088139",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Bank Payment Settings",
