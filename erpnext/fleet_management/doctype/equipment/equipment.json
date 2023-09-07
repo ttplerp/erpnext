@@ -1,423 +1,424 @@
 {
- "actions": [],
- "allow_import": 1,
- "allow_rename": 1,
- "autoname": "field:registeration_number",
- "creation": "2022-10-19 12:38:16.340269",
- "doctype": "DocType",
- "editable_grid": 1,
- "engine": "InnoDB",
- "field_order": [
-  "equipment_details_tab",
-  "branch",
-  "creation_date",
-  "asset_code",
-  "rate",
-  "asset_issue_details",
-  "column_break_2",
-  "enabled",
-  "hired_equipment",
-  "status",
-  "equipment_information_section",
-  "equipment_name",
-  "equipment_category",
-  "equipment_type",
-  "wheeler",
-  "fuelbook",
-  "reading_uom",
-  "column_break_8",
-  "equipment_model",
-  "registeration_number",
-  "initial_km_reading",
-  "fuel_type",
-  "emission_standard",
-  "make",
-  "capacity",
-  "is_container",
-  "purchase_details_section",
-  "purchase_receipt",
-  "purchase_date",
-  "column_break_20",
-  "purchase_rate",
-  "engine_details_section",
-  "engine_number",
-  "column_break_13",
-  "chasis_number",
-  "equipment_operator_section",
-  "equipment_operator",
-  "equipment_description",
-  "model_items",
-  "company",
-  "owner_details_tab",
-  "supplier",
-  "dzongkhag",
-  "gewog",
-  "village",
-  "equipment_history_tab",
-  "equipment_history"
- ],
- "fields": [
-  {
-   "fieldname": "branch",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Branch",
-   "options": "Branch",
-   "reqd": 1
-  },
-  {
-   "fieldname": "column_break_2",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "1",
-   "fieldname": "enabled",
-   "fieldtype": "Check",
-   "label": "Enabled"
-  },
-  {
-   "default": "0",
-   "fieldname": "hired_equipment",
-   "fieldtype": "Check",
-   "in_list_view": 1,
-   "label": "Hired Equipment/Vehicle"
-  },
-  {
-   "fieldname": "equipment_information_section",
-   "fieldtype": "Section Break",
-   "label": "Equipment/Vehicle Information"
-  },
-  {
-   "fieldname": "equipment_category",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Equipment/Vehicle Category",
-   "options": "Equipment Category",
-   "reqd": 1
-  },
-  {
-   "fetch_from": "asset_issue_details.equipment_type",
-   "fetch_if_empty": 1,
-   "fieldname": "equipment_type",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Equipment/Vehicle Type",
-   "options": "Equipment Type",
-   "reqd": 1
-  },
-  {
-   "fieldname": "column_break_8",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fetch_from": "asset_issue_details.model",
-   "fetch_if_empty": 1,
-   "fieldname": "equipment_model",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Equipment/Vehicle Model",
-   "options": "Equipment Model",
-   "reqd": 1
-  },
-  {
-   "fetch_from": "asset_issue_details.reg_number",
-   "fieldname": "registeration_number",
-   "fieldtype": "Data",
-   "label": "Registration Number",
-   "reqd": 1,
-   "unique": 1
-  },
-  {
-   "fieldname": "engine_details_section",
-   "fieldtype": "Section Break",
-   "label": "Veh/ Machine Details"
-  },
-  {
-   "fetch_from": "asset_issue_details.engine_no",
-   "fieldname": "engine_number",
-   "fieldtype": "Data",
-   "label": "Engine Number",
-   "unique": 1
-  },
-  {
-   "fieldname": "column_break_13",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fetch_from": "asset_issue_details.chesis_no",
-   "fieldname": "chasis_number",
-   "fieldtype": "Data",
-   "label": "Chasis/Serial Number"
-  },
-  {
-   "depends_on": "hired_equipment",
-   "fieldname": "owner_details_tab",
-   "fieldtype": "Tab Break",
-   "label": "Owner Details"
-  },
-  {
-   "depends_on": "eval:!doc.hired_equipment",
-   "fieldname": "asset_code",
-   "fieldtype": "Link",
-   "label": "Asset Code",
-   "options": "Asset"
-  },
-  {
-   "fieldname": "supplier",
-   "fieldtype": "Link",
-   "ignore_user_permissions": 1,
-   "label": "Owner(Supplier)",
-   "mandatory_depends_on": "hired_equipment",
-   "options": "Supplier"
-  },
-  {
-   "fieldname": "equipment_operator_section",
-   "fieldtype": "Section Break",
-   "label": "Equipment/Vehicle Operator/Driver"
-  },
-  {
-   "fieldname": "equipment_operator",
-   "fieldtype": "Table",
-   "label": "Equipment Operator/Driver",
-   "options": "Equipment Operator"
-  },
-  {
-   "fieldname": "equipment_details_tab",
-   "fieldtype": "Tab Break",
-   "label": "Equipment/Vehicle Details"
-  },
-  {
-   "fieldname": "fuelbook",
-   "fieldtype": "Link",
-   "label": "Fuelbook",
-   "options": "Fuelbook"
-  },
-  {
-   "fieldname": "initial_km_reading",
-   "fieldtype": "Float",
-   "label": "Initial KM/Hr Reading"
-  },
-  {
-   "fieldname": "model_items",
-   "fieldtype": "Table",
-   "label": "Equipment Model History",
-   "options": "Equipment Model History",
-   "read_only": 1
-  },
-  {
-   "fieldname": "fuel_type",
-   "fieldtype": "Link",
-   "label": "Fuel Type",
-   "options": "Fuel Type",
-   "reqd": 1
-  },
-  {
-   "fieldname": "equipment_description",
-   "fieldtype": "Small Text",
-   "label": "Equipment/Vehicle Description"
-  },
-  {
-   "fieldname": "equipment_name",
-   "fieldtype": "Data",
-   "label": "Equipment/Vehicle Name"
-  },
-  {
-   "default": "Running",
-   "fieldname": "status",
-   "fieldtype": "Select",
-   "label": "Status",
-   "options": "\nRunning\nMaintenance"
-  },
-  {
-   "depends_on": "eval:!doc.hired_equipment",
-   "fieldname": "purchase_details_section",
-   "fieldtype": "Section Break",
-   "label": "Purchase Details"
-  },
-  {
-   "fieldname": "purchase_receipt",
-   "fieldtype": "Link",
-   "label": "Purchase Receipt",
-   "options": "Purchase Receipt",
-   "read_only": 1
-  },
-  {
-   "fieldname": "column_break_20",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "purchase_rate",
-   "fieldtype": "Currency",
-   "label": "Purchase Rate(Price)"
-  },
-  {
-   "default": "Today",
-   "fieldname": "creation_date",
-   "fieldtype": "Date",
-   "label": "Creation Date",
-   "reqd": 1
-  },
-  {
-   "fetch_from": "purchase_receipt.posting_date",
-   "fieldname": "purchase_date",
-   "fieldtype": "Date",
-   "label": "Purchase Date",
-   "read_only": 1
-  },
-  {
-   "depends_on": "eval:doc.asset_code",
-   "fetch_from": "asset_code.gross_purchase_amount",
-   "fieldname": "rate",
-   "fieldtype": "Currency",
-   "in_list_view": 1,
-   "label": "Rate",
-   "read_only": 1
-  },
-  {
-   "fetch_from": "supplier.dzongkhag",
-   "fieldname": "dzongkhag",
-   "fieldtype": "Link",
-   "label": "Dzongkhag",
-   "options": "Dzongkhag",
-   "read_only": 1
-  },
-  {
-   "fetch_from": "supplier.gewog",
-   "fieldname": "gewog",
-   "fieldtype": "Link",
-   "label": "Gewog",
-   "options": "Dzongkhag",
-   "read_only": 1
-  },
-  {
-   "fetch_from": "supplier.village",
-   "fieldname": "village",
-   "fieldtype": "Link",
-   "label": "Village",
-   "options": "Dzongkhag",
-   "read_only": 1
-  },
-  {
-   "default": "0",
-   "fetch_from": "equipment_type.is_container",
-   "fieldname": "is_container",
-   "fieldtype": "Check",
-   "label": "Is Container?"
-  },
-  {
-   "fieldname": "company",
-   "fieldtype": "Link",
-   "label": "Company",
-   "options": "Company"
-  },
-  {
-   "fieldname": "equipment_history",
-   "fieldtype": "Table",
-   "label": "Equipment History",
-   "options": "Equipment History"
-  },
-  {
-   "fieldname": "equipment_history_tab",
-   "fieldtype": "Tab Break",
-   "label": "Equipment History"
-  },
-  {
-   "fetch_from": "asset_code.asset_issue_details",
-   "fieldname": "asset_issue_details",
-   "fieldtype": "Link",
-   "label": "Asset Issue Details",
-   "options": "Asset Issue Details",
-   "read_only": 1
-  },
-  {
-   "fieldname": "make",
-   "fieldtype": "Data",
-   "label": "Make(Brand)"
-  },
-  {
-   "fieldname": "emission_standard",
-   "fieldtype": "Data",
-   "label": "Emission Standard"
-  },
-  {
-   "fieldname": "wheeler",
-   "fieldtype": "Select",
-   "label": "Wheeler",
-   "options": "\n26\n10\n6\n4\n2"
-  },
-  {
-   "fieldname": "capacity",
-   "fieldtype": "Data",
-   "label": "Capacity"
-  },
-  {
-   "fetch_from": "equipment_type.reading_uom",
-   "fieldname": "reading_uom",
-   "fieldtype": "Data",
-   "label": "Reading UOM",
-   "read_only": 1
-  }
- ],
- "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2023-09-01 14:49:01.999018",
- "modified_by": "Administrator",
- "module": "Fleet Management",
- "name": "Equipment",
- "naming_rule": "By fieldname",
- "owner": "Administrator",
- "permissions": [
-  {
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Employee",
-   "select": 1,
-   "share": 1
-  },
-  {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Fleet Manager",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Fleet User",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "System Manager",
-   "share": 1,
-   "write": 1
-  }
- ],
- "search_fields": "equipment_category,equipment_type, equipment_model",
- "sort_field": "modified",
- "sort_order": "DESC",
- "states": [],
- "title_field": "equipment_name"
+    "actions": [],
+    "allow_import": 1,
+    "allow_rename": 1,
+    "autoname": "field:registeration_number",
+    "creation": "2022-10-19 12:38:16.340269",
+    "doctype": "DocType",
+    "editable_grid": 1,
+    "engine": "InnoDB",
+    "field_order": [
+        "equipment_details_tab",
+        "branch",
+        "creation_date",
+        "asset_code",
+        "rate",
+        "asset_issue_details",
+        "column_break_2",
+        "enabled",
+        "hired_equipment",
+        "status",
+        "equipment_information_section",
+        "equipment_name",
+        "equipment_category",
+        "equipment_type",
+        "wheeler",
+        "fuelbook",
+        "reading_uom",
+        "column_break_8",
+        "equipment_model",
+        "registeration_number",
+        "initial_km_reading",
+        "fuel_type",
+        "emission_standard",
+        "make",
+        "capacity",
+        "is_container",
+        "purchase_details_section",
+        "purchase_receipt",
+        "purchase_date",
+        "column_break_20",
+        "purchase_rate",
+        "engine_details_section",
+        "engine_number",
+        "column_break_13",
+        "chasis_number",
+        "equipment_operator_section",
+        "equipment_operator",
+        "equipment_description",
+        "model_items",
+        "company",
+        "owner_details_tab",
+        "supplier",
+        "dzongkhag",
+        "gewog",
+        "village",
+        "equipment_history_tab",
+        "equipment_history"
+    ],
+    "fields": [
+        {
+            "fieldname": "branch",
+            "fieldtype": "Link",
+            "in_list_view": 1,
+            "in_standard_filter": 1,
+            "label": "Branch",
+            "options": "Branch",
+            "reqd": 1
+        },
+        {
+            "fieldname": "column_break_2",
+            "fieldtype": "Column Break"
+        },
+        {
+            "default": "1",
+            "fieldname": "enabled",
+            "fieldtype": "Check",
+            "label": "Enabled"
+        },
+        {
+            "default": "0",
+            "fieldname": "hired_equipment",
+            "fieldtype": "Check",
+            "in_list_view": 1,
+            "label": "Hired Equipment/Vehicle"
+        },
+        {
+            "fieldname": "equipment_information_section",
+            "fieldtype": "Section Break",
+            "label": "Equipment/Vehicle Information"
+        },
+        {
+            "fieldname": "equipment_category",
+            "fieldtype": "Link",
+            "in_list_view": 1,
+            "in_standard_filter": 1,
+            "label": "Equipment/Vehicle Category",
+            "options": "Equipment Category",
+            "reqd": 1
+        },
+        {
+            "fetch_from": "asset_issue_details.equipment_type",
+            "fetch_if_empty": 1,
+            "fieldname": "equipment_type",
+            "fieldtype": "Link",
+            "in_list_view": 1,
+            "in_standard_filter": 1,
+            "label": "Equipment/Vehicle Type",
+            "options": "Equipment Type",
+            "reqd": 1
+        },
+        {
+            "fieldname": "column_break_8",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fetch_from": "asset_issue_details.model",
+            "fetch_if_empty": 1,
+            "fieldname": "equipment_model",
+            "fieldtype": "Link",
+            "in_list_view": 1,
+            "label": "Equipment/Vehicle Model",
+            "options": "Equipment Model",
+            "reqd": 1
+        },
+        {
+            "fetch_from": "asset_issue_details.reg_number",
+            "fieldname": "registeration_number",
+            "fieldtype": "Data",
+            "label": "Registration Number",
+            "reqd": 1,
+            "unique": 1
+        },
+        {
+            "fieldname": "engine_details_section",
+            "fieldtype": "Section Break",
+            "label": "Veh/ Machine Details"
+        },
+        {
+            "fetch_from": "asset_issue_details.engine_no",
+            "fieldname": "engine_number",
+            "fieldtype": "Data",
+            "label": "Engine Number",
+            "unique": 1
+        },
+        {
+            "fieldname": "column_break_13",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fetch_from": "asset_issue_details.chesis_no",
+            "fieldname": "chasis_number",
+            "fieldtype": "Data",
+            "label": "Chasis/Serial Number"
+        },
+        {
+            "depends_on": "hired_equipment",
+            "fieldname": "owner_details_tab",
+            "fieldtype": "Tab Break",
+            "label": "Owner Details"
+        },
+        {
+            "depends_on": "eval:!doc.hired_equipment",
+            "fieldname": "asset_code",
+            "fieldtype": "Link",
+            "label": "Asset Code",
+            "options": "Asset"
+        },
+        {
+            "fieldname": "supplier",
+            "fieldtype": "Link",
+            "ignore_user_permissions": 1,
+            "label": "Owner(Supplier)",
+            "mandatory_depends_on": "hired_equipment",
+            "options": "Supplier"
+        },
+        {
+            "fieldname": "equipment_operator_section",
+            "fieldtype": "Section Break",
+            "label": "Equipment/Vehicle Operator/Driver"
+        },
+        {
+            "fieldname": "equipment_operator",
+            "fieldtype": "Table",
+            "label": "Equipment Operator/Driver",
+            "options": "Equipment Operator"
+        },
+        {
+            "fieldname": "equipment_details_tab",
+            "fieldtype": "Tab Break",
+            "label": "Equipment/Vehicle Details"
+        },
+        {
+            "fieldname": "fuelbook",
+            "fieldtype": "Link",
+            "label": "Fuelbook",
+            "options": "Fuelbook"
+        },
+        {
+            "fieldname": "initial_km_reading",
+            "fieldtype": "Float",
+            "label": "Initial KM/Hr Reading"
+        },
+        {
+            "fieldname": "model_items",
+            "fieldtype": "Table",
+            "label": "Equipment Model History",
+            "options": "Equipment Model History",
+            "read_only": 1
+        },
+        {
+            "fieldname": "fuel_type",
+            "fieldtype": "Link",
+            "label": "Fuel Type",
+            "options": "Fuel Type",
+            "reqd": 1
+        },
+        {
+            "fieldname": "equipment_description",
+            "fieldtype": "Small Text",
+            "label": "Equipment/Vehicle Description"
+        },
+        {
+            "fieldname": "equipment_name",
+            "fieldtype": "Data",
+            "label": "Equipment/Vehicle Name"
+        },
+        {
+            "default": "Running",
+            "fieldname": "status",
+            "fieldtype": "Select",
+            "label": "Status",
+            "options": "\nRunning\nMaintenance"
+        },
+        {
+            "depends_on": "eval:!doc.hired_equipment",
+            "fieldname": "purchase_details_section",
+            "fieldtype": "Section Break",
+            "label": "Purchase Details"
+        },
+        {
+            "fieldname": "purchase_receipt",
+            "fieldtype": "Link",
+            "label": "Purchase Receipt",
+            "options": "Purchase Receipt",
+            "read_only": 1
+        },
+        {
+            "fieldname": "column_break_20",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "purchase_rate",
+            "fieldtype": "Currency",
+            "label": "Purchase Rate(Price)"
+        },
+        {
+            "default": "Today",
+            "fieldname": "creation_date",
+            "fieldtype": "Date",
+            "label": "Creation Date",
+            "reqd": 1
+        },
+        {
+            "fetch_from": "purchase_receipt.posting_date",
+            "fieldname": "purchase_date",
+            "fieldtype": "Date",
+            "label": "Purchase Date",
+            "read_only": 1
+        },
+        {
+            "depends_on": "eval:doc.asset_code",
+            "fetch_from": "asset_code.gross_purchase_amount",
+            "fieldname": "rate",
+            "fieldtype": "Currency",
+            "in_list_view": 1,
+            "label": "Rate",
+            "read_only": 1,
+            "report_hide": 1
+        },
+        {
+            "fetch_from": "supplier.dzongkhag",
+            "fieldname": "dzongkhag",
+            "fieldtype": "Link",
+            "label": "Dzongkhag",
+            "options": "Dzongkhag",
+            "read_only": 1
+        },
+        {
+            "fetch_from": "supplier.gewog",
+            "fieldname": "gewog",
+            "fieldtype": "Link",
+            "label": "Gewog",
+            "options": "Dzongkhag",
+            "read_only": 1
+        },
+        {
+            "fetch_from": "supplier.village",
+            "fieldname": "village",
+            "fieldtype": "Link",
+            "label": "Village",
+            "options": "Dzongkhag",
+            "read_only": 1
+        },
+        {
+            "default": "0",
+            "fetch_from": "equipment_type.is_container",
+            "fieldname": "is_container",
+            "fieldtype": "Check",
+            "label": "Is Container?"
+        },
+        {
+            "fieldname": "company",
+            "fieldtype": "Link",
+            "label": "Company",
+            "options": "Company"
+        },
+        {
+            "fieldname": "equipment_history",
+            "fieldtype": "Table",
+            "label": "Equipment History",
+            "options": "Equipment History"
+        },
+        {
+            "fieldname": "equipment_history_tab",
+            "fieldtype": "Tab Break",
+            "label": "Equipment History"
+        },
+        {
+            "fetch_from": "asset_code.asset_issue_details",
+            "fieldname": "asset_issue_details",
+            "fieldtype": "Link",
+            "label": "Asset Issue Details",
+            "options": "Asset Issue Details",
+            "read_only": 1
+        },
+        {
+            "fieldname": "make",
+            "fieldtype": "Data",
+            "label": "Make(Brand)"
+        },
+        {
+            "fieldname": "emission_standard",
+            "fieldtype": "Data",
+            "label": "Emission Standard"
+        },
+        {
+            "fieldname": "wheeler",
+            "fieldtype": "Select",
+            "label": "Wheeler",
+            "options": "\n26\n10\n6\n4\n2"
+        },
+        {
+            "fieldname": "capacity",
+            "fieldtype": "Data",
+            "label": "Capacity"
+        },
+        {
+            "fetch_from": "equipment_type.reading_uom",
+            "fieldname": "reading_uom",
+            "fieldtype": "Data",
+            "label": "Reading UOM",
+            "read_only": 1
+        }
+    ],
+    "index_web_pages_for_search": 1,
+    "links": [],
+    "modified": "2023-09-04 12:38:28.515595",
+    "modified_by": "Administrator",
+    "module": "Fleet Management",
+    "name": "Equipment",
+    "naming_rule": "By fieldname",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Employee",
+            "select": 1,
+            "share": 1
+        },
+        {
+            "create": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Fleet Manager",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Fleet User",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "System Manager",
+            "share": 1,
+            "write": 1
+        }
+    ],
+    "search_fields": "equipment_category,equipment_type, equipment_model",
+    "sort_field": "modified",
+    "sort_order": "DESC",
+    "states": [],
+    "title_field": "equipment_name"
 }
