@@ -114,8 +114,8 @@ class JournalEntry(AccountsController):
 		if not self.title:
 			self.title = self.get_title()
 
-	def before_submit(self):
-		self.update_transporter_invoice()
+	# def before_submit(self):
+	# 	self.update_transporter_invoice()
 
 	def on_submit(self):
 		self.validate_cheque_info()
@@ -127,6 +127,7 @@ class JournalEntry(AccountsController):
 		self.update_project_advance(cancel=self.docstatus == 2)
 		self.update_technical_sanction_advance(cancel=self.docstatus == 2)
 		self.update_je_link_status(cancel=self.docstatus == 2)
+		self.link_je_to_imprest(cancel=self.docstatus == 2)
 		
 	def on_cancel(self):
 		from erpnext.accounts.utils import unlink_ref_doc_from_payment_entries
@@ -145,6 +146,7 @@ class JournalEntry(AccountsController):
 		self.update_project_advance(cancel=self.docstatus == 2)
 		self.update_technical_sanction_advance(cancel=self.docstatus == 2)
 		self.update_je_link_status(cancel=self.docstatus == 2)
+		self.link_je_to_imprest(cancel=self.docstatus == 2)
 
 	def on_trash(self):
 		self.unlink_transporter_invoice()
@@ -1144,6 +1146,18 @@ class JournalEntry(AccountsController):
 						doc.journal_entry_status = "Paid"
 					else:
 						doc.journal_entry_status = "Received"
+				doc.save(ignore_permissions=True)
+
+	def link_je_to_imprest(self, cancel=False):
+		ref_list = ['Imprest Advance']
+		for d in self.accounts:
+			if d.reference_type in ref_list and d.reference_name:
+				doc = frappe.get_doc(d.reference_type, d.reference_name)
+				if cancel:
+					doc.journal_entry = ""
+				else:
+					doc.journal_entry = self.name
+
 				doc.save(ignore_permissions=True)
 
 	@frappe.whitelist()
