@@ -940,11 +940,11 @@
    "read_only": 1
   },
   {
-   "default": "0",
-   "depends_on": "grand_total",
+   "default": "1",
    "fieldname": "disable_rounded_total",
    "fieldtype": "Check",
-   "label": "Disable Rounded Total"
+   "label": "Disable Rounded Total",
+   "reqd": 1
   },
   {
    "collapsible": 1,
@@ -1481,7 +1481,7 @@
  "idx": 204,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-08-17 09:50:47.896199",
+ "modified": "2023-09-05 17:05:18.863548",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Purchase Invoice",

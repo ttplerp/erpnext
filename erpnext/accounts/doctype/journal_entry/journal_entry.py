@@ -1158,7 +1158,9 @@ class JournalEntry(AccountsController):
     def build_gl_map(self):
         gl_map = []
         for d in self.get("accounts"):
-            if d.debit or d.credit:
+            if (d.debit or d.credit) or (
+                d.debit_in_account_currency or d.credit_in_account_currency
+            ):
                 r = [d.user_remark, self.remark]
                 r = [x for x in r if x]
                 remarks = "\n".join(r)

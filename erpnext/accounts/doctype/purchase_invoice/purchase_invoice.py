@@ -119,7 +119,8 @@ class PurchaseInvoice(BuyingController):
 
         if self._action == "submit" and self.update_stock:
             self.make_batches("warehouse")
-
+        if self.disable_rounded_total != 1:
+            frappe.throw(str("Please check disable rounded total."))
         self.validate_release_date()
         self.check_conversion_rate()
         self.validate_credit_to_acc()
@@ -2161,7 +2162,7 @@ class PurchaseInvoice(BuyingController):
                 "credit_in_account_currency": flt(total, 2),
                 "cost_center": self.cost_center,
                 "party_type": "Employee",
-                "party": "20120701025",
+                "party": self.imprest_party,
                 # "reference_type": "Project Advance",
                 # "reference_name": self.name,
             },

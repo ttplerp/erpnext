@@ -562,14 +562,6 @@ frappe.ui.form.on("Purchase Invoice", {
 		}
 	},
 
-	// post_journal_entry: function (frm) {
-	// 	frappe.call({
-	// 		method: "post_journal_entry",
-	// 		doc: frm.doc,
-	// 		callback: function (r) { },
-	// 	});
-	// },
-
 	post_journal_entry: function (frm) {
 		frappe.model.open_mapped_doc({
 			method: "erpnext.accounts.doctype.purchase_invoice.purchase_invoice.post_journal_entry",
