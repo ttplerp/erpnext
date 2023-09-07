@@ -26,7 +26,7 @@ class BankPayment(Document):
         self.update_totals()
         self.get_bank_available_balance()
         self.check_one_one_or_bulk_payment()
-        self.validate_approver()
+        self.validate_approver()        
 
     def before_submit(self):
         self.validate_timing()
@@ -41,7 +41,7 @@ class BankPayment(Document):
         self.check_for_transactions_in_progress()
         self.update_status()
         self.update_transaction_status(cancel=True)
-    
+
     def validate_approver(self):
         if self.workflow_state == "Approved":
             approver_dtl = frappe.db.sql("""select approver_user_id, approver_name, approver_employee
@@ -49,9 +49,11 @@ class BankPayment(Document):
                                             where  minimum <= {0} and maximum >= {0};
                                             limit 1
                                         """.format(self.total_amount), as_dict=True)
+            if not approver_dtl:
+                frappe.throw("Approver in Bank Payment Setting is not set. Please set the approver")
             if frappe.session.user != approver_dtl[0]['approver_user_id']:
                 frappe.throw("As per the Bank Payment Settings, {0}({1}) is designated to approved this payment".format(approver_dtl[0]['approver_name'],approver_dtl[0]['approver_user_id']))
-        
+
     def update_pi_number(self):
         if self.payment_type == "One-One Payment":
             for a in self.get("items"):
@@ -83,16 +85,10 @@ class BankPayment(Document):
             
     def check_one_one_or_bulk_payment(self):
         get_max_transaction = frappe.db.get_value('Bank Payment Settings', "BOBL", 'transaction_limit')
-        get_transaction = frappe.db.sql("""select count(bpi.employee) 
-                                        from `tabBank Payment` bp, `tabBank Payment Item` bpi 
-                                        where bp.name=bpi.parent 
-                                    and bp.name='{}'""".format(self.name))
+        get_transaction = frappe.db.sql("""select count(bpi.employee) from `tabBank Payment` bp, `tabBank Payment Item` bpi where bp.name=bpi.parent and bp.name='{}'""".format(self.name))
         if self.payment_type == "One-One Payment" and get_transaction[0][0] > get_max_transaction:
-            frappe.throw("For transaction more than {0} records, Please select Payment Type to Bulk Payment!".format(get_max_transaction))
-        else:
-            pass
-
-    #Modified by Thukten to restrict timing only for Inter Bank Transaction
+            frappe.throw("For transaction more than {} records, Please select Payment Type to Bulk Payment!".format(get_max_transaction))
+        
     def validate_timing(self):
         inter_transaction = frappe.db.sql("""select count(*) as transaction
                                             from `tabBank Payment` bp, `tabBank Payment Item` bpi 
@@ -112,7 +108,7 @@ class BankPayment(Document):
                 pass
             else:
                 frappe.throw("<b>Inter Bank Transaction</b> are only allowed between from <b>{}</b> till <b>{} </b>!".format(start_time, end_time), title="Transaction Restricted!")
-        
+    
     def get_bank_available_balance(self):
         ''' get paying bank balance '''
         if self.bank_account_no:
@@ -490,7 +486,7 @@ class BankPayment(Document):
                                 where parent = '{journal_entry}'
                                 AND party_type in ('Employee', 'Supplier')
                                 AND (party IS NOT NULL or party != "")
-                                AND debit > 0
+                                AND (debit > 0 OR debit_in_account_currency >0)
                                 """.format(journal_entry = a.transaction_id))[0][0]
                 non_bank_entries = 0
                 non_bank_entries_amount = 0.00
@@ -500,7 +496,7 @@ class BankPayment(Document):
                                 where a.account = b.name
                                 and b.account_type != 'Bank'
                                 and a.parent = '{journal_entry}'
-                                and a.credit > 0
+                                and (a.debit > 0 OR a.debit_in_account_currency > 0)
                                 """.format(journal_entry = a.transaction_id), as_dict=True):
                     non_bank_entries += 1
                     non_bank_entries_amount += flt(x.credit)
@@ -510,10 +506,11 @@ class BankPayment(Document):
 
                 for b in frappe.db.sql("""SELECT ja.name transaction_reference, ja.reference_type, ja.reference_name, ja.party_type, ja.party, ja.account,
                                         round(ja.debit,2) as debit_amount, round(ja.credit,2) as credit_amount, round(ja.tax_amount,2) as tax_amount,
+                                        round(ja.debit_in_account_currency,2) as debit_in_account_currency,
                                         ja.beneficiary_type, ja.beneficiary
                                         FROM `tabJournal Entry Account` ja
                                         WHERE ja.parent = '{parent}'
-                                        AND ja.debit > 0
+                                        AND (ja.debit > 0 OR ja.debit_in_account_currency >0)
                                     """.format(parent = a.transaction_id), as_dict=True):
                     query = supplier = employee = None
                     if self.select_beneficiary and self.beneficiary:
@@ -577,11 +574,11 @@ class BankPayment(Document):
                                     pass
                         if not party:
                             frappe.msgprint("Party missing for Journal Entry {}".format(a.transaction_id))
-                    
+                    debit_amount = b.debit_amount if b.debit_amount > 0 else b.debit_in_account_currency
                     if party_count == 1 and non_bank_entries > 0:
-                        payable_amt = flt(b.debit_amount) - flt(b.tax_amount) - flt(non_bank_entries_amount)
+                        payable_amt = flt(debit_amount) - flt(b.tax_amount) - flt(non_bank_entries_amount)
                     else:
-                        payable_amt = flt(b.debit_amount) - flt(b.tax_amount)
+                        payable_amt = flt(debit_amount) - flt(b.tax_amount)
 
                     if party and party_type and not query:
                         if party_type == "Supplier":
