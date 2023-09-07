@@ -193,34 +193,14 @@ var enable_disable = function(frm){
 
 var process_payment = function(frm){
 	frappe.call({
-        method: "frappe.client.get",
-        args: {
-            doctype: "Bank Payment Settings",
-            name: "BOBL",
-        },
-        callback(r) {
-            if(r.message) {
-                var from_time = r.message.from_time;
-				var to_time = r.message.to_time;
-				var currentdate = new Date();
-				var currenttime = currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
-                if(currenttime < from_time && currenttime > to_time){
-					frappe.throw("BOBL Bank Payment Transaction is allowed from " + from_time + " to " + to_time)
-				}
-				frappe.call({
-					method: "process_payment",
-					doc: frm.doc,
-					callback: function(r){
-						cur_frm.reload_doc();
-					},
-					freeze: true,
-					freeze_message: "Processing payment.... Please Wait",
-				})
-            }
-        }
-    });
-	
-
+		method: "process_payment",
+		doc: frm.doc,
+		callback: function(r){
+			cur_frm.reload_doc();
+		},
+		freeze: true,
+        freeze_message: "Processing payment.... Please Wait",
+	})
 }
 
 var reupload_files = function(frm){
