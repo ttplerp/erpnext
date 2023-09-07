@@ -35,7 +35,7 @@ class Reimbursement(Document):
 	def before_cancel(self):
 		if self.journal_entry:
 			je = frappe.get_doc("Journal Entry", self.journal_entry)
-			for a in je:
+			for a in je.accounts:
 				frappe.db.sql("""
 					update `tabJournal Entry Account` set reference_type = NULL, reference_name = NULL
 					where name = '{}'
