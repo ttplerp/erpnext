@@ -23,18 +23,8 @@ class POLReceive(StockController):
         check_future_date(self.posting_date)
         self.calculate_km_diff()
         self.validate_data()
-        if (
-            self.direct_consumption
-            or self.equipment_category in ("Tanker", "barrel")
-            or self.receive_in_barrel == 1
-        ):
-            validate_workflow_states(self)
-        if (
-            self.workflow_state != "Approved"
-            or self.direct_consumption
-            or self.equipment_category in ("Tanker", "barrel")
-            or self.receive_in_barrel == 1
-        ):
+        validate_workflow_states(self)
+        if self.workflow_state != "Approved":
             notify_workflow_states(self)
         # self.balance_check()
 
@@ -89,6 +79,7 @@ class POLReceive(StockController):
     def on_cancel(self):
         self.update_pol_expense()
         self.delete_pol_entry()
+        # notify_workflow_states(self)
         if self.direct_consumption == 0 and self.receive_in_barrel == 1:
             self.update_stock_ledger()
         # self.make_gl_entries()

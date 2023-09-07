@@ -2786,21 +2786,23 @@ class CustomWorkflow:
                 )
 
     def repair_services(self):
-        # Maintenance User -> Waiting for MTO GM Approval
-        # Maintenance User - Fleet Manager
+        # Maintenance User ->Waiting Supervisor -> Waiting for MTO GM Approval
+        # Maintenance User - Fleet Verifier - Fleet Manager
         if self.new_state.lower() in ("Draft".lower()):
             if self.doc.owner != frappe.session.user:
                 frappe.throw(
                     "Only the document owner can Apply this rapair and service"
                 )
-
-        elif self.new_state.lower() in (" Waiting Mechanical GM Approval".lower()):
-            if (
-                self.doc.owner != frappe.session.user
-                and self.new_state.lower() != self.old_state.lower()
-            ):
+        elif self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
+            if self.doc.owner != frappe.session.user:
                 frappe.throw(
                     "Only the document owner can Apply this rapair and service"
+                )
+            self.set_approver("Supervisor")
+        elif self.new_state.lower() in (" Waiting Mechanical GM Approval".lower()):
+            if self.doc.approver != frappe.session.user:
+                frappe.throw(
+                    "Only the document Forward can Apply this rapair and service"
                 )
             self.set_approver("Fleet Manager")
 

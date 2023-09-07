@@ -46,7 +46,7 @@ class BankPayment(Document):
         if self.workflow_state == "Approved":
             approver_dtl = frappe.db.sql("""select approver_user_id, approver_name, approver_employee
                                             from `tabBank Payment Approver` 
-                                            where  minimum <= {0} and maximum >= {0};
+                                            where  minimum <= {0} and maximum >= {0}
                                             limit 1
                                         """.format(self.total_amount), as_dict=True)
             if not approver_dtl:
