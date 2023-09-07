@@ -40,7 +40,10 @@ class Reimbursement(Document):
 					update `tabJournal Entry Account` set reference_type = NULL, reference_name = NULL
 					where name = '{}'
 				""".format(a.name))
-			self.journal_entry = None
+			frappe.db.sql("""
+				update `tabReimbursement` set journal_entry = NULL
+				where name = '{}'
+			""".format(self.name))
 			je.cancel()
 			# for t in frappe.get_all("Journal Entry", ["name"], {"name": self.journal_entry, "docstatus": ("<",2)}):
 			# 	frappe.throw(_('Journal Entry  <a href="#Form/Journal Entry/{0}">{0}</a> for this transaction needs to be cancelled first').format(self.journal_entry),title='Not permitted')
