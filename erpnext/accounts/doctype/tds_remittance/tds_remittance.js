@@ -90,43 +90,16 @@ var get_details = function(frm){
 	frm.refresh_field("items");
 	frm.set_value('total_amount', 0);
 	frm.set_value('total_tds', 0);
-    let d = new frappe.ui.Dialog({
-        title: 'Enter details',
-        fields: [
-            {
-                "fieldname":"cost_center",
-                "label": __("Cost Center"),
-                "fieldtype": "MultiSelectList",
-                "reqd":1,
-                "description":"Select cost center",
-                get_data: function(txt) {
-                    return frappe.db.get_link_options('Cost Center', txt, {
-                        company: frm.doc.company
-                    });
-                }
-            },
-        ],
-        primary_action_label: 'Submit',
-        primary_action(values) {
-            console.log(values);
-            frappe.call({
-            	method: "get_details",
-            	doc: frm.doc,
-                args:{
-                    cost_center_filter:values.cost_center
-                },
-            	callback: function (r, rt) {
-            		if ( r.message){
-            			frm.refresh_field("items");
-            			frm.set_value('total_amount',r.message[1]);
-            			frm.set_value('total_tds',r.message[0]);
-            			frm.refresh_fields();
-            		}
-            	},
-            });
-            d.hide();
-        }
-    });
-    
-    d.show();
+	frappe.call({
+		method: "get_details",
+		doc: frm.doc,
+		callback: function (r, rt) {
+			if ( r.message){
+				frm.refresh_field("items");
+				frm.set_value('total_amount',r.message[1]);
+				frm.set_value('total_tds',r.message[0]);
+				frm.refresh_fields();
+			}
+		},
+	});
 }
