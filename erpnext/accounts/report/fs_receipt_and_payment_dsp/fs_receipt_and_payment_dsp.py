@@ -18,7 +18,7 @@ def get_data(filters):
 	cond=""
 	if filters.get("cost_center"):
 		cond=" and cost_center='{}'".format(filters.get("cost_center"))
-	gl_entries = frappe.db.sql("""Select * from `tabGL Entry` where account='{0}' and posting_date <= '{1}' {cond} 
+	gl_entries = frappe.db.sql("""Select * from `tabGL Entry` where account='{0}' and posting_date <= '{1}' {cond} and is_cancelled = 0
 		""".format(filters.get("account"), filters.get("to_date"), cond=cond), as_dict=True)
 	
 	def update_value_in_dict(data, key, gle):
