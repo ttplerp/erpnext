@@ -377,7 +377,7 @@ class Asset(AccountsController):
 			# If depreciation is already completed (for double declining balance)
 			if skip_row:
 				continue
-			if not has_pro_rata or n < cint(number_of_pending_depreciations) - 1:
+			if not has_pro_rata or n <= cint(number_of_pending_depreciations) - 1:
 				schedule_date = add_months(
 					finance_book.depreciation_start_date, n * cint(finance_book.frequency_of_depreciation)
 				)
@@ -627,13 +627,13 @@ class Asset(AccountsController):
 				else:
 					self.number_of_depreciations_booked = 0
 
-				if flt(row.total_number_of_depreciations) <= cint(self.number_of_depreciations_booked):
-					frappe.throw(
-						_(
-							"Row {0}: Total Number of Depreciations cannot be less than or equal to Number of Depreciations Booked"
-						).format(row.idx),
-						title=_("Invalid Schedule"),
-					)
+				# if flt(row.total_number_of_depreciations) <= cint(self.number_of_depreciations_booked):
+				# 	frappe.throw(
+				# 		_(
+				# 			"Row {0}: Total Number of Depreciations cannot be less than or equal to Number of Depreciations Booked"
+				# 		).format(row.idx),
+				# 		title=_("Invalid Schedule"),
+				# 	)
 
 			if row.depreciation_start_date and getdate(row.depreciation_start_date) < getdate(
 				self.purchase_date
