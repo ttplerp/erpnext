@@ -305,21 +305,21 @@ def compare_expense_with_budget(args, budget_amount, action_for, action, budget_
 	if args.project:
 		condition = " and cb.project = '{}'".format(budget_against)
 	else:
-		condition = " and cb.cost_center = '{}'".format(budget_against)
+		condition = " and cb.cost_center = {}".format(frappe.db.escape(budget_against))
 	args.fiscal_year = args.fiscal_year if args.fiscal_year else str(args.posting_date)[0:4]
 	committed = frappe.db.sql("""select SUM(cb.amount) as total 
 								from `tabCommitted Budget` cb 
-								where cb.account='{account}' 
+								where cb.account={account} 
 								{condition} 
 								and cb.reference_date between '{start_date}' and '{end_date}'""".format(condition=condition, 
-							account=args.account, cost_center=args.cost_center, start_date=str(args.fiscal_year) + "-01-01", 
+							account=frappe.db.escape(args.account), cost_center=args.cost_center, start_date=str(args.fiscal_year) + "-01-01", 
 							end_date=str(args.fiscal_year)[0:4] + "-12-31"), as_dict=True)
 	consumed = frappe.db.sql("""select SUM(cb.amount) as total 
 								from `tabConsumed Budget` cb 
-								where cb.account='{account}'
+								where cb.account={account}
 								{condition} 
 								and cb.reference_date between '{start_date}' and '{end_date}'""".format(condition=condition, 
-							account=args.account, cost_center=args.cost_center, start_date=str(args.fiscal_year) + "-01-01", 
+							account=frappe.db.escape(args.account), cost_center=args.cost_center, start_date=str(args.fiscal_year) + "-01-01", 
 							end_date=str(args.fiscal_year)[0:4] + "-12-31"), as_dict=True)
 	if consumed and committed:
 		if flt(consumed[0].total) > flt(committed[0].total):
