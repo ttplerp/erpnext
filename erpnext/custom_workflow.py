@@ -471,6 +471,18 @@ class CustomWorkflow:
                 )
 
         if self.doc.doctype == "Material Request":
+            self.fleet_mto = frappe.db.get_value(
+                "Employee",
+                {
+                    "user_id": frappe.db.get_single_value(
+                        "Maintenance Settings", "fleet_mto"
+                    )
+                },
+                self.field_list,
+            )
+            if not self.fleet_mto:
+                frappe.throw('Fleet MTO not set in maintenance settings.')
+
             self.mr_approvers = frappe.db.sql(
                 """SELECT user from `tabMR Administrators`""", as_dict=1
             )
@@ -2872,7 +2884,7 @@ class CustomWorkflow:
                     )
                 )
             self.set_approver("QHSE")
-
+        
         elif self.new_state.lower() in ("Waiting QHSE GM Approval".lower()):
             if self.doc.approver != frappe.session.user:
                 frappe.throw(
@@ -2881,7 +2893,14 @@ class CustomWorkflow:
                     )
                 )
             self.set_approver("QHSE_GM")
-            #
+        elif self.new_state.lower() in ("Waiting Mechanical GM Approval".lower()):
+            if self.doc.approver != frappe.session.user:
+                frappe.throw(
+                    "Only the {} can Approve this material request".format(
+                        self.doc.approver
+                    )
+                )
+            self.set_approver("Fleet Manager")
         elif self.new_state.lower() in ("Waiting HR Approval".lower()):
             if self.doc.approver != frappe.session.user:
                 frappe.throw(
