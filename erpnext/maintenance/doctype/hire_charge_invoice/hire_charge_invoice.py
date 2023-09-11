@@ -115,20 +115,19 @@ class HireChargeInvoice(AccountsController):
 
 			#self.make_gl_entries_on_cancel()
 		# check_uncancelled_linked_doc(self.doctype, self.name)
-		cl_status = frappe.db.get_value("Journal Entry", self.invoice_jv, "docstatus")
+		cl_status = frappe.db.get_value("Journal Entry", self.journal_entry, "docstatus")
 		if cl_status and cl_status != 2:
-			frappe.throw("You need to cancel the journal entry ("+ str(self.invoice_jv) + ")related to this invoice first!")
-		if self.payment_jv:
-			cl_status = frappe.db.get_value("Journal Entry", self.payment_jv, "docstatus")
-			if cl_status and cl_status != 2:
-				frappe.throw("You need to cancel the journal entry ("+ str(self.payment_jv) + ")related to this invoice first!")
+			frappe.throw("You need to cancel the journal entry ("+ str(self.journal_entry) + ")related to this invoice first!")
+		# if self.payment_jv:
+		# 	cl_status = frappe.db.get_value("Journal Entry", self.payment_jv, "docstatus")
+		# 	if cl_status and cl_status != 2:
+		# 		frappe.throw("You need to cancel the journal entry ("+ str(self.payment_jv) + ")related to this invoice first!")
 		self.readjust_advance()
 		if self.close:
 			self.check_advances()
 		self.update_vlogs(0)
 		# self.check_close(1)
-		self.db_set("invoice_jv", "")
-		self.db_set("payment_jv", "")
+		self.db_set("journal_entry", "")
 
 	def check_advances(self, cancel=None):
 		hire_name = self.ehf_name
