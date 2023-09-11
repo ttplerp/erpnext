@@ -8,30 +8,6 @@ cur_frm.add_fetch("paid_from", "bank_account_type", "bank_account_type");
 cur_frm.add_fetch("paid_from", "bank_account_no", "bank_account_no");	
 frappe.ui.form.on('Bank Payment', {
 	setup: function(frm){
-		var status = {"Draft": "tomato",
-                        "Pending": "orange",
-                        "In progress": "blue",
-                        "Waiting Acknowledgement": "blue",
-						"Processing Acknowledgement": "yellow",
-                        "Upload Failed": "red",
-                        "Failed": "red",
-                        "Completed": "green",
-                        "Cancelled": "black"
-                        };
-		frm.set_indicator_formatter('status',
-			function(doc) {
-				return status[doc.status];
-		});
-
-		frm.set_indicator_formatter('transaction_id',
-			function(doc) {
-				return status[doc.status];
-		});
-
-		frm.set_indicator_formatter('file_name',
-			function(doc) {
-				return status[doc.status];
-		});
 	},
 	onload: function(frm){
 		enable_disable(frm);
@@ -60,10 +36,6 @@ frappe.ui.form.on('Bank Payment', {
 		create_custom_buttons(frm);
 	},
 	onload_post_render: function(frm) {
-		if(frm.doc.docstatus == 0){
-			frm.get_field("get_transactions").$input.addClass("btn-info");
-			frm.get_field("get_transactions").$input.css("padding", "5px 10px");
-		}
 	},
 	branch: function(frm){
 		//cur_frm.add_fetch("branch", "expense_bank_account", "paid_from");	
