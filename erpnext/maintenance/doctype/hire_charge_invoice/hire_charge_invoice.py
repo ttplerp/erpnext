@@ -109,6 +109,7 @@ class HireChargeInvoice(AccountsController):
 			"delete from `tabConsumed Budget` where reference_no = %s", self.name)
 
 	def on_cancel(self):
+		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
 		self.make_gl_entries()
 		self.cancel_budget_entry()
 
