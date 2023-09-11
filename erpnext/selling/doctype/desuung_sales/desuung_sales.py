@@ -139,5 +139,5 @@ class DesuungSales(Document):
 		make_sl_entries(sl_entries, allow_negative_stock, via_landed_cost_voucher)
 
 	""" below code added with purpose. Jai 11 Sept 2023, As repost item valuation is refering for get_gl_entries function """
-	def get_gl_entries():
+	def get_gl_entries(doc, warehouse_account=None):
 		return []
