@@ -138,4 +138,6 @@ class DesuungSales(Document):
 		from erpnext.stock.stock_ledger import make_sl_entries
 		make_sl_entries(sl_entries, allow_negative_stock, via_landed_cost_voucher)
 
-	
+	""" below code added with purpose. Jai 11 Sept 2023, As repost item valuation is refering for get_gl_entries function """
+	def get_gl_entries():
+		return []
