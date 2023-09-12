@@ -9,24 +9,43 @@ def check_dn():
 	doc.make_gl_entries()
 
 def update_sle_gl():
-	for b in ["PRO-23-07-05-095","PRO-23-07-06-062","PRO-23-07-06-069","PRO-23-07-06-064","PRO-23-07-06-070"]:
-		#frappe.db.sql("delete from `tabGL Entry` where voucher_type='Production' and voucher_no='{}'".format(b))
-		for a in frappe.db.sql("""select name, actual_qty, incoming_rate,
-									valuation_rate, qty_after_transaction
-									from `tabStock Ledger Entry` 
-									where voucher_no="{}"
-									and item_code="300023"	
-								""".format(b), as_dict=True):
-			stock_value = a.qty_after_transaction * a.valuation_rate
-			stock_value_difference = a.actual_qty * a.incoming_rate
+	i = 0
+	production = []
+	for a in frappe.db.sql("""select name, actual_qty, incoming_rate,
+								valuation_rate, qty_after_transaction,
+								stock_value_difference, stock_value, voucher_no
+								from `tabStock Ledger Entry` 
+								where voucher_type="Production"
+								and posting_date between '2023-07-31' and '2023-08-28' 
+								and is_cancelled=0
+								order by posting_date, posting_time
+							""", as_dict=True):
+		stock_value = abs(a.qty_after_transaction) * a.valuation_rate
+		rate = abs(a.incoming_rate) if a.actual_qty > 0 else abs(a.valuation_rate)
+		stock_value_difference = abs(a.actual_qty) * rate 
+		val_diff = flt(abs(a.stock_value_difference) - stock_value_difference,2)
+		val = flt(a.stock_value - stock_value,2)
+
+		act_stock_value = stock_value if val > 1 or val < -1 else a.stock_value
+		act_stock_value_diff = stock_value_difference if val_diff > 1 or val_diff < -1 else a.stock_value_difference
+		if val_diff > 1 or val_diff < -1 or val > 1 or val < -1:
+			i += 1
+			if a.voucher_no not in production:
+				production.append(a.voucher_no)
+			print(i, a.voucher_no)
 			frappe.db.sql("""  update `tabStock Ledger Entry`
-							set stock_value='{}', stock_value_difference='{}'
-							where name ='{}'
-						""".format(stock_value, stock_value_difference, a.name))
+				set stock_value='{}', stock_value_difference='{}'
+				where name ='{}'
+			""".format(act_stock_value, act_stock_value_diff, a.name))
+	j=0
+	for b in production:
+		j+=1
+		print(j, b, i)
+		frappe.db.sql("delete from `tabGL Entry` where voucher_type='Production' and voucher_no='{}'".format(b))
 		doc = frappe.get_doc("Production", b)
-		#doc.make_gl_entries()
-		#frappe.db.commit()
+		doc.make_gl_entries()
 		print("Done for Production No: " + str(b))
+	frappe.db.commit()
 
 def correct_dn():
 	for b in ("DN2302070020",):
