@@ -31,7 +31,7 @@ erpnext.setup.EmployeeController = class EmployeeController extends frappe.ui.fo
 
 frappe.ui.form.on("Employee", {
 	onload_post_render: function(frm){
-		$(".grid-add-row").addClass('hidden');
+		// $(".grid-add-row").addClass('hidden');
 	},
 	onload: function (frm) {
 		frm.set_query("department", function() {
