@@ -4,6 +4,10 @@ import pandas as pd
 import csv
 from frappe.utils import flt, cint, nowdate, getdate, formatdate
 
+def check_dn():
+	doc = frappe.get_doc("Delivery Note","DN2304050001")
+	doc.make_gl_entries()
+
 def update_sle_gl():
 	for b in ["PRO-23-07-05-095","PRO-23-07-06-062","PRO-23-07-06-069","PRO-23-07-06-064","PRO-23-07-06-070"]:
 		#frappe.db.sql("delete from `tabGL Entry` where voucher_type='Production' and voucher_no='{}'".format(b))
@@ -23,6 +27,28 @@ def update_sle_gl():
 		#doc.make_gl_entries()
 		#frappe.db.commit()
 		print("Done for Production No: " + str(b))
+
+def correct_dn():
+	for b in ("DN2302070020",):
+		frappe.db.sql("delete from `tabGL Entry` where voucher_type='Delivery Note' and voucher_no='{}'".format(b))
+		for a in frappe.db.sql("""select name, actual_qty, incoming_rate,
+									valuation_rate, qty_after_transaction
+									from `tabStock Ledger Entry` 
+									where voucher_no="{}"
+								""".format(b), as_dict=True):
+			stock_value = a.qty_after_transaction * a.valuation_rate
+			stock_value_difference = a.actual_qty * a.incoming_rate
+			
+			frappe.db.sql("""  update `tabStock Ledger Entry`
+							set stock_value='{}', stock_value_difference='{}'
+							where name ='{}'
+						""".format(stock_value, stock_value_difference, a.name))
+			
+		doc = frappe.get_doc("Delivery Note", b)
+		doc.make_gl_entries()
+		frappe.db.commit()
+		print("Done for DN No: " + str(b))
+
 
 def get_wrong_dn():
 	i=0
@@ -78,6 +104,24 @@ def detete_pol_receive_gl():
 	for x in name:
 		frappe.db.sql("delete from `tabGL Entry` where against_voucher_type='POL Receive' and against_voucher= '{}'".format(x.name))
 		print(x.name)
+
+def create_pol_receive_gl():
+	name = frappe.db.sql("""select name
+			from `tabPOL Receive`
+			where direct_consumption=1
+			and use_common_fuelbook =1
+			and is_opening =0
+			and docstatus=1
+		""",as_dict=True)
+	for x in name:
+		gl_entry = frappe.db.sql("select name from `tabGL Entry` where against_voucher_type='POL Receive' and against_voucher= '{}'".format(x.name))
+		if gl_entry:
+			print(gl_entry)
+		else:
+			doc = frappe.get_doc("POL Receive",x.name)
+			doc.make_gl_entries()
+			print(doc.name)
+	frappe.db.commit()
 
 def pol_entry_correction():
 	for d in frappe.bd.sql("select name,reference_type,reference,equipment from `tabPOL Entry` where rate <= 0"):
