@@ -294,8 +294,8 @@ class CustomWorkflow:
 			self.material_request()		
 		elif self.doc.doctype == "Employee Advance":
 			self.employee_advance()
-		elif self.doc.doctype == "Employee Transfer":
-			self.employee_transfer()
+		elif self.doc.doctype == "Employee Benefit Claim":
+			self.employee_benefit_claim()
 		elif self.doc.doctype == "Budget Reappropiation":
 			self.budget_reappropiation()
 		elif self.doc.doctype == "Target Set Up":
@@ -422,15 +422,12 @@ class CustomWorkflow:
 			frappe.throw(_("Invalid Workflow State {}").format(self.doc.workflow_state))
 	
 	def employee_benefits(self):
-		if self.new_state.lower() in ("Draft".lower(), "Waiting GM Approval".lower()):
-			if self.new_state.lower() == "Waiting GM Approval".lower():
+		if self.new_state.lower() in ("Draft".lower(), "Waiting Approval".lower()):
+			if self.new_state.lower() == "Waiting Approval".lower():
 				if "HR User" not in frappe.get_roles(frappe.session.user):
 					frappe.throw("Only HR can Apply this Appeal")
 			self.set_approver("HRGM")
-		elif self.new_state.lower() == "Waiting Approval".lower():
-			if self.doc.benefit_approver != frappe.session.user:
-				frappe.throw("Only {} can Forward this document".format(self.doc.benefit_approver_name))
-			self.set_approver("CEO")
+
 		elif self.new_state.lower() in ("Approved".lower(), "Rejected".lower()):
 			if self.doc.benefit_approver != frappe.session.user:
 				frappe.throw("Only {} can Approved or Reject this document".format(self.doc.benefit_approver_name))
@@ -706,7 +703,7 @@ class CustomWorkflow:
 				frappe.throw("Only {} can Reject this Application".format(self.doc.approver_name))
 		else:
 			frappe.throw(_("Invalid Workflow State {}").format(self.doc.workflow_state))
-	def employee_transfer(self):
+	def employee_benefit_claim(self):
 		if self.new_state.lower() in ("Draft".lower(), "Waiting Approval".lower()):
 			if self.new_state.lower() == "Waiting Approval".lower():
 				if "HR User" not in frappe.get_roles(frappe.session.user):
@@ -714,8 +711,8 @@ class CustomWorkflow:
 			self.set_approver("HRGM")
 
 		elif self.new_state.lower() in ("Approved".lower(), "Rejected".lower()):
-			if self.doc.supervisor != frappe.session.user:
-				frappe.throw("Only {} can Approved or Reject this document".format(self.doc.supervisor_name))
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Approved or Reject this document".format(self.doc.benefit_approver_name))
 
 	def notify(self, args):
 		args = frappe._dict(args)
@@ -989,6 +986,7 @@ def get_field_map():
 		"Budget Reappropiation": ["approver", "approver_name", "approver_designation"],
 		"Employee Transfer": ["supervisor", "supervisor_name", "supervisor_designation"],
 		"Employee Benefits": ["benefit_approver","benefit_approver_name","benefit_approver_designation"],
+		"Employee Benefit Claim": ["approver","benefit_approver_name","benefit_approver_designation"],
 		"Training Approval Request": [],
 		"Employee Separation": ["approver","approver_name","approver_designation"],
 		"Target Set Up": ["approver","approver_name","approver_designation"],

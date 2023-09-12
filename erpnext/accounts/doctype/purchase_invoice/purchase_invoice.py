@@ -124,10 +124,19 @@ class PurchaseInvoice(BuyingController):
 		self.reset_default_field_value("set_warehouse", "items", "warehouse")
 		self.reset_default_field_value("rejected_warehouse", "items", "rejected_warehouse")
 		self.reset_default_field_value("set_from_warehouse", "items", "from_warehouse")
+		self.set_account()
 
 	def validate_release_date(self):
 		if self.release_date and getdate(nowdate()) >= getdate(self.release_date):
 			frappe.throw(_("Release date must be in the future"))
+	def set_account(self):
+		for d in self.get("items"):
+			account_expense = frappe.db.sql("""select expense_account
+				from `tabPurchase Receipt Item`
+				where parent='{0}'
+				and item_code='{1}'
+			""".format(d.purchase_receipt,d.item_code))[0][0]
+			d.account_expense = account_expense
 
 	def validate_cash(self):
 		if not self.cash_bank_account and flt(self.paid_amount):
