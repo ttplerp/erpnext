@@ -589,6 +589,7 @@
    "fieldname": "bank_payment",
    "fieldtype": "Link",
    "label": "Bank Payment",
+   "no_copy": 1,
    "options": "Bank Payment",
    "read_only": 1
   },
@@ -615,7 +616,7 @@
    "link_fieldname": "journal_entry"
   }
  ],
- "modified": "2023-06-26 15:22:40.664892",
+ "modified": "2023-09-13 12:50:26.045712",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",

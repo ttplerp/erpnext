@@ -490,19 +490,22 @@ class BankPayment(Document):
                                 """.format(journal_entry = a.transaction_id))[0][0]
                 non_bank_entries = 0
                 non_bank_entries_amount = 0.00
-                payable_amt = 0.00 
-                for x in frappe.db.sql("""select a.credit as credit
+                payable_amt = 0.00
+                exist_party = []
+                for x in frappe.db.sql("""select ifnull(a.credit,credit_in_account_currency) as credit,party
                                 from `tabJournal Entry Account` a, `tabAccount` b							
                                 where a.account = b.name
                                 and b.account_type != 'Bank'
                                 and a.parent = '{journal_entry}'
-                                and (a.debit > 0 OR a.debit_in_account_currency > 0)
+                                and (a.credit > 0 OR a.credit_in_account_currency > 0)
                                 """.format(journal_entry = a.transaction_id), as_dict=True):
-                    non_bank_entries += 1
+                    if x.party not in exist_party:
+                        non_bank_entries += 1
+                        exist_party.append(x.party)
                     non_bank_entries_amount += flt(x.credit)
-
-                if party_count > 1 and non_bank_entries > 0:
-                    frappe.throw("Journal Entry {} is not feasible for bank payment as the deductions cannot be auto allocated because of multiple party involved in it")
+                    
+                if party_count > 1 or non_bank_entries > 1:
+                    frappe.throw("Journal Entry <b>{} </b> is not feasible for bank payment as the deductions cannot be auto allocated because of multiple party involved in it".format(a.transaction_id))
 
                 for b in frappe.db.sql("""SELECT ja.name transaction_reference, ja.reference_type, ja.reference_name, ja.party_type, ja.party, ja.account,
                                         round(ja.debit,2) as debit_amount, round(ja.credit,2) as credit_amount, round(ja.tax_amount,2) as tax_amount,
