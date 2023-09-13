@@ -482,16 +482,9 @@ frappe.ui.form.on("Material Request Item", {
 			}
 		}
 	},
-	
-
-	// issue_to: function (frm, cdt, cdn) {
-	// 	var row = locals[cdt][cdn];
-	// 	frappe.model.get_value("Employee", row.issue_to, "employee_name", function (d) {
-	// 		if (d !== undefined) {
-	// 			frappe.model.set_value(cdt, cdn, "issued_employee_name", d.employee_name);
-	// 		}
-	// 	});
-	// }
+	"item_code":function(frm, cdt,cdn){
+		set_expense_account(frm,cdt, cdn);
+	}
 });
 
 erpnext.buying.MaterialRequestController = class MaterialRequestController extends erpnext.buying.BuyingController {
@@ -565,4 +558,7 @@ function set_schedule_date(frm) {
 	if (frm.doc.schedule_date) {
 		erpnext.utils.copy_value_in_all_rows(frm.doc, frm.doc.doctype, frm.doc.name, "items", "schedule_date");
 	}
+}
+var set_expense_account = function(cdt, cdn){
+	frappe.model.set_value(cdt, cdn, "expense_account"," ");
 }
