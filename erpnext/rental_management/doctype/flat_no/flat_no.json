@@ -18,7 +18,10 @@
   "total_floor_area",
   "land_area",
   "status",
-  "old_flat_no"
+  "old_flat_no",
+  "sb_property_mgt",
+  "property_management_item",
+  "total_property_management_amount"
  ],
  "fields": [
   {
@@ -112,11 +115,27 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Old Flat No"
+  },
+  {
+   "fieldname": "sb_property_mgt",
+   "fieldtype": "Section Break",
+   "label": "Property Management Detail"
+  },
+  {
+   "fieldname": "property_management_item",
+   "fieldtype": "Table",
+   "label": "Property Management Detail",
+   "options": "Property Management Item"
+  },
+  {
+   "fieldname": "total_property_management_amount",
+   "fieldtype": "Currency",
+   "label": "Total Property Management Amount"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-21 14:39:18.642995",
+ "modified": "2023-09-13 09:41:43.260176",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Flat No",

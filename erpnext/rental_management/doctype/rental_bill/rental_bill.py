@@ -80,10 +80,10 @@ class RentalBill(AccountsController):
 			previous_bill_date = str(prev_fiscal_year)+"-"+str(prev_month)+"-"+"01"
 
 			query = """
-					select tenant_cid, tenant_name, customer_code, block, flat, 
+					select tenant_cid, tenant_name, customer_code, block, flat, flat_no,
 					ministry_and_agency, location_name, branch, tenant_department_name, dzongkhag, 
 					town_category, building_category, is_nhdcl_employee, rental_amount, building_classification,
-					phone_no, allocated_date, locations, total_property_management_amount
+					phone_no, allocated_date, locations
 					from `tabTenant Information` t 
 					inner join `tabTenant Rental Charges` r 
 					on t.name = r.parent 
@@ -109,7 +109,11 @@ class RentalBill(AccountsController):
 			dtls = frappe.db.sql(query, as_dict=True)
 			if dtls:
 				for d in dtls:
-					total_property_mgt_amount = frappe.db.get_value("Locations", d.locations, "total_property_management_amount")
+					total_property_mgt_amount = frappe.db.get_value("Flat No", d.flat_no, "total_property_management_amount")
+					prop_mgt_amount = 0
+					for pm_item in frappe.db.sql("select * from `tabProperty Management Item` where is_percent=1 and parent='{}'".format(d.flat_no), as_dict=1):
+						prop_mgt_amount = flt(d.rental_amount * (pm_item.percent / 100), 2)
+						total_property_mgt_amount += prop_mgt_amount
 					total_property_management_amount = total_property_mgt_amount if total_property_mgt_amount > 0 else 0
 					self.rent_amount = d.rental_amount
 					self.receivable_amount = flt(d.rental_amount + total_property_management_amount)
