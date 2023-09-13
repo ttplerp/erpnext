@@ -251,8 +251,11 @@ def get_planned_data_for_account(company, from_date, to_date, root_lft, root_rgt
 		
 		query = f"""
 			SELECT 
-				ba.account, 
-				SUM(ba.{month_lower} + ba.sb_{month_lower} + ba.br_{month_lower} - ba.bs_{month_lower}) as monthly_amt, 
+				ba.account,
+				COALESCE(SUM(ba.{month_lower}), 0) +
+				COALESCE(SUM(ba.sb_{month_lower}), 0) +
+				COALESCE(SUM(ba.br_{month_lower}), 0) -
+				COALESCE(SUM(ba.bs_{month_lower}), 0) as monthly_amt, 
 				b.fiscal_year
 			FROM `tabBudget` b, `tabBudget Account` ba
 			WHERE ba.parent=b.name AND b.docstatus = 1

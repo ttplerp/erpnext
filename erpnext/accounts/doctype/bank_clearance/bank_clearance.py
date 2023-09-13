@@ -6,7 +6,7 @@ import frappe
 from frappe import _, msgprint
 from frappe.model.document import Document
 from frappe.query_builder.custom import ConstantColumn
-from frappe.utils import flt, fmt_money, getdate
+from frappe.utils import flt, fmt_money, getdate, nowdate
 
 import erpnext
 
@@ -104,6 +104,27 @@ class BankClearance(Document):
 			},
 			as_dict=1,
 		)
+		opening_brs_entries = frappe.db.sql("""
+			select 
+				'Opening BRS Entry' as payment_document, name as payment_entry,
+				cheque_no as cheque_number, cheque_date, 
+				debit, credit, 
+				posting_date, party as against_account, clearance_date 
+			from `tabOpening BRS Entry Detail`
+			where 
+				account = %(account)s and docstatus=1
+				and posting_date < %(from)s {condition}
+			group by name, cheque_number, cheque_date, posting_date, party, clearance_date
+			order by posting_date ASC, name DESC
+		""".format(condition=condition),
+			{
+				"account": self.account, 
+				"from": self.from_date
+			},
+			as_dict=1,
+		)
+		# frappe.throw(str(opening_brs_entries))
+
 		loan_disbursement = frappe.qb.DocType("Loan Disbursement")
 
 		loan_disbursements = (
@@ -190,7 +211,7 @@ class BankClearance(Document):
 				{"account": self.account, "from": self.from_date, "to": self.to_date},
 				as_dict=1,
 			)
-
+		
 		entries = sorted(
 			list(payment_entries)
 			+ list(journal_entries)
@@ -198,7 +219,8 @@ class BankClearance(Document):
 			+ list(pos_purchase_invoices)
 			+ list(loan_disbursements)
 			+ list(loan_repayments)
-			+ list(tds_remittance),
+			+ list(tds_remittance)
+			+ list(opening_brs_entries),
 			key=lambda k: getdate(k["posting_date"]),
 		)
 
@@ -242,9 +264,15 @@ class BankClearance(Document):
 			if d.clearance_date or self.include_reconciled_entries:
 				if not d.clearance_date:
 					d.clearance_date = None
-
-				payment_entry = frappe.get_doc(d.payment_document, d.payment_entry)
-				payment_entry.db_set("clearance_date", d.clearance_date)
+				
+				if d.payment_document == 'Opening BRS Entry':
+					frappe.db.set_value('Opening BRS Entry Detail', d.payment_entry, "clearance_date", d.clearance_date)
+					frappe.db.sql("""update `tab{0} Detail` set clearance_date = %s, modified = %s 
+						where name=%s""".format(d.payment_document), 
+					(d.clearance_date, nowdate(), d.payment_entry))
+				else:
+					payment_entry = frappe.get_doc(d.payment_document, d.payment_entry)
+					payment_entry.db_set("clearance_date", d.clearance_date)
 
 				clearance_date_updated = True
 

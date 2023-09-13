@@ -119,12 +119,14 @@ def get_entries(filters):
 
 	loan_entries = get_loan_entries(filters)
 
+	opening_brs_entries = get_opening_brs_entries(filters)
+
 	pos_entries = []
 	if filters.include_pos_transactions:
 		pos_entries = get_pos_entries(filters)
 
 	return sorted(
-		list(payment_entries) + list(journal_entries + list(pos_entries) + list(loan_entries)),
+		list(payment_entries) + list(journal_entries + list(pos_entries) + list(loan_entries) + list(opening_brs_entries)),
 		key=lambda k: getdate(k["posting_date"]),
 	)
 
@@ -187,6 +189,24 @@ def get_pos_entries(filters):
 		as_dict=1,
 	)
 
+def get_opening_brs_entries(filters):
+	return frappe.db.sql(
+		"""
+			select 
+				'Opening BRS Entry Detail' as payment_document, posting_date,
+				name as payment_entry, sum(debit) as debit,
+				sum(credit) as credit, party as against_account,
+				cheque_no as reference_no, cheque_date as ref_date, clearance_date, 'BTN' as account_currency 
+			from `tabOpening BRS Entry Detail`
+			where 
+				docstatus = 1 and account = %(account)s
+				and posting_date <= %(report_date)s
+				and ifnull(clearance_date, '4000-01-01') > %(report_date)s
+			group by posting_date, name, party, cheque_no, cheque_date, clearance_date
+			""", 
+		filters, 
+		as_dict=1,
+	)
 
 def get_loan_entries(filters):
 	loan_docs = []
@@ -226,7 +246,6 @@ def get_loan_entries(filters):
 		loan_docs.extend(entries)
 
 	return loan_docs
-
 
 def get_amounts_not_reflected_in_system(filters):
 	je_amount = frappe.db.sql(
