@@ -3192,14 +3192,26 @@ class NotifyCustomWorkflow:
         else:
             employee = frappe.get_doc(
                 "Employee",
-                frappe.db.get_value("Employee", {"user_id": self.doc.owner}, "name"),
+                frappe.db.get_value("Employee", {"user_id": self.doc.owner}),
             )
         if not employee.user_id:
             return
 
         parent_doc = frappe.get_doc(self.doc.doctype, self.doc.name)
         args = parent_doc.as_dict()
-
+        
+        if self.doc.doctype == "Employee Advance Settlement":
+            template = frappe.db.get_single_value(
+                "HR Settings", "employee_advance_settlement_status_notification"
+            )
+            if not template:
+                frappe.msgprint(
+                    _(
+                        "Please set default template for Employee Advance Settlement Status Notification in HR Settings."
+                    )
+                )
+                return
+            
         if self.doc.doctype == "Leave Application":
             template = frappe.db.get_single_value(
                 "HR Settings", "leave_status_notification_template"
@@ -3404,23 +3416,14 @@ class NotifyCustomWorkflow:
             return
         email_template = frappe.get_doc("Email Template", template)
         message = frappe.render_template(email_template.response, args)
-        if (
-            employee
-            and "Driver" not in employee.designation
-            and "Elementary Service Personnel" not in employee.designation
-            and "Home Based Caretaker" not in employee.designation
-            and employee.user_id not in ("dawa486@bt.bt", "sonam.tobgye274@bt.bt")
-        ):
-            self.notify(
-                {
-                    # for post in messages
-                    "message": message,
-                    "message_to": employee.user_id,
-                    # for email
-                    "subject": email_template.subject,
-                    "notify": "employee",
-                }
-            )
+        self.notify(
+            {
+                "message": message,
+                "message_to": employee.user_id,
+                "subject": email_template.subject,
+                "notify": "employee",
+            }
+        )
 
     def notify_approver(self):
         if self.doc.get(self.doc_approver[0]):
@@ -3435,6 +3438,17 @@ class NotifyCustomWorkflow:
                     frappe.msgprint(
                         _(
                             "Please set default template for Leave Approval Notification in HR Settings."
+                        )
+                    )
+                    return
+            elif self.doc.doctype == "Employee Advance Settlement":
+                template = frappe.db.get_single_value(
+                    "HR Settings", "employee_advance_settlement_approval_notification"
+                )
+                if not template:
+                    frappe.msgprint(
+                        _(
+                            "Please set default template for Employee Advance Settlement Approval Notification in HR Settings."
                         )
                     )
                     return
@@ -3653,41 +3667,13 @@ class NotifyCustomWorkflow:
                 return
             email_template = frappe.get_doc("Email Template", template)
             message = frappe.render_template(email_template.response, args)
-            # emp = frappe.db.get_value("Employee",{"user_id":self.doc_approver[0]},"name")
-            # employee = frappe.get_doc("Employee",emp)
-            # if employee and "Driver" not in employee.designation and "Elementary Service Personnel" not in employee.designation and "Home Based Caretaker" not in employee.designation and employee.user_id not in ('dawa486@bt.bt','sonam.tobgye274@bt.bt'):
             self.notify(
                 {
-                    # for post in messages
                     "message": message,
                     "message_to": self.doc.get(self.doc_approver[0]),
-                    # for email
                     "subject": email_template.subject,
                 }
             )
-            # else:
-            # 	receipients = []
-            # 	if self.new_state.lower() == "Waiting Approval":
-            # 		if self.ta_approver != None:
-            # 			for a in self.ta_approver:
-            # 				receipients.append(a.user)
-            # 		self.notify({
-            # 			# for post in messages
-            # 			"message": message,
-            # 			"message_to": receipients,
-            # 			# for email
-            # 			"subject": email_template.subject
-            # 		})
-            # 	elif self.new_state.lower() == "Waiting HR Approval":
-            # 		for a in frappe.db.sql("""select parent from `tabHas Role` where role = 'HR User' and parent like '%@%'"""):
-            # 			receipients.append(a)
-            # 		self.notify({
-            # 			# for post in messages
-            # 			"message": message,
-            # 			"message_to": receipients,
-            # 			# for email
-            # 			"subject": email_template.subject
-            # 		})
 
     def notify_hr_users(self):
         receipients = []
@@ -4017,13 +4003,7 @@ class NotifyCustomWorkflow:
             "Claimed",
             "Submitted",
         ):
-            if (
-                self.doc.doctype == "Material Request"
-                and self.doc.owner != "Administrator"
-            ):
-                self.notify_employee()
-            else:
-                self.notify_employee()
+            self.notify_employee()
         elif (
             self.new_state.startswith("Waiting")
             and self.old_state != self.new_state
@@ -4031,10 +4011,7 @@ class NotifyCustomWorkflow:
             not in ("Asset Issue Details", "Project Capitalization")
         ):
             self.notify_approver()
-        # elif self.new_state.startswith("Waiting") and self.old_state != self.new_state and self.doc.doctype in ("Asset Issue Details","Project Capitalization"):
-        # 	self.notify_finance_users()
-        elif self.new_state.startswith("Verified") and self.old_state != self.new_state:
-            self.notify_approver()
+            
         else:
             frappe.msgprint(
                 _("Email notifications not configured for workflow state {}").format(

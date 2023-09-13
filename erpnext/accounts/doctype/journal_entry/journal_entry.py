@@ -1273,6 +1273,7 @@ class JournalEntry(AccountsController):
         from erpnext.accounts.general_ledger import make_gl_entries
 
         gl_map = self.build_gl_map()
+        # frappe.throw(str(gl_map))
         if self.voucher_type in ("Deferred Revenue", "Deferred Expense"):
             update_outstanding = "No"
         else:

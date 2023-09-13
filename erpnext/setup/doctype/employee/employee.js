@@ -129,6 +129,12 @@ frappe.ui.form.on("Employee", {
 	}
 });
 
+// frappe.ui.form.on("Family Detail Item", {
+// 	refresh: function(frm){
+// 		$(".grid-add-row").addClass('hidden');
+// 	},
+// });
+
 cur_frm.cscript = new erpnext.setup.EmployeeController({
 	frm: cur_frm
 });
