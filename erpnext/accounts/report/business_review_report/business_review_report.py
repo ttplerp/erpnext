@@ -23,6 +23,7 @@ value_fields = (
 	"planned",
 	"actual_plan_difference",
 	"actual_plan_diff_percent",
+	"comparison_actuals",
 	"comparison_actual_difference",
 	"comparison_actual_diff_percent",
 )
@@ -293,6 +294,7 @@ def calculate_values(accounts, combined_data, filters):
 		"comparison_debit": 0.0,
 		"comparison_credit": 0.0,
 		"planned": 0.0,
+		"comparison_actuals": 0.0,
 		"actual_plan_difference": 0.0,
 		"actual_plan_diff_percent": 0.0,
 		"comparison_actual_difference": 0.0, 
@@ -346,18 +348,36 @@ def calculate_values(accounts, combined_data, filters):
 		total_row["comparison_credit"] += d["comparison_credit"]
 		total_row["root_type"] = d["root_type"]
 		total_row["planned"] += d["planned"]
+		total_row["comparison_actuals"] += d["comparison_actuals"]
 		total_row["actual_plan_difference"] += d["actual_plan_difference"]
 		total_row["actual_plan_diff_percent"] += d["actual_plan_diff_percent"]
 		total_row["comparison_actual_difference"] += d["comparison_actual_difference"]
 		total_row["comparison_actual_diff_percent"] += d["comparison_actual_diff_percent"]
-
 	return total_row
+
+# def accumulate_values_into_parents(accounts, accounts_by_name):
+# 	for d in reversed(accounts):
+# 		if d.parent_account:
+# 			for key in value_fields:
+# 				accounts_by_name[d.parent_account][key] += d[key]
 
 def accumulate_values_into_parents(accounts, accounts_by_name):
 	for d in reversed(accounts):
 		if d.parent_account:
 			for key in value_fields:
-				accounts_by_name[d.parent_account][key] += d[key]
+				if key not in ("actual_plan_diff_percent", "comparison_actual_diff_percent"):  # Skip accumulation for percent
+					accounts_by_name[d.parent_account][key] += d[key]
+
+			# Calculate variance_percent for the parent based on accumulated actuals and planned
+			parent = accounts_by_name[d.parent_account]
+			if parent["planned"] > 0:
+				parent["actual_plan_diff_percent"] = (parent["actual_plan_difference"] / parent["planned"]) * 100
+			else:
+				parent["actual_plan_diff_percent"] = 0
+			if parent["comparison_actuals"]:
+				parent["comparison_actual_diff_percent"] = (parent["comparison_actual_difference"] / parent["comparison_actuals"]) * 100
+			else:
+				parent["comparison_actual_diff_percent"] = 0
 
 def prepare_data(accounts, total_row, parent_children_map, planned_data_by_account):
 	data = []

@@ -207,13 +207,20 @@ def calculate_values(accounts, combined_data, filters):
 	return total_row
 
 def accumulate_values_into_parents(accounts, accounts_by_name):
-    for d in reversed(accounts):
-        if d.parent_account:
-            # Check if the planned value is greater than 0 before accumulating
-            if d.planned > 0:
-                for key in value_fields:
-                    accounts_by_name[d.parent_account][key] += d[key]
-
+	for d in reversed(accounts):
+		if d.parent_account:
+			# Check if the planned value is greater than 0 before accumulating
+			if d.planned > 0:
+				for key in value_fields:
+					if key != "variance_percent":  # Skip accumulation for variance_percent
+						accounts_by_name[d.parent_account][key] += d[key]
+				# Calculate variance_percent for the parent based on accumulated actuals and planned
+				parent = accounts_by_name[d.parent_account]
+				if parent["planned"] > 0:
+					parent["variance_percent"] = (parent["variance"] / parent["planned"]) * 100
+				else:
+					parent["variance_percent"] = 0
+		
 
 def prepare_data(accounts, total_row, parent_children_map, planned_data_by_account):
 	data = []
