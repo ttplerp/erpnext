@@ -45,7 +45,7 @@ class CustomWorkflow:
 			unit = frappe.db.get_value("Employee",self.doc.employee, "unit")
 			self.hrgm 	= frappe.db.get_value("Employee",frappe.db.get_single_value("HR Settings","hrgm"), self.field_list)
 			self.ceo	= frappe.db.get_value("Employee", frappe.db.get_value("Employee", {"designation": "Chief Executive Officer", "status": "Active"},"name"), self.field_list)
-
+			self.unit_approver = frappe.db.get_value("Employee",frappe.db.get_value("Department",unit,"approver"),self.field_list)
 			self.section_approver = frappe.db.get_value("Employee",{"user_id":frappe.db.get_value(
 					"Department Approver",
 					{"parent": section, "parentfield": "leave_approvers", "idx": 1},
@@ -56,7 +56,6 @@ class CustomWorkflow:
 					{"parent": division, "parentfield": "leave_approvers", "idx": 1},
 					"approver",
 				)},self.field_list)
-
 		if self.doc.doctype == "Performance Evaluation":
 			self.employee		= frappe.db.get_value("Employee", self.doc.employee, self.field_list)
 			self.reports_to		= frappe.db.get_value("Employee", frappe.db.get_value("Employee", self.doc.employee, "reports_to"), self.field_list)
@@ -484,18 +483,20 @@ class CustomWorkflow:
 			if self.doc.leave_approver != frappe.session.user:
 				frappe.throw("Only {} can Approve this Leave Application".format(self.doc.leave_approver_name))
 			if unit:
-				section_approver = frappe.db.get_value(
-					"Department Approver",
-					{"parent": section, "parentfield": "leave_approvers", "idx": 1},
-					"approver",
-				)
-				if section_approver:
-					self.set_approver("Section Approver")
+				if unit in ("GRAHSP-ADB Project - NHDCL","Corporate Strategy Office - NHDCL"):
+					self.set_approver("Unit Approver")
 				else:
-					self.set_approver("Division Approver")
+					section_approver = frappe.db.get_value(
+						"Department Approver",
+						{"parent": section, "parentfield": "leave_approvers", "idx": 1},
+						"approver",
+					)
+					if section_approver:
+						self.set_approver("Section Approver")
+					else:
+						self.set_approver("Division Approver")
 			else:
 				self.set_approver("Division Approver")
-
 		elif self.new_state.lower() in ("Waiting HR Approval".lower()):
 			if self.doc.leave_approver != frappe.session.user:
 				frappe.throw("Only {} can Apply or Forward this Leave Application".format(self.doc.leave_approver_name))
