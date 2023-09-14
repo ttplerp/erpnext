@@ -349,8 +349,6 @@ class BankPayment(Document):
             frappe.msgprint(_("Under development"))
         elif self.transaction_type == "Payment Entry":
             data = self.get_payment_entry()
-        elif self.transaction_type == "Direct Payment":
-            data = self.get_direct_payment()
         elif self.transaction_type == "Journal Entry":
             data = self.get_journal_entry()
         elif self.transaction_type == "Leave Travel Concession":
@@ -480,196 +478,68 @@ class BankPayment(Document):
                     if flt(p.debit) > 0:
                         debit_bank_account += 1
             elif a.voucher_type == "Bank Entry":
+                payment_dtl=[]
                 party_type = party = reference_type = reference_name = ""
-                party_count = frappe.db.sql("""select count(distinct party) as party_count 
-                                from `tabJournal Entry Account` 
-                                where parent = '{journal_entry}'
-                                AND party_type in ('Employee', 'Supplier')
-                                AND (party IS NOT NULL or party != "")
-                                AND (debit > 0 OR debit_in_account_currency >0)
-                                """.format(journal_entry = a.transaction_id))[0][0]
-                non_bank_entries = 0
-                non_bank_entries_amount = 0.00
-                payable_amt = 0.00
-                exist_party = []
-                for x in frappe.db.sql("""select ifnull(a.credit,credit_in_account_currency) as credit,party
-                                from `tabJournal Entry Account` a, `tabAccount` b							
-                                where a.account = b.name
-                                and b.account_type != 'Bank'
-                                and a.parent = '{journal_entry}'
-                                and (a.credit > 0 OR a.credit_in_account_currency > 0)
+                for b in frappe.db.sql("""select party, party_type,
+                                        sum(if(credit>0, credit, credit_in_account_currency)) as credit,
+                                        sum(if(debit>0, debit, debit_in_account_currency)) as debit,
+                                        sum(tax_amount) as tax_amount
+                                    from `tabJournal Entry Account` 
+                                    where parent = '{journal_entry}'
+                                    AND party!="" AND party is NOT NULL
+                                    group by party
                                 """.format(journal_entry = a.transaction_id), as_dict=True):
-                    if x.party not in exist_party:
-                        non_bank_entries += 1
-                        exist_party.append(x.party)
-                    non_bank_entries_amount += flt(x.credit)
-                    
-                if party_count > 1 or non_bank_entries > 1:
-                    frappe.throw("Journal Entry <b>{} </b> is not feasible for bank payment as the deductions cannot be auto allocated because of multiple party involved in it".format(a.transaction_id))
-
-                for b in frappe.db.sql("""SELECT ja.name transaction_reference, ja.reference_type, ja.reference_name, ja.party_type, ja.party, ja.account,
-                                        round(ja.debit,2) as debit_amount, round(ja.credit,2) as credit_amount, round(ja.tax_amount,2) as tax_amount,
-                                        round(ja.debit_in_account_currency,2) as debit_in_account_currency,
-                                        ja.beneficiary_type, ja.beneficiary
-                                        FROM `tabJournal Entry Account` ja
-                                        WHERE ja.parent = '{parent}'
-                                        AND (ja.debit > 0 OR ja.debit_in_account_currency >0)
-                                    """.format(parent = a.transaction_id), as_dict=True):
-                    query = supplier = employee = None
-                    if self.select_beneficiary and self.beneficiary:
+                    amount = flt(b.debit - b.credit - b.tax_amount,2)
+                    payment_dtl.append({
+                                        "party":b.party,
+                                        "party_type": b.party_type, 
+                                        "credit": b.credit,
+                                        "debit": b.debit,
+                                        "amount": amount,
+                                    })
+                supplier, employee = None, None
+                for i  in payment_dtl:
+                    if i['party_type'] == "Supplier":
                         query = """select s.bank_name, s.bank_branch, s.bank_account_type, 
                                         s.account_number as bank_account_no, s.supplier_name as beneficiary_name,
                                         (CASE WHEN s.bank_name = "INR" THEN s.inr_bank_code ELSE NULL END) inr_bank_code,
                                         (CASE WHEN s.bank_name = "INR" THEN s.inr_purpose_code ELSE NULL END) inr_purpose_code
                                         from `tabSupplier` s
                                         WHERE s.name = '{party}'
-                                    """.format(party = self.beneficiary)
-                        supplier = self.beneficiary
-
-                    if b.beneficiary_type and b.beneficiary and not query:
-                        if b.beneficiary_type == "Supplier":
-                            query = """select s.bank_name, s.bank_branch, s.bank_account_type, 
-                                            s.account_number as bank_account_no, s.supplier_name as beneficiary_name,
-                                            (CASE WHEN s.bank_name = "INR" THEN s.inr_bank_code ELSE NULL END) inr_bank_code,
-                                            (CASE WHEN s.bank_name = "INR" THEN s.inr_purpose_code ELSE NULL END) inr_purpose_code
-                                            from `tabSupplier` s
-                                            WHERE s.name = '{party}'
-                                        """.format(party = b.beneficiary)
-                            supplier = b.beneficiary
-                        elif b.beneficiary_type   ==  "Employee":
-                            query = """select e.bank_name, e.bank_branch, e.bank_account_type, e.employee_name as beneficiary_name,
-                                            e.bank_ac_no as bank_account_no, NULL inr_bank_code, NULL inr_purpose_code
-                                            from `tabEmployee` e
-                                            WHERE e.name = '{party}'
-                                        """.format(party = b.beneficiary)
-                            employee = b.beneficiary
-                        elif b.beneficiary_type == "Account":
-                            query = """ select bank_name, bank_branch, bank_account_type, company as beneficiary_name,
-                                            bank_account_no, NULL inr_bank_code, NULL inr_purpose_code
-                                            from `tabAccount` 
-                                            WHERE name = '{account}'
-                                    """.format(account =  b.beneficiary)
-                        elif b.beneficiary_type == "Branch":
-                            branch_doc = frappe.get_doc("Branch", b.beneficiary)
-                            branch_bank_ac_no =  branch_doc.revenue_bank_account if branch_doc.expense_account else branch_doc.expense_account
-                            query = """ select bank_name, bank_branch, bank_account_type, company as beneficiary_name,
-                                            bank_account_no, NULL inr_bank_code, NULL inr_purpose_code
-                                            from `tabAccount` 
-                                            WHERE name = '{account}'
-                                    """.format(account =  branch_bank_ac_no)
-                    elif b.party_type and b.party and not query:
-                        party_type = b.party_type
-                        party = b.party
-
-                    if not b.beneficiary_type and not b.beneficiary and not party_type and not party and b.reference_type and b.reference_name and not query:
-                        reference_type = b.reference_type if b.reference_type and not reference_type else ""
-                        reference_name = b.reference_name if b.reference_name and not reference_name else ""
-                        if reference_type and reference_name:
-                            if reference_type in ['Travel Authorization','Travel Claim','Overtime Application','Leave Encashment','Employee Benefits']:
-                                party_type = "Employee"
-                                party      = frappe.db.get_value(reference_type, reference_name, "employee")
-                            else:
-                                meta = frappe.get_meta(reference_type)
-                                if meta.has_field("supplier"):
-                                    party_type = "Supplier"
-                                    party      = frappe.db.get_value(reference_type, reference_name, "supplier")
-                                else:
-                                    pass
-                        if not party:
-                            frappe.msgprint("Party missing for Journal Entry {}".format(a.transaction_id))
-                    debit_amount = b.debit_amount if b.debit_amount > 0 else b.debit_in_account_currency
-                    if party_count == 1 and non_bank_entries > 0:
-                        payable_amt = flt(debit_amount) - flt(b.tax_amount) - flt(non_bank_entries_amount)
-                    else:
-                        payable_amt = flt(debit_amount) - flt(b.tax_amount)
-
-                    if party and party_type and not query:
-                        if party_type == "Supplier":
-                            query = """select s.bank_name, s.bank_branch, s.bank_account_type, 
-                                            s.account_number as bank_account_no, s.supplier_name as beneficiary_name,
-                                            (CASE WHEN s.bank_name = "INR" THEN s.inr_bank_code ELSE NULL END) inr_bank_code,
-                                            (CASE WHEN s.bank_name = "INR" THEN s.inr_purpose_code ELSE NULL END) inr_purpose_code
-                                            from `tabSupplier` s
-                                            WHERE s.name = '{party}'
-                                        """.format(party = party)
-                            supplier = party
-                        elif party_type == "Employee":
-                            query = """select e.bank_name, e.bank_branch, e.bank_account_type, e.employee_name as beneficiary_name,
-                                            e.bank_ac_no as bank_account_no, NULL inr_bank_code, NULL inr_purpose_code
-                                            from `tabEmployee` e
-                                            WHERE e.name = '{party}'
-                                        """.format(party = party)
-                            employee = party
-                    if not query:
-                        frappe.throw("Beneficiary deails are missing or not applicable for ePayment")
-                    for c in frappe.db.sql(query, as_dict=True):				
-                        data.append(frappe._dict({
-                            'transaction_type': 'Journal Entry',
-                            'transaction_id': a.transaction_id,
-                            'transaction_date': a.transaction_date,
-                            'employee': employee,
-                            'supplier': supplier,
-                            'beneficiary_name': c.beneficiary_name,
-                            'bank_name': c.bank_name,
-                            'bank_branch': c.bank_branch,
-                            'bank_account_type': c.bank_account_type,
-                            'bank_account_no': c.bank_account_no,
-                            'amount': flt(payable_amt),
-                            'inr_bank_code': c.inr_bank_code,
-                            'inr_purpose_code': c.inr_purpose_code,
-                            'status': "Draft",
-                            'remarks': a.user_remark
-                        }))
+                                    """.format(party = i['party'])
+                        supplier = i['party']
+                    elif i['party_type'] == "Employee":
+                        query = """select e.bank_name, e.bank_branch, e.bank_account_type, e.employee_name as beneficiary_name,
+                                        e.bank_ac_no as bank_account_no, NULL inr_bank_code, NULL inr_purpose_code
+                                        from `tabEmployee` e
+                                        WHERE e.name = '{party}'
+                                    """.format(party = i['party'])
+                        employee = i['party']
+                    elif i['party_type'] == "Muster Roll Employee":
+                        query = """select e.bank_name, e.bank_branch, e.bank_account_type, e.person_name as beneficiary_name,
+                                        e.bank_ac_no as bank_account_no, NULL inr_bank_code, NULL inr_purpose_code
+                                        from `tabMuster Roll Employee` e
+                                        WHERE e.name = '{party}'
+                                    """.format(party = i['party'])
+                    dtl = frappe.db.sql(query, as_dict=True)				
+                    data.append(frappe._dict({
+                        'transaction_type': 'Journal Entry',
+                        'transaction_id': a.transaction_id,
+                        'transaction_date': a.transaction_date,
+                        'employee': employee,
+                        'supplier': supplier,
+                        'beneficiary_name': dtl[0]['beneficiary_name'],
+                        'bank_name': dtl[0]['bank_name'],
+                        'bank_branch': dtl[0]['bank_branch'],
+                        'bank_account_type': dtl[0]['bank_account_type'],
+                        'bank_account_no': dtl[0]['bank_account_no'],
+                        'amount': flt(i['amount']),
+                        'inr_bank_code': dtl[0]['inr_bank_code'],
+                        'inr_purpose_code': dtl[0]['inr_purpose_code'],
+                        'status': "Draft",
+                        'remarks': a.user_remark
+                    }))
         return data
-
-    def get_direct_payment(self):
-        cond = ""
-        if self.transaction_no:
-            cond = 'AND dp.name = "{}"'.format(self.transaction_no)
-        elif not self.transaction_no and self.from_date and self.to_date:
-            cond = 'AND dp.posting_date BETWEEN "{}" AND "{}"'.format(str(self.from_date), str(self.to_date))
-
-        return frappe.db.sql("""SELECT "Direct Payment" transaction_type, dp.name transaction_id, 
-                dpi.name transaction_reference, dp.posting_date transaction_date, 
-                (CASE WHEN dpi.party_type = 'Supplier' THEN dpi.party ELSE NULL END) as supplier, 
-                (CASE WHEN dpi.party_type = 'Employee' THEN dpi.party ELSE NULL END) as employee, 
-                (CASE WHEN dpi.party_type = 'Supplier' THEN s.supplier_name ELSE e.employee_name END) as beneficiary_name,
-                (CASE WHEN dpi.party_type = 'Supplier' THEN s.bank_name ELSE e.bank_name END) as bank_name, 
-                (CASE WHEN dpi.party_type = 'Supplier' THEN s.bank_branch ELSE e.bank_branch END) as bank_branch, 
-                (CASE WHEN dpi.party_type = 'Supplier' THEN s.bank_account_type ELSE e.bank_account_type END) as bank_account_type, 
-                (CASE WHEN dpi.party_type = 'Supplier' THEN s.account_number ELSE e.bank_ac_no END) as bank_account_no,
-                round((dpi.net_amount-(select ifnull(sum(dpd.amount),0)
-                            from `tabDirect Payment Deduction` dpd
-                            where dpd.parent = dp.name 
-                            and dpd.party_type = dpi.party_type
-                            and dpd.party = dpi.party
-                        )
-                ),2) amount						
-                FROM `tabDirect Payment` dp 
-                INNER JOIN `tabDirect Payment Item` dpi ON dpi.parent = dp.name
-                LEFT JOIN `tabSupplier` s ON dpi.party_type = 'Supplier' AND s.name = dpi.party
-                LEFT JOIN `tabEmployee` e ON dpi.party_type = 'Employee' AND e.name = dpi.party
-                WHERE dp.branch = "{branch}" 
-                {cond}
-                AND dp.docstatus = 1
-                AND ifnull(dp.utility_bill,'') = ''
-                AND dpi.party_type IS NOT NULL
-                AND dpi.party IS NOT NULL
-                AND IFNULL(dpi.net_amount,0) > 0
-                AND ifnull(dpi.payment_status,'') IN ('','Failed','Payment Failed')
-                AND NOT EXISTS(select 1
-                FROM `tabBank Payment Item` bpi
-                WHERE bpi.transaction_type = 'Direct Payment'
-                AND bpi.transaction_id = dp.name
-                AND bpi.transaction_reference = dpi.name
-                AND bpi.parent != '{bank_payment}'
-                AND bpi.docstatus != 2
-                AND bpi.status NOT IN ('Cancelled', 'Failed')
-                )
-        ORDER BY dp.posting_date, dp.name """.format(direct_payment = self.transaction_no, 
-            bank_payment = self.name,
-            branch = self.branch,
-            cond = cond), as_dict=True)
 
     def get_payment_entry(self):
         cond = ""
