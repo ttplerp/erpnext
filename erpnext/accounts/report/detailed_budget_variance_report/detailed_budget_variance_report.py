@@ -192,7 +192,7 @@ def calculate_values(accounts, combined_data, filters):
 			d["actuals"] = 0.0
 
 		# Calculate the difference between actuals and planned
-		d["variance"] = d["actuals"] - d["planned"]
+		d["variance"] = d["planned"] - d["actuals"]
 		
 		# Calculate the difference percentage
 		d["variance_percent"] = (d["variance"] / d["planned"]) * 100 if d["planned"] else 0.0
