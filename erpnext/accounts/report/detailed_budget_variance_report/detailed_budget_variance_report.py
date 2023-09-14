@@ -251,7 +251,7 @@ def prepare_data(accounts, total_row, parent_children_map, planned_data_by_accou
 			planned_targets = planned_data_by_account[account.name]
 			planned_sum = sum([entry["monthly_amt"] if entry["monthly_amt"] else 0 for entry in planned_targets])
 			row["planned"] = planned_sum
-			row["variance"] = row["actuals"] - planned_sum
+			row["variance"] = planned_sum - row["actuals"]
 			row["variance_percent"] = (row["variance"] / row["planned"]) * 100 if row["planned"] else 0.0
 
 		# Only add the row if the planned value is greater than 0
