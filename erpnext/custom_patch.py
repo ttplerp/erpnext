@@ -465,3 +465,7 @@ def update_advance_approver_name():
 
     print("sss")
     
+def leave_application_update_attendance():
+    la = frappe.get_doc("Leave Application", {"name": "HR-LAP-2023-00166"})
+    la.update_attendance()
+    print('Done')
