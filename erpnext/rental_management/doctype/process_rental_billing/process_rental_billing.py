@@ -141,6 +141,7 @@ class ProcessRentalBilling(Document):
 								"fiscal_year": self.fiscal_year,
 								"month": self.month,
 								"flat_no": d.flat,
+								"old_flat_no": frappe.db.get_value("Flat No", d.flat_no, "old_flat_no"),
 								"ministry_agency": d.ministry_and_agency,
 								"location": d.location_name,
 								"branch": d.branch,

@@ -27,6 +27,7 @@
   "building_classification",
   "block_no",
   "flat_no",
+  "old_flat_no",
   "sb_rental_period",
   "fiscal_year",
   "cb_3",
@@ -407,12 +408,17 @@
    "hidden": 1,
    "label": "Employment Type",
    "read_only": 1
+  },
+  {
+   "fieldname": "old_flat_no",
+   "fieldtype": "Data",
+   "label": "Old Flat No"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-09-05 15:26:36.435305",
+ "modified": "2023-09-14 15:12:45.047199",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Bill",
