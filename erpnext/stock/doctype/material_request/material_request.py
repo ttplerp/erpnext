@@ -853,20 +853,19 @@ def get_permission_query_conditions(user):
                     e.user_id = `tabMaterial Request`.approver AND
 				    e.user_id = '{user}'
             )
-		
-		)
+            or
+	        exists(select 1
+            from `tabEmployee` e, `tabAssign Branch` ab, `tabBranch Item` bi
+            where e.user_id = '{user}'
+            and ab.employee = e.name
+            and bi.parent = ab.name
+            and bi.branch = `tabMaterial Request`.branch)
+		    )
         """.format(
             user=user
         )
-    # or
 
 
-# 	exists(select 1
-# 		from `tabEmployee` e, `tabAssign Branch` ab, `tabBranch Item` bi
-# 		where e.user_id = '{user}'
-# 		and ab.employee = e.name
-# 		and bi.parent = ab.name
-# 		and bi.branch = `tabMaterial Request`.branch)
 # dsp copied
 # if not user:
 #     user = frappe.session.user
