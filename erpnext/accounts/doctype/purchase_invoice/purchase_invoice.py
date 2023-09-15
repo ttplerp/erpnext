@@ -102,7 +102,8 @@ class PurchaseInvoice(BuyingController):
             self.is_opening = "No"
 
         self.validate_posting_time()
-
+        if not self.advances or len(self.advances) < 1:
+            frappe.msgprint("The advances table is empty. Please check adances for the given supplier.")
         super(PurchaseInvoice, self).validate()
 
         if not self.is_return:

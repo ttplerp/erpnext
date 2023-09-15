@@ -853,26 +853,30 @@ def get_permission_query_conditions(user):
                     e.user_id = `tabMaterial Request`.approver AND
 				    e.user_id = '{user}'
             )
-		or
-		exists(select 1
-			from `tabEmployee` e, `tabAssign Branch` ab, `tabBranch Item` bi
-			where e.user_id = '{user}'
-			and ab.employee = e.name
-			and bi.parent = ab.name
-			and bi.branch = `tabMaterial Request`.branch)
-		)""".format(
+		
+		)
+        """.format(
             user=user
         )
-    # dsp copied
-    # if not user:
-    #     user = frappe.session.user
-    # user_roles = frappe.get_roles(user)
-    # if "Administrator" in user_roles or "System Manager" in user_roles:
-    #     return
-    # ceo_or_general_manager = (
-    #     1 if "General Manager" in user_roles or "CEO" in user_roles else 0
-    # )
-    # return """(
+    # or
+
+
+# 	exists(select 1
+# 		from `tabEmployee` e, `tabAssign Branch` ab, `tabBranch Item` bi
+# 		where e.user_id = '{user}'
+# 		and ab.employee = e.name
+# 		and bi.parent = ab.name
+# 		and bi.branch = `tabMaterial Request`.branch)
+# dsp copied
+# if not user:
+#     user = frappe.session.user
+# user_roles = frappe.get_roles(user)
+# if "Administrator" in user_roles or "System Manager" in user_roles:
+#     return
+# ceo_or_general_manager = (
+#     1 if "General Manager" in user_roles or "CEO" in user_roles else 0
+# )
+# return """(
 
 
 # 		`tabMaterial Request`.owner = '{user}'
@@ -902,8 +906,6 @@ def get_permission_query_conditions(user):
 # )""".format(
 #     user=user, ceo_or_general_manager=ceo_or_general_manager
 # )
-
-
 
 
 # e.user_id = `tabMaterial Request`.owner
