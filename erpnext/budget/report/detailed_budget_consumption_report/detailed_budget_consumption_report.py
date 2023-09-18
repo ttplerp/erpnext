@@ -39,12 +39,12 @@ def get_data(query, filters):
                         reference_date, cost_center, name, amount, reference_type, reference_no, item_code, 
                         (select a.amount from `tabCommitted Budget` a where b.com_ref=a.name) as committed
                     FROM `tabConsumed Budget` b
-                    WHERE account = '{account}' 
-                    and reference_date BETWEEN '{start_date}' and '{end_date}'
+                    WHERE account = {account} 
+                    and reference_date BETWEEN {start_date} and {end_date}
                     {condition}
                     order by reference_date Desc
-                """.format(account=d.account, start_date=filters.from_date, 
-                end_date=filters.to_date, condition=condition)
+                """.format(account=frappe.db.escape(d.account), start_date=frappe.db.escape(filters.from_date), 
+                end_date=frappe.db.escape(filters.to_date), condition=frappe.db.escape(condition))
         ini+=flt(d.initial_budget)
         su+=flt(d.supplement)
         query = frappe.db.sql(query, as_dict=True)
