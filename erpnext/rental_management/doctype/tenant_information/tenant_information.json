@@ -376,6 +376,7 @@
    "reqd": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "allocated_date",
    "fieldtype": "Date",
    "label": "Allocated Date",
@@ -508,7 +509,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-09-05 16:31:41.247731",
+ "modified": "2023-09-18 20:25:18.884637",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Tenant Information",
