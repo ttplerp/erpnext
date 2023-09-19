@@ -113,7 +113,7 @@ frappe.ui.form.on('Project Invoice', {
 		cur_frm.set_value("party", "");
 	},
     tds_rate:function(frm){
-        if (frm.doc.tds_percent){
+        if (frm.doc.tds_rate){
 			frappe.call({
 				method: "erpnext.accounts.utils.get_tds_account",
 				args: {
@@ -122,8 +122,8 @@ frappe.ui.form.on('Project Invoice', {
 				},
 				callback: function(r) {
 					if(r.message) {
-						frm.set_value("tds_rate",r.message)
-						frm.refresh_fields("tds_rate")
+						frm.set_value("tds_account",r.message)
+						frm.refresh_fields("tds_account")
 					}
 				}
 			});
