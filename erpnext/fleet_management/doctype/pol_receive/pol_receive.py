@@ -131,11 +131,16 @@ class POLReceive(StockController):
             credit_account = frappe.get_value(
                 "Company", self.company, "imprest_advance_account"
             )
+        # debit_account = frappe.db.get_value(
+        #     "Equipment Category", self.equipment_category, "r_m_expense_account"
+        # )
+        # if self.direct_consumption:
         debit_account = frappe.db.get_value(
-            "Equipment Category", self.equipment_category, "r_m_expense_account"
+            "Equipment Category", self.equipment_category, "pol_advance_account"
         )
         if not debit_account and self.receive_in_barrel == 1:
             debit_account = frappe.db.get_value("Warehouse", self.warehouse, "account")
+
         # Posting Journal Entry
         je = frappe.new_doc("Journal Entry")
         je.flags.ignore_permissions = 1
