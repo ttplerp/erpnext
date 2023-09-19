@@ -340,20 +340,18 @@
   },
   {
    "fieldname": "attachment_tab",
-   "fieldtype": "Tab Break",
+   "fieldtype": "Section Break",
    "label": "Attachment"
   },
   {
    "fieldname": "salary_slip",
    "fieldtype": "Attach",
-   "label": "Latest Salary Slip",
-   "reqd": 1
+   "label": "Latest Salary Slip"
   },
   {
    "fieldname": "appointment_letter",
    "fieldtype": "Attach",
-   "label": "Appointment Letter",
-   "reqd": 1
+   "label": "Appointment Letter"
   },
   {
    "default": "Pending",
@@ -401,7 +399,7 @@
  "is_submittable": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2023-07-22 22:05:50.848117",
+ "modified": "2023-09-19 20:45:35.984238",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Housing Application",
