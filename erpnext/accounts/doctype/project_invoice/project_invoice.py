@@ -429,9 +429,10 @@ class ProjectInvoice(AccountsController):
 		make_gl_entries(gl_entries,update_outstanding="No",cancel=self.docstatus == 2)
 						
 	def make_party_gl_entry(self, gl_entries):
+		credit_account = frappe.db.get_value("Company",self.company,"default_payable_account" if self.party_type == "Supplier" else "default_receivable_account")
 		gl_entries.append(
 			self.get_gl_dict({
-					"account":  self.debit_credit_account,
+					"account":  credit_account,
 					"party_type": self.party_type,
 					"party": self.party,
 					"against": self.debit_credit_account,
@@ -444,11 +445,15 @@ class ProjectInvoice(AccountsController):
 					"posting_date":self.invoice_date
 			}, self.currency)
 		)
-		expnse_account = frappe.db.get_value("Company",self.company,"invoice_account_supplier" if self.party_type == "Supplier"else "project_invoice_account")
+		# expense_account = frappe.db.get_value("Company",self.company,"invoice_account_supplier" if self.party_type == "Supplier"else "project_invoice_account")
+		if self.debit_credit_account:
+			debit_account = self.debit_credit_account
+		else:
+			debit_account = frappe.db.get_value("Company",self.company,"invoice_account_supplier" if self.party_type == "Supplier"else "project_invoice_account")
 
 		gl_entries.append(
 			self.get_gl_dict({
-				"account":  expnse_account,
+				"account":  debit_account,
 				"against": self.party,
 				"debit" if self.party_type == "Supplier" else "credit": self.net_amount,
 				"debit_in_account_currency" if self.party_type == "Supplier" else "credit_in_account_currency": self.net_amount,
