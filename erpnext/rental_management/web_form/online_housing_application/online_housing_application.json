@@ -24,7 +24,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2023-09-19 21:16:15.594448",
+ "modified": "2023-09-19 22:03:19.176002",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "online-housing-application",
@@ -35,8 +35,9 @@
  "show_attachments": 0,
  "show_list": 0,
  "show_sidebar": 0,
- "success_message": "Thank you for Applying and You can track the status and rank of your application using your Citizenship ID No.",
+ "success_message": "Thank you for Applying. Track your status and rank using your Citizenship ID No. from <a href=\"https://erp.nhdcl.bt/check-status\" target=\"blank\">https://erp.nhdcl.bt/check-status</a>",
  "success_title": "Success",
+ "success_url": "https://erp.nhdcl.bt/check-status",
  "title": "Online Housing Application",
  "web_form_fields": [
   {
@@ -524,19 +525,6 @@
   },
   {
    "allow_read_on_all_link_options": 0,
-   "fieldname": "",
-   "fieldtype": "Page Break",
-   "hidden": 0,
-   "label": "Service Detail",
-   "max_length": 0,
-   "max_value": 0,
-   "options": "",
-   "read_only": 0,
-   "reqd": 0,
-   "show_in_filter": 0
-  },
-  {
-   "allow_read_on_all_link_options": 0,
    "fieldname": "designation",
    "fieldtype": "Data",
    "hidden": 0,
@@ -706,13 +694,14 @@
   },
   {
    "allow_read_on_all_link_options": 0,
-   "description": "<p style=\"font-size: 14px;\">You declare that all the information provided here is true and you agree to all the terms and conditions of NHDCL </p>\n",
+   "default": "",
+   "description": "<p style=\"font-size: 13px;\">You declare that all the information provided here is true and you agree to all the terms and conditions of NHDCL </p>\n",
+   "fieldname": "agree",
    "fieldtype": "Check",
    "hidden": 0,
-   "label": "Terms And Conditions",
+   "label": "I Agree to following Terms",
    "max_length": 0,
    "max_value": 0,
-   "options": "",
    "read_only": 0,
    "reqd": 1,
    "show_in_filter": 0
