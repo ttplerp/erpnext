@@ -149,34 +149,6 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Tools",
-   "link_count": 2,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Tenant Updation Tools",
-   "link_count": 0,
-   "link_to": "Tenant Updation Tool",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Payment Refund",
-   "link_count": 0,
-   "link_to": "Payment Refund",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Real Estate Management Services",
    "link_count": 7,
    "onboard": 0,
@@ -357,9 +329,47 @@
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Tools",
+   "link_count": 3,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Tenant Updation Tools",
+   "link_count": 0,
+   "link_to": "Tenant Updation Tool",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Payment Refund",
+   "link_count": 0,
+   "link_to": "Payment Refund",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Housing Application",
+   "link_count": 0,
+   "link_to": "Housing Application",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-08-08 12:05:56.987632",
+ "modified": "2023-09-20 19:10:22.029169",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Management",
