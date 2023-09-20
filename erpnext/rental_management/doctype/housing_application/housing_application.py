@@ -9,11 +9,18 @@ from frappe.model.mapper import get_mapped_doc
 
 class HousingApplication(Document):
 	def validate(self):
+		self.check_agree()
 		self.validate_duplicate()
 		self.generate_rank()
 
 	def on_submit(self):
 		pass
+	
+	def check_agree(self):
+		if not self.agree:
+			frappe.throw("You must agree to terms in order to submit the application")
+		if self.employment_type != "Civil Servant" and self.work_station != "Thimphu":
+			frappe.throw("Housing Application for Non Civil Servant are accepted only for Thimphu")
 
 	def generate_rank(self):
 		gross_income = flt(self.gross_salary,2) + flt(self.spouse_gross_salary,2)
