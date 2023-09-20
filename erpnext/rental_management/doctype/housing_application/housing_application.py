@@ -6,12 +6,55 @@ from frappe.model.document import Document
 from frappe.utils import add_to_date, get_last_day, flt, getdate, cint
 from frappe import _
 from frappe.model.mapper import get_mapped_doc
+from erpnext.rental_management.doctype.api_setting.api_setting import get_cid_detail, get_civil_servant_detail
 
 class HousingApplication(Document):
 	def validate(self):
 		self.check_agree()
+		self.validate_detail()
 		self.validate_duplicate()
 		self.generate_rank()
+
+	def validate_detail(self):
+		#citizenship Detail
+		data=get_cid_detail(cid=self.cid)
+		if data:
+			self.applicant_name = data['firstName']+" "+data['middleName']+" "+data['lastName'] if data['middleName'] else data['firstName'] + " " + data['lastName']
+			self.gender = "Male" if data['gender'] == "M" else "Female"
+			self.dzongkhag = data['dzongkhagName']
+			self.gewog = data['gewogName']
+			self.village = data['permanentVillagename']
+
+		if self.employment_type == "Civil Servant":
+			#Civil Servant Deail
+			data1=get_civil_servant_detail(cid=self.cid)
+			if data1:
+				self.grade = data1['positionLevel']
+				self.ministry_agency = data1['OrganogramLevel1']
+				self.department = data1['OrganogramLevel2']
+				self.employee_id = data1['employeeNumber']
+				self.designation = data1['positionTitle']
+				self.email_id = data1['Email']
+				self.mobile_no = data1['MobileNo']
+				self.gross_salary = data1['GrossPay']
+		
+		if self.marital_status == "Married":
+			data2=get_cid_detail(cid=self.spouse_cid)
+			if data2:
+				self.spouse_name = data2['firstName']+" "+data2['middleName']+" "+data2['lastName'] if data2['middleName'] else data2['firstName'] + " " + data2['lastName']
+				self.spouse_dob = data2['dob']
+				self.spouse_dzongkhag = data2['dzongkhagName']
+				self.spouse_gewog = data2['gewogName']
+				self.spouse_village = data2['permanentVillagename']
+				
+			if self.spouse_employment_type=="Civil Servant":
+				data3=get_civil_servant_detail(cid=self.spouse_cid)
+				if data3:
+					self.spouse_designation = data3['positionTitle']
+					self.spouse_grade = data3['positionLevel']
+					self.spouse_ministry = data3['OrganogramLevel1']
+					self.spouse_department = data3['OrganogramLevel2']
+					self.spouse_gross_salary = data3['GrossPay']
 
 	def on_submit(self):
 		pass
