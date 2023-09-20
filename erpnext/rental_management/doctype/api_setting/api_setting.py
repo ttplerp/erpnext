@@ -1,84 +1,77 @@
-# Copyright (c) 2023, Frappe Technologies Pvt. Ltd. and contributors
+# Copyright (c) 2023, Frappe Technologies and contributors
 # For license information, please see license.txt
 
 import frappe
 from frappe.model.document import Document
-from frappe.utils import add_to_date, get_last_day, flt, getdate, cint
-from frappe import _
-from frappe.model.mapper import get_mapped_doc
+import requests, json
+import base64
 
-class HousingApplication(Document):
+class APISetting(Document):
 	def validate(self):
-		self.check_agree()
-		self.validate_duplicate()
-		self.generate_rank()
-
-	def on_submit(self):
 		pass
 
-	def check_agree(self):
-		if not self.agree:
-			frappe.throw("You must agree to terms in order to submit the application")
-		
-		if self.employment_type != "Civil Servant" and self.work_station != "Thimphu":
-			frappe.throw("Housing Application for Non Civil Servant are accepted only for Thimphu")
-
-	def generate_rank(self):
-		gross_income = flt(self.gross_salary,2) + flt(self.spouse_gross_salary,2)
-		building_class=frappe.db.sql("""
-								select name from `tabBuilding Classification`
-								where '{gross_income}' between 	minimum_income and maximum_income
-							""".format(gross_income=gross_income))[0][0]
-		if not building_class:
-			frappe.throw("Building Classification not found")
-		self.building_classification = building_class
-
-		if not self.applicant_rank:
-			highest_rank=frappe.db.sql("""select max(applicant_rank) as ranking 
-						from `tabHousing Application`
-						where employment_type="{employment_type}"
-						and building_classification="{classification}"
-					""".format(employment_type=self.employment_type, classification=self.building_classification))[0][0]
-			self.applicant_rank=cint(highest_rank) + 1
+	@frappe.whitelist()
+	def generate_token(self):
+		bearer_token = self.generate_bearer_token()
+		if bearer_token:
+			self.db_set("bearer_token", bearer_token)
 	
-	def validate_duplicate(self):
-		if frappe.db.exists("Housing Application", {"cid":self.cid, "name":("!=",self.name), "docstatus":("!=", 2)}):
-			frappe.throw("Applicant with <b>CID No. {} </b>has already registered for Housing application".format(self.cid))
+	def generate_bearer_token(self):
+		url = self.url
+		username=self.username
+		password=self.get_password()
+		
+		credentials = f'{username}:{password}'
+		encoded_credentials = credentials.encode('utf-8')
+		base64_credentials = base64.b64encode(encoded_credentials).decode('utf-8')
 
-		if frappe.db.exists("Tenant Information", {"tenant_cid":self.cid, "status":"Allocated", "docstatus":("!=", 2)}):
-			frappe.throw("Applicant with <b>CID No. {} </b> is an active  tenant in Tenant Information".format(self.cid))
+		headers = {
+			'Authorization': f'Basic {base64_credentials}',
+			'Content-Type': 'application/x-www-form-urlencoded',
+		}
 
-@frappe.whitelist()
-def make_tenant_information(source_name, target_doc=None):
-	def set_missing_values(obj, target, source_parent):
-		if obj.employment_type == "Civil Servant":
-			target.ministry_and_agency = obj.ministry_agency
-			target.tenant_department = obj.department
+		data = {
+			'grant_type': 'client_credentials',
+		}
+
+		response = requests.post(url, headers=headers, data=data)
+
+		if response.status_code == 200:
+			token = response.json().get('access_token')
+			return token
 		else:
-			target.agency = obj.agency
+			frappe.throw(f"Failed to generate bearer token. Status code: {response.status_code}")
+			return None
 
-		if obj.flat_no:
-			block_no=frappe.db.get_value("Flat No", obj.flat_no, "block_no")
-			target.block_no=block_no
-			target.locations=frappe.db.get_value("Block No", block_no, "location")
-			target.flat_no=obj.flat_no
+@frappe.whitelist(allow_guest=True)
+def get_cid_detail(cid=None):
+	data=None
+	doc = frappe.get_doc("API Setting Item", {"parent":"API-2023-313", "api_name":"Citizen Detail"})
+	url = doc.api_url + str(cid)
+	payload={}
+	doc = frappe.get_doc("API Setting", "API-2023-313")
+	bearer_token = 'Bearer ' + doc.generate_bearer_token()
+	headers = {
+	'Authorization': str(bearer_token)
+	}
+	response = requests.request("GET", url, headers=headers, data=payload)
+	data = response.json()
+	data = data['citizendetails']['citizendetail'] if data['citizendetails'] else data['citizendetails']
+	return data
 
-		if obj.employment_type=="Civil Servant":
-			pass
 
-		target.employee_id=""
-
-	doc = get_mapped_doc("Housing Application", source_name, {
-			"Housing Application": {
-				"doctype": "Tenant Information",
-				"field_map": {
-					"name": "housing_application",
-					"applicant_name":"tenant_name",
-					"cid":"tenant_cid",
-					"mobile_no":"phone_no",
-					"email_id":"email",
-				},
-				"postprocess": set_missing_values,
-			},
-	}, target_doc, ignore_permissions=True)
-	return doc
+@frappe.whitelist(allow_guest=True)
+def get_civil_servant_detail(cid=None):
+	data=None
+	doc = frappe.get_doc("API Setting Item", {"parent":"API-2023-313", "api_name":"Civil Servant Detail"})
+	url = doc.api_url + str(cid)
+	payload={}
+	doc = frappe.get_doc("API Setting", "API-2023-313")
+	bearer_token = 'Bearer ' + doc.generate_bearer_token()
+	headers = {
+	'Authorization': str(bearer_token)
+	}
+	response = requests.request("GET", url, headers=headers, data=payload)
+	data = response.json()
+	data = data['employeedetails']['employeedetail'] if data['employeedetails'] else data['employeedetails']
+	return data
