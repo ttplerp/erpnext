@@ -18,9 +18,9 @@ class HousingApplication(Document):
 	
 	def check_agree(self):
 		if not self.agree:
-			frappe.throw("You must agree to terms in order to submit the application")
+			frappe.throw("You must <b>Agree to Terms</b> in order to submit the application")
 		if self.employment_type != "Civil Servant" and self.work_station != "Thimphu":
-			frappe.throw("Housing Application for Non Civil Servant are accepted only for Thimphu")
+			frappe.throw("Housing Application for <b>Non Civil Servant</b> are accepted only for <b>Thimphu</b>")
 
 	def generate_rank(self):
 		gross_income = flt(self.gross_salary,2) + flt(self.spouse_gross_salary,2)
