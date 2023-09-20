@@ -56,22 +56,37 @@ def get_cid_detail(cid=None):
 	}
 	response = requests.request("GET", url, headers=headers, data=payload)
 	data = response.json()
-	data = data['citizendetails']['citizendetail'] if data['citizendetails'] else data['citizendetails']
+	data = data['citizendetails']['citizendetail'][0] if data['citizendetails'] else data['citizendetails']
 	return data
 
 
 @frappe.whitelist(allow_guest=True)
 def get_civil_servant_detail(cid=None):
 	data=None
-	doc = frappe.get_doc("API Setting Item", {"parent":"API-2023-313", "api_name":"Civil Servant Detail"})
-	url = doc.api_url + str(cid)
-	payload={}
+	dtl={}
+
 	doc = frappe.get_doc("API Setting", "API-2023-313")
 	bearer_token = 'Bearer ' + doc.generate_bearer_token()
 	headers = {
 	'Authorization': str(bearer_token)
 	}
+	payload={}
+	
+	#Civil Servant Detail
+	doc = frappe.get_doc("API Setting Item", {"parent":"API-2023-313", "api_name":"Civil Servant Detail"})
+	url = doc.api_url + str(cid)
 	response = requests.request("GET", url, headers=headers, data=payload)
 	data = response.json()
-	data = data['employeedetails']['employeedetail'] if data['employeedetails'] else data['employeedetails']
-	return data
+	data = data['employeedetails']['employeedetail'][0] if data['employeedetails'] else data['employeedetails']
+
+	#Salary Detail of the Civil Servant
+	doc1 = frappe.get_doc("API Setting Item", {"parent":"API-2023-313", "api_name":"ePEMS"})
+	url = doc1.api_url + str(cid)
+	response = requests.request("GET", url, headers=headers, data=payload)
+	data1 = response.json()
+	data1 = data1['epemsEmployeeDetails']['epemsEmployeeDetail'][0] if data1['epemsEmployeeDetails'] else data1['epemsEmployeeDetails']
+
+	#Merge Civil Servant detail and Salary Detail
+	dtl = data | data1
+
+	return dtl
