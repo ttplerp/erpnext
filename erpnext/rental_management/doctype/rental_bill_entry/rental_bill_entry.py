@@ -220,8 +220,8 @@ class RentalBillEntry(Document):
 	@frappe.whitelist()
 	def remove_rental_bill(self):
 		for f in self.get("items"):
-			# if f.rental_bill:
-			# 	frappe.db.delete("Rental Bill", {"name": f.rental_bill, "docstatus": 0})
+			if f.rental_bill:
+				frappe.db.delete("Rental Bill", {"name": f.rental_bill, "docstatus": 0})
 
 			rental_bill_entry_item = frappe.get_doc("Rental Bill Entry Item", {"parent": self.name, "tenant": f.tenant})
 			rental_bill_entry_item.db_set("status", "")
