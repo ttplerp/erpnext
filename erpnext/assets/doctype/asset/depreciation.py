@@ -75,9 +75,11 @@ def make_depreciation_entry(asset_name, date=None):
             je.naming_series = "Journal Voucher"
             je.mode_of_payment = "Cash"
             je.voucher_type = "Depreciation Entry"
-            # je.naming_series 	= depreciation_series
             je.posting_date = d.schedule_date
             je.company = asset.company
+            je.total_debit = asset.opening_accumulated_depreciation
+            je.total_credit = asset.opening_accumulated_depreciation
+
             je.finance_book = d.finance_book
             je.remark = "Depreciation Entry against {0} worth {1}".format(
                 asset_name, d.depreciation_amount
@@ -239,28 +241,23 @@ def reset_asset_value_for_scrap_sales(asset_name, posting_date):
             _("Asset Sales and Scrap date should be within the current fiscal year")
         )
 
-    # schedules = frappe.db.sql(
-    #     """SELECT name, journal_entry, depreciation_amount 
-	# 							~l_entry !='' or journal_entry is NOT NULL)""",
-    #     (asset_name, reverse_start_date, today()),
-    #     as_dict=True,
-    # )
-    schedules = frappe.db.sql('''SELECT name, journal_entry, depreciation_amount 
-                                FROM `tabDepreciation Schedule` 
-                                WHERE parent = %s 
-                                AND schedule_date BETWEEN %s AND %s 
-                                AND (journal_entry !='' or journal_entry is NOT NULL)''',
-                                    ( asset_name, reverse_start_date, today()), as_dict=True)
+    schedules = frappe.db.sql('''
+        SELECT name, journal_entry, depreciation_amount 
+        FROM `tabDepreciation Schedule` 
+        WHERE parent = %s 
+        AND schedule_date BETWEEN %s AND %s 
+        AND (journal_entry !='' or journal_entry is NOT NULL)''',
+            ( asset_name, reverse_start_date, today()), as_dict=True)
     accounts = frappe.db.sql(
         """
-					SELECT 
-						depreciation_expense_account, 
-						accumulated_depreciation_account 
-					FROM 
-						`tabAsset Category Account`
-					WHERE 
-						parent = '{}'
-					""".format(
+        SELECT 
+            depreciation_expense_account, 
+            accumulated_depreciation_account 
+        FROM 
+            `tabAsset Category Account`
+        WHERE 
+            parent = '{}'
+        """.format(
             asset.asset_category
         ),
         as_dict=1,
@@ -332,12 +329,12 @@ def reset_asset_value_for_scrap_sales(asset_name, posting_date):
         if pro_rate_days > 1:
             dtl = frappe.db.sql(
                 """select name, journal_entry, depreciation_amount, income_depreciation_amount, 
-									accumulated_depreciation_amount, income_accumulated_depreciation,
-									no_of_days_in_a_schedule,finance_book 
-									from `tabDepreciation Schedule` 
-									where parent = %s 
-									and schedule_date = %s
-								""",
+                    accumulated_depreciation_amount, income_accumulated_depreciation,
+                    no_of_days_in_a_schedule,finance_book 
+                    from `tabDepreciation Schedule` 
+                    where parent = %s 
+                    and schedule_date = %s
+				""",
                 (asset_name, get_last_day(posting_date)),
                 as_dict=1,
             )
@@ -482,7 +479,6 @@ def scrap_asset(asset_name, scrap_date=None):
                 asset.name, asset.status
             )
         )
-
     depreciation_series = frappe.get_cached_value(
         "Company", asset.company, "series_for_depreciation_entry"
     )

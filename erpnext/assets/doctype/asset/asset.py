@@ -894,6 +894,8 @@ class Asset(AccountsController):
 			je.voucher_type = "Journal Entry"
 			je.mode_of_payment = "Cash"
 			je.naming_series = "Journal Voucher"
+			je.total_credit = self.gross_purchase_amount
+			je.total_debit = self.gross_purchase_amount
 
 			je.update({
 				"voucher_type": "Journal Entry",
@@ -928,6 +930,8 @@ class Asset(AccountsController):
 			je.voucher_type = "Journal Entry"
 			je.mode_of_payment = "Cash"
 			je.naming_series = "Journal Voucher"
+			je.total_credit = self.opening_accumulated_depreciation
+			je.total_debit = self.opening_accumulated_depreciation
 			je.update({
 				"voucher_type": "Journal Entry",
 				"company": self.company,
