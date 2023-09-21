@@ -80,6 +80,7 @@
  ],
  "fields": [
   {
+   "allow_on_submit": 1,
    "fieldname": "branch",
    "fieldtype": "Link",
    "label": "Branch",
@@ -509,7 +510,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-09-18 20:25:18.884637",
+ "modified": "2023-09-21 10:03:21.134769",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Tenant Information",
