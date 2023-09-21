@@ -128,12 +128,14 @@
    "label": "Tenant Details"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "tenant_name",
    "fieldtype": "Data",
    "label": "Tenant Name",
    "reqd": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "tenant_cid",
    "fieldtype": "Data",
    "label": "Tenant CID",
@@ -228,7 +230,7 @@
    "depends_on": "eval: doc.building_category != 'Pilot Housing'",
    "fetch_from": "flat_no.total_floor_area",
    "fieldname": "total_floor_area",
-   "fieldtype": "Float",
+   "fieldtype": "Int",
    "label": "Total Floor Area (Sqft)",
    "read_only": 1
   },
@@ -511,7 +513,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-09-21 10:59:02.652052",
+ "modified": "2023-09-21 23:32:08.463473",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Tenant Information",
