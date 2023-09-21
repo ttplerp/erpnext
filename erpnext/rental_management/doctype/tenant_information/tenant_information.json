@@ -371,6 +371,7 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "initial_allotment_date",
    "fieldtype": "Date",
    "label": "Initial Allotment Date",
@@ -510,7 +511,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-09-21 10:03:21.134769",
+ "modified": "2023-09-21 10:59:02.652052",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Tenant Information",
