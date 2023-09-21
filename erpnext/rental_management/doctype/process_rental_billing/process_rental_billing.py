@@ -124,7 +124,7 @@ class ProcessRentalBilling(Document):
 								self.company = frappe.db.get_value("Branch", d.branch, "company")
 							""" calc. property mgt. amount """
 							total_property_mgt_amount = frappe.db.get_value("Flat No", d.flat_no, "total_property_management_amount")
-							prop_mgt_amount = 0
+							total_property_management_amount = prop_mgt_amount = 0
 							for pm_item in frappe.db.sql("select * from `tabProperty Management Item` where is_percent=1 and parent='{}'".format(d.flat_no), as_dict=1):
 								prop_mgt_amount = flt(d.rental_amount * (pm_item.percent / 100), 2)
 								total_property_mgt_amount += prop_mgt_amount
@@ -141,6 +141,7 @@ class ProcessRentalBilling(Document):
 								"fiscal_year": self.fiscal_year,
 								"month": self.month,
 								"flat_no": d.flat,
+								"flat_id": d.flat_no,
 								"old_flat_no": frappe.db.get_value("Flat No", d.flat_no, "old_flat_no"),
 								"ministry_agency": d.ministry_and_agency,
 								"location": d.location_name,

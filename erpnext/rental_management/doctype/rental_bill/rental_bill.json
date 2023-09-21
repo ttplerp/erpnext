@@ -26,6 +26,7 @@
   "building_category",
   "building_classification",
   "block_no",
+  "flat_id",
   "flat_no",
   "old_flat_no",
   "sb_rental_period",
@@ -413,12 +414,19 @@
    "fieldname": "old_flat_no",
    "fieldtype": "Data",
    "label": "Old Flat No"
+  },
+  {
+   "fieldname": "flat_id",
+   "fieldtype": "Link",
+   "label": "Flat ID",
+   "options": "Flat No",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-09-14 15:12:45.047199",
+ "modified": "2023-09-21 13:39:19.551620",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Bill",
