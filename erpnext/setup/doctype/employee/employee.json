@@ -111,9 +111,15 @@
   "advance_approver",
   "advance_approver_name",
   "personal_details",
+  "village",
+  "dzongkhag",
+  "house_number",
   "marital_status",
   "family_background",
   "column_break6",
+  "gewog",
+  "country",
+  "thram_number",
   "blood_group",
   "health_details",
   "passport_details_section",
@@ -732,7 +738,6 @@
    "label": "Company Details"
   },
   {
-   "collapsible": 1,
    "fieldname": "address_section",
    "fieldtype": "Section Break",
    "label": "Address"
@@ -1026,7 +1031,8 @@
   {
    "fieldname": "evaluators",
    "fieldtype": "Table",
-   "options": "Performance Evaluator"
+   "options": "Performance Evaluator",
+   "read_only": 1
   },
   {
    "fieldname": "signature",
@@ -1044,13 +1050,43 @@
    "fieldname": "advance_approver_name",
    "fieldtype": "Data",
    "label": "Advance Approver Name"
+  },
+  {
+   "fieldname": "house_number",
+   "fieldtype": "Data",
+   "label": "House Number"
+  },
+  {
+   "fieldname": "thram_number",
+   "fieldtype": "Data",
+   "label": "Thram Number"
+  },
+  {
+   "fieldname": "village",
+   "fieldtype": "Data",
+   "label": "Village"
+  },
+  {
+   "fieldname": "dzongkhag",
+   "fieldtype": "Data",
+   "label": "Dzongkhag"
+  },
+  {
+   "fieldname": "gewog",
+   "fieldtype": "Data",
+   "label": "Gewog"
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Data",
+   "label": "Country"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-09-01 16:50:50.316664",
+ "modified": "2023-09-22 15:02:09.156998",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
