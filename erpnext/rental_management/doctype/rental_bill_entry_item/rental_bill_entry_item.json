@@ -65,7 +65,7 @@
   },
   {
    "fieldname": "error_msg",
-   "fieldtype": "Data",
+   "fieldtype": "Small Text",
    "label": "Error",
    "read_only": 1
   },
@@ -79,7 +79,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-07-16 22:25:23.607655",
+ "modified": "2023-09-22 18:47:42.528283",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Bill Entry Item",
