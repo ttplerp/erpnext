@@ -57,7 +57,7 @@ class RentalBill(AccountsController):
 			focals = []
 			# if self.employment_type == "Civil Servant":
 			focals = frappe.db.sql("""select rental_focal, focal_name from `tabRental Focal and Agency` r inner join `tabRental Focal and Agency Item` i On i.parent=r.name 
-						where r.is_active=1 and i.dzongkhag='{dzongkhag}' and i.ministry_and_agency='{ministry_and_agency}'""".format(dzongkhag=self.dzongkhag, ministry_and_agency=self.ministry_agency), as_dict=1)
+						where r.is_active=1 and i.dzongkhag='{dzongkhag}' and i.ministry_and_agency='{ministry_and_agency}'""".format(dzongkhag=self.dzongkhag, ministry_and_agency=frappe.db.escape(self.ministry_agency)), as_dict=1)
 			# else:
 				
 			if not len(focals):
