@@ -331,6 +331,7 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "rental_charges",
    "fieldtype": "Table",
    "label": "Rental Charges",
@@ -519,7 +520,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-09-23 11:26:15.300279",
+ "modified": "2023-09-23 13:41:55.310513",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Tenant Information",
