@@ -1,0 +1,134 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "DID.YY.####",
+ "creation": "2023-09-23 11:45:59.417001",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "tenant_id",
+  "tenant_name",
+  "tenant_cid",
+  "locations_id",
+  "dzongkhag",
+  "building_classification",
+  "town_category",
+  "building_category",
+  "block_id",
+  "flat_id",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Tenant ID",
+   "options": "Tenant Information",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "tenant_id.tenant_name",
+   "fieldname": "tenant_name",
+   "fieldtype": "Data",
+   "label": "Tenant Name"
+  },
+  {
+   "fetch_from": "tenant_id.tenant_cid",
+   "fieldname": "tenant_cid",
+   "fieldtype": "Data",
+   "label": "Tenant CID"
+  },
+  {
+   "fetch_from": "tenant_id.locations",
+   "fieldname": "locations_id",
+   "fieldtype": "Data",
+   "label": "Locations ID"
+  },
+  {
+   "fetch_from": "tenant_id.dzongkhag",
+   "fieldname": "dzongkhag",
+   "fieldtype": "Data",
+   "label": "Dzongkhag"
+  },
+  {
+   "fetch_from": "tenant_id.building_classification",
+   "fieldname": "building_classification",
+   "fieldtype": "Data",
+   "label": "Building Classification"
+  },
+  {
+   "fetch_from": "tenant_id.town_category",
+   "fieldname": "town_category",
+   "fieldtype": "Data",
+   "label": "Town Category"
+  },
+  {
+   "fetch_from": "tenant_id.building_category",
+   "fieldname": "building_category",
+   "fieldtype": "Data",
+   "label": "Building Category"
+  },
+  {
+   "fetch_from": "tenant_id.block_no",
+   "fieldname": "block_id",
+   "fieldtype": "Data",
+   "label": "Block ID"
+  },
+  {
+   "fetch_from": "tenant_id.flat_no",
+   "fieldname": "flat_id",
+   "fieldtype": "Data",
+   "label": "Flat ID"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Draft Tenant ID",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-09-23 11:50:27.487687",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Draft Tenant ID",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Rental Master",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
