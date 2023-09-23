@@ -137,7 +137,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-23 11:07:26.576878",
+ "modified": "2023-09-23 11:23:04.195334",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Flat No",
@@ -190,5 +190,6 @@
  "search_fields": "flat_no",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }

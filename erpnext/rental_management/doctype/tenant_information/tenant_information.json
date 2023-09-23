@@ -519,7 +519,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-09-23 11:13:12.324569",
+ "modified": "2023-09-23 11:22:42.878572",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Tenant Information",
@@ -585,5 +585,6 @@
  "search_fields": "tenant_name, tenant_cid",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }
