@@ -220,7 +220,8 @@
    "fieldname": "rate_per_sqft",
    "fieldtype": "Currency",
    "label": "Rate per Sqft",
-   "mandatory_depends_on": "eval: doc.building_category != 'Pilot Housing'"
+   "mandatory_depends_on": "eval: doc.building_category != 'Pilot Housing'",
+   "precision": "3"
   },
   {
    "fetch_from": "flat_no.flat_no",
@@ -520,7 +521,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-09-23 13:41:55.310513",
+ "modified": "2023-09-23 14:51:30.396943",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Tenant Information",
