@@ -47,7 +47,8 @@
    "fieldname": "total_floor_area",
    "fieldtype": "Float",
    "label": "Total Floor Area (Sqft)",
-   "mandatory_depends_on": "eval: doc.building_category != 'Pilot Housing'"
+   "mandatory_depends_on": "eval: doc.building_category != 'Pilot Housing'",
+   "precision": "3"
   },
   {
    "default": "Unallocated",
@@ -70,7 +71,8 @@
    "fieldname": "land_area",
    "fieldtype": "Float",
    "label": "Land Area (sq.m)",
-   "mandatory_depends_on": "eval: doc.building_category == 'Pilot Housing'"
+   "mandatory_depends_on": "eval: doc.building_category == 'Pilot Housing'",
+   "precision": "3"
   },
   {
    "depends_on": "eval: doc.building_category == 'Pilot Housing'",
@@ -135,7 +137,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-13 09:41:43.260176",
+ "modified": "2023-09-23 11:07:26.576878",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Flat No",

@@ -159,14 +159,18 @@
    "label": "Rental Details"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "initial_rental_amount",
    "fieldtype": "Currency",
-   "label": "Initial Rental Amount"
+   "label": "Initial Rental Amount",
+   "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "security_deposit",
    "fieldtype": "Currency",
-   "label": "Security Deposit"
+   "label": "Security Deposit",
+   "read_only": 1
   },
   {
    "fieldname": "cb_4",
@@ -230,8 +234,9 @@
    "depends_on": "eval: doc.building_category != 'Pilot Housing'",
    "fetch_from": "flat_no.total_floor_area",
    "fieldname": "total_floor_area",
-   "fieldtype": "Int",
+   "fieldtype": "Float",
    "label": "Total Floor Area (Sqft)",
+   "precision": "3",
    "read_only": 1
   },
   {
@@ -370,6 +375,7 @@
    "fieldname": "land_area",
    "fieldtype": "Float",
    "label": "Land area (Sq.m)",
+   "precision": "3",
    "read_only": 1
   },
   {
@@ -513,7 +519,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-09-21 23:32:08.463473",
+ "modified": "2023-09-23 11:13:12.324569",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Tenant Information",
