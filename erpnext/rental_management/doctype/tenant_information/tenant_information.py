@@ -214,7 +214,7 @@ class TenantInformation(Document):
 					end_date = add_to_date(end_date, years=increment_year)
 					increment = flt(actual_rent) * flt(flt(percentage)/100) if actual_rent > 0 else flt(self.initial_rental_amount) * flt(flt(percentage)/100)
 					actual_rent = flt(actual_rent) + flt(increment) if actual_rent > 0 else flt(self.initial_rental_amount) + flt(increment)
-				actual_rent = actual_rent if actual_rent > 0 else self.initial_rental_amount		
+				actual_rent = round(actual_rent) if actual_rent > 0 else self.initial_rental_amount		
 				#frappe.msgprint("{0} start: {1} and  end_date: {2} increment {3} and rent {4}".format(i, start_date, end_date, increment, actual_rent))
 				rent_obj = self.append("rental_charges", {
 							"from_date": start_date,
