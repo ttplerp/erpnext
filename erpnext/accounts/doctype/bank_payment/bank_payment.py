@@ -44,15 +44,17 @@ class BankPayment(Document):
 
     def validate_approver(self):
         if self.workflow_state == "Approved":
-            approver_dtl = frappe.db.sql("""select approver_user_id, approver_name, approver_employee
+            approver_dtl = []
+            for a in frappe.db.sql("""select approver_user_id, approver_name, approver_employee
                                             from `tabBank Payment Approver` 
                                             where  minimum <= {0} and maximum >= {0}
-                                            limit 1
-                                        """.format(self.total_amount), as_dict=True)
+                                        """.format(self.total_amount), as_dict=True):
+                approver_dtl.append(a.approver_user_id)
+                
             if not approver_dtl:
                 frappe.throw("Approver in Bank Payment Setting is not set. Please set the approver")
-            if frappe.session.user != approver_dtl[0]['approver_user_id']:
-                frappe.throw("As per the Bank Payment Settings, {0}({1}) is designated to approved this payment".format(approver_dtl[0]['approver_name'],approver_dtl[0]['approver_user_id']))
+            if frappe.session.user not in approver_dtl:
+                frappe.throw("As per the Bank Payment Settings, {0} is/are designated to approved this payment".format(approver_dtl))
 
     def update_pi_number(self):
         if self.payment_type == "One-One Payment":
