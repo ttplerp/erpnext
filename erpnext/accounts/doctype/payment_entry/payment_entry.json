@@ -757,7 +757,7 @@
    "options": "Cheque Lot"
   },
   {
-   "depends_on": "eval:doc.mode_of_payment == \"Cheque\"",
+   "depends_on": "eval:doc.mode_of_payment == \"Cheque\" || doc.mode_of_payment == \"RTGS\";",
    "fieldname": "section_break_10",
    "fieldtype": "Section Break"
   },
@@ -805,7 +805,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-11 11:37:18.611805",
+ "modified": "2023-09-28 09:37:06.698816",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Payment Entry",
