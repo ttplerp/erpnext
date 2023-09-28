@@ -481,7 +481,7 @@ class CustomWorkflow:
 			self.set_approver("Supervisor")	
 		elif self.new_state.lower() == ("Waiting Approval".lower()):
 			if self.doc.leave_approver != frappe.session.user:
-				frappe.throw("Only {} can Approve this Leave Application".format(self.doc.leave_approver_name))
+				frappe.throw("Only {} can Approve or Forward this Leave Application".format(self.doc.leave_approver_name))
 			if unit:
 				if unit in ("GRAHSP-ADB Project - NHDCL","Corporate Strategy Office - NHDCL"):
 					self.set_approver("Unit Approver")
@@ -496,22 +496,18 @@ class CustomWorkflow:
 					else:
 						self.set_approver("Division Approver")
 			else:
-				self.set_approver("Division Approver")
-		elif self.new_state.lower() in ("Waiting HR Approval".lower()):
-			if self.doc.leave_approver != frappe.session.user:
-				frappe.throw("Only {} can Apply or Forward this Leave Application".format(self.doc.leave_approver_name))
-			self.set_approver("HR")	
+				self.set_approver("Division Approver")	
 
 		elif self.new_state.lower() == ("Waiting CEO Approval".lower()):
 			if self.doc.leave_approver != frappe.session.user:
-				frappe.throw("Only {} can Apply or Forward this Leave Application".format(self.doc.leave_approver_name))
+				frappe.throw("Only {} can Forward this Leave Application".format(self.doc.leave_approver_name))
 			self.set_approver("CEO")
 
 		elif self.new_state.lower() == ("Approved".lower()):
 			if self.doc.leave_approver != frappe.session.user:
 				frappe.throw("Only {} can Approve this Leave Application".format(self.doc.leave_approver_name))
 
-		elif self.new_state.lower() == ("Rejected".lower() or "Rejected by CEO".lower()):
+		elif self.new_state.lower() == ("Rejected".lower()):
 			if self.doc.leave_approver != frappe.session.user:
 				frappe.throw("Only {} can Reject this Leave Application".format(self.doc.leave_approver_name))
 		else:
