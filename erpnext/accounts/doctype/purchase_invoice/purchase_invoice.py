@@ -2140,6 +2140,7 @@ class PurchaseInvoice(BuyingController):
         # Posting Journal Entry
         je = frappe.new_doc("Journal Entry")
         je.flags.ignore_permissions = 1
+        total = flt(self.grand_total) - flt(self.total_advance)
         je.update(
             {
                 "doctype": "Journal Entry",
@@ -2153,9 +2154,11 @@ class PurchaseInvoice(BuyingController):
                 "branch": self.branch,
                 "reference_type": self.doctype,
                 "referece_doctype": self.name,
+                "total_debit": flt(total, 2),
+                "total_credit": flt(total, 2)
             }
         )
-        total = flt(self.grand_total) - flt(self.total_advance)
+        
         je.append(
             "accounts",
             {
@@ -2164,8 +2167,8 @@ class PurchaseInvoice(BuyingController):
                 "cost_center": self.cost_center,
                 "party_type": "Employee",
                 "party": self.imprest_party,
-                # "reference_type": "Project Advance",
-                # "reference_name": self.name,
+                "reference_type": "Project Advance",
+                "reference_name": self.name,
             },
         )
         je.append(
