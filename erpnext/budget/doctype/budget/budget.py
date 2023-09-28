@@ -273,7 +273,7 @@ def validate_budget_records(args, budget_records):
 	for budget in budget_records:
 		amount = get_amount(args, budget)
 		yearly_action, monthly_action = get_actions(args, budget)
-		if frappe.db.exists("Monthly Distribution", {"fiscal_year":args.fiscal_year}):
+		if frappe.db.exists("Monthly Distribution", {"fiscal_year":args.fiscal_year}) and budget.monthly_distribution:
 			if monthly_action in ["Stop", "Warn"]:
 				budget_amount = get_accumulated_monthly_budget(
 					budget.monthly_distribution, args.posting_date, args.fiscal_year, budget.budget_amount
