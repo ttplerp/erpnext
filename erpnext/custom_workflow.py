@@ -428,8 +428,9 @@ class CustomWorkflow:
 			self.set_approver("HRGM")
 
 		elif self.new_state.lower() in ("Approved".lower(), "Rejected".lower()):
-			if self.doc.benefit_approver != frappe.session.user:
-				frappe.throw("Only {} can Approved or Reject this document".format(self.doc.benefit_approver_name))
+			pass
+			# if self.doc.benefit_approver != frappe.session.user:
+			# 	frappe.throw("Only {} can Approved or Reject this document".format(self.doc.benefit_approver_name))
 	
 	def imprest_advance(self):
 		if self.new_state.lower() in ("Draft".lower(), "Waiting for Verification".lower()):

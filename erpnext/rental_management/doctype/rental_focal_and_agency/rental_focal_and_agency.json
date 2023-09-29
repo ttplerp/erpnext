@@ -57,6 +57,7 @@
    "label": "Dzongkhag and Agency Details"
   },
   {
+   "allow_bulk_edit": 1,
    "fieldname": "items",
    "fieldtype": "Table",
    "options": "Rental Focal and Agency Item",
@@ -65,7 +66,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-03 07:38:35.803863",
+ "modified": "2023-09-29 20:07:26.426338",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Focal and Agency",
