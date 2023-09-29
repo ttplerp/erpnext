@@ -10,6 +10,7 @@ Version          Author         Ticket#           CreatedOn          ModifiedOn 
 """
 
 from __future__ import unicode_literals
+from builtins import vars
 import frappe
 from frappe import _
 from frappe.utils import nowdate, cint, flt
@@ -471,6 +472,18 @@ class CustomWorkflow:
                 )
 
         if self.doc.doctype == "Material Request":
+            self.mechanical_cs = frappe.db.get_value(
+                "Employee",
+                {
+                    "user_id": frappe.db.get_single_value(
+                        "Maintenance Settings", "mechanical_cs"
+                    )
+                },
+                self.field_list,
+            )
+            if not self.mechanical_cs:
+                frappe.throw("Mechanical Center Store not set in maintenance settings.")
+
             self.fleet_mto = frappe.db.get_value(
                 "Employee",
                 {
@@ -1003,6 +1016,18 @@ class CustomWorkflow:
             )
             vars(self.doc)[self.doc_approver[2]] = (
                 officiating[2] if officiating else self.supervisors_supervisor[2]
+            )
+        elif approver_type == "Mechanical Center store":
+            officiating = get_officiating_employee(self.mechanical_cs[3])
+            if officiating:
+                officiating = frappe.db.get_value(
+                    "Employee", officiating[0].officiate, self.field_list
+                )
+            vars(self.doc)[self.doc_approver[0]] = (
+                officiating[0] if officiating else self.mechanical_cs[0]
+            )
+            vars(self.doc)[self.doc_approver[1]] = (
+                officiating[1] if officiating else self.mechanical_cs[1]
             )
 
         elif approver_type == "Fleet Manager":
@@ -2856,6 +2881,7 @@ class CustomWorkflow:
 
     def material_request(self):
         """Material Request Workflow
+        doc.item_group == "Property, Plant and Equipment" or "Spare parts" in doc.item_group
         # General workflow
             1. Employee -> supervisor -> Center Store -[approve/forward] -> approval
 
@@ -2894,13 +2920,20 @@ class CustomWorkflow:
                 )
             self.set_approver("QHSE_GM")
         elif self.new_state.lower() in ("Waiting Mechanical GM Approval".lower()):
+            if (
+                self.doc.owner != frappe.session.user
+                and self.new_state.lower() != self.old_state.lower()
+            ):
+                frappe.throw("Only the document owner can Apply this material request")
+            self.set_approver("Fleet Manager")
+        elif self.new_state.lower() in ("Waiting Central Store Mechanical".lower()):
             if self.doc.approver != frappe.session.user:
                 frappe.throw(
-                    "Only the {} can Approve this material request".format(
+                    "Only the {} can approvef/forward this material request".format(
                         self.doc.approver
                     )
                 )
-            self.set_approver("Fleet Manager")
+            self.set_approver("Mechanical Center store")
         elif self.new_state.lower() in ("Waiting HR Approval".lower()):
             if self.doc.approver != frappe.session.user:
                 frappe.throw(

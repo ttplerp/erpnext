@@ -11,7 +11,10 @@
   "vehicle_request_status_notification_template",
   "sb_approver",
   "fleet_mto",
+  "mechanical_cs",
+  "column_break_zh2j0",
   "fleet_mto_name",
+  "mechanical_cs_name",
   "account_settings_tab",
   "equipment_hire_income_account",
   "equipment_hire_expense_account"
@@ -68,12 +71,29 @@
    "fieldtype": "Link",
    "label": "Equipment Hire Expense Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "mechanical_cs",
+   "fieldtype": "Link",
+   "label": "Mechanical Center Store",
+   "options": "User"
+  },
+  {
+   "fetch_from": "mechanical_cs.full_name",
+   "fieldname": "mechanical_cs_name",
+   "fieldtype": "Data",
+   "label": "Mechanical Center Store Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_zh2j0",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-06-22 17:48:10.449188",
+ "modified": "2023-09-29 12:53:20.729975",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Maintenance Settings",
