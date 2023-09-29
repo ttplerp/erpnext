@@ -41,8 +41,8 @@ class TenantInformation(Document):
 	def validate(self):
 		self.set_missing_values()
 		self.validate_allocation()
-		# if not self.rental_charges:
-		# 	self.calculate_rent_charges()
+		if not self.rental_charges:
+			self.calculate_rent_charges()
 		if not self.is_nhdcl_employee:
 			self.employee = ''
 
