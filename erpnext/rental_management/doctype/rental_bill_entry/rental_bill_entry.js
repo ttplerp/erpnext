@@ -18,7 +18,7 @@ frappe.ui.form.on('Rental Bill Entry', {
 				frm.events.submit_rental_bill(frm)
 			},__("Create"))
 		}
-		if(frm.doc.number_of_rental_bills != 0 && (frm.doc.number_of_rental_bills == frm.doc.successful) && frm.doc.bill_submitted == 0){
+		if(frm.doc.number_of_rental_bills > 0 && frm.doc.bill_submitted == 0){
 			cur_frm.add_custom_button(__('Remove Rental Bill'), function(doc) {
 				frm.events.remove_rental_bill(frm)
 			},__("Create"))
