@@ -208,7 +208,6 @@
    "oldfieldname": "qty",
    "oldfieldtype": "Currency",
    "print_width": "100px",
-   "read_only": 1,
    "reqd": 1,
    "width": "100px"
   },
@@ -974,7 +973,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-01 15:15:37.375350",
+ "modified": "2023-10-02 13:56:09.135140",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Delivery Note Item",
