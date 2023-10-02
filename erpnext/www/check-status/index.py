@@ -1,7 +1,15 @@
-import frappe
+import datetime
+import json
 
-def get_context(context):
-    cid = frappe.form_dict.get("cid")
+import frappe
+import pytz
+from frappe import _
+
+no_cache = 1
+
+@frappe.whitelist(allow_guest=True)
+def get_applicant_info(cid):
+    context = {}
     context["applicant_info"] = None
 
     if cid:
@@ -10,7 +18,6 @@ def get_context(context):
             filters={"cid": cid},
             fields=["name", "applicant_name", "cid", "gender", "employment_type", "applicant_rank", "application_status", "mobile_no", "flat_no"],
         )
-
         context["applicant_info"] = applicant_info
-
+    
     return context

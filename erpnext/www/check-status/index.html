@@ -3,101 +3,37 @@
 {% block title %}{{ _("Search Applicant") }}{% endblock %}
 
 {% block script %}
-<script src="assets/js/moment-bundle.min.js"></script>
-<script src="book_appointment/index.js"></script>
+<!-- <script src="assets/js/moment-bundle.min.js"></script>
+<script src="book_appointment/index.js"></script> -->
+<script src="check-status/index.js"></script>
 {% endblock %}
 
 {% block page_content %}
 <div class="container">
     <div class="row mb-12">
         <div class="col-sm-5">
-            <form action="{{ route }}">
-                <div class="row">
-                    <div class="col">
-                        <form action="{{ route }}" method="get" onsubmit="return validateForm()">
-                            <div class="input-group">
-                                <input name="cid" class="form-control" type="text" value="{{ frappe.form_dict.cid or '' }}"
-                                    placeholder="{{ _('Enter Applicant CID') }}" required pattern="[0-9]{11}">
-                                <div class="input-group-append">
-                                    <button type="submit" class="btn btn-sm btn-primary btn-search">
-                                        {{ _('Submit') }}
-                                    </button>
-                                </div>
+            <div class="row">
+                <div class="col">
+                    <form onsubmit="getApplicantInfo(); return false;">
+                        <div class="input-group">
+                            <input name="cid" class="form-control" type="text" value="{{ frappe.form_dict.cid or '' }}"
+                                placeholder="{{ _('Enter Applicant CID') }}" required pattern="[0-9]{11}">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-sm btn-primary btn-search">
+                                    {{ _('Submit') }}
+                                </button>
                             </div>
-                            <div class="input-description">
-                                <span class="input-description-text">[Note: CID should be an integer with 11 digits.]</span>
-                            </div>
-                        </form>
-                        <script>
-                            function validateForm() {
-                                var cidInput = document.getElementsByName("cid")[0];
-                                var cidValue = parseInt(cidInput.value);
-                                if (!cidInput.checkValidity() || isNaN(cidValue) || cidValue.toString().length !== 11) {
-                                    alert("Please enter a valid 11-digit CID (numeric only).");
-                                    return false;
-                                }
-                                return true;
-                            }
-                        </script>
-                    </div>
-                </div>                
-            </form>
-        </div>
-    </div>
-
-    {% if applicant_info %}
-        <div class="row">
-            <div class="col">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-condensed table-custom-width">
-                        <colgroup>
-                            <col style="width: 50%;">
-                            <col style="width: 50%;">
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                <th colspan="2" class="table-heading-one">{{ _("Applicant Information") }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for applicant in applicant_info %}
-                                <tr>
-                                    <td class="table-heading">{{ _("CID") }}</td>
-                                    <td>{{ applicant.cid }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="table-heading">{{ _("Applicant Name") }}</td>
-                                    <td>{{ applicant.applicant_name }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="table-heading">{{ _("Employment Type") }}</td>
-                                    <td>{{ applicant.employment_type }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="table-heading">{{ _("Applicant Rank") }}</td>
-                                    <td>{{ applicant.applicant_rank }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="table-heading">{{ _("Mobile No") }}</td>
-                                    <td>{{ applicant.mobile_no }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="table-heading">{{ _("Status") }}</td>
-                                    <td>{{ applicant.application_status }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                        </div>
+                        <div class="input-description">
+                            <span class="input-description-text">[Note: CID should be an integer with 11 digits.]</span>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    {% else %}
-        <div class="row">
-            <div class="col">
-                <p>{{ _("No Record found") }}</p>
-            </div>
-        </div>
-    {% endif %}
+    </div>
+
+    <div id="applicant-info"></div>
 
     <style>
         .table-bordered {
