@@ -12,7 +12,7 @@ def execute(filters=None):
 
 def get_columns():
 	return [
-		_("Rental Type") + ":Data:100", 
+		_("Rental Site") + ":Data:100", 
 		_("Site Name") + ":Dynamic Link/Rental Type:100",
 		_("Posting Date") + ":Date:100", 
 		_("Branch") + ":Link/Branch:100", 
@@ -48,9 +48,10 @@ def get_data(filters):
 			`tabStock Entry` se
 		INNER JOIN
 			`tabStock Entry Detail` sed ON se.name = sed.parent
-		WHERE
-			se.docstatus = 1
-			AND se.rental_site IS NOT NULL {conditions}
+        WHERE
+            se.docstatus = 1
+            AND se.rental_site != ''
+            {conditions}
 	""".format(conditions = cond)
 
 	return (frappe.db.sql(query))
