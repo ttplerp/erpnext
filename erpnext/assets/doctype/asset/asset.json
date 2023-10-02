@@ -87,6 +87,8 @@
   "other_details",
   "asset_issue_details",
   "status",
+  "column_break_vmcun",
+  "is_opening",
   "booked_fixed_asset",
   "column_break_51",
   "purchase_receipt_amount",
@@ -655,6 +657,16 @@
    "fieldtype": "Barcode",
    "label": "Asset Barcode",
    "read_only": 1
+  },
+  {
+   "fieldname": "is_opening",
+   "fieldtype": "Select",
+   "label": "Is Opening",
+   "options": "No\nYes"
+  },
+  {
+   "fieldname": "column_break_vmcun",
+   "fieldtype": "Column Break"
   }
  ],
  "idx": 72,
@@ -677,7 +689,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2023-07-19 14:17:04.853084",
+ "modified": "2023-10-02 15:42:39.142489",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",
