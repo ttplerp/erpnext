@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and contributors
 # For license information, please see license.txt
 
@@ -230,83 +229,47 @@ class UtilityBill(Document):
             d.fetch_status_code = res_status
 
     @frappe.whitelist()
-    def make_direct_payment(self):
-        if self.direct_payment:
-            frappe.throw("Direct Payment No. <b> {} </b>already created for this Utility Bill".format(self.direct_payment))
+    def make_journal_entry(self):
+        if self.journal_entry:
+            frappe.throw("Journal Entry No. <b> {} </b>already created for this Utility Bill".format(self.journal_entry))
 
-        doc = frappe.new_doc("Direct Payment")
+        doc = frappe.new_doc("Journal Entry")
         doc.branch = self.branch
-        doc.cost_center = self.cost_center
         doc.posting_date = self.posting_date
-        doc.payment_type = "Payment"
-        doc.tds_percent = self.tds_percent
-        doc.tds_account = self.tds_account
-        doc.credit_account = self.expense_account
+        doc.entry_type = "Journal Entry"
+        doc.naming_series = "Journal Entry"
+        doc.company = "Rigsar Construction Private Limited"
         doc.utility_bill = str(self.name)
-        doc.business_activity = self.business_activity
         doc.remarks = "Utility Bill Payment " + str(self.name)
         doc.status = "Completed"
+        doc.cheque_no = self.name
+        doc.cheque_date = self.posting_date
         if self.item:
             count_child = 0
             for a in self.item:
-                #if a.create_direct_payment:
                 if a.invoice_amount > 0 and a.payment_status == "Success":
-                    doc.append("item", {
-                                "party_type": "Supplier",
-                                "party": a.party,
+                    doc.append("accounts", {
                                 "account": a.debit_account,
-                                "amount": a.invoice_amount,
-                                "invoice_no": a.invoice_no,
-                                "invoice_date": a.invoice_date,
-                                "tds_applicable": a.tds_applicable,
-                                "taxable_amount": a.invoice_amount,
-                                "tds_amount": a.tds_amount,
-                                "net_amount": a.net_amount,
-                                "payment_status": "Payment Successful"
-                        })
+                                "debit_in_account_currency": a.net_amount,
+                                "reference_type": "",
+                                "reference_no": self.name,
+                                "cost_center": self.cost_center,
+                                "party_type": "Supplier",
+                                "party": a.party
+                        },)
+                    doc.append("accounts", {
+                        "account": self.expense_account,
+                        "credit_in_account_currency": a.net_amount,
+                        "cost_center": self.cost_center,
+                        "reference_type": ""
+                    })
                     count_child +=1
             if count_child > 0:
                 doc.save()
             if doc.name:
-                self.db_set("direct_payment", doc.name)
+                self.db_set("journal_entry", doc.name)
             return doc.name
-        # doc = frappe.new_doc("Direct Payment")
-        # doc.branch = self.branch
-        # doc.cost_center = self.cost_center
-        # doc.posting_date = self.posting_date
-        # doc.payment_type = "Payment"
-        # doc.tds_percent = self.tds_percent
-        # doc.tds_account = self.tds_account
-        # doc.credit_account = self.expense_account
-        # doc.utility_bill = str(self.name)
-        # doc.business_activity = self.business_activity
-        # doc.remarks = "Utility Bill Payment " + str(self.name)
-        # doc.status = "Completed"
-        # if self.item:
-        #     count_child = 0
-        #     for a in self.item:
-        #         if a.create_direct_payment:
-        #             if a.invoice_amount > 0 and a.payment_status == "Success":
-        #                 doc.append("item", {
-        #                         "party_type": "Supplier",
-        #                         "party": a.party,
-        #                         "account": a.debit_account,
-        #                         "amount": a.invoice_amount,
-        #                         "invoice_no": a.invoice_no,
-        #                         "invoice_date": a.invoice_date,
-        #                         "tds_applicable": a.tds_applicable,
-        #                         "taxable_amount": a.invoice_amount,
-        #                         "tds_amount": a.tds_amount,
-        #                         "net_amount": a.net_amount,
-        #                         "payment_status": "Payment Successful"
-        #                     })
-        #                 count_child +=1
-        #     if count_child > 0:
-        #         doc.submit()
-        #     if doc.name:
-        #         self.db_set("direct_payment", doc.name)
-        #         frappe.msgprint("Direct Payment created and submitted for this Utility Bill")
-                
+       
     def remove_bill_without_os(self):
         to_remove = []
         for d in self.get("item"):

@@ -29,7 +29,8 @@
   "column_break_22",
   "net_payable_amount",
   "workflow_state",
-  "amended_from"
+  "amended_from",
+  "journal_entry"
  ],
  "fields": [
   {
@@ -185,14 +186,22 @@
    "no_copy": 1,
    "options": "Draft\nPending\nPayment Successful\nPayment Failed\nPartial Payment",
    "read_only": 1
+  },
+  {
+   "fieldname": "journal_entry",
+   "fieldtype": "Link",
+   "label": "Journal Entry",
+   "options": "Journal Entry",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-17 12:13:03.885014",
+ "modified": "2023-10-03 16:19:35.923741",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Utility Bill",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
