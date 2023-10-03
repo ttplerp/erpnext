@@ -170,6 +170,7 @@ class RentalBillEntry(Document):
 			else:
 				rental_bill_entry_item.db_set("rental_bill", rb.name)
 				rental_bill_entry_item.db_set("status", "Success")
+				rental_bill_entry_item.db_set("tenant_cid", rb.tenant_cid)
 				rental_bill_entry_item.db_set("rental_focal", rb.rental_focal)
 				rental_bill_entry_item.db_set("rental_amount", rb.receivable_amount)
 		

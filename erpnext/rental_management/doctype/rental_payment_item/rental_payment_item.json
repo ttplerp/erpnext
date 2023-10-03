@@ -9,6 +9,7 @@
   "sb_rental_details",
   "tenant",
   "tenant_name",
+  "tenant_cid",
   "customer",
   "cb_1",
   "ministry_and_agency",
@@ -226,12 +227,18 @@
    "fieldtype": "Currency",
    "label": "Adjusted Amount",
    "read_only": 1
+  },
+  {
+   "fetch_from": "tenant.tenant_cid",
+   "fieldname": "tenant_cid",
+   "fieldtype": "Data",
+   "label": "Tenant CID"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-07-04 12:38:38.943493",
+ "modified": "2023-10-03 17:33:14.289564",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Payment Item",

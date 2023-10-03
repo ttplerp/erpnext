@@ -574,7 +574,7 @@ class RentalPayment(AccountsController):
 		if self.tenant_department_name:
 			condition += " and department='{}'".format(self.tenant_department_name)
 
-		rental_bills = frappe.db.sql("""select name as rental_bill, tenant, tenant_name, customer, 
+		rental_bills = frappe.db.sql("""select name as rental_bill, tenant, tenant_name, customer, tenant_cid,
 						(receivable_amount - received_amount - discount_amount - tds_amount - rent_write_off_amount) as bill_amount, 
 						fiscal_year, month, ministry_agency as ministry_and_agency, department as tenant_department, property_management_amount, adjusted_amount
 						from `tabRental Bill` 
