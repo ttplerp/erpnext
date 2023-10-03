@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_import": 1,
+ "allow_rename": 1,
  "creation": "2023-04-27 17:47:10.116451",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -137,7 +138,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-23 11:23:04.195334",
+ "modified": "2023-10-03 11:09:49.438306",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Flat No",
