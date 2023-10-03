@@ -141,6 +141,7 @@ class RentalBillEntry(Document):
 							"flat_no": d.flat,
 							"flat_id": d.flat_no,
 							"ministry_agency": d.ministry_and_agency,
+							"location_id": d.locations,
 							"location": d.location_name,
 							"branch": d.branch,
 							"department": d.tenant_department_name,

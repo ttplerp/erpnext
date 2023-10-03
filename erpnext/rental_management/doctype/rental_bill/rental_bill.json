@@ -19,6 +19,7 @@
   "ministry_agency",
   "department",
   "dzongkhag",
+  "location_id",
   "location",
   "employment_type",
   "cb_2",
@@ -421,12 +422,18 @@
    "label": "Flat ID",
    "options": "Flat No",
    "read_only": 1
+  },
+  {
+   "fieldname": "location_id",
+   "fieldtype": "Link",
+   "label": "Location ID",
+   "options": "Locations"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-09-21 13:39:19.551620",
+ "modified": "2023-10-03 18:20:37.850167",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Bill",

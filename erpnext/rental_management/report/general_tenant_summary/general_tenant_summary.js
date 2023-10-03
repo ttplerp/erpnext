@@ -73,5 +73,23 @@ frappe.query_reports["General Tenant Summary"] = {
 			"fieldtype": "Link",
 			"options": "Ministry and Agency"
 		},
+		{
+			"fieldname": "dzongkhag",
+			"label": __("Dzongkhag"),
+			"fieldtype": "Link",
+			"options": "Dzongkhag"
+		},
+		{
+			"fieldname": "location",
+			"label": __("Location"),
+			"fieldtype": "Link",
+			"options": "Locations"
+		},
+		{
+			"fieldname": "building_category",
+			"label": __("Building Category"),
+			"fieldtype": "Link",
+			"options": "Building Category"
+		},
 	]
 };
