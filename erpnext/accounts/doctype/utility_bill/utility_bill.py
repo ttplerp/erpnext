@@ -236,9 +236,9 @@ class UtilityBill(Document):
         doc = frappe.new_doc("Journal Entry")
         doc.branch = self.branch
         doc.posting_date = self.posting_date
-        doc.entry_type = "Journal Entry"
-        doc.naming_series = "Journal Entry"
-        doc.company = "Rigsar Construction Private Limited"
+        doc.entry_type = "Bank Entry"
+        doc.naming_series = "Bank Payment Voucher"
+        #doc.company = "Rigsar Construction Private Limited"
         doc.utility_bill = str(self.name)
         doc.remarks = "Utility Bill Payment " + str(self.name)
         doc.status = "Completed"
@@ -249,7 +249,7 @@ class UtilityBill(Document):
             for a in self.item:
                 if a.invoice_amount > 0 and a.payment_status == "Success":
                     doc.append("accounts", {
-                                "account": a.debit_account,
+                                "account": a.debit_account if a.debit_account else frappe.db.get_value("Utility Service Type", a.utility_service_type, "expense_account"),
                                 "debit_in_account_currency": a.net_amount,
                                 "reference_type": "",
                                 "reference_no": self.name,
