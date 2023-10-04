@@ -10,6 +10,7 @@ from frappe.utils import cstr, flt, fmt_money, formatdate, nowdate
 class TechnicalSanction(Document):
 	def validate(self):
 		self.update_maf()
+		self.calculate_abstract_cost_amount()
 		if self.outsource:
 			if not self.supplier:
 				frappe.throw("A Contractor must be selected as the work type is outsource")
@@ -37,6 +38,11 @@ class TechnicalSanction(Document):
 				frappe.db.sql("update `tabMaintenance Application Form` set technical_sanction = '{0}' where name ='{1}'".format(self.name, self.maf))
 			else:
 				frappe.throw("Not able to update MAF")
+	def calculate_abstract_cost_amount(self):
+		for d in self.items:
+			total = flt(d.qty)* flt(d.amount)
+			d.total = flt(total)
+
 
 	@frappe.whitelist()
 	def get_technical_sanction_items(self):
