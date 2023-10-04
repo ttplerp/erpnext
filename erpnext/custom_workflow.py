@@ -298,9 +298,13 @@ class CustomWorkflow:
 		elif self.doc.doctype == "Budget Reappropiation":
 			self.budget_reappropiation()
 		elif self.doc.doctype == "Target Set Up":
-			self.target_setup_request()
+			self.target_setup()
+		elif self.doc.doctype == "Review":
+			self.target_setup()
+		elif self.doc.doctype == "Employee Transfer":
+			self.employee_transfer
 		elif self.doc.doctype == "Performance Evaluation":
-			self.performance_evaluation_request()
+			self.performance_evaluation()
 		elif self.doc.doctype == "PMS Appeal":
 			self.pms_appeal_request()
 		elif self.doc.doctype == "Employee Separation":
@@ -333,10 +337,13 @@ class CustomWorkflow:
 			if self.doc.approver_id != frappe.session.user:
 				frappe.throw("Only {} can Approve this Vehicle Request".format(self.doc.approver))
 				
-	def target_setup_request(self):
-		pass
-
-	def performance_evaluation_request(self):
+	def target_setup(self):
+		if self.new_state.lower() in ("Draft".lower(), "Waiting Approval".lower()):
+			self.set_approver("HRGM")
+		elif self.new_state.lower() in ("Approved".lower(), "Rejected".lower()):
+			if (self.doc.approver != frappe.session.user):
+				frappe.throw("Only {} can Approved or make Reject this Request".format(self.doc.approver_name))	
+	def performance_evaluation(self):
 		if not self.new_state:
 			frappe.throw('Due to slow network/some other issue this document faced issue to save. Please reload the page and save again.')
 		if self.new_state.lower() in ("Draft".lower()):
@@ -428,9 +435,16 @@ class CustomWorkflow:
 			self.set_approver("HRGM")
 
 		elif self.new_state.lower() in ("Approved".lower(), "Rejected".lower()):
-			pass
-			# if self.doc.benefit_approver != frappe.session.user:
-			# 	frappe.throw("Only {} can Approved or Reject this document".format(self.doc.benefit_approver_name))
+			if self.doc.benefit_approver != frappe.session.user:
+				frappe.throw("Only {} can Approved or Reject this document".format(self.doc.benefit_approver_name))
+	
+	def employee_transfer(self):
+		if self.new_state.lower() in ("Draft".lower(), "Waiting Approval".lower()):
+			self.set_approver("HRGM")
+
+		elif self.new_state.lower() in ("Approved".lower(), "Rejected".lower()):
+			if self.doc.supervisor != frappe.session.user:
+				frappe.throw("Only {} can Approved or Reject this document".format(self.doc.supervisor_name))
 	
 	def imprest_advance(self):
 		if self.new_state.lower() in ("Draft".lower(), "Waiting for Verification".lower()):
