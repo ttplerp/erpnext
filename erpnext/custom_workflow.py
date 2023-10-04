@@ -302,7 +302,7 @@ class CustomWorkflow:
 		elif self.doc.doctype == "Review":
 			self.target_setup()
 		elif self.doc.doctype == "Employee Transfer":
-			self.employee_transfer
+			self.employee_transfer()
 		elif self.doc.doctype == "Performance Evaluation":
 			self.performance_evaluation()
 		elif self.doc.doctype == "PMS Appeal":
