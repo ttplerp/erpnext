@@ -41,7 +41,7 @@ class RentalBillEntry(Document):
 			condition += " and t1.name = '{tenant}'".format(tenant=self.tenant)
 
 		tenant_list = frappe.db.sql("""
-				select t1.name tenant, t1.tenant_name tenant_name
+				select t1.name tenant, t1.tenant_name tenant_name, t1.tenant_cid
 				from `tabTenant Information` t1
 				where t1.docstatus = "1"
 				and t1.status="Allocated" and t1.allocated_date <= '{month_end_date}'
@@ -171,7 +171,6 @@ class RentalBillEntry(Document):
 			else:
 				rental_bill_entry_item.db_set("rental_bill", rb.name)
 				rental_bill_entry_item.db_set("status", "Success")
-				rental_bill_entry_item.db_set("tenant_cid", rb.tenant_cid)
 				rental_bill_entry_item.db_set("rental_focal", rb.rental_focal)
 				rental_bill_entry_item.db_set("rental_amount", rb.receivable_amount)
 		
