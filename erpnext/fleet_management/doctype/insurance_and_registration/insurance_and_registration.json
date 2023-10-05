@@ -11,10 +11,13 @@
   "settle_imprest_advance",
   "imprest_party",
   "cb_1",
+  "employee",
+  "employee_name",
   "equipment",
   "asset",
   "cb_2",
   "posting_date",
+  "designation",
   "sb_1",
   "branch",
   "cb_3",
@@ -43,7 +46,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Insurance For",
-   "options": "\nVehicle\nAsset"
+   "options": "\nVehicle\nAsset\nGPA"
   },
   {
    "fieldname": "cb_1",
@@ -204,11 +207,35 @@
    "fieldname": "settle_imprest_advance",
    "fieldtype": "Check",
    "label": "Settle Imprest Advance Account"
+  },
+  {
+   "depends_on": "eval:doc.insurance_for == \"GPA\"",
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "mandatory_depends_on": "eval:doc.insurance_for == \"GPA\"",
+   "options": "Employee"
+  },
+  {
+   "depends_on": "eval:doc.insurance_for == \"GPA\"",
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.insurance_for == \"GPA\"",
+   "fetch_from": "employee.designation",
+   "fieldname": "designation",
+   "fieldtype": "Data",
+   "label": "Designation",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-10 10:08:55.217426",
+ "modified": "2023-10-05 12:18:35.876411",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Insurance and Registration",
