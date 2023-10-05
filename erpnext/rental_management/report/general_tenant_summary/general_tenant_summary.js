@@ -45,30 +45,30 @@ frappe.query_reports["General Tenant Summary"] = {
 			"fieldtype": "Data",
 			"read_only": 1
 		},
-		{
-			"fieldname":"employment_type",
-			"label": __("Employment Type"),
-			"fieldtype": "Select",
-			"options": ["", __("Civil Servant"), __("Corporate Employee"), __("Private Employee"), __("Others")],
-			on_change: function(query_report){
-				var employment_type = frappe.query_report.get_filter_value('employment_type');
-				if(employment_type == "Civil Servant"){
-					var ministyr_agency = frappe.query_report.get_filter("ministyr_agency"); 
-					ministyr_agency.toggle(true);
-					frappe.query_report.set_filter_value('ministyr_agency', "");
-				}else{
-					var ministyr_agency = frappe.query_report.get_filter("ministyr_agency"); 
-					ministyr_agency.toggle(false);
-					frappe.query_report.set_filter_value('ministyr_agency', "");	
-				}
+		// {
+		// 	"fieldname":"employment_type",
+		// 	"label": __("Employment Type"),
+		// 	"fieldtype": "Select",
+		// 	"options": ["", __("Civil Servant"), __("Corporate Employee"), __("Private Employee"), __("Others")],
+		// 	on_change: function(query_report){
+		// 		var employment_type = frappe.query_report.get_filter_value('employment_type');
+		// 		if(employment_type == "Civil Servant"){
+		// 			var ministry_agency = frappe.query_report.get_filter("ministry_agency"); 
+		// 			ministry_agency.toggle(true);
+		// 			frappe.query_report.set_filter_value('ministry_agency', "");
+		// 		}else{
+		// 			var ministry_agency = frappe.query_report.get_filter("ministry_agency"); 
+		// 			ministry_agency.toggle(false);
+		// 			frappe.query_report.set_filter_value('ministry_agency', "");	
+		// 		}
 				
-				query_report.trigger_refresh();	
-			},
-			"reqd":1,
-			"default":"Civil Servant"
-		},
+		// 		query_report.trigger_refresh();	
+		// 	},
+		// 	"reqd":1,
+		// 	"default":"Civil Servant"
+		// },
 		{
-			"fieldname": "ministyr_agency",
+			"fieldname": "ministry_agency",
 			"label": __("Ministry/Agency"),
 			"fieldtype": "Link",
 			"options": "Ministry and Agency"
