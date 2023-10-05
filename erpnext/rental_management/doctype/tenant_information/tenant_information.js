@@ -21,7 +21,8 @@ frappe.ui.form.on('Tenant Information', {
 		frm.set_query("flat_no", function(){
 			return {
 				"filters":[
-					["block_no", "=", frm.doc.block_no]
+					["block_no", "=", frm.doc.block_no],
+					['status', 'in', ['Surrendered', 'Unallocated']]
 				]
 			};
 		});
