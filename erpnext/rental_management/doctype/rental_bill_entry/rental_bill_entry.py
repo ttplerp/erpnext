@@ -32,7 +32,7 @@ class RentalBillEntry(Document):
 			prev_fiscal_year = int(self.fiscal_year)
 			prev_month = str(int(self.month) - 1).zfill(2)
 
-		condition = " and t1.building_category != 'Pilot Housing' and t1.branch = '{}'".format(self.branch)
+		condition = " and t1.building_category != 'Pilot' and t1.branch = '{}'".format(self.branch)
 		if self.dzongkhag:
 			condition += " and t1.dzongkhag = '{dzongkhag}'".format(dzongkhag=self.dzongkhag)
 		if self.ministry_agency:
