@@ -306,11 +306,11 @@ class POLReceive(StockController):
         previous_km_reading = frappe.db.sql(
             """
 						select cur_km_reading from `tabPOL Receive` where docstatus = 1 
-						and equipment = '{}' and uom = '{}'
+						and equipment = '{}' and uom = '{}' and posting_date < '{}'
 						order by posting_date desc, posting_time desc
 						limit 1
 						""".format(
-                self.equipment, self.uom
+                self.equipment, self.uom, self.posting_date
             )
         )
         previous_km_reading_pol_issue = frappe.db.sql(
