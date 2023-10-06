@@ -837,12 +837,12 @@ class JournalEntry(AccountsController):
 			self.pay_to_recd_from = frappe.db.get_value(
 				party_type, pay_to_recd_from, "customer_name" if party_type == "Customer" else "supplier_name"
 			)
-			if bank_amount:
-				total_amount = bank_amount
-				currency = bank_account_currency
-			else:
-				total_amount = party_amount
-				currency = party_account_currency
+		if bank_amount:
+			total_amount = bank_amount
+			currency = bank_account_currency
+		else:
+			total_amount = party_amount
+			currency = party_account_currency
 
 		self.set_total_amount(total_amount, currency)
 
