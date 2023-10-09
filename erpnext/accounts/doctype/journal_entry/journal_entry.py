@@ -124,6 +124,7 @@ class JournalEntry(AccountsController):
 		self.update_advance_paid()
 		self.update_inter_company_jv()
 		self.update_invoice_discounting()
+		self.update_pol_expense_status()
 
 	def on_cancel(self):
 		from erpnext.accounts.utils import unlink_ref_doc_from_payment_entries
@@ -138,6 +139,7 @@ class JournalEntry(AccountsController):
 		self.unlink_asset_adjustment_entry()
 		self.update_invoice_discounting()
 		self.unlink_transporter_invoice()
+		self.update_pol_expense_status(cancel=True)
 		check_clearance_date(self.doctype, self.name)
 	def on_trash(self):
 		self.unlink_transporter_invoice()
@@ -152,6 +154,13 @@ class JournalEntry(AccountsController):
 			set ti.journal_entry = jea.parent
 			where jea.parent = %s
 			and ti.journal_entry is null""", self.name)
+	def update_pol_expense_status(self, cancel=False):
+		for row in self.get("accounts"):
+			if row.reference_type =="POL Expense":
+				if not cancel:
+					frappe.db.set_value('POL Expense',row.reference_name,'payment_status','Paid')
+				else:
+					frappe.db.set_value('POL Expense',row.reference_name,'payment_status','Unpaid')
 
 	def update_advance_paid(self):
 		advance_paid = frappe._dict()
