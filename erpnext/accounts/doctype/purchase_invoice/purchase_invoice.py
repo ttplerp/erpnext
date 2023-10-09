@@ -103,7 +103,9 @@ class PurchaseInvoice(BuyingController):
 
         self.validate_posting_time()
         if not self.advances or len(self.advances) < 1:
-            frappe.msgprint("The advances table is empty. Please check adances for the given supplier.")
+            frappe.msgprint(
+                "The advances table is empty. Please check adances for the given supplier."
+            )
         super(PurchaseInvoice, self).validate()
 
         if not self.is_return:
@@ -2155,15 +2157,16 @@ class PurchaseInvoice(BuyingController):
                 "reference_type": self.doctype,
                 "referece_doctype": self.name,
                 "total_debit": flt(total, 2),
-                "total_credit": flt(total, 2)
+                "total_credit": flt(total, 2),
             }
         )
-        
+
         je.append(
             "accounts",
             {
                 "account": imprest_advance_account,
                 "credit_in_account_currency": flt(total, 2),
+                "credit": flt(total, 2),
                 "cost_center": self.cost_center,
                 "party_type": "Employee",
                 "party": self.imprest_party,
@@ -2176,20 +2179,16 @@ class PurchaseInvoice(BuyingController):
             {
                 "account": self.credit_to,
                 "debit_in_account_currency": flt(total, 2),
+                "debit": flt(total, 2),
                 "cost_center": self.cost_center,
                 "party_type": "Supplier",
                 "party": self.supplier,
+                "reference_type": "Project Advance",
+                "reference_name": self.name,
             },
         )
 
         je.insert()
-        # Set a reference to the claim journal entry
-        # self.db_set("journal_entry", je.name)
-        # frappe.msgprint(
-        #     _("{0} posted to accounts").format(
-        #         frappe.get_desk_link("Journal Entry", je.name)
-        #     )
-        # )
 
 
 # to get details of purchase invoice/receipt from which this doc was created for exchange rate difference handling
@@ -2381,16 +2380,11 @@ def post_journal_entry(source_name, target_doc=None):
             get_account_balance_and_party_type,
         )
 
-        # # target.doctype = "Journal Entry"
-        # target.voucher_type = "Journal Entry"
         target.naming_series = "Journal Voucher"
-        # target.title = "Imprest Settlement"
-        # target.posting_date = source.posting_date
-        # target.total_amount_in_words = money_in_words(source.outstanding_amount)
-        # target.branch = source.branch
-        # target.reference_type = (source.doctype,)
-        # target.referece_doctype = (source.name,)
         total = flt(source.grand_total) - flt(source.total_advance)
+        target.total_debit = total
+        target.total_credit = total
+
         accounts = [
             {
                 "account": imprest_advance_account,
@@ -2418,7 +2412,9 @@ def post_journal_entry(source_name, target_doc=None):
             row = target.append("accounts", {})
             row.account = account.get("account")
             row.debit_in_account_currency = account.get("debit_in_account_currency")
+            row.debit = account.get("debit_in_account_currency")
             row.credit_in_account_currency = account.get("credit_in_account_currency")
+            row.credit = account.get("credit_in_account_currency")
             row.cost_center = source.cost_center
             cc_acc_data = get_account_balance_and_party_type(
                 account.get("account"),
@@ -2445,63 +2441,6 @@ def post_journal_entry(source_name, target_doc=None):
         set_missing_values,
     )
     return doc
-
-
-@frappe.whitelist()
-def post_journal_entry1(self):
-    imprest_advance_account = frappe.db.get_value(
-        "Company", "VAJRA BUILDERS PRIVATE LIMITED", "imprest_advance_account"
-    )
-    if not imprest_advance_account:
-        frappe.throw("Please set imprest advance anccount in company setting.")
-    je = frappe.new_doc("Journal Entry")
-    je.flags.ignore_permissions = 1
-    total = flt(self.grand_total) - flt(self.total_advance)
-    je.update(
-        {
-            "doctype": "Journal Entry",
-            "voucher_type": "Journal Entry",
-            "naming_series": "Journal Voucher",
-            "title": "Imprest Settlement ",
-            "user_remark": "Note: " + "Imprest settlement ",
-            "posting_date": self.posting_date,
-            "company": self.company,
-            "total_amount_in_words": money_in_words(self.outstanding_amount),
-            "branch": self.branch,
-            "reference_type": self.doctype,
-            "referece_doctype": self.name,
-            "total_debit": total,
-            "total_credit": total,
-        }
-    )
-
-    je.append(
-        "accounts",
-        {
-            "account": imprest_advance_account,
-            "credit_in_account_currency": flt(total, 2),
-            "credit": flt(total, 2),
-            "cost_center": self.cost_center,
-            "party_type": "Employee",
-            "party": "20120701025",
-            "reference_type": "Purchase Invoice",
-            "reference_name": self.name,
-        },
-    )
-    je.append(
-        "accounts",
-        {
-            "account": self.credit_to,
-            "debit_in_account_currency": flt(total, 2),
-            "debit": flt(total, 2),
-            "cost_center": self.cost_center,
-            "party_type": "Supplier",
-            "party": self.supplier,
-            "reference_type": "Purchase Invoice",
-            "reference_name": self.name,
-        },
-    )
-    je.insert()
 
 
 def get_permission_query_conditions(user):
