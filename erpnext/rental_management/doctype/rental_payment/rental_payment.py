@@ -492,7 +492,7 @@ class RentalPayment(AccountsController):
 				)
 
 		if self.excess_amount > 0:
-			account_type = frappe.db.get_value("Account", pre_rent_account, "account_type") or ""
+			account_type = frappe.db.get_value("Account", excess_payment_account, "account_type") or ""
 			if account_type in ["Receivable", "Payable"]:
 				party = party_name
 				party_type = "Customer"
