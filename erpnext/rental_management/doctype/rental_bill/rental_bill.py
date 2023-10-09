@@ -68,7 +68,7 @@ class RentalBill(AccountsController):
 		self.yearmonth = str(self.fiscal_year) + str(self.month)
 	
 	def set_rental_amount(self):
-		if not self.rent_amount or not self.receivable_amount:
+		if not self.adjusted_amount and not self.receivable_amount:
 			posting_date = self.posting_date
 			if self.month == "01":
 				prev_fiscal_year = int(self.fiscal_year) - 1
@@ -118,7 +118,7 @@ class RentalBill(AccountsController):
 					self.rent_amount = d.rental_amount
 					self.receivable_amount = flt(d.rental_amount + total_property_management_amount)
 			else:
-				frappe.throw("no rental amount to bill")
+				frappe.throw("No rental amount to bill")
 		
 		""" Pre-rent calc. and update receivable amount """
 		pre_rent_account = frappe.db.get_single_value("Rental Account Setting", "pre_rent_account")
