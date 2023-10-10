@@ -278,7 +278,7 @@
   {
    "fieldname": "total_rent_received",
    "fieldtype": "Currency",
-   "label": "Total Rent Received"
+   "label": "Total Rent Receivable"
   },
   {
    "fieldname": "rent_write_off_amount",
@@ -420,7 +420,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-10-10 09:58:42.141459",
+ "modified": "2023-10-10 16:45:12.730689",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Payment",
