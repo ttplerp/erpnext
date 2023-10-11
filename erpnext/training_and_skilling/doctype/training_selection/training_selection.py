@@ -387,12 +387,12 @@ class TrainingSelection(Document):
 								deployment_title = title.replace('"','')
 								if not frappe.db.exists("Deployment Title", deployment_title):
 									dep_doc = frappe.new_doc("Deployment Title")
-									dep_doc.deployment_title = deployment_title
+									dep_doc.deployment_title = deployment_title if len(deployment_title) < 140 else deployment_title[0:139]
 									dep_doc.save()
 								else:
 									deployment_category = frappe.db.get_value("Deployment Title", deployment_title)
 									doc.deployment_category = deployment_category
-								doc.deployment_title = deployment_title
+								doc.deployment_title = deployment_title if len(deployment_title) < 140 else deployment_title[0:139]
 								doc.location = d['location']
 								doc.submit()
 					frappe.db.sql("Update `tabTraining Selection Item` set update_deployment = '1' where name= '{}'".format(a.name))
