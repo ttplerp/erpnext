@@ -1,6 +1,5 @@
 {
  "actions": [],
- "allow_rename": 1,
  "autoname": "RPAY.YY.MM.####",
  "creation": "2023-05-24 12:06:48.468194",
  "doctype": "DocType",
@@ -420,7 +419,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-10-10 16:45:12.730689",
+ "modified": "2023-10-11 11:13:27.232109",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Payment",
