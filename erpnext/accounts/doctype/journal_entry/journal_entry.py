@@ -99,36 +99,36 @@ class JournalEntry(AccountsController):
 
         self.clearance_date = None
 
-        # self.validate_party()
-        # self.validate_entries_for_advance()
-        # self.validate_multi_currency()
-        # self.set_amounts_in_company_currency()
-        # self.validate_debit_credit_amount()
-        # self.validate_settlement()
+        self.validate_party()
+        self.validate_entries_for_advance()
+        self.validate_multi_currency()
+        self.set_amounts_in_company_currency()
+        self.validate_debit_credit_amount()
+        self.validate_settlement()
 
         # # Do not validate while importing via data import
-        # if not frappe.flags.in_import:
-        #     self.validate_total_debit_and_credit()
+        if not frappe.flags.in_import:
+            self.validate_total_debit_and_credit()
 
-        # if not frappe.flags.is_reverse_depr_entry:
-        #     self.validate_against_jv()
-        #     self.validate_stock_accounts()
+        if not frappe.flags.is_reverse_depr_entry:
+            self.validate_against_jv()
+            self.validate_stock_accounts()
 
-        # self.validate_reference_doc()
-        # if self.docstatus == 0:
-        #     self.set_against_account()
-        # self.create_remarks()
-        # self.set_print_format_fields()
-        # self.validate_credit_debit_note()
-        # self.validate_empty_accounts_table()
-        # self.set_account_and_party_balance()
-        # self.validate_inter_company_accounts()
+        self.validate_reference_doc()
+        if self.docstatus == 0:
+            self.set_against_account()
+        self.create_remarks()
+        self.set_print_format_fields()
+        self.validate_credit_debit_note()
+        self.validate_empty_accounts_table()
+        self.set_account_and_party_balance()
+        self.validate_inter_company_accounts()
 
-        # if self.docstatus == 0:
-        #     self.apply_tax_withholding()
+        if self.docstatus == 0:
+            self.apply_tax_withholding()
 
-        # if not self.title:
-        #     self.title = self.get_title()
+        if not self.title:
+            self.title = self.get_title()
 
     def before_submit(self):
         self.update_transporter_invoice()
@@ -894,15 +894,12 @@ class JournalEntry(AccountsController):
 
     def validate_total_debit_and_credit(self):
         self.set_total_debit_credit()
-        if self.difference:
-            frappe.throw(
-                _(
-                    "Total Debit must be equal to Total Credit. The difference is {0}"
-                ).format(self.difference)
-            )
+        # frappe.throw(str(self.total_debit)+' <--> '+str(self.total_credit) +' --> '+str(self.difference))
+       
 
     def set_total_debit_credit(self):
         self.total_debit, self.total_credit, self.difference = 0, 0, 0
+        
         for d in self.get("accounts"):
             tax_amount, tax_dr, tax_cr = 0, 0, 0
             if d.debit and d.credit:
@@ -930,6 +927,14 @@ class JournalEntry(AccountsController):
         self.difference = flt(self.total_debit, self.precision("total_debit")) - flt(
             self.total_credit, self.precision("total_credit")
         )
+        
+        if self.difference:
+            frappe.throw(
+                _(
+                    "Total Debit must be equal to Total Credit. The difference is {0}"
+                ).format(self.difference)
+            )
+
 
     def validate_multi_currency(self):
         alternate_currency = []
