@@ -170,11 +170,23 @@ frappe.ui.form.on('Rental Payment Item', {
 				},
 				callback: function(r){
 					console.log(r.message)
-					frappe.model.set_value(cdt, cdn, "security_deposit", r.message ?? 0.00)
+					frappe.model.set_value(cdt, cdn, "security_deposit", r.message ?? 0.00);
 				}
 			});
 		} else {
 			frappe.model.set_value(cdt, cdn, "security_deposit", 0.00)
+		}
+	},
+	pre_rent_amount_received: function(frm, cdt, cdn) {
+		var row = locals[cdt][cdn];
+		if (row.pre_rent_amount_received > 0){
+			frappe.model.set_value(cdt, cdn, "pre_rent_amount", flt(row.pre_rent_amount_received + row.tds_pre_rent_amount ?? 0));
+		}
+	},
+	tds_pre_rent_amount: function(frm, cdt, cdn) {
+		var row = locals[cdt][cdn];
+		if (row.tds_pre_rent_amount > 0){
+			frappe.model.set_value(cdt, cdn, "pre_rent_amount", flt(row.tds_pre_rent_amount + row.pre_rent_amount_received ?? 0));
 		}
 	}
 });

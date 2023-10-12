@@ -114,6 +114,9 @@ class RentalPayment(AccountsController):
 		# rent_received = bill_amount + property_mgt_amount
 		rent_received = security_deposit = total_amount_received = excess = pre_rent = tds_amount = write_off_amount = property_mgt_amount = tot_bill_amount = 0.00
 		for a in self.items:
+			if self.is_opening == 'No':
+				a.pre_rent_amount = flt(a.pre_rent_amount_received + a.tds_pre_rent_amount, 2)
+			
 			rent_received_amt = flt(a.rent_received) + flt(a.property_management_amount) + flt(a.tds_amount) + flt(a.discount_amount)
 			a.total_amount_received = flt(a.rent_received) + flt(a.property_management_amount) + flt(a.security_deposit_amount) + flt(a.penalty) + flt(a.excess_amount) + flt(a.pre_rent_amount)
 			if a.rent_write_off:
