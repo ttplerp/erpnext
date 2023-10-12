@@ -127,8 +127,9 @@ class RentalPayment(AccountsController):
 				
 				frappe.msgprint("Rent Received amount is changed to {} as the total of Rent receive + Discount + TDS cannot be more than Bill Amount {} for tenant {}".format(a.rent_received, a.bill_amount, a.tenant_name))
 			# frappe.throw("not here! check on balance rent")
-			if a.balance_rent > 0 and (a.pre_rent_amount > 0 or a.excess_amount > 0):
-				frappe.throw("Pre rent and excess rent collection not allowed as current rent is not settled")
+			""" commented below code to enable opening accumulated rent receive in chunks with excess amount. for time being. """
+			# if a.balance_rent > 0 and (a.pre_rent_amount > 0 or a.excess_amount > 0):
+			# 	frappe.throw("Pre rent and excess rent collection not allowed as current rent is not settled")
 
 			tot_bill_amount += flt(a.bill_amount)
 			write_off_amount += flt(a.rent_write_off_amount)
