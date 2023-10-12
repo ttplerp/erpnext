@@ -900,7 +900,7 @@ class JournalEntry(AccountsController):
                     "Total Debit must be equal to Total Credit. The difference is {0}"
                 ).format(self.difference)
             )
-        # frappe.throw(str(self.total_debit)+' <--> '+str(self.total_credit) +' --> '+str(self.difference))
+
        
 
     def set_total_debit_credit(self):
