@@ -894,6 +894,12 @@ class JournalEntry(AccountsController):
 
     def validate_total_debit_and_credit(self):
         self.set_total_debit_credit()
+        if self.difference:
+            frappe.throw(
+                _(
+                    "Total Debit must be equal to Total Credit. The difference is {0}"
+                ).format(self.difference)
+            )
         # frappe.throw(str(self.total_debit)+' <--> '+str(self.total_credit) +' --> '+str(self.difference))
        
 
@@ -927,14 +933,6 @@ class JournalEntry(AccountsController):
         self.difference = flt(self.total_debit, self.precision("total_debit")) - flt(
             self.total_credit, self.precision("total_credit")
         )
-        
-        if self.difference:
-            frappe.throw(
-                _(
-                    "Total Debit must be equal to Total Credit. The difference is {0}"
-                ).format(self.difference)
-            )
-
 
     def validate_multi_currency(self):
         alternate_currency = []
