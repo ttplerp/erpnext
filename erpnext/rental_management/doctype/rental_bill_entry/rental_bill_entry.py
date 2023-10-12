@@ -52,15 +52,17 @@ class RentalBillEntry(Document):
 					and t3.docstatus != 2 
 					and t3.fiscal_year = '{prev_fiscal_year}'
 					and t3.month = '{prev_month}'
-				) and not exists(select 1
+				) or not exists(select 1
 					from `tabRental Bill` as t2
 					where t2.tenant = t1.name
 					and t2.docstatus != 2
 				))
-				OR not exists(select 1
+				and not exists(select 1
 					from `tabRental Bill` as t2
 					where t2.tenant = t1.name
 					and t2.docstatus != 2
+					and t2.fiscal_year = '{fiscal_year}'
+					and t2.month = '{month}'
 				)
 				order by t1.dzongkhag, t1.name
 		""".format(fiscal_year=self.fiscal_year, month=self.month, month_start_date=month_start, month_end_date=month_end, cond=condition, prev_fiscal_year=prev_fiscal_year, prev_month=prev_month), as_dict=True)
