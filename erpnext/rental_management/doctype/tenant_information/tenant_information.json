@@ -258,7 +258,6 @@
   },
   {
    "allow_on_submit": 1,
-   "depends_on": "eval:doc.employment_type==\"Civil Servant\"",
    "fetch_from": "tenant_department.department",
    "fieldname": "tenant_department_name",
    "fieldtype": "Data",
@@ -527,7 +526,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-10-02 16:48:14.223554",
+ "modified": "2023-10-12 12:32:12.787598",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Tenant Information",
