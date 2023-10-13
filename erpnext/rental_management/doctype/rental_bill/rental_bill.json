@@ -17,6 +17,7 @@
   "cb_1",
   "branch",
   "ministry_agency",
+  "tenant_department",
   "department",
   "dzongkhag",
   "location_id",
@@ -429,12 +430,20 @@
    "fieldtype": "Link",
    "label": "Location ID",
    "options": "Locations"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "tenant_department",
+   "fieldtype": "Link",
+   "label": "Tenant Department",
+   "options": "Tenant Department",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-10-11 11:15:20.307067",
+ "modified": "2023-10-13 18:17:26.101175",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Bill",

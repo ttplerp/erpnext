@@ -95,7 +95,7 @@ class RentalBillEntry(Document):
 			try:
 				query = """
 					select tenant_cid, tenant_name, customer, block, flat, block_no, flat_no,
-					ministry_and_agency, location_name, branch, tenant_department_name, dzongkhag, 
+					ministry_and_agency, location_name, branch, tenant_department_name, tenant_department, dzongkhag, 
 					town_category, building_category, is_nhdcl_employee, rental_amount, building_classification,
 					phone_no, allocated_date, locations, employment_type
 					from `tabTenant Information` t 
@@ -150,6 +150,7 @@ class RentalBillEntry(Document):
 							"location_id": d.locations,
 							"location": d.location_name,
 							"branch": d.branch,
+							"tenant_department": d.tenant_department,
 							"department": d.tenant_department_name,
 							"dzongkhag": d.dzongkhag,
 							"town_category": d.town_category,
