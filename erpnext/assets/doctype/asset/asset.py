@@ -1040,8 +1040,9 @@ class Asset(AccountsController):
         if self.gross_purchase_amount:
             je = frappe.new_doc("Journal Entry")
             je.flags.ignore_permissions = 1
-            je.voucher_type = "Opening Entry" if self.is_opening else "Journal Entry"
-            je.mode_of_payment = "Cash"
+            je.voucher_type = (
+                "Opening Entry" if self.is_opening == "Yes" else "Journal Entry"
+            )
             je.naming_series = "Journal Voucher"
             je.total_credit = self.gross_purchase_amount
             je.total_debit = self.gross_purchase_amount
@@ -1050,7 +1051,7 @@ class Asset(AccountsController):
             je.update(
                 {
                     "voucher_type": "Opening Entry"
-                    if self.is_opening
+                    if self.is_opening == "Yes"
                     else "Journal Entry",
                     "company": self.company,
                     "remark": self.name + " (" + self.asset_name + ") Asset Issued",
@@ -1094,14 +1095,16 @@ class Asset(AccountsController):
         if self.is_existing_asset:
             je = frappe.new_doc("Journal Entry")
             je.flags.ignore_permissions = 1
-            je.voucher_type = ("Opening Entry" if self.is_opening else "Journal Entry",)
+            je.voucher_type = (
+                "Opening Entry" if self.is_opening == "Yes" else "Journal Entry"
+            )
             je.naming_series = "Journal Voucher"
             je.total_credit = self.opening_accumulated_depreciation
             je.total_debit = self.opening_accumulated_depreciation
             je.update(
                 {
                     "voucher_type": "Opening Entry"
-                    if self.is_opening
+                    if self.is_opening == "Yes"
                     else "Journal Entry",
                     "company": self.company,
                     "remark": self.name + " (" + self.asset_name + ") Asset Issued",
