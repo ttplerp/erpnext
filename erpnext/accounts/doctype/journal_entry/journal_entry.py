@@ -11,11 +11,9 @@ from frappe.utils import (
     flt,
     fmt_money,
     formatdate,
-    getdate,
     nowdate,
     cint,
     get_link_to_form,
-    now_datetime,
     get_datetime,
 )
 
@@ -28,7 +26,6 @@ from erpnext.accounts.doctype.tax_withholding_category.tax_withholding_category 
     get_party_tax_withholding_details,
 )
 from erpnext.accounts.utils import (
-    get_tds_account,
     get_account_type,
     check_clearance_date,
 )

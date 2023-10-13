@@ -57,7 +57,6 @@ class Asset(AccountsController):
         self.set_status()
         # self.make_asset_movement()
         self.make_asset_je_entry()
-        # frappe.throw(str(self.booked_fixed_asset) +" : "+ str(self.validate_make_gl_entry()))
         if not self.booked_fixed_asset and self.validate_make_gl_entry():
             self.make_gl_entries()
 
@@ -1041,7 +1040,7 @@ class Asset(AccountsController):
         if self.gross_purchase_amount:
             je = frappe.new_doc("Journal Entry")
             je.flags.ignore_permissions = 1
-            je.voucher_type = "Journal Entry"
+            je.voucher_type = "Opening Entry" if self.is_opening else "Journal Entry"
             je.mode_of_payment = "Cash"
             je.naming_series = "Journal Voucher"
             je.total_credit = self.gross_purchase_amount
@@ -1050,7 +1049,9 @@ class Asset(AccountsController):
 
             je.update(
                 {
-                    "voucher_type": "Journal Entry",
+                    "voucher_type": "Opening Entry"
+                    if self.is_opening
+                    else "Journal Entry",
                     "company": self.company,
                     "remark": self.name + " (" + self.asset_name + ") Asset Issued",
                     "user_remark": self.name
@@ -1093,14 +1094,15 @@ class Asset(AccountsController):
         if self.is_existing_asset:
             je = frappe.new_doc("Journal Entry")
             je.flags.ignore_permissions = 1
-            je.voucher_type = "Journal Entry"
-            je.mode_of_payment = "Cash"
+            je.voucher_type = ("Opening Entry" if self.is_opening else "Journal Entry",)
             je.naming_series = "Journal Voucher"
             je.total_credit = self.opening_accumulated_depreciation
             je.total_debit = self.opening_accumulated_depreciation
             je.update(
                 {
-                    "voucher_type": "Journal Entry",
+                    "voucher_type": "Opening Entry"
+                    if self.is_opening
+                    else "Journal Entry",
                     "company": self.company,
                     "remark": self.name + " (" + self.asset_name + ") Asset Issued",
                     "user_remark": self.name
