@@ -575,8 +575,8 @@ class RentalPayment(AccountsController):
 			condition += " and dzongkhag='{}'".format(self.dzongkhag)
 		if self.ministry_and_agency:
 			condition += " and ministry_agency='{}'".format(self.ministry_and_agency)
-		if self.tenant_department_name:
-			condition += " and department='{}'".format(self.tenant_department_name)
+		if self.tenant_department:
+			condition += " and tenant_department='{}'".format(self.tenant_department)
 
 		rental_bills = frappe.db.sql("""select name as rental_bill, tenant, tenant_name, customer, tenant_cid,
 						(receivable_amount - received_amount - discount_amount - tds_amount - rent_write_off_amount) as bill_amount, 
