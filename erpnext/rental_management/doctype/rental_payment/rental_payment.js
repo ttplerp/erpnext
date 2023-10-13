@@ -140,13 +140,13 @@ frappe.ui.form.on('Rental Payment', {
 					frm.set_value("total_rent_received", r.message['total_rent_amt']);
 					frm.set_value("total_amount_received", r.message['total_bill_amount'] - r.message['rent_write_off_amount']);
 					frm.set_value("rent_write_off_amount", r.message['rent_write_off_amount']);
-					frm.set_value("month", r.message['month']);
+					// frm.set_value("month", r.message['month']);
 					frm.refresh_field("number_of_rental_bill");
 					frm.refresh_field("total_bill_amount");
 					frm.refresh_field("total_rent_received");
 					frm.refresh_field("total_amount_received");
 					frm.refresh_field("rent_write_off_amount");
-					frm.refresh_field("month");
+					// frm.refresh_field("month");
 					frm.refresh_field("items");
 					frm.dirty();
 				}
