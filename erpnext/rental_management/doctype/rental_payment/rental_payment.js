@@ -179,14 +179,14 @@ frappe.ui.form.on('Rental Payment Item', {
 	},
 	pre_rent_amount_received: function(frm, cdt, cdn) {
 		var row = locals[cdt][cdn];
-		if (row.pre_rent_amount_received > 0){
-			frappe.model.set_value(cdt, cdn, "pre_rent_amount", flt(row.pre_rent_amount_received + row.tds_pre_rent_amount ?? 0));
-		}
+		frappe.model.set_value(cdt, cdn, "pre_rent_amount", flt(row.pre_rent_amount_received + row.tds_pre_rent_amount + row.pmc_pre_rent_amount));
 	},
 	tds_pre_rent_amount: function(frm, cdt, cdn) {
 		var row = locals[cdt][cdn];
-		if (row.tds_pre_rent_amount > 0){
-			frappe.model.set_value(cdt, cdn, "pre_rent_amount", flt(row.tds_pre_rent_amount + row.pre_rent_amount_received ?? 0));
-		}
+		frappe.model.set_value(cdt, cdn, "pre_rent_amount", flt(row.tds_pre_rent_amount + row.pre_rent_amount_received + row.pmc_pre_rent_amount));
+	},
+	pmc_pre_rent_amount: function(frm, cdt, cdn) {
+		var row = locals[cdt][cdn];
+		frappe.model.set_value(cdt, cdn, "pre_rent_amount", flt(row.tds_pre_rent_amount + row.pre_rent_amount_received + row.pmc_pre_rent_amount));
 	}
 });

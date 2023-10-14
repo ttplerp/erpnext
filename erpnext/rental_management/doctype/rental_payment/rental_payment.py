@@ -607,6 +607,15 @@ class RentalPayment(AccountsController):
 			else:
 				row.rent_received = flt(d.bill_amount - d.property_management_amount)
 				row.total_amount_received = flt(d.bill_amount)
+
+				""" check if already received partially and PMC amount included. Here code to exclude PMC in remaining half bill amount"""
+				for j in frappe.db.sql("select * from `tabRental Payment Details` where parent='{}'".format(d.rental_bill), as_dict=True):
+					if flt(j.property_management_amount) and flt(j.property_management_amount) == flt(d.property_management_amount):
+						d.bill_amount = flt(d.bill_amount - d.property_management_amount)
+						d.property_management_amount = 0.0
+						row.rent_received = flt(d.bill_amount)
+						row.total_amount_received = flt(d.bill_amount)
+						
 				row.auto_calculate_penalty = 1
 			property_mgt_amount += flt(d.property_management_amount)
 			total_bill_amount += flt(d.bill_amount)
