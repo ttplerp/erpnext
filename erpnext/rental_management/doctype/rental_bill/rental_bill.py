@@ -62,7 +62,7 @@ class RentalBill(AccountsController):
 			if not len(focals):
 				frappe.throw("Missing Rental Focal for Tenant: {0} - {1}".format(self.tenant, self.tenant_name))
 			self.rental_focal = focals[0]['rental_focal']
-			self.focal_name = focals[0]['focal_name']
+			self.focal_name = focals[0]['rental_focal_name']
 		
 		self.yearmonth = str(self.fiscal_year) + str(self.month)
 	

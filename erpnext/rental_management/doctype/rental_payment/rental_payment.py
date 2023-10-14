@@ -137,6 +137,7 @@ class RentalPayment(AccountsController):
 			tot_bill_amount += flt(a.bill_amount)
 			write_off_amount += flt(a.rent_write_off_amount)
 			tds_amount += flt(a.tds_amount)
+			tds_amount += flt(a.tds_pre_rent_amount)
 			rent_received += flt(a.rent_received)
 			security_deposit += flt(a.security_deposit_amount)
 			excess += flt(a.excess_amount)
