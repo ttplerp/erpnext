@@ -56,6 +56,10 @@
   "rental_term_year",
   "percent_of_increment",
   "no_of_year_for_increment",
+  "sb_rental_focal_details",
+  "rental_focal",
+  "cb_rfd_1",
+  "rental_focal_name",
   "sb_pilot_housing_details",
   "sale_price",
   "repayment_period",
@@ -521,12 +525,36 @@
    "fieldname": "agency",
    "fieldtype": "Data",
    "label": "Name of Agency"
+  },
+  {
+   "fieldname": "sb_rental_focal_details",
+   "fieldtype": "Section Break",
+   "label": "Rental Focal Details"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "rental_focal",
+   "fieldtype": "Link",
+   "label": "Rental Focal",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "cb_rfd_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fetch_from": "rental_focal.employee_name",
+   "fieldname": "rental_focal_name",
+   "fieldtype": "Data",
+   "label": "Rental Focal Name",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-10-12 12:32:12.787598",
+ "modified": "2023-10-14 13:44:18.189395",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Tenant Information",
