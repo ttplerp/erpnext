@@ -616,7 +616,7 @@
    "link_fieldname": "journal_entry"
   }
  ],
- "modified": "2023-09-13 12:50:26.045712",
+ "modified": "2023-10-16 10:23:38.550721",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",
@@ -667,16 +667,6 @@
    "read": 1,
    "report": 1,
    "role": "Fleet Manager",
-   "share": 1
-  },
-  {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Approver",
    "share": 1
   }
  ],
