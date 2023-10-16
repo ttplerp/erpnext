@@ -118,6 +118,10 @@ def get_data(query, filters):
 	cond = ""
 	if filters.get("month"):
 		cond += """and ri.month ='{}'""".format(filters.get("month"))
+	if filters.get("ministry_and_agency"):
+		cond += """and ri.ministry_and_agency ='{}'""".format(filters.get("ministry_and_agency"))
+	if filters.get("department"):
+		cond += """and ri.tenant_department ='{}'""".format(filters.get("department"))
 	data = []
 	datas = frappe.db.sql(query, as_dict=True)
 	for d in datas:

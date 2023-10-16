@@ -37,6 +37,16 @@ frappe.query_reports["Rental Payment Details"] = {
 			options: ["","01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"],
 			default: "",
 		},
-		
+		{
+			"fieldname": "ministry_and_agency",
+			"label": __("Ministry and Agency"),
+			"fieldtype": "Link",
+			"options": "Ministry and Agency"
+		},
+		{
+			"fieldname": "department",
+			"label": __("Department"),
+			"fieldtype": "Data"
+		},
 	]
 };
