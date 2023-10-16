@@ -115,7 +115,7 @@ class RentalPayment(AccountsController):
 		rent_received = security_deposit = total_amount_received = excess = pre_rent = tds_amount = write_off_amount = property_mgt_amount = tot_bill_amount = 0.00
 		for a in self.items:
 			if self.is_opening == 'No':
-				a.pre_rent_amount = flt(a.pre_rent_amount_received + a.tds_pre_rent_amount, 2)
+				a.pre_rent_amount = flt(a.pre_rent_amount_received + a.tds_pre_rent_amount + a.pmc_pre_rent_amount, 2)
 			
 			rent_received_amt = flt(a.rent_received) + flt(a.property_management_amount) + flt(a.tds_amount) + flt(a.discount_amount)
 			a.total_amount_received = flt(a.rent_received) + flt(a.property_management_amount) + flt(a.security_deposit_amount) + flt(a.penalty) + flt(a.excess_amount) + flt(a.pre_rent_amount)
@@ -452,6 +452,24 @@ class RentalPayment(AccountsController):
 					})
 				)
 
+			if a.pmc_pre_rent_amount > 0:
+				gl_entries.append(
+					self.get_gl_dict({
+						"account": acc_property_management,
+						"credit": a.pmc_pre_rent_amount,
+						"credit_in_account_currency": self.pmc_pre_rent_amount,
+						"voucher_no": self.name,
+						"voucher_type": self.doctype,
+						"cost_center": cost_center,
+						"party": a.customer,
+						"party_type": "Customer",
+						"company": self.company,
+						"remarks": self.remarks,
+						"business_activity": business_activity
+					})
+				)
+
+
 		if self.tds_amount > 0:
 			gl_entries.append(
 				self.get_gl_dict({
@@ -524,8 +542,8 @@ class RentalPayment(AccountsController):
 		# 	gl_entries.append(
 		# 		self.get_gl_dict({
 		# 			"account": acc_property_management,
-		# 			"credit": self.property_management_amount,
-		# 			"credit_in_account_currency": self.property_management_amount,
+		# 			"credit": self.pmc_pre_rent_amount,
+		# 			"credit_in_account_currency": self.pmc_pre_rent_amount,
 		# 			"voucher_no": self.name,
 		# 			"voucher_type": self.doctype,
 		# 			"cost_center": cost_center,
