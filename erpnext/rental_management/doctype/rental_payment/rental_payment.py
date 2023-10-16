@@ -457,7 +457,7 @@ class RentalPayment(AccountsController):
 					self.get_gl_dict({
 						"account": acc_property_management,
 						"credit": a.pmc_pre_rent_amount,
-						"credit_in_account_currency": self.pmc_pre_rent_amount,
+						"credit_in_account_currency": a.pmc_pre_rent_amount,
 						"voucher_no": self.name,
 						"voucher_type": self.doctype,
 						"cost_center": cost_center,
