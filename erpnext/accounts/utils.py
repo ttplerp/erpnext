@@ -69,7 +69,8 @@ def get_fiscal_years(
     company=None,
     as_dict=False,
 ):
-    fiscal_years = frappe.cache().hget("fiscal_years", company) or []
+    fiscal_years = None
+    # fiscal_years = frappe.cache().hget("fiscal_years", company) or []
 
     if not fiscal_years:
         # if year start date is 2012-04-01, year end date should be 2013-03-31 (hence subdate)
