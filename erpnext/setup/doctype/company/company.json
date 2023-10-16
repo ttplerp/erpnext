@@ -124,6 +124,7 @@
   "meeting_and_seminars_outcountry_account",
   "travel_advance_account",
   "salary_advance_account",
+  "employee_loan_account",
   "imprest_advance_account",
   "other_settings_tab",
   "budget_detail",
@@ -1112,6 +1113,12 @@
    "fieldname": "seal",
    "fieldtype": "Attach Image",
    "label": "Company Seal"
+  },
+  {
+   "fieldname": "employee_loan_account",
+   "fieldtype": "Link",
+   "label": "Employee Loan Account",
+   "options": "Account"
   }
  ],
  "icon": "fa fa-building",
@@ -1119,7 +1126,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2023-08-18 14:49:55.230921",
+ "modified": "2023-10-16 14:05:11.250752",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",

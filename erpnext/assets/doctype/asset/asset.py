@@ -184,7 +184,7 @@ class Asset(AccountsController):
                 "Item", self.item_code, "asset_category"
             )
 
-        if not flt(self.gross_purchase_amount):
+        if not flt(self.gross_purchase_amount) and self.asset_category != "Land":
             frappe.throw(_("Gross Purchase Amount is mandatory"), frappe.MandatoryError)
 
         if is_cwip_accounting_enabled(self.asset_category):
@@ -675,69 +675,70 @@ class Asset(AccountsController):
         )
 
     def validate_asset_finance_books(self, row):
-        if flt(row.expected_value_after_useful_life) >= flt(self.gross_purchase_amount):
-            frappe.throw(
-                _(
-                    "Row {0}: Expected Value After Useful Life must be less than Gross Purchase Amount"
-                ).format(row.idx),
-                title=_("Invalid Schedule"),
-            )
-
-        if not row.depreciation_start_date:
-            if not self.available_for_use_date:
-                frappe.throw(
-                    _("Row {0}: Depreciation Start Date is required").format(row.idx),
-                    title=_("Invalid Schedule"),
-                )
-            row.depreciation_start_date = get_last_day(self.available_for_use_date)
-
-        if not self.is_existing_asset:
-            self.opening_accumulated_depreciation = 0
-            self.number_of_depreciations_booked = 0
-        else:
-            depreciable_amount = flt(self.gross_purchase_amount) - flt(
-                row.expected_value_after_useful_life
-            )
-            if flt(self.opening_accumulated_depreciation) > depreciable_amount:
+        if self.asset_category != "Land":
+            if flt(row.expected_value_after_useful_life) >= flt(self.gross_purchase_amount):
                 frappe.throw(
                     _(
-                        "Opening Accumulated Depreciation must be less than equal to {0}"
-                    ).format(depreciable_amount)
-                )
-
-            if self.opening_accumulated_depreciation:
-                if not self.number_of_depreciations_booked:
-                    frappe.throw(_("Please set Number of Depreciations Booked"))
-            else:
-                self.number_of_depreciations_booked = 0
-
-            if flt(row.total_number_of_depreciations) <= cint(
-                self.number_of_depreciations_booked
-            ):
-                frappe.throw(
-                    _(
-                        "Row {0}: Total Number of Depreciations cannot be less than or equal to Number of Depreciations Booked"
+                        "Row {0}: Expected Value After Useful Life must be less than Gross Purchase Amount"
                     ).format(row.idx),
                     title=_("Invalid Schedule"),
                 )
 
-        if row.depreciation_start_date and getdate(
-            row.depreciation_start_date
-        ) < getdate(self.purchase_date):
-            frappe.throw(
-                _(
-                    "Depreciation Row {0}: Next Depreciation Date cannot be before Purchase Date"
-                ).format(row.idx)
-            )
+            if not row.depreciation_start_date:
+                if not self.available_for_use_date:
+                    frappe.throw(
+                        _("Row {0}: Depreciation Start Date is required").format(row.idx),
+                        title=_("Invalid Schedule"),
+                    )
+                row.depreciation_start_date = get_last_day(self.available_for_use_date)
 
-        if row.depreciation_start_date and getdate(
-            row.depreciation_start_date
-        ) < getdate(self.available_for_use_date):
-            frappe.throw(
-                _(
-                    "Depreciation Row {0}: Next Depreciation Date cannot be before Available-for-use Date"
-                ).format(row.idx)
-            )
+            if not self.is_existing_asset:
+                self.opening_accumulated_depreciation = 0
+                self.number_of_depreciations_booked = 0
+            else:
+                depreciable_amount = flt(self.gross_purchase_amount) - flt(
+                    row.expected_value_after_useful_life
+                )
+                if flt(self.opening_accumulated_depreciation) > depreciable_amount:
+                    frappe.throw(
+                        _(
+                            "Opening Accumulated Depreciation must be less than equal to {0}"
+                        ).format(depreciable_amount)
+                    )
+
+                if self.opening_accumulated_depreciation:
+                    if not self.number_of_depreciations_booked:
+                        frappe.throw(_("Please set Number of Depreciations Booked"))
+                else:
+                    self.number_of_depreciations_booked = 0
+
+                if flt(row.total_number_of_depreciations) <= cint(
+                    self.number_of_depreciations_booked
+                ):
+                    frappe.throw(
+                        _(
+                            "Row {0}: Total Number of Depreciations cannot be less than or equal to Number of Depreciations Booked"
+                        ).format(row.idx),
+                        title=_("Invalid Schedule"),
+                    )
+
+            if row.depreciation_start_date and getdate(
+                row.depreciation_start_date
+            ) < getdate(self.purchase_date):
+                frappe.throw(
+                    _(
+                        "Depreciation Row {0}: Next Depreciation Date cannot be before Purchase Date"
+                    ).format(row.idx)
+                )
+
+            if row.depreciation_start_date and getdate(
+                row.depreciation_start_date
+            ) < getdate(self.available_for_use_date):
+                frappe.throw(
+                    _(
+                        "Depreciation Row {0}: Next Depreciation Date cannot be before Available-for-use Date"
+                    ).format(row.idx)
+                )
 
     # to ensure that final accumulated depreciation amount is accurate
     def get_adjusted_depreciation_amount(
@@ -916,23 +917,23 @@ class Asset(AccountsController):
             status = "Draft"
         elif self.docstatus == 1:
             status = "Submitted"
+            if self.asset_category != "Land":
+                if self.journal_entry_for_scrap:
+                    status = "Scrapped"
+                elif self.finance_books:
+                    idx = self.get_default_finance_book_idx() or 0
 
-            if self.journal_entry_for_scrap:
-                status = "Scrapped"
-            elif self.finance_books:
-                idx = self.get_default_finance_book_idx() or 0
+                    expected_value_after_useful_life = self.finance_books[
+                        idx
+                    ].expected_value_after_useful_life
+                    value_after_depreciation = self.finance_books[
+                        idx
+                    ].value_after_depreciation
 
-                expected_value_after_useful_life = self.finance_books[
-                    idx
-                ].expected_value_after_useful_life
-                value_after_depreciation = self.finance_books[
-                    idx
-                ].value_after_depreciation
-
-                if flt(value_after_depreciation) <= expected_value_after_useful_life:
-                    status = "Fully Depreciated"
-                elif flt(value_after_depreciation) < flt(self.gross_purchase_amount):
-                    status = "Partially Depreciated"
+                    if flt(value_after_depreciation) <= expected_value_after_useful_life:
+                        status = "Fully Depreciated"
+                    elif flt(value_after_depreciation) < flt(self.gross_purchase_amount):
+                        status = "Partially Depreciated"
         elif self.docstatus == 2:
             status = "Cancelled"
         return status
@@ -1092,7 +1093,7 @@ class Asset(AccountsController):
                 },
             )
             je.submit()
-        if self.is_existing_asset:
+        if self.is_existing_asset and self.asset_category != "Land":
             je = frappe.new_doc("Journal Entry")
             je.flags.ignore_permissions = 1
             je.voucher_type = (
