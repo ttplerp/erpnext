@@ -452,22 +452,22 @@ class RentalPayment(AccountsController):
 					})
 				)
 
-			if a.pmc_pre_rent_amount > 0:
-				gl_entries.append(
-					self.get_gl_dict({
-						"account": acc_property_management,
-						"credit": a.pmc_pre_rent_amount,
-						"credit_in_account_currency": a.pmc_pre_rent_amount,
-						"voucher_no": self.name,
-						"voucher_type": self.doctype,
-						"cost_center": cost_center,
-						"party": a.customer,
-						"party_type": "Customer",
-						"company": self.company,
-						"remarks": self.remarks,
-						"business_activity": business_activity
-					})
-				)
+			# if a.pmc_pre_rent_amount > 0:
+			# 	gl_entries.append(
+			# 		self.get_gl_dict({
+			# 			"account": acc_property_management,
+			# 			"credit": a.pmc_pre_rent_amount,
+			# 			"credit_in_account_currency": a.pmc_pre_rent_amount,
+			# 			"voucher_no": self.name,
+			# 			"voucher_type": self.doctype,
+			# 			"cost_center": cost_center,
+			# 			"party": a.customer,
+			# 			"party_type": "Customer",
+			# 			"company": self.company,
+			# 			"remarks": self.remarks,
+			# 			"business_activity": business_activity
+			# 		})
+			# 	)
 
 
 		if self.tds_amount > 0:
