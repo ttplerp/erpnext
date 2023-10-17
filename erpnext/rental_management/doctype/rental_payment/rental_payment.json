@@ -406,7 +406,8 @@
   {
    "fieldname": "property_management_amount",
    "fieldtype": "Currency",
-   "label": "Property Management Amount"
+   "label": "Property Management Amount",
+   "read_only": 1
   },
   {
    "allow_on_submit": 1,
@@ -419,7 +420,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-10-11 11:13:27.232109",
+ "modified": "2023-10-17 16:05:01.680947",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Payment",

@@ -115,18 +115,18 @@ class RentalPayment(AccountsController):
 		rent_received = security_deposit = total_amount_received = excess = pre_rent = tds_amount = write_off_amount = property_mgt_amount = tot_bill_amount = 0.00
 		for a in self.items:
 			if self.is_opening == 'No':
-				a.pre_rent_amount = flt(a.pre_rent_amount_received + a.tds_pre_rent_amount + a.pmc_pre_rent_amount, 2)
+				a.pre_rent_amount = flt(a.pre_rent_amount_received + a.tds_pre_rent_amount, 2)
 			
-			rent_received_amt = flt(a.rent_received) + flt(a.property_management_amount) + flt(a.tds_amount) + flt(a.discount_amount)
-			a.total_amount_received = flt(a.rent_received) + flt(a.property_management_amount) + flt(a.security_deposit_amount) + flt(a.penalty) + flt(a.excess_amount) + flt(a.pre_rent_amount)
+			rent_received_amt = flt(a.rent_received) + flt(a.tds_amount) + flt(a.discount_amount)
+			a.total_amount_received = flt(a.rent_received) + flt(a.security_deposit_amount) + flt(a.penalty) + flt(a.excess_amount) + flt(a.pre_rent_amount_received)
 			if a.rent_write_off:
 				a.balance_rent = round(a.bill_amount) - round(a.rent_received) - round(a.tds_amount) - round(a.discount_amount) - round(a.rent_write_off_amount)
 			else:
-				a.balance_rent = round(a.bill_amount) - round(a.rent_received) - round(a.tds_amount) - round(a.discount_amount) - round(a.property_management_amount)
+				a.balance_rent = round(a.bill_amount) - round(a.rent_received) - round(a.tds_amount) - round(a.discount_amount)
 				# frappe.throw(str(a.balance_rent))
 			if flt(rent_received_amt) > flt(a.bill_amount):
-				a.rent_received = flt(a.bill_amount) - flt(a.tds_amount) - flt(a.discount_amount) - flt(a.property_management_amount)
-				a.balance_rent = flt(a.bill_amount) - flt(a.rent_received) - flt(a.tds_amount) - flt(a.discount_amount) - flt(a.property_management_amount)
+				a.rent_received = flt(a.bill_amount) - flt(a.tds_amount) - flt(a.discount_amount)
+				a.balance_rent = flt(a.bill_amount) - flt(a.rent_received) - flt(a.tds_amount) - flt(a.discount_amount)
 				
 				frappe.msgprint("Rent Received amount is changed to {} as the total of Rent receive + Discount + TDS cannot be more than Bill Amount {} for tenant {}".format(a.rent_received, a.bill_amount, a.tenant_name))
 			# frappe.throw("not here! check on balance rent")
@@ -142,8 +142,8 @@ class RentalPayment(AccountsController):
 			security_deposit += flt(a.security_deposit_amount)
 			excess += flt(a.excess_amount)
 			pre_rent += flt(a.pre_rent_amount)
-			property_mgt_amount += flt(a.property_management_amount)
-			total_amount_received += flt(a.rent_received) + flt(a.security_deposit_amount) + flt(a.penalty) + flt(a.excess_amount) + flt(a.pre_rent_amount) + flt(a.property_management_amount)
+			# property_mgt_amount += flt(a.property_management_amount)
+			total_amount_received += flt(a.rent_received) + flt(a.security_deposit_amount) + flt(a.penalty) + flt(a.excess_amount) + flt(a.pre_rent_amount_received)
 
 		if self.rent_write_off:
 			self.rent_write_off_amount = write_off_amount
@@ -274,7 +274,7 @@ class RentalPayment(AccountsController):
 									"discount_amount"  : flt(a.discount_amount),
 									"tds_amount" 	   : flt(a.tds_amount),
 									"excess_amount" 	: flt(a.excess_amount),
-									"property_management_amount" 	: flt(a.property_management_amount),
+									# "property_management_amount" 	: flt(a.property_management_amount),
 									"penalty_amount" 	: flt(a.penalty),
 									"rent_write_off_amount" : flt(a.rent_write_off_amount),
 									"payment_date" 	   : self.posting_date
@@ -326,7 +326,7 @@ class RentalPayment(AccountsController):
 		excess_payment_account = frappe.db.get_single_value("Rental Account Setting", "excess_payment_account")
 		discount_account = frappe.db.get_single_value("Rental Account Setting", "discount_account")
 		security_deposit_account = frappe.db.get_single_value("Rental Account Setting", "security_deposit_account")
-		acc_property_management = frappe.db.get_single_value("Rental Account Setting", "property_management_account")
+		# acc_property_management = frappe.db.get_single_value("Rental Account Setting", "property_management_account")
 		
 		if self.is_nhdcl_employee:
 			self.post_debit_account(gl_entries, cost_center, business_activity)
@@ -360,7 +360,7 @@ class RentalPayment(AccountsController):
 				party = None
 				party_type = None
 
-			debtor_amount = flt(a.rent_received) + flt(a.discount_amount) + flt(a.tds_amount) + flt(a.rent_write_off_amount) + flt(a.property_management_amount)
+			debtor_amount = flt(a.rent_received) + flt(a.discount_amount) + flt(a.tds_amount) + flt(a.rent_write_off_amount)
 			if debtor_amount > 0 and not a.deduct_from_security_deposit:
 				gl_entries.append(
 					self.get_gl_dict({
@@ -599,7 +599,7 @@ class RentalPayment(AccountsController):
 
 		rental_bills = frappe.db.sql("""select name as rental_bill, tenant, tenant_name, customer, tenant_cid,
 						(receivable_amount - received_amount - discount_amount - tds_amount - rent_write_off_amount) as bill_amount, 
-						fiscal_year, month as month, ministry_agency as ministry_and_agency, department as tenant_department, property_management_amount, adjusted_amount
+						fiscal_year, month as month, ministry_agency as ministry_and_agency, department as tenant_department, adjusted_amount
 						from `tabRental Bill` 
 						where docstatus=1 and outstanding_amount > 0 {cond} 
 						order by tenant_name""".format(cond=condition), as_dict=1)
@@ -624,23 +624,23 @@ class RentalPayment(AccountsController):
 				row.rent_write_off_amount = flt(d.bill_amount)
 				rent_write_off_amount += flt(d.bill_amount)
 			else:
-				row.rent_received = flt(d.bill_amount - d.property_management_amount)
+				row.rent_received = flt(d.bill_amount)
 				row.total_amount_received = flt(d.bill_amount)
 
 				""" check if already received partially and PMC amount included. Here code to exclude PMC in remaining half bill amount"""
-				for j in frappe.db.sql("select * from `tabRental Payment Details` where parent='{}'".format(d.rental_bill), as_dict=True):
-					if flt(j.property_management_amount) and flt(j.property_management_amount) == flt(d.property_management_amount):
-						d.bill_amount = flt(d.bill_amount - d.property_management_amount)
-						d.property_management_amount = 0.0
-						row.rent_received = flt(d.bill_amount)
-						row.total_amount_received = flt(d.bill_amount)
+				# for j in frappe.db.sql("select * from `tabRental Payment Details` where parent='{}'".format(d.rental_bill), as_dict=True):
+				# 	if flt(j.property_management_amount) and flt(j.property_management_amount) == flt(d.property_management_amount):
+				# 		d.bill_amount = flt(d.bill_amount - d.property_management_amount)
+				# 		d.property_management_amount = 0.0
+				# 		row.rent_received = flt(d.bill_amount)
+				# 		row.total_amount_received = flt(d.bill_amount)
 						
 				row.auto_calculate_penalty = 1
-			property_mgt_amount += flt(d.property_management_amount)
+			# property_mgt_amount += flt(d.property_management_amount)
 			total_bill_amount += flt(d.bill_amount)
 			row.update(d)
 		self.number_of_rental_bill = len(rentals)
-		return {"number_of_rental_bill":self.number_of_rental_bill, "total_bill_amount":total_bill_amount, "rent_write_off_amount":rent_write_off_amount, "total_rent_amt": flt(total_bill_amount - property_mgt_amount)}
+		return {"number_of_rental_bill":self.number_of_rental_bill, "total_bill_amount":total_bill_amount, "rent_write_off_amount":rent_write_off_amount, "total_rent_amt": flt(total_bill_amount)}
 
 	@frappe.whitelist()
 	def get_security_deposit(self, customer):
