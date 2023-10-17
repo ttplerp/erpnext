@@ -32,14 +32,16 @@
   "rent_received",
   "tds_amount",
   "discount_amount",
-  "security_deposit_amount",
-  "excess_amount",
   "property_management_amount",
   "cb_4",
+  "security_deposit_amount",
+  "excess_amount",
+  "sb_pre_rent",
   "pre_rent_amount_received",
   "tds_pre_rent_amount",
   "pmc_pre_rent_amount",
   "pre_rent_amount",
+  "cb_pr_1",
   "total_amount_received",
   "balance_rent"
  ],
@@ -266,12 +268,21 @@
    "hidden": 1,
    "label": "PMC Amount on Pre Rent Amount",
    "read_only": 1
+  },
+  {
+   "fieldname": "sb_pre_rent",
+   "fieldtype": "Section Break",
+   "label": "Pre Rent Details"
+  },
+  {
+   "fieldname": "cb_pr_1",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-10-17 17:20:06.011046",
+ "modified": "2023-10-17 23:49:10.518016",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Payment Item",
