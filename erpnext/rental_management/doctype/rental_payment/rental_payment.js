@@ -185,8 +185,8 @@ frappe.ui.form.on('Rental Payment Item', {
 		var row = locals[cdt][cdn];
 		frappe.model.set_value(cdt, cdn, "pre_rent_amount", flt(row.tds_pre_rent_amount + row.pre_rent_amount_received + row.pmc_pre_rent_amount));
 	},
-	pmc_pre_rent_amount: function(frm, cdt, cdn) {
-		var row = locals[cdt][cdn];
-		frappe.model.set_value(cdt, cdn, "pre_rent_amount", flt(row.tds_pre_rent_amount + row.pre_rent_amount_received + row.pmc_pre_rent_amount));
-	}
+	// pmc_pre_rent_amount: function(frm, cdt, cdn) {
+	// 	var row = locals[cdt][cdn];
+	// 	frappe.model.set_value(cdt, cdn, "pre_rent_amount", flt(row.tds_pre_rent_amount + row.pre_rent_amount_received + row.pmc_pre_rent_amount));
+	// }
 });
