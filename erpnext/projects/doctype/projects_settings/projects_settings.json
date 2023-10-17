@@ -10,9 +10,16 @@
   "ignore_user_time_overlap",
   "ignore_employee_time_overlap",
   "account_settings_tab",
+  "sub_contractor_supplier_section",
   "national_wage_payable",
+  "national_wage",
   "column_break_dend2",
-  "foreign_wage_payable"
+  "foreign_wage_payable",
+  "foreign_wage",
+  "customer_client_section",
+  "income_account",
+  "column_break_selcu",
+  "project_invoice_account"
  ],
  "fields": [
   {
@@ -58,11 +65,49 @@
   {
    "fieldname": "column_break_dend2",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "national_wage",
+   "fieldtype": "Link",
+   "label": "National Wage (Expense Account)",
+   "options": "Account"
+  },
+  {
+   "fieldname": "foreign_wage",
+   "fieldtype": "Link",
+   "label": "Foreign Wage (Expense Account)",
+   "options": "Account"
+  },
+  {
+   "fieldname": "sub_contractor_supplier_section",
+   "fieldtype": "Section Break",
+   "label": "Sub Contractor (Supplier)"
+  },
+  {
+   "fieldname": "customer_client_section",
+   "fieldtype": "Section Break",
+   "label": "Customer (Client)"
+  },
+  {
+   "fieldname": "income_account",
+   "fieldtype": "Link",
+   "label": "Income Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "column_break_selcu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "project_invoice_account",
+   "fieldtype": "Link",
+   "label": "Project Invoice Account",
+   "options": "Account"
   }
  ],
  "issingle": 1,
  "links": [],
- "modified": "2023-10-16 17:09:06.979807",
+ "modified": "2023-10-17 10:28:21.248949",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Projects Settings",
