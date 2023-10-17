@@ -988,6 +988,7 @@ def get_outstanding_invoices(
                             "invoice_amount": flt(d.invoice_amount_in_account_currency),
                             "payment_amount": payment_amount,
                             "outstanding_amount": outstanding_amount,
+                            "allocated_amount": outstanding_amount,
                             "due_date": d.due_date,
                             "currency": d.currency,
                         }
