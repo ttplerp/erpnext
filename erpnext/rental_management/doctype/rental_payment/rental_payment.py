@@ -118,7 +118,6 @@ class RentalPayment(AccountsController):
 				a.pre_rent_amount = flt(a.pre_rent_amount_received + a.tds_pre_rent_amount, 2)
 			
 			rent_received_amt = flt(a.rent_received) + flt(a.tds_amount) + flt(a.discount_amount)
-			a.total_amount_received = flt(a.rent_received) + flt(a.security_deposit_amount) + flt(a.penalty) + flt(a.excess_amount) + flt(a.pre_rent_amount_received)
 			if a.rent_write_off:
 				a.balance_rent = round(a.bill_amount) - round(a.rent_received) - round(a.tds_amount) - round(a.discount_amount) - round(a.rent_write_off_amount)
 			else:
@@ -129,6 +128,7 @@ class RentalPayment(AccountsController):
 				a.balance_rent = flt(a.bill_amount) - flt(a.rent_received) - flt(a.tds_amount) - flt(a.discount_amount)
 				
 				frappe.msgprint("Rent Received amount is changed to {} as the total of Rent receive + Discount + TDS cannot be more than Bill Amount {} for tenant {}".format(a.rent_received, a.bill_amount, a.tenant_name))
+			a.total_amount_received = flt(a.rent_received) + flt(a.security_deposit_amount) + flt(a.penalty) + flt(a.excess_amount) + flt(a.pre_rent_amount_received)
 			# frappe.throw("not here! check on balance rent")
 			""" commented below code to enable opening accumulated rent receive in chunks with excess amount. for time being. """
 			# if a.balance_rent > 0 and (a.pre_rent_amount > 0 or a.excess_amount > 0):
