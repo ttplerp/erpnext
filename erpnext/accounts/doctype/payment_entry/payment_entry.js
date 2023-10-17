@@ -870,6 +870,7 @@ frappe.ui.form.on('Payment Entry', {
 					precision("base_paid_amount"));
 			}
 		});
+		frm.set_value("paid_amount", Math.abs(total_allocated_amount));
 		frm.set_value("total_allocated_amount", Math.abs(total_allocated_amount));
 		frm.set_value("base_total_allocated_amount", Math.abs(base_total_allocated_amount));
 
