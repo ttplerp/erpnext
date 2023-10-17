@@ -44,16 +44,22 @@ def get_columns():
 				"width": 120,
 			},
 			{
+				"label": _("Property Mgt. Amount"),
+				"fieldname": "total_prop_mgt_amount",
+				"fieldtype": "Currency",
+				"width": 150,
+			},
+			{
 				"label": _("Rent Received"),
 				"fieldname": "total_received_amount",
 				"fieldtype": "Currency",
 				"width": 120,
 			},
 			{
-				"label": _("Property Mgt. Amount"),
-				"fieldname": "total_prop_mgt_amount",
+				"label": _("TDS"),
+				"fieldname": "total_tds_amount",
 				"fieldtype": "Currency",
-				"width": 150,
+				"width": 100,
 			},
 			# {
 			# 	"label": _("Received Property Mgt. Amount"),
@@ -82,12 +88,6 @@ def get_columns():
 			{
 				"label": _("Excess Rent"),
 				"fieldname": "total_excess_amount",
-				"fieldtype": "Currency",
-				"width": 100,
-			},
-			{
-				"label": _("TDS"),
-				"fieldname": "total_tds_amount",
 				"fieldtype": "Currency",
 				"width": 100,
 			},
