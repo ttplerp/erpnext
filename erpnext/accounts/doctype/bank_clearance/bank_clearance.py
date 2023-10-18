@@ -123,6 +123,27 @@ class BankClearance(Document):
 			},
 			as_dict=1,
 		)
+		rental_payment_entries = frappe.db.sql("""
+			select
+				"Rental Payment" as payment_document, name as payment_entry,
+				cheque_no as cheque_number, cheque_date,
+				total_amount_received as credit, 0 as debit,
+				posting_date, branch as against_account, clearance_date
+			from `tabRental Payment`
+			where bank_account = %(account)s
+			and docstatus = 1
+			and posting_date between %(from)s and %(to)s
+			{condition}
+		""".format(
+				condition=condition
+			),
+			{
+				"account": self.account,
+				"from": self.from_date,
+				"to": self.to_date
+			},
+			as_dict=1
+		)
 		# frappe.throw(str(opening_brs_entries))
 
 		loan_disbursement = frappe.qb.DocType("Loan Disbursement")
@@ -220,6 +241,7 @@ class BankClearance(Document):
 			+ list(loan_disbursements)
 			+ list(loan_repayments)
 			+ list(tds_remittance)
+			+ list(rental_payment_entries)
 			+ list(opening_brs_entries),
 			key=lambda k: getdate(k["posting_date"]),
 		)
