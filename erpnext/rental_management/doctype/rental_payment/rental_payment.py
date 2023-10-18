@@ -353,14 +353,16 @@ class RentalPayment(AccountsController):
 			# frappe.throw(a.tenant)
 			# party_name = frappe.db.get_value("Customer", {"customer_code": frappe.db.get_value("Tenant Information", a.tenant, "customer_code")},"name")
 			party_name = a.customer
-			account_type = frappe.db.get_value("Account", debtor_rental, "account_type") or ""
-			# frappe.throw(party_name)
-			if account_type in ["Receivable", "Payable"]:
-				party = party_name
-				party_type = "Customer"
-			else:
-				party = None
-				party_type = None
+			# account_type = frappe.db.get_value("Account", debtor_rental, "account_type") or ""
+			
+			# if account_type in ["Receivable", "Payable"]:
+			# 	party = party_name
+			# 	party_type = "Customer"
+			# else:
+			# 	party = None
+			# 	party_type = None
+			party = party_name
+			party_type = "Customer"
 
 			debtor_amount = flt(a.rent_received) + flt(a.discount_amount) + flt(a.tds_amount) + flt(a.rent_write_off_amount)
 			if debtor_amount > 0 and not a.deduct_from_security_deposit:
@@ -382,13 +384,13 @@ class RentalPayment(AccountsController):
 					})
 				)
 			if a.pre_rent_amount > 0:
-				account_type = frappe.db.get_value("Account", pre_rent_account, "account_type") or ""
-				if account_type in ["Receivable", "Payable"]:
-					party = party_name
-					party_type = "Customer"
-				else:
-					party = None
-					party_type = None
+				# account_type = frappe.db.get_value("Account", pre_rent_account, "account_type") or ""
+				# if account_type in ["Receivable", "Payable"]:
+				# 	party = party_name
+				# 	party_type = "Customer"
+				# else:
+				# 	party = None
+				# 	party_type = None
 
 				gl_entries.append(
 					self.get_gl_dict({
@@ -407,13 +409,13 @@ class RentalPayment(AccountsController):
 				)
 			
 			if a.security_deposit_amount > 0:
-				account_type = frappe.db.get_value("Account", security_deposit_account, "account_type") or ""
-				if account_type in ["Receivable", "Payable"]:
-					party = party_name
-					party_type = "Customer"
-				else:
-					party = None
-					party_type = None
+				# account_type = frappe.db.get_value("Account", security_deposit_account, "account_type") or ""
+				# if account_type in ["Receivable", "Payable"]:
+				# 	party = party_name
+				# 	party_type = "Customer"
+				# else:
+				# 	party = None
+				# 	party_type = None
 				gl_entries.append(
 					self.get_gl_dict({
 						"account": security_deposit_account,
@@ -431,13 +433,13 @@ class RentalPayment(AccountsController):
 				)
 
 			if a.deduct_from_security_deposit and a.security_deposit > 0:
-				account_type = frappe.db.get_value("Account", security_deposit_account, "account_type") or ""
-				if account_type in ["Receivable", "Payable"]:
-					party = party_name
-					party_type = "Customer"
-				else:
-					party = None
-					party_type = None
+				# account_type = frappe.db.get_value("Account", security_deposit_account, "account_type") or ""
+				# if account_type in ["Receivable", "Payable"]:
+				# 	party = party_name
+				# 	party_type = "Customer"
+				# else:
+				# 	party = None
+				# 	party_type = None
 				gl_entries.append(
 					self.get_gl_dict({
 						"account": security_deposit_account,
@@ -453,24 +455,6 @@ class RentalPayment(AccountsController):
 						"business_activity": business_activity
 					})
 				)
-
-			# if a.pmc_pre_rent_amount > 0:
-			# 	gl_entries.append(
-			# 		self.get_gl_dict({
-			# 			"account": acc_property_management,
-			# 			"credit": a.pmc_pre_rent_amount,
-			# 			"credit_in_account_currency": a.pmc_pre_rent_amount,
-			# 			"voucher_no": self.name,
-			# 			"voucher_type": self.doctype,
-			# 			"cost_center": cost_center,
-			# 			"party": a.customer,
-			# 			"party_type": "Customer",
-			# 			"company": self.company,
-			# 			"remarks": self.remarks,
-			# 			"business_activity": business_activity
-			# 		})
-			# 	)
-
 
 		if self.tds_amount > 0:
 			gl_entries.append(
@@ -517,13 +501,15 @@ class RentalPayment(AccountsController):
 				)
 
 		if self.excess_amount > 0:
-			account_type = frappe.db.get_value("Account", excess_payment_account, "account_type") or ""
-			if account_type in ["Receivable", "Payable"]:
-				party = party_name
-				party_type = "Customer"
-			else:
-				party = None
-				party_type = None
+			# account_type = frappe.db.get_value("Account", excess_payment_account, "account_type") or ""
+			# if account_type in ["Receivable", "Payable"]:
+			# 	party = party_name
+			# 	party_type = "Customer"
+			# else:
+			# 	party = None
+			# 	party_type = None
+			party = party_name
+			party_type = "Customer"
 			gl_entries.append(
 				self.get_gl_dict({
 					"account": excess_payment_account,
@@ -539,23 +525,6 @@ class RentalPayment(AccountsController):
 					"business_activity": business_activity
 					})
 				)
-		
-		# if self.property_management_amount > 0:
-		# 	gl_entries.append(
-		# 		self.get_gl_dict({
-		# 			"account": acc_property_management,
-		# 			"credit": self.pmc_pre_rent_amount,
-		# 			"credit_in_account_currency": self.pmc_pre_rent_amount,
-		# 			"voucher_no": self.name,
-		# 			"voucher_type": self.doctype,
-		# 			"cost_center": cost_center,
-		# 			"party": party,
-		# 			"party_type": party_type,
-		# 			"company": self.company,
-		# 			"remarks": self.remarks,
-		# 			"business_activity": business_activity
-		# 			})
-		# 		)
 
 		# frappe.throw("<pre>{}</pre>".format(frappe.as_json(gl_entries)))
 		make_gl_entries(gl_entries, cancel=(self.docstatus == 2),update_outstanding="Yes", merge_entries=False)
