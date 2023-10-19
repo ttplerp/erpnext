@@ -131,6 +131,7 @@ class JournalEntry(AccountsController):
 		self.update_inter_company_jv()
 		self.update_invoice_discounting()
 		self.update_project_transaction_details() #added by Jai
+		self.link_je_to_doc(cancel=self.docstatus == 2)
 
 	def on_cancel(self):
 		from erpnext.accounts.utils import unlink_ref_doc_from_payment_entries
@@ -145,9 +146,22 @@ class JournalEntry(AccountsController):
 		self.unlink_asset_adjustment_entry()
 		self.update_invoice_discounting()
 		self.update_project_transaction_details() #added by Jai
+		self.link_je_to_doc(cancel=self.docstatus == 2)
 
 	def get_title(self):
 		return self.pay_to_recd_from or self.accounts[0].account
+
+	def link_je_to_doc(self, cancel=False):
+		ref_list = ['Pol Advance']
+		for d in self.accounts:
+			if d.reference_type in ref_list and d.reference_name:
+				doc = frappe.get_doc(d.reference_type, d.reference_name)
+				if cancel:
+					doc.journal_entry = ""
+				else:
+					doc.journal_entry = self.name
+
+				doc.save(ignore_permissions=True)
 
 	def update_advance_paid(self):
 		advance_paid = frappe._dict()
