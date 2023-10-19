@@ -4,6 +4,28 @@ from erpnext.setup.doctype.employee.employee import create_user
 import csv
 from frappe.utils import flt, cint, nowdate, getdate, formatdate
 
+def pass_leave_ledger_and_attendance_from_la():
+	count=0
+	for d in frappe.db.sql("select name, docstatus, workflow_state, status, posting_date from `tabLeave Application` where docstatus=1 and workflow_state='Approved' and status='Open' Order by posting_date", as_dict=1):
+		print(str(d.name))
+		count+=1
+		frappe.db.sql("update `tabLeave Application` set status='Approved' where name='{}'".format(d.name))
+		leave_doc = frappe.get_doc("Leave Application", d.name)
+		leave_doc.update_attendance()
+		leave_doc.create_leave_ledger_entry()
+	frappe.db.commit()
+	print(str(count))
+
+def update_rental_charges():
+	with open("/home/frappe/erp/apps/Final.csv") as f:
+		reader = csv.reader(f)
+		mylist = list(reader)
+		c = 0
+		for i in mylist:
+			
+			c += 1
+		print('DONE')
+
 def cost_center_correction_budget():
 	for d in frappe.db.get_list("Committed Budget",filters={"reference_type":"Journal Entry"},fields=["cost_center","name"]):
 		parent_cost_center = frappe.db.get_value("Cost Center",{"name":d.cost_center,"use_budget_from_parent":1},["budget_cost_center"])
@@ -164,6 +186,23 @@ def update_department():
 				where name = '{}'
 			""".format(a.name))
 			print(a.name)
+
+def update_tenant_department_id():
+	tenant = frappe.db.sql("""
+				select name as name, tenant_department_name as department_name, ministry_and_agency as ministry_and_agency from `tabTenant Information` where docstatus=1
+			""", as_dict=True)
+	for d in tenant:
+		if not d.department_name or not d.ministry_and_agency:
+			print(tenant)
+		else:
+			department_id =frappe.db.sql("""select name from `tabTenant Department` where department ="{0}" and ministry_agency ="{1}" """.format(d.department_name, d.ministry_and_agency))[0][0]
+			if department_id:
+				frappe.db.sql("""
+					update `tabTenant Information` set tenant_department ="{0}" where name="{1}"
+				""".format(department_id, d.name))
+				print(department_id)
+			else:
+				print(d.name)
 
 def update_user_pwd():
 	user_list = frappe.db.sql("select name from `tabUser` where name not in ('Administrator', 'Guest', 'lhendrup.dorji@thimphutechpark.bt', 'sonam.zangmo@thimphutechpark.bt', 'sangay.dorji@thimphutechpark.bt', 'ugyen.choden@thimphutechpark.bt')", as_dict=1)
