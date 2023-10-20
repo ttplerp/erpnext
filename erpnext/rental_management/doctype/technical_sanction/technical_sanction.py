@@ -164,6 +164,7 @@ def prepare_rts(source_name, target_doc=None):
 def prepare_bill(source_name, target_doc=None):
 	def update_docs(obj, target, source_parent):
 		target.technical_sanction = obj.name
+		target.tds_taxable_amount = target.total_gross_amount
 	doc = get_mapped_doc("Technical Sanction", source_name, {
 			"Technical Sanction": {
 				"doctype": "Technical Sanction Bill",

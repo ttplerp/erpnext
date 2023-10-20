@@ -89,7 +89,13 @@ frappe.ui.form.on('Technical Sanction Bill', {
 		}
 	},
 	"tax_withholding_category": function (frm) {
-		if (!frm.doc.tax_withholding_category) return
+
+		if (!frm.doc.tax_withholding_category) {
+			cur_frm.set_df_property("tds_account", "reqd", (frm.doc.tax_withholding_category)? 1:0);
+			cur_frm.set_value("tds_account", "");
+			cur_frm.set_value("tds_amount", 0.0);
+			return
+		}
 		calculate_tds(frm);
 		
 		cur_frm.set_df_property("tds_account", "reqd", (frm.doc.tax_withholding_category)? 1:0);
@@ -109,6 +115,7 @@ frappe.ui.form.on('Technical Sanction Item', {
 			total += item.total;
 		}
 		cur_frm.set_value("total_gross_amount", total);
+		cur_frm.set_value("tds_taxable_amount", total);
 	}
 });
 
@@ -147,7 +154,7 @@ function calculate_tds(frm) {
 			if(r.message) {
 				frm.set_value("tds_account", r.message.tax_withholding_account);
 				cur_frm.refresh_field("tds_account");
-				frm.set_value("tds_amount", flt(flt(r.message.tax_withholding_rate * frm.doc.total_gross_amount) / 100, 2) ?? 0.0);
+				frm.set_value("tds_amount", flt(flt(r.message.tax_withholding_rate * frm.doc.tds_taxable_amount) / 100, 2) ?? 0.0);
 			}
 		}
 	})

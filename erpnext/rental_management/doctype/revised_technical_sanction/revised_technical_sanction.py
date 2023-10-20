@@ -2,6 +2,7 @@
 # For license information, please see license.txt
 
 import frappe
+from frappe import _
 from frappe.model.document import Document
 from frappe.model.mapper import get_mapped_doc
 from frappe.utils import cstr, flt, fmt_money, formatdate, nowdate
@@ -113,6 +114,7 @@ def get_price_list(doctype, txt, searchfield, start, page_len, filters):
 def prepare_bill(source_name, target_doc=None):
 	def update_docs(obj, target, source_parent):
 		target.revised_technical_sanction = obj.name
+		target.tds_taxable_amount = target.total_gross_amount
 	doc = get_mapped_doc("Revised Technical Sanction", source_name, {
 		"Revised Technical Sanction": {
 			"doctype": "Technical Sanction Bill","field_map":{

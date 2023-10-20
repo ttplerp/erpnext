@@ -15,6 +15,7 @@ class TechnicalSanctionBill(AccountsController):
 	def validate(self):
 		self.calculate_total_amount()
 	
+	@frappe.whitelist()
 	def calculate_total_amount(self):
 		self.total_deduction_amount = 0
 		total = tdsAmount = 0
@@ -219,11 +220,6 @@ class TechnicalSanctionBill(AccountsController):
 					adv_doc.balance_amount    = flt(adv_doc.balance_amount) - flt(allocated_amount)
 					adv_doc.save(ignore_permissions = True)
 
-	@frappe.whitelist()
-	def get_tds_details(self, tax_withholding_category):
-		# frappe.throw(tax_withholding_category)
-		tds_account  = get_tds_account(tax_withholding_category)
-		return tds_account
 
 	@frappe.whitelist()
 	def make_journal_entry(self):
@@ -299,6 +295,12 @@ class TechnicalSanctionBill(AccountsController):
 		self.db_set("journal_entry",je.name)
 		frappe.msgprint(_('Journal Entry {} posted to Accounts').format(frappe.get_desk_link(je.doctype,je.name)))
 
+	@frappe.whitelist()
+	def get_tds_details(self, tax_withholding_category):
+		# frappe.throw(tax_withholding_category)
+		tds_account  = get_tds_account(tax_withholding_category)
+		return tds_account
+	
 @frappe.whitelist()
 def make_payment(source_name, target_doc=None):
 	def update_docs(obj, target, source_parent):
