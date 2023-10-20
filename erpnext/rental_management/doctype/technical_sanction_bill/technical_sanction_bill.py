@@ -33,6 +33,7 @@ class TechnicalSanctionBill(AccountsController):
 		self.total_amount = total - self.total_deduction_amount - tdsAmount
 
 		self.total_gross_amount = total
+		self.tds_taxable_amount = total
 
 	def on_submit(self):
 		self.make_gl_entries()
