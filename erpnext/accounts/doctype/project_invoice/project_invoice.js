@@ -154,6 +154,7 @@ frappe.ui.form.on('Project Invoice', {
 					party_type:frm.doc.party_type,
 					party:frm.doc.party,
 					company: frm.doc.company,
+					doctype: frm.doc.doctype,
 				},
 				callback: function(r) {
 					if(r.message) {
@@ -430,12 +431,13 @@ function get_advance_list(frm) {
 				if (r.message) {
 					cur_frm.clear_table("advances");
 					r.message.forEach(function (adv) {
+						console.log(adv['reference_doctype']);
 						var row = frappe.model.add_child(frm.doc, "Project Invoice Advance", "advances");
-						row.reference_doctype = "Project Advance";
+						row.reference_doctype = adv['reference_doctype'];
 						row.reference_name = adv['name'];
 						row.total_amount = flt(adv['balance_amount']);
                         row.advance_account = adv['advance_account']
-						row.allocated_amount = 0.00;
+						row.allocated_amount = flt(adv['balance_amount']);
 					});
 					frm.refresh_field("advances");
 				}

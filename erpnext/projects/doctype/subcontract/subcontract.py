@@ -219,7 +219,9 @@ def make_direct_invoice(source_name, target_doc=None):
 @frappe.whitelist()
 def make_mb_invoice(source_name, target_doc=None):
 	def update_master(source_doc, target_doc, source_parent):
-		#target_doc.invoice_title = str(target_doc.project) + " (Project Invoice)"
+		sup_country = frappe.db.get_value('Supplier', source_doc.party, 'country')
+		account = 'national_wage_payable' if sup_country == 'Bhutan' else 'foreign_wage_payable'
+		target_doc.debit_credit_account = frappe.db.get_single_value('Projects Settings', account)
 		target_doc.invoice_title = "Project Invoice ( {0} )".format(frappe.db.get_value("Project", source_doc.project, "project_name"))
 		target_doc.invoice_type = "MB Based Invoice"
 		target_doc.check_all_mb = 1
@@ -277,6 +279,10 @@ def make_book_entry(source_name, target_doc=None):
 
 @frappe.whitelist()
 def make_subcontract_advance(source_name, target_doc=None):
+	def set_missing_values(obj, target, source_parent):
+		# frappe.throw(str(obj.party))
+		# target.advance_type = 'Nationa Avance'
+		pass
 	doclist = get_mapped_doc("Subcontract", source_name, {
 		"Subcontract": {
 				"doctype": "Project Advance",
@@ -286,6 +292,7 @@ def make_subcontract_advance(source_name, target_doc=None):
 						"party": "party",
 						"party_address": "party_address"
 				},
+				"postprocess": set_missing_values,
 				}
 	}, target_doc)
 	return doclist

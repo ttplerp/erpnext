@@ -23,7 +23,7 @@ from erpnext.accounts.doctype.tax_withholding_category.tax_withholding_category 
 )
 from erpnext.accounts.general_ledger import make_gl_entries, process_gl_map
 from erpnext.accounts.party import get_party_account
-from erpnext.accounts.utils import get_account_currency, get_balance_on, get_outstanding_invoices,check_clearance_date
+from erpnext.accounts.utils import get_account_currency, get_balance_on, get_outstanding_invoices, check_clearance_date
 from erpnext.controllers.accounts_controller import (
 	AccountsController,
 	get_supplier_block_status,
@@ -1726,8 +1726,7 @@ def get_reference_details(reference_doctype, reference_name, party_account_curre
 
 
 @frappe.whitelist()
-def get_payment_entry(
-	dt, dn, party_amount=None, bank_account=None, bank_amount=None, party_type=None, payment_type=None):
+def get_payment_entry(dt, dn, party_amount=None, bank_account=None, bank_amount=None, party_type=None, payment_type=None):
 	reference_doc = None
 	is_advance = False
 	if dt in ['Sales Order','Purchase Order']:
@@ -1778,6 +1777,7 @@ def get_payment_entry(
 
 	pe.paid_from = party_account if payment_type == "Receive" else bank.account
 	pe.paid_to = party_account if payment_type == "Pay" else bank.account
+
 	pe.paid_from_account_currency = (
 		party_account_currency if payment_type == "Receive" else bank.account_currency
 	)
@@ -1899,13 +1899,15 @@ def set_party_account(dt, dn, doc, party_type,is_advance=None):
 		party_account = doc.credit_to
 	elif dt in ["Transporter Invoice","EME Invoice","Repair And Service Invoice"]:
 		party_account = doc.credit_account
+	elif dt == "Project Invoice":
+		party_account = doc.debit_credit_account
 	else:
 		party_account = get_party_account(party_type, doc.get(party_type.lower()), doc.company,is_advance)
 	return party_account
 
 
 def set_party_account_currency(dt, party_account, doc):
-	if dt not in ("Sales Invoice", "Purchase Invoice","Transporter Invoice","EME Invoice","Repair And Service Invoice"):
+	if dt not in ("Sales Invoice", "Purchase Invoice", "Project Invoice","Transporter Invoice","EME Invoice","Repair And Service Invoice"):
 		party_account_currency = get_account_currency(party_account)
 	else:
 		party_account_currency = doc.get("party_account_currency") or get_account_currency(party_account)
@@ -1945,7 +1947,8 @@ def set_grand_total_and_outstanding_amount(party_amount, dt, party_account_curre
 			grand_total = flt(doc.get("base_rounded_total") or doc.get("base_grand_total"))
 		else:
 			grand_total = flt(doc.get("rounded_total") or doc.get("grand_total"))
-		outstanding_amount = doc.get("outstanding_amount") or (grand_total - flt(doc.advance_paid))
+		outstanding_amount = doc.get("outstanding_amount")
+		# outstanding_amount = doc.get("outstanding_amount") or (grand_total - flt(doc.advance_paid))
 	return grand_total, outstanding_amount
 
 

@@ -6,6 +6,16 @@ frappe.ui.form.on('Project Advance', {
 		if(frm.doc.__islocal && frm.doc.project){
 			set_defaults(frm.doc);
 		}
+
+		// advance_type set_query
+		frm.set_query("advance_type", function () {
+			return {
+				// query: "erpnext.accounts.doctype.project_invoice.project_invoice.get_project_party_type",
+				filters: {
+					party_type: frm.doc.party_type
+				}
+			};
+		});
 	},
 	
 	refresh: function(frm) {
@@ -22,6 +32,7 @@ frappe.ui.form.on('Project Advance', {
 			// }
 		}
 	},
+	
 	advance_type: function(frm){
 		frappe.call({
 			method: "get_advance_account",

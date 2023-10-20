@@ -5,7 +5,7 @@
    "label": "Open Projects"
   }
  ],
- "content": "[{\"id\":\"EdDK6YAkCI\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Open Projects\",\"col\":12}},{\"id\":\"kpL7noam4h\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"gv4syxZCGF\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"id\":\"RSphlkSvLh\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Task\",\"col\":3}},{\"id\":\"MMavRzWfq6\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Project\",\"col\":3}},{\"id\":\"_rNcUFIvY_\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Timesheet\",\"col\":3}},{\"id\":\"Z37bazb2yI\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Project Billing Summary\",\"col\":3}},{\"id\":\"cB-KP2i3la\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":3}},{\"id\":\"x2wqCMMb3T\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"e9RqE_t3k6\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"id\":\"RrkRNIBG23\",\"type\":\"card\",\"data\":{\"card_name\":\"Projects\",\"col\":4}},{\"id\":\"DMN1Loaw68\",\"type\":\"card\",\"data\":{\"card_name\":\"Time Tracking\",\"col\":4}},{\"id\":\"7t1n-4femj\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}},{\"id\":\"aoRY66-fH-\",\"type\":\"card\",\"data\":{\"card_name\":\"Bills of Quantities\",\"col\":4}},{\"id\":\"YqL_Svx4vG\",\"type\":\"card\",\"data\":{\"card_name\":\"Payment\",\"col\":4}},{\"id\":\"G-HgFU4OGb\",\"type\":\"card\",\"data\":{\"card_name\":\"Project Reports\",\"col\":4}}]",
+ "content": "[{\"id\":\"vO4uwzOSDP\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Open Projects\",\"col\":12}},{\"id\":\"xb2MdZPCNf\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"ZKKuKUAcHO\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"id\":\"tLwRrIlakC\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Task\",\"col\":3}},{\"id\":\"jITaBNvy0G\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Project\",\"col\":3}},{\"id\":\"FLmsgfU-yd\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Timesheet\",\"col\":3}},{\"id\":\"S20pbwq6pX\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Project Billing Summary\",\"col\":3}},{\"id\":\"JAArQu_POc\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":3}},{\"id\":\"214ZFJC-Gw\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"rrGlsmc9-P\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"id\":\"RHJzpnbHIH\",\"type\":\"card\",\"data\":{\"card_name\":\"Projects\",\"col\":4}},{\"id\":\"XFFTen32al\",\"type\":\"card\",\"data\":{\"card_name\":\"Time Tracking\",\"col\":4}},{\"id\":\"JF_9SfPzM1\",\"type\":\"card\",\"data\":{\"card_name\":\"Bills of Quantities\",\"col\":4}},{\"id\":\"nEkxvd1RU6\",\"type\":\"card\",\"data\":{\"card_name\":\"Payment\",\"col\":4}},{\"id\":\"we48OnhiKl\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}},{\"id\":\"zhzDH2xeal\",\"type\":\"card\",\"data\":{\"card_name\":\"Project Reports\",\"col\":4}},{\"id\":\"cosx3HlLa0\",\"type\":\"card\",\"data\":{\"card_name\":\"Project Settings\",\"col\":4}}]",
  "creation": "2020-03-02 15:46:04.874669",
  "custom_blocks": [],
  "docstatus": 0,
@@ -182,34 +182,6 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Payment",
-   "link_count": 2,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Project Advance",
-   "link_count": 0,
-   "link_to": "Project Advance",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Project Invoice",
-   "link_count": 0,
-   "link_to": "Project Invoice",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Project Reports",
    "link_count": 1,
    "onboard": 0,
@@ -279,7 +251,7 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Project Register",
    "link_count": 0,
    "link_to": "Project Register",
@@ -289,7 +261,7 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "BOQ Register",
    "link_count": 0,
    "link_to": "BOQ Register",
@@ -299,7 +271,7 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "MB Register",
    "link_count": 0,
    "link_to": "MB Register",
@@ -309,7 +281,7 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Project Advance Register",
    "link_count": 0,
    "link_to": "Project Advance Register",
@@ -319,7 +291,7 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Project Invoice Register",
    "link_count": 0,
    "link_to": "Project Invoice Register",
@@ -329,7 +301,7 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Project Timeline Report",
    "link_count": 0,
    "link_to": "Project Timeline Report",
@@ -339,7 +311,7 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Daily Record of Measurement",
    "link_count": 0,
    "link_to": "Daily Record of Measurement",
@@ -349,17 +321,73 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Daily Work Report",
    "link_count": 0,
    "link_to": "Daily Work Report",
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Payment",
+   "link_count": 3,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Project Advance",
+   "link_count": 0,
+   "link_to": "Project Advance",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Project Invoice",
+   "link_count": 0,
+   "link_to": "Project Invoice",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Journal Entry",
+   "link_count": 0,
+   "link_to": "Journal Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Project Settings",
+   "link_count": 1,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Project Settings",
+   "link_count": 0,
+   "link_to": "Projects Settings",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-08-01 13:01:21.356783",
- "modified_by": "dechen.lhaden@thimphutechpark.bt",
+ "modified": "2023-10-17 09:44:07.201527",
+ "modified_by": "Administrator",
  "module": "Projects",
  "name": "Projects",
  "number_cards": [],

@@ -335,16 +335,16 @@
   },
   {
    "fieldname": "advance_type",
-   "fieldtype": "Select",
+   "fieldtype": "Link",
    "label": "Advance Type",
-   "options": "\nMobilization Advance\nMaterial Secure Advance\nEquipment Advance\nOther Advance",
+   "options": "Advance Type",
    "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-08-01 10:59:17.367613",
+ "modified": "2023-10-17 16:14:30.013421",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project Advance",

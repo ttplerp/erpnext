@@ -90,6 +90,7 @@
   "status",
   "custom_remarks",
   "remarks",
+  "is_advance",
   "column_break_16",
   "letter_head",
   "print_heading",
@@ -794,12 +795,19 @@
    "label": "Imprest party",
    "mandatory_depends_on": "eval:doc.settle_project_imprest==1",
    "options": "Employee"
+  },
+  {
+   "fieldname": "is_advance",
+   "fieldtype": "Select",
+   "label": "Is Advance",
+   "options": "\nYes\nNo",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-08-16 09:51:51.428978",
+ "modified": "2023-10-17 12:17:09.761187",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Payment Entry",

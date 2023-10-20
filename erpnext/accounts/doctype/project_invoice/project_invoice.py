@@ -398,7 +398,7 @@ class ProjectInvoice(AccountsController):
 				else:
 					rebate_deduction_total += item.amount
 
-		total_deduction_amount = self.calculate_total_deductions()
+		self.total_deduction_amount = self.calculate_total_deductions()
 
 		self.gross_invoice_amount    = flt(gross_invoice_amount)
 		self.net_amount              = flt(self.gross_invoice_amount)-flt(rebate_deduction_total)
@@ -418,6 +418,7 @@ class ProjectInvoice(AccountsController):
 		if self.advances:
 			for item in self.advances:
 				total_deduction_amount += item.allocated_amount
+		return total_deduction_amount
 
 	def make_gl_entry(self):
 		gl_entries = []
@@ -426,7 +427,7 @@ class ProjectInvoice(AccountsController):
 		self.make_other_deduction_gl_entry(gl_entries)
 		self.make_tds_gl_entry(gl_entries)
 		gl_entries = merge_similar_entries(gl_entries)
-		make_gl_entries(gl_entries,update_outstanding="No",cancel=self.docstatus == 2)
+		make_gl_entries(gl_entries, update_outstanding="No", cancel=self.docstatus == 2)
 						
 	def make_party_gl_entry(self, gl_entries):
 		gl_entries.append(
@@ -444,15 +445,20 @@ class ProjectInvoice(AccountsController):
 					"posting_date":self.invoice_date
 			}, self.currency)
 		)
-		expnse_account = frappe.db.get_value("Company",self.company,"project_invoice_acc_supplier" if self.party_type == "Supplier" else "project_invoice_acc_customer")
 
-		if not expnse_account:
-			frappe.throw('Set Account for {} Project Invoice in Company List'.format(self.party_type))
+		if self.party_type == "Supplier":
+			supplier_country = frappe.db.get_value('Supplier', self.party, 'country')
+			income_expense_account = frappe.db.get_single_value("Projects Settings", "national_wage" if supplier_country == "Bhutan" else "foreign_wage")
+		else:
+			income_expense_account = frappe.db.get_single_value("Projects Settings", "income_account")
+		if not income_expense_account:
+			frappe.throw('Set accounts in Projects Settings')
 
 		gl_entries.append(
 			self.get_gl_dict({
-				"account":  expnse_account,
-				"against": self.party,
+				"account":  income_expense_account,
+				"party_type": self.party_type,
+				"party": self.party,
 				"debit" if self.party_type == "Supplier" else "credit": self.net_amount,
 				"debit_in_account_currency" if self.party_type == "Supplier" else "credit_in_account_currency": self.net_amount,
 				"project": self.project,
@@ -650,17 +656,17 @@ class ProjectInvoice(AccountsController):
 		for adv in self.advances:
 			allocated_amount = 0.0
 			if flt(adv.allocated_amount) > 0:
-				balance_amount = frappe.db.get_value("Project Advance", adv.reference_name, "balance_amount")
+				if adv.reference_doctype == 'Project Advance':
+					balance_amount = frappe.db.get_value("Project Advance", adv.reference_name, "balance_amount")
+					if flt(balance_amount) < flt(adv.allocated_amount) and self.docstatus < 2:
+						frappe.throw(_("Advance#{0} : Allocated amount Nu. {1}/- cannot be more than Advance Balance Nu. {2}/-").format(adv.reference_name, "{:,.2f}".format(flt(adv.allocated_amount)),"{:,.2f}".format(flt(balance_amount))))
+					else:
+						allocated_amount = -1*flt(adv.allocated_amount) if self.docstatus == 2 else flt(adv.allocated_amount)
 
-				if flt(balance_amount) < flt(adv.allocated_amount) and self.docstatus < 2:
-					frappe.throw(_("Advance#{0} : Allocated amount Nu. {1}/- cannot be more than Advance Balance Nu. {2}/-").format(adv.reference_name, "{:,.2f}".format(flt(adv.allocated_amount)),"{:,.2f}".format(flt(balance_amount))))
-				else:
-					allocated_amount = -1*flt(adv.allocated_amount) if self.docstatus == 2 else flt(adv.allocated_amount)
-
-					adv_doc = frappe.get_doc("Project Advance", adv.reference_name)
-					adv_doc.adjustment_amount = flt(adv_doc.adjustment_amount) + flt(allocated_amount)
-					adv_doc.balance_amount    = flt(adv_doc.balance_amount) - flt(allocated_amount)
-					adv_doc.save(ignore_permissions = True)
+						adv_doc = frappe.get_doc("Project Advance", adv.reference_name)
+						adv_doc.adjustment_amount = flt(adv_doc.adjustment_amount) + flt(allocated_amount)
+						adv_doc.balance_amount    = flt(adv_doc.balance_amount) - flt(allocated_amount)
+						adv_doc.save(ignore_permissions = True)
 
 	#Cancel the consumed budget
 	def cancel_consumed(self):
@@ -736,9 +742,15 @@ def get_project_party(doctype, txt, searchfield, start, page_len, filters):
 	
 @frappe.whitelist()
 def get_advance_list(project, party_type, party):
+
+	query = frappe.db.sql("""
+				select p.name, p.paid_amount as balance_amount, p.paid_to as advance_account, 'Payment Entry' as reference_doctype  
+					   from `tabPayment Entry` p 
+					   where p.project = '{}' and p.party= '{}' and p.party_type= '{}' and p.is_advance='Yes' and p.docstatus = 1
+			""".format(project, party, party_type), as_dict=True)
 	
-	result = frappe.db.sql("""
-		select *
+	query1 = frappe.db.sql("""
+		select name, balance_amount, advance_account, 'Project Advance' as reference_doctype
 		from `tabProject Advance`
 		where project = '{project}'
 		and party_type = '{party_type}'
@@ -746,6 +758,20 @@ def get_advance_list(project, party_type, party):
 		and docstatus = 1
 		and balance_amount > 0
 		""".format(project=project, party_type=party_type, party=party), as_dict=True)
+	
+	query2 = frappe.db.sql("""
+		select je.name, (CASE WHEN party_type = 'Supplier' THEN jea.debit ELSE jea.credit END) as balance_amount, jea.account as advance_account, 'Journal Entry' as reference_doctype
+			from `tabJournal Entry` je
+			inner join `tabJournal Entry Account` jea
+			on jea.parent = je.name
+			where je.docstatus = 1 
+			and je.reference_doctype='{}'
+		 	and jea.party_type='{}' 
+			and jea.party='{}' 
+			and jea.is_advance = 'Yes'
+		""".format(project, party_type, party), as_dict=True)
+	result = query + query1 + query2
+
 	return result
 
 # Following code commented by SHIV on 2019/06/18

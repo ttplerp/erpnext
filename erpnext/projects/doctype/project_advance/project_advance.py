@@ -78,14 +78,7 @@ class ProjectAdvance(Document):
 	@frappe.whitelist()
 	def get_advance_account(self):
 		account = None
-		if self.advance_type == "Mobilization Advance":
-			account = frappe.db.get_value("Company", self.company, "mobilization_advance_account")
-		if self.advance_type == "Material Secure Advance":
-			account = frappe.db.get_value("Company", self.company, "material_secure_advance_account")
-		if self.advance_type == "Equipment Advance":
-			account = frappe.db.get_value("Company", self.company, "equipment_advance_account")
-		if self.advance_type == "Other Advance":
-			account = frappe.db.get_value("Company", self.company, "other_advance_account")
+		account = frappe.db.get_value('Advance Type', self.advance_type, 'account')
 		
 		return account
 
@@ -101,8 +94,8 @@ class ProjectAdvance(Document):
 				self.received_amount = self.advance_amount_requested
 			self.adjustment_amount = 0
 			self.balance_amount = self.advance_amount_requested
-		if not self.advance_account:
-			self.advance_account = get_party_account(self.party_type, self.party, self.company, is_advance=True)
+		# if not self.advance_account:
+		# 	self.advance_account = get_party_account(self.party_type, self.party, self.company, is_advance=True)
 		if self.project:
 			project = frappe.get_doc("Project", self.project)
 
@@ -147,8 +140,15 @@ class ProjectAdvance(Document):
 			frappe.throw(_("Advance GL is not defined in Projects Accounts Settings."))
 		adv_gl_det = frappe.db.get_value(doctype="Account", filters=adv_gl, fieldname=["account_type","is_an_advance_account"], as_dict=True)
 
+		debit_credit_acc = frappe.db.get_value("Company", self.company, "default_bank_account")
+		if not debit_credit_acc:
+			frappe.throw('Set default bank account in Company {}'.format(self.company))
+		
+		# --- Commented by Dawa Tshering on 17/10/2023
+		'''
 		# Fetching Revenue & Expense GLs
 		rev_gl, exp_gl = frappe.db.get_value("Branch",self.branch,["revenue_bank_account", "expense_bank_account"])
+		
 		if self.payment_type == "Receive":
 			if not rev_gl:
 				frappe.throw(_("Revenue GL is not defined for this Branch '{0}'.").format(self.branch), title="Data Missing")
@@ -156,17 +156,18 @@ class ProjectAdvance(Document):
 		else:
 			if not exp_gl:
 					frappe.throw(_("Expense GL is not defined for this Branch '{0}'.").format(self.branch), title="Data Missing")
-			exp_gl_det = frappe.db.get_value(doctype="Account", filters=exp_gl, fieldname=["account_type","is_an_advance_account"], as_dict=True)                                
+			exp_gl_det = frappe.db.get_value(doctype="Account", filters=exp_gl, fieldname=["account_type","is_an_advance_account"], as_dict=True)   
+		'''                             
 
 		# Posting Journal Entry
 		accounts = []
-		accounts.append({"account": adv_gl,
+		accounts.append({
+			"account": adv_gl,
 			"credit_in_account_currency" if self.party_type == "Customer" else "debit_in_account_currency": flt(self.advance_amount),
 			"cost_center": self.cost_center,
 			"party_check": 1,
 			"party_type": self.party_type,
 			"party": self.party,
-			"account_type": adv_gl_det.account_type,
 			"is_advance": "Yes" if adv_gl_det.is_an_advance_account == 1 else None,
 			"reference_type": "Project Advance",
 			"reference_name": self.name,
@@ -174,20 +175,21 @@ class ProjectAdvance(Document):
 		})
 
 		if self.party_type == "Customer":
-			accounts.append({"account": rev_gl,
+			accounts.append({
+				"account": debit_credit_acc,
 				"debit_in_account_currency": flt(self.advance_amount),
 				"cost_center": self.cost_center,
 				"party_check": 0,
-				"account_type": rev_gl_det.account_type,
-				"is_advance": "Yes" if rev_gl_det.is_an_advance_account == 1 else "No",
+				"is_advance": "Yes",
 			})
 		else:
-			accounts.append({"account": exp_gl,
+			accounts.append({
+				"account": debit_credit_acc,
 				"credit_in_account_currency": flt(self.advance_amount),
 				"cost_center": self.cost_center,
 				"party_check": 0,
-				"account_type": exp_gl_det.account_type,
-				"is_advance": "Yes" if exp_gl_det.is_an_advance_account == 1 else "No",
+				# "account_type": exp_gl_det.account_type,
+				"is_advance": "Yes",
 			})
 
 		je = frappe.new_doc("Journal Entry")

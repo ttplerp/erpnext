@@ -46,7 +46,7 @@
   "clearance_date",
   "remark",
   "reference_type",
-  "referece_doctype",
+  "reference_doctype",
   "paid_loan",
   "inter_company_journal_entry_reference",
   "column_break98",
@@ -597,11 +597,10 @@
    "fieldname": "reference_type",
    "fieldtype": "Link",
    "label": "Reference Type",
-   "options": "DocType",
-   "read_only": 1
+   "options": "DocType"
   },
   {
-   "fieldname": "referece_doctype",
+   "fieldname": "reference_doctype",
    "fieldtype": "Dynamic Link",
    "label": "Reference Doctype",
    "options": "reference_type"
@@ -616,7 +615,7 @@
    "link_fieldname": "journal_entry"
   }
  ],
- "modified": "2023-10-16 10:23:38.550721",
+ "modified": "2023-10-16 16:08:34.457589",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",

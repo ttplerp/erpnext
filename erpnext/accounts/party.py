@@ -348,7 +348,7 @@ def set_account_and_due_date(
 
 
 @frappe.whitelist()
-def get_party_account(party_type, party=None, company=None,is_advance=False):
+def get_party_account(party_type, party=None, company=None, doctype=None, is_advance=False):
 	"""Returns the account for the given `party`.
 	Will first search in party (Customer / Supplier) record, if not found,
 	will search in group (Customer Group / Supplier Group),
@@ -390,18 +390,31 @@ def get_party_account(party_type, party=None, company=None,is_advance=False):
 				{"parenttype": party_group_doctype, "parent": group, "company": company},
 				"account",
 			)
-	if not account and party_type in ["Customer", "Supplier","Employee"]:
-		if party_type == "Employee":
-			default_account_name = "employee_payable_account"
-		elif is_advance:
-			default_account_name = (
-				"advance_received_from_customer" if party_type == "Customer" else "advance_paid_to_supplier"
-			)
+	if not account and party_type in ["Customer", "Supplier", "Employee"]:
+		# ---- Added by Dawa Tshering on 16/10/2023 ----
+		if doctype == 'Project Invoice':
+			if party_type == "Employee":
+				default_account_name = "employee_payable_account"
+			elif is_advance:
+				default_account_name = (
+					"advance_received_from_customer" if party_type == "Customer" else "advance_paid_to_supplier"
+				)
+			else:
+				if party_type == "Supplier":
+					party_country = frappe.get_cached_value("Supplier", party, "country")
+					default_account_name = (
+					"national_wage_payable" if party_country == "Bhutan" else "foreign_wage_payable"
+				)
+				if party_type == "Customer":
+					party_country = frappe.get_cached_value("Customer", party, "country")
+					default_account_name = "project_invoice_account"
+			account = frappe.db.get_single_value("Projects Settings", default_account_name)
+			# ---- Added Code Ends here ---
 		else:
 			default_account_name = (
 				"default_receivable_account" if party_type == "Customer" else "default_payable_account"
 			)
-		account = frappe.get_cached_value("Company", company, default_account_name)
+			account = frappe.get_cached_value("Company", company, default_account_name)
 	existing_gle_currency = get_party_gle_currency(party_type, party, company)
 	if existing_gle_currency:
 		if account:
