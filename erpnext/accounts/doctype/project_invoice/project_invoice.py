@@ -772,7 +772,17 @@ def get_advance_list(project, party_type, party):
 			and jea.party='{}' 
 			and jea.is_advance = 'Yes'
 		""".format(project, party_type, party), as_dict=True)
-	result = query + query1 + query2
+	query3 = frappe.db.sql("""
+				select eas.name, eas_item.amount as balance_amount, eas_item.account as advance_account, 'Employee Advance Settlement' as reference_doctype
+				from `tabEmployee Advance Settlement` eas
+				inner join `tabEmployee Advance Settlement Item` eas_item
+				on eas_item.parent = eas.name
+				where eas.docstatus = 1
+				and eas.reference_doctype='{}'
+				and eas_item.party_type='{}'
+				and eas_item.party='{}'
+			""".format(project, party_type, party), as_dict=True)
+	result = query + query1 + query2 + query3
 
 	return result
 
