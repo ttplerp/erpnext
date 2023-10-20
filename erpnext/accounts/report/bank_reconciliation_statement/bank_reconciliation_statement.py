@@ -155,8 +155,8 @@ def get_payment_entries(filters):
 		select
 			"Payment Entry" as payment_document, name as payment_entry,
 			reference_no, reference_date as ref_date,
-			if(paid_to=%(account)s, received_amount, 0) as debit,
-			if(paid_from=%(account)s, paid_amount, 0) as credit,
+			if(paid_to=%(account)s, received_amount_after_tax, 0) as debit,
+			if(paid_from=%(account)s, paid_amount_after_tax, 0) as credit,
 			posting_date, ifnull(party,if(paid_from=%(account)s,paid_to,paid_from)) as against_account, clearance_date,
 			if(paid_to=%(account)s, paid_to_account_currency, paid_from_account_currency) as account_currency
 		from `tabPayment Entry`
@@ -168,7 +168,8 @@ def get_payment_entries(filters):
 		filters,
 		as_dict=1,
 	)
-
+#  Jai if(paid_from=%(account)s, paid_amount, 0) as credit, #paid amt replaced with paid_amount_after_tax
+#  if(paid_to=%(account)s, received_amount, 0) as debit, # replaced by received_amount_after_tax
 
 def get_pos_entries(filters):
 	return frappe.db.sql(
