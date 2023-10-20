@@ -404,7 +404,7 @@ frappe.ui.form.on("Project Invoice Deduction", {
 	},
 
 	deductions_add: function (frm, cdt, cdn) {
-		child = locals[cdt][cdn];
+		let child = locals[cdt][cdn];
 		frappe.model.set_value(cdt, cdn, 'cost_center', frm.doc.cost_center);
 	},
 });
