@@ -409,7 +409,7 @@ class ProjectInvoice(AccountsController):
 		if flt(self.gross_invoice_amount) == 0:
 			frappe.throw(_("Gross Invoice Amount should be greater than zero"), title="Invalid Data")
 
-	def calculate_total_deductions (self):
+	def calculate_total_deductions(self):
 		total_deduction_amount = 0 
 		if self.deductions:
 			for item in self.deductions:
@@ -418,6 +418,8 @@ class ProjectInvoice(AccountsController):
 		if self.advances:
 			for item in self.advances:
 				total_deduction_amount += item.allocated_amount
+		if self.tds_amount:
+			total_deduction_amount += self.tds_amount
 		return total_deduction_amount
 
 	def make_gl_entry(self):
