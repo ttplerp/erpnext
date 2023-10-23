@@ -662,7 +662,7 @@
    "link_fieldname": "party"
   }
  ],
- "modified": "2023-07-04 12:12:55.282867",
+ "modified": "2023-10-23 10:47:53.836196",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Customer",
@@ -741,7 +741,7 @@
    "role": "Accounts Manager"
   }
  ],
- "search_fields": "customer_name,customer_group,territory, mobile_no,primary_address",
+ "search_fields": "customer_name,customer_group,territory, mobile_no,primary_address,customer_id",
  "show_name_in_global_search": 1,
  "sort_field": "modified",
  "sort_order": "ASC",
