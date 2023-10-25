@@ -243,6 +243,7 @@ class UtilityBill(Document):
         doc.status = "Completed"
         doc.cheque_no = self.name
         doc.cheque_date = self.posting_date
+        doc.payment_status = "Payment Successful"
         if self.item:
             count_child = 0
             for a in self.item:

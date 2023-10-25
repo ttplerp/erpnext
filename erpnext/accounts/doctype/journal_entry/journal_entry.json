@@ -72,7 +72,8 @@
   "subscription_section",
   "auto_repeat",
   "bank_payment",
-  "amended_from"
+  "amended_from",
+  "utility_bill"
  ],
  "fields": [
   {
@@ -604,6 +605,14 @@
    "fieldtype": "Dynamic Link",
    "label": "Reference Doctype",
    "options": "reference_type"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "utility_bill",
+   "fieldtype": "Link",
+   "label": "Utility Bill",
+   "options": "Utility Bill",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-file-text",
@@ -615,7 +624,7 @@
    "link_fieldname": "journal_entry"
   }
  ],
- "modified": "2023-10-20 15:46:39.084320",
+ "modified": "2023-10-25 12:58:51.974985",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",
