@@ -314,6 +314,7 @@ frappe.ui.form.on('Asset', {
 				"asset": frm.doc.name,
 				"item_code": frm.doc.item_code,
 				"company": frm.doc.company,
+				"branch": frm.doc.branch,
 				"serial_no": frm.doc.serial_no,
 				"cost_center":frm.doc.cost_center
 			},
