@@ -390,7 +390,8 @@ class BuyingController(SubcontractingController):
 				message = _(
 					"Row #{0}: Received Qty must be equal to Accepted + Rejected Qty for Item {1}"
 				).format(d.idx, d.item_code)
-				frappe.throw(msg=message, title=_("Mismatch"), exc=QtyMismatchError)
+				if not d.void_deduction:
+					frappe.throw(msg=message, title=_("Mismatch"), exc=QtyMismatchError)
 
 	def validate_negative_quantity(self, item_row, field_list):
 		if self.is_return:
