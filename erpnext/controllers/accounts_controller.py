@@ -907,6 +907,7 @@ class AccountsController(TransactionBase):
 
         self.set("advances", [])
         advance_allocated = total_advance = 0
+        # frappe.msgprint(str(res))
         for d in res:
             if d.against_order:
                 if self.doctype == "Sales Invoice":
