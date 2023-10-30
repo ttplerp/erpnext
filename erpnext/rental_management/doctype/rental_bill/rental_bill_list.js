@@ -7,7 +7,7 @@ frappe.listview_settings['Rental Bill'] = {
             else if (doc.receivable_amount == doc.rent_write_off_amount && doc.adjusted_amount == 0){
                     return ["Written-off", "purple"];
             }
-            else if (doc.receivable_amount == (doc.received_amount + doc.discount_amount + doc.tds_amount + doc.adjusted_amount)) {
+            else if (doc.receivable_amount == (doc.received_amount + doc.discount_amount + doc.tds_amount)) {
                     return ["Received", "green"];
             }
             else if (doc.receivable_amount > (doc.received_amount + doc.discount_amount + doc.tds_amount) && doc.received_amount > 0) {
