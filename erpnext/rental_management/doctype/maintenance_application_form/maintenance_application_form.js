@@ -31,7 +31,6 @@ frappe.ui.form.on('Maintenance Application Form', {
 			return {
 				filters: [
 					["block_no", "=", frm.doc.block_no],
-					["status", "not in", ["Allocated", "Under Maintenance"]]
 				]
 			}
 		});
