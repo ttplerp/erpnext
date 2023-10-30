@@ -308,7 +308,7 @@ def reset_asset_value_for_scrap_sales(asset_name, posting_date):
 			je.submit()
 			value_after_depreciation, finance_book_name = frappe.db.get_value('Asset Finance Book',
 															{'finance_book':dtl[0].finance_book,
-															'asset_sub_category':asset.asset_sub_category,
+															# 'asset_sub_category':asset.asset_sub_category,
 															'parent':asset.name},['value_after_depreciation','name'])
 			value_after_depreciation = flt(value_after_depreciation) - flt(pro_rate_depreciation_amount)
 
