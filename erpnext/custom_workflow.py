@@ -606,24 +606,18 @@ class CustomWorkflow:
             )
 
         if self.doc.doctype == "Repair And Services":
-            self.expense_approver = frappe.db.get_value(
-                "Employee",
-                {
-                    "user_id": frappe.db.get_value(
-                        "Employee", {"user_id": self.doc.owner}, "expense_approver"
-                    )
-                },
-                self.field_list,
-            )
+            self.expense_approver = frappe.db.get_value("Employee", {"user_id": frappe.db.get_value("Employee", {"user_id": self.doc.owner}, "expense_approver")}, self.field_list,)
+            
             self.fleet_mto = frappe.db.get_value(
                 "Employee",
                 {
-                    "user_id": frappe.db.get_single_value(
-                        "Maintenance Settings", "fleet_mto"
+                    "user_id": frappe.db.get_value(
+                        "Branch", self.doc.branch, "imprest_approver"
                     ),
                 },
                 self.field_list,
             )
+
         if self.doc.doctype == "Vehicle Request":
             if frappe.db.get_value("Employee", self.doc.employee, "expense_approver"):
                 self.expense_approver = frappe.db.get_value(
@@ -2823,8 +2817,8 @@ class CustomWorkflow:
                 )
 
     def repair_services(self):
-        # Maintenance User ->Waiting Supervisor -> Waiting for MTO GM Approval
-        # Maintenance User - Fleet Verifier - Fleet Manager
+        # Maintenance User ->Waiting Supervisor -> Waiting Approval
+        # Maintenance User - Fleet Verifier - Accounts Manager
         if self.new_state.lower() in ("Draft".lower()):
             if self.doc.owner != frappe.session.user:
                 frappe.throw(
@@ -2836,7 +2830,7 @@ class CustomWorkflow:
                     "Only the document owner can Apply this rapair and service"
                 )
             self.set_approver("Supervisor")
-        elif self.new_state.lower() in (" Waiting Mechanical GM Approval".lower()):
+        elif self.new_state.lower() in (" Waiting Approval".lower()):
             if self.doc.approver != frappe.session.user:
                 frappe.throw(
                     "Only the document Forward can Apply this rapair and service"
