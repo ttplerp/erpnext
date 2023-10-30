@@ -1093,7 +1093,7 @@ class Asset(AccountsController):
             )
             je.submit()
 
-        days = date_diff(self.purchase_date, self.available_for_use_date)
+        days = date_diff(self.available_for_use_date, self.purchase_date)
         if self.is_existing_asset and self.asset_category != "Land" and days > 30:
             je = frappe.new_doc("Journal Entry")
             je.flags.ignore_permissions = 1
@@ -1360,7 +1360,11 @@ def get_item_details(item_code, asset_category, asset_sub_category):
     asset_category_doc = frappe.get_doc("Asset Category", asset_category)
     books = []
     for d in asset_category_doc.finance_books:
-        if d.asset_sub_category == asset_sub_category:
+        if (
+            d.asset_sub_category
+            and asset_sub_category
+            and (d.asset_sub_category == asset_sub_category)
+        ):
             books.append(
                 {
                     "finance_book": d.finance_book,
