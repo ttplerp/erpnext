@@ -2158,6 +2158,7 @@ class PurchaseInvoice(BuyingController):
                 "referece_doctype": self.name,
                 "total_debit": flt(total, 2),
                 "total_credit": flt(total, 2),
+                "settle_project_imprest": self.settle_project_imprest,
             }
         )
 
@@ -2434,7 +2435,11 @@ def post_journal_entry(source_name, target_doc=None):
         {
             "Purchase Invoice": {
                 "doctype": "Journal Entry",
-                "fieldmap": {"branch": "branch", "posting_date": "posting_date"},
+                "fieldmap": {
+                    "branch": "branch",
+                    "posting_date": "posting_date",
+                    "settle_project_imprest": "settle_project_imprest",
+                },
             },
         },
         target_doc,

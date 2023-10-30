@@ -14,6 +14,7 @@
   "title",
   "voucher_type",
   "naming_series",
+  "settle_project_imprest",
   "finance_book",
   "process_deferred_accounting",
   "reversal_of",
@@ -613,6 +614,13 @@
    "label": "Utility Bill",
    "options": "Utility Bill",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "settle_project_imprest",
+   "fieldtype": "Check",
+   "label": "Settle Project Imprest",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-file-text",
@@ -624,7 +632,7 @@
    "link_fieldname": "journal_entry"
   }
  ],
- "modified": "2023-10-25 12:58:51.974985",
+ "modified": "2023-10-30 10:29:00.581762",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",

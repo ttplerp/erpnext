@@ -91,7 +91,7 @@ class InsuranceandRegistration(Document):
                 frappe.throw("Setup Fleet Expense Account in Company".format())
         if not default_bank_account:
             frappe.throw("Setup Default Bank Account in Branch {}".format(self.branch))
-        posting_date
+
         je.update(
             {
                 "doctype": "Journal Entry",
@@ -112,6 +112,7 @@ class InsuranceandRegistration(Document):
                 "branch": self.branch,
                 "total_debit": args.total_amount,
                 "total_credit": args.total_amount,
+                "settle_project_imprest": self.settle_imprest_advance,
             }
         )
         je.append(

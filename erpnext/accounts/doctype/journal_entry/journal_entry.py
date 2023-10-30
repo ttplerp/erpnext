@@ -111,7 +111,9 @@ class JournalEntry(AccountsController):
             self.validate_against_jv()
             self.validate_stock_accounts()
 
-        self.validate_reference_doc()
+        if cint(self.settle_project_imprest) != 1:
+            self.validate_reference_doc()
+
         if self.docstatus == 0:
             self.set_against_account()
         self.create_remarks()
@@ -898,11 +900,9 @@ class JournalEntry(AccountsController):
                 ).format(self.difference)
             )
 
-       
-
     def set_total_debit_credit(self):
         self.total_debit, self.total_credit, self.difference = 0, 0, 0
-        
+
         for d in self.get("accounts"):
             tax_amount, tax_dr, tax_cr = 0, 0, 0
             if d.debit and d.credit:
@@ -2047,7 +2047,7 @@ def make_bank_payment(source_name, target_doc=None):
         {
             "Journal Entry": {
                 "doctype": "Bank Payment",
-                "field_map": {
+            "field_map": {
                     "name": "transaction_no",
                 },
                 "postprocess": set_missing_values,

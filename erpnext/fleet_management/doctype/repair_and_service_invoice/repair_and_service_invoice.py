@@ -224,6 +224,7 @@ class RepairAndServiceInvoice(AccountsController):
                 "referece_doctype": self.name,
                 "total_debit": self.outstanding_amount,
                 "total_credit": self.outstanding_amount,
+                "settle_project_imprest": self.settle_imprest_advance,
             }
         )
         je.append(

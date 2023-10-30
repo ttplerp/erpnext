@@ -135,9 +135,29 @@ class POLReceive(StockController):
         #     "Equipment Category", self.equipment_category, "r_m_expense_account"
         # )
         # if self.direct_consumption:
-        debit_account = frappe.db.get_value(
-            "Equipment Category", self.equipment_category, "pol_advance_account"
+        (
+            enable_pol_receive_acc,
+            pol_receive_account,
+            pol_advance_account,
+        ) = frappe.db.get_value(
+            "Equipment Category",
+            self.equipment_category,
+            [
+                "enable_pol_receive_account",
+                "pol_receive_account",
+                "pol_advance_account",
+            ],
         )
+        if (
+            enable_pol_receive_acc == 1
+            and frappe.db.get_value("Equipment", self.equipment, "is_container") == 1
+        ):
+            debit_account = pol_receive_account
+        else:
+            debit_account = pol_advance_account
+            # debit_account = frappe.db.get_value(
+            #     "Equipment Category", self.equipment_category, "pol_advance_account"
+            # )
         if not debit_account and self.receive_in_barrel == 1:
             debit_account = frappe.db.get_value("Warehouse", self.warehouse, "account")
 
@@ -201,6 +221,7 @@ class POLReceive(StockController):
                 "accounts": accounts,
                 "total_debit": flt(self.total_amount, 2),
                 "total_credit": flt(self.total_amount, 2),
+                "settle_project_imprest": self.settle_imprest_advance,
             }
         )
         # frappe.throw('{}'.format(accounts))
