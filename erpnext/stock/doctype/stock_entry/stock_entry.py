@@ -1362,6 +1362,9 @@ class StockEntry(StockController):
 					or item_group_defaults.get("expense_account")
 					or frappe.get_cached_value("Company", self.company, "default_expense_account")
 				)
+		elif self.stock_entry_type == "Material Transfer for Manufacture" or self.stock_entry_type == "Manufacture":
+			ret["expense_account"] = frappe.db.get_value('Company', self.company, 'default_expense_account')
+		
 		for company_field, field in {
 			"stock_adjustment_account": "expense_account",
 			"cost_center": "cost_center",

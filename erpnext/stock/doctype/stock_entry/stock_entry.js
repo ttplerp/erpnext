@@ -343,6 +343,11 @@ frappe.ui.form.on('Stock Entry', {
 		frm.trigger("setup_quality_inspection");
 		attach_bom_items(frm.doc.bom_no)
 
+		if (frm.doc.stock_entry_type == 'Manufacture' || frm.doc.stock_entry_type == "Material Transfer for Manufacture"){
+			frm.doc.items.map(v=> v.expense_account = 'Cost of Goods Manufactured - NHDCL')
+			frm.refresh_field('items')
+		}
+
 	},
 
 	create_custom_buttons: function (frm) {
