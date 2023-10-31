@@ -97,6 +97,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "fetch_from": "tenant.ministry_and_agency",
    "fieldname": "ministry_and_agency",
    "fieldtype": "Link",
    "label": "Ministry and Agency",
@@ -163,6 +164,7 @@
    "read_only": 1
   },
   {
+   "fetch_from": "tenant.tenant_department",
    "fieldname": "tenant_department",
    "fieldtype": "Link",
    "label": "Tenant Department ID",
@@ -423,7 +425,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-10-17 18:29:21.528671",
+ "modified": "2023-10-31 12:18:34.197355",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Payment",
