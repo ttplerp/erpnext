@@ -13,7 +13,10 @@
   "disabled",
   "pol_advance_account",
   "r_m_expense_account",
-  "hiring_rate_revision"
+  "hiring_rate_revision",
+  "cb_01",
+  "enable_pol_receive_account",
+  "pol_receive_account"
  ],
  "fields": [
   {
@@ -56,11 +59,28 @@
    "label": "POL Advance Account",
    "options": "Account",
    "reqd": 1
+  },
+  {
+   "fieldname": "cb_01",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "enable_pol_receive_account",
+   "fieldname": "pol_receive_account",
+   "fieldtype": "Link",
+   "label": "POL Receive Account",
+   "options": "Account"
+  },
+  {
+   "default": "0",
+   "fieldname": "enable_pol_receive_account",
+   "fieldtype": "Check",
+   "label": "Enable POL Receive Account"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-07 16:19:50.822996",
+ "modified": "2023-10-27 11:33:13.577879",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment Category",

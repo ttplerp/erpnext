@@ -43,6 +43,9 @@ frappe.ui.form.on('POL Issue', {
 	pol_type: function(frm){
 		set_item_rate(frm)
 	},
+	tanker: function(frm){
+		set_item_rate(frm)
+	},
 	warehouse: function(frm){
 		set_item_rate(frm)
 	},

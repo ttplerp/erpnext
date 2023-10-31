@@ -24,6 +24,7 @@ class POLIssue(StockController):
         check_future_date(self.posting_date)
         self.validate_uom_is_integer("stock_uom", "qty")
         self.update_items()
+        self.check_balance()
         self.validate_data()
 
     def validate_data(self):
@@ -91,8 +92,11 @@ class POLIssue(StockController):
         self.total_quantity = total_quantity
 
     def on_submit(self):
+        
         if self.receive_in_barrel == 0:
             self.check_tanker_hsd_balance()
+            if self.tanker:
+                self.post_journal_entry()
         elif self.receive_in_barrel == 1:
             self.update_stock_ledger()
             self.post_journal_entry()
@@ -135,6 +139,26 @@ class POLIssue(StockController):
                     )
                 )
 
+    def check_balance(self):
+        received_data = frappe.db.sql(f"""
+            select sum(qty) as qty from `tabPOL Receive` where docstatus = 1
+            and equipment = '{self.tanker}' and pol_type = '{self.pol_type}'
+            and direct_consumption = 0
+        """, as_dict=1)
+        issued_data = frappe.db.sql(f"""
+            select sum(b.qty) as qty from `tabPOL Issue` a, `tabPOL Issue Items` b where b.parent = a.name and a.docstatus = 1
+            and a.tanker = '{self.tanker}' and a.pol_type = '{self.pol_type}' and a.name != '{self.name}'
+        """, as_dict=1)
+        balance_qty = flt(received_data[0].qty) - flt(issued_data[0].qty)
+        qty = 0
+        for a in self.items:
+            qty += a.qty
+        if flt(qty) > flt(balance_qty):
+            frappe.throw(f"""
+                            Not Enough Balance for POL Item {self.item_name} in Tanker {self.tanker}. Balance is less by {flt(qty)-flt(balance_qty)}
+                         """)
+        
+
     def on_cancel(self):
         if self.receive_in_barrel == 1:
             self.update_stock_ledger()
@@ -164,11 +188,15 @@ class POLIssue(StockController):
         # if self.settle_imprest_advance == 1:
         # 	credit_account = frappe.get_value("Company", self.company, "imprest_advance_account")
         # debit_account = frappe.db.get_value("Equipment Category", self.equipment_category, "r_m_expense_account")
-        credit_account = frappe.db.get_value("Warehouse", self.warehouse, "account")
-        if not credit_account:
-            credit_account = frappe.get_value(
-                "Company", self.company, "default_bank_account"
-            )
+        credit_account = None
+        if self.receive_in_barrel == 1 and not self.tanker:
+            credit_account = frappe.db.get_value("Warehouse", self.warehouse, "account")
+            if not credit_account:
+                credit_account = frappe.get_value(
+                    "Company", self.company, "default_bank_account"
+                )
+        elif self.tanker:
+            credit_account = frappe.db.get_value("Equipment Category", frappe.db.get_value("Equipment", self.tanker, "equipment_category"),"pol_receive_account")
         # Posting Journal Entry
         je = frappe.new_doc("Journal Entry")
         je.flags.ignore_permissions = 1
@@ -432,8 +460,26 @@ class POLIssue(StockController):
                 "voucher_no": self.name,
             }
         )
-        rate = get_incoming_rate(args, True)
+        if self.receive_in_barrel == 1:
+            rate = get_incoming_rate(args, True)
+        else:
+            rate = self.get_pol_receive_rate()
         return rate
+
+    def get_pol_receive_rate(self):
+        received_data = frappe.db.sql(f"""
+            select sum(qty) as qty, sum(qty*rate) as amount from `tabPOL Receive` where docstatus = 1
+            and equipment = '{self.tanker}' and pol_type = '{self.pol_type}'
+            and direct_consumption = 0
+        """, as_dict=1)
+        issued_data = frappe.db.sql(f"""
+            select sum(b.qty) as qty, sum(b.qty*b.rate) as amount from `tabPOL Issue` a, `tabPOL Issue Items` b where b.parent = a.name and a.docstatus = 1
+            and a.tanker = '{self.tanker}' and a.pol_type = '{self.pol_type}' and a.name != '{self.name}'
+        """, as_dict=1)
+        balance_qty = flt(received_data[0].qty) - flt(issued_data[0].qty)
+        balance_amount = flt(received_data[0].amount) - flt(issued_data[0].amount)
+        if flt(balance_qty) > 0:
+            return flt(balance_amount)/flt(balance_qty)
 
     # def update_stock_ledger(self):
     # 	sl_entries = []
@@ -447,3 +493,18 @@ class POLIssue(StockController):
     # 	if self.docstatus == 2:
     # 		sl_entries.reverse()
     # 	self.make_sl_entries(sl_entries, self.amended_from and 'Yes' or 'No')
+
+# Added by Dawa Tshering on 25/10/2023
+def get_permission_query_conditions(user):
+    if not user:
+        user = frappe.session.user
+    user_roles = frappe.get_roles(user)
+
+    if user == "Administrator":
+        return
+    if "Fleet Manager" in user_roles:
+        return
+
+    return """(
+		`tabPol Issue`.owner = '{user}'
+	)""".format(user=user)
