@@ -60,8 +60,8 @@ class RentalPayment(AccountsController):
 			total_penalty = 0.00
 			for a in self.items:
 				if not a.write_off_penalty:
-					if a.bill_amount:
-						if a.auto_calculate_penalty:
+					if a.auto_calculate_penalty and a.penalty == 0:
+						if a.bill_amount:
 							bill_date = frappe.db.get_value("Rental Bill", a.rental_bill, "posting_date")
 							last_date = get_last_day(bill_date)
 							no_of_days = date_diff(self.posting_date, last_date)
@@ -86,9 +86,9 @@ class RentalPayment(AccountsController):
 								total_penalty += a.penalty
 							else:
 								frappe.throw("Penalty Rate and Payment Due Date are missing in Rental Setting")
-						else:
-							if a.penalty > 0:
-								total_penalty += a.penalty
+					else:
+						if a.penalty > 0:
+							total_penalty += a.penalty
 				else:
 					a.penalty = 0.00					
 			self.penalty_amount = round(total_penalty)
