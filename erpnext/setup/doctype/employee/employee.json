@@ -58,7 +58,8 @@
   "division",
   "section",
   "unit",
-  "evaluator_details_section",
+  "performance_evaluation_section",
+  "include_in_performance_evaluation",
   "evaluators",
   "employment_details",
   "scheduled_confirmation_date",
@@ -999,11 +1000,6 @@
    "label": "Employee Qualification"
   },
   {
-   "fieldname": "evaluator_details_section",
-   "fieldtype": "Section Break",
-   "label": "PMS Evaluator Details"
-  },
-  {
    "depends_on": "eval:doc.employment_status==\"Temporary\";",
    "fieldname": "temporary_end_date",
    "fieldtype": "Date",
@@ -1080,13 +1076,24 @@
    "fieldname": "country",
    "fieldtype": "Data",
    "label": "Country"
+  },
+  {
+   "default": "0",
+   "fieldname": "include_in_performance_evaluation",
+   "fieldtype": "Check",
+   "label": "Include in Performance Evaluation"
+  },
+  {
+   "fieldname": "performance_evaluation_section",
+   "fieldtype": "Section Break",
+   "label": "Performance Evaluation"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-09-22 15:02:09.156998",
+ "modified": "2023-11-02 11:47:42.108351",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
