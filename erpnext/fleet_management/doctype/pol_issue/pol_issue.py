@@ -99,6 +99,7 @@ class POLIssue(StockController):
                 self.post_journal_entry()
         elif self.receive_in_barrel == 1:
             self.update_stock_ledger()
+            self.repost_future_sle_and_gle()
             self.post_journal_entry()
         self.make_pol_entry()
 
@@ -162,6 +163,7 @@ class POLIssue(StockController):
     def on_cancel(self):
         if self.receive_in_barrel == 1:
             self.update_stock_ledger()
+            self.repost_future_sle_and_gle()
         self.delete_pol_entry()
 
     def check_tanker_hsd_balance(self):

@@ -31,6 +31,7 @@ class POLReceive(StockController):
     def on_submit(self):
         if self.direct_consumption == 0 and self.receive_in_barrel == 1:
             self.update_stock_ledger()
+            self.repost_future_sle_and_gle()
         self.update_pol_expense()
         self.make_pol_entry()
         self.post_journal_entry()
@@ -82,6 +83,7 @@ class POLReceive(StockController):
         # notify_workflow_states(self)
         if self.direct_consumption == 0 and self.receive_in_barrel == 1:
             self.update_stock_ledger()
+            self.repost_future_sle_and_gle()
         # self.make_gl_entries()
 
     def update_stock_ledger(self):
