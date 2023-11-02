@@ -135,19 +135,21 @@ class POLReceive(StockController):
         #     "Equipment Category", self.equipment_category, "r_m_expense_account"
         # )
         # if self.direct_consumption:
-        (
-            enable_pol_receive_acc,
-            pol_receive_account,
-            pol_advance_account,
-        ) = frappe.db.get_value(
-            "Equipment Category",
-            self.equipment_category,
-            [
-                "enable_pol_receive_account",
-                "pol_receive_account",
-                "pol_advance_account",
-            ],
-        )
+        enable_pol_receive_acc = pol_receive_account = pol_advance_account = None
+        if self.equipment:
+            (
+                enable_pol_receive_acc,
+                pol_receive_account,
+                pol_advance_account,
+            ) = frappe.db.get_value(
+                "Equipment Category",
+                self.equipment_category,
+                [
+                    "enable_pol_receive_account",
+                    "pol_receive_account",
+                    "pol_advance_account",
+                ],
+            )
         if (
             enable_pol_receive_acc == 1
             and frappe.db.get_value("Equipment", self.equipment, "is_container") == 1
