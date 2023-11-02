@@ -20,6 +20,7 @@ class POLIssue(StockController):
 		check_future_date(self.posting_date)
 		self.validate_uom_is_integer("stock_uom", "qty")
 		self.update_items()
+		self.validate_duplicate_equipment()
 		self.validate_data()
 	
 	def validate_data(self):
@@ -67,6 +68,7 @@ class POLIssue(StockController):
 		self.total_quantity = total_quantity
 	
 	def on_submit(self):
+		self.validate_duplicate_equipment()
 		self.check_tanker_hsd_balance()
 		self.make_pol_entry()
 		self.make_gl_entries()
@@ -160,6 +162,12 @@ class POLIssue(StockController):
 
 	def delete_pol_entry(self):
 		frappe.db.sql("delete from `tabPOL Entry` where reference = %s", self.name)
+	def validate_duplicate_equipment(self):
+		for a in self.items:
+			for b in self.items:
+				if a.idx != b.idx:
+					if a.equipment == b.equipment and a.equipment_category == b.equipment_category:
+						frappe.throw("duplicate equipment {0} at row {1} and row {2}".format(a.equipment,a.idx,b.idx))
 
 	def update_items(self):
 		for a in self.items:
