@@ -104,7 +104,7 @@ frappe.ui.form.on('Rental Payment', {
 			return {
 				"filters": [
 					["docstatus", "=", 1],
-					["status", "=", "Allocated"],
+					// ["status", "=", "Allocated"],
 				]
 			};
 		});
@@ -112,7 +112,7 @@ frappe.ui.form.on('Rental Payment', {
 			return {
 				filters: [
 					["docstatus", "=", 1],
-					["status", "=", "Allocated"],
+					// ["status", "=", "Allocated"],
 					["branch", "=", frm.doc.branch],
 				]
 			}
