@@ -1,0 +1,538 @@
+{
+ "actions": [],
+ "autoname": "REV.YY.MM.DD.####",
+ "creation": "2021-03-09 10:20:42.851171",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "html_1",
+  "section_break_2",
+  "employee",
+  "pms_group",
+  "required_to_set_target",
+  "grade",
+  "department",
+  "column_break_2",
+  "old_employee_id",
+  "employee_name",
+  "review_date",
+  "division",
+  "column_break_10",
+  "branch",
+  "target",
+  "section",
+  "column_break_13",
+  "designation",
+  "region",
+  "unit",
+  "user_id",
+  "pms_calendar_section",
+  "pms_calendar",
+  "company",
+  "column_break_17",
+  "start_date",
+  "negative_target",
+  "column_break_16",
+  "end_date",
+  "section_break_30",
+  "max_weightage_for_target",
+  "max_no_of_target",
+  "column_break_33",
+  "min_weightage_for_target",
+  "min_no_of_target",
+  "column_break_36",
+  "total_weightage",
+  "part_a_section",
+  "get_target",
+  "review_target_item",
+  "section_break_12",
+  "business_target",
+  "part_b_section",
+  "get_competency",
+  "review_competency_item",
+  "part_c_section",
+  "additional_items",
+  "approver_details_section",
+  "approver",
+  "set_manual_approver",
+  "column_break_30",
+  "approver_name",
+  "column_break_38",
+  "approver_designation",
+  "amended_from",
+  "rev_workflow_state",
+  "other_details_section",
+  "reason",
+  "column_break_40",
+  "reference"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Employee ID",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Read Only",
+   "in_list_view": 1,
+   "label": "Employee Name"
+  },
+  {
+   "fetch_from": "employee.department",
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.pms_group",
+   "fieldname": "pms_group",
+   "fieldtype": "Link",
+   "label": "PMS Group",
+   "options": "PMS Group",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_12",
+   "fieldtype": "Section Break",
+   "label": "Business Activity Target For Negative Points"
+  },
+  {
+   "fetch_from": "employee.grade",
+   "fieldname": "grade",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Grade",
+   "options": "Employee Grade",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "depends_on": "eval:doc.employee",
+   "fieldname": "part_b_section",
+   "fieldtype": "Section Break",
+   "label": "Form II:(Work-Related Competencies and Values)"
+  },
+  {
+   "fetch_from": "employee.old_employee_id",
+   "fieldname": "old_employee_id",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Old Employee ID",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.required_to_set_target == 1",
+   "fieldname": "part_a_section",
+   "fieldtype": "Section Break",
+   "label": "Form I: (Work Performance: Targets & Accomplishment)"
+  },
+  {
+   "depends_on": "eval:doc.pms_calendar",
+   "fieldname": "part_c_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Part C: Review on achievements by the appraisee which were not planned"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Review",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fetch_from": "pms_group.required_to_set_target",
+   "fieldname": "required_to_set_target",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Require to set target",
+   "read_only": 1
+  },
+  {
+   "fieldname": "pms_calendar_section",
+   "fieldtype": "Section Break",
+   "label": "PMS Calendar"
+  },
+  {
+   "fieldname": "pms_calendar",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "PMS Calendar",
+   "options": "PMS Calendar",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "pms_calendar.review_start_date",
+   "fieldname": "start_date",
+   "fieldtype": "Read Only",
+   "label": "Start Date"
+  },
+  {
+   "fieldname": "column_break_16",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "pms_calendar.review_end_date",
+   "fieldname": "end_date",
+   "fieldtype": "Read Only",
+   "label": "End Date"
+  },
+  {
+   "fieldname": "additional_items",
+   "fieldtype": "Table",
+   "label": "Additional Achievements",
+   "options": "Additional Achievements"
+  },
+  {
+   "fieldname": "review_competency_item",
+   "fieldtype": "Table",
+   "label": "Review competency",
+   "options": "Review Competency Item",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.pms_calendar",
+   "fieldname": "get_target",
+   "fieldtype": "Button",
+   "label": "Get Target"
+  },
+  {
+   "depends_on": "eval:doc.pms_calendar",
+   "fieldname": "get_competency",
+   "fieldtype": "Button",
+   "hidden": 1,
+   "label": "Get Competency"
+  },
+  {
+   "fetch_from": "employee.designation",
+   "fieldname": "designation",
+   "fieldtype": "Link",
+   "label": "Designation",
+   "options": "Designation",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.branch",
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "read_only": 1
+  },
+  {
+   "fieldname": "approver",
+   "fieldtype": "Link",
+   "label": "Approver",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_17",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "approver.full_name",
+   "fieldname": "approver_name",
+   "fieldtype": "Data",
+   "label": "Approver Name",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "approver_details_section",
+   "fieldtype": "Section Break",
+   "label": "APPROVER DETAILS"
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_30",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "rev_workflow_state",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Workflow State",
+   "read_only": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "review_date",
+   "fieldtype": "Date",
+   "label": "Posting Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "target",
+   "fieldtype": "Link",
+   "label": "Target",
+   "options": "Target Set Up",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_13",
+   "fieldtype": "Column Break"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "other_details_section",
+   "fieldtype": "Section Break",
+   "label": "Reason for Unfreeze of PMS"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "reason",
+   "fieldtype": "Small Text",
+   "ignore_user_permissions": 1,
+   "label": "Reason",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_40",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "reference",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Reference",
+   "options": "Change In Performance Evaluation",
+   "read_only": 1
+  },
+  {
+   "fieldname": "review_target_item",
+   "fieldtype": "Table",
+   "label": "Review Target Item",
+   "options": "Review Target Item"
+  },
+  {
+   "fetch_from": "employee.division",
+   "fieldname": "division",
+   "fieldtype": "Link",
+   "label": "Division",
+   "options": "Department",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.section",
+   "fieldname": "section",
+   "fieldtype": "Link",
+   "label": "Section",
+   "options": "Department",
+   "read_only": 1
+  },
+  {
+   "fieldname": "region",
+   "fieldtype": "Link",
+   "label": "Region",
+   "options": "Region",
+   "read_only": 1
+  },
+  {
+   "fieldname": "unit",
+   "fieldtype": "Link",
+   "label": "Unit",
+   "options": "Department",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_38",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "approver_designation",
+   "fieldtype": "Data",
+   "label": "Approver Designation",
+   "read_only": 1
+  },
+  {
+   "fieldname": "html_1",
+   "fieldtype": "HTML",
+   "hidden": 1,
+   "options": "<h3 style=\"color: #5fbb49;\"> Employee Details<i class=\"fa fa-users\"></i></h3> "
+  },
+  {
+   "fieldname": "section_break_2",
+   "fieldtype": "Section Break",
+   "label": "Employee Details"
+  },
+  {
+   "allow_on_submit": 1,
+   "fetch_from": "employee.company",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fetch_from": "employee.user_id",
+   "fieldname": "user_id",
+   "fieldtype": "Link",
+   "label": "User ID",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "bold": 1,
+   "default": "0",
+   "fieldname": "set_manual_approver",
+   "fieldtype": "Check",
+   "label": "Set Manual Approver",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.negative_target==1",
+   "fieldname": "business_target",
+   "fieldtype": "Table",
+   "label": "Business Target",
+   "options": "Negative Target Review"
+  },
+  {
+   "default": "0",
+   "fieldname": "negative_target",
+   "fieldtype": "Check",
+   "label": "Eligible For Negative Target",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_30",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "max_weightage_for_target",
+   "fieldtype": "Float",
+   "label": "Max Weightage For Target"
+  },
+  {
+   "fieldname": "max_no_of_target",
+   "fieldtype": "Float",
+   "label": "Max No. of target"
+  },
+  {
+   "fieldname": "column_break_33",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "min_weightage_for_target",
+   "fieldtype": "Float",
+   "label": "Min Weightage For Target"
+  },
+  {
+   "fieldname": "min_no_of_target",
+   "fieldtype": "Float",
+   "label": "Min No. of Target"
+  },
+  {
+   "fieldname": "column_break_36",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_weightage",
+   "fieldtype": "Float",
+   "label": "Total Target Weightage(%)"
+  }
+ ],
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-10-31 10:51:39.354376",
+ "modified_by": "Administrator",
+ "module": "PMS",
+ "name": "Review",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "cancel": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Employee",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Administrator",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "employee_name",
+ "track_changes": 1
+}

@@ -1,0 +1,111 @@
+{
+ "actions": [],
+ "autoname": "field:rating",
+ "creation": "2021-03-18 15:51:08.191419",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "rating",
+  "lower_range_percent",
+  "lower_range",
+  "star",
+  "column_break_3",
+  "upper_range_percent",
+  "upper_range",
+  "column_break_5",
+  "weightage"
+ ],
+ "fields": [
+  {
+   "fieldname": "rating",
+   "fieldtype": "Data",
+   "label": "Rating",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "lower_range",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Lower Range"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "upper_range",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Upper Range"
+  },
+  {
+   "fieldname": "weightage",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Weightage Percent",
+   "options": "\n100\n90\n80\n70\n60\n50\n40\n30\n20\n10",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "lower_range_percent",
+   "fieldtype": "Percent",
+   "label": "Lower Range(%)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "upper_range_percent",
+   "fieldtype": "Percent",
+   "label": "Upper Range(%)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "star",
+   "fieldtype": "Rating",
+   "in_list_view": 1,
+   "label": "Star"
+  }
+ ],
+ "links": [],
+ "modified": "2023-10-02 14:40:00.700105",
+ "modified_by": "Administrator",
+ "module": "PMS",
+ "name": "Overall Rating",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Employee",
+   "share": 1
+  }
+ ],
+ "quick_entry": 1,
+ "search_fields": "rating,weightage,star",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "rating",
+ "track_changes": 1
+}

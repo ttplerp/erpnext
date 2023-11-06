@@ -1,0 +1,88 @@
+{
+ "creation": "2021-08-25 15:33:54.713806",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "question",
+  "column_break_2",
+  "decison",
+  "section_break_4",
+  "supervisor_manager_id",
+  "column_break_6",
+  "supervisor_manager_name",
+  "column_break_8",
+  "reference"
+ ],
+ "fields": [
+  {
+   "bold": 1,
+   "fieldname": "question",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Question",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "bold": 1,
+   "columns": 1,
+   "fieldname": "decison",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Decison",
+   "options": "\nYes\nNo",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_4",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "supervisor_manager_id",
+   "fieldtype": "Link",
+   "label": "Supervisor's Manager Id",
+   "options": "Employee",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "bold": 1,
+   "columns": 2,
+   "fetch_from": "supervisor_manager_id.employee_name",
+   "fieldname": "supervisor_manager_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Supervisor's Manager Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reference",
+   "fieldtype": "Link",
+   "label": "Reference",
+   "options": "Performance Evaluation",
+   "read_only": 1
+  }
+ ],
+ "istable": 1,
+ "modified": "2021-08-25 16:53:10.046511",
+ "modified_by": "Administrator",
+ "module": "PMS",
+ "name": "Supervisor Manager Declaration Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

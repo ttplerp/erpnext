@@ -1,0 +1,173 @@
+{
+ "actions": [],
+ "creation": "2021-03-09 14:55:53.613771",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "target_details_section",
+  "performance_target",
+  "weightage",
+  "reverse_formula",
+  "column_break_5",
+  "qty_quality",
+  "quantity",
+  "quality",
+  "quantity_achieved",
+  "quality_achieved",
+  "column_break_9",
+  "timeline_base_on",
+  "timeline",
+  "timeline_achieved",
+  "give_your_review_section",
+  "appraisees_remarks",
+  "column_break_10",
+  "appraisers_remark",
+  "section_break_10",
+  "description"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "fieldname": "appraisees_remarks",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Appraisee's Remarks"
+  },
+  {
+   "columns": 1,
+   "fieldname": "appraisers_remark",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Appraiser's Remark"
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.qty_quality == 'Quality'",
+   "fieldname": "quality",
+   "fieldtype": "Percent",
+   "ignore_user_permissions": 1,
+   "label": "Quality"
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.qty_quality == 'Quantity'",
+   "fieldname": "quantity",
+   "fieldtype": "Float",
+   "ignore_user_permissions": 1,
+   "label": "Quantity"
+  },
+  {
+   "fieldname": "weightage",
+   "fieldtype": "Percent",
+   "label": "Weightage"
+  },
+  {
+   "columns": 3,
+   "fieldname": "performance_target",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Performance Target"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "timeline",
+   "fieldtype": "Float",
+   "ignore_user_permissions": 1,
+   "label": "Timeline"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "qty_quality",
+   "fieldtype": "Select",
+   "label": "Quantity/Quality",
+   "options": "\nQuantity\nQuality"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_10",
+   "fieldtype": "Section Break",
+   "label": "Description"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description",
+   "read_only": 1
+  },
+  {
+   "fieldname": "give_your_review_section",
+   "fieldtype": "Section Break",
+   "label": "Give Your Review"
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "reverse_formula",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Apply (&lt;=) Operator",
+   "read_only": 1
+  },
+  {
+   "fieldname": "target_details_section",
+   "fieldtype": "Section Break",
+   "label": "Target Details"
+  },
+  {
+   "fieldname": "column_break_9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "timeline_base_on",
+   "fieldtype": "Select",
+   "label": "Timeline Base On(Minutes/Hours/Days/Month)",
+   "options": "\nMinute\nHour\nDay\nMonth\nQuarterly",
+   "reqd": 1
+  },
+  {
+   "columns": 1,
+   "depends_on": "eval:doc.qty_quality == 'Quantity';",
+   "fieldname": "quantity_achieved",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Quantity Achieved"
+  },
+  {
+   "columns": 1,
+   "depends_on": "eval:doc.qty_quality == 'Quality'",
+   "fieldname": "quality_achieved",
+   "fieldtype": "Percent",
+   "in_list_view": 1,
+   "label": "Quality Achieved"
+  },
+  {
+   "columns": 1,
+   "fieldname": "timeline_achieved",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Timeline Achieved"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2023-10-03 11:50:11.123211",
+ "modified_by": "Administrator",
+ "module": "PMS",
+ "name": "Review Target Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

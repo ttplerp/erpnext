@@ -1,0 +1,223 @@
+{
+ "actions": [],
+ "autoname": "ECI.#####",
+ "creation": "2021-03-11 09:57:42.701212",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "competency_details_section",
+  "competency",
+  "sub_competency",
+  "column_break_4",
+  "weightage",
+  "column_break_10",
+  "is_parent",
+  "rating_section",
+  "achievement",
+  "average",
+  "column_break_9",
+  "rating",
+  "score",
+  "review_details_section",
+  "appraisers_remark",
+  "column_break_12",
+  "appraisees_remark",
+  "give_comment_if_necessary_section",
+  "comment",
+  "section_break_10",
+  "description",
+  "top_level",
+  "self_rating",
+  "supervisor_rating",
+  "weightage_percent"
+ ],
+ "fields": [
+  {
+   "bold": 1,
+   "columns": 2,
+   "fieldname": "competency",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Work Competency",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "weightage",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Weightage(%)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "appraisers_remark",
+   "fieldtype": "Small Text",
+   "label": "Appraiser's Remark",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 1,
+   "default": "0",
+   "fieldname": "self_rating",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "Self Rating"
+  },
+  {
+   "columns": 1,
+   "default": "0",
+   "fieldname": "supervisor_rating",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "Supervisor Rating"
+  },
+  {
+   "fieldname": "appraisees_remark",
+   "fieldtype": "Small Text",
+   "label": "Appraisee's Remark",
+   "read_only": 1
+  },
+  {
+   "fieldname": "comment",
+   "fieldtype": "Small Text",
+   "label": "Comment"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_10",
+   "fieldtype": "Section Break",
+   "label": "Descriptions"
+  },
+  {
+   "columns": 4,
+   "fieldname": "sub_competency",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Sub Competency",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_parent",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Is Parent",
+   "read_only": 1
+  },
+  {
+   "collapsible_depends_on": "eval: !doc.is_parent",
+   "fieldname": "review_details_section",
+   "fieldtype": "Section Break",
+   "label": "Review Details"
+  },
+  {
+   "fieldname": "column_break_12",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: !doc.is_parent",
+   "fieldname": "give_comment_if_necessary_section",
+   "fieldtype": "Section Break",
+   "label": "Give Comments If Necessary"
+  },
+  {
+   "fieldname": "rating_section",
+   "fieldtype": "Section Break",
+   "label": "Rating Details"
+  },
+  {
+   "allow_on_submit": 1,
+   "columns": 1,
+   "depends_on": "eval:doc.is_parent",
+   "fieldname": "score",
+   "fieldtype": "Float",
+   "label": "Score(%)",
+   "precision": "5",
+   "read_only": 1
+  },
+  {
+   "fieldname": "top_level",
+   "fieldtype": "Data",
+   "label": "Top Level",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:!doc.is_parent",
+   "fieldname": "achievement",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Achievement",
+   "options": "Overall Rating"
+  },
+  {
+   "fieldname": "column_break_9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:!doc.is_parent",
+   "fetch_from": "achievement.star",
+   "fieldname": "rating",
+   "fieldtype": "Rating",
+   "in_list_view": 1,
+   "label": "Rating",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "columns": 1,
+   "depends_on": "eval:doc.is_parent",
+   "fieldname": "average",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Average",
+   "precision": "5",
+   "read_only": 1
+  },
+  {
+   "fieldname": "competency_details_section",
+   "fieldtype": "Section Break",
+   "label": "Competency Details"
+  },
+  {
+   "fetch_from": "achievement.weightage",
+   "fieldname": "weightage_percent",
+   "fieldtype": "Select",
+   "label": "Weightage Percent",
+   "options": "10\n20\n30\n40\n50\n60\n70\n80\n90\n100",
+   "read_only": 1
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2023-10-05 09:53:05.573959",
+ "modified_by": "Administrator",
+ "module": "PMS",
+ "name": "Evaluate Competency Item",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

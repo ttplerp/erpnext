@@ -1,0 +1,327 @@
+{
+ "actions": [],
+ "autoname": "ETI.#####",
+ "creation": "2021-03-11 09:43:56.591098",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "target_details_section",
+  "performance_target",
+  "weightage",
+  "reverse_formula",
+  "column_break_5",
+  "qty_quality",
+  "quality",
+  "quantity",
+  "accept_zero_qtyquality",
+  "column_break_9",
+  "timeline_base_on",
+  "timeline",
+  "achievements_section",
+  "quantity_achieved",
+  "quality_achieved",
+  "employee_remarks",
+  "column_break_12",
+  "timeline_achieved",
+  "supervisor_remarks",
+  "rating_section",
+  "quality_rating",
+  "quantity_rating",
+  "column_break_11",
+  "timeline_rating",
+  "column_break_13",
+  "average_rating",
+  "column_break_15",
+  "score",
+  "review_details_section",
+  "appraisees_remarks",
+  "column_break_19",
+  "appraisers_remark",
+  "section_break_12",
+  "comment",
+  "description_section",
+  "description",
+  "supervisor_rating",
+  "self_rating"
+ ],
+ "fields": [
+  {
+   "fieldname": "performance_target",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Performance Target",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "weightage",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Weightage(%)",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "self_rating",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "Self Rating"
+  },
+  {
+   "default": "0",
+   "fieldname": "supervisor_rating",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "Supervisor Rating",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.qty_quality == 'Quantity'",
+   "fieldname": "quantity",
+   "fieldtype": "Float",
+   "ignore_user_permissions": 1,
+   "label": "Quantity",
+   "precision": "5",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.qty_quality == 'Quality';",
+   "fieldname": "quality",
+   "fieldtype": "Percent",
+   "ignore_user_permissions": 1,
+   "label": "Quality",
+   "precision": "5",
+   "read_only": 1
+  },
+  {
+   "fieldname": "appraisees_remarks",
+   "fieldtype": "Small Text",
+   "label": "Appraisee's Remarks",
+   "read_only": 1
+  },
+  {
+   "fieldname": "appraisers_remark",
+   "fieldtype": "Small Text",
+   "label": "Appraiser's Remark",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "columns": 1,
+   "fieldname": "timeline",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Timeline",
+   "precision": "5",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_12",
+   "fieldtype": "Section Break",
+   "label": "Give Comments If Necessary"
+  },
+  {
+   "fieldname": "comment",
+   "fieldtype": "Small Text",
+   "label": "Comment"
+  },
+  {
+   "allow_on_submit": 1,
+   "columns": 1,
+   "fieldname": "qty_quality",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Quantity/Quality",
+   "options": "\nQuantity\nQuality",
+   "read_only": 1
+  },
+  {
+   "fieldname": "review_details_section",
+   "fieldtype": "Section Break",
+   "label": "Review Details"
+  },
+  {
+   "fieldname": "column_break_13",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "description_section",
+   "fieldtype": "Section Break",
+   "label": "Description"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rating_section",
+   "fieldtype": "Section Break",
+   "label": "Rating"
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.qty_quality == 'Quantity';",
+   "fieldname": "quantity_rating",
+   "fieldtype": "Float",
+   "label": "Quantity Rating",
+   "precision": "5",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.qty_quality == 'Quality';",
+   "fieldname": "quality_rating",
+   "fieldtype": "Float",
+   "label": "Quality Rating",
+   "precision": "5",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "timeline_rating",
+   "fieldtype": "Float",
+   "label": "Timeline Rating",
+   "precision": "5",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "average_rating",
+   "fieldtype": "Float",
+   "label": "Average Rating",
+   "precision": "5",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_15",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "score",
+   "fieldtype": "Percent",
+   "label": "Target Achieved Percentage",
+   "precision": "5",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_19",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "reverse_formula",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Apply (&lt;=) Operator"
+  },
+  {
+   "fieldname": "achievements_section",
+   "fieldtype": "Section Break",
+   "label": "Achievements"
+  },
+  {
+   "allow_on_submit": 1,
+   "columns": 1,
+   "depends_on": "eval:doc.qty_quality == 'Quantity';",
+   "description": "Allowed only four decimal point precision",
+   "fieldname": "quantity_achieved",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Quantity Achieved ",
+   "precision": "5"
+  },
+  {
+   "allow_on_submit": 1,
+   "columns": 1,
+   "depends_on": "eval:doc.qty_quality == 'Quality'",
+   "description": "Allowed only four decimal point precision",
+   "fieldname": "quality_achieved",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Quality Achieved",
+   "precision": "5"
+  },
+  {
+   "fieldname": "column_break_12",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "columns": 1,
+   "fieldname": "timeline_achieved",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Timeline Achieved",
+   "precision": "5",
+   "reqd": 1
+  },
+  {
+   "fieldname": "target_details_section",
+   "fieldtype": "Section Break",
+   "label": "Target Details"
+  },
+  {
+   "fieldname": "column_break_9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "columns": 1,
+   "fieldname": "timeline_base_on",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Timeline Base On(Minutes/Hours/Days/Months)",
+   "options": "\nMinute\nHour\nDay\nMonth\nQuarterly",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "depends_on": "eval:doc.reverse_formula",
+   "fieldname": "accept_zero_qtyquality",
+   "fieldtype": "Check",
+   "label": "Accept Zero Qty/Quality"
+  },
+  {
+   "fieldname": "supervisor_remarks",
+   "fieldtype": "Text",
+   "label": "Supervisor Remarks"
+  },
+  {
+   "fieldname": "employee_remarks",
+   "fieldtype": "Text",
+   "label": "Employee Remarks"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2023-09-28 15:42:36.038070",
+ "modified_by": "Administrator",
+ "module": "PMS",
+ "name": "Evaluate Target Item",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
