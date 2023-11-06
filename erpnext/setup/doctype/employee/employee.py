@@ -488,8 +488,18 @@ def has_upload_permission(doc, ptype="read", user=None):
 def get_permission_query_conditions(user):
 	if not user: user = frappe.session.user
 	user_roles = frappe.get_roles(user)
-	if "HR User" in user_roles or "HR Manager" in user_roles or "Accounts User" in user_roles or "System Manager" in user_roles:
+	if "System Manager" in user_roles:
 		return
+	if "HR User" in user_roles or "HR Manager" in user_roles or "Accounts User" in user_roles:
+		emp_branch = frappe.db.get_value("Employee", {"user_id": user}, "branch")
+		cost_center_for = frappe.db.get_value("Branch", emp_branch, "cost_center_for")
+		return """(
+			exists(select 1
+				from `tabEmployee` as e
+				where e.name = `tabEmployee`.name and
+					e.branch in (select name from tabBranch where cost_center_for = '{cc_for}')
+				)
+			)""".format(cc_for=cost_center_for)
 	else:
 		return """(
 			exists(select 1
