@@ -48,9 +48,7 @@ class CustomWorkflow:
                 "Employee Advance Settlement",
             )
         ):
-            self.employee = frappe.db.get_value(
-                "Employee", self.doc.owner, self.field_list
-            )
+            self.employee = frappe.db.get_value("Employee", self.doc.owner, self.field_list)
             self.reports_to = frappe.db.get_value(
                 "Employee",
                 {
@@ -606,17 +604,17 @@ class CustomWorkflow:
             )
 
         if self.doc.doctype == "Repair And Services":
-            self.expense_approver = frappe.db.get_value("Employee", {"user_id": frappe.db.get_value("Employee", {"user_id": self.doc.owner}, "expense_approver")}, self.field_list,)
+            if not frappe.db.get_value("Employee", {"user_id": self.doc.owner}, "expense_approver"):
+                frappe.throw("User ID {} is not linked with Employee in Employee list".format(self.doc.owner))
+            self.expense_approver = frappe.db.get_value("Employee", {"user_id": frappe.db.get_value("Employee", {"user_id": self.doc.owner}, "expense_approver")}, self.field_list)
+            if not self.expense_approver:
+                frappe.throw('Set expense approver')
             
-            self.fleet_mto = frappe.db.get_value(
-                "Employee",
-                {
-                    "user_id": frappe.db.get_value(
-                        "Branch", self.doc.branch, "imprest_approver"
-                    ),
-                },
-                self.field_list,
-            )
+            if not frappe.db.get_value("Branch", self.doc.branch, "imprest_approver"):
+                frappe.throw("Set Imprest Approver in branch {}".format(self.doc.branch))
+            self.fleet_mto = frappe.db.get_value("Employee", {"user_id": frappe.db.get_value("Branch", self.doc.branch, "imprest_approver")}, self.field_list)
+            if not self.fleet_mto:
+                frappe.throw('Set imprest approver in branch {}'.format(self.doc.branch))
 
         if self.doc.doctype == "Vehicle Request":
             if frappe.db.get_value("Employee", self.doc.employee, "expense_approver"):
@@ -1933,14 +1931,12 @@ class CustomWorkflow:
                 )
 
     def performance_evaluation(self):
-        # frappe.throw('Here')
         if not self.new_state:
             frappe.throw(
                 "Due to slow network/some other issue this document faced issue to save. Please reload the page and save again."
             )
 
         if self.new_state.lower() in ("Draft".lower()):
-            # frappe.throw('Here')
             if (
                 self.doc.owner != frappe.session.user
                 and self.doc.approver != frappe.session.user
@@ -2824,16 +2820,19 @@ class CustomWorkflow:
                 frappe.throw(
                     "Only the document owner can Apply this rapair and service"
                 )
+            self.set_approver("Supervisor")
+            
         elif self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
             if self.doc.owner != frappe.session.user:
                 frappe.throw(
                     "Only the document owner can Apply this rapair and service"
                 )
             self.set_approver("Supervisor")
+
         elif self.new_state.lower() in (" Waiting Approval".lower()):
             if self.doc.approver != frappe.session.user:
                 frappe.throw(
-                    "Only the document Forward can Apply this rapair and service"
+                    "Only {} can Forward this rapair and service".format(self.doc.approver_name)
                 )
             self.set_approver("Fleet Manager")
 
