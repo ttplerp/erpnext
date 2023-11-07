@@ -38,6 +38,8 @@ class CustomWorkflow:
 					{"parent": "Administration Section - SMCL", "parentfield": "expense_approvers", "idx": 1},
 					"approver",
 				)},self.field_list)
+			self.appeal_approver = frappe.db.get_value("Employee", {"name":frappe.db.get_single_value("PMS Setting","approver")}, self.field_list)
+			
 
 		if self.doc.doctype in ("Travel Request","Leave Application","Employee Separation","Overtime Application"):
 			division = frappe.db.get_value("Employee",self.doc.employee,"division")
@@ -242,7 +244,15 @@ class CustomWorkflow:
 				officiating = frappe.db.get_value("Employee", officiating[0].officiate, self.field_list)
 			vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.fleet_mto[0]
 			vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.fleet_mto[1]
-		
+
+		elif approver_type =="Appeal Approver":
+			officiating = get_officiating_employee(self.appeal_approver[3])
+			if officiating:
+				officiating = frappe.db.get_value("Employee", officiating[0].officiate, self.field_list)
+			vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.appeal_approver[0]
+			vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.appeal_approver[1]
+			vars(self.doc)[self.doc_approver[2]] = officiating[2] if officiating else self.appeal_approver[2]
+			
 		elif approver_type == "Warehouse Manager":
 			officiating = get_officiating_employee(self.warehouse_manager[3])
 			if officiating:
@@ -338,55 +348,31 @@ class CustomWorkflow:
 				frappe.throw("Only {} can Approve this Vehicle Request".format(self.doc.approver))
 				
 	def target_setup(self):
-		if self.new_state.lower() in ("Draft".lower(), "Waiting Approval".lower()):
-			self.set_approver("HRGM")
+		if self.new_state.lower() in ("Draft".lower(), "Waiting Supervisor Approval".lower()):
+			if (self.doc.owner != frappe.session.user):
+				frappe.throw("Only {} can apply or save this this request".format(self.doc.owner))
+			self.set_approver("Supervisor")
 		elif self.new_state.lower() in ("Approved".lower(), "Rejected".lower()):
 			if (self.doc.approver != frappe.session.user):
-				frappe.throw("Only {} can Approved or make Reject this Request".format(self.doc.approver_name))	
+				frappe.throw("Only {} can Approved or make Reject this Request".format(self.doc.approver_name))
+				
 	def performance_evaluation(self):
-		if not self.new_state:
-			frappe.throw('Due to slow network/some other issue this document faced issue to save. Please reload the page and save again.')
-		if self.new_state.lower() in ("Draft".lower()):
-			if (self.doc.owner != frappe.session.user and self.doc.approver != frappe.session.user):
-				frappe.throw("Only {} or {} can Apply or make changes to this Request".format(self.doc.employee_name, self.doc.approver_name))	
-			if self.doc.set_manual_approver == 1:
-				return
-			else:
-				self.set_approver("Supervisor")
-
-		elif self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
-			# to accomodate the approver changes made manually for PMS Calendar 2021
-			if self.doc.set_manual_approver != 1:
-				self.set_approver("Supervisor")
-			elif self.doc.set_manual_approver == 1:
-				if self.old_state.lower() == "Rejected".lower():
-					self.doc.approver = self.doc.approver_in_first_level
-					self.doc.approver_name = self.doc.approver_fl_name
-					self.doc.approver_designation = self.doc.approver_fl_designation
-				else:
-					return
-			if ("HR User" in frappe.get_roles(frappe.session.user) or "HR Manager" in frappe.get_roles(frappe.session.user)) and self.doc.employee != frappe.db.get_value('Employee',{'user_id':frappe.session.user},'name') : 
-				return
-			if (self.doc.owner != frappe.session.user and self.doc.approver != frappe.session.user):
-				frappe.throw("Only {} or {} can Apply or make changes to this Request".format(self.doc.employee_name, self.doc.approver_name))
-			
-		elif self.new_state.lower() in ("Waiting Approval".lower()):
-			if self.doc.approver != frappe.session.user:
-				frappe.throw("Only {} can Forward/Reject this Target".format(self.doc.approver_name))
-			self.set_approver("Supervisors Supervisor")
-			if "HR User" in frappe.get_roles(frappe.session.user) or "HR Manager" in frappe.get_roles(frappe.session.user): 
-				return	
-		elif self.new_state.lower() in ("Approved".lower(), "Waiting PERC".lower(), "Rejected".lower()):
-			if self.doc.approver != frappe.session.user:
-				frappe.throw("Only {} can Forward/Reject this Target".format(self.doc.approver_name))
-		elif self.new_state.lower() in ("Approved By PERC".lower(), "Rejected By PERC".lower()):
-			if "PERC Member" in frappe.get_roles(frappe.session.user):
-				return
-			else:
-				frappe.throw("Only PERC Member can Approve/Reject this Target")
+		if self.new_state.lower() in ("Draft".lower(), "Waiting Supervisor Approval".lower()):
+			if (self.doc.owner != frappe.session.user):
+				frappe.throw("Only {} can apply or save this this request".format(self.doc.owner))
+			self.set_approver("Supervisor")
+		elif self.new_state.lower() in ("Approved".lower(), "Rejected".lower()):
+			if (self.doc.approver != frappe.session.user):
+				frappe.throw("Only {} can Approved or make Reject this Request".format(self.doc.approver_name))
 
 	def pms_appeal_request(self):
-		pass
+		if self.new_state.lower() in ("Draft".lower(), "Waiting Approval".lower()):
+			if (self.doc.owner != frappe.session.user):
+				frappe.throw("Only {} can apply or save this this request".format(self.doc.owner))
+			self.set_approver("Appeal Approver")
+		elif self.new_state.lower() in ("Approved".lower(), "Rejected".lower()):
+			if (self.doc.approver != frappe.session.user):
+				frappe.throw("Only {} can Approved or Reject this Request".format(self.doc.approver_name))
 
 	def employee_separation(self):
 		division = frappe.db.get_value("Employee",self.doc.employee,"division")
@@ -819,11 +805,6 @@ class NotifyCustomWorkflow:
 			if not template:
 				frappe.msgprint(_("Please set default template for Material Request Status Notification in HR Settings."))
 				return
-		# elif self.doc.doctype == "Asset Issue Details":
-		# 	template = frappe.db.get_single_value('HR Settings', 'asset_issue_status_notification_template')
-		# 	if not template:
-		# 		frappe.msgprint(_("Please set default template for Asset Issue Status Notification in HR Settings."))
-		# 		return
 		
 		elif self.doc.doctype == "Imprest Advance":
 			template = frappe.db.get_single_value('HR Settings', 'imprest_advance_status_notification_template')
@@ -835,6 +816,29 @@ class NotifyCustomWorkflow:
 			template = frappe.db.get_single_value('HR Settings', 'imprest_recoup_status_notification_template')
 			if not template:
 				frappe.msgprint(_("Please set default template for Imprest Recoup Status Notification in HR Settings."))
+				return
+			
+		elif self.doc.doctype == "Target Set Up":
+			template = frappe.db.get_single_value('HR Settings', 'target_set_up_status_notification_template')
+			if not template:
+				frappe.msgprint(_("Please set default template for Target Set Up Status Notification in HR Settings."))
+				return
+		elif self.doc.doctype == "Review":
+			template = frappe.db.get_single_value('HR Settings', 'review_status_notification_template')
+			if not template:
+				frappe.msgprint(_("Please set default template for Review Status Notification in HR Settings."))
+				return
+		
+		elif self.doc.doctype == "Performance Evaluation":
+			template = frappe.db.get_single_value('HR Settings', 'evaluation_status_notification_template')
+			if not template:
+				frappe.msgprint(_("Please set default template for Evaluation Status Notification in HR Settings."))
+				return
+		
+		elif self.doc.doctype == "PMS Appeal":
+			template = frappe.db.get_single_value('HR Settings', 'pms_appeal_status_notification_template')
+			if not template:
+				frappe.msgprint(_("Please set default template for PMS Appeal Status Notification in HR Settings."))
 				return
 		
 		elif self.doc.doctype == "Vehicle Request":
@@ -904,12 +908,6 @@ class NotifyCustomWorkflow:
 				if not template:
 					frappe.msgprint(_("Please set default template for Material Request Approval Notification in HR Settings."))
 					return
-
-			# elif self.doc.doctype == "Asset Issue Details":
-			# 	template = frappe.db.get_single_value('HR Settings', 'asset_issue_approval_notification_template')
-			# 	if not template:
-			# 		frappe.msgprint(_("Please set default template for Asset Issue Approval Notification in HR Settings."))
-			# 		return
 			
 			elif self.doc.doctype == "Imprest Advance":
 				template = frappe.db.get_single_value('HR Settings', 'imprest_advance_approval_notification_template')
@@ -921,6 +919,30 @@ class NotifyCustomWorkflow:
 				template = frappe.db.get_single_value('HR Settings', 'imprest_recoup_approval_notification_template')
 				if not template:
 					frappe.msgprint(_("Please set default template for Imprest Recoup Approval Notification in HR Settings."))
+					return
+				
+			elif self.doc.doctype == "Target Set Up":
+				template = frappe.db.get_single_value('HR Settings', 'target_set_up_approval_notification_template')
+				if not template:
+					frappe.msgprint(_("Please set default template for Target set Up Approval Notification in HR Settings."))
+					return
+				
+			elif self.doc.doctype == "Review":
+				template = frappe.db.get_single_value('HR Settings', 'review_approval_notification_template')
+				if not template:
+					frappe.msgprint(_("Please set default template for Review Approval Notification in HR Settings."))
+					return
+				
+			elif self.doc.doctype == "Performance Evaluation":
+				template = frappe.db.get_single_value('HR Settings', 'evaluation_approval_notification_template')
+				if not template:
+					frappe.msgprint(_("Please set default template for Evaluation Approval Notification in HR Settings."))
+					return
+	
+			elif self.doc.doctype == "PMS Appeal":
+				template = frappe.db.get_single_value('HR Settings', 'pms_appeal_approval_notification_template')
+				if not template:
+					frappe.msgprint(_("Please set default template for PMS Appeal Approval Notification in HR Settings."))
 					return
 			
 			elif self.doc.doctype == "Vehicle Request":
@@ -1007,7 +1029,7 @@ def get_field_map():
 		"Review": ["approver","approver_name","approver_designation"],
 		"Performance Evaluation": ["approver","approver_name","approver_designation"],
 		"Vehicle Request": ["approver_id", "approver"],
-		"PMS Appeal":[],
+		"PMS Appeal":["approver","approver_name","approver_designation"],
 		"Asset Issue Details": [],
 
 	}

@@ -30,6 +30,7 @@
   "employment_type",
   "employee_group",
   "designation",
+  "pms_group",
   "region",
   "reports_to",
   "reports_to_name",
@@ -126,6 +127,8 @@
   "date_of_issue",
   "place_of_issue",
   "profile_tab",
+  "pms_records_section",
+  "employee_pms",
   "bio",
   "educational_qualification",
   "education",
@@ -150,7 +153,9 @@
   "feedback",
   "lft",
   "rgt",
-  "old_parent"
+  "old_parent",
+  "old_employee_id",
+  "signature_url"
  ],
  "fields": [
   {
@@ -1032,13 +1037,39 @@
    "fieldname": "cbreak_33",
    "fieldtype": "Section Break",
    "label": "Family Member Details"
+  },
+  {
+   "fieldname": "pms_group",
+   "fieldtype": "Link",
+   "label": "PMS Group",
+   "options": "PMS Group"
+  },
+  {
+   "fieldname": "pms_records_section",
+   "fieldtype": "Section Break",
+   "label": "PMS Records"
+  },
+  {
+   "fieldname": "employee_pms",
+   "fieldtype": "Table",
+   "options": "Employee PMS Rating"
+  },
+  {
+   "fieldname": "old_employee_id",
+   "fieldtype": "Data",
+   "label": "Old Employee ID"
+  },
+  {
+   "fieldname": "signature_url",
+   "fieldtype": "Attach",
+   "label": "Signature Url"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-08-23 10:18:01.535151",
+ "modified": "2023-10-26 16:21:13.254712",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
@@ -1085,5 +1116,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "employee_name"
+ "title_field": "employee_name",
+ "track_changes": 1
 }
