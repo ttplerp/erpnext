@@ -26,6 +26,12 @@ def get_columns():
 				"width": 150,
 			},
 			{
+				"label": _("Tenant CID"),
+				"fieldname": "tenant_cid",
+				"fieldtype": "Data",
+				"width": 100,
+			},
+			{
 				"label": _("Rental Bill"),
 				"fieldname": "rental_bill",
 				"fieldtype": "Data",
@@ -185,6 +191,7 @@ def get_data(filters):
 			"tenant": key,
 			"tenant_name": frappe.db.get_value("Tenant Information", key, "tenant_name"),
 			"rental_bill": '',
+			"tenant_cid": frappe.db.get_value("Tenant Information", key, "tenant_cid"),
 			"total_receivable_amount": 0.0,
 			"total_rent_amount": 0.0,
 			"total_received_amount": 0.0,
@@ -262,6 +269,8 @@ def get_all_bills(filters):
 		cond += " and rb.building_category='{}'".format(filters.get("building_category"))
 	if filters.get("location"):
 		cond += " and rb.location_id='{}'".format(filters.get("location"))
+	if filters.get("department"):
+		cond += " and rb.tenant_department='{}'".format(filters.get("department"))
 
 	query = """select 
 				rb.name, rb.tenant, rb.tenant_name,
