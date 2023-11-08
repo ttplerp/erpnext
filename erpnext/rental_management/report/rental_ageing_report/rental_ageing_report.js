@@ -38,5 +38,26 @@ frappe.query_reports["Rental Ageing Report"] = {
 			"fieldtype": "Link",
 			"options": "Dzongkhag",
 		},
+		{
+			"fieldname": "department",
+			"label": __("Department"),
+			"fieldtype": "Link",
+			"options": "Tenant Department",
+			on_change: function(query_report) {
+				var dep = query_report.get_filter_value('department');
+				if (!dep) {
+					frappe.query_report.set_filter_value('department_name', "");
+				}
+				frappe.db.get_value("Tenant Department", dep, "department", function(value) {
+					frappe.query_report.set_filter_value('department_name', value["department"]);
+				});
+			}
+		},
+		{
+			"fieldname": "department_name",
+			"label": __("Department Name"),
+			"fieldtype": "Data",
+			"read_only": 1
+		},
 	]
 };

@@ -64,7 +64,9 @@ def get_data(filters):
 def get_os_lists(filters, fiscal_year, month):
 	cond = ''
 	if filters.get('based_on') == 'Tenant' and filters.get('dzongkhag'):
-		cond = " and dzongkhag='{}'".format(str(filters.get('dzongkhag')))
+		cond += " and dzongkhag='{}'".format(str(filters.get('dzongkhag')))
+	if filters.get('department'):
+		cond += " and tenant_department='{}'".format(filters.get("department"))
 
 	result = frappe.db.sql("""select * from `tabRental Bill` 
 		where docstatus=1 and gl_entry=1 and outstanding_amount > 0 and fiscal_year <= '{fiscal_year}' and month <= '{month}' {cond} order by tenant, posting_date""".format(fiscal_year=fiscal_year, month=month, cond=cond), as_dict=1)
