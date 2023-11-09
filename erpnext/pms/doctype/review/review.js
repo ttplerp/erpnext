@@ -11,53 +11,53 @@ frappe.ui.form.on('Review', {
 				});
 			}).addClass("btn-primary custom-create custom-create-css")
 		}
-		if (frm.doc.rev_workflow_state == "Waiting Approval" && frappe.user.has_role(['HR Manager', 'HR User'])){
-			cur_frm.add_custom_button(__('Manual Approval'), ()=>{
-				frappe.call({
-					method: "erpnext.pms.doctype.review.review.manual_approval_for_hr",
-					frm: cur_frm,
+		// if (frm.doc.rev_workflow_state == "Waiting Approval" && frappe.user.has_role(['HR Manager', 'HR User'])){
+		// 	cur_frm.add_custom_button(__('Manual Approval'), ()=>{
+		// 		frappe.call({
+		// 			method: "erpnext.pms.doctype.review.review.manual_approval_for_hr",
+		// 			frm: cur_frm,
 					
-					args: {
-						name: frm.doc.name,
-						employee: frm.doc.employee,
-						pms_calendar: frm.doc.pms_calendar,
-					},
-					callback:function(){
-						cur_frm.reload_doc()
-					}				
-				});
-			}).addClass("btn-primary custom-create custom-create-css");
-		}
+		// 			args: {
+		// 				name: frm.doc.name,
+		// 				employee: frm.doc.employee,
+		// 				pms_calendar: frm.doc.pms_calendar,
+		// 			},
+		// 			callback:function(){
+		// 				cur_frm.reload_doc()
+		// 			}				
+		// 		});
+		// 	}).addClass("btn-primary custom-create custom-create-css");
+		// }
 		if (frm.doc.approver == frappe.session.user){
 			frappe.meta.get_docfield("Review Target Item","appraisees_remarks",cur_frm.doc.name).read_only = frappe.session.user == frm.doc.approver
 			frappe.meta.get_docfield("Review Competency Item","appraisees_remarks",cur_frm.doc.name).read_only = frappe.session.user == frm.doc.approver
 			frappe.meta.get_docfield("Additional Achievements","appraisees_remarks",cur_frm.doc.name).read_only = frappe.session.user == frm.doc.approver
 		}
-		if (frm.doc.docstatus != 1 && frappe.user.has_role(['HR Manager', 'HR User'])){
-			frm.add_custom_button(__('Manual Approval'), ()=>{
-				frappe.call({
-					method: "erpnext.pms.doctype.review.review.manual_approval_for_hr",
-					frm: cur_frm,
-					args: {
-						name: frm.doc.name,
-						employee: frm.doc.employee,
-						pms_calendar: frm.doc.pms_calendar,
-					},
-					callback:function(){
-						cur_frm.reload_doc()
-					}				
-				});
-			}).addClass("btn-primary custom-create custom-create-css");
-		}
+		// if (frm.doc.docstatus != 1 && frappe.user.has_role(['HR Manager', 'HR User'])){
+		// 	frm.add_custom_button(__('Manual Approval'), ()=>{
+		// 		frappe.call({
+		// 			method: "erpnext.pms.doctype.review.review.manual_approval_for_hr",
+		// 			frm: cur_frm,
+		// 			args: {
+		// 				name: frm.doc.name,
+		// 				employee: frm.doc.employee,
+		// 				pms_calendar: frm.doc.pms_calendar,
+		// 			},
+		// 			callback:function(){
+		// 				cur_frm.reload_doc()
+		// 			}				
+		// 		});
+		// 	}).addClass("btn-primary custom-create custom-create-css");
+		// }
 	},
-	set_manual_approver:function(frm){
-		if (flt(frm.doc.set_manual_approver) == 1){
-			frm.set_df_property('approver', 'read_only', 0);
-		}
-		else{
-			frm.set_df_property('approver', 'read_only', 1);
-		}
-	},
+	// set_manual_approver:function(frm){
+	// 	if (flt(frm.doc.set_manual_approver) == 1){
+	// 		frm.set_df_property('approver', 'read_only', 0);
+	// 	}
+	// 	else{
+	// 		frm.set_df_property('approver', 'read_only', 1);
+	// 	}
+	// },
 	onload: function(frm){
 		apply_filter(frm)
 	},

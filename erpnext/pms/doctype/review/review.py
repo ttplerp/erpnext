@@ -148,5 +148,5 @@ def get_permission_query_conditions(user):
 				where `tabEmployee`.name = `tabReview`.employee
 				and `tabEmployee`.user_id = '{user}')
 		or
-		(`tabReview`.approver = '{user}' and `tabReview`.rev_workflow_state not in ('Draft', 'Rejected', 'Cancelled'))
+		(`tabReview`.approver = '{user}' and `tabReview`.workflow_state not in ('Draft', 'Rejected', 'Cancelled'))
 	)""".format(user=user)

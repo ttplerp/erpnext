@@ -349,8 +349,6 @@ class CustomWorkflow:
 				
 	def target_setup(self):
 		if self.new_state.lower() in ("Draft".lower(), "Waiting Supervisor Approval".lower()):
-			if (self.doc.owner != frappe.session.user):
-				frappe.throw("Only {} can apply or save this this request".format(self.doc.owner))
 			self.set_approver("Supervisor")
 		elif self.new_state.lower() in ("Approved".lower(), "Rejected".lower()):
 			if (self.doc.approver != frappe.session.user):
@@ -358,8 +356,6 @@ class CustomWorkflow:
 				
 	def performance_evaluation(self):
 		if self.new_state.lower() in ("Draft".lower(), "Waiting Supervisor Approval".lower()):
-			if (self.doc.owner != frappe.session.user):
-				frappe.throw("Only {} can apply or save this this request".format(self.doc.owner))
 			self.set_approver("Supervisor")
 		elif self.new_state.lower() in ("Approved".lower(), "Rejected".lower()):
 			if (self.doc.approver != frappe.session.user):
@@ -367,8 +363,6 @@ class CustomWorkflow:
 
 	def pms_appeal_request(self):
 		if self.new_state.lower() in ("Draft".lower(), "Waiting Approval".lower()):
-			if (self.doc.owner != frappe.session.user):
-				frappe.throw("Only {} can apply or save this this request".format(self.doc.owner))
 			self.set_approver("Appeal Approver")
 		elif self.new_state.lower() in ("Approved".lower(), "Rejected".lower()):
 			if (self.doc.approver != frappe.session.user):

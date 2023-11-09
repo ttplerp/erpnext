@@ -296,7 +296,7 @@
    "collapsible": 1,
    "fieldname": "other_details_section",
    "fieldtype": "Section Break",
-   "label": "Reason for Unfreeze of PMS"
+   "label": "Target Set Up Reference"
   },
   {
    "allow_on_submit": 1,
@@ -316,7 +316,7 @@
    "fieldtype": "Link",
    "ignore_user_permissions": 1,
    "label": "Reference",
-   "options": "Change In Performance Evaluation",
+   "options": "Target Set Up",
    "read_only": 1
   },
   {
@@ -454,7 +454,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-10-31 10:51:39.354376",
+ "modified": "2023-11-09 09:27:20.413675",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Review",

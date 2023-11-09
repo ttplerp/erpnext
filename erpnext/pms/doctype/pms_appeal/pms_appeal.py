@@ -20,9 +20,11 @@ class PMSAppeal(Document):
 		validate_workflow_states(self)
 		if self.workflow_state != "Approved":
 			notify_workflow_states(self)
-
+	def on_submit(self):
+		self.employee_pms_record()
 	def on_cancel(self):
 		self.set_reference(cancel=True)
+		self.update_employee_master()
 
 	def set_perc_approver(self):
 		approver = frappe.db.get_single_value("HR Settings","appeal")
@@ -58,8 +60,8 @@ class PMSAppeal(Document):
 				item.quality_rating = quality_rating
 
 			elif item.qty_quality == 'Quantity':
-				if item.quantity_achieved <= 0:
-					frappe.throw('Quality Achieved for target <b>{}</b> must be greater than or equal to 0'.format(item.performance_target))
+				# if item.quantity_achieved <= 0:
+				# 	frappe.throw('Quality Achieved for target <b>{}</b> must be greater than or equal to 0'.format(item.performance_target))
 				
 				if flt(item.quantity_achieved)>= flt(item.quantity):
 					quantity_rating = flt(item.weightage)
@@ -141,6 +143,44 @@ class PMSAppeal(Document):
 		self.db_set('final_score_percent', flt(self.final_score))
 		self.overall_rating = frappe.db.sql('''select name from `tabOverall Rating` where  upper_range_percent >= {0} and lower_range_percent <= {0}'''.format(self.final_score_percent))[0][0]
 		self.db_set('overall_rating', self.overall_rating)
+		
+	def update_employee_master(self):
+		doc = frappe.db.get_value("Employee PMS Rating",{"performance_evaluation":self.name},"name")
+		if doc:
+			frappe.delete_doc("Employee PMS Rating",doc)
+		else:
+			frappe.msgprint("""No PMS Appeal record found in Employee Master Data of employee <a href= "#Form/Employee/{0}">{0}</a>""".format(self.employee))
+		final_score = frappe.db.get_value("Performance Evaluation",self.reference,"final_score")
+		final_score_percent = frappe.db.get_value("Performance Evaluation",self.reference,"final_score_percent")
+		overall_rating = frappe.db.get_value("Performance Evaluation",self.reference,"overall_rating")
+		
+		emp = frappe.get_doc("Employee",self.employee)
+		row = emp.append("employee_pms",{})
+		row.fiscal_year = self.pms_calendar
+		row.final_score = final_score
+		row.final_score_percent = final_score_percent
+		row.overall_rating = overall_rating
+		row.reference_type = 'Performance Evaluation'
+		row.performance_evaluation = self.reference
+		emp.save(ignore_permissions=True)
+		frappe.msgprint("""Performance Evaluation record Updated in Employee Master Data of employee <a href= "#Form/Employee/{0}">{0}</a>""".format(self.employee))
+	def employee_pms_record(self):
+		if self.reference:
+			doc = frappe.db.get_value("Employee PMS Rating",{"performance_evaluation":self.reference},"name")
+			if doc:
+				frappe.delete_doc("Employee PMS Rating",doc)
+			else:
+				frappe.msgprint("""No PMS record found in Employee Master Data of employee <a href= "#Form/Employee/{0}">{0}</a>""".format(self.employee))
+		emp = frappe.get_doc("Employee",self.employee)
+		row = emp.append("employee_pms",{})
+		row.fiscal_year = self.pms_calendar
+		row.final_score = self.final_score
+		row.final_score_percent = self.final_score_percent
+		row.overall_rating = self.overall_rating
+		row.reference_type = 'PMS Appeal'
+		row.performance_evaluation = self.name
+		emp.save(ignore_permissions=True)
+		frappe.msgprint("""PMS Appeal record Updated in Employee Master Data of employee <a href= "#Form/Employee/{0}">{0}</a>""".format(self.employee))
 
 def get_permission_query_conditions(user):
 	# restrict user from accessing this doctype if not the owner

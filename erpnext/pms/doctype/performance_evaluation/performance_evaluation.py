@@ -61,7 +61,7 @@ class PerformanceEvaluation(Document):
 
 	def set_dafault_values(self):
 		self.max_rating_limit = frappe.db.get_single_value('PMS Setting','max_rating_limit')
-
+	@frappe.whitelist()
 	def create_employee_pms_record(self):
 		if self.reference:
 			return
