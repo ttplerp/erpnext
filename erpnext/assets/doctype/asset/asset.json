@@ -10,6 +10,7 @@
   "company",
   "item_code",
   "item_name",
+  "asset_identification_code",
   "asset_owner",
   "asset_owner_company",
   "is_existing_asset",
@@ -673,6 +674,12 @@
    "fieldname": "asset_label",
    "fieldtype": "Data",
    "label": "Asset Label"
+  },
+  {
+   "fieldname": "asset_identification_code",
+   "fieldtype": "Data",
+   "label": "Asset Identification Code",
+   "read_only": 1
   }
  ],
  "idx": 72,
@@ -695,7 +702,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2023-10-13 15:56:48.560736",
+ "modified": "2023-11-09 14:12:12.307437",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",

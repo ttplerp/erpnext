@@ -15,6 +15,7 @@
   "item_detail_section",
   "item_code",
   "item_name",
+  "asset_identification_code",
   "engine_no",
   "column_break_8",
   "purchase_receipt",
@@ -238,12 +239,18 @@
    "fieldtype": "Data",
    "hidden": 1,
    "label": "Serial Number"
+  },
+  {
+   "fieldname": "asset_identification_code",
+   "fieldtype": "Data",
+   "label": "Asset Identification Code",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-11 15:58:38.170647",
+ "modified": "2023-11-09 14:10:08.086440",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Asset Issue Details",
