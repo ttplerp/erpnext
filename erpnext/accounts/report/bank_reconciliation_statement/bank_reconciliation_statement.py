@@ -121,12 +121,14 @@ def get_entries(filters):
 
 	opening_brs_entries = get_opening_brs_entries(filters)
 
+	tds_entries = get_tds_entries(filters)
+
 	pos_entries = []
 	if filters.include_pos_transactions:
 		pos_entries = get_pos_entries(filters)
 
 	return sorted(
-		list(payment_entries) + list(journal_entries + list(pos_entries) + list(loan_entries) + list(opening_brs_entries)),
+		list(payment_entries) + list(journal_entries + list(pos_entries) + list(loan_entries) + list(opening_brs_entries) + list(tds_entries)),
 		key=lambda k: getdate(k["posting_date"]),
 	)
 
@@ -196,13 +198,39 @@ def get_opening_brs_entries(filters):
 				'Opening BRS Entry Detail' as payment_document, posting_date,
 				name as payment_entry, sum(debit) as debit,
 				sum(credit) as credit, party as against_account,
-				cheque_no as reference_no, cheque_date as ref_date, clearance_date, 'BTN' as account_currency 
+				clearance_date, 'BTN' as account_currency 
 			from `tabOpening BRS Entry Detail`
 			where 
 				docstatus = 1 and account = %(account)s
 				and posting_date <= %(report_date)s
 				and ifnull(clearance_date, '4000-01-01') > %(report_date)s
 			group by posting_date, name, party, cheque_no, cheque_date, clearance_date
+			""", 
+		filters, 
+		as_dict=1,
+	)
+
+def get_tds_entries(filters):
+	return frappe.db.sql(
+		"""
+			SELECT 
+				'TDS Remittance' AS payment_document, posting_date, name AS payment_entry,
+				0 AS debit, total_tds AS credit, tax_withholding_category AS against_account,
+				CASE 
+					WHEN mode_of_payment = 'Cheque' THEN cheque_no
+					ELSE reference_number
+				END AS reference_no,
+				CASE 
+					WHEN mode_of_payment = 'Cheque' THEN cheque_date
+					ELSE reference_date
+				END AS ref_date,
+				clearance_date, 'BTN' AS account_currency 
+			FROM `tabTDS Remittance`
+			WHERE 
+				docstatus = 1 AND credit_account = %(account)s
+				AND posting_date <= %(report_date)s
+				AND IFNULL(clearance_date, '4000-01-01') > %(report_date)s
+			GROUP BY posting_date, name, clearance_date;
 			""", 
 		filters, 
 		as_dict=1,
