@@ -456,6 +456,23 @@ class RentalPayment(AccountsController):
 					})
 				)
 
+			if a.excess_amount > 0:
+				gl_entries.append(
+					self.get_gl_dict({
+						"account": excess_payment_account,
+						"credit": a.excess_amount,
+						"credit_in_account_currency": a.excess_amount,
+						"voucher_no": self.name,
+						"voucher_type": self.doctype,
+						"cost_center": cost_center,
+						"party": party,
+						"party_type": party_type,
+						"company": self.company,
+						"remarks": self.remarks,
+						"business_activity": business_activity
+					})
+				)
+
 		if self.tds_amount > 0:
 			gl_entries.append(
 				self.get_gl_dict({
@@ -500,7 +517,7 @@ class RentalPayment(AccountsController):
 					})
 				)
 
-		if self.excess_amount > 0:
+		# if self.excess_amount > 0:
 			# account_type = frappe.db.get_value("Account", excess_payment_account, "account_type") or ""
 			# if account_type in ["Receivable", "Payable"]:
 			# 	party = party_name
@@ -508,23 +525,23 @@ class RentalPayment(AccountsController):
 			# else:
 			# 	party = None
 			# 	party_type = None
-			party = party_name
-			party_type = "Customer"
-			gl_entries.append(
-				self.get_gl_dict({
-					"account": excess_payment_account,
-					"credit": self.excess_amount,
-					"credit_in_account_currency": self.excess_amount,
-					"voucher_no": self.name,
-					"voucher_type": self.doctype,
-					"cost_center": cost_center,
-					"party": party,
-					"party_type": party_type,
-					"company": self.company,
-					"remarks": self.remarks,
-					"business_activity": business_activity
-					})
-				)
+			# party = party_name
+			# party_type = "Customer"
+			# gl_entries.append(
+			# 	self.get_gl_dict({
+			# 		"account": excess_payment_account,
+			# 		"credit": self.excess_amount,
+			# 		"credit_in_account_currency": self.excess_amount,
+			# 		"voucher_no": self.name,
+			# 		"voucher_type": self.doctype,
+			# 		"cost_center": cost_center,
+			# 		"party": party,
+			# 		"party_type": party_type,
+			# 		"company": self.company,
+			# 		"remarks": self.remarks,
+			# 		"business_activity": business_activity
+			# 		})
+			# 	)
 
 		# frappe.throw("<pre>{}</pre>".format(frappe.as_json(gl_entries)))
 		make_gl_entries(gl_entries, cancel=(self.docstatus == 2),update_outstanding="Yes", merge_entries=False)
