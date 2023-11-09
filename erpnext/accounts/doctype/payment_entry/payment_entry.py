@@ -1947,8 +1947,8 @@ def set_grand_total_and_outstanding_amount(party_amount, dt, party_account_curre
 			grand_total = flt(doc.get("base_rounded_total") or doc.get("base_grand_total"))
 		else:
 			grand_total = flt(doc.get("rounded_total") or doc.get("grand_total"))
-		outstanding_amount = doc.get("outstanding_amount")
-		# outstanding_amount = doc.get("outstanding_amount") or (grand_total - flt(doc.advance_paid))
+		# outstanding_amount = doc.get("outstanding_amount")
+		outstanding_amount = doc.get("outstanding_amount") or (grand_total - flt(doc.advance_paid))
 	return grand_total, outstanding_amount
 
 
