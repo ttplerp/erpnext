@@ -10,9 +10,7 @@ from frappe.utils import flt, fmt_money, getdate
 
 import erpnext
 
-form_grid_templates = {
-    "journal_entries": "templates/form_grid/bank_reconciliation_grid.html"
-}
+form_grid_templates = {"journal_entries": "templates/form_grid/bank_reconciliation_grid.html"}
 
 
 class BankClearance(Document):
@@ -33,7 +31,7 @@ class BankClearance(Document):
 			select
 				"Journal Entry" as payment_document, t1.name as payment_entry,
 				t1.cheque_no as cheque_number, t1.cheque_date,
-				sum(t2.debit_in_account_currency) as debit, sum(t2.credit_in_account_currency) as credit,
+				t2.debit_in_account_currency as debit, t2.credit_in_account_currency as credit,
 				t1.posting_date, t2.against_account, t1.clearance_date, t2.account_currency
 			from
 				`tabJournal Entry` t1, `tabJournal Entry Account` t2
@@ -98,11 +96,7 @@ class BankClearance(Document):
             .where(loan_disbursement.disbursement_date >= self.from_date)
             .where(loan_disbursement.disbursement_date <= self.to_date)
             .where(loan_disbursement.clearance_date.isnull())
-            .where(
-                loan_disbursement.disbursement_account.isin(
-                    [self.bank_account, self.account]
-                )
-            )
+            .where(loan_disbursement.disbursement_account.isin([self.bank_account, self.account]))
             .orderby(loan_disbursement.disbursement_date)
             .orderby(loan_disbursement.name, frappe.qb.desc)
         ).run(as_dict=1)
@@ -125,9 +119,7 @@ class BankClearance(Document):
             .where(loan_repayment.clearance_date.isnull())
             .where(loan_repayment.posting_date >= self.from_date)
             .where(loan_repayment.posting_date <= self.to_date)
-            .where(
-                loan_repayment.payment_account.isin([self.bank_account, self.account])
-            )
+            .where(loan_repayment.payment_account.isin([self.bank_account, self.account]))
         )
 
         if frappe.db.has_column("Loan Repayment", "repay_from_salary"):
@@ -214,16 +206,14 @@ class BankClearance(Document):
             if d.clearance_date:
                 if not d.payment_document:
                     frappe.throw(
-                        _(
-                            "Row #{0}: Payment document is required to complete the transaction"
-                        )
+                        _("Row #{0}: Payment document is required to complete the transaction")
                     )
 
                 if d.cheque_date and getdate(d.clearance_date) < getdate(d.cheque_date):
                     frappe.throw(
-                        _(
-                            "Row #{0}: Clearance date {1} cannot be before Cheque Date {2}"
-                        ).format(d.idx, d.clearance_date, d.cheque_date)
+                        _("Row #{0}: Clearance date {1} cannot be before Cheque Date {2}").format(
+                            d.idx, d.clearance_date, d.cheque_date
+                        )
                     )
 
             if d.clearance_date or self.include_reconciled_entries:
