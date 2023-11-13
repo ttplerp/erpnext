@@ -29,6 +29,8 @@
   "meterage_drilled",
   "section_break_31",
   "ignore_time",
+  "column_break_25",
+  "ignore_reading",
   "km_reading_section",
   "uom",
   "schedule_working_hrs",
@@ -112,7 +114,7 @@
    "reqd": 1
   },
   {
-   "depends_on": "eval:doc.ignore_time == 0",
+   "depends_on": "eval:doc.ignore_reading == 0",
    "fieldname": "km_reading_section",
    "fieldtype": "Section Break",
    "label": "KM/Hr Reading"
@@ -121,7 +123,7 @@
    "fieldname": "initial_km",
    "fieldtype": "Float",
    "label": "Initial KM/Hr",
-   "mandatory_depends_on": "eval:doc.ignore_time == 0"
+   "mandatory_depends_on": "eval:doc.ignore_reading == 0"
   },
   {
    "fieldname": "column_break_12",
@@ -205,7 +207,7 @@
    "fieldname": "final_km",
    "fieldtype": "Float",
    "label": "Final KM/Hr",
-   "mandatory_depends_on": "eval:doc.ignore_time == 0"
+   "mandatory_depends_on": "eval:doc.ignore_reading == 0"
   },
   {
    "fetch_from": "shift_type.no_of_working_hrs",
@@ -269,7 +271,7 @@
    "fieldname": "uom",
    "fieldtype": "Select",
    "label": "Reading UOM",
-   "mandatory_depends_on": "eval:doc.ignore_time == 0",
+   "mandatory_depends_on": "eval:doc.ignore_reading == 0",
    "options": "\nKM\nHour"
   },
   {
@@ -315,13 +317,23 @@
    "description": "<b>Tick this only for recording multiple holes dug in same Shift</b>",
    "fieldname": "ignore_time",
    "fieldtype": "Check",
-   "label": "Ignore Reading & Time"
+   "label": "Ignore  Time"
+  },
+  {
+   "fieldname": "column_break_25",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "ignore_reading",
+   "fieldtype": "Check",
+   "label": "Ignore Reading"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-03-14 16:27:27.021557",
+ "modified": "2023-11-13 11:23:40.252231",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Fleet Engagement Item",
