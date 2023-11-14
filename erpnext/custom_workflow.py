@@ -108,7 +108,7 @@ class CustomWorkflow:
                 "Employee",
                 frappe.db.get_value(
                     "Employee",
-                    {"designation": "Dy. CEO/Director", "status": "Active"},
+                    {"designation": "Dy. Chief Executive Officer", "status": "Active"},
                     "name",
                 ),
                 self.field_list,
@@ -450,7 +450,7 @@ class CustomWorkflow:
                 "Employee",
                 frappe.db.get_value(
                     "Employee",
-                    {"designation": "Dy. CEO/Director", "status": "Active"},
+                    {"designation": "Dy. Chief Executive Officer", "status": "Active"},
                     "name",
                 ),
                 self.field_list,
@@ -470,9 +470,7 @@ class CustomWorkflow:
                 )
 
         if self.doc.doctype == "Material Request":
-            self.mechanical_cs = frappe.db.get_value(
-                "Employee",
-                {
+            self.mechanical_cs = frappe.db.get_value("Employee", {
                     "user_id": frappe.db.get_single_value(
                         "Maintenance Settings", "mechanical_cs"
                     )
@@ -481,6 +479,19 @@ class CustomWorkflow:
             )
             if not self.mechanical_cs:
                 frappe.throw("Mechanical Center Store not set in maintenance settings.")
+
+            self.deputy_ceo = frappe.db.get_value(
+                "Employee",
+                frappe.db.get_value(
+                    "Employee",
+                    {"designation": "Dy. Chief Executive Officer", "status": "Active"},
+                    "name",
+                ),
+                self.field_list,
+            )
+            if not self.mechanical_cs:
+                frappe.throw("Please assign on employee Deputy CEO")
+
 
             self.fleet_mto = frappe.db.get_value(
                 "Employee",
@@ -565,6 +576,7 @@ class CustomWorkflow:
                 ),
                 self.field_list,
             )
+
             if not self.reports_to:
                 frappe.throw(
                     "Reports to not set for the employee: {}".format(self.doc.owner)
@@ -898,7 +910,7 @@ class CustomWorkflow:
             vars(self.doc)[self.doc_approver[2]] = (
                 officiating[2] if officiating else self.qhse[2]
             )
-        elif approver_type == "QHSE_GM":
+        elif approver_type == "QHSE GM":
             officiating = get_officiating_employee(self.qhse_gm[3])
             if officiating:
                 officiating = frappe.db.get_value(
@@ -2874,27 +2886,35 @@ class CustomWorkflow:
 
     def material_request(self):
         """Material Request Workflow
-        doc.item_group == "Property, Plant and Equipment" or "Spare parts" in doc.item_group
-        # General workflow
+            # General workflow
             1. Employee -> supervisor -> Center Store -[approve/forward] -> approval
 
-            # item group : PPE, Safety and Mess
+            # item group : Mess, First Aid Kit
             2. Employee -> supervisor -> QHSE -> QHSE Head
 
-            # Item group : Fixed Asset
-            3. Employee -> Supervisor -> HR - [Approve/Forward] - approval
+            # Item group : Fixed Assets
+            3. Employee -> Supervisor -> HR
+
+            # Item group : Property, Plant and Equipment
+            4. Employee -> Supervisor -> Mechnical GM
+
+            # item group : Personal Protective Equipment
+            5. Employee -> Dy. CEO
         """
         if self.new_state.lower() in ("Draft".lower()):
             if self.doc.owner != frappe.session.user:
                 frappe.throw("Only the document owner can Apply this material request")
 
         elif self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
-            if (
-                self.doc.owner != frappe.session.user
-                and self.new_state.lower() != self.old_state.lower()
-            ):
+            if (self.doc.owner != frappe.session.user and self.new_state.lower() != self.old_state.lower()):
                 frappe.throw("Only the document owner can Apply this material request")
             self.set_approver("Supervisor")
+
+        elif self.new_state.lower() in ("Waiting Deputy CEO Approval".lower()):
+            if (self.doc.owner != frappe.session.user and self.new_state.lower() != self.old_state.lower()):
+                frappe.throw("Only the document owner can Apply this material request")
+            self.set_approver("Deputy CEO")
+
         elif self.new_state.lower() in ("Waiting QHSE Approval".lower()):
             if self.doc.approver != frappe.session.user:
                 frappe.throw(
@@ -2911,7 +2931,8 @@ class CustomWorkflow:
                         self.doc.approver
                     )
                 )
-            self.set_approver("QHSE_GM")
+            self.set_approver("QHSE GM")
+
         elif self.new_state.lower() in ("Waiting Mechanical GM Approval".lower()):
             if (
                 self.doc.owner != frappe.session.user
@@ -2919,14 +2940,7 @@ class CustomWorkflow:
             ):
                 frappe.throw("Only the document owner can Apply this material request")
             self.set_approver("Fleet Manager")
-        elif self.new_state.lower() in ("Waiting Central Store Mechanical".lower()):
-            if self.doc.approver != frappe.session.user:
-                frappe.throw(
-                    "Only the {} can approvef/forward this material request".format(
-                        self.doc.approver
-                    )
-                )
-            self.set_approver("Mechanical Center store")
+
         elif self.new_state.lower() in ("Waiting HR Approval".lower()):
             if self.doc.approver != frappe.session.user:
                 frappe.throw(
@@ -2935,6 +2949,7 @@ class CustomWorkflow:
                     )
                 )
             self.set_approver("HRGM")
+
         elif self.new_state.lower() in ("Waiting Approval".lower()):
             if self.old_state.lower() == "Waiting Central Store approval".lower():
                 submit_flag = 0
@@ -2964,7 +2979,8 @@ class CustomWorkflow:
                         self.doc.approver
                     )
                 )
-            # self.set_approver("MR Manager")
+            self.set_approver("MR Manager")
+
         elif self.new_state.lower() == "Approved".lower():
             if self.old_state.lower() == "Waiting Central Store approval".lower():
                 submit_flag = 0
@@ -2980,18 +2996,11 @@ class CustomWorkflow:
                         )
             else:
                 if self.doc.approver != frappe.session.user:
-                    frappe.throw(
-                        "Only {} can Approve the Material Request".format(
-                            self.doc.approver_name
-                        )
-                    )
+                    frappe.throw("Only {} can Approve the Material Request".format(self.doc.approver_name))
+                    
         elif self.new_state.lower() in ("Rejected".lower()):
             if self.doc.approver != frappe.session.user:
-                frappe.throw(
-                    "Only the {} can Reject this material request".format(
-                        self.doc.approver
-                    )
-                )
+                frappe.throw("Only the {} can Reject this material request".format(self.doc.approver))
 
     def festival_advance(self):
         """Leave Encashment Workflow
