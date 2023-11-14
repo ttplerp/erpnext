@@ -57,7 +57,7 @@ class AccountsSettings(Document):
 @frappe.whitelist()
 def get_bank_account(branch=None):
 	Company = "State Mining Corporation Ltd"
-	default_bank_account = frappe.db.get_value('Company',Company,'pbva_account')
+	default_bank_account = frappe.db.get_value('Company',Company,'default_bank_account')
 	expense_bank_account = None
 	if branch:
 		expense_bank_account = frappe.db.get_value('Branch', branch, 'expense_bank_account')
