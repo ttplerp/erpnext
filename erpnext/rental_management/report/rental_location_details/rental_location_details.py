@@ -49,9 +49,9 @@ def get_columns(data):
 		},
 		{
 			"fieldname": "flat_no",
-			"label": "Flat No",
+			"label": "Old Flat No",
 			"fieldtype": "Data",
-			"width":70
+			"width":150
 		},
 		{
 			"fieldname": "b_category",
@@ -86,7 +86,7 @@ def construct_query(filters=None):
 	conditions, filters = get_conditions(filters)
 	query = ("""
 			select 
-				f.name as name, f.block_no as block_no, f.flat_no as flat_no,f.building_category as building_category, f.status as status, f.town_category as town_category, f.dzongkhag as dzongkhag
+				f.name as name, f.block_no as block_no, f.old_flat_no as flat_no,f.building_category as building_category, f.status as status, f.town_category as town_category, f.dzongkhag as dzongkhag
 			from `tabFlat No` f 
 			where f.docstatus != 2
 			{}
