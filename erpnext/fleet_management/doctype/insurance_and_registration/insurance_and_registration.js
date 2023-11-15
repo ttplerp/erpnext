@@ -36,6 +36,18 @@ frappe.ui.form.on('Insurance and Registration', {
 			__("View")
 		);
 	},
+
+	post_je: function (frm) { 
+		frappe.call({
+			method: "post_je",
+			doc: frm.doc,
+			callback: function (r) {
+				if (r.message) {
+					frm.refresh_field("insurance_item")
+				}
+			}
+		})
+	}
 });
 frappe.ui.form.on("Insurance Details", {
 	"post_bank_entry": function (frm, cdt, cdn) {
@@ -76,23 +88,6 @@ frappe.ui.form.on("Bluebook and Emission", {
 			}
 		})
 	},
-	// before_items_remove:function(frm, cdt, cdn){
-	// 	let row = locals[cdt][cdn]
-	// 	if (row.journal_entry){
-	// 		frappe.call({
-	// 			method: "frappe.client.get_value",
-	// 			args: {
-	// 				doctype: "Journal Entry",
-	// 				fieldname: ["docstatus"],
-	// 				filters: {
-	// 					"name": row.journal_entry
-	// 				}
-	// 			},
-	// 			callback: function(r){
-	// 				if (flt(r.message.docstatus) != 2) frappe.throw("You cannot delete row " + row.idx +" of "+ row.doctype+ " as there exist accounting entry")
-	// 			}})
-	// 	}
-	// }
 });
 var set_total_amount = function (frm, cdt, cdn) {
 	var item = locals[cdt][cdn];

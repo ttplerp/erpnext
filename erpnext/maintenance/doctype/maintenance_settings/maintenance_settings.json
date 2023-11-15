@@ -16,6 +16,10 @@
   "fleet_mto_name",
   "mechanical_cs_name",
   "account_settings_tab",
+  "bluebook",
+  "emission",
+  "fitness",
+  "column_break_goxlq",
   "equipment_hire_income_account",
   "equipment_hire_expense_account"
  ],
@@ -88,12 +92,34 @@
   {
    "fieldname": "column_break_zh2j0",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "bluebook",
+   "fieldtype": "Link",
+   "label": "Bluebook GL",
+   "options": "Account"
+  },
+  {
+   "fieldname": "column_break_goxlq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "emission",
+   "fieldtype": "Link",
+   "label": "Emission GL",
+   "options": "Account"
+  },
+  {
+   "fieldname": "fitness",
+   "fieldtype": "Link",
+   "label": "Fitness GL",
+   "options": "Account"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-09-29 12:53:20.729975",
+ "modified": "2023-11-15 09:39:55.522494",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Maintenance Settings",

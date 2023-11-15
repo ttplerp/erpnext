@@ -38,6 +38,8 @@
   "registration_item",
   "bluebook_details_section",
   "items",
+  "post_je",
+  "reference",
   "company"
  ],
  "fields": [
@@ -231,11 +233,22 @@
    "fieldtype": "Data",
    "label": "Designation",
    "read_only": 1
+  },
+  {
+   "fieldname": "reference",
+   "fieldtype": "Data",
+   "label": "Bluebook Fitness & Emission  JE Ref",
+   "read_only": 1
+  },
+  {
+   "fieldname": "post_je",
+   "fieldtype": "Button",
+   "label": "Post Bluebook Fitness & Emission JE"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-10-05 12:18:35.876411",
+ "modified": "2023-11-14 15:08:57.709669",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Insurance and Registration",

@@ -87,6 +87,7 @@
    "depends_on": "eval: !doc.journal_entry && doc.total_amount>0",
    "fieldname": "post_bank_entry",
    "fieldtype": "Button",
+   "hidden": 1,
    "label": "Post Bank Entry"
   },
   {
@@ -118,7 +119,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-04-17 12:12:31.001404",
+ "modified": "2023-11-14 15:13:35.857066",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Bluebook and Emission",
