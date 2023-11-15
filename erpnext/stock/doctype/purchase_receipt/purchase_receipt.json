@@ -192,17 +192,12 @@
    "width": "50%"
   },
   {
-   "default": "Today",
    "fieldname": "posting_date",
    "fieldtype": "Date",
-   "in_list_view": 1,
-   "label": "Date",
-   "no_copy": 1,
+   "label": "Posting Date",
    "oldfieldname": "posting_date",
    "oldfieldtype": "Date",
    "print_width": "100px",
-   "reqd": 1,
-   "search_index": 1,
    "width": "100px"
   },
   {
@@ -1182,7 +1177,7 @@
  "idx": 261,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-17 12:12:00.097981",
+ "modified": "2023-11-14 17:03:36.529382",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Purchase Receipt",
