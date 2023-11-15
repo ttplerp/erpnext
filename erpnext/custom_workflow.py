@@ -426,6 +426,7 @@ class CustomWorkflow:
                         )
                     )
                 )
+
         if self.doc.doctype == "Employee Advance":
             self.advance_supervisor = frappe.db.get_value(
                 "Employee",
@@ -434,11 +435,13 @@ class CustomWorkflow:
             )
             if not self.advance_supervisor:
                 frappe.throw("Advance Approver not set in the employee.")
+
             self.reports_to = frappe.db.get_value(
                 "Employee",
                 frappe.db.get_value("Employee", self.doc.employee, "reports_to"),
                 self.field_list,
             )
+
             self.ceo = frappe.db.get_value(
                 "Employee",
                 frappe.db.get_value(
@@ -446,6 +449,7 @@ class CustomWorkflow:
                 ),
                 self.field_list,
             )
+
             self.deputy_ceo = frappe.db.get_value(
                 "Employee",
                 frappe.db.get_value(
@@ -455,6 +459,15 @@ class CustomWorkflow:
                 ),
                 self.field_list,
             )
+
+            self.finance_director = frappe.db.get_value(
+                    "Employee",
+                    frappe.db.get_single_value("HR Settings", "finance_director"),
+                    self.field_list,
+                )
+            if not self.finance_director:
+                    frappe.throw("Finance director not set in hr setting")
+
             if self.doc.advance_type == "Imprest Advance":
                 self.imprest_approvers = frappe.db.sql(
                     """SELECT user from `tabImprest Settlement Administrators`""",
@@ -1102,6 +1115,22 @@ class CustomWorkflow:
             )
             vars(self.doc)[self.doc_approver[2]] = (
                 officiating[2] if officiating else self.hrgm[2]
+            )
+
+        elif approver_type == "Finance Director":
+            officiating = get_officiating_employee(self.finance_director[3])
+            if officiating:
+                officiating = frappe.db.get_value(
+                    "Employee", officiating[0].officiate, self.field_list
+                )
+            vars(self.doc)[self.doc_approver[0]] = (
+                officiating[0] if officiating else self.finance_director[0]
+            )
+            vars(self.doc)[self.doc_approver[1]] = (
+                officiating[1] if officiating else self.finance_director[1]
+            )
+            vars(self.doc)[self.doc_approver[2]] = (
+                officiating[2] if officiating else self.finance_director[2]
             )
 
         elif approver_type == "Project Head":
@@ -2583,29 +2612,37 @@ class CustomWorkflow:
                 )
 
     def employee_advance(self):
-        if (
-            self.new_state
-            and self.old_state
-            and self.new_state.lower() == self.old_state.lower()
-        ):
-            return
-        if self.new_state.lower() in (
-            "Draft".lower(),
-            "Waiting Supervisor Approval".lower(),
-        ):
+        ''''
+            1. Employee -> Supervisor -> HR Manager
+            2. CEO/Depty CEO -> HR Manager
+            3. HR Manager -> Finance Manager
+        '''
+        designation = frappe.db.get_value('Employee', self.doc.employee, ['designation'])
+        hrgm = frappe.db.get_single_value("HR Settings", "hrgm")
+
+        if self.new_state.lower() == "Draft".lower():
+            self.set_approver("Supervisor") 
+        
+        elif self.old_state.lower() == "Draft".lower() and self.new_state.lower() != "Draft".lower():
             if self.doc.owner != frappe.session.user:
                 frappe.throw("Only {} can Apply this document".format(self.doc.owner))
-            self.set_approver("Supervisor")
 
-        if self.new_state.lower() in ("Waiting Approval".lower()):
-            if (
-                self.doc.advance_approver != frappe.session.user
-                and self.old_state != "Draft"
-            ):
-                frappe.throw(
-                    "Only {} can forward this request".format(self.doc.advance_approver)
-                )
-            if self.doc.advance_type != "Imprest Advance":
+            if designation in ['Chief Executive Officer', 'Dy. Chief Executive Officer'] or hrgm == self.doc.employee:
+                self.doc.workflow_state = "Waiting Approval"
+            else:
+                self.doc.workflow_state = "Waiting Supervisor Approval"
+                
+        elif self.old_state.lower() in ("Waiting Supervisor Approval".lower()):
+            if (self.doc.advance_approver != frappe.session.user and self.old_state != "Draft"):
+                frappe.throw("Only {} can forward this request".format(self.doc.advance_approver))
+            self.set_approver("HRGM")
+
+        elif self.old_state.lower() in ("Waiting Approval".lower()):
+            if self.doc.advance_approver != frappe.session.user:
+                frappe.throw("Only {} can Approve this request".format(self.doc.advance_approver))
+            if hrgm == self.doc.employee:
+                self.set_approver("Finance Director")
+            else:
                 self.set_approver("HRGM")
 
         elif self.new_state.lower() == "Approved".lower():
@@ -2635,6 +2672,7 @@ class CustomWorkflow:
                     self.doc.advance_approver = self.approver[0]
                     self.doc.advance_approver_name = self.approver[1]
                     self.doc.advance_approver_designation = self.approver[2]
+
         elif self.new_state.lower() == "Rejected".lower():
             if (
                 self.doc.advance_approver != frappe.session.user
@@ -2643,6 +2681,7 @@ class CustomWorkflow:
                 frappe.throw(
                     "Only {} can Reject this request".format(self.doc.advance_approver)
                 )
+
 
         elif self.new_state.lower() == "Cancelled".lower():
             if "HR User" not in frappe.get_roles(frappe.session.user):
