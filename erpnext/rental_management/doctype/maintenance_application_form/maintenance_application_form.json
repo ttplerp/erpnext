@@ -12,6 +12,8 @@
   "no_current_tenant",
   "cb_1",
   "posting_date",
+  "maf_status",
+  "completion_date",
   "maintenance_application_form",
   "cidd",
   "tenant_name",
@@ -251,12 +253,28 @@
   {
    "fieldname": "section_break_39",
    "fieldtype": "Section Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "Open",
+   "fieldname": "maf_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "MAF Status",
+   "options": "Open\nIn Process\nOn Hold\nClosed\nCompleted"
+  },
+  {
+   "depends_on": "eval:doc.maf_status ==\"Completed\"",
+   "fieldname": "completion_date",
+   "fieldtype": "Date",
+   "label": "Completion Date"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-11-16 13:30:52.167108",
+ "modified": "2023-11-16 13:56:11.060424",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Maintenance Application Form",
