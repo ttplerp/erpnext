@@ -13,31 +13,36 @@
   "cb_1",
   "posting_date",
   "maintenance_application_form",
-  "tenant",
+  "cidd",
   "tenant_name",
-  "cid",
+  "tenant_id",
   "mobile_no",
+  "maintenance_type",
+  "column_break_12",
+  "location",
+  "location_name",
+  "block_no",
+  "flat_no",
+  "dzongkhag",
+  "section_break_12",
+  "longtex",
+  "section_break_15",
   "column_break_2",
   "designation",
   "ministry_agency",
   "department",
-  "location",
-  "location_name",
-  "dzongkhag",
   "column_break_14",
-  "block_no",
-  "flat_no",
-  "maintenance_type",
   "section_break_25",
   "maintenance_date",
   "column_break_22",
   "site_inspector",
-  "column_break_24",
   "site_inspector_name",
   "section_break_26",
   "maintenance_required",
   "technical_sanction",
-  "amended_from"
+  "amended_from",
+  "section_break_39",
+  "column_break_24"
  ],
  "fields": [
   {
@@ -69,14 +74,6 @@
    "label": "Maintenance Application Form"
   },
   {
-   "depends_on": "eval: doc.no_current_tenant == 0",
-   "fieldname": "tenant",
-   "fieldtype": "Link",
-   "label": "Tenant",
-   "mandatory_depends_on": "eval: doc.no_current_tenant == 0",
-   "options": "Tenant Information"
-  },
-  {
    "fetch_from": "tenant.tenant_name",
    "fieldname": "tenant_name",
    "fieldtype": "Data",
@@ -85,19 +82,10 @@
    "read_only": 1
   },
   {
-   "fetch_from": "tenant.tenant_cid",
-   "fieldname": "cid",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "CID",
-   "read_only": 1
-  },
-  {
    "fetch_from": "location.dzongkhag",
    "fieldname": "dzongkhag",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "label": "Dzongkhag",
-   "options": "Dzongkhag",
    "read_only": 1
   },
   {
@@ -127,17 +115,14 @@
   {
    "fetch_from": "tenant.locations",
    "fieldname": "location",
-   "fieldtype": "Link",
-   "label": "Location",
-   "options": "Locations",
-   "reqd": 1
+   "fieldtype": "Data",
+   "label": "Location"
   },
   {
    "fieldname": "maintenance_type",
    "fieldtype": "Select",
    "label": "Maintenance Type",
-   "options": "\nMinor\nMajor\nPlanned\nAdhoc",
-   "reqd": 1
+   "options": "\nMinor\nMajor\nPlanned\nAdhoc"
   },
   {
    "fieldname": "column_break_14",
@@ -145,10 +130,10 @@
   },
   {
    "fieldname": "site_inspector",
-   "fieldtype": "Link",
+   "fieldtype": "Table",
+   "ignore_user_permissions": 1,
    "label": "Site Visitor",
-   "options": "Employee",
-   "reqd": 1
+   "options": "Employee Multiselect"
   },
   {
    "fetch_from": "site_inspector.employee_name",
@@ -160,9 +145,8 @@
   {
    "fetch_from": "tenant.block_no",
    "fieldname": "block_no",
-   "fieldtype": "Link",
-   "label": "Block No",
-   "options": "Block No"
+   "fieldtype": "Data",
+   "label": "Block No"
   },
   {
    "default": "Today",
@@ -178,7 +162,7 @@
   {
    "fieldname": "maintenance_date",
    "fieldtype": "Date",
-   "label": "Effective Maintenance Date"
+   "label": "Site Visit Date"
   },
   {
    "fieldname": "column_break_22",
@@ -191,8 +175,7 @@
   {
    "fieldname": "maintenance_required",
    "fieldtype": "Text Editor",
-   "label": "Natures of maintenance required",
-   "reqd": 1
+   "label": "Natures of maintenance required"
   },
   {
    "fieldname": "technical_sanction",
@@ -220,9 +203,8 @@
   {
    "fetch_from": "tenant.flat_no",
    "fieldname": "flat_no",
-   "fieldtype": "Link",
-   "label": "Flat No",
-   "options": "Flat No"
+   "fieldtype": "Data",
+   "label": "Flat No"
   },
   {
    "fetch_from": "location.location",
@@ -237,12 +219,44 @@
   {
    "fieldname": "column_break_24",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "cidd",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "CID"
+  },
+  {
+   "fieldname": "longtex",
+   "fieldtype": "Long Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "section_break_12",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_15",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_12",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "label": "Tenant ID"
+  },
+  {
+   "fieldname": "section_break_39",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-09-21 16:01:08.440164",
+ "modified": "2023-11-16 12:47:35.752145",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Maintenance Application Form",

@@ -168,8 +168,6 @@
    "fetch_from": "equipment.equipment_type",
    "fieldname": "equipment_type",
    "fieldtype": "Link",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
    "label": "Equipment Type",
    "options": "Equipment Type",
    "read_only": 1
@@ -241,6 +239,7 @@
    "fieldname": "party",
    "fieldtype": "Dynamic Link",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Party",
    "options": "party_type",
    "reqd": 1
@@ -286,7 +285,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-29 11:26:50.916601",
+ "modified": "2023-11-16 10:04:05.410578",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Repair And Service Invoice",

@@ -9,10 +9,12 @@
   "location",
   "luc_no",
   "plot_no",
+  "plot_area",
   "disabled",
   "cb_1",
   "town_category",
   "dzongkhag",
+  "gewog_throm",
   "description",
   "sb_property_mgt",
   "property_management_item",
@@ -99,11 +101,22 @@
    "options": "Locations",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "plot_area",
+   "fieldtype": "Data",
+   "label": "Plot Area",
+   "reqd": 1
+  },
+  {
+   "fieldname": "gewog_throm",
+   "fieldtype": "Data",
+   "label": "Gewog / Throm"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-15 12:46:53.975607",
+ "modified": "2023-11-16 10:33:35.941055",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Locations",

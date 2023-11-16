@@ -2,6 +2,18 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Maintenance Application Form', {
+
+	cidd: function(frm) {
+        frm.fields_dict.cidd.$input.on("keyup", function(event) {
+            if (event.which === 13) { // Check if Enter key is pressed
+                var enteredText = frm.doc.cidd;
+                if (enteredText) {
+                    frappe.msgprint('Hello');
+                }
+            }
+        });
+    },
+	
 	refresh: function(frm) {
 		if (!frm.doc.technical_sanction && frm.doc.docstatus == 1) {
 			frm.add_custom_button("Create Technical Sanction", function () {
