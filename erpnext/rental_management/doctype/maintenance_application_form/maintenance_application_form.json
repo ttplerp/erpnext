@@ -36,13 +36,13 @@
   "maintenance_date",
   "column_break_22",
   "site_inspector",
+  "column_break_24",
   "site_inspector_name",
   "section_break_26",
   "maintenance_required",
   "technical_sanction",
   "amended_from",
-  "section_break_39",
-  "column_break_24"
+  "section_break_39"
  ],
  "fields": [
   {
@@ -130,10 +130,10 @@
   },
   {
    "fieldname": "site_inspector",
-   "fieldtype": "Table",
+   "fieldtype": "Link",
    "ignore_user_permissions": 1,
    "label": "Site Visitor",
-   "options": "Employee Multiselect"
+   "options": "Employee"
   },
   {
    "fetch_from": "site_inspector.employee_name",
@@ -256,7 +256,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-11-16 12:47:35.752145",
+ "modified": "2023-11-16 13:30:52.167108",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Maintenance Application Form",
