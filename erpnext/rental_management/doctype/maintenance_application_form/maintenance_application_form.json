@@ -265,6 +265,7 @@
    "options": "Open\nIn Process\nOn Hold\nClosed\nCompleted"
   },
   {
+   "allow_on_submit": 1,
    "depends_on": "eval:doc.maf_status ==\"Completed\"",
    "fieldname": "completion_date",
    "fieldtype": "Date",
@@ -274,7 +275,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-11-16 13:56:11.060424",
+ "modified": "2023-11-16 14:10:31.918721",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Maintenance Application Form",
