@@ -562,8 +562,8 @@
    "fieldname": "reference",
    "fieldtype": "Link",
    "ignore_user_permissions": 1,
-   "label": "Appeal Reference",
-   "options": "PMS Appeal",
+   "label": "ReviewReference",
+   "options": "Review",
    "read_only": 1
   },
   {
@@ -783,7 +783,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-10-31 14:44:36.190463",
+ "modified": "2023-11-09 16:41:47.102434",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Performance Evaluation",
