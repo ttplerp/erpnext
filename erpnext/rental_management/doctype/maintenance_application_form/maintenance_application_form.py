@@ -79,3 +79,7 @@ def get_cid_detail(tenant_cid):
     except Exception as e:
         frappe.log_error(_("Error in get_tenant_name: {0}").format(e))
         return None
+
+@frappe.whitelist(allow_guest=True)
+def checkCidExistence(tenant_cid):
+    return True
