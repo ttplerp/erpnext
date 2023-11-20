@@ -1,0 +1,240 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "HC.YYYY.MM.####",
+ "creation": "2023-11-14 14:29:36.706577",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "cid",
+  "application_name",
+  "purpose",
+  "email",
+  "column_break_3",
+  "application_date",
+  "application_status",
+  "is_tenant",
+  "tenant_information_section",
+  "tenant",
+  "tenant_name",
+  "ministry_agency",
+  "employment_type",
+  "tenant_department",
+  "column_break_13",
+  "dzongkhag",
+  "location_id",
+  "location_name",
+  "block_id",
+  "building_classification",
+  "column_break_19",
+  "tenant_status",
+  "flat_id",
+  "floor_area",
+  "initial_rent_amount",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "application_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Application Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cid",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Citizen ID No",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "purpose",
+   "fieldtype": "Data",
+   "label": "Purpose",
+   "reqd": 1
+  },
+  {
+   "fieldname": "tenant_information_section",
+   "fieldtype": "Section Break",
+   "label": "Tenant Information"
+  },
+  {
+   "depends_on": "eval:doc.is_tenant",
+   "fieldname": "tenant",
+   "fieldtype": "Link",
+   "label": "Tenant",
+   "options": "Tenant Information"
+  },
+  {
+   "fetch_from": "tenant.tenant_name",
+   "fieldname": "tenant_name",
+   "fieldtype": "Data",
+   "label": "Tenant Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "tenant.locations",
+   "fieldname": "location_id",
+   "fieldtype": "Data",
+   "label": "Location ID",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "tenant.location_name",
+   "fieldname": "location_name",
+   "fieldtype": "Data",
+   "label": "Location Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "tenant.dzongkhag",
+   "fieldname": "dzongkhag",
+   "fieldtype": "Data",
+   "label": "Dzongkhag",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "tenant.block_no",
+   "fieldname": "block_id",
+   "fieldtype": "Data",
+   "label": "Block ID",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "tenant.building_classification",
+   "fieldname": "building_classification",
+   "fieldtype": "Data",
+   "label": "Building Classification",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "tenant.flat_no",
+   "fieldname": "flat_id",
+   "fieldtype": "Data",
+   "label": "Flat ID",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "tenant.total_floor_area",
+   "fieldname": "floor_area",
+   "fieldtype": "Data",
+   "label": "Total Floor Area (Sqft)",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "tenant.initial_rental_amount",
+   "fieldname": "initial_rent_amount",
+   "fieldtype": "Data",
+   "label": "Initial Rental Amount",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "tenant.tenant_department_name",
+   "fieldname": "employment_type",
+   "fieldtype": "Data",
+   "label": "Employment Type",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "tenant.ministry_and_agency",
+   "fieldname": "ministry_agency",
+   "fieldtype": "Data",
+   "label": "Ministry and Agency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "tenant_department",
+   "fieldtype": "Data",
+   "label": "Tenant Department",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_13",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_19",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "application_date",
+   "fieldtype": "Date",
+   "label": "Application Date"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_tenant",
+   "fieldtype": "Check",
+   "label": "Is Tenant",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fetch_from": "tenant.status",
+   "fieldname": "tenant_status",
+   "fieldtype": "Data",
+   "label": "Status",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Housing Clearance",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email"
+  },
+  {
+   "fieldname": "application_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Application Status",
+   "no_copy": 1,
+   "options": "Pending\nApproved\nRejected"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-11-16 13:39:40.556503",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Housing Clearance",
+ "name_case": "UPPER CASE",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

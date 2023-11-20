@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Rental Management</span>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Master Data\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Tenant Transactions\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Real Estate Management Services\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Tools\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}}]",
+ "content": "[{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Rental Management</span>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Master Data\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Tenant Transactions\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Real Estate Management Services\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Tools\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Allotment\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}}]",
  "creation": "2023-04-27 17:50:54.834147",
  "docstatus": 0,
  "doctype": "Workspace",
@@ -275,8 +275,46 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "Tools",
+   "link_count": 3,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Tenant Updation Tools",
+   "link_count": 0,
+   "link_to": "Tenant Updation Tool",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Payment Refund",
+   "link_count": 0,
+   "link_to": "Payment Refund",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Housing Application ",
+   "link_count": 0,
+   "link_to": "Housing Application",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "Reports",
-   "link_count": 5,
+   "link_count": 7,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -332,31 +370,41 @@
   },
   {
    "hidden": 0,
+   "is_query_report": 1,
+   "label": "Rental Payment Details",
+   "link_count": 0,
+   "link_to": "Rental Payment Details",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Rental Increment Report",
+   "link_count": 0,
+   "link_to": "Rental Increment Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Housing Application Report",
+   "link_count": 0,
+   "link_to": "Housing Application Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
    "is_query_report": 0,
-   "label": "Tools",
-   "link_count": 3,
+   "label": "Allotment",
+   "link_count": 2,
    "onboard": 0,
    "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Tenant Updation Tools",
-   "link_count": 0,
-   "link_to": "Tenant Updation Tool",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Payment Refund",
-   "link_count": 0,
-   "link_to": "Payment Refund",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
   },
   {
    "hidden": 0,
@@ -367,10 +415,20 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Allotment",
+   "link_count": 0,
+   "link_to": "Tenant Information",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-09-20 19:10:22.029169",
- "modified_by": "Administrator",
+ "modified": "2023-11-20 13:01:28.862862",
+ "modified_by": "lhendrup.dorji@thimphutechpark.bt",
  "module": "Rental Management",
  "name": "Rental Management",
  "owner": "Administrator",
