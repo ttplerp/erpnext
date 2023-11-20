@@ -516,6 +516,20 @@ def get_permission_query_conditions(user):
 	user_roles = frappe.get_roles(user)
 	if "HR User" in user_roles or "HR Manager" in user_roles or "Accounts User" in user_roles or "CEO" in user_roles:
 		return
+	if "MR User" in user_roles:
+		return """(
+			exists(select 1
+				from `tabEmployee` as e
+				where e.name = `tabEmployee`.name
+				and e.user_id = '{user}')
+			or
+			exists(select 1
+				from `tabEmployee` e, `tabAssign Branch` ab, `tabBranch Item` bi
+				where e.user_id = '{user}'
+				and ab.employee = e.name
+				and bi.parent = ab.name
+				and bi.branch = e.branch)
+		)""".format(user=user)
 	else:
 		return """(
 			exists(select 1
