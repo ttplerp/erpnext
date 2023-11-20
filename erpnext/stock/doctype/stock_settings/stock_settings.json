@@ -61,9 +61,11 @@
   "stock_settings_tab",
   "mr_approval",
   "central_store_approval",
+  "ppe_approver",
   "column_break_lyi3d",
   "qhse",
-  "qhse_gm"
+  "qhse_gm",
+  "ppe_approver_name"
  ],
  "fields": [
   {
@@ -397,6 +399,19 @@
    "fieldtype": "Link",
    "label": "QHSE GM",
    "options": "Employee"
+  },
+  {
+   "fieldname": "ppe_approver",
+   "fieldtype": "Link",
+   "label": "Property, Plant and Equipment Approver",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "ppe_approver.employee_name",
+   "fieldname": "ppe_approver_name",
+   "fieldtype": "Data",
+   "label": "Property, Plant and Equipment Name",
+   "read_only": 1
   }
  ],
  "icon": "icon-cog",
@@ -404,7 +419,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-07-31 12:03:03.489257",
+ "modified": "2023-11-20 10:32:44.013812",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Settings",

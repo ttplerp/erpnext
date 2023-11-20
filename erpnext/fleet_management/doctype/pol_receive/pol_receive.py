@@ -363,14 +363,29 @@ class POLReceive(StockController):
             )
         else:
             pv_km = previous_km_reading[0][0]
-        self.previous_km = pv_km
-        if flt(pv_km) >= flt(self.cur_km_reading):
+        
+        # Commentted by Dawa Tshering on 20/11/2023
+        # self.previous_km = pv_km
+        # if flt(pv_km) >= flt(self.cur_km_reading):
+        #     frappe.throw(
+        #         "Current KM/Hr Reading cannot be less than Previous KM/Hr Reading({}) for Equipment Number <b>{}</b>".format(
+        #             pv_km, self.equipment
+        #         )
+        #     )
+        # self.km_difference = flt(self.cur_km_reading) - flt(pv_km)
+        # if self.uom == "Hour":
+        #     self.mileage = self.qty / flt(self.km_difference)
+        # else:
+        #     self.mileage = flt(self.km_difference) / self.qty
+
+        # Commentted by Dawa Tshering on 20/11/2023
+        if flt(self.previous_km) >= flt(self.cur_km_reading):
             frappe.throw(
                 "Current KM/Hr Reading cannot be less than Previous KM/Hr Reading({}) for Equipment Number <b>{}</b>".format(
-                    pv_km, self.equipment
+                    self.previous_km, self.equipment
                 )
             )
-        self.km_difference = flt(self.cur_km_reading) - flt(pv_km)
+        self.km_difference = flt(self.cur_km_reading) - flt(self.previous_km)
         if self.uom == "Hour":
             self.mileage = self.qty / flt(self.km_difference)
         else:
