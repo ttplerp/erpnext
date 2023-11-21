@@ -18,8 +18,10 @@
   "foreign_wage",
   "customer_client_section",
   "income_account",
+  "carriage_charge",
   "column_break_selcu",
-  "project_invoice_account"
+  "project_invoice_account",
+  "carriage_payable"
  ],
  "fields": [
   {
@@ -103,11 +105,23 @@
    "fieldtype": "Link",
    "label": "Project Invoice Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "carriage_charge",
+   "fieldtype": "Link",
+   "label": "Carriage Charge",
+   "options": "Account"
+  },
+  {
+   "fieldname": "carriage_payable",
+   "fieldtype": "Link",
+   "label": "Carriage Payable",
+   "options": "Account"
   }
  ],
  "issingle": 1,
  "links": [],
- "modified": "2023-10-17 10:28:21.248949",
+ "modified": "2023-11-16 10:22:16.567670",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Projects Settings",
