@@ -469,19 +469,31 @@ class CustomWorkflow:
             if not self.finance_director:
                     frappe.throw("Finance director not set in hr setting")
 
-            if self.doc.advance_type == "Imprest Advance":
-                self.imprest_approvers = frappe.db.sql(
-                    """SELECT user from `tabImprest Settlement Administrators`""",
-                    as_dict=1,
-                )
-                if not self.imprest_approvers:
-                    frappe.throw("Imprest Approvers not set in hr setting")
-            else:
-                self.hrgm = frappe.db.get_value(
+            self.hrgm = frappe.db.get_value(
                     "Employee",
                     frappe.db.get_single_value("HR Settings", "hrgm"),
                     self.field_list,
                 )
+            
+            self.imprest_approver = frappe.db.get_value(
+                    "Employee",
+                    frappe.db.get_single_value("HR Settings", "imprest_approver"),
+                    self.field_list,
+                )
+
+            # if self.doc.advance_type == "Imprest Advance":
+            #     self.imprest_approvers = frappe.db.sql(
+            #         """SELECT user from `tabImprest Settlement Administrators`""",
+            #         as_dict=1,
+            #     )
+            #     if not self.imprest_approvers:
+            #         frappe.throw("Imprest Approvers not set in hr setting")
+            # else:
+            #     self.hrgm = frappe.db.get_value(
+            #         "Employee",
+            #         frappe.db.get_single_value("HR Settings", "hrgm"),
+            #         self.field_list,
+            #     )
 
         if self.doc.doctype == "Material Request":
             self.mechanical_cs = frappe.db.get_value("Employee", {
@@ -2633,7 +2645,11 @@ class CustomWorkflow:
         elif self.old_state.lower() in ("Waiting Supervisor Approval".lower()):
             if (self.doc.advance_approver != frappe.session.user and self.old_state != "Draft"):
                 frappe.throw("Only {} can forward this request".format(self.doc.advance_approver))
-            self.set_approver("HRGM")
+            if self.doc.advance_type == 'Imprest Advance':
+                self.set_approver("Imprest Approver")
+            else:
+                self.set_approver("HRGM")
+
 
         elif self.old_state.lower() in ("Waiting Approval".lower()):
             if self.doc.advance_approver != frappe.session.user:
