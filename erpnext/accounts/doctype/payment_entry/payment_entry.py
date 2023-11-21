@@ -1941,24 +1941,24 @@ def get_payment_entry(
         party_type = set_party_type(dt)
 
     party_account = set_party_account(dt, dn, doc, party_type, is_advance)
-
-    supplier_type = frappe.db.get_value("Supplier", doc.supplier, "supplier_type")
-    if supplier_type == "Domestic Vendor":
-        party_account = frappe.db.get_value(
-            "Company",
-            "VAJRA BUILDERS PRIVATE LIMITED",
-            "advance_paid_to_domestic_supplier",
-        )
-    elif supplier_type == "International Vendor":
-        party_account = frappe.db.get_value(
-            "Company",
-            "VAJRA BUILDERS PRIVATE LIMITED",
-            "advance_paid_to_international_supplier",
-        )
-    else:
-        frappe.msgprint(
-            str("The supplier type is individual and there is no associated account for it.")
-        )
+    if dt == "Purchase Order":
+        supplier_type = frappe.db.get_value("Supplier", doc.supplier, "supplier_type")
+        if supplier_type == "Domestic Vendor":
+            party_account = frappe.db.get_value(
+                "Company",
+                "VAJRA BUILDERS PRIVATE LIMITED",
+                "advance_paid_to_domestic_supplier",
+            )
+        elif supplier_type == "International Vendor":
+            party_account = frappe.db.get_value(
+                "Company",
+                "VAJRA BUILDERS PRIVATE LIMITED",
+                "advance_paid_to_international_supplier",
+            )
+        else:
+            frappe.msgprint(
+                str("The supplier type is individual and there is no associated account for it.")
+            )
 
     party_account_currency = set_party_account_currency(dt, party_account, doc)
     if not payment_type:
