@@ -2722,7 +2722,7 @@ class CustomWorkflow:
     def asset_movement(self):
         if self.new_state.lower() in ("Draft".lower()):
             if self.doc.owner != frappe.session.user:
-                frappe.throw("Only the document owner can Apply this material request")
+                frappe.throw("Only the document owner can Apply this Document")
             self.set_approver("Asset Verifier")
 
         if self.new_state.lower() in ("Waiting for Verification".lower()):
@@ -2942,16 +2942,18 @@ class CustomWorkflow:
         """
         if self.new_state.lower() in ("Draft".lower()):
             if self.doc.owner != frappe.session.user:
-                frappe.throw("Only the document owner can Apply this material request")
+                frappe.throw("Only the document owner can Apply this material request.")
 
         elif self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
             if (self.doc.owner != frappe.session.user and self.new_state.lower() != self.old_state.lower()):
-                frappe.throw("Only the document owner can Apply this material request")
+                frappe.throw("Only the document owner can Apply this material request.")
             self.set_approver("Supervisor")
 
         elif self.new_state.lower() in ("Waiting Deputy CEO Approval".lower()):
-            if (self.doc.owner != frappe.session.user and self.new_state.lower() != self.old_state.lower()):
-                frappe.throw("Only the document owner can Apply this material request")
+            if (self.doc.approver != frappe.session.user
+                and self.new_state.lower() != self.old_state.lower()
+            ):
+                frappe.throw("Only the {0} can Forward this material request ".format(self.doc.approver))
             self.set_approver("Deputy CEO")
 
         elif self.new_state.lower() in ("Waiting QHSE Approval".lower()):
@@ -2973,11 +2975,10 @@ class CustomWorkflow:
             self.set_approver("QHSE GM")
 
         elif self.new_state.lower() in ("Waiting Mechanical GM Approval".lower()):
-            if (
-                self.doc.owner != frappe.session.user
+            if (self.doc.approver != frappe.session.user
                 and self.new_state.lower() != self.old_state.lower()
             ):
-                frappe.throw("Only the document owner can Apply this material request")
+                frappe.throw("Only the {0} can Forward this material request ".format(self.doc.approver))
             self.set_approver("Fleet Manager")
 
         elif self.new_state.lower() in ("Waiting HR Approval".lower()):
