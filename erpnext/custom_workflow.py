@@ -2654,10 +2654,13 @@ class CustomWorkflow:
         elif self.old_state.lower() in ("Waiting Approval".lower()):
             if self.doc.advance_approver != frappe.session.user:
                 frappe.throw("Only {} can Approve this request".format(self.doc.advance_approver))
-            if hrgm == self.doc.employee:
-                self.set_approver("Finance Director")
+            if self.doc.advance_type == 'Imprest Advance':
+                self.set_approver("Imprest Approver")
             else:
-                self.set_approver("HRGM")
+                if hrgm == self.doc.employee:
+                    self.set_approver("Finance Director")
+                else:
+                    self.set_approver("HRGM")
 
         elif self.new_state.lower() == "Approved".lower():
             if self.doc.advance_type != "Imprest Advance":
