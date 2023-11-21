@@ -16,7 +16,8 @@
   "hiring_rate_revision",
   "cb_01",
   "enable_pol_receive_account",
-  "pol_receive_account"
+  "pol_receive_account",
+  "insurance_account"
  ],
  "fields": [
   {
@@ -76,11 +77,17 @@
    "fieldname": "enable_pol_receive_account",
    "fieldtype": "Check",
    "label": "Enable POL Receive Account"
+  },
+  {
+   "fieldname": "insurance_account",
+   "fieldtype": "Link",
+   "label": "Insurance Account",
+   "options": "Account"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-10-27 11:33:13.577879",
+ "modified": "2023-11-21 16:33:17.484989",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment Category",

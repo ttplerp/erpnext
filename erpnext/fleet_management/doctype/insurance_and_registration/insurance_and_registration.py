@@ -76,9 +76,11 @@ class InsuranceandRegistration(Document):
         je = frappe.new_doc("Journal Entry")
         je.flags.ignore_permissions = 1
         if args.get("type") == "Insurance":
-            debit_account = get_party_account(
-                "Supplier", args.get("party"), self.company, is_advance=True
-            )
+            category = frappe.db.get_value("Equipment", self.equipment, "equipment_category")
+            debit_account = frappe.db.get_value("Equipment Category", category, "insurance_account")
+
+            if not debit_account:
+                frappe.throw("Insurance account not set in equipment category {0}".format(category))
             posting_date = args.get("insured_date")
         else:
             posting_date = args.get("receipt_date")
