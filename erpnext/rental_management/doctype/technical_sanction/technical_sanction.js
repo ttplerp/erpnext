@@ -50,7 +50,7 @@ frappe.ui.form.on('Technical Sanction', {
 					filters: [
 						["disabled", "=", 0],
 						["is_service_item", "=", 1],
-						["is_bsr_service_item", "=", 1]
+						// ["is_bsr_service_item", "=", 1]
 					]
 				}
 			} else if (row.type == "Item") {
@@ -72,7 +72,7 @@ frappe.ui.form.on('Technical Sanction', {
 					filters: [
 						["disabled", "=", 0],
 						["is_service_item", "=", 1],
-						["is_bsr_service_item", "=", 1]
+						// ["is_bsr_service_item", "=", 1]
 					]
 				}
 			} else if (row.type == "Item") {
