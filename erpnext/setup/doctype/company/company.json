@@ -47,6 +47,7 @@
   "total_monthly_sales",
   "advance_received_from_customer",
   "advance_paid_to_supplier",
+  "advance_paid_to_domestic_supplier",
   "column_break_goals",
   "default_selling_terms",
   "default_warehouse_for_sales_return",
@@ -54,6 +55,7 @@
   "transactions_annual_history",
   "normal_loss_account",
   "abnormal_loss_account",
+  "advance_paid_to_international_supplier",
   "default_settings",
   "default_bank_account",
   "default_cash_account",
@@ -158,7 +160,8 @@
   "coal_raising_credit_account",
   "coal_raising_expense_account",
   "column_break_131",
-  "coal_raising_penalty_account"
+  "coal_raising_penalty_account",
+  "fine_and_penalty_account"
  ],
  "fields": [
   {
@@ -1119,6 +1122,24 @@
    "fieldtype": "Link",
    "label": "Employee Loan Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "fine_and_penalty_account",
+   "fieldtype": "Link",
+   "label": "Fines And Penalty Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "advance_paid_to_domestic_supplier",
+   "fieldtype": "Link",
+   "label": "Advance Paid to Domestic Supplier",
+   "options": "Account"
+  },
+  {
+   "fieldname": "advance_paid_to_international_supplier",
+   "fieldtype": "Link",
+   "label": "Advance Paid to International Supplier",
+   "options": "Account"
   }
  ],
  "icon": "fa fa-building",
@@ -1126,7 +1147,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2023-10-16 14:05:11.250752",
+ "modified": "2023-11-20 14:32:14.966074",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",
