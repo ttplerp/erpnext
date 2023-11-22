@@ -1,7 +1,7 @@
 frappe.listview_settings['Rental Bill'] = {
-    add_fields: ["name", "yearmonth", "property_management_amount", "rent_amount", "received_amount", "discount_amount", "docstatus", "tds_amount", "adjusted_amount", "receivable_amount", "rent_write_off_amount"],
+    add_fields: ["name", "yearmonth", "property_management_amount", "rent_amount", "received_amount", "discount_amount", "docstatus", "tds_amount", "adjusted_amount", "receivable_amount", "rent_write_off_amount", "outstanding_amount"],
     get_indicator: function (doc) {
-            if (doc.receivable_amount == doc.adjusted_amount) {
+            if (doc.outstanding_amount == 0 && doc.adjusted_amount > 0) {
                     return ["Adjusted", "blue"];
             }
             else if (doc.receivable_amount == doc.rent_write_off_amount && doc.adjusted_amount == 0){
