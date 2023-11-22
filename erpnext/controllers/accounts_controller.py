@@ -909,12 +909,16 @@ class AccountsController(TransactionBase):
                     "VAJRA BUILDERS PRIVATE LIMITED",
                     "advance_paid_to_domestic_supplier",
                 )
+                if not party_account:
+                    frappe.throw(str("Advance Paid to Domestic Vendor not set in company setting"))
             elif supplier_type == "International Vendor":
                 party_account = frappe.db.get_value(
                     "Company",
                     "VAJRA BUILDERS PRIVATE LIMITED",
                     "advance_paid_to_international_supplier",
                 )
+                if not party_account:
+                    frappe.throw(str("Advance Paid to International Vendor not set in company setting"))
             else:
                 frappe.msgprint(
                     str(

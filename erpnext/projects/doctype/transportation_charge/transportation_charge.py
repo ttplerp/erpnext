@@ -37,47 +37,49 @@ class TransportationCharge(AccountsController):
         carriage_payable = frappe.db.get_single_value("Projects Settings", "carriage_payable")
         if not carriage_payable:
             frappe.throw("Carriage payable not set project settings")
-        if flt(self.total_amount) > 0 and self.party_type == "Supplier":
-            gl_entries.append(
-                self.get_gl_dict(
-                    {
-                        "account": carriage_payable,
-                        "credit": flt(self.total_amount, 2),
-                        "credit_in_account_currency": flt(self.total_amount, 2),
-                        "against_voucher": self.name,
-                        "party_type": self.party_type,
-                        "party": self.party,
-                        "against_voucher_type": self.doctype,
-                        "cost_center": self.cost_center,
-                        "voucher_type": self.doctype,
-                        "voucher_no": self.name,
-                    },
-                    self.currency,
+        for i in self.items:
+            if flt(i.total_amount) > 0 and i.party_type == "Supplier":
+                gl_entries.append(
+                    self.get_gl_dict(
+                        {
+                            "account": carriage_payable,
+                            "credit": flt(i.total_amount, 2),
+                            "credit_in_account_currency": flt(i.total_amount, 2),
+                            "against_voucher": self.name,
+                            "party_type": i.party_type,
+                            "party": i.party,
+                            "against_voucher_type": self.doctype,
+                            "cost_center": i.cost_center,
+                            "voucher_type": self.doctype,
+                            "voucher_no": self.name,
+                        },
+                        self.currency,
+                    )
                 )
-            )
 
     def make_carriage_gl_entry(self, gl_entries):
         carriage_charge = frappe.db.get_single_value("Projects Settings", "carriage_charge")
         if not carriage_charge:
             frappe.throw("Carriage charge not set project settings")
-        if flt(self.total_amount) > 0 and self.party_type == "Supplier":
-            gl_entries.append(
-                self.get_gl_dict(
-                    {
-                        "account": carriage_charge,
-                        "debit": flt(self.total_amount, 2),
-                        "debit_in_account_currency": flt(self.total_amount, 2),
-                        "against_voucher": self.name,
-                        "party_type": self.party_type,
-                        "party": self.party,
-                        "against_voucher_type": self.doctype,
-                        "cost_center": self.cost_center,
-                        "voucher_type": self.doctype,
-                        "voucher_no": self.name,
-                    },
-                    self.currency,
+        for i in self.items:
+            if flt(i.total_amount) > 0:
+                gl_entries.append(
+                    self.get_gl_dict(
+                        {
+                            "account": carriage_charge,
+                            "debit": flt(i.total_amount, 2),
+                            "debit_in_account_currency": flt(i.total_amount, 2),
+                            "against_voucher": self.name,
+                            "party_type": i.party_type,
+                            "party": i.party,
+                            "against_voucher_type": self.doctype,
+                            "cost_center": i.cost_center,
+                            "voucher_type": self.doctype,
+                            "voucher_no": self.name,
+                        },
+                        self.currency,
+                    )
                 )
-            )
 
     def make_journal_entry(self, cancel=None):
         if cancel:

@@ -2764,6 +2764,39 @@ class CustomWorkflow:
                     "Only {} can Cancel this request".format(self.doc.approver_name)
                 )
 
+    def transportation_charge(self):
+        # Employee [Apply] -> Waiting Supervisor Approver - [Forward] -> [Approve] - [Waiting Approver]
+        # Account user                      Supervisor                       Head off. Account officer
+        if self.new_state.lower() in ("Waiting Supervisor Approval".lower(),):
+            if self.doc.owner != frappe.session.user:
+                frappe.throw("Only {} can Apply this request".format(self.doc.owner))
+            self.set_approver("Supervisor")
+        elif self.new_state.lower() == "Waiting Approval".lower():
+            if self.old_state.lower() != "Draft".lower():
+                if self.doc.approver != frappe.session.user:
+                    frappe.throw(
+                        "Only {} can Forward this request".format(
+                            self.doc.approver_name
+                        )
+                    )
+            else:
+                if self.doc.owner != frappe.session.user:
+                    frappe.throw(
+                        "Only {} can Apply this request".format(self.doc.owner)
+                    )
+            self.set_approver("Imprest Approver")
+        elif self.new_state.lower() == "Approved".lower():
+            if self.doc.approver != frappe.session.user:
+                frappe.throw(
+                    "Only {} can Approve this request".format(self.doc.approver_name)
+                )
+
+        elif self.new_state.lower() == "Cancelled".lower():
+            if self.doc.approver != frappe.session.user:
+                frappe.throw(
+                    "Only {} can Cancel this request".format(self.doc.approver_name)
+                )
+
     def employee_advance_settlement(self):
         # Employee [Apply] -> Waiting Supervisor Approver - [Forward] -> [Approve] - [Waiting Approver]
         # Account user                      Supervisor                       Head off. Account officer
