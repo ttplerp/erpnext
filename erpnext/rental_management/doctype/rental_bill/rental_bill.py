@@ -134,9 +134,11 @@ class RentalBill(AccountsController):
 			else:
 				self.adjusted_amount = flt(pre_rent_amount)
 		
-		if self.adjusted_amount > 0:
-			self.receivable_amount = flt(self.rent_amount + self.property_management_amount) - flt(self.adjusted_amount)
-		self.outstanding_amount = flt(self.receivable_amount)
+		self.receivable_amount = flt(self.rent_amount + self.property_management_amount)
+		# if self.adjusted_amount > 0:
+		# 	self.receivable_amount = flt(self.rent_amount + self.property_management_amount) - flt(self.adjusted_amount)
+		# self.outstanding_amount = flt(self.receivable_amount)
+		self.outstanding_amount = flt(self.rent_amount + self.property_management_amount) - flt(self.adjusted_amount)
 
 	def make_gl_entry(self):
 		revenue_claim_account = frappe.db.get_single_value("Rental Account Setting", "revenue_claim_account")
