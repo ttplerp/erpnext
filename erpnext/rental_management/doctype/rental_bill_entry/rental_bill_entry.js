@@ -6,22 +6,22 @@ frappe.ui.form.on('Rental Bill Entry', {
 		if(frm.doc.docstatus == 0 && frm.doc.bill_created == 0){
 			cur_frm.add_custom_button(__('Get Tenants'), function(doc) {
 				frm.events.get_tenant_list(frm)
-			},__("Create"))
+			},__("Action"))
 		}
 		if(frm.doc.docstatus == 1 && frm.doc.bill_created == 0){
 			cur_frm.add_custom_button(__('Create Rental Bill'), function(doc) {
 				frm.events.create_rental_bill(frm)
-			},__("Create"))
+			},__("Action"))
 		}
 		if(frm.doc.docstatus == 1 && frm.doc.bill_created == 1 && frm.doc.bill_submitted == 0){
 			cur_frm.add_custom_button(__('Submit Rental Bill'), function(doc) {
 				frm.events.submit_rental_bill(frm)
-			},__("Create"))
+			},__("Action"))
 		}
 		if(frm.doc.number_of_rental_bills > 0 && frm.doc.bill_submitted == 0){
 			cur_frm.add_custom_button(__('Remove Rental Bill'), function(doc) {
 				frm.events.remove_rental_bill(frm)
-			},__("Create"))
+			},__("Action"))
 		}
 	},
 	get_tenant_list:function(frm){
