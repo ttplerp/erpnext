@@ -3,6 +3,37 @@ from erpnext.setup.doctype.employee.employee import create_user
 import pandas as pd
 import csv
 from frappe.utils import flt, cint, nowdate, getdate, formatdate
+import math
+
+def update_salary_structure():
+	count = 1
+	ss = frappe.db.sql("""
+		select ss.name, ss.employee_grade, ss.employment_type, ss.employee_group from `tabSalary Structure` ss,
+		`tabEmployee` e where e.name = ss.employee
+		and e.status = 'Active' and ss.is_active = 'Yes'
+    """,as_dict=1)
+	if ss:
+		for s in ss:
+			sal_struct = frappe.get_doc("Salary Structure", s.name)
+			if s.employee_group not in ("Temporary"):
+				sal_struct.eligible_for_fixed_allowance = 1
+				sal_struct.eligible_for_cash_handling = 0
+				for e in sal_struct.earnings:
+					if e.salary_component == "Basic Pay":
+						if s.employee_grade not in ("S1","S2","S3","O1","O2","O3","O4","O5","O6","O7","GS1","GS2","ESP"):
+							e.amount += e.amount * 0.02
+						else:
+							e.amount += e.amount * 0.05
+						e.amount = flt(e.amount,0)
+						e.amount = math.ceil(e.amount)
+						if flt(str(e.amount)[len(str(e.amount))-1]) > 0 and flt(str(e.amount)[len(str(e.amount))-1]) <= 5:
+							e.amount = flt(str(e.amount)[0:len(str(e.amount))-1]+"5")
+						elif flt(str(e.amount)[len(str(e.amount))-1]) > 5 and flt(str(e.amount)[len(str(e.amount))-1]) <= 9:
+							value_to_add = 10 - flt(str(e.amount)[len(str(e.amount))-1])
+							e.amount = e.amount + value_to_add
+				sal_struct.save(ignore_permissions=1)
+				print(str(count)+". "+sal_struct.employee)
+				count += 1
 
 def check_dn():
 	doc = frappe.get_doc("Delivery Note","DN2304050001")
@@ -123,7 +154,16 @@ def detete_pol_receive_gl():
 	for x in name:
 		frappe.db.sql("delete from `tabGL Entry` where against_voucher_type='POL Receive' and against_voucher= '{}'".format(x.name))
 		print(x.name)
-
+def pol_issue_double_equipment_issue():
+	from_date = '01-01-2023'
+	to_date = '11-10-2023'
+	name=frappe.db.sql("""
+			select name
+			from `tabPOL Issue`
+			where docstatus =1
+			and posting_date between '{0}' and '{1}'
+		""".format(from_date, to_date),as_dict=True)
+	print(name)
 def create_pol_receive_gl():
 	name = frappe.db.sql("""select name
 			from `tabPOL Receive`
