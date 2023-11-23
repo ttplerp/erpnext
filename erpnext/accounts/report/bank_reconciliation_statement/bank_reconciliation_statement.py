@@ -25,7 +25,7 @@ def execute(filters=None):
 
 	data = get_entries(filters)
 
-	balance_as_per_system = get_balance_on(filters["account"], filters["report_date"])
+	balance_as_per_system = get_balance_on(filters["account"], filters["report_date"], in_account_currency=False)
 
 	total_debit, total_credit = 0, 0
 	for d in data:
