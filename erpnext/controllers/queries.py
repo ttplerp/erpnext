@@ -254,7 +254,7 @@ def item_query(doctype, txt, searchfield, start, page_len, filters, as_dict=Fals
 
 	searchfields = searchfields + [
 		field
-		for field in [searchfield or "name", "item_code", "item_group", "item_name"]
+		for field in [searchfield or "name", "item_code", "item_group", "item_name", "parts_no"]
 		if not field in searchfields
 	]
 	searchfields = " or ".join([field + " like %(txt)s" for field in searchfields])
@@ -292,7 +292,7 @@ def item_query(doctype, txt, searchfield, start, page_len, filters, as_dict=Fals
 		description_cond = "or tabItem.description LIKE %(txt)s"
 	return frappe.db.sql(
 		"""select
-			tabItem.name, tabItem.item_name, tabItem.item_group,
+			tabItem.name, tabItem.item_name, tabItem.item_group, tabItem.parts_no,
 		if(length(tabItem.description) > 40, \
 			concat(substr(tabItem.description, 1, 40), "..."), description) as description
 		{columns}
