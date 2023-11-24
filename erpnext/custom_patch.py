@@ -4,7 +4,7 @@ import pandas as pd
 import csv
 from frappe.utils import flt, cint, nowdate, getdate, formatdate
 import math
-
+#change
 def update_salary_structure():
 	count = 1
 	ss = frappe.db.sql("""
