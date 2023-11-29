@@ -288,7 +288,7 @@ def update_bank_payment_status(file_name, file_status, bank, ack_file=None):
 	''' update status of the file '''
 	if not frappe.db.exists('Bank Payment Upload', {'file_name': file_name}):
 		return
-	
+
 	processing = completed = failed = 0
 	doc = frappe.get_doc('Bank Payment', frappe.db.get_value('Bank Payment Upload', {'file_name': file_name}, "parent"))
 	doc_modified = 0	
@@ -316,16 +316,18 @@ def update_bank_payment_status(file_name, file_status, bank, ack_file=None):
 	if ack_file:
 		with open(ack_file, 'r') as file:
 			csv_reader = csv.reader(file)
+			rows = list(csv_reader)
 
-			for row in csv_reader:
+			for idx, row in enumerate(rows):
+				if idx == len(rows) - 1:
+					continue
 				bank_account_no_from_ack = row[1]
 				bank_response = row[8]
 
 				for rec in doc.items:
-					if rec.file_name and file_name and rec.file_name.lower() == file_name.lower():
-						if rec.bank_account_no == bank_account_no_from_ack:
-							bpi = frappe.get_doc('Bank Payment Item', rec.name)
-							bpi.db_set('error_message', bank_response)
+					if rec.bank_account_no == bank_account_no_from_ack:
+						bpi = frappe.get_doc('Bank Payment Item', rec.name)
+						bpi.db_set('error_message', bank_response)
 
 	counter = 0
 	for rec in doc.items:
