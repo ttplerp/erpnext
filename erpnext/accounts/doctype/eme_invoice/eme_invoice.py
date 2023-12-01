@@ -57,7 +57,7 @@ class EMEInvoice(AccountsController):
 	#Function to pay arrear base on change in rate
 	def update_rate_amount(self):
 		for a in self.get("items"):
-			rate = self.get_rate(a.equipment_hiring_form,d.posting_date)
+			rate = self.get_rate(a.equipment_hiring_form,a.posting_date)
 			if rate:
 				a.new_rate = flt(rate)
 				a.rate   = flt(a.new_rate) - flt(a.prev_rate)
