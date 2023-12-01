@@ -341,6 +341,7 @@ def make_arrear_payment(source_name, target_doc=None):
 	from frappe.model.mapper import get_mapped_doc
 
 	def postprocess(source, target_doc):
+		target_doc.journal_entry = ""
 		set_missing_values(source, target_doc)
 
 	def update_item(obj, target, source_parent):
@@ -351,7 +352,6 @@ def make_arrear_payment(source_name, target_doc=None):
 			"doctype": "EME Invoice",
 			"field_map": {
 				"naming_series": "naming_series",
-				"journal_entry": "",
 			},
 			"validation": {
 				"docstatus": ["=", 1],
