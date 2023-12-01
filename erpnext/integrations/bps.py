@@ -294,6 +294,7 @@ def update_bank_payment_status(file_name, file_status, bank, ack_file=None):
 		doc.db_set('workflow_state', status if status else doc.status)
 		doc.reload()
 		doc.update_transaction_status()
+		doc.append_bank_response_in_bpi()
 		doc.reload()
 
 def check_kill_process(pstring):
