@@ -29,7 +29,6 @@ class BankPayment(Document):
         if self.transaction_type == "Leave Travel Concession":
             self.validate_je()
         
-
     def before_submit(self):
         self.validate_timing()
         self.update_status()
@@ -183,6 +182,38 @@ class BankPayment(Document):
                         i.idx, frappe.get_desk_link(i.transaction_type,i.transaction_id),
                         frappe.get_desk_link(self.doctype, j.name)
                     ), title="Transaction Details")
+
+    # added by Dendup to append the response from bank to respective child table to find the status
+    def append_bank_response_in_bpi(self):
+        if self.payment_type == 'Bulk Payment':
+            file_list = []
+            for d in self.get("uploads"):
+                file_name = d.file_name
+                if file_name.endswith('.csv'):
+                    file_list.append(file_name.replace('.csv', '_VALSUC.csv'))
+                    file_list.append(file_name.replace('.csv', '_VALERR.csv'))
+                elif file_name.endswith('.txt'):
+                    file_list.append(file_name.replace('.txt', '_SUC.txt'))
+                    file_list.append(file_name.replace('.txt', '_ERR.txt'))
+
+            filepath = get_site_path('private', 'files', 'epayment', 'processed').rstrip("/") + "/"
+
+            for file in file_list:
+                file_path_to_check = filepath + file
+                if os.path.exists(file_path_to_check):
+                    with open(file_path_to_check, 'r') as file:
+                        csv_reader = csv.reader(file)
+                        rows = list(csv_reader)
+
+                        for idx, row in enumerate(rows):
+                            if idx == len(rows) - 1:
+                                continue
+                            bank_account_no_from_ack = row[1]
+                            bank_response = row[8]
+
+                            for rec in self.items:
+                                if rec.bank_account_no == bank_account_no_from_ack:
+                                    rec.db_set('error_message', bank_response)
 
     def update_transaction_status(self, cancel=False):
         ''' update respective transactions status '''
