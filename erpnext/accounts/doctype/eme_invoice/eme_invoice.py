@@ -351,6 +351,7 @@ def make_arrear_payment(source_name, target_doc=None):
 			"doctype": "EME Invoice",
 			"field_map": {
 				"naming_series": "naming_series",
+				"journal_entry": "",
 			},
 			"validation": {
 				"docstatus": ["=", 1],
