@@ -45,8 +45,12 @@ class EMEInvoice(AccountsController):
 
 	def validate_eme_invoice_entry(self):
 		if self.eme_invoice_entry:
-			if not frappe.db.exists("EME Invoice Success",{"parent":self.eme_invoice_entry,"eme_invoice":self.name}):
-				frappe.msgprint(_("Transaction {} does not exists in {}'s successful transaction".format(bold(self.name),bold(self.eme_invoice_entry))), raise_exception=True)
+			if self.arrear_eme_payment: 
+				if not frappe.db.exists("EME Invoice Success",{"parent":self.eme_invoice_entry,"eme_invoice":self.arrear_eme_payment}):
+					frappe.msgprint(_("Transaction {} does not exists in {}'s successful transaction".format(bold(self.arrear_eme_payment),bold(self.eme_invoice_entry))), raise_exception=True)
+			else:
+				if not frappe.db.exists("EME Invoice Success",{"parent":self.eme_invoice_entry,"eme_invoice":self.name}):
+					frappe.msgprint(_("Transaction {} does not exists in {}'s successful transaction".format(bold(self.name),bold(self.eme_invoice_entry))), raise_exception=True)
 				
 	def before_cancel(self):
 		if self.journal_entry and frappe.db.exists("Journal Entry",self.journal_entry):
