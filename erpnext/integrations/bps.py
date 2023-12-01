@@ -326,6 +326,7 @@ def update_bank_payment_status(file_name, file_status, bank, ack_file=None):
 
 				for rec in doc.items:
 					if rec.bank_account_no == bank_account_no_from_ack:
+						doc_modified += 1
 						bpi = frappe.get_doc('Bank Payment Item', rec.name)
 						bpi.db_set('error_message', bank_response)
 
