@@ -30,16 +30,16 @@ class SupplementaryBudget(Document):
 						b.name, ba.account from `tabBudget` b, `tabBudget Account` ba
 					where
 						ba.parent = b.name and b.docstatus = 1 and b.company = %s and %s=%s and
-						b.fiscal_year=%s and ba.account =%s """
-					% ("%s", budget_against_field, "%s", "%s", "%s"),
-					(self.company, budget_against, self.fiscal_year, d.account),
+						b.fiscal_year=%s and ba.account =%s and b.business_activity=%s """
+					% ("%s", budget_against_field, "%s", "%s", "%s", "%s"),
+					(self.company, budget_against, self.fiscal_year, d.account, self.business_activity),
 					as_dict=1,
 				)
 			if not budget_exist:
 				frappe.throw(
 					_(
-						"Budget record doesnot exists against {0} '{1}' and account '{2}' for fiscal year {3}"
-					).format(self.budget_against, budget_against, d.account, self.fiscal_year),
+						"Budget record doesnot exists against {0} '{1}' and Business Activity '{4}' and account '{2}' for fiscal year {3}"
+					).format(self.budget_against, budget_against, d.account, self.fiscal_year, self.business_activity),
 				)
 
 	# Written by Thukten to perform budget supplement, 13 Sept 2022
@@ -58,9 +58,9 @@ class SupplementaryBudget(Document):
 							ba.name, ba.account from `tabBudget` b, `tabBudget Account` ba
 						where
 							ba.parent = b.name and b.docstatus < 2 and b.company = %s and %s=%s and
-							b.fiscal_year=%s and ba.account =%s """
-						% ("%s", budget_against_field, "%s", "%s", "%s"),
-						(self.company, budget_against, self.fiscal_year, d.account),
+							b.fiscal_year=%s and ba.account =%s and b.business_activity=%s """
+						% ("%s", budget_against_field, "%s", "%s", "%s", "%s"),
+						(self.company, budget_against, self.fiscal_year, d.account, self.business_activity),
 						as_dict=1,
 					)
 				if to_account:
@@ -82,14 +82,19 @@ class SupplementaryBudget(Document):
 						supp_details.company = self.company
 						supp_details.reference = self.name
 						supp_details.posting_date = nowdate()
+						supp_details.business_activity = self.business_activity
 						supp_details.submit()
 					
 					to_budget_account.db_set("supplementary_budget", flt(supplement))
 					to_budget_account.db_set("budget_amount", flt(total))
+					budget_obj = frappe.get_doc("Budget", to_budget_account.parent)
+					budget_obj.calculate_totals()
+					budget_obj.save()
 				else:
 					frappe.throw(_(
-									"Budget not set for account %s under %s %s. Please check initital budget allocations"
+									"Budget not set for account %s under %s %s and Business Activity '%s'. Please check initital budget allocations"
 								 ).format(d.account,
 								 		 self.budget_against, 
-										budget_against)
+										budget_against,
+										self.business_activity)
 								)

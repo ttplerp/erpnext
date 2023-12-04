@@ -14,7 +14,8 @@
   "posting_date",
   "reference",
   "company",
-  "amended_from"
+  "amended_from",
+  "business_activity"
  ],
  "fields": [
   {
@@ -79,13 +80,19 @@
    "options": "Supplementary Details",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "business_activity",
+   "fieldtype": "Link",
+   "label": "Business Activity",
+   "options": "Business Activity"
   }
  ],
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-09-13 07:45:22.182283",
+ "modified": "2023-12-04 15:48:54.619478",
  "modified_by": "Administrator",
  "module": "Budget",
  "name": "Supplementary Details",
