@@ -312,23 +312,25 @@ def update_bank_payment_status(file_name, file_status, bank, ack_file=None):
 		elif status == 'Completed':
 			completed += 1
 
-	# # update bank's response in the respective bank payment item
-	# if ack_file:
-	# 	with open(ack_file, 'r') as file:
-	# 		csv_reader = csv.reader(file)
-	# 		rows = list(csv_reader)
+	# update bank's response in the respective bank payment item
+	if ack_file:
+		with open(ack_file, 'r') as file:
+			csv_reader = csv.reader(file)
+			rows = list(csv_reader)
 
-	# 		for idx, row in enumerate(rows):
-	# 			if idx == len(rows) - 1:
-	# 				continue
-	# 			bank_account_no_from_ack = row[1]
-	# 			bank_response = row[8]
+			for idx, row in enumerate(rows):
+				if ack_file.endswith('_VALERR.csv'):
+					if idx == len(rows) - 1:
+						continue
 
-	# 			for rec in doc.items:
-	# 				if rec.bank_account_no == bank_account_no_from_ack:
-	# 					doc_modified += 1
-	# 					bpi = frappe.get_doc('Bank Payment Item', rec.name)
-	# 					bpi.db_set('error_message', bank_response)
+				bank_account_no_from_ack = row[1]
+				bank_response = row[8]
+
+				for rec in doc.items:
+					if rec.bank_account_no == bank_account_no_from_ack:
+						doc_modified += 1
+						bpi = frappe.get_doc('Bank Payment Item', rec.name)
+						bpi.db_set('error_message', bank_response)
 
 	counter = 0
 	for rec in doc.items:

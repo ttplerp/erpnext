@@ -206,8 +206,10 @@ class BankPayment(Document):
                         rows = list(csv_reader)
 
                         for idx, row in enumerate(rows):
-                            if idx == len(rows) - 1:
-                                continue
+                            if file_path_to_check.endswith('_VALERR.csv'):
+                                if idx == len(rows) - 1:
+                                    continue
+        
                             bank_account_no_from_ack = row[1]
                             bank_response = row[8]
 
