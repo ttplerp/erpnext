@@ -314,6 +314,7 @@ def update_bank_payment_status(file_name, file_status, bank, ack_file=None):
 
 	# update bank's response in the respective bank payment item
 	if ack_file:
+		logging.info("Updating Bank Response...")
 		with open(ack_file, 'r') as file:
 			csv_reader = csv.reader(file)
 			rows = list(csv_reader)
@@ -331,6 +332,36 @@ def update_bank_payment_status(file_name, file_status, bank, ack_file=None):
 						doc_modified += 1
 						bpi = frappe.get_doc('Bank Payment Item', rec.name)
 						bpi.db_set('error_message', bank_response)
+	else:				
+		if file_status:
+			if file_name.endswith('.csv'):
+				if file_status == "Completed":
+					ack_file = file_name.replace('.csv', '_VALSUC.csv')
+				elif file_status == "Failed":
+					ack_file = file_name.replace('.csv', '_VALERR.csv')
+			else:
+				if file_status == "Completed":
+					ack_file = file_name.replace('.txt', '_SUC.txt')
+				elif file_status == "Failed":
+					ack_file = file_name.replace('.txt', '_ERR.txt')
+
+		file_path_to_check = os.path.join(get_site_path('private', 'files', 'epayment', 'processed').rstrip("/"), file)
+		if os.path.exists(file_path_to_check):
+			logging.info("Updating Bank Response...") 
+			with open(file_path_to_check, 'r') as file:
+				csv_reader = csv.reader(file)
+				rows = list(csv_reader)
+
+				for idx, row in enumerate(rows):
+					if file_path_to_check.endswith('_VALERR.csv') and idx == len(rows) - 1:
+						continue
+						
+					bank_account_no_from_ack = row[1]
+					bank_response = row[8]
+
+					for rec in doc.items:
+						if rec.bank_account_no == bank_account_no_from_ack:
+							rec.db_set('error_message', bank_response)
 
 	counter = 0
 	for rec in doc.items:
@@ -364,7 +395,6 @@ def update_bank_payment_status(file_name, file_status, bank, ack_file=None):
 		doc.db_set('workflow_state', status if status else doc.status)
 		doc.reload()
 		doc.update_transaction_status()
-		doc.append_bank_response_in_bpi()
 		doc.reload()
 
 def check_kill_process(pstring):
