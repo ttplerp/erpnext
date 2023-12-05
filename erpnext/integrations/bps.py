@@ -345,7 +345,7 @@ def update_bank_payment_status(file_name, file_status, bank, ack_file=None):
 				elif file_status == "Failed":
 					ack_file = file_name.replace('.txt', '_ERR.txt')
 
-		file_path_to_check = os.path.join(get_site_path('private', 'files', 'epayment', 'processed').rstrip("/"), file)
+		file_path_to_check = os.path.join(get_site_path('private', 'files', 'epayment', 'processed').rstrip("/"), ack_file)
 		if os.path.exists(file_path_to_check):
 			logging.info("Updating Bank Response...") 
 			with open(file_path_to_check, 'r') as file:
