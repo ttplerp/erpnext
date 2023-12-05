@@ -346,7 +346,7 @@ class JobCard(AccountsController):
 def get_payment_entry(doc_name, total_amount):
 	query = """
 		select je.docstatus from `tabJournal Entry` je, `tabJob Card` jc 
-		where jc.journal_entry = je.name and jc.name='{}'
+		where jc.journal_entry = je.name and jc.name='{}' and je.docstatus=1
 	""".format(doc_name)
 	journal_entry = frappe.db.sql(query, as_dict=1)
 	if journal_entry:

@@ -65,6 +65,8 @@ def get_data(filters):
 		
 	if filters.to_cc:
 		query+=" and cost_center = \'" + filters.to_cc  + "\'"
+		if filters.business_activity:
+			query+=" and business_activity = \'" + filters.business_activity  + "\'"
 
 	if filters.to_acc and filters.budget_against == "Cost Center":
 		query+=" and account = \'" + filters.to_acc  + "\'"

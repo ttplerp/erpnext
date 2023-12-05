@@ -78,5 +78,11 @@ frappe.query_reports["Supplementary Budget Report"] = {
 			"fieldtype": "Link",
 			"options": "Account",
 		},
+		{
+			"fieldname": "business_activity",
+			"label": __("Business Activity"),
+			"fieldtype": "Link",
+			"options": "Business Activity",
+		},
 	]
 }

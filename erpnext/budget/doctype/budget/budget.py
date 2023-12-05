@@ -328,13 +328,14 @@ def compare_expense_with_budget(args, budget_amount, action_for, action, budget_
 		diff = total_expense_amount - budget_amount
 		currency = frappe.get_cached_value("Company", args.company, "default_currency")
 
-		msg = _("{0} Budget for Account {1} against {2} {3} is {4}. It will exceed by {5}").format(
+		msg = _("{0} Budget for Account {1} against {2} {3} and Business Activity {6} is {4}. It will exceed by {5}").format(
 			_(action_for),
 			frappe.bold(args.account),
 			args.budget_against_field,
 			frappe.bold(budget_against),
 			frappe.bold(fmt_money(budget_amount, currency=currency)),
 			frappe.bold(fmt_money(diff, currency=currency)),
+			frappe.bold(args.business_activity),
 		)
 
 		if (

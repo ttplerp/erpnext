@@ -152,7 +152,7 @@ class JournalEntry(AccountsController):
 		return self.pay_to_recd_from or self.accounts[0].account
 
 	def link_je_to_doc(self, cancel=False):
-		ref_list = ['Pol Advance']
+		ref_list = ['Pol Advance', 'Job Card']
 		for d in self.accounts:
 			if d.reference_type in ref_list and d.reference_name:
 				doc = frappe.get_doc(d.reference_type, d.reference_name)
