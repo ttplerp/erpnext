@@ -155,7 +155,7 @@ frappe.ui.form.on("Item", {
 			frm.set_value('is_fixed_asset',1)
 			frm.trigger('is_fixed_asset')
 		}
-		if (frm.doc.item_group == "Services" || frm.doc.item_group == "Service (Miscellaneous)" || frm.doc.item_group =="Service (Works)"){
+		if (frm.doc.item_group == "Services" || frm.doc.item_group == "Service (Miscellaneous)" || frm.doc.item_group =="Service Works"){
 			frm.set_value("is_stock_item", 0);
 			frm.set_value('is_fixed_asset',0)
 			frm.trigger('is_service_item')
@@ -197,6 +197,7 @@ frappe.ui.form.on("Item", {
 		frm.set_value('has_batch_no', 0);
         frm.set_value("is_stock_item", 0);
 		frm.set_value('is_fixed_asset',0)
+		frm.set_value('item_group', 'Service Works')
 		frm.toggle_enable(['has_serial_no', 'serial_no_series','is_stock_item','is_fixed_asset'], false);
 	},
 	is_bsr_service_item: function(frm) {
@@ -205,6 +206,7 @@ frappe.ui.form.on("Item", {
         frm.set_value("is_stock_item", 0);
 		frm.set_value('is_fixed_asset',0)
 		frm.set_value('is_service_item', 1)
+		frm.set_value('item_group', 'Service Works')
 		frm.toggle_enable(['has_serial_no', 'serial_no_series','is_stock_item','is_fixed_asset'], false);
 	},
 	set_asset_naming_series: function(frm, asset_naming_series) {

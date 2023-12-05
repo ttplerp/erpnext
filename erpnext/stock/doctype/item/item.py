@@ -59,6 +59,11 @@ class Item(Document):
 		if self.item_old_code:
 			self.item_code = self.name = self.item_old_code
 			return
+		
+		if self.item_group:
+			if cint(self.is_service_item) == 1:
+				if self.item_group != "Service Works":
+					self.item_group = "Service Works"
 
 		if frappe.db.exists("Item", {"item_group": self.item_group}):
 			prev_item = frappe.db.sql("SELECT name FROM `tabItem` WHERE item_group = '{}' ORDER BY name DESC LIMIT 1".format(self.item_group))
@@ -79,8 +84,7 @@ class Item(Document):
 				self.item_code = self.name = make_autoname('ABC{}.#####'.format(frappe.db.get_value('Item Group', self.item_group, 'item_code_base')))[3:]
 		else:
 			self.item_code = self.name = make_autoname('ABC{}.#####'.format(frappe.db.get_value('Item Group', self.item_group, 'item_code_base')))[3:]
-
-			
+		
 	def after_insert(self):
 		"""set opening stock and item price"""
 		if self.standard_rate:
@@ -130,6 +134,10 @@ class Item(Document):
 
 		if not self.is_new():
 			self.old_item_group = frappe.db.get_value(self.doctype, self.name, "item_group")
+		
+		if cint(self.is_service_item) == 1:
+			if self.item_group != "Service Works":
+				self.item_group = "Service Works"
 
 	def on_update(self):
 		invalidate_cache_for_item(self)
