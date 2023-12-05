@@ -3,16 +3,7 @@
 
 frappe.ui.form.on('Maintenance Application Form', {
 
-	cidd: function(frm) {
-        frm.fields_dict.cidd.$input.on("keyup", function(event) {
-            if (event.which === 13) { // Check if Enter key is pressed
-                var enteredText = frm.doc.cidd;
-                if (enteredText) {
-                    frappe.msgprint('Hello');
-                }
-            }
-        });
-    },
+	
 	
 	refresh: function(frm) {
 		if (!frm.doc.technical_sanction && frm.doc.docstatus == 1) {
@@ -47,9 +38,9 @@ frappe.ui.form.on('Maintenance Application Form', {
 			}
 		});
 	},
-	no_current_tenant: function(frm) {
-		if(frm.doc.no_current_tenant == 1){
-			frm.set_value("tenant", "");
-		}
-	}
+	// no_current_tenant: function(frm) {
+	// 	if(frm.doc.no_current_tenant == 1){
+	// 		frm.set_value("tenant", "");
+	// 	}
+	// }
 });
