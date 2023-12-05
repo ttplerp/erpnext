@@ -158,8 +158,12 @@ class JournalEntry(AccountsController):
 				doc = frappe.get_doc(d.reference_type, d.reference_name)
 				if cancel:
 					doc.journal_entry = ""
+					if doc.doctype == "Job Card":
+						doc.payment_status="Not Paid"
 				else:
 					doc.journal_entry = self.name
+					if doc.doctype == "Job Card":
+						doc.payment_status="Paid"
 
 				doc.save(ignore_permissions=True)
 
