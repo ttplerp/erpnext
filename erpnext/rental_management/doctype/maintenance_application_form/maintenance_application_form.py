@@ -105,10 +105,10 @@ def checkCidExistence(tenant_cid):
             # frappe.throw(record_name)
         
         # Check if data exists
-        if data and maf_status!='Closed':
+        if data and maf_status not in ['Closed', 'Completed']:
            
             # CID exists, showing the existing CID and allowing the check
-            frappe.msgprint(f"CID {tenant_cid} already applied and that application is not yet closed.")
+            frappe.msgprint(f"CID {tenant_cid} already applied and that application is not yet closed or completed.")
             return True
         else:
             # CID does not exist, preventing the check and showing a message

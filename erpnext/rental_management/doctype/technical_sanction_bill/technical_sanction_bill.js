@@ -53,7 +53,6 @@ frappe.ui.form.on('Technical Sanction Bill', {
 
 	},
 	"deduction": function (frm) {
-		console.log("hello world")
 		calculate_total_amount(frm)
 	},
 	"get_advances": function (frm) {
@@ -88,6 +87,10 @@ frappe.ui.form.on('Technical Sanction Bill', {
 			frappe.throw("Either party type or party are missing in the technical sanction!")
 		}
 	},
+	"tds_taxable_amount": function (frm) {
+		if(!frm.doc.tax_withholding_category) return
+		calculate_tds(frm);
+	},
 	"tax_withholding_category": function (frm) {
 
 		if (!frm.doc.tax_withholding_category) {
@@ -101,6 +104,10 @@ frappe.ui.form.on('Technical Sanction Bill', {
 		cur_frm.set_df_property("tds_account", "reqd", (frm.doc.tax_withholding_category)? 1:0);
 	},
 	"tds_amount": function (frm) {
+		cur_frm.set_value("total_amount", flt(frm.doc.invoice_amount) - flt(frm.doc.total_deduction_amount) - flt(frm.doc.tds_amount));
+	},
+	"price_adjustment_amount": function (frm) {
+		cur_frm.set_value("tds_taxable_amount", flt(frm.doc.total_gross_amount) + flt(frm.doc.price_adjustment_amount))
 		calculate_total_amount(frm)
 	}
 });

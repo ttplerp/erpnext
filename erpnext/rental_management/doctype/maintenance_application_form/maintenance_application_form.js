@@ -38,9 +38,9 @@ frappe.ui.form.on('Maintenance Application Form', {
 			}
 		});
 	},
-	// no_current_tenant: function(frm) {
-	// 	if(frm.doc.no_current_tenant == 1){
-	// 		frm.set_value("tenant", "");
-	// 	}
-	// }
+	no_current_tenant: function(frm) {
+		if(frm.doc.no_current_tenant == 1){
+			frm.set_value("tenant_id", "");
+		}
+	}
 });

@@ -16,9 +16,9 @@
   "completion_date",
   "remarks",
   "maintenance_application_form",
+  "tenant_id",
   "cidd",
   "tenant_name",
-  "tenant_id",
   "mobile_no",
   "maintenance_type",
   "column_break_12",
@@ -77,7 +77,7 @@
    "label": "Maintenance Application Form"
   },
   {
-   "fetch_from": "tenant.tenant_name",
+   "fetch_from": "tenant_id.tenant_name",
    "fieldname": "tenant_name",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -87,8 +87,9 @@
   {
    "fetch_from": "location.dzongkhag",
    "fieldname": "dzongkhag",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "label": "Dzongkhag",
+   "options": "Dzongkhag",
    "read_only": 1
   },
   {
@@ -104,22 +105,25 @@
   {
    "fetch_from": "tenant.ministry_and_agency",
    "fieldname": "ministry_agency",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "label": "Minisitry/Agency",
+   "options": "Ministry and Agency",
    "read_only": 1
   },
   {
    "fetch_from": "tenant.tenant_department_name",
    "fieldname": "department",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "label": "Department",
+   "options": "Tenant Department",
    "read_only": 1
   },
   {
    "fetch_from": "tenant.locations",
    "fieldname": "location",
-   "fieldtype": "Data",
-   "label": "Location"
+   "fieldtype": "Link",
+   "label": "Location",
+   "options": "Locations"
   },
   {
    "fieldname": "maintenance_type",
@@ -147,9 +151,11 @@
   },
   {
    "fetch_from": "tenant.block_no",
+   "fetch_if_empty": 1,
    "fieldname": "block_no",
-   "fieldtype": "Data",
-   "label": "Block No"
+   "fieldtype": "Link",
+   "label": "Block No",
+   "options": "Block No"
   },
   {
    "default": "Today",
@@ -197,7 +203,7 @@
    "read_only": 1
   },
   {
-   "fetch_from": "tenant.phone_no",
+   "fetch_from": "tenant_id.phone_no",
    "fieldname": "mobile_no",
    "fieldtype": "Data",
    "label": "Mobile No.",
@@ -206,8 +212,9 @@
   {
    "fetch_from": "tenant.flat_no",
    "fieldname": "flat_no",
-   "fieldtype": "Data",
-   "label": "Flat No"
+   "fieldtype": "Link",
+   "label": "Flat No",
+   "options": "Flat No"
   },
   {
    "fetch_from": "location.location",
@@ -224,6 +231,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "fetch_from": "tenant_id.tenant_cid",
    "fieldname": "cidd",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -247,9 +255,11 @@
    "fieldtype": "Column Break"
   },
   {
+   "fetch_from": "tenant.tenant_name",
    "fieldname": "tenant_id",
-   "fieldtype": "Data",
-   "label": "Tenant ID"
+   "fieldtype": "Link",
+   "label": "Tenant ID",
+   "options": "Tenant Information"
   },
   {
    "fieldname": "section_break_39",
@@ -260,6 +270,7 @@
    "default": "Open",
    "fieldname": "maf_status",
    "fieldtype": "Select",
+   "ignore_user_permissions": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "MAF Status",
@@ -282,7 +293,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-11-16 14:36:28.563052",
+ "modified": "2023-12-06 09:47:55.142965",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Maintenance Application Form",

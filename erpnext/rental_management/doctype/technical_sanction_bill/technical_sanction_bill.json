@@ -35,6 +35,12 @@
   "expense_account",
   "section_break_21",
   "items",
+  "sb_total_gross_amount",
+  "total_gross_amount",
+  "cb_tga_1",
+  "price_adjustment_amount",
+  "cb_tga_2",
+  "net_amount",
   "section_break_22",
   "deduction",
   "section_break_25",
@@ -47,7 +53,7 @@
   "tds_account",
   "tds_amount",
   "section_break_30",
-  "total_gross_amount",
+  "invoice_amount",
   "col_break",
   "total_deduction_amount",
   "column_break_27",
@@ -407,12 +413,40 @@
    "fieldname": "tds_taxable_amount",
    "fieldtype": "Currency",
    "label": "TDS Taxable Amount"
+  },
+  {
+   "fieldname": "sb_total_gross_amount",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "cb_tga_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "cb_tga_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "net_amount",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Net Amount"
+  },
+  {
+   "fieldname": "invoice_amount",
+   "fieldtype": "Currency",
+   "label": "Gross Invoice Amount"
+  },
+  {
+   "fieldname": "price_adjustment_amount",
+   "fieldtype": "Currency",
+   "label": "Price Adjustment (+/-)"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-10-12 16:26:15.243316",
+ "modified": "2023-11-30 12:36:12.496953",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Technical Sanction Bill",

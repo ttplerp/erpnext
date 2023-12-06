@@ -3,12 +3,16 @@ from frappe import _
 
 def get_data():
 	return {
-		"fieldname": "technical_sanction",
+		"collapsible": True,
+		"fieldname": "tenant",
 		# "non_standard_fieldnames": {
 		# 	"Stock Entry": "technical_sanction",
 		# 	"Technical Sanction Bill": "technical_sanction",
 		# },
 		"transactions": [
-			{"label": _("Related"), "items": ["Stock Entry", "Revised Technical Sanction", "Technical Sanction Bill", "Material Request"]},
+			{
+				"label": _("Related"), 
+				"items": ["Rental Bill"]
+			},
 		],
 	}

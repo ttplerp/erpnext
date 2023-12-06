@@ -18,7 +18,7 @@ class TechnicalSanctionBill(AccountsController):
 	@frappe.whitelist()
 	def calculate_total_amount(self):
 		self.total_deduction_amount = 0
-		total = tdsAmount = 0
+		net_services_total = services_total = tdsAmount = 0
 		for item in self.deduction: 
 			self.total_deduction_amount += item.deduction_amount
 
@@ -26,14 +26,18 @@ class TechnicalSanctionBill(AccountsController):
 			self.total_deduction_amount += item.allocated_amount
 
 		for item in self.items: 
-			total += item.total
+			services_total += item.total
+
+		""" price adjustment / rebate """
+		if cint(self.price_adjustment_amount):
+			net_services_total = flt(services_total) + flt(self.price_adjustment_amount)
 		
 		if self.tds_amount > 0:
 			tdsAmount = self.tds_amount
-		self.total_amount = total - self.total_deduction_amount - tdsAmount
+		self.total_amount = net_services_total - self.total_deduction_amount - tdsAmount
 
-		self.total_gross_amount = total
-		self.tds_taxable_amount = total
+		self.total_gross_amount = services_total
+		self.invoice_amount = net_services_total
 
 	def on_submit(self):
 		self.make_gl_entries()
