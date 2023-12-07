@@ -28,6 +28,7 @@ class TechnicalSanctionBill(AccountsController):
 		for item in self.items: 
 			services_total += item.total
 
+		net_services_total = flt(services_total)
 		""" price adjustment / rebate """
 		if cint(self.price_adjustment_amount):
 			net_services_total = flt(services_total) + flt(self.price_adjustment_amount)
@@ -116,8 +117,8 @@ class TechnicalSanctionBill(AccountsController):
 				self.get_gl_dict({
 					"account":  inv_gl,
 					"against": self.party,
-					"debit" if self.party_type == "Supplier" else "credit": self.total_gross_amount,
-					"debit_in_account_currency" if self.party_type == "Supplier" else "credit_in_account_currency": self.total_gross_amount,
+					"debit" if self.party_type == "Supplier" else "credit": self.invoice_amount,
+					"debit_in_account_currency" if self.party_type == "Supplier" else "credit_in_account_currency": self.invoice_amount,
 					"technical_sanction_bill": self.name,
 					"cost_center": cost_center,
 					"business_activity": default_ba
