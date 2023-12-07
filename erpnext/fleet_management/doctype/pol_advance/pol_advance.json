@@ -240,6 +240,7 @@
    "label": "Narration"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "journal_entry",
    "fieldtype": "Data",
    "label": "Journal Entry",
@@ -333,7 +334,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-16 17:11:45.348345",
+ "modified": "2023-12-07 16:07:48.851529",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Advance",

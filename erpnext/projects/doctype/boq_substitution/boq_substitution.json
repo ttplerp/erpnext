@@ -207,7 +207,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-07 16:27:14.289590",
+ "modified": "2023-12-07 16:08:34.916346",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "BOQ Substitution",
@@ -270,5 +270,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }

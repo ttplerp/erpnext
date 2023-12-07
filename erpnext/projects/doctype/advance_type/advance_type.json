@@ -29,7 +29,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-29 13:00:45.678202",
+ "modified": "2023-12-07 16:08:42.136727",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Advance Type",
@@ -81,5 +81,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }

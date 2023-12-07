@@ -86,7 +86,7 @@
   }
  ],
  "links": [],
- "modified": "2023-05-26 13:27:36.440835",
+ "modified": "2023-12-07 16:08:44.998335",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Activity Cost",
@@ -121,5 +121,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "title"
+ "title_field": "title",
+ "track_changes": 1
 }
