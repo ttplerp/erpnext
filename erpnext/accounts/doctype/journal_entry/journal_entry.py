@@ -147,7 +147,7 @@ class JournalEntry(AccountsController):
 		self.update_technical_sanction_advance(cancel=self.docstatus == 2)
 		self.update_je_link_status(cancel=self.docstatus == 2)
 		self.link_je_to_imprest(cancel=self.docstatus == 2)
-
+		
 	def on_trash(self):
 		self.unlink_transporter_invoice()
 
@@ -1071,6 +1071,7 @@ class JournalEntry(AccountsController):
 
 			d.account_balance = account_balance[d.account]
 			d.party_balance = party_balance[(d.party_type, d.party)]
+
 	def update_project_advance(self, cancel=False):
 		project_advance = frappe._dict()
 		for d in self.accounts:
@@ -1102,6 +1103,7 @@ class JournalEntry(AccountsController):
 				doc.paid_amount = flt(doc.paid_amount) + (value["debit"] * factor)
 
 			doc.save(ignore_permissions=True)
+
 	def update_technical_sanction_advance(self, cancel=False):
 		ts_advance = frappe._dict()
 		for d in self.accounts:
@@ -1150,7 +1152,7 @@ class JournalEntry(AccountsController):
 				doc.save(ignore_permissions=True)
 
 	def link_je_to_imprest(self, cancel=False):
-		ref_list = ['Imprest Advance']
+		ref_list = ['Imprest Advance', 'POL Advance']
 		for d in self.accounts:
 			if d.reference_type in ref_list and d.reference_name:
 				doc = frappe.get_doc(d.reference_type, d.reference_name)
