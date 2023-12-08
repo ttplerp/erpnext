@@ -43,7 +43,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Purpose",
-   "options": "\nOther Invoice\nEmployee Salary\nLeave Encashment\nPBVA\nBonus",
+   "options": "\nOther Invoice\nEmployee Salary\nLeave Encashment\nPBVA\nBonus\nSalary Arrear",
    "reqd": 1
   },
   {
@@ -72,11 +72,11 @@
    "read_only": 1
   },
   {
-   "depends_on": "eval:in_list([\"Employee Salary\",\"Bonus\",\"PBVA\"], doc.purpose)",
+   "depends_on": "eval:in_list([\"Employee Salary\",\"Salary Arrear\",\"Bonus\",\"PBVA\",\"MPI Transaction\"], doc.purpose)",
    "fieldname": "fiscal_year",
    "fieldtype": "Link",
    "label": "Fiscal Year",
-   "mandatory_depends_on": "eval:in_list([\"Employee Salary\",\"Annual Bonus\",\"PBVA\"], doc.purpose)",
+   "mandatory_depends_on": "eval:!in_list([\"Employee Salary\",\"Salary Arrear\",\"Bonus\",\"PBVA\",\"MPI Transaction\"], doc.purpose)",
    "options": "Fiscal Year"
   },
   {
@@ -91,11 +91,11 @@
    "options": "Region"
   },
   {
-   "depends_on": "eval:doc.purpose == \"Employee Salary\"",
+   "depends_on": "eval:in_list([\"Employee Salary\",\"Salary Arrear\"], doc.purpose)",
    "fieldname": "month",
    "fieldtype": "Select",
    "label": "Month",
-   "mandatory_depends_on": "eval:doc.purpose == \"Employee Salary\"",
+   "mandatory_depends_on": "val:in_list([\"Employee Salary\",\"Salary Arrear\"], doc.purpose)",
    "options": "\n01\n02\n03\n04\n05\n06\n07\n08\n09\n10\n11\n12"
   },
   {
@@ -111,22 +111,22 @@
    "label": "Filters"
   },
   {
-   "depends_on": "eval:!in_list([\"Employee Salary\",\"Bonus\",\"PBVA\"], doc.purpose)",
+   "depends_on": "eval:!in_list([\"Employee Salary\",\"Salary Arrear\",\"Bonus\",\"PBVA\",\"MPI Transaction\"], doc.purpose)",
    "fieldname": "from_date",
    "fieldtype": "Date",
    "label": "From Date",
-   "mandatory_depends_on": "eval:!in_list([\"Employee Salary\",\"Bonus\",\"PBVA\"], doc.purpose)"
+   "mandatory_depends_on": "eval:!in_list([\"Employee Salary\",\"Salary Arrear\",\"Bonus\",\"PBVA\",\"MPI Transaction\"], doc.purpose)"
   },
   {
    "fieldname": "cb_9",
    "fieldtype": "Column Break"
   },
   {
-   "depends_on": "eval:!in_list([\"Employee Salary\",\"Bonus\",\"PBVA\"], doc.purpose)",
+   "depends_on": "eval:!in_list([\"Employee Salary\",\"Salary Arrear\",\"Bonus\",\"PBVA\",\"MPI Transaction\"], doc.purpose)",
    "fieldname": "to_date",
    "fieldtype": "Date",
    "label": "To Date",
-   "mandatory_depends_on": "eval:!in_list([\"Employee Salary\",\"Bonus\",\"PBVA\"], doc.purpose)"
+   "mandatory_depends_on": "eval:!in_list([\"Employee Salary\",\"Salary Arrear\",\"Bonus\",\"PBVA\",\"MPI Transaction\"], doc.purpose)"
   },
   {
    "fieldname": "sb_receipt_details",
@@ -218,7 +218,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-09 14:15:19.568267",
+ "modified": "2023-12-06 14:04:52.620423",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "TDS Receipt Update",
