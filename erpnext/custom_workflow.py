@@ -657,11 +657,20 @@ class CustomWorkflow:
             if not self.expense_approver:
                 frappe.throw('Set expense approver')
             
-            if not frappe.db.get_value("Branch", self.doc.branch, "imprest_approver"):
-                frappe.throw("Set Imprest Approver in branch {}".format(self.doc.branch))
-            self.fleet_mto = frappe.db.get_value("Employee", {"user_id": frappe.db.get_value("Branch", self.doc.branch, "imprest_approver")}, self.field_list)
+            # if not frappe.db.get_value("Branch", self.doc.branch, "imprest_approver"):
+            #     frappe.throw("Set Imprest Approver in branch {}".format(self.doc.branch))
+            # self.fleet_mto = frappe.db.get_value("Employee", {"user_id": frappe.db.get_value("Branch", self.doc.branch, "imprest_approver")}, self.field_list)
+            self.fleet_mto = frappe.db.get_value(
+                "Employee",
+                {
+                    "user_id": frappe.db.get_single_value(
+                        "Maintenance Settings", "fleet_mto"
+                    )
+                },
+                self.field_list,
+            )
             if not self.fleet_mto:
-                frappe.throw('Set imprest approver in branch {}'.format(self.doc.branch))
+                frappe.throw('Fleet MTO not set in Maintenance Setting')
 
         if self.doc.doctype == "Vehicle Request":
             if frappe.db.get_value("Employee", self.doc.employee, "expense_approver"):
@@ -2939,8 +2948,9 @@ class CustomWorkflow:
                 )
 
     def repair_services(self):
-        # Maintenance User ->Waiting Supervisor -> Waiting Approval
-        # Maintenance User - Fleet Verifier - Accounts Manager
+        """ 1. Maintenance User -> [Apply] -> Waiting Supervisor -> [Forward] -> Waiting Approval
+                Maintenance User - Fleet Verifier - Accounts Manager
+        """
         if self.new_state.lower() in ("Draft".lower()):
             if self.doc.owner != frappe.session.user:
                 frappe.throw(
@@ -2949,13 +2959,13 @@ class CustomWorkflow:
             self.set_approver("Supervisor")
             
         elif self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
-            if self.doc.owner != frappe.session.user:
+            if self.doc.owner != frappe.session.user and self.new_state != self.old_state:
                 frappe.throw(
                     "Only the document owner can Apply this rapair and service"
                 )
             self.set_approver("Supervisor")
 
-        elif self.new_state.lower() in (" Waiting Approval".lower()):
+        elif self.new_state.lower() in ("Waiting Approval".lower()):
             if self.doc.approver != frappe.session.user:
                 frappe.throw(
                     "Only {} can Forward this rapair and service".format(self.doc.approver_name)

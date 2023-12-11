@@ -20,6 +20,33 @@ frappe.ui.form.on('Repair And Service Invoice', {
 			}			
 		}
 	},
+
+	tds_percent:function(frm){
+		if (frm.doc.tds_percent){
+			frappe.call({
+				method: "erpnext.accounts.utils.get_tds_account",
+				args: {
+					percent:frm.doc.tds_percent,
+					company:frm.doc.company
+				},
+				callback: function(r) {
+					if(r.message) {
+						frm.set_value("tds_account",r.message)
+						frm.refresh_fields("tds_account")
+						// console.log(frm.doc.grand_total)
+						// console.log(frm.doc.tds_percent)
+						frm.set_value("tds_amount", parseFloat(frm.doc.grand_total) * (parseFloat(frm.doc.tds_percent) / 100));
+						frm.set_value("net_amount", parseFloat(frm.doc.grand_total)-parseFloat(frm.doc.tds_amount));
+
+
+
+					}
+				}
+			});
+		}
+	},
+
+
 	make_payment_entry:function(frm){
 		frappe.call({
 			method:"erpnext.accounts.doctype.payment_entry.payment_entry.get_payment_entry",

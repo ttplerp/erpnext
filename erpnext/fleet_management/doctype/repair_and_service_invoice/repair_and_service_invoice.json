@@ -30,6 +30,12 @@
   "grand_total",
   "column_break_34",
   "outstanding_amount",
+  "tds_details_section",
+  "tds_percent",
+  "tds_amount",
+  "column_break_a7a2t",
+  "tds_account",
+  "net_amount",
   "section_break_5",
   "repair_and_services_date",
   "equipment",
@@ -296,12 +302,48 @@
    "fieldtype": "Link",
    "label": "Imprest Party",
    "options": "Employee"
+  },
+  {
+   "fieldname": "tds_details_section",
+   "fieldtype": "Section Break",
+   "label": "TDS Details"
+  },
+  {
+   "fieldname": "tds_percent",
+   "fieldtype": "Select",
+   "label": "TDS Percent",
+   "options": "\n2\n3\n5"
+  },
+  {
+   "depends_on": "eval:doc.tds_percent",
+   "fieldname": "tds_amount",
+   "fieldtype": "Currency",
+   "label": "TDS Amount",
+   "options": "currency",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.tds_percent",
+   "fieldname": "tds_account",
+   "fieldtype": "Link",
+   "label": "TDS Account",
+   "options": "Account",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_a7a2t",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "net_amount",
+   "fieldtype": "Data",
+   "label": "Net Amount"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-08-15 15:16:47.497721",
+ "modified": "2023-12-11 09:04:19.453020",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Repair And Service Invoice",
