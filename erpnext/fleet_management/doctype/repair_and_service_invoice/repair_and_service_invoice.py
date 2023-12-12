@@ -17,9 +17,7 @@ class RepairAndServiceInvoice(AccountsController):
         self.calculate_total()
         self.set_status()
         if not self.credit_account:
-            self.credit_account = get_party_account(
-                self.party_type, self.party, self.company
-            )
+            self.credit_account = get_party_account(self.party_type, self.party, self.company)
 
     def on_submit(self):
         # self.make_gl_entry()
@@ -40,10 +38,7 @@ class RepairAndServiceInvoice(AccountsController):
 
     def check_journal_entry(self):
         if self.journal_entry:
-            if (
-                frappe.db.get_value("Journal Entry", self.journal_entry, "docstatus")
-                < 2
-            ):
+            if frappe.db.get_value("Journal Entry", self.journal_entry, "docstatus") < 2:
                 je = frappe.get_doc("journal Entry", self.journal_entry)
                 je.flags.ignore_permissions = True
                 je.cancel()
@@ -171,9 +166,7 @@ class RepairAndServiceInvoice(AccountsController):
         if not credit_account:
             frappe.throw("Credit Account is mandatory")
 
-        bank_account = frappe.db.get_value(
-            "Branch", self.branch, "expense_bank_account"
-        )
+        bank_account = frappe.db.get_value("Branch", self.branch, "expense_bank_account")
         expense_account = frappe.db.get_value(
             "Equipment Category", self.equipment_category, "r_m_expense_account"
         )
@@ -194,12 +187,16 @@ class RepairAndServiceInvoice(AccountsController):
             )
         if not bank_account:
             frappe.throw(
-                _(
-                    "Default bank account is not set in branch {}".format(
-                        frappe.bold(self.company)
-                    )
-                )
+                _("Default bank account is not set in branch {}".format(frappe.bold(self.company)))
             )
+        tds_rate, tds_account = 0, ""
+        if self.tds_amount > 0:
+            tds_dtls = self.get_tax_details()
+            tds_rate = tds_dtls["rate"]
+
+            tds_account = tds_dtls["account"]
+            frappe.throw("the tds account os",tds_rate)
+
         # Posting Journal Entry
         if self.settle_imprest_advance == 1 and not imprest_advance_account:
             frappe.throw("Imprest Advance is not set in Company settings")
@@ -208,13 +205,13 @@ class RepairAndServiceInvoice(AccountsController):
         je.update(
             {
                 "doctype": "Journal Entry",
-                "voucher_type": "Bank Entry"
+                "evoucher_type": "Bank Entry"
                 if self.settle_imprest_advance == 0
                 else "Journal Entry",
                 "naming_series": "Bank Payment Voucher"
                 if self.settle_imprest_advance == 0
                 else "Journal Voucher",
-                "title": "Transporter Payment " + self.party,
+                "title": "Paid to " + self.party,
                 "user_remark": "Note: " + "Repair And Service - " + self.party,
                 "posting_date": self.posting_date,
                 "company": self.company,
@@ -222,9 +219,17 @@ class RepairAndServiceInvoice(AccountsController):
                 "branch": self.branch,
                 "reference_type": self.doctype,
                 "referece_doctype": self.name,
-                "total_debit": self.outstanding_amount,
-                "total_credit": self.outstanding_amount,
+                # "total_debit": self.outstanding_amount,
+                # "total_credit": self.outstanding_amount,
                 "settle_project_imprest": self.settle_imprest_advance,
+                "apply_tds": 1 if self.tds_amount > 0 else 0,
+                "tax_withholding_category": (
+                    "2 % TDS"
+                    if self.tds_percent == "2"
+                    else "3 % TDS"
+                    if self.tds_percent == "3"
+                    else "5 % TDS"
+                ),
             }
         )
         je.append(
@@ -232,13 +237,19 @@ class RepairAndServiceInvoice(AccountsController):
             {
                 "account": expense_account,
                 "debit_in_account_currency": self.outstanding_amount,
-                "debit": self.outstanding_amount,
+                # "debit": self.outstanding_amount,
                 "cost_center": self.cost_center,
                 "party_check": 1,
                 "party_type": self.party_type,
                 "party": self.party,
                 "reference_type": self.doctype,
                 "reference_name": self.name,
+                "apply_tds": 1 if self.tds_amount > 0 else 0,
+                "add_deduct_tax": "Deduct" if self.tds_amount > 0 else "",
+                "tax_account": tds_account,
+                "rate": tds_rate,
+                "tax_amount_in_account_currency": self.tds_amount,
+                "tax_amount": self.tds_amount,
             },
         )
         je.append(
@@ -247,14 +258,10 @@ class RepairAndServiceInvoice(AccountsController):
                 "account": bank_account
                 if self.settle_imprest_advance == 0
                 else imprest_advance_account,
-                "party_type": "Employee"
-                if self.settle_imprest_advance == 1
-                else self.party_type,
-                "party": self.imprest_party
-                if self.settle_imprest_advance == 1
-                else self.party,
-                "credit_in_account_currency": self.outstanding_amount,
-                "credit": self.outstanding_amount,
+                "party_type": "Employee" if self.settle_imprest_advance == 1 else self.party_type,
+                "party": self.imprest_party if self.settle_imprest_advance == 1 else self.party,
+                "credit_in_account_currency": self.outstanding_amount,  # self.net_amount if self.tds_amount > 0 else self.outstanding_amount,
+                # "credit": self.net_amount if self.tds_amount > 0 else self.outstanding_amount,
                 "cost_center": self.cost_center,
             },
         )
@@ -267,6 +274,19 @@ class RepairAndServiceInvoice(AccountsController):
                 frappe.get_desk_link("Journal Entry", je.name)
             )
         )
+
+    @frappe.whitelist()
+    def get_tax_details(self):
+        tax_account = frappe.db.get_value(
+            "Tax Withholding Account",
+            {"parent": self.tds_percent, "company": self.company},
+            "account",
+        )
+        tax_rate = frappe.db.get_value(
+            "Tax Withholding Rate", {"parent": self.tds_percent}, "tax_withholding_rate"
+        )
+
+        return {"account": tax_account, "rate": tax_rate}
 
 
 # permission query

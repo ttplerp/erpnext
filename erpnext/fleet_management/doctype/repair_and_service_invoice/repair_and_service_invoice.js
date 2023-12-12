@@ -38,7 +38,7 @@ frappe.ui.form.on('Repair And Service Invoice', {
 						frm.set_value("tds_amount", parseFloat(frm.doc.grand_total) * (parseFloat(frm.doc.tds_percent) / 100));
 						frm.set_value("net_amount", parseFloat(frm.doc.grand_total)-parseFloat(frm.doc.tds_amount));
 
-
+						
 
 					}
 				}
