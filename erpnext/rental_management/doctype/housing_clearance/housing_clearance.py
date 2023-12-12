@@ -5,14 +5,15 @@ import frappe
 from datetime import date
 from frappe.utils import nowdate,date_diff
 from frappe.model.document import Document
-from frappe.utils import add_to_date, get_last_day, flt, getdate, cint
+from frappe.utils import add_to_date, get_last_day, flt, getdate, cint,nowdate
 from frappe import _
 from frappe.model.mapper import get_mapped_doc
 from erpnext.rental_management.doctype.api_setting.api_setting import get_cid_detail, get_civil_servant_detail
 class HousingClearance(Document):
 	def validate(self):
-		
 		self.check_id_exist()
+		if not self.is_tenant:
+			self.application_approval_date = nowdate()
 	def check_id_exist(self):
      
 		exist = frappe.db.exists("Housing Clearance",{"cid":self.cid})
@@ -56,7 +57,7 @@ class HousingClearance(Document):
 
 		if self.tenant_status and self.tenant_status != "Surrendered" and self.application_status == "Approved":
 			frappe.throw("Not allow to Approve the application as the Tenant Status is not <b>Surrendered</b>")
- 
-
+	
+		self.application_approval_date = nowdate()
      
     
