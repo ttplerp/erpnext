@@ -66,6 +66,26 @@ frappe.ui.form.on("Insurance Details", {
 		})
 	},
 });
+
+frappe.ui.form.on("Registration Details", {
+	"post_bank_entry": function (frm, cdt, cdn) {
+		let row = locals[cdt][cdn]
+		frappe.call({
+			method: "post_to_account",
+			doc: frm.doc,
+			args: row,
+			callback: function (r) {
+				if (r.message) {
+					frappe.model.set_value(cdt, cdn, "journal_entry", r.message);
+					frm.refresh_field("registration_item")
+					frm.dirty()
+				}
+			}
+		})
+	},
+});
+
+
 frappe.ui.form.on("Bluebook and Emission", {
 	"amount": function (frm, cdt, cdn) {
 		set_total_amount(frm, cdt, cdn);

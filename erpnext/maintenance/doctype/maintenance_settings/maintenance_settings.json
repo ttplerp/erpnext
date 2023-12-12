@@ -21,7 +21,13 @@
   "fitness",
   "column_break_goxlq",
   "equipment_hire_income_account",
-  "equipment_hire_expense_account"
+  "equipment_hire_expense_account",
+  "registration_account",
+  "hiring_charges_section",
+  "vehicle_expense_account",
+  "hire_charge_payable_account",
+  "column_break_gfnlq",
+  "machine_expense_account"
  ],
  "fields": [
   {
@@ -114,12 +120,45 @@
    "fieldtype": "Link",
    "label": "Fitness GL",
    "options": "Account"
+  },
+  {
+   "fieldname": "hiring_charges_section",
+   "fieldtype": "Section Break",
+   "label": "Hiring Charges"
+  },
+  {
+   "fieldname": "vehicle_expense_account",
+   "fieldtype": "Link",
+   "label": "Vehicle Expense Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "hire_charge_payable_account",
+   "fieldtype": "Link",
+   "label": "Hire Charge Payable Account ",
+   "options": "Account"
+  },
+  {
+   "fieldname": "column_break_gfnlq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "machine_expense_account",
+   "fieldtype": "Link",
+   "label": "Machine Expense Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "registration_account",
+   "fieldtype": "Link",
+   "label": "Registration Account",
+   "options": "Account"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-11-15 09:39:55.522494",
+ "modified": "2023-12-12 11:34:55.095467",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Maintenance Settings",

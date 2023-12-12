@@ -161,6 +161,94 @@ class InsuranceandRegistration(Document):
         # Set a reference to the claim journal entry
 
     @frappe.whitelist()
+    def post_to_account(self, args):
+        if args.journal_entry and frappe.db.exists("Journal Entry", args.journal_entry):
+            doc = frappe.get_doc("Journal Entry", args.journal_entry)
+            if doc.docstatus != 2:
+                frappe.throw(
+                    "Journal Entry exists for this transaction {}".format(
+                        frappe.get_desk_link("Journal Entry", args.journal_entry)
+                    )
+                )
+
+        if flt(args.registration_amount) <= 0:
+            frappe.throw(_("Amount should be greater than zero"))
+
+        default_bank_account = frappe.db.get_value("Branch", self.branch, "expense_bank_account")
+        imprest_advance_account = frappe.db.get_value(
+            "Company", self.company, "imprest_advance_account"
+        )
+        if self.settle_imprest_advance == 1 and not imprest_advance_account:
+            frappe.throw("Please set Imprest Advance Account in company settings")
+
+        debit_account = frappe.db.get_single_value("Maintenance Settings", "registration_account")
+        if not debit_account:
+            frappe.throw("Please set Account in maintenance settings")
+
+        # Posting to JE
+        je = frappe.new_doc("Journal Entry")
+        je.flags.ignore_permissions = 1
+        je.update(
+            {
+                "doctype": "Journal Entry",
+                "voucher_type": "Bank Entry" if self.settle_imprest_advance == 0 else "Journal Entry",
+                "naming_series": "Bank Payment Voucher" if self.settle_imprest_advance == 0 else "Journal Voucher",
+                "title": " Registration - " + self.equipment,
+                "user_remark": "Note: Registration paid against Vehicle "+ self.equipment,
+                "posting_date": args.registration_date,
+                "company": self.company,
+                "total_amount_in_words": money_in_words(args.registration_amount),
+                "branch": self.branch,
+                "total_debit": args.registration_amount,
+                "total_credit": args.registration_amount,
+                "settle_project_imprest": self.settle_imprest_advance,
+            }
+        )
+        je.append("accounts",
+            {
+                "account": debit_account,
+                "debit_in_account_currency": args.registration_amount,
+                "debit": args.registration_amount,
+                "cost_center": frappe.db.get_value("Branch", self.branch, "cost_center"),
+                "party_check": 0,
+                "party_type": "Supplier",
+                "party": args.party,
+                "reference_type": self.doctype,
+                "reference_name": self.name,
+            },
+        )
+        if self.settle_imprest_advance == 0:
+            je.append(
+                "accounts",
+                {
+                    "account": default_bank_account,
+                    "credit_in_account_currency": args.registration_amount,
+                    "credit": args.registration_amount,
+                    "cost_center": frappe.db.get_value("Branch", self.branch, "cost_center"),
+                },
+            )
+        else:
+            je.append(
+                "accounts",
+                {
+                    "account": imprest_advance_account,
+                    "party_type": "Employee",
+                    "party": self.imprest_party,
+                    "credit_in_account_currency": args.registration_amount,
+                    "credit": args.registration_amount,
+                    "cost_center": frappe.db.get_value("Branch", self.branch, "cost_center"),
+                },
+            )
+
+        je.insert()
+        frappe.msgprint(
+            _("Journal Entry {0} posted to accounts").format(
+                frappe.get_desk_link("Journal Entry", je.name)
+            )
+        )
+        return je.name
+
+    @frappe.whitelist()
     def post_je(self):
         if self.reference:
             frappe.throw(

@@ -6,8 +6,11 @@
  "engine": "InnoDB",
  "field_order": [
   "fiscal_year",
+  "journal_entry",
+  "post_bank_entry",
   "column_break_2",
   "registration_date",
+  "party",
   "column_break_4",
   "registration_amount"
  ],
@@ -41,12 +44,31 @@
    "in_list_view": 1,
    "label": "Registration Amount",
    "reqd": 1
+  },
+  {
+   "fieldname": "post_bank_entry",
+   "fieldtype": "Button",
+   "label": "Post Bank Entry"
+  },
+  {
+   "fieldname": "journal_entry",
+   "fieldtype": "Link",
+   "label": "Journal Entry",
+   "options": "Journal Entry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "party",
+   "fieldtype": "Link",
+   "label": "Party",
+   "options": "Supplier",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-04-17 12:13:09.755117",
+ "modified": "2023-12-12 12:30:32.382966",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Registration Details",
