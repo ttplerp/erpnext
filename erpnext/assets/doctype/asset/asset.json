@@ -613,6 +613,7 @@
    "reqd": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "vehicle_number",
    "fieldtype": "Data",
    "label": "Vehicle Number"
@@ -687,7 +688,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2023-08-24 13:55:02.712148",
+ "modified": "2023-12-12 12:40:43.166102",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",
