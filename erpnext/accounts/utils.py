@@ -56,9 +56,7 @@ GL_REPOSTING_CHUNK = 100
 def get_fiscal_year(
     date=None, fiscal_year=None, label="Date", verbose=1, company=None, as_dict=False
 ):
-    return get_fiscal_years(
-        date, fiscal_year, label, verbose, company, as_dict=as_dict
-    )[0]
+    return get_fiscal_years(date, fiscal_year, label, verbose, company, as_dict=as_dict)[0]
 
 
 def get_fiscal_years(
@@ -141,9 +139,7 @@ def get_fiscal_years(
 
 @frappe.whitelist()
 def get_account_type(account, company):
-    return frappe.db.get_value(
-        "Account", {"name": account, "company": company}, "account_type"
-    )
+    return frappe.db.get_value("Account", {"name": account, "company": company}, "account_type")
 
 
 @frappe.whitelist()
@@ -176,9 +172,7 @@ def validate_fiscal_year(date, fiscal_year, company, label="Date", doc=None):
             doc.fiscal_year = years[0]
         else:
             throw(
-                _("{0} '{1}' not in Fiscal Year {2}").format(
-                    label, formatdate(date), fiscal_year
-                )
+                _("{0} '{1}' not in Fiscal Year {2}").format(label, formatdate(date), fiscal_year)
             )
 
 
@@ -192,6 +186,7 @@ def get_balance_on(
     in_account_currency=True,
     cost_center=None,
     ignore_account_permission=False,
+    from_date=None,
 ):
     if not account and frappe.form_dict.get("account"):
         account = frappe.form_dict.get("account")
@@ -205,11 +200,16 @@ def get_balance_on(
         cost_center = frappe.form_dict.get("cost_center")
 
     cond = ["is_cancelled=0"]
-    if date:
-        cond.append("posting_date <= %s" % frappe.db.escape(cstr(date)))
+    if from_date is None:
+        if date:
+            cond.append("posting_date <= %s" % frappe.db.escape(cstr(date)))
+        else:
+            # get balance of all entries that exist
+            date = nowdate()
     else:
-        # get balance of all entries that exist
-        date = nowdate()
+        cond.append(
+            "posting_date BETWEEN '{0}' AND '{1}' ".format(from_date, date if date else nowdate())
+        )
 
     if account:
         acc = frappe.get_doc("Account", account)
@@ -244,8 +244,7 @@ def get_balance_on(
 
         else:
             cond.append(
-                """gle.cost_center = %s """
-                % (frappe.db.escape(cost_center, percent=False),)
+                """gle.cost_center = %s """ % (frappe.db.escape(cost_center, percent=False),)
             )
 
     if account:
@@ -275,9 +274,7 @@ def get_balance_on(
             ):
                 in_account_currency = False
         else:
-            cond.append(
-                """gle.account = %s """ % (frappe.db.escape(account, percent=False),)
-            )
+            cond.append("""gle.account = %s """ % (frappe.db.escape(account, percent=False),))
 
     if party_type and party:
         cond.append(
@@ -286,15 +283,11 @@ def get_balance_on(
         )
 
     if company:
-        cond.append(
-            """gle.company = %s """ % (frappe.db.escape(company, percent=False))
-        )
+        cond.append("""gle.company = %s """ % (frappe.db.escape(company, percent=False)))
 
     if account or (party_type and party):
         if in_account_currency:
-            select_field = (
-                "sum(debit_in_account_currency) - sum(credit_in_account_currency)"
-            )
+            select_field = "sum(debit_in_account_currency) - sum(credit_in_account_currency)"
         else:
             select_field = "sum(debit) - sum(credit)"
         bal = frappe.db.sql(
@@ -353,9 +346,7 @@ def get_count_on(account, fieldname, date):
                 % (acc.lft, acc.rgt)
             )
         else:
-            cond.append(
-                """gle.account = %s """ % (frappe.db.escape(account, percent=False),)
-            )
+            cond.append("""gle.account = %s """ % (frappe.db.escape(account, percent=False),))
 
         entries = frappe.db.sql(
             """
@@ -591,11 +582,7 @@ def check_if_advance_entry_modified(args):
             )
 
     if not ret:
-        throw(
-            _(
-                """Payment Entry has been modified after you pulled it. Please pull it again."""
-            )
-        )
+        throw(_("""Payment Entry has been modified after you pulled it. Please pull it again."""))
 
 
 def validate_allocated_amount(args):
@@ -618,12 +605,8 @@ def update_reference_in_journal_entry(d, journal_entry, do_not_save=False):
 
     if flt(d["unadjusted_amount"]) - flt(d["allocated_amount"]) != 0:
         # adjust the unreconciled balance
-        amount_in_account_currency = flt(d["unadjusted_amount"]) - flt(
-            d["allocated_amount"]
-        )
-        amount_in_company_currency = amount_in_account_currency * flt(
-            jv_detail.exchange_rate
-        )
+        amount_in_account_currency = flt(d["unadjusted_amount"]) - flt(d["allocated_amount"])
+        amount_in_company_currency = amount_in_account_currency * flt(jv_detail.exchange_rate)
         jv_detail.set(d["dr_or_cr"], amount_in_account_currency)
         jv_detail.set(
             "debit" if d["dr_or_cr"] == "debit_in_account_currency" else "credit",
@@ -649,9 +632,7 @@ def update_reference_in_journal_entry(d, journal_entry, do_not_save=False):
         else "debit_in_account_currency",
         0,
     )
-    new_row.set(
-        "credit" if d["dr_or_cr"] == "debit_in_account_currency" else "debit", 0
-    )
+    new_row.set("credit" if d["dr_or_cr"] == "debit_in_account_currency" else "debit", 0)
 
     new_row.set("reference_type", d["against_voucher_type"])
     new_row.set("reference_name", d["against_voucher"])
@@ -680,9 +661,7 @@ def update_reference_in_payment_entry(d, payment_entry, do_not_save=False):
     }
 
     if d.voucher_detail_no:
-        existing_row = payment_entry.get(
-            "references", {"name": d["voucher_detail_no"]}
-        )[0]
+        existing_row = payment_entry.get("references", {"name": d["voucher_detail_no"]})[0]
         original_row = existing_row.as_dict().copy()
         existing_row.update(reference_details)
 
@@ -692,9 +671,7 @@ def update_reference_in_payment_entry(d, payment_entry, do_not_save=False):
             for field in list(reference_details):
                 new_row.set(field, original_row[field])
 
-            new_row.allocated_amount = (
-                original_row.allocated_amount - d.allocated_amount
-            )
+            new_row.allocated_amount = original_row.allocated_amount - d.allocated_amount
     else:
         new_row = payment_entry.append("references")
         new_row.docstatus = 1
@@ -737,9 +714,7 @@ def unlink_ref_doc_from_payment_entries(ref_doc):
         ref_doc.set("advances", [])
 
         frappe.db.sql(
-            """delete from `tab{0} Advance` where parent = %s""".format(
-                ref_doc.doctype
-            ),
+            """delete from `tab{0} Advance` where parent = %s""".format(ref_doc.doctype),
             ref_doc.name,
         )
 
@@ -761,9 +736,7 @@ def remove_ref_doc_link_from_jv(ref_type, ref_no):
             (now(), frappe.session.user, ref_type, ref_no),
         )
 
-        frappe.msgprint(
-            _("Journal Entries {0} are un-linked").format("\n".join(linked_jv))
-        )
+        frappe.msgprint(_("Journal Entries {0} are un-linked").format("\n".join(linked_jv)))
 
 
 def remove_ref_doc_link_from_pe(ref_type, ref_no):
@@ -789,14 +762,10 @@ def remove_ref_doc_link_from_pe(ref_type, ref_no):
                 pe_doc.clear_unallocated_reference_document_rows()
                 pe_doc.validate_payment_type_with_outstanding()
             except Exception as e:
-                msg = _("There were issues unlinking payment entry {0}.").format(
-                    pe_doc.name
-                )
+                msg = _("There were issues unlinking payment entry {0}.").format(pe_doc.name)
                 msg += "<br>"
                 msg += _("Please cancel payment entry manually first")
-                frappe.throw(
-                    msg, exc=PaymentEntryUnlinkError, title=_("Payment Unlink Error")
-                )
+                frappe.throw(msg, exc=PaymentEntryUnlinkError, title=_("Payment Unlink Error"))
 
             frappe.db.sql(
                 """update `tabPayment Entry` set total_allocated_amount=%s,
@@ -812,9 +781,7 @@ def remove_ref_doc_link_from_pe(ref_type, ref_no):
                 ),
             )
 
-        frappe.msgprint(
-            _("Payment Entries {0} are un-linked").format("\n".join(linked_pe))
-        )
+        frappe.msgprint(_("Payment Entries {0} are un-linked").format("\n".join(linked_pe)))
 
 
 @frappe.whitelist()
@@ -896,9 +863,7 @@ def get_stock_rbnb_difference(posting_date, company):
     stock_rbnb_account = "Stock Received But Not Billed - " + frappe.get_cached_value(
         "Company", company, "abbr"
     )
-    sys_bal = get_balance_on(
-        stock_rbnb_account, posting_date, in_account_currency=False
-    )
+    sys_bal = get_balance_on(stock_rbnb_account, posting_date, in_account_currency=False)
 
     # Amount should be credited
     return flt(stock_rbnb) + flt(sys_bal)
@@ -960,25 +925,19 @@ def get_outstanding_invoices(
     )
 
     for d in invoice_list:
-        payment_amount = (
-            d.invoice_amount_in_account_currency - d.outstanding_in_account_currency
-        )
+        payment_amount = d.invoice_amount_in_account_currency - d.outstanding_in_account_currency
         outstanding_amount = d.outstanding_in_account_currency
         if outstanding_amount > 0.5 / (10**precision):
             if (
                 min_outstanding
                 and max_outstanding
                 and not (
-                    outstanding_amount >= min_outstanding
-                    and outstanding_amount <= max_outstanding
+                    outstanding_amount >= min_outstanding and outstanding_amount <= max_outstanding
                 )
             ):
                 continue
 
-            if (
-                not d.voucher_type == "Purchase Invoice"
-                or d.voucher_no not in held_invoices
-            ):
+            if not d.voucher_type == "Purchase Invoice" or d.voucher_no not in held_invoices:
                 outstanding_invoices.append(
                     frappe._dict(
                         {
@@ -1015,8 +974,7 @@ def get_account_name(
             "account_type": account_type or "",
             "root_type": root_type or "",
             "is_group": is_group or 0,
-            "account_currency": account_currency
-            or frappe.defaults.get_defaults().currency,
+            "account_currency": account_currency or frappe.defaults.get_defaults().currency,
             "company": company or frappe.defaults.get_defaults().company,
         },
         "name",
@@ -1035,9 +993,7 @@ def get_tds_account(percent, company):
 @frappe.whitelist()
 def get_companies():
     """get a list of companies based on permission"""
-    return [
-        d.name for d in frappe.get_list("Company", fields=["name"], order_by="name")
-    ]
+    return [d.name for d in frappe.get_list("Company", fields=["name"], order_by="name")]
 
 
 @frappe.whitelist()
@@ -1048,16 +1004,10 @@ def get_children(doctype, parent, company, is_root=False):
     fields = ["name as value", "is_group as expandable"]
     filters = [["docstatus", "<", 2]]
 
-    filters.append(
-        ['ifnull(`{0}`,"")'.format(parent_fieldname), "=", "" if is_root else parent]
-    )
+    filters.append(['ifnull(`{0}`,"")'.format(parent_fieldname), "=", "" if is_root else parent])
 
     if is_root:
-        fields += (
-            ["root_type", "report_type", "account_currency"]
-            if doctype == "Account"
-            else []
-        )
+        fields += ["root_type", "report_type", "account_currency"] if doctype == "Account" else []
         filters.append(["company", "=", company])
 
     else:
@@ -1087,10 +1037,7 @@ def get_account_balances(accounts, company):
         account["balance"] = flt(
             get_balance_on(account["value"], in_account_currency=False, company=company)
         )
-        if (
-            account["account_currency"]
-            and account["account_currency"] != company_currency
-        ):
+        if account["account_currency"] and account["account_currency"] != company_currency:
             account["balance_in_account_currency"] = flt(
                 get_balance_on(account["value"], company=company)
             )
@@ -1126,14 +1073,10 @@ def create_payment_gateway_account(gateway, payment_channel="Email"):
 
     if not bank_account:
         # try creating one
-        bank_account = create_bank_account(
-            {"company_name": company, "bank_account": _(gateway)}
-        )
+        bank_account = create_bank_account({"company_name": company, "bank_account": _(gateway)})
 
     if not bank_account:
-        frappe.msgprint(
-            _("Payment Gateway Account not created, please create one manually.")
-        )
+        frappe.msgprint(_("Payment Gateway Account not created, please create one manually."))
         return
 
     # if payment gateway account exists, return
@@ -1177,13 +1120,9 @@ def update_cost_center(docname, cost_center_name, cost_center_number, company, m
     else:
         frappe.db.set_value("Cost Center", docname, "cost_center_number", "")
 
-    frappe.db.set_value(
-        "Cost Center", docname, "cost_center_name", cost_center_name.strip()
-    )
+    frappe.db.set_value("Cost Center", docname, "cost_center_name", cost_center_name.strip())
 
-    new_name = get_autoname_with_number(
-        cost_center_number, cost_center_name, docname, company
-    )
+    new_name = get_autoname_with_number(cost_center_number, cost_center_name, docname, company)
     if docname != new_name:
         frappe.rename_doc("Cost Center", docname, new_name, force=1, merge=merge)
         return new_name
@@ -1236,9 +1175,7 @@ def get_coa(doctype, parent, is_root, chart=None):
     frappe.flags.chart = chart
 
     parent = None if parent == _("All Accounts") else parent
-    accounts = build_tree_from_json(
-        chart
-    )  # returns alist of dict in a tree render-able form
+    accounts = build_tree_from_json(chart)  # returns alist of dict in a tree render-able form
 
     # filter out to show data for the selected node only
     accounts = [d for d in accounts if d["parent_account"] == parent]
@@ -1257,9 +1194,7 @@ def update_gl_entries_after(
     stock_vouchers = get_future_stock_vouchers(
         posting_date, posting_time, for_warehouses, for_items, company
     )
-    repost_gle_for_stock_vouchers(
-        stock_vouchers, posting_date, company, warehouse_account
-    )
+    repost_gle_for_stock_vouchers(stock_vouchers, posting_date, company, warehouse_account)
 
 
 def repost_gle_for_stock_vouchers(
@@ -1300,9 +1235,7 @@ def repost_gle_for_stock_vouchers(
                     existing_gle, expected_gle, precision
                 ):
                     _delete_gl_entries(voucher_type, voucher_no)
-                    voucher_obj.make_gl_entries(
-                        gl_entries=expected_gle, from_repost=True
-                    )
+                    voucher_obj.make_gl_entries(gl_entries=expected_gle, from_repost=True)
             else:
                 _delete_gl_entries(voucher_type, voucher_no)
 
@@ -1364,9 +1297,7 @@ def get_future_stock_vouchers(
         values += for_items
 
     if for_warehouses:
-        condition += " and warehouse in ({})".format(
-            ", ".join(["%s"] * len(for_warehouses))
-        )
+        condition += " and warehouse in ({})".format(", ".join(["%s"] * len(for_warehouses)))
         values += for_warehouses
 
     if company:
@@ -1508,9 +1439,7 @@ def get_stock_and_account_balance(account=None, posting_date=None, company=None)
         value = get_stock_value_on(warehouse, posting_date)
         total_stock_value += value
 
-    precision = frappe.get_precision(
-        "Journal Entry Account", "debit_in_account_currency"
-    )
+    precision = frappe.get_precision("Journal Entry Account", "debit_in_account_currency")
     return (
         flt(account_balance, precision),
         flt(total_stock_value, precision),
@@ -1651,9 +1580,7 @@ def update_voucher_outstanding(voucher_type, voucher_no, account, party_type, pa
         common_filter.append(ple.party == party)
     ple_query = QueryPaymentLedger()
     # on cancellation outstanding can be an empty list
-    voucher_outstanding = ple_query.get_voucher_outstandings(
-        vouchers, common_filter=common_filter
-    )
+    voucher_outstanding = ple_query.get_voucher_outstandings(vouchers, common_filter=common_filter)
 
     if (
         voucher_type
@@ -1691,9 +1618,7 @@ def update_voucher_outstanding(voucher_type, voucher_no, account, party_type, pa
             # Didn't use db_set for optimisation purpose
             outstanding = flt(ref_doc.outstanding_amount) - flt(total_debit)
             ref_doc.outstanding_amount = outstanding
-            frappe.db.set_value(
-                voucher_type, voucher_no, "outstanding_amount", outstanding
-            )
+            frappe.db.set_value(voucher_type, voucher_no, "outstanding_amount", outstanding)
             ref_doc.set_status(update=True)
 
 
@@ -1763,36 +1688,28 @@ class QueryPaymentLedger(object):
             filter_on_voucher_no.append(ple.voucher_type.isin(voucher_types))
             filter_on_voucher_no.append(ple.voucher_no.isin(voucher_nos))
 
-            filter_on_against_voucher_no.append(
-                ple.against_voucher_type.isin(voucher_types)
-            )
-            filter_on_against_voucher_no.append(
-                ple.against_voucher_no.isin(voucher_nos)
-            )
+            filter_on_against_voucher_no.append(ple.against_voucher_type.isin(voucher_types))
+            filter_on_against_voucher_no.append(ple.against_voucher_no.isin(voucher_nos))
 
         # build outstanding amount filter
         filter_on_outstanding_amount = []
         if self.min_outstanding:
             if self.min_outstanding > 0:
                 filter_on_outstanding_amount.append(
-                    Table("outstanding").amount_in_account_currency
-                    >= self.min_outstanding
+                    Table("outstanding").amount_in_account_currency >= self.min_outstanding
                 )
             else:
                 filter_on_outstanding_amount.append(
-                    Table("outstanding").amount_in_account_currency
-                    <= self.min_outstanding
+                    Table("outstanding").amount_in_account_currency <= self.min_outstanding
                 )
         if self.max_outstanding:
             if self.max_outstanding > 0:
                 filter_on_outstanding_amount.append(
-                    Table("outstanding").amount_in_account_currency
-                    <= self.max_outstanding
+                    Table("outstanding").amount_in_account_currency <= self.max_outstanding
                 )
             else:
                 filter_on_outstanding_amount.append(
-                    Table("outstanding").amount_in_account_currency
-                    >= self.max_outstanding
+                    Table("outstanding").amount_in_account_currency >= self.max_outstanding
                 )
 
         # build query for voucher amount
@@ -1850,22 +1767,13 @@ class QueryPaymentLedger(object):
             .from_(AliasedQuery("vouchers"))
             .left_join(AliasedQuery("outstanding"))
             .on(
-                (
-                    AliasedQuery("vouchers").account
-                    == AliasedQuery("outstanding").account
-                )
+                (AliasedQuery("vouchers").account == AliasedQuery("outstanding").account)
                 & (
                     AliasedQuery("vouchers").voucher_type
                     == AliasedQuery("outstanding").voucher_type
                 )
-                & (
-                    AliasedQuery("vouchers").voucher_no
-                    == AliasedQuery("outstanding").voucher_no
-                )
-                & (
-                    AliasedQuery("vouchers").party_type
-                    == AliasedQuery("outstanding").party_type
-                )
+                & (AliasedQuery("vouchers").voucher_no == AliasedQuery("outstanding").voucher_no)
+                & (AliasedQuery("vouchers").party_type == AliasedQuery("outstanding").party_type)
                 & (AliasedQuery("vouchers").party == AliasedQuery("outstanding").party)
             )
             .select(
@@ -1883,9 +1791,7 @@ class QueryPaymentLedger(object):
                 Table("outstanding").amount_in_account_currency.as_(
                     "outstanding_in_account_currency"
                 ),
-                (Table("vouchers").amount - Table("outstanding").amount).as_(
-                    "paid_amount"
-                ),
+                (Table("vouchers").amount - Table("outstanding").amount).as_("paid_amount"),
                 (
                     Table("vouchers").amount_in_account_currency
                     - Table("outstanding").amount_in_account_currency
@@ -1913,9 +1819,7 @@ class QueryPaymentLedger(object):
             )
 
         # execute SQL
-        self.voucher_outstandings = self.cte_query_voucher_amount_and_outstanding.run(
-            as_dict=True
-        )
+        self.voucher_outstandings = self.cte_query_voucher_amount_and_outstanding.run(as_dict=True)
 
     def get_voucher_outstandings(
         self,
