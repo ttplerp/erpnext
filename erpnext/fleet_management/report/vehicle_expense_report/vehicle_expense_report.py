@@ -68,11 +68,13 @@ def construct_query(cond, filters):
         sql = """
         SELECT 
             posting_date,
+            name,
             equipment,
             type,
             amount
         FROM (
                 SELECT
+                    rs.name,
                     rs.posting_date,
                     rs.equipment, 
                     'Repair And Services' AS type, 
@@ -85,6 +87,7 @@ def construct_query(cond, filters):
                 UNION ALL
                 
                 SELECT
+                    ir.name,
                     ir.posting_date,
                     ir.equipment, 
                     be.type, 
@@ -94,8 +97,11 @@ def construct_query(cond, filters):
                     `tabInsurance and Registration` ir 
                 WHERE 
                     ir.name = be.parent 
+
                 UNION ALL
+
                 SELECT 
+                    p.name,
                     p.posting_date,
                     pi.equipment, 
                     "POL Issue" as type, 
@@ -110,6 +116,7 @@ def construct_query(cond, filters):
                 UNION ALL
 
                 SELECT 
+                    pr.name,
                     pr.posting_date,
                     pr.equipment, 
                     "POL Receive" as type, 
@@ -134,6 +141,14 @@ def get_columns(filters):
     if not filters.consolidate:
         column.append(
             {
+                "fieldname": "name",
+                "label": "Transaction ID",
+                "fieldtype": "Data",
+                "width": 200,
+            }
+        )
+        column.append(
+            {
                 "fieldname": "posting_date",
                 "label": "Posting Date",
                 "fieldtype": "Date",
@@ -146,7 +161,7 @@ def get_columns(filters):
             "label": "Equipment",
             "fieldtype": "Link",
             "options": "Equipment",
-            "width": 250,
+            "width": 200,
         },
         {
             "fieldname": "type",
