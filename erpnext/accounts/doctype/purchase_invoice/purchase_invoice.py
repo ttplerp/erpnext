@@ -86,7 +86,7 @@ class PurchaseInvoice(BuyingController):
 		return self.on_hold and (not self.release_date or self.release_date > getdate(nowdate()))
 
 	def validate(self):
-		self.posting_date = getdate(nowdate())
+		# self.posting_date = getdate(nowdate())
 		if not self.is_opening:
 			self.is_opening = "No"
 
