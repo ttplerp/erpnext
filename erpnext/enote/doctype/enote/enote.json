@@ -1,0 +1,174 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "ENOTE.YY.MM.####",
+ "creation": "2023-09-18 13:28:42.381307",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "enote_format",
+  "title",
+  "category",
+  "enote_type",
+  "column_break_2",
+  "note_date",
+  "forward_to",
+  "enote_series",
+  "permitted_user",
+  "copied",
+  "section_break_21",
+  "content",
+  "seen_by_section",
+  "remark",
+  "workflow_state",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "enote_format",
+   "fieldtype": "Data",
+   "label": "Dispatch Number",
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "label": "Title",
+   "no_copy": 1,
+   "print_hide": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Link",
+   "label": "Category",
+   "options": "eNote Category",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "note_date",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "fieldname": "forward_to",
+   "fieldtype": "Link",
+   "label": "Forward To",
+   "no_copy": 1,
+   "options": "User"
+  },
+  {
+   "fieldname": "permitted_user",
+   "fieldtype": "Link",
+   "label": "Permitted User",
+   "no_copy": 1,
+   "options": "User"
+  },
+  {
+   "allow_on_submit": 1,
+   "fetch_if_empty": 1,
+   "fieldname": "copied",
+   "fieldtype": "Table MultiSelect",
+   "ignore_user_permissions": 1,
+   "label": "eNote Copy To",
+   "options": "Note Copy"
+  },
+  {
+   "fieldname": "section_break_21",
+   "fieldtype": "Section Break"
+  },
+  {
+   "bold": 1,
+   "description": "Help: To link to another record in the system, use \"/app/note/[Note Name]\" as the Link URL. (don't use \"http://\")",
+   "fetch_from": "category.template",
+   "fetch_if_empty": 1,
+   "fieldname": "content",
+   "fieldtype": "Text Editor",
+   "in_global_search": 1,
+   "label": "Content",
+   "no_copy": 1
+  },
+  {
+   "fieldname": "seen_by_section",
+   "fieldtype": "Section Break",
+   "label": "Action & Remark"
+  },
+  {
+   "fieldname": "remark",
+   "fieldtype": "Table",
+   "no_copy": 1,
+   "options": "Note Remark",
+   "read_only": 1
+  },
+  {
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Workflow State",
+   "no_copy": 1,
+   "options": "Workflow State",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "eNote",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "enote_type",
+   "fieldtype": "Link",
+   "label": "eNote Type",
+   "options": "eNote Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "enote_series",
+   "fieldtype": "Link",
+   "label": "Dispatch/Reference Series",
+   "options": "eNote Series",
+   "reqd": 1
+  }
+ ],
+ "icon": "fa fa-file-text",
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-11-21 12:51:48.863666",
+ "modified_by": "Administrator",
+ "module": "eNote",
+ "name": "eNote",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "All",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "ASC",
+ "states": [],
+ "title_field": "title",
+ "track_changes": 1,
+ "track_seen": 1
+}
