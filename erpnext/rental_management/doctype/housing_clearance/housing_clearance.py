@@ -14,25 +14,33 @@ class HousingClearance(Document):
 		self.check_id_exist()
 		if not self.is_tenant:
 			self.application_approval_date = nowdate()
+		if self.docstatus == 1:
+			self.notify()
+
 	def check_id_exist(self):
-     
-		exist = frappe.db.exists("Housing Clearance",{"cid":self.cid})
-		if exist:
-			if self.get_numbers_of_day() <= 30: 
-				frappe.msgprint("Sorry Your Clearance already exist and it is not expired")
-			else:
-				self.update_detail() # if number of days is greater than one month save a details
-		else:
-			self.update_detail() # if cid does not exist, update the details
-		# frappe.errprint(exist)
+		for a in frappe.db.sql("""
+					 		select name, application_status, application_date, docstatus
+					 		from `tabHousing Clearance`
+					 		where name!='{}'
+					 		and cid='{}'
+						   and docstatus != 2
+						 """.format(self.name, self.cid), as_dict=True):
+			if a.application_status == "Pending":
+				frappe.throw("Your Housing Clearance Application <b>{}</b> is still Pending".format(a.name))
+
+			if a.application_status == "Approved" and a.docstatus==1:
+				if self.get_numbers_of_day(a.application_date) < 90:
+					frappe.throw("Your Housing Clearance Application <b>{}</b> is Not Expired".format(a.name))
+		
+		self.update_detail()
+		
   
-	def get_numbers_of_day(self): # return the number of days 
-		self.application_date
+	def get_numbers_of_day(self, application_date): # return the number of days 
 		current_date = nowdate()
-		applications_date= frappe.db.get_value('Housing Clearance',{'cid':self.cid} , ['application_date'])
-		num_day = date_diff(current_date,applications_date)
-		frappe.errprint(num_day)
+		num_day = date_diff(current_date, application_date)
+		# frappe.errprint(num_day)
 		return num_day
+
 	def update_detail(self): # updates the  clearance details
 		if len(str(self.cid)) == 11:
 			if self.cid:
@@ -49,9 +57,11 @@ class HousingClearance(Document):
 					self.application_status = "Approved"
 					self.is_tenant = 0
 					self.docstatus = 1
+					
 		else:
 			frappe.throw("Invalid Length of Cid")
 	def on_submit(self):
+		
 		if self.application_status == "Pending":
 			frappe.throw("Not allow to submit the application with <b>Pending</b> Status")
 
@@ -59,5 +69,50 @@ class HousingClearance(Document):
 			frappe.throw("Not allow to Approve the application as the Tenant Status is not <b>Surrendered</b>")
 	
 		self.application_approval_date = nowdate()
+		self.notify()
+  
+	def get_args(self):
+		parent_doc = frappe.get_doc(self.doctype, self.name)
+		args = parent_doc.as_dict()
+		return args
+
+	def notify(self):
+		# args = self.get_args()
+		# template = frappe.db.get_single_value('HR Settings', 'housing_clearance_approver_notification')
+		# if not template:
+		# 	frappe.msgprint(_("Please set default template for Housing Clearance Approver Notification in HR Settings."))
+		# 	return
+		# email_template = frappe.get_doc("Email Template", template)
+		# message = frappe.render_template(email_template.response, args)
+		message  = f"The Housing Clearance Application {self.name}  is approved. Please check Your mail."
+		# frappe.msgprint(str(message))
+		recipients = self.email
+		# subject = email_template.subject
+		subject = "Housing Clearance Approver Notification"
+		self.send_mail(recipients,message, subject)
      
+	def send_mail(self, recipients, message, subject):
+		attachments = self.get_attachment()
+		try:
+			frappe.sendmail(
+					recipients=recipients,
+					subject=_(subject),
+					message= _(message),
+					attachments=attachments,
+				)
+		except:
+			pass
+	def get_attachment(self):
+		"""check print settings are attach the pdf"""
+		print_settings = frappe.get_doc("Print Settings", "Print Settings")
+		return [
+			{
+				"print_format_attachment": 1,
+				"doctype": self.doctype,
+				"name": self.name,
+				"print_format": "Housing Clearance Certificate",
+				"print_letterhead": print_settings.with_letterhead,
+				"lang": "en",
+			}
+		]
     

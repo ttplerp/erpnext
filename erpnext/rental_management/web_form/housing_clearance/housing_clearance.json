@@ -1,5 +1,3 @@
-
-
 {
  "accept_payment": 0,
  "allow_comments": 0,
@@ -22,7 +20,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2023-11-16 15:52:58.189889",
+ "modified": "2023-12-13 16:25:09.718234",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "housing-clearance",
@@ -33,7 +31,7 @@
  "show_attachments": 0,
  "show_list": 0,
  "show_sidebar": 0,
- "success_message": "Your Submission of the Housing Clearance Form has been Successful !",
+ "success_message": "Your Submission of the Housing Clearance Form has been Successfully Submitted  !",
  "success_title": "",
  "title": "Housing Clearance",
  "web_form_fields": [
@@ -54,7 +52,7 @@
    "fieldname": "application_name",
    "fieldtype": "Data",
    "hidden": 0,
-   "label": "Application Name",
+   "label": "Applicant Name",
    "max_length": 0,
    "max_value": 0,
    "read_only": 1,
@@ -77,24 +75,25 @@
   {
    "allow_read_on_all_link_options": 0,
    "fieldname": "purpose",
-   "fieldtype": "Data",
+   "fieldtype": "Select",
    "hidden": 0,
    "label": "Purpose",
    "max_length": 0,
    "max_value": 0,
+   "options": "\nVoluntary\nSupernation\nTermination\nCompletion of contract\nDeceased\nOthers",
    "read_only": 0,
    "reqd": 1,
    "show_in_filter": 0
   },
   {
    "allow_read_on_all_link_options": 0,
-   "description": "[Note: Housing Clearance certificate will be send to this email]",
    "fieldname": "email",
    "fieldtype": "Data",
    "hidden": 0,
    "label": "Email",
    "max_length": 0,
    "max_value": 0,
+   "options": "Email",
    "read_only": 0,
    "reqd": 1,
    "show_in_filter": 0

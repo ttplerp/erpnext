@@ -3,7 +3,7 @@ frappe.ready(function() {
 	var applicant_cid = ""
 	frappe.web_form.on('cid', (field, value) => {
 		applicant_cid=value;
-		if(value.length == "11"){
+		if(value.length == '11'){
 			// Example frappe.call usage
 			get_cid_detail(applicant_cid);
 		}
@@ -17,6 +17,7 @@ function get_cid_detail(cid){
 			cid: cid,
 		},
 		callback: function(r) {
+			
 			if(r.message['middleName']){
 				var applicant_name = r.message['firstName'] + " " + r.message['middleName'] + " " + r.message['lastName'];
 			}

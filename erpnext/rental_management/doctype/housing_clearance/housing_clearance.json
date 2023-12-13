@@ -33,15 +33,17 @@
   "flat_id",
   "floor_area",
   "initial_rent_amount",
-  "amended_from"
+  "amended_from",
+  "remarks_section",
+  "remarks"
  ],
  "fields": [
   {
    "fieldname": "application_name",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Application Name",
-   "read_only": 1
+   "label": "Applicant Name",
+   "reqd": 1
   },
   {
    "fieldname": "cid",
@@ -56,8 +58,9 @@
   },
   {
    "fieldname": "purpose",
-   "fieldtype": "Data",
+   "fieldtype": "Select",
    "label": "Purpose",
+   "options": "\nVoluntary\nSupernation\nTermination\nCompletion of contract\nDeceased\nOthers",
    "reqd": 1
   },
   {
@@ -196,7 +199,9 @@
   {
    "fieldname": "email",
    "fieldtype": "Data",
-   "label": "Email"
+   "label": "Email",
+   "options": "Email",
+   "reqd": 1
   },
   {
    "fieldname": "application_status",
@@ -212,12 +217,24 @@
    "fieldtype": "Date",
    "label": "Application Approved Date",
    "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.application_status==\"Rejected\"",
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks",
+   "mandatory_depends_on": "doc.application_status==\"Rejected\""
+  },
+  {
+   "fieldname": "remarks_section",
+   "fieldtype": "Section Break",
+   "label": "Remarks"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-12-12 10:01:33.300169",
+ "modified": "2023-12-13 14:57:21.607301",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Housing Clearance",
@@ -235,6 +252,7 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],
