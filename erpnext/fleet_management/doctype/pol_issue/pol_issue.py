@@ -24,7 +24,8 @@ class POLIssue(StockController):
         check_future_date(self.posting_date)
         self.validate_uom_is_integer("stock_uom", "qty")
         self.update_items()
-        self.check_balance()
+        if not self.receive_in_barrel:
+            self.check_balance()
         self.validate_data()
 
     def validate_data(self):
