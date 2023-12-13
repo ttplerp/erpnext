@@ -6,20 +6,36 @@
    "width": "Full"
   },
   {
-   "chart": "Employees by Branch",
+   "chart": "Projects by Branch",
+   "width": "Full"
+  },
+  {
+   "chart": "Type of Project at Hand",
+   "width": "Half"
+  },
+  {
+   "chart": "Project Status",
+   "width": "Half"
+  },
+  {
+   "chart": "Project Performance and Financial % Progress",
+   "width": "Full"
+  },
+  {
+   "chart": "Project Value and Revenue",
    "width": "Full"
   }
  ],
- "creation": "2023-04-10 16:38:14.873753",
+ "creation": "2023-06-27 14:22:47.584173",
  "dashboard_name": "Project",
  "docstatus": 0,
  "doctype": "Dashboard",
  "idx": 0,
  "is_default": 0,
  "is_standard": 1,
- "modified": "2023-05-19 12:12:24.160101",
- "modified_by": "lhendrup.dorji@thimphutechpark.bt",
+ "modified": "2023-12-13 09:31:05.157036",
+ "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project",
- "owner": "jairaj.rai@thimphutechpark.bt"
+ "owner": "admin@test.com"
 }

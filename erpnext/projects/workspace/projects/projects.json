@@ -208,74 +208,6 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Project Reports",
-   "link_count": 6,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Project Register",
-   "link_count": 0,
-   "link_to": "Project Register",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "BOQ Register",
-   "link_count": 0,
-   "link_to": "BOQ Register",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "MB Register",
-   "link_count": 0,
-   "link_to": "MB Register",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Project Advance Register",
-   "link_count": 0,
-   "link_to": "Project Advance Register",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Project Invoice Register",
-   "link_count": 0,
-   "link_to": "Project Invoice Register",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Project Timeline Report",
-   "link_count": 0,
-   "link_to": "Project Timeline Report",
-   "link_type": "Report",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Reports",
    "link_count": 5,
    "onboard": 0,
@@ -352,10 +284,98 @@
    "link_type": "DocType",
    "onboard": 1,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Project Reports",
+   "link_count": 8,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Project Register",
+   "link_count": 0,
+   "link_to": "Project Register",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "BOQ Register",
+   "link_count": 0,
+   "link_to": "BOQ Register",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "MB Register",
+   "link_count": 0,
+   "link_to": "MB Register",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Project Advance Register",
+   "link_count": 0,
+   "link_to": "Project Advance Register",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Project Invoice Register",
+   "link_count": 0,
+   "link_to": "Project Invoice Register",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Project Timeline Report",
+   "link_count": 0,
+   "link_to": "Project Timeline Report",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Statement of Payment and Recovery",
+   "link_count": 0,
+   "link_to": "Statement of Payment and Recovery",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Deviation Item Statement",
+   "link_count": 0,
+   "link_to": "Deviation Item Statement",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-07-07 16:39:28.475042",
- "modified_by": "lhendrup.dorji@thimphutechpark.bt",
+ "modified": "2023-12-07 15:12:16.231551",
+ "modified_by": "Administrator",
  "module": "Projects",
  "name": "Projects",
  "owner": "Administrator",

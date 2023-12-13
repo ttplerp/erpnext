@@ -129,6 +129,8 @@ class AssetValueAdjustment(Document):
 		doc.db_set("additional_value", self.difference_amount)
 
 	def reschedule_depreciations(self, asset_value):
+		if self.asset_category == "Investment Property":
+			return
 		depreciation_start_date = get_last_day(add_days(self.date, -20))
 		asset = frappe.get_doc("Asset", self.asset)
 		country = frappe.get_value("Company", self.company, "country")
@@ -173,7 +175,11 @@ class AssetValueAdjustment(Document):
 @frappe.whitelist()
 def get_current_asset_value(asset, finance_book=None):
 	cond = {"parent": asset, "parenttype": "Asset"}
+	asset_category = frappe.db.get_value("Asset", asset, "asset_category")
+	if asset_category == "Investment Property":
+		return frappe.db.get_value("Asset", asset, "gross_purchase_amount")
+
 	if finance_book:
 		cond.update({"finance_book": finance_book})
 
-	return frappe.db.get_value("Asset Finance Book", cond, "value_after_depreciation")
+		return frappe.db.get_value("Asset Finance Book", cond, "value_after_depreciation")

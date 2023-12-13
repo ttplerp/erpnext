@@ -1,0 +1,44 @@
+{
+ "based_on": "",
+ "chart_name": "Projects by Branch",
+ "chart_type": "Group By",
+ "color": "#CB2929",
+ "creation": "2023-12-11 10:56:38.034056",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "document_type": "Project",
+ "dynamic_filters_json": "[]",
+ "filters_json": "[[\"Project\",\"is_active\",\"=\",\"Yes\",false]]",
+ "group_by_based_on": "branch",
+ "group_by_type": "Count",
+ "idx": 0,
+ "is_public": 0,
+ "is_standard": 1,
+ "last_synced_on": "2023-12-12 13:42:34.049310",
+ "modified": "2023-12-12 13:43:07.605641",
+ "modified_by": "Administrator",
+ "module": "Projects",
+ "name": "Projects by Branch",
+ "number_of_groups": 0,
+ "owner": "Administrator",
+ "parent_document_type": "",
+ "roles": [
+  {
+   "role": "Projects GM"
+  },
+  {
+   "role": "Projects Manager"
+  },
+  {
+   "role": "Projects User"
+  }
+ ],
+ "source": "",
+ "time_interval": "Yearly",
+ "timeseries": 0,
+ "timespan": "Last Year",
+ "type": "Bar",
+ "use_report_chart": 0,
+ "value_based_on": "",
+ "y_axis": []
+}

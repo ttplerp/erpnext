@@ -8,6 +8,13 @@
  "document_type": "Setup",
  "engine": "InnoDB",
  "field_order": [
+  "project_profile_section",
+  "type_of_project_at_hand",
+  "project_status",
+  "column_break_37",
+  "consultancy_charge",
+  "boq_value",
+  "section_break_6",
   "naming_series",
   "project_name",
   "branch",
@@ -40,6 +47,7 @@
   "copied_from",
   "section_break0",
   "notes",
+  "company",
   "section_break_18",
   "actual_start_date",
   "actual_time",
@@ -49,16 +57,15 @@
   "estimated_costing",
   "total_costing_amount",
   "total_purchase_cost",
-  "company",
+  "data_50",
   "column_break_28",
   "total_sales_amount",
   "total_billable_amount",
   "total_billed_amount",
   "total_consumed_material_cost",
-  "boq_value",
   "margin",
   "gross_margin",
-  "column_break_37",
+  "column_break_56",
   "per_gross_margin",
   "monitor_progress",
   "collect_progress",
@@ -274,7 +281,6 @@
    "collapsible": 1,
    "fieldname": "project_details",
    "fieldtype": "Section Break",
-   "hidden": 1,
    "label": "Costing and Billing",
    "oldfieldtype": "Section Break",
    "options": "fa fa-money"
@@ -528,6 +534,41 @@
    "label": "Project Invoice Item",
    "options": "Project Invoice Item",
    "read_only": 1
+  },
+  {
+   "fieldname": "type_of_project_at_hand",
+   "fieldtype": "Select",
+   "label": "Type of Project at Hand",
+   "options": "\nContract\nDepartmental\nDeposit"
+  },
+  {
+   "fieldname": "project_status",
+   "fieldtype": "Select",
+   "label": "Project Status",
+   "options": "\nOn Track\nOn Extended Period\nDelayed\nOn Hold"
+  },
+  {
+   "fieldname": "consultancy_charge",
+   "fieldtype": "Currency",
+   "label": "Supervision & Consultancy Charge",
+   "options": "Company:company:default_currency"
+  },
+  {
+   "fieldname": "column_break_56",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "project_profile_section",
+   "fieldtype": "Section Break",
+   "label": "Project Profile"
+  },
+  {
+   "fieldname": "section_break_6",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "data_50",
+   "fieldtype": "Data"
   }
  ],
  "icon": "fa fa-puzzle-piece",
@@ -535,7 +576,7 @@
  "index_web_pages_for_search": 1,
  "links": [],
  "max_attachments": 4,
- "modified": "2023-12-07 16:08:42.963447",
+ "modified": "2023-12-11 11:40:23.211286",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project",

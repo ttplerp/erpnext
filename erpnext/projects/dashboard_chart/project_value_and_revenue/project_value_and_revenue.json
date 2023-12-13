@@ -1,0 +1,37 @@
+{
+ "chart_name": "Project Value and Revenue",
+ "chart_type": "Report",
+ "creation": "2023-12-12 13:41:47.666526",
+ "custom_options": "{\"x_field\": \"project\", \"chart_type\": \"Bar\", \"y_axis_fields\": [{\"idx\": 1, \"__islocal\": true, \"name\": \"row 1\", \"y_field\": \"project_budget\", \"color\": \"#4463F0\"}, {\"idx\": 2, \"__islocal\": true, \"name\": \"row 2\", \"y_field\": \"revenue_calculated\", \"color\": \"#ECAD4B\"}], \"y_fields\": [\"project_budget\", \"revenue_calculated\"], \"colors\": [\"#4463F0\", \"#ECAD4B\"]}",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "filters_json": "{}",
+ "group_by_type": "Count",
+ "idx": 0,
+ "is_public": 0,
+ "is_standard": 1,
+ "modified": "2023-12-12 13:41:47.727381",
+ "modified_by": "Administrator",
+ "module": "Projects",
+ "name": "Project Value and Revenue",
+ "number_of_groups": 0,
+ "owner": "Administrator",
+ "report_name": "Project Value and Revenue Report",
+ "roles": [],
+ "time_interval": "Yearly",
+ "timeseries": 0,
+ "timespan": "Last Year",
+ "type": "Bar",
+ "use_report_chart": 0,
+ "x_field": "project",
+ "y_axis": [
+  {
+   "color": "#4463F0",
+   "y_field": "project_budget"
+  },
+  {
+   "color": "#ECAD4B",
+   "y_field": "revenue_calculated"
+  }
+ ]
+}
