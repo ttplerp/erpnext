@@ -18,6 +18,7 @@
   "company",
   "letter_head",
   "holiday_list",
+  "branch_supervisor",
   "sb_accounts_settings",
   "expense_bank_account",
   "column_break_11",
@@ -121,12 +122,18 @@
    "fieldtype": "Link",
    "label": "Imprest Approver",
    "options": "User"
+  },
+  {
+   "fieldname": "branch_supervisor",
+   "fieldtype": "Link",
+   "label": "Branch Supervisor",
+   "options": "User"
   }
  ],
  "icon": "fa fa-code-fork",
  "idx": 1,
  "links": [],
- "modified": "2023-09-21 10:13:37.528963",
+ "modified": "2023-12-12 14:18:06.442396",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Branch",
