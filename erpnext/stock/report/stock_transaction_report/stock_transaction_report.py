@@ -86,5 +86,9 @@ def get_data(filters):
 		query = (query.where(filters.from_date <= se.posting_date))
 	if filters.get("to_date"):
 		query = (query.where(filters.to_date >= se.posting_date))
+	if filters.get("to_date"):
+		query = (query.where(filters.to_date >= se.posting_date))
+	if filters.get("project"):
+		query = (query.where(sed.project == filters.project))
 	return query.run()
 

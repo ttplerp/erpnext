@@ -61,5 +61,12 @@ frappe.query_reports["Stock Transaction Report"] = {
 			"width": "80",
 			"options": "Item"
 		},
+		{
+			"fieldname": "project",
+			"label": __("Project"),
+			"fieldtype": "Link",
+			"width": "100",
+			"options": "Project"
+		},
 	]
 };
