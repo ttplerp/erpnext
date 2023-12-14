@@ -85,7 +85,7 @@ class HousingClearance(Document):
 		# 	return
 		# email_template = frappe.get_doc("Email Template", template)
 		# message = frappe.render_template(email_template.response, args)
-		message  = f"The Housing Clearance Application {self.name}  is approved. Please check Your mail."
+		message  = f"The Housing Clearance Application {self.name}  is approved. Please check Your Attachment."
 		# frappe.msgprint(str(message))
 		recipients = self.email
 		# subject = email_template.subject
