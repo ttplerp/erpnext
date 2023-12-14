@@ -64,9 +64,10 @@ class HousingClearance(Document):
 		
 		if self.application_status == "Pending":
 			frappe.throw("Not allow to submit the application with <b>Pending</b> Status")
-
+		'''
 		if self.tenant_status and self.tenant_status != "Surrendered" and self.application_status == "Approved":
 			frappe.throw("Not allow to Approve the application as the Tenant Status is not <b>Surrendered</b>")
+		'''
 	
 		self.application_approval_date = nowdate()
 		self.notify()
