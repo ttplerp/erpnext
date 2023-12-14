@@ -27,7 +27,7 @@ function get_cid_detail(cid){
 			
 			//Handle the response from the server
 			if(r.message) {
-				$('[data-fieldname="applicant_name"]').val(applicant_name);		
+				$('[data-fieldname="application_name"]').val(applicant_name);		
 			}else{
 				frappe.throw("No such CID details found")
 			}
