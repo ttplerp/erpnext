@@ -1,7 +1,6 @@
 {
  "actions": [],
  "allow_import": 1,
- "allow_rename": 1,
  "autoname": "PROJ.-.YY.-.MM.-.####",
  "creation": "2013-03-07 11:55:07",
  "doctype": "DocType",
@@ -576,7 +575,7 @@
  "index_web_pages_for_search": 1,
  "links": [],
  "max_attachments": 4,
- "modified": "2023-12-11 11:40:23.211286",
+ "modified": "2023-12-14 12:19:05.828971",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project",
