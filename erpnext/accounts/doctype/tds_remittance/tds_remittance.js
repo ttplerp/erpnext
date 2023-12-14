@@ -29,6 +29,11 @@ frappe.ui.form.on('TDS Remittance', {
 	tax_withholding_category: function(frm){
 		cur_frm.clear_table("items");
 		cur_frm.refresh_field("items");
+	}, 
+
+	fines_and_penalties: function(frm) {
+		calculate_total(frm);
+		frm.refresh_fields();
 	}
 });
 
@@ -102,4 +107,10 @@ var get_details = function(frm){
 			}
 		},
 	});
+}
+
+var calculate_total = function (frm) {
+	let grand_total = 0
+	grand_total = frm.doc.total_tds + fines_and_penalties
+	frm.set_value('grand_total', grand_total)
 }

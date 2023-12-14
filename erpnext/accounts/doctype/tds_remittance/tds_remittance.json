@@ -29,7 +29,8 @@
   "cb_6",
   "total_amount",
   "total_tds",
-  "data_24",
+  "fines_and_penalties",
+  "grand_total",
   "sb_payment_details",
   "mode_of_payment",
   "pay_to_recd_from",
@@ -229,10 +230,6 @@
    "label": "Cheque Date"
   },
   {
-   "fieldname": "data_24",
-   "fieldtype": "Data"
-  },
-  {
    "fieldname": "sb_payment_details",
    "fieldtype": "Section Break",
    "label": "Payment Details"
@@ -255,12 +252,23 @@
    "fieldname": "reference_number",
    "fieldtype": "Data",
    "label": "Reference Number"
+  },
+  {
+   "fieldname": "fines_and_penalties",
+   "fieldtype": "Currency",
+   "label": "Fines and penalties"
+  },
+  {
+   "fieldname": "grand_total",
+   "fieldtype": "Currency",
+   "label": "Grand Total",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-21 12:12:31.004850",
+ "modified": "2023-12-14 10:45:30.375530",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "TDS Remittance",

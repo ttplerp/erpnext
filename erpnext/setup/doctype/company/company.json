@@ -81,6 +81,7 @@
   "company_cost_center",
   "default_finance_book",
   "clearing_account",
+  "fines_and_penalties_account",
   "tds_accounts_section",
   "tds_account_item",
   "auto_accounting_for_stock_settings",
@@ -1140,6 +1141,12 @@
    "fieldtype": "Link",
    "label": "Advance Paid to International Supplier",
    "options": "Account"
+  },
+  {
+   "fieldname": "fines_and_penalties_account",
+   "fieldtype": "Link",
+   "label": "Fines And Penalties",
+   "options": "Account"
   }
  ],
  "icon": "fa fa-building",
@@ -1147,7 +1154,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2023-11-20 14:32:14.966074",
+ "modified": "2023-12-14 11:04:15.454251",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",
