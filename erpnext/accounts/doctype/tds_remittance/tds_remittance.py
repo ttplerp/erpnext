@@ -82,25 +82,26 @@ class TDSRemittance(AccountsController):
 						"against_voucher": item.invoice_no
 					},
 					account_currency= "BTN"))
-				
-			gl_entries.append(
-				self.get_gl_dict({
-						"account": fines_penalties_account,
-						"debit": self.fines_and_penalties,
-						"debit_in_account_currency": self.fines_and_penalties,
-						"voucher_type": self.doctype,
-						"voucher_no": self.name,
-						"cost_center": self.cost_center,
-						# "business_activity": item.business_activity,
-						"against_voucher_type":	self.doctype,
-						"against_voucher": self.name
-					},
-					account_currency= "BTN"))
+			
+			if self.fines_and_penalties > 0:
+				gl_entries.append(
+					self.get_gl_dict({
+							"account": fines_penalties_account,
+							"debit": self.fines_and_penalties,
+							"debit_in_account_currency": self.fines_and_penalties,
+							"voucher_type": self.doctype,
+							"voucher_no": self.name,
+							"cost_center": self.cost_center,
+							# "business_activity": item.business_activity,
+							"against_voucher_type":	self.doctype,
+							"against_voucher": self.name
+						},
+						account_currency= "BTN"))
 			
 			gl_entries.append(
 				self.get_gl_dict({
 					"account": str(self.credit_account),
-					"credit": flt(self.total_tds + self.fines_and_penalties),
+					"credit": flt(self.total_tds + self.fines_and_penalties) if self.fines_and_penalties > 0 else self.total_tds,
 					"credit_in_account_currency": self.total_tds,
 					"voucher_type": self.doctype,					
 					"voucher_no": self.name,
