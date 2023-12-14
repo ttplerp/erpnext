@@ -450,8 +450,8 @@ email_brand_image = "assets/erpnext/images/erpnext-logo.jpg"
 default_mail_footer = """
 	<span>
 		Sent via
-		<a class="text-muted" href="https://emines.smcl.bt" target="_blank">
-			Emines
+		<a class="text-muted" href="https://erp.nhdcl.bt" target="_blank">
+			NHDCL ERP
 		</a>
 	</span>
 """
@@ -559,6 +559,7 @@ regional_overrides = {
 
 has_permission = {
 	# "Material Request":"erpnext.stock.doctype.material_request.material_request.has_record_permission", 
+	"eNote": "erpnext.enote.doctype.enote.enote.get_permission_query_conditions",
 	"Employee": "erpnext.setup.doctype.employee.employee.has_record_permission",
 	"Salary Structure": "hrms.payroll.doctype.salary_structure.salary_structure.has_record_permission",
 	"Salary Slip": "hrms.payroll.doctype.salary_slip.salary_slip.has_record_permission",
@@ -567,6 +568,7 @@ has_permission = {
 }
 
 permission_query_conditions = {
+    "eNote": "erpnext.enote.doctype.enote.enote.get_permission_query_conditions",
 	"Journal Entry": "erpnext.accounts.doctype.journal_entry.journal_entry.get_permission_query_conditions",
 	"Payment Entry": "erpnext.accounts.doctype.payment_entry.payment_entry.get_permission_query_conditions",
 	"Purchase Order": "erpnext.buying.doctype.purchase_order.purchase_order.get_permission_query_conditions",
