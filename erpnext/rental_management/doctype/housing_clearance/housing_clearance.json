@@ -60,7 +60,7 @@
    "fieldname": "purpose",
    "fieldtype": "Select",
    "label": "Purpose",
-   "options": "\nVoluntary\nSupernation\nTermination\nCompletion of contract\nDeceased\nOthers",
+   "options": "\nVoluntary\nSupernation\nTermination\nCompletion of contract\nDeceased",
    "reqd": 1
   },
   {
@@ -235,7 +235,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-12-14 09:47:09.857351",
+ "modified": "2023-12-14 09:58:12.585762",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Housing Clearance",
