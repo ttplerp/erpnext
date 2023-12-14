@@ -820,7 +820,7 @@ $.extend(erpnext.journal_entry, {
 
 /* ePayment Begins */
 var create_custom_buttons = function(frm){
-	if(frm.doc.docstatus == 1 && (frm.doc.voucher_type == "Bank Entry" || frm.doc.voucher_type == "Contra Entry")){
+	if(frm.doc.docstatus == 1 && (frm.doc.voucher_type == "Bank Entry" || frm.doc.voucher_type == "Contra Entry") && frm.doc.mode_of_payment == "Online Payment"){
 		if(!frm.doc.payment_status || frm.doc.payment_status == 'Failed' || frm.doc.payment_status == 'Payment Failed'){
 			frm.page.set_primary_action(__('Process Payment'), () => {
 				frappe.model.open_mapped_doc({
