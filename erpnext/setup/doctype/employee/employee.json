@@ -136,6 +136,8 @@
   "external_work_history",
   "history_in_company",
   "internal_work_history",
+  "others_information_section",
+  "signature_url",
   "exit",
   "resignation_letter_date",
   "relieving_date",
@@ -154,8 +156,7 @@
   "lft",
   "rgt",
   "old_parent",
-  "old_employee_id",
-  "signature_url"
+  "old_employee_id"
  ],
  "fields": [
   {
@@ -1063,13 +1064,18 @@
    "fieldname": "signature_url",
    "fieldtype": "Attach",
    "label": "Signature Url"
+  },
+  {
+   "fieldname": "others_information_section",
+   "fieldtype": "Section Break",
+   "label": "Others Information"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-10-26 16:21:13.254712",
+ "modified": "2023-12-14 14:32:38.147937",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
