@@ -65,7 +65,7 @@ class RepairAndServiceInvoice(AccountsController):
                 if outstanding_amount > 0 and self.total_amount > outstanding_amount:
                     self.status = "Partly Paid"
                 elif outstanding_amount > 0:
-                    self.status = "Unpaid"
+                    self.status = "Paid"
                 elif outstanding_amount <= 0:
                     self.status = "Paid"
                 else:
@@ -189,14 +189,6 @@ class RepairAndServiceInvoice(AccountsController):
             frappe.throw(
                 _("Default bank account is not set in branch {}".format(frappe.bold(self.company)))
             )
-        tds_rate, tds_account = 0, ""
-        if self.tds_amount > 0:
-            tds_dtls = self.get_tax_details()
-            tds_rate = tds_dtls["rate"]
-
-            tds_account = tds_dtls["account"]
-            frappe.throw("the tds account os",tds_rate)
-
         # Posting Journal Entry
         if self.settle_imprest_advance == 1 and not imprest_advance_account:
             frappe.throw("Imprest Advance is not set in Company settings")
@@ -218,9 +210,9 @@ class RepairAndServiceInvoice(AccountsController):
                 "total_amount_in_words": money_in_words(self.outstanding_amount),
                 "branch": self.branch,
                 "reference_type": self.doctype,
-                "referece_doctype": self.name,
-                # "total_debit": self.outstanding_amount,
-                # "total_credit": self.outstanding_amount,
+                "reference_doctype": self.name,
+                "total_debit": self.outstanding_amount,
+                "total_credit": self.outstanding_amount,
                 "settle_project_imprest": self.settle_imprest_advance,
                 "apply_tds": 1 if self.tds_amount > 0 else 0,
                 "tax_withholding_category": (
@@ -237,7 +229,7 @@ class RepairAndServiceInvoice(AccountsController):
             {
                 "account": expense_account,
                 "debit_in_account_currency": self.outstanding_amount,
-                # "debit": self.outstanding_amount,
+                "debit": self.outstanding_amount,
                 "cost_center": self.cost_center,
                 "party_check": 1,
                 "party_type": self.party_type,
@@ -246,8 +238,14 @@ class RepairAndServiceInvoice(AccountsController):
                 "reference_name": self.name,
                 "apply_tds": 1 if self.tds_amount > 0 else 0,
                 "add_deduct_tax": "Deduct" if self.tds_amount > 0 else "",
-                "tax_account": tds_account,
-                "rate": tds_rate,
+                "tax_account": self.tds_account,
+                "rate": (
+                    "2"
+                    if self.tds_percent == "2"
+                    else "3"
+                    if self.tds_percent == "3"
+                    else "5"
+                ),
                 "tax_amount_in_account_currency": self.tds_amount,
                 "tax_amount": self.tds_amount,
             },
@@ -260,8 +258,8 @@ class RepairAndServiceInvoice(AccountsController):
                 else imprest_advance_account,
                 "party_type": "Employee" if self.settle_imprest_advance == 1 else self.party_type,
                 "party": self.imprest_party if self.settle_imprest_advance == 1 else self.party,
-                "credit_in_account_currency": self.outstanding_amount,  # self.net_amount if self.tds_amount > 0 else self.outstanding_amount,
-                # "credit": self.net_amount if self.tds_amount > 0 else self.outstanding_amount,
+                "credit_in_account_currency":  self.net_amount if self.tds_amount > 0 else self.outstanding_amount,
+                "credit": self.net_amount if self.tds_amount > 0 else self.outstanding_amount,
                 "cost_center": self.cost_center,
             },
         )
@@ -275,18 +273,7 @@ class RepairAndServiceInvoice(AccountsController):
             )
         )
 
-    @frappe.whitelist()
-    def get_tax_details(self):
-        tax_account = frappe.db.get_value(
-            "Tax Withholding Account",
-            {"parent": self.tds_percent, "company": self.company},
-            "account",
-        )
-        tax_rate = frappe.db.get_value(
-            "Tax Withholding Rate", {"parent": self.tds_percent}, "tax_withholding_rate"
-        )
-
-        return {"account": tax_account, "rate": tax_rate}
+ 
 
 
 # permission query

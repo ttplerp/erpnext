@@ -24,10 +24,17 @@ class RepairAndServices(StockController):
         if not self.posting_time:
             self.posting_time = nowtime()
         self.update_items()
+        self.validate_rate()
         self.calculate_total_amount()
         self.calculate_km_diff()
         self.fetch_previous_service_date()
         self.calculate_total_hr()
+
+    def validate_rate(self):
+        for i in self.items:
+            if not i.maintain_stock and self.out_source and i.rate <= 0:
+                frappe.throw("Rate at Row# {} cannot be {}.".format(i.idx, i.rate))
+                
 
     def on_update(self):
         self.calculate_total_hr()
