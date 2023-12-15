@@ -83,6 +83,7 @@
  ],
  "fields": [
   {
+   "allow_on_submit": 1,
    "fieldname": "payment_status",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -504,7 +505,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-12-05 11:31:06.486103",
+ "modified": "2023-12-15 15:09:47.626544",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Job Card",
