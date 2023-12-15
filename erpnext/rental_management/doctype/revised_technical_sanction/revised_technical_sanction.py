@@ -36,12 +36,12 @@ class RevisedTechnicalSanction(Document):
 					frappe.db.sql(
 						"""select sum(i.qty)
 					from `tabTechnical Sanction Item` i inner join `tabTechnical Sanction Bill` b on b.name=i.parent where i.service = %s
-					and i.parenttype = 'Technical Sanction Bill' and b.revised_technical_sanction = %s and i.docstatus = 1""",
+					and i.parenttype = 'Technical Sanction Bill' and b.revised_technical_sanction = %s and b.docstatus = 1""",
 						(item_name, self.name),
 					)[0][0]
 				)
 
-				if rts_qty and rts_qty > flt(d.qty):
+				if flt(rts_qty) and flt(rts_qty) > flt(d.qty):
 					frappe.throw(
 						_(
 							"The total TS-Bill quantity {0} cannot be greater then total Revised Technical Sanction quantity {1} for Item {2} in Revised Technical Sanction {3}"
