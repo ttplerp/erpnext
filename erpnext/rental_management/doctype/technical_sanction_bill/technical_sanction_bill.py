@@ -199,6 +199,7 @@ class TechnicalSanctionBill(AccountsController):
 
 	def on_cancel(self):
 		check_tds_remittance(self.name)
+		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
 		self.cancel_linked_docs()
 		self.make_gl_entries()
 		self.update_advance_balance()
