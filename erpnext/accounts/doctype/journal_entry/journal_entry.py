@@ -1152,7 +1152,7 @@ class JournalEntry(AccountsController):
 				doc.save(ignore_permissions=True)
 
 	def link_je_to_imprest(self, cancel=False):
-		ref_list = ['Imprest Advance', 'POL Advance']
+		ref_list = ['Imprest Advance', 'POL Advance', 'Technical Sanction Bill']
 		for d in self.accounts:
 			if d.reference_type in ref_list and d.reference_name:
 				doc = frappe.get_doc(d.reference_type, d.reference_name)
