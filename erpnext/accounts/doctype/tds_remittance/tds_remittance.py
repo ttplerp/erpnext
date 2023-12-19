@@ -97,7 +97,7 @@ class TDSRemittance(AccountsController):
 
 def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_existing = False, cond='', party_type = None):
 	accounts_cond = accounts_cond_ti = accounts_cond_eme = existing_cond = party_cond = "" 
-	entries = pi_entries = pe_entries = je_entries = []
+	entries = pi_entries = pe_entries = je_entries = tsb_entries = []
 
 	if not tax_withholding_category:
 		frappe.msgprint(_("<b>Tax Withholding Category</b> is mandatory"))
@@ -123,6 +123,7 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 		accounts_cond = 'and t1.account_head = "{}"'.format(accounts[0])
 		accounts_cond_ti = 'and t1.account = "{}"'.format(accounts[0])
 		accounts_cond_eme = 'and t.tds_account = "{}"'.format(accounts[0])
+		accounts_cond_tsb = 'and t.tds_account = "{}"'.format(accounts[0])
 	else:
 		accounts_cond = 'and t1.account_head in ({})'.format('"' + '","'.join(accounts) + '"')
 		accounts_cond_ti = 'and t1.account in ({})'.format('"' + '","'.join(accounts) + '"')
@@ -215,7 +216,26 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 		{cond}""".format(accounts_cond = accounts_cond, cond = cond, existing_cond = existing_cond,\
 			party_cond = party_cond, from_date=from_date, to_date=to_date), as_dict=True)
 	
-	entries = pi_entries + pe_entries + je_entries 
+	# TS-Bill
+	if not party_type or party_type == "Supplier":
+		tsb_entries = frappe.db.sql("""select t.posting_date, 'Technical Sanction Bill' as invoice_type, t.name as invoice_no,  
+				'Supplier' as party_type, t.party as party, (select supplier_tpn_no from `tabSupplier` where name = t.party) as tpn, 
+				'' as business_activity, (select cost_center from tabBranch where name=t.branch) as cost_center,
+				t.tds_taxable_amount as bill_amount, 
+				t.tds_amount,
+				t.tds_account, tre.tds_remittance, tre.tds_receipt_update,'' as bill_no, t.posting_date,
+				(case when tre.tds_receipt_update is not null then 'Paid' else 'Unpaid' end) remittance_status
+			from `tabTechnical Sanction Bill` t
+				left join `tabSupplier` s on s.name = t.supplier
+				left join `tabTDS Receipt Entry` tre on tre.invoice_no = t.name 
+			where t.posting_date between '{from_date}' and '{to_date}'
+			{accounts_cond}
+			and t.docstatus = 1 
+			{existing_cond}
+			{cond}""".format(accounts_cond = accounts_cond_tsb, cond = cond, existing_cond = existing_cond,\
+				from_date=from_date, to_date=to_date), as_dict=True)
+
+	entries = pi_entries + pe_entries + je_entries + tsb_entries
 	entries = sorted(entries, key=lambda d: (d['posting_date'], d['invoice_no']))
 	return entries
 
