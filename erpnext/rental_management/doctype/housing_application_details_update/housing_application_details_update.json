@@ -1,0 +1,199 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-12-14 10:47:32.805255",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "personal_details_tab",
+  "application_date_and_time",
+  "cid",
+  "applicant_name",
+  "gender",
+  "amended_from",
+  "column_break_7",
+  "marital_status",
+  "spouse_information_section",
+  "spouse_citizen_id",
+  "spouse_name",
+  "spouse_date_of_birth",
+  "spouse_employment_type",
+  "column_break_15",
+  "spouse_dzongkhag",
+  "spouse_gewog",
+  "spouse_village",
+  "spouse_service_detail_section",
+  "spouse_designation",
+  "spouse_grade",
+  "spouse_ministryagency",
+  "spouse_name_of_agency",
+  "spouse_department",
+  "spouse_gross_salary",
+  "spouse_employee_id"
+ ],
+ "fields": [
+  {
+   "fieldname": "personal_details_tab",
+   "fieldtype": "Tab Break",
+   "label": "Personal Details"
+  },
+  {
+   "fieldname": "application_date_and_time",
+   "fieldtype": "Datetime",
+   "label": "Application Date and Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cid",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Citizen ID No",
+   "reqd": 1
+  },
+  {
+   "fieldname": "applicant_name",
+   "fieldtype": "Data",
+   "label": "Applicant Name"
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Select",
+   "label": "Gender",
+   "options": "Male\nFemale"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Housing Application Details Update",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "marital_status",
+   "fieldtype": "Select",
+   "label": "Marital Status",
+   "options": "Single\nMarried\nDivorced\nSeparated\nWidowed"
+  },
+  {
+   "fieldname": "spouse_information_section",
+   "fieldtype": "Section Break",
+   "label": "Spouse Information"
+  },
+  {
+   "fieldname": "spouse_citizen_id",
+   "fieldtype": "Data",
+   "label": "Spouse Citizen ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "spouse_name",
+   "fieldtype": "Data",
+   "label": "Spouse Name",
+   "read_only_depends_on": "eval:doc.cidd"
+  },
+  {
+   "fieldname": "spouse_date_of_birth",
+   "fieldtype": "Data",
+   "label": "Spouse Date of Birth"
+  },
+  {
+   "fieldname": "spouse_employment_type",
+   "fieldtype": "Select",
+   "label": "Spouse Employment Type",
+   "options": "\nCivil Servant\nCorporate Employee\nPrivate Employee\nSelf Employee\nHouse Wife\nOthers"
+  },
+  {
+   "fieldname": "column_break_15",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "spouse_dzongkhag",
+   "fieldtype": "Data",
+   "label": "Spouse Dzongkhag"
+  },
+  {
+   "fieldname": "spouse_gewog",
+   "fieldtype": "Data",
+   "label": "Spouse Gewog"
+  },
+  {
+   "fieldname": "spouse_village",
+   "fieldtype": "Data",
+   "label": "Spouse Village"
+  },
+  {
+   "fieldname": "spouse_service_detail_section",
+   "fieldtype": "Section Break",
+   "label": "Spouse Service Detail"
+  },
+  {
+   "fieldname": "spouse_designation",
+   "fieldtype": "Data",
+   "label": "Spouse Designation"
+  },
+  {
+   "fieldname": "spouse_grade",
+   "fieldtype": "Data",
+   "label": "Spouse Grade"
+  },
+  {
+   "fieldname": "spouse_ministryagency",
+   "fieldtype": "Data",
+   "label": "Spouse Ministry/Agency"
+  },
+  {
+   "fieldname": "spouse_name_of_agency",
+   "fieldtype": "Data",
+   "label": "Spouse Name of Agency"
+  },
+  {
+   "fieldname": "spouse_department",
+   "fieldtype": "Data",
+   "label": "Spouse Department"
+  },
+  {
+   "fieldname": "spouse_gross_salary",
+   "fieldtype": "Data",
+   "label": "Spouse Gross Salary"
+  },
+  {
+   "fieldname": "spouse_employee_id",
+   "fieldtype": "Data",
+   "label": "Spouse Employee id"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-12-18 14:29:27.279162",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Housing Application Details Update",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "route": "housing-clerance",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

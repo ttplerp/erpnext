@@ -24,7 +24,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2023-09-29 15:21:36.711738",
+ "modified": "2023-12-14 10:25:43.858353",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "online-housing-application",
@@ -622,7 +622,7 @@
    "max_length": 0,
    "max_value": 0,
    "read_only": 0,
-   "reqd": 0,
+   "reqd": 1,
    "show_in_filter": 0
   },
   {
