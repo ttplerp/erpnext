@@ -20,6 +20,7 @@
   "cidd",
   "tenant_name",
   "mobile_no",
+  "email",
   "maintenance_type",
   "column_break_12",
   "location",
@@ -288,12 +289,17 @@
    "fieldname": "remarks",
    "fieldtype": "Small Text",
    "label": "Remarks"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-12-06 09:47:55.142965",
+ "modified": "2023-12-18 10:24:40.781708",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Maintenance Application Form",
