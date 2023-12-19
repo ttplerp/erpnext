@@ -76,11 +76,11 @@ frappe.ui.form.on('Project Invoice', {
 				frappe.set_route("query-report", "General Ledger");
 			}, __("View"));
 
-            if (self.status != "Paid"){
+            if (frm.doc.payment_status != "Paid"){
                 cur_frm.add_custom_button(__('Pay'), function(doc) {
                     frm.events.make_payment_entry(frm)
                 })
-            }			
+            }				
 		}
 	},
     make_payment_entry:function(frm){

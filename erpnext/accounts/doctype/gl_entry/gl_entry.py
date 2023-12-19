@@ -79,6 +79,7 @@ class GLEntry(Document):
                         self.party,
                         self.against_voucher_type,
                         self.against_voucher,
+                        self.voucher_type,
                     )
 
     def check_mandatory(self):
@@ -348,7 +349,7 @@ def validate_balance_type(account, adv_adj=False):
 
 
 def update_outstanding_amt(
-    account, party_type, party, against_voucher_type, against_voucher, on_cancel=False
+    account, party_type, party, against_voucher_type, against_voucher, voucher_type, on_cancel=False
 ):
     if party_type and party:
         party_condition = " and party_type={0} and party={1}".format(
@@ -384,17 +385,31 @@ def update_outstanding_amt(
     if against_voucher_type == "Purchase Invoice":
         bal = -bal
     elif against_voucher_type == "Journal Entry":
-        against_voucher_amount = flt(
+        if voucher_type and voucher_type == "TDS Remittance":
+            against_voucher_amount = flt(
             frappe.db.sql(
                 """
 			select sum(debit_in_account_currency) - sum(credit_in_account_currency)
 			from `tabGL Entry` where voucher_type = 'Journal Entry' and voucher_no = %s
-			and account = %s and (against_voucher is null or against_voucher='') {0}""".format(
+			and account = %s {0}""".format(
                     party_condition
                 ),
                 (against_voucher, account),
             )[0][0]
-        )
+            )
+            
+        else:    
+            against_voucher_amount = flt(
+                frappe.db.sql(
+                    """
+                select sum(debit_in_account_currency) - sum(credit_in_account_currency)
+                from `tabGL Entry` where voucher_type = 'Journal Entry' and voucher_no = %s
+                and account = %s and (against_voucher is null or against_voucher='') {0}""".format(
+                        party_condition
+                    ),
+                    (against_voucher, account),
+                )[0][0]
+            )
 
         if not against_voucher_amount:
             frappe.throw(

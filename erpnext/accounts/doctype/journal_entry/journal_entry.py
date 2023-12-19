@@ -145,15 +145,15 @@ class JournalEntry(AccountsController):
 		self.update_mr_employee_advance(cancel=self.docstatus == 2)
 		# Update Repair & Service Status
 		if self.reference_type == "Repair And Service Invoice":
-			self.update_repair_and_service_status()
+			self.update_repair_and_service_status(status='Paid')
 
-	def update_repair_and_service_status(self):
+	def update_repair_and_service_status(self, status):
 		if self.reference_doctype:
 			frappe.db.sql("""
 				UPDATE `tabRepair And Service Invoice` ras
-				SET ras.status = "Paid"
-				WHERE ras.name = '{0}'
-			""".format(self.reference_doctype))
+				SET ras.status = '{0}'
+				WHERE ras.name = '{1}'
+			""".format(status,self.reference_doctype))
 
 	def on_cancel(self):
 		from erpnext.accounts.utils import unlink_ref_doc_from_payment_entries
@@ -176,6 +176,8 @@ class JournalEntry(AccountsController):
 		self.update_reference_document(cancel=1)
 		self.update_hire_charge_advance(cancel=self.docstatus == 2)
 		self.update_mr_employee_advance(cancel=self.docstatus == 2)
+		if self.reference_type == "Repair And Service Invoice":
+			self.update_repair_and_service_status(status='Unpaid')
 	
 	def update_hire_charge_advance(self, cancel=False):
 		hire_charge_advance = frappe._dict()
