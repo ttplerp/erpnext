@@ -200,6 +200,8 @@ class POLIssue(StockController):
                 )
         elif self.tanker:
             credit_account = frappe.db.get_value("Equipment Category", frappe.db.get_value("Equipment", self.tanker, "equipment_category"),"pol_receive_account")
+            if not credit_account:
+                frappe.throw("No Account found. Please set POL Receive Account in Equipment Category <strong>{}</strong>".format(frappe.db.get_value("Equipment", self.tanker, "equipment_category")))
         # Posting Journal Entry
         je = frappe.new_doc("Journal Entry")
         je.flags.ignore_permissions = 1
