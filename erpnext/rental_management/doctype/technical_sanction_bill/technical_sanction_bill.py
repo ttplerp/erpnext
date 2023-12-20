@@ -44,7 +44,7 @@ class TechnicalSanctionBill(AccountsController):
 		self.make_gl_entries()
 		self.update_linked_docs()
 		self.update_advance_balance()
-		self.validate_bill_qty()
+		# self.validate_bill_qty()
 	
 	def validate_bill_qty(self):
 		for d in self.get("items"):
@@ -203,7 +203,7 @@ class TechnicalSanctionBill(AccountsController):
 		self.cancel_linked_docs()
 		self.make_gl_entries()
 		self.update_advance_balance()
-		self.validate_bill_qty()
+		# self.validate_bill_qty()
 	
 	def cancel_linked_docs(self): 
 		if self.technical_sanction: 
