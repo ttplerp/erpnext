@@ -103,7 +103,7 @@ class PurchaseReceipt(BuyingController):
 			apply_putaway_rule(self.doctype, self.get("items"), self.company)
 
 	def validate(self):
-		self.validate_posting_time()
+		# self.validate_posting_time()
 		super(PurchaseReceipt, self).validate()
 
 		if self._action == "submit":
