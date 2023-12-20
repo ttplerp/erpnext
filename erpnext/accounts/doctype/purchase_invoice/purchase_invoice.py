@@ -83,7 +83,7 @@ class PurchaseInvoice(BuyingController):
 		if not self.is_opening:
 			self.is_opening = "No"
 
-		self.validate_posting_time()
+		# self.validate_posting_time()
 
 		super(PurchaseInvoice, self).validate()
 
