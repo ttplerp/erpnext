@@ -32,7 +32,7 @@ class MaintenanceApplicationForm(Document):
 		pattern = r'^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$'
 
 		
-		if not re.match(pattern, self.email):
+		if self.email and not re.match(pattern, self.email):
 			frappe.throw("Email Format is not right") 
 	
 	def get_branch_missing(self):
