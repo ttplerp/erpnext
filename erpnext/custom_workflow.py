@@ -579,6 +579,9 @@ class CustomWorkflow:
 		elif self.new_state.lower() == ("Rejected".lower() or "Rejected by CEO".lower()):
 			if self.doc.supervisor != frappe.session.user:
 				frappe.throw("Only {} can Reject this Application".format(self.doc.supervisor_name))
+		elif self.new_state.lower() == ("Rejected By Supervisor".lower()):
+			if self.doc.supervisor != frappe.session.user:
+				frappe.throw("Only {} can Reject this Application".format(self.doc.supervisor_name))
 		else:
 			frappe.throw(_("Invalid Workflow State {}").format(self.doc.workflow_state))
 
