@@ -21,6 +21,10 @@
   "from_date",
   "cb_9",
   "to_date",
+  "sb_employees",
+  "employee_branch",
+  "get_employees",
+  "employees",
   "sb_receipt_details",
   "tds_receipt_number",
   "cb_15",
@@ -215,12 +219,37 @@
    "label": "Company",
    "options": "Company",
    "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.purpose == \"Employee Salary\";",
+   "fieldname": "sb_employees",
+   "fieldtype": "Section Break",
+   "label": "Employees"
+  },
+  {
+   "depends_on": "eval:doc.purpose == \"Employee Salary\";",
+   "fieldname": "employees",
+   "fieldtype": "Table",
+   "label": "Employee Details",
+   "mandatory_depends_on": "eval:doc.purpose == \"Employee Salary\";",
+   "options": "TDS Receipt Update Employees"
+  },
+  {
+   "fieldname": "get_employees",
+   "fieldtype": "Button",
+   "label": "Get Employees"
+  },
+  {
+   "fieldname": "employee_branch",
+   "fieldtype": "Link",
+   "label": "Employee Branch",
+   "options": "Branch"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-10-31 10:53:06.826922",
+ "modified": "2023-12-21 12:38:22.281886",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "TDS Receipt Update",

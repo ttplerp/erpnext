@@ -11,6 +11,8 @@ class TDSReceiptUpdate(Document):
 	def validate(self):
 		self.calculate_total()
 		self.validate_filters()
+		if self.purpose == "Employee Salary":
+			self.validate_duplicate()
 
 	def on_update(self):
 		self.check_duplicate_entries()
@@ -23,13 +25,24 @@ class TDSReceiptUpdate(Document):
 
 	def check_duplicate_entries(self):
 		if self.purpose in ["Employee Salary","PBVA","Bonus"]:
-			filters = {"purpose": self.purpose, "fiscal_year": self.fiscal_year}
-			if self.purpose == "Employee Salary":
-				filters.update({"month": self.month})
+			for emp in self.employees:
+				for t in frappe.db.sql("""select t1.tds_receipt_update, t1.invoice_type, t1.invoice_no 
+						from `tabTDS Receipt Entry` t1
+						where exists(select 1
+							from `tabTDS Receipt Update` t2, `tabTDS Receipt Update Employees` t3
+							where t2.name = t3.parent
+							and t3.employee = '{employee}'
+							and t2.name = t1.tds_receipt_update)
+					""".format(parent=self.name, employee=emp.employee), as_dict=True):
+					frappe.throw(_("Receipt details for employee {}: {]} already updated: via TDS Receipt Update {}")\
+						.format(frappe.get_desk_link("Employee", emp.employee), emp.employee_name, frappe.get_desk_link("TDS Receipt Update", t.tds_receipt_update)))
+			# filters = {"purpose": self.purpose, "fiscal_year": self.fiscal_year}
+			# if self.purpose == "Employee Salary":
+			# 	filters.update({"month": self.month})
 
-			for t in frappe.db.get_all("TDS Receipt Entry", filters, "tds_receipt_update"):
-				frappe.throw(_("Receipt details for <b>{}</b> already updated via {}")\
-					.format(self.purpose, frappe.get_desk_link("TDS Receipt Update", t.tds_receipt_update)))
+			# for t in frappe.db.get_all("TDS Receipt Entry", filters, "tds_receipt_update"):
+			# 	frappe.throw(_("Receipt details for <b>{}</b> already updated via {}")\
+			# 		.format(self.purpose, frappe.get_desk_link("TDS Receipt Update", t.tds_receipt_update)))
 		else:
 			for t in frappe.db.sql("""select t1.tds_receipt_update, t1.invoice_type, t1.invoice_no 
 					from `tabTDS Receipt Entry` t1
@@ -164,8 +177,37 @@ class TDSReceiptUpdate(Document):
 				frappe.throw("<b>Fiscal Year</b> is mandatory")
 			elif self.purpose == "Employee Salary" and not self.month:
 				frappe.throw("<b>Month</b> is mandatory")
+		if self.purpose != "Employee Salary":
+			self.set("employees", [])
+	def validate_duplicate(self):
+		for a in self.employees:
+			exists = frappe.db.sql("""
+                          select td.name from `tabTDS Receipt Update` td, `tabTDS Receipt Update Employees` tde
+                          where tde.parent = td.name and td.month = '{}' and td.fiscal_year = '{}' and tde.employee = '{}' and
+                          td.name != '{}'
+                          """.format(self.month, self.fiscal_year, a.employee, self.name))
+			if exists:
+				frappe.throw("Employee Salary TDS Receipt Update already exists for Employee {}: {}. Existing TDS Receipt Update".format(a.employee, exists[0][0]))
 
 	@frappe.whitelist()
+	def get_employees(self):
+		self.set("employees", [])
+		conditions = ''
+		if self.employee_branch:
+			conditions = f" and e.branch = '{self.employee_branch}'"
+		employees = frappe.db.sql("""
+				select e.name, e.employee_name
+    			from `tabEmployee` e
+				where not exists(select 1 from `tabTDS Receipt Update` tr, `tabTDS Receipt Update Employees` tre where tr.name = tre.parent
+    			and tre.employee = e.employee and tre.parent != '{}' and tr.docstatus = 1
+				and tr.fiscal_year = '{}' and tr.month = '{}'
+       			) {}
+                """.format(self.name, self.fiscal_year, self.month, conditions), as_dict = 1)
+		self.set("employees",[])
+		for a in employees:
+			row = self.append("employees", {})
+			row.employee = a.name
+			row.employee_name = a.employee_name
 	def get_invoices(self):
 		cond = accounts_cond = "" 
 		total_bill_amount = total_tds_amount = 0

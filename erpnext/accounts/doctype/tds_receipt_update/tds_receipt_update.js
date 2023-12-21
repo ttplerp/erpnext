@@ -27,6 +27,15 @@ frappe.ui.form.on('TDS Receipt Update', {
 		frm.refresh_field("items");
 		frm.set_value('total_bill_amount', 0);
 		frm.set_value('total_tax_amount', 0);
+	},
+	get_employees: function(frm){
+		frappe.call({
+			method: "get_employees",
+			doc: frm.doc,
+			callback: function(r){
+				frm.refresh_field("employees");
+			}
+		})
 	}
 });
 
