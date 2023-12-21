@@ -15,12 +15,14 @@
   "bill_date",
   "party_details_section",
   "party_type",
+  "equipment_type",
   "party_branch",
   "is_internal_customer",
   "settle_imprest_advance",
   "imprest_party",
   "column_break_11",
   "party",
+  "equipment_no",
   "party_cost_center",
   "section_break_10",
   "from_date",
@@ -41,6 +43,8 @@
   "tds_amount",
   "column_break_22",
   "tds_account",
+  "advance_detail_section",
+  "advances",
   "section_break_32",
   "deduct_items",
   "section_break_20",
@@ -49,6 +53,7 @@
   "section_break_19",
   "company",
   "status",
+  "hire_charge_entry",
   "amended_from",
   "column_break_32",
   "currency",
@@ -96,6 +101,7 @@
    "label": "Bill Date"
   },
   {
+   "depends_on": "eval: doc.party_type == 'Customer'",
    "fieldname": "section_break_10",
    "fieldtype": "Section Break",
    "label": "Date Details"
@@ -104,13 +110,13 @@
    "fieldname": "from_date",
    "fieldtype": "Date",
    "label": "From Date",
-   "reqd": 1
+   "mandatory_depends_on": "eval: doc.party_type == 'Customer'"
   },
   {
    "fieldname": "to_date",
    "fieldtype": "Date",
    "label": "To Date",
-   "reqd": 1
+   "mandatory_depends_on": "eval: doc.party_type == 'Customer'"
   },
   {
    "fieldname": "column_break_14",
@@ -219,6 +225,7 @@
    "options": "EME Deduction Item"
   },
   {
+   "depends_on": "eval: doc.party_type == 'Customer'",
    "fieldname": "section_break_20",
    "fieldtype": "Section Break",
    "label": "Logbook Details"
@@ -233,8 +240,8 @@
    "allow_bulk_edit": 1,
    "fieldname": "items",
    "fieldtype": "Table",
-   "options": "EME Invoice Item",
-   "reqd": 1
+   "mandatory_depends_on": "eval: doc.party_type == 'Customer'",
+   "options": "EME Invoice Item"
   },
   {
    "fieldname": "section_break_19",
@@ -343,6 +350,7 @@
    "default": "0",
    "fieldname": "settle_imprest_advance",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Settle Imprest Advance Account"
   },
   {
@@ -351,11 +359,38 @@
    "fieldtype": "Link",
    "label": "Imprest Party",
    "options": "Employee"
+  },
+  {
+   "fieldname": "hire_charge_entry",
+   "fieldtype": "Link",
+   "label": "Hire Charge Entry",
+   "options": "Hire Charge Entry"
+  },
+  {
+   "fieldname": "equipment_type",
+   "fieldtype": "Select",
+   "label": "Equipment Type",
+   "options": "Vehicle\nMachine"
+  },
+  {
+   "fieldname": "equipment_no",
+   "fieldtype": "Data",
+   "label": "Equipment No"
+  },
+  {
+   "fieldname": "advance_detail_section",
+   "fieldtype": "Section Break",
+   "label": "Advance Detail"
+  },
+  {
+   "fieldname": "advances",
+   "fieldtype": "Table",
+   "options": "Hire Charge Invoice Advance"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-08-04 12:12:05.542067",
+ "modified": "2023-11-29 12:52:03.947949",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Hire Charge Invoice",

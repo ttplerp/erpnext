@@ -14,8 +14,8 @@ frappe.ui.form.on('Hire Charge Invoice', {
 				};
 				frappe.set_route("query-report", "General Ledger");
 			}, __("View"));
-
-			if (!frm.doc.post_journal_entry && frm.doc.is_internal_customer == 0){
+			
+			if (!frm.doc.post_journal_entry && frm.doc.is_internal_customer == 0 && frm.doc.party_type =="Customer"){
 				cur_frm.add_custom_button(__('Make Journal Entry'), function(doc) {
 					frm.events.post_journal_entry(frm)
 				},__("Create"))
@@ -34,14 +34,16 @@ frappe.ui.form.on('Hire Charge Invoice', {
 			};
 			frappe.set_route("query-report", "Hire Charge Invoice Details");
 			}, __("View"));
-
-		frm.add_custom_button("Make Arrear Invoice", function() {
-			frappe.model.open_mapped_doc({
-				method: "erpnext.accounts.doctype.hire_charge_invoice.hire_charge_invoice.make_arrear_payment",
-				frm: cur_frm
-			});
-		},__("Create"));
-		cur_frm.page.set_inner_btn_group_as_primary(__('Create'));
+		
+		if (frm.doc.party_type =="Customer") {
+			frm.add_custom_button("Make Arrear Invoice", function() {
+				frappe.model.open_mapped_doc({
+					method: "erpnext.accounts.doctype.hire_charge_invoice.hire_charge_invoice.make_arrear_payment",
+					frm: cur_frm
+				});
+			},__("Create"));
+			cur_frm.page.set_inner_btn_group_as_primary(__('Create'));
+		}
 		cur_frm.page.set_inner_btn_group_as_primary(__('View'));
 	},
 	settle_imprest_advance: function(frm){

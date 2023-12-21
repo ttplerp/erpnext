@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"_uoHUuSpfl\",\"type\":\"header\",\"data\":{\"text\":\"<span style=\\\"font-size: 18px;\\\"><b>Quick Access</b></span>\",\"col\":12}},{\"id\":\"OCHolOE025\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Equipment\",\"col\":3}},{\"id\":\"YrwXcTE55z\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"POL Expense\",\"col\":3}},{\"id\":\"W98Ry68FWU\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"POL Receive\",\"col\":3}},{\"id\":\"7nCb4cVlcF\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"POL Issue\",\"col\":3}},{\"id\":\"W0uHMSdYXJ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Repair &amp; Services\",\"col\":3}},{\"id\":\"gqvvrXHEGA\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"R &amp; Service Invoice\",\"col\":3}},{\"id\":\"AgU4-7ge9T\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Equipment Modifier Tool\",\"col\":3}},{\"id\":\"ATt4ebeReD\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"id\":\"t_D7RF9DzK\",\"type\":\"card\",\"data\":{\"card_name\":\"Master Data\",\"col\":4}},{\"id\":\"HXiGVf_yAr\",\"type\":\"card\",\"data\":{\"card_name\":\"POL Transaction\",\"col\":4}},{\"id\":\"q1gomBwp1k\",\"type\":\"card\",\"data\":{\"card_name\":\"Repair and Services\",\"col\":4}},{\"id\":\"ybom8SloNa\",\"type\":\"card\",\"data\":{\"card_name\":\"Fleet Transaction\",\"col\":4}},{\"id\":\"uFXp1F_58G\",\"type\":\"card\",\"data\":{\"card_name\":\"Fleet Report\",\"col\":4}},{\"id\":\"aAjJG6eJb5\",\"type\":\"card\",\"data\":{\"card_name\":\"Hire Transaction\",\"col\":4}}]",
+ "content": "[{\"id\":\"LdURVnYfhl\",\"type\":\"header\",\"data\":{\"text\":\"<span style=\\\"font-size: 18px;\\\"><b>Quick Access</b></span>\",\"col\":12}},{\"id\":\"DZt4vXkAk5\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Equipment\",\"col\":3}},{\"id\":\"YdTpOc89lJ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"POL Expense\",\"col\":3}},{\"id\":\"P9743gfgLB\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"POL Receive\",\"col\":3}},{\"id\":\"7sgsv70s8a\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"POL Issue\",\"col\":3}},{\"id\":\"MA_ghtTnd1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Repair &amp; Services\",\"col\":3}},{\"id\":\"rad8qaKikQ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"R &amp; Service Invoice\",\"col\":3}},{\"id\":\"EY6hjDhMSA\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Equipment Modifier Tool\",\"col\":3}},{\"id\":\"TFWix6bxvt\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"id\":\"Elt_nT-pA9\",\"type\":\"card\",\"data\":{\"card_name\":\"Master Data\",\"col\":4}},{\"id\":\"gn00YHDQjc\",\"type\":\"card\",\"data\":{\"card_name\":\"POL Transaction\",\"col\":4}},{\"id\":\"vURHkzEOcI\",\"type\":\"card\",\"data\":{\"card_name\":\"Repair and Services\",\"col\":4}},{\"id\":\"jxnxzULEld\",\"type\":\"card\",\"data\":{\"card_name\":\"Fleet Transaction\",\"col\":4}},{\"id\":\"3GlLUXFFq5\",\"type\":\"card\",\"data\":{\"card_name\":\"Fleet Report\",\"col\":4}},{\"id\":\"cnJzyHlO6n\",\"type\":\"card\",\"data\":{\"card_name\":\"Hire Transaction\",\"col\":4}}]",
  "creation": "2023-03-14 12:40:35.110706",
  "custom_blocks": [],
  "docstatus": 0,
@@ -483,44 +483,6 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Hire Transaction",
-   "link_count": 3,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Equipment Hiring Form",
-   "link_count": 0,
-   "link_to": "Equipment Hiring Form",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Logbook",
-   "link_count": 0,
-   "link_to": "Logbook",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Hire Charge",
-   "link_count": 0,
-   "link_to": "Hire Charge Invoice",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Repair and Services",
    "link_count": 2,
    "onboard": 0,
@@ -577,8 +539,66 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "Hire Transaction",
+   "link_count": 5,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Equipment Hiring Form",
+   "link_count": 0,
+   "link_to": "Equipment Hiring Form",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Logbook",
+   "link_count": 0,
+   "link_to": "Logbook",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Hire Charge",
+   "link_count": 0,
+   "link_to": "Hire Charge Invoice",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Hire Charge Entry",
+   "link_count": 0,
+   "link_to": "Hire Charge Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Hire Charge Advance",
+   "link_count": 0,
+   "link_to": "Hire Charge Advance",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "Fleet Report",
-   "link_count": 8,
+   "link_count": 6,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -624,16 +644,6 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 1,
-   "label": "Fleet Engagement Report",
-   "link_count": 0,
-   "link_to": "Fleet Engagement Report",
-   "link_type": "Report",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
    "is_query_report": 0,
    "label": "Vehicle Expense Report",
    "link_count": 0,
@@ -651,19 +661,9 @@
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Vehicle Request Report",
-   "link_count": 0,
-   "link_to": "Vehicle Request Report",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
   }
  ],
- "modified": "2023-08-31 12:37:16.806642",
+ "modified": "2023-12-21 15:03:11.944883",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Fleet Management",

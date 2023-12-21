@@ -1,0 +1,190 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "HE.YYYY.MM.####",
+ "creation": "2023-11-27 14:30:13.857331",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "branch",
+  "cost_center",
+  "column_break_zi5tl",
+  "posting_date",
+  "party_details_section",
+  "items",
+  "settle_imprest_advance_account",
+  "imprest_party",
+  "advances_section",
+  "get_advance",
+  "advances",
+  "section_break_xgioy",
+  "deductions",
+  "section_break_qwpgy",
+  "hire_charge_invoice_created",
+  "column_break_rc5sl",
+  "hire_charge_invoice_submitted",
+  "section_break_1dttw",
+  "company",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Hire Charge Entry",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_zi5tl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "branch.cost_center",
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "party_details_section",
+   "fieldtype": "Section Break",
+   "label": "Party Details"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Hire Charge Details",
+   "options": "Hire Charge Entry Item"
+  },
+  {
+   "fieldname": "section_break_qwpgy",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "hire_charge_invoice_created",
+   "fieldtype": "Check",
+   "label": "Hire Charge Invoice Created",
+   "no_copy": 1
+  },
+  {
+   "fieldname": "column_break_rc5sl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "hire_charge_invoice_submitted",
+   "fieldtype": "Check",
+   "label": "Hire Charge Invoice Submitted",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "settle_imprest_advance_account",
+   "fieldtype": "Check",
+   "label": " Settle Imprest Advance Account"
+  },
+  {
+   "depends_on": "eval:doc.settle_imprest_advance_account",
+   "fieldname": "imprest_party",
+   "fieldtype": "Link",
+   "label": "Imprest Party",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "deductions",
+   "fieldtype": "Table",
+   "label": "Deductions",
+   "options": "Hire Charge Deduction Item"
+  },
+  {
+   "fieldname": "section_break_xgioy",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_1dttw",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "advances_section",
+   "fieldtype": "Section Break",
+   "label": "Advances"
+  },
+  {
+   "fieldname": "get_advance",
+   "fieldtype": "Button",
+   "label": "Get Advance"
+  },
+  {
+   "fieldname": "advances",
+   "fieldtype": "Table",
+   "options": "Hire Charge Entry Advance"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-11-29 12:59:20.037387",
+ "modified_by": "Administrator",
+ "module": "Fleet Management",
+ "name": "Hire Charge Entry",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Fleet User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
