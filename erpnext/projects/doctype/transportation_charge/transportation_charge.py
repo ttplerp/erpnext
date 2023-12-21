@@ -162,8 +162,6 @@ class TransportationCharge(AccountsController):
                 "accounts",
                 {
                     "account": default_bank_account,
-                    "party_type": self.party_type,
-                    "party": self.party,
                     "credit_in_account_currency": total_amount,
                     "credit": total_amount,
                     "cost_center": self.cost_center,
