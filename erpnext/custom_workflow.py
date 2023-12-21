@@ -1077,6 +1077,17 @@ class CustomWorkflow:
             vars(self.doc)[self.doc_approver[1]] = (
                 officiating[1] if officiating else self.fleet_mto[1]
             )
+
+        elif approver_type == "Mechanical Manager":
+            officiating = get_officiating_employee(self.mechanical_cs[3])
+            if officiating:
+                officiating = frappe.db.get_value("Employee", officiating[0].officiate, self.field_list)
+            vars(self.doc)[self.doc_approver[0]] = (
+                officiating[0] if officiating else self.mechanical_cs[0]
+            )
+            vars(self.doc)[self.doc_approver[1]] = (
+                officiating[1] if officiating else self.mechanical_cs[1]
+            )
             # vars(self.doc)[self.doc_approver[2]] = officiating[2] if officiating else self.fleet_mto[2]
 
         elif approver_type == "Project Manager":
@@ -2811,14 +2822,16 @@ class CustomWorkflow:
             self.set_approver("QHSE GM")
 
         elif self.new_state.lower() in ("Waiting Mechanical GM Approval".lower()):
-            if (
-                self.doc.approver != frappe.session.user
-                and self.new_state.lower() != self.old_state.lower()
-            ):
+            if (self.doc.approver != frappe.session.user):
                 frappe.throw(
                     "Only the {0} can Forward this material request ".format(self.doc.approver)
                 )
             self.set_approver("Fleet Manager")
+
+        elif self.new_state.lower() in ("Waiting Mechanical Central Store Approval".lower()):
+            if (self.doc.approver != frappe.session.user):
+                frappe.throw("Only the {0} can Forward/Approve this material request ".format(self.doc.approver))
+            self.set_approver("Mechanical Manager")
 
         elif self.new_state.lower() in ("Waiting HR Approval".lower()):
             if self.doc.approver != frappe.session.user:
