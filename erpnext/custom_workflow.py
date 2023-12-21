@@ -668,11 +668,24 @@ class CustomWorkflow:
                 self.field_list,
             )
 
-        if (
-            self.doc.doctype == "Employee Advance Settlement"
-            or self.doc.doctype == "POL Receive"
-            or self.doc.doctype == "Transportation Charge"
-        ):
+        if (self.doc.doctype == "Employee Advance Settlement"):
+            self.data = frappe.db.sql("""
+                                    select supervisor from `tabSupervisor And Approver Mapper` sam,
+                                    `tabSupervisor Item` si where si.parent = sam.name and si.branch = '{}' and sam.employee = '{}'
+                                  """.format(self.doc.expense_branch, self.doc.employee))
+            if self.data:
+                self.supervisor = self.data[0][0]
+                self.expense_approver = frappe.db.get_value("Employee", self.supervisor, self.field_list) 
+            else:
+                self.expense_approver = frappe.db.get_value("Employee", frappe.db.get_value("Employee", self.doc.employee, "reports_to"), self.field_list)
+
+
+            self.imprest_approver = frappe.db.get_value("Employee", {"user_id": frappe.db.get_value("Branch", {"name": self.doc.expense_branch}, "imprest_approver")}, self.field_list)
+            if not self.imprest_approver:
+                frappe.throw("Imprest Approver not set for the branch {}.".format(self.doc.expense_branch))
+
+
+        if (self.doc.doctype == "POL Receive" or self.doc.doctype == "Transportation Charge"):
             self.expense = frappe.db.get_value(
                 "Employee", {"user_id": self.doc.owner}, "expense_approver"
             )
@@ -685,22 +698,6 @@ class CustomWorkflow:
                 {"user_id": self.expense},
                 self.field_list,
             )
-            if (
-                self.doc.doctype == "Employee Advance Settlement"
-                and self.doc.advance_type == "Project Imprest"
-            ):
-                branch = self.doc.items[0].branch
-                frappe.msgprint(str(branch))
-                branch_supervisor = frappe.db.get_value("Branch", branch, "branch_supervisor")
-                if not branch_supervisor:
-                    frappe.throw(
-                        "Branch Supervisor not set for the branch {}.".format(self.branch)
-                    )
-                self.expense_approver = frappe.db.get_value(
-                    "Employee",
-                    {"user_id": branch_supervisor},
-                    self.field_list,
-                )
 
             if not self.expense_approver:
                 frappe.throw(
@@ -2640,12 +2637,12 @@ class CustomWorkflow:
                 frappe.throw("Only {} can Cancel this request".format(self.doc.approver_name))
 
     def employee_advance_settlement(self):
-        # Employee [Apply] -> Waiting Supervisor Approver - [Forward] -> [Approve] - [Waiting Approver]
-        # Account user                      Supervisor                       Head off. Account officer
+        # Employee-[Apply] --> Waiting Supervisor Approver-[Forward] --> Waiting Approveral-[Approve] 
         if self.new_state.lower() in ("Waiting Supervisor Approval".lower(),):
             if self.doc.owner != frappe.session.user:
                 frappe.throw("Only {} can Apply this request".format(self.doc.owner))
             self.set_approver("Supervisor")
+
         elif self.new_state.lower() == "Waiting Approval".lower():
             if self.old_state.lower() != "Draft".lower():
                 if self.doc.approver != frappe.session.user:
@@ -2654,6 +2651,7 @@ class CustomWorkflow:
                 if self.doc.owner != frappe.session.user:
                     frappe.throw("Only {} can Apply this request".format(self.doc.owner))
             self.set_approver("Imprest Approver")
+
         elif self.new_state.lower() == "Approved".lower():
             if self.doc.approver != frappe.session.user:
                 frappe.throw("Only {} can Approve this request".format(self.doc.approver_name))
@@ -2726,24 +2724,17 @@ class CustomWorkflow:
                 )
 
     def repair_services(self):
-        """1. Maintenance User -> [Apply] -> Waiting Supervisor -> [Forward] -> Waiting Approval
-        Maintenance User - Fleet Verifier - Accounts Manager
+        """
+        1. Maintenance User - Mechnical Head
         """
         if self.new_state.lower() in ("Draft".lower()):
             if self.doc.owner != frappe.session.user:
                 frappe.throw("Only the document owner can Apply this rapair and service")
-            self.set_approver("Supervisor")
+            self.set_approver("Fleet Manager")
 
-        elif self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
+        elif self.new_state.lower() in ("Waiting Mechanical GM Approval".lower()):
             if self.doc.owner != frappe.session.user and self.new_state != self.old_state:
                 frappe.throw("Only the document owner can Apply this rapair and service")
-            self.set_approver("Supervisor")
-
-        elif self.new_state.lower() in ("Waiting Approval".lower()):
-            if self.doc.approver != frappe.session.user:
-                frappe.throw(
-                    "Only {} can Forward this rapair and service".format(self.doc.approver_name)
-                )
             self.set_approver("Fleet Manager")
 
         elif self.new_state.lower() in ("Approved".lower()):
