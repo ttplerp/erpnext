@@ -240,11 +240,7 @@ class RepairAndServiceInvoice(AccountsController):
                 "add_deduct_tax": "Deduct" if self.tds_amount > 0 else "",
                 "tax_account": self.tds_account,
                 "rate": (
-                    "2"
-                    if self.tds_percent == "2"
-                    else "3"
-                    if self.tds_percent == "3"
-                    else "5"
+                    "2" if self.tds_percent == "2" else "3" if self.tds_percent == "3" else "5"
                 ),
                 "tax_amount_in_account_currency": self.tds_amount,
                 "tax_amount": self.tds_amount,
@@ -256,9 +252,11 @@ class RepairAndServiceInvoice(AccountsController):
                 "account": bank_account
                 if self.settle_imprest_advance == 0
                 else imprest_advance_account,
-                "party_type": "Employee" if self.settle_imprest_advance == 1 else self.party_type,
-                "party": self.imprest_party if self.settle_imprest_advance == 1 else self.party,
-                "credit_in_account_currency":  self.net_amount if self.tds_amount > 0 else self.outstanding_amount,
+                "party_type": "Employee" if self.settle_imprest_advance == 1 else None,
+                "party": self.imprest_party if self.settle_imprest_advance == 1 else None,
+                "credit_in_account_currency": self.net_amount
+                if self.tds_amount > 0
+                else self.outstanding_amount,
                 "credit": self.net_amount if self.tds_amount > 0 else self.outstanding_amount,
                 "cost_center": self.cost_center,
             },
@@ -272,8 +270,6 @@ class RepairAndServiceInvoice(AccountsController):
                 frappe.get_desk_link("Journal Entry", je.name)
             )
         )
-
- 
 
 
 # permission query
