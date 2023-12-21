@@ -127,7 +127,7 @@ class TransportationCharge(AccountsController):
                 if self.settle_imprest_advance == 1
                 else "Bank Payment Voucher",
                 "title": "Transportation charge",
-                "user_remark": "Note: Transportation charge - against " + str(self.party),
+                "user_remark": "Note: Transportation charge - against " + str(self.cost_center),
                 "posting_date": self.posting_date,
                 "company": self.company,
                 "total_amount_in_words": money_in_words(total_amount),
