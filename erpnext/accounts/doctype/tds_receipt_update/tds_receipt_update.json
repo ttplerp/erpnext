@@ -43,7 +43,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Purpose",
-   "options": "\nOther Invoice\nEmployee Salary\nLeave Encashment\nPBVA\nBonus",
+   "options": "\nOther Invoice\nEmployee Salary\nSalary Arrear\nLeave Encashment\nPBVA\nBonus",
    "reqd": 1
   },
   {
@@ -72,7 +72,7 @@
    "read_only": 1
   },
   {
-   "depends_on": "eval:in_list([\"Employee Salary\",\"Bonus\",\"PBVA\"], doc.purpose)",
+   "depends_on": "eval:in_list([\"Employee Salary\",\"Bonus\",\"PBVA\", \"Salary Arrear\"], doc.purpose)",
    "fieldname": "fiscal_year",
    "fieldtype": "Link",
    "label": "Fiscal Year",
@@ -91,7 +91,7 @@
    "options": "Region"
   },
   {
-   "depends_on": "eval:doc.purpose == \"Employee Salary\"",
+   "depends_on": "eval:doc.purpose == \"Employee Salary\" || doc.purpose == \"Salary Arrear\"",
    "fieldname": "month",
    "fieldtype": "Select",
    "label": "Month",
@@ -218,7 +218,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-09 14:15:19.568267",
+ "modified": "2023-12-22 11:50:13.913335",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "TDS Receipt Update",
