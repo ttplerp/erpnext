@@ -20,7 +20,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2023-12-13 16:25:09.718234",
+ "modified": "2023-12-21 12:31:31.801695",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "housing-clearance",
@@ -37,10 +37,23 @@
  "web_form_fields": [
   {
    "allow_read_on_all_link_options": 0,
+   "fieldname": "applicant_type",
+   "fieldtype": "Select",
+   "hidden": 0,
+   "label": "Applicant Type",
+   "max_length": 0,
+   "max_value": 0,
+   "options": "\nBhutanese\nNon-Bhutanese\nOrganisation",
+   "read_only": 0,
+   "reqd": 1,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
    "fieldname": "cid",
    "fieldtype": "Data",
    "hidden": 0,
-   "label": "Citizen ID No",
+   "label": "CID No/Work Permit No",
    "max_length": 0,
    "max_value": 0,
    "read_only": 0,
@@ -94,6 +107,18 @@
    "max_length": 0,
    "max_value": 0,
    "options": "Email",
+   "read_only": 0,
+   "reqd": 1,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "phone_no",
+   "fieldtype": "Data",
+   "hidden": 0,
+   "label": "Phone No",
+   "max_length": 0,
+   "max_value": 0,
    "read_only": 0,
    "reqd": 1,
    "show_in_filter": 0

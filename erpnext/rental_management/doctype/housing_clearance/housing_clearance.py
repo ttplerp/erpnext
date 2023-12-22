@@ -42,24 +42,44 @@ class HousingClearance(Document):
 		return num_day
 
 	def update_detail(self): # updates the  clearance details
-		if len(str(self.cid)) == 11:
-			if self.cid:
-				if frappe.db.exists("Tenant Information", {"tenant_cid":self.cid}):
-					tenant_id = frappe.db.sql("""select name 
-												from `tabTenant Information`
-												where tenant_cid='{}'
-												order by allocated_date desc
-												limit 1
-											""".format(self.cid))[0][0]
-					self.is_tenant = 1
-					self.tenant = tenant_id
-				else:
-					self.application_status = "Approved"
-					self.is_tenant = 0
-					self.docstatus = 1
-					
+		if self.applicant_type=="Bhutanese":
+			# frappe.throw(self.applicant_type)
+			if len(str(self.cid)) == 11:
+				if self.cid:
+					if frappe.db.exists("Tenant Information", {"tenant_cid":self.cid}):
+						tenant_id = frappe.db.sql("""select name 
+													from `tabTenant Information`
+													where tenant_cid='{}'
+													order by allocated_date desc
+													limit 1
+												""".format(self.cid))[0][0]
+						self.is_tenant = 1
+						self.tenant = tenant_id
+					else:
+						self.application_status = "Approved"
+						self.is_tenant = 0
+						self.docstatus = 1
+						
+			else :
+				frappe.throw("Invalid Length of Cid")
 		else:
-			frappe.throw("Invalid Length of Cid")
+			if self.cid:
+					if frappe.db.exists("Tenant Information", {"tenant_cid":self.cid}):
+						tenant_id = frappe.db.sql("""select name 
+													from `tabTenant Information`
+													where tenant_cid='{}'
+													order by allocated_date desc
+													limit 1
+												""".format(self.cid))[0][0]
+						self.is_tenant = 1
+						self.tenant = tenant_id
+					else:
+						self.application_status = "Approved"
+						self.is_tenant = 0
+						self.docstatus = 1 
+	
+	
+
 	def on_submit(self):
 		
 		if self.application_status == "Pending":

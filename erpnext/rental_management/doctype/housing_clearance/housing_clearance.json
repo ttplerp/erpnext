@@ -10,7 +10,6 @@
   "cid",
   "application_name",
   "purpose",
-  "email",
   "column_break_3",
   "application_date",
   "application_status",
@@ -35,7 +34,10 @@
   "initial_rent_amount",
   "amended_from",
   "remarks_section",
-  "remarks"
+  "remarks",
+  "applicant_type",
+  "phone_no",
+  "email"
  ],
  "fields": [
   {
@@ -197,14 +199,6 @@
    "read_only": 1
   },
   {
-   "description": "Email is mandatory as the housing clearance will be send here",
-   "fieldname": "email",
-   "fieldtype": "Data",
-   "label": "Email",
-   "options": "Email",
-   "reqd": 1
-  },
-  {
    "fieldname": "application_status",
    "fieldtype": "Select",
    "in_list_view": 1,
@@ -230,12 +224,30 @@
    "fieldname": "remarks_section",
    "fieldtype": "Section Break",
    "label": "Remarks"
+  },
+  {
+   "fieldname": "applicant_type",
+   "fieldtype": "Select",
+   "label": "Applicant Type",
+   "options": "\nBhutanese\nNon-Bhutanese\nOrganisation",
+   "reqd": 1
+  },
+  {
+   "fieldname": "phone_no",
+   "fieldtype": "Data",
+   "label": "Phone No"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-12-14 15:03:47.710040",
+ "modified": "2023-12-21 12:30:52.606941",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Housing Clearance",
