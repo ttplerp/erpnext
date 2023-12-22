@@ -320,7 +320,8 @@
    "fieldname": "previous_km",
    "fieldtype": "Float",
    "label": "Previous KM",
-   "mandatory_depends_on": "eval:doc.direct_consumption && !doc.hired_equipment"
+   "no_copy": 1,
+   "read_only": 1
   },
   {
    "depends_on": "eval:!doc.hired_equipment",
@@ -457,7 +458,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-11-20 12:44:36.504490",
+ "modified": "2023-12-22 12:25:55.830549",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Receive",

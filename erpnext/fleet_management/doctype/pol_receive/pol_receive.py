@@ -317,25 +317,16 @@ class POLReceive(StockController):
             doc.adjusted_amount = flt(doc.adjusted_amount) + flt(item.allocated_amount)
             doc.save(ignore_permissions=True)
 
-    def calculate_km_diff(self):
-        if cint(self.hired_equipment) == 1:
-            return
-        if cint(self.direct_consumption) == 0:
-            return
-        if not self.uom:
-            self.uom = frappe.db.get_value("Equipment", self.equipment, "reading_uom")
-        if not self.uom:
-            self.uom = frappe.db.get_value(
-                "Equipment Type", self.equipment_type, "reading_uom"
-            )
+    @frappe.whitelist()
+    def get_previous_km_reading(self):
         previous_km_reading = frappe.db.sql(
             """
 						select cur_km_reading from `tabPOL Receive` where docstatus = 1 
-						and equipment = '{}' and uom = '{}' and posting_date < '{}'
+						and equipment = '{}' and uom = '{}'
 						order by posting_date desc, posting_time desc
 						limit 1
 						""".format(
-                self.equipment, self.uom, self.posting_date
+                self.equipment, self.uom
             )
         )
         previous_km_reading_pol_issue = frappe.db.sql(
@@ -363,9 +354,23 @@ class POLReceive(StockController):
             )
         else:
             pv_km = previous_km_reading[0][0]
+        self.previous_km = pv_km
+        return pv_km
+
+    def calculate_km_diff(self):
+        if cint(self.hired_equipment) == 1:
+            return
+        if cint(self.direct_consumption) == 0:
+            return
+        if not self.uom:
+            self.uom = frappe.db.get_value("Equipment", self.equipment, "reading_uom")
+        if not self.uom:
+            self.uom = frappe.db.get_value(
+                "Equipment Type", self.equipment_type, "reading_uom"
+            )
         
+        pv_km = self.get_previous_km_reading()
         # Commentted by Dawa Tshering on 20/11/2023
-        # self.previous_km = pv_km
         # if flt(pv_km) >= flt(self.cur_km_reading):
         #     frappe.throw(
         #         "Current KM/Hr Reading cannot be less than Previous KM/Hr Reading({}) for Equipment Number <b>{}</b>".format(
@@ -379,13 +384,13 @@ class POLReceive(StockController):
         #     self.mileage = flt(self.km_difference) / self.qty
 
         # Commentted by Dawa Tshering on 20/11/2023
-        if flt(self.previous_km) >= flt(self.cur_km_reading):
+        if flt(pv_km) >= flt(self.cur_km_reading):
             frappe.throw(
                 "Current KM/Hr Reading cannot be less than Previous KM/Hr Reading({}) for Equipment Number <b>{}</b>".format(
-                    self.previous_km, self.equipment
+                    pv_km, self.equipment
                 )
             )
-        self.km_difference = flt(self.cur_km_reading) - flt(self.previous_km)
+        self.km_difference = flt(self.cur_km_reading) - flt(self.pv_km)
         if self.uom == "Hour":
             self.mileage = self.qty / flt(self.km_difference)
         else:

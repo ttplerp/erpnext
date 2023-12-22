@@ -82,6 +82,7 @@ frappe.ui.form.on('POL Receive', {
 				}
 			}
 		})
+		get_previous_km_reading(frm);
 	},
 	reset_items:function(frm){
 		cur_frm.clear_table("items");
@@ -128,6 +129,17 @@ var set_equipment_filter=function(frm){
 			};
 		});
 	}
+}
+
+var get_previous_km_reading = (frm) => {
+	frappe.call({
+		method: "get_previous_km_reading",
+		doc: frm.doc,
+		callback: function (r) {
+			frm.set_value("previous_km", r.message);
+			frm.refresh_field("previous_km");
+		}
+	})
 }
 
 var refresh_html = function(frm){
