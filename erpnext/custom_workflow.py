@@ -2787,10 +2787,10 @@ class CustomWorkflow:
         3. Employee -> Supervisor -> HR
 
         # Item group : Property, Plant and Equipment
-        4. Employee -> Supervisor -> Mechnical GM
+        4. Employee -> Mechnical GM -> Mechincal Central Store
 
         # item group : Personal Protective Equipment
-        5.  Employee -> supervisor -> QHSE(Pema Dorji) -> QHSE Head
+        5.  Employee -> supervisor -> QHSE -> QHSE Head
         """
         if self.new_state.lower() in ("Draft".lower()):
             if self.doc.owner != frappe.session.user:
@@ -2822,15 +2822,13 @@ class CustomWorkflow:
             self.set_approver("QHSE GM")
 
         elif self.new_state.lower() in ("Waiting Mechanical GM Approval".lower()):
-            if (self.doc.approver != frappe.session.user):
-                frappe.throw(
-                    "Only the {0} can Forward this material request ".format(self.doc.approver)
-                )
+            if self.doc.owner != frappe.session.user:
+                frappe.throw("Only the document owner can Apply this material request.")
             self.set_approver("Fleet Manager")
 
         elif self.new_state.lower() in ("Waiting Mechanical Central Store Approval".lower()):
             if (self.doc.approver != frappe.session.user):
-                frappe.throw("Only the {0} can Forward/Approve this material request ".format(self.doc.approver))
+                frappe.throw("Only the {0} can Forward this material request ".format(self.doc.approver))
             self.set_approver("Mechanical Manager")
 
         elif self.new_state.lower() in ("Waiting HR Approval".lower()):
