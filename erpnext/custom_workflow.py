@@ -677,7 +677,10 @@ class CustomWorkflow:
                 self.supervisor = self.data[0][0]
                 self.expense_approver = frappe.db.get_value("Employee", self.supervisor, self.field_list) 
             else:
-                self.expense_approver = frappe.db.get_value("Employee", frappe.db.get_value("Employee", self.doc.employee, "expense_approver"), self.field_list)
+                self.expense_approver = frappe.db.get_value("Employee", {"user_id": frappe.db.get_value("Employee", self.doc.employee, "expense_approver")}, self.field_list)
+
+                if not self.expense_approver:
+                    frappe.throw("Please set expense approver for employee <strong>{}</strong>".format(self.doc.employee))
 
 
             self.imprest_approver = frappe.db.get_value("Employee", {"user_id": frappe.db.get_value("Branch", {"name": self.doc.expense_branch}, "imprest_approver")}, self.field_list)
