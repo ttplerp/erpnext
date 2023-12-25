@@ -48,7 +48,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Insurance For",
-   "options": "\nVehicle\nAsset\nGPA"
+   "options": "\nVehicle\nTransit\nAsset\nGPA"
   },
   {
    "fieldname": "cb_1",
@@ -170,11 +170,11 @@
    "label": "Bluebook Fitness and Emission Details"
   },
   {
-   "depends_on": "eval:doc.insurance_for == \"Vehicle\"",
+   "depends_on": "eval:(doc.insurance_for == \"Vehicle\" || doc.insurance_for == \"Transit\")",
    "fieldname": "equipment",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Vehicle",
+   "label": "Equipment",
    "options": "Equipment"
   },
   {
@@ -248,7 +248,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-11-14 15:08:57.709669",
+ "modified": "2023-12-25 15:11:48.640743",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Insurance and Registration",
