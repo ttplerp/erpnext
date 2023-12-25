@@ -390,7 +390,7 @@ class POLReceive(StockController):
                     pv_km, self.equipment
                 )
             )
-        self.km_difference = flt(self.cur_km_reading) - flt(self.pv_km)
+        self.km_difference = flt(self.cur_km_reading) - flt(pv_km)
         if self.uom == "Hour":
             self.mileage = self.qty / flt(self.km_difference)
         else:
