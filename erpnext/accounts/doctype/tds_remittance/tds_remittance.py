@@ -234,8 +234,26 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 			{existing_cond}
 			{cond}""".format(accounts_cond = accounts_cond_tsb, cond = cond, existing_cond = existing_cond,\
 				from_date=from_date, to_date=to_date), as_dict=True)
+	
+	# Project Invoice
+	if not party_type or party_type == "Supplier":
+		pji_entries = frappe.db.sql("""select t.invoice_date as posting_date, 'Project Invoice' as invoice_type,
+				t.name as invoice_no, t.party_type, t.party, 
+				(select supplier_tpn_no from `tabSupplier` where name = t.party) as tpn, 
+				'' as business_activity, t.cost_center, t.tds_taxable_amount as bill_amount, t.tds_amount, 
+				t.tds_account as tax_account, tre.tds_remittance, tre.tds_receipt_update,'' as bill_no, t.invoice_date as posting_date,
+				(case when tre.tds_receipt_update is not null then 'Paid' else 'Unpaid' end) remittance_status
+			from `tabProject Invoice` t
+				left join `tabSupplier` s on s.name = t.party
+				left join `tabTDS Receipt Entry` tre on tre.invoice_no = t.name 
+			where t.invoice_date between '{from_date}' and '{to_date}'
+			{accounts_cond}
+			and t.docstatus = 1 
+			{existing_cond}
+			{cond}""".format(accounts_cond = accounts_cond_tsb, cond = cond, existing_cond = existing_cond,\
+				from_date=from_date, to_date=to_date), as_dict=True)
 
-	entries = pi_entries + pe_entries + je_entries + tsb_entries
+	entries = pi_entries + pe_entries + je_entries + tsb_entries + pji_entries
 	entries = sorted(entries, key=lambda d: (d['posting_date'], d['invoice_no']))
 	return entries
 
