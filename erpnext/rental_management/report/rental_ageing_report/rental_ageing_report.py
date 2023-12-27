@@ -3,7 +3,7 @@
 
 import frappe
 from frappe import _
-from frappe.utils import formatdate, date_diff, today, nowdate, getdate, flt
+from frappe.utils import formatdate, date_diff, today, nowdate, getdate, flt, cint
 
 
 def execute(filters=None):
@@ -45,18 +45,24 @@ def get_data(filters):
 			"balance_os": 0.0
 		})
 
+		flag=0
 		for d in value:
-			count_days = date_diff(nowdate(), getdate(d.posting_date)) + 1
-			if count_days >= 0 and count_days <= 30:
+			count_days = date_diff(getdate(filters.get("date")), getdate(d.posting_date))
+			if cint(count_days) >= 0 and cint(count_days) <= 30:
+				flag=1
 				filter_data['one_month_os'] = flt(filter_data['one_month_os'] + d.outstanding_amount, 2)
-			elif count_days >= 31 and count_days <= 90:
+			elif cint(count_days) >= 31 and cint(count_days) <= 90:
+				flag=1
 				filter_data['two_to_three_month_os'] = flt(filter_data['two_to_three_month_os'] + d.outstanding_amount, 2)
-			elif count_days >= 91 and count_days <= 365:
+			elif cint(count_days) >= 91 and cint(count_days) <= 365:
+				flag=1
 				filter_data['more_than_three_month_os'] = flt(filter_data['more_than_three_month_os'] + d.outstanding_amount, 2)
-			else: #more the 1 year
+			elif cint(count_days) > 365: #more the 1 year
+				flag=1
 				filter_data['above_one_year_os'] = flt(filter_data['above_one_year_os'] + d.outstanding_amount, 2)
-				
-			filter_data['balance_os'] = flt(filter_data['balance_os'] + d.outstanding_amount, 2)
+
+			if flag:	
+				filter_data['balance_os'] = flt(filter_data['balance_os'] + d.outstanding_amount, 2)
 		data.append(filter_data)
 
 	return data

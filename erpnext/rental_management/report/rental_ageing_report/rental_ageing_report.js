@@ -9,7 +9,7 @@ frappe.query_reports["Rental Ageing Report"] = {
 			"label": __("Date"),
 			"fieldtype": "Date",
 			"reqd":1,
-			"read_only": 1,
+			"read_only": 0,
 			"default": frappe.datetime.get_today(),
 		},
 		{
