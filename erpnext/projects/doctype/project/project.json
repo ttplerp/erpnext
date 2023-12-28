@@ -482,15 +482,17 @@
   },
   {
    "fieldname": "party_type",
-   "fieldtype": "Link",
+   "fieldtype": "Select",
    "label": "Party Type",
-   "options": "DocType"
+   "options": "\nSupplier\nCustomer",
+   "reqd": 1
   },
   {
    "fieldname": "party",
    "fieldtype": "Dynamic Link",
    "label": "Party",
-   "options": "party_type"
+   "options": "party_type",
+   "reqd": 1
   },
   {
    "fieldname": "boq_value",
@@ -575,7 +577,7 @@
  "index_web_pages_for_search": 1,
  "links": [],
  "max_attachments": 4,
- "modified": "2023-12-14 12:19:05.828971",
+ "modified": "2023-12-28 12:54:55.908136",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project",

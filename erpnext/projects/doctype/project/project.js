@@ -61,6 +61,10 @@ frappe.ui.form.on("Project", {
 		}
 		frm.trigger("set_custom_buttons");
 	},
+	party_type: function(frm){
+		frm.set_value('party', '')
+		
+	},
 	project_type:function(frm){
 		if (frm.doc.project_type == "External") {
 			frm.set_query("party_type", function() {
