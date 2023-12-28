@@ -57,6 +57,9 @@ frappe.ui.form.on('Hire Charge Entry Item', {
 	amount: function(frm, cdt, cdn) {
 		calculate_tds_amount(frm, cdt, cdn)
 	},
+	tds_percent: function(frm, cdt, cdn) {
+		calculate_tds_amount(frm, cdt, cdn)
+	},
 });
 
 var calculate_tds_amount = function(frm, cdt, cdn) {
