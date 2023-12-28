@@ -344,7 +344,6 @@ class PurchaseReceipt(BuyingController):
         self.make_item_gl_entries(gl_entries, warehouse_account=warehouse_account)
         self.make_tax_gl_entries(gl_entries)
         self.get_asset_gl_entry(gl_entries)
-
         return process_gl_map(gl_entries)
 
     def make_item_gl_entries(self, gl_entries, warehouse_account=None):
@@ -713,6 +712,7 @@ class PurchaseReceipt(BuyingController):
                         remarks=self.remarks or _("Accounting Entry for Stock"),
                         against_account=against_account,
                         item=tax,
+                        party=tax.party,
                     )
 
                     i += 1
@@ -733,6 +733,7 @@ class PurchaseReceipt(BuyingController):
         voucher_detail_no=None,
         item=None,
         posting_date=None,
+        party=None,
     ):
         gl_entry = {
             "account": account,
@@ -741,6 +742,7 @@ class PurchaseReceipt(BuyingController):
             "credit": credit,
             "against": against_account,
             "remarks": remarks,
+            "party": party,
         }
 
         if voucher_detail_no:
@@ -754,6 +756,8 @@ class PurchaseReceipt(BuyingController):
 
         if posting_date:
             gl_entry.update({"posting_date": posting_date})
+        if party:
+            gl_entry.update({"party_type": "Supplier"})
 
         gl_entries.append(self.get_gl_dict(gl_entry, item=item))
 
