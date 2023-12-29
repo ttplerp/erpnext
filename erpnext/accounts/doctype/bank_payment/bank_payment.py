@@ -401,7 +401,7 @@ class BankPayment(Document):
             data = self.get_direct_payment()
         elif self.transaction_type == "Journal Entry":
             data = self.get_journal_entry()
-        elif self.transaction_type == "Leave Travel Concession":
+        elif self.transaction_type == "LTC":
             data = self.get_ltc_payment()
         elif self.transaction_type == "Employee Loan Payment":
             data = self.get_loan_detail()
