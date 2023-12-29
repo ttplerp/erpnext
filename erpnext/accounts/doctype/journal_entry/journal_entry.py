@@ -700,7 +700,8 @@ class JournalEntry(AccountsController):
 					tax_cr = tax_amount if flt(d.debit) else 0
 			self.total_debit = flt(self.total_debit) + flt(d.debit, d.precision("debit")) + flt(tax_dr)
 			self.total_credit = flt(self.total_credit) + flt(d.credit, d.precision("credit")) + flt(tax_cr)
-
+			frappe.errprint(str(d.account)+" "+str(d.debit)+" "+str(d.credit)+" "+str(self.total_debit)+ ' '+str(self.total_credit))
+		# frappe.throw(str(self.total_debit)+ ' '+str(self.total_credit))
 		self.difference = flt(self.total_debit, self.precision("total_debit")) - flt(
 			self.total_credit, self.precision("total_credit")
 		)

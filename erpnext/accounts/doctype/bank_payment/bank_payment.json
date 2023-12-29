@@ -63,7 +63,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Transaction Type",
-   "options": "\nSalary\nSalary Arrear\nJournal Entry\nPayment Entry\nEmployee Loan Payment\nBonus\nImprest Recoup\nLTC\nPBVA\nProcess MR Payment",
+   "options": "\nSalary\nSalary Arrear\nJournal Entry\nPayment Entry\nEmployee Loan Payment\nBonus\nImprest Recoup\nLTC\nPBVA\nProcess MR Payment\nBulk Leave Encashment",
    "reqd": 1
   },
   {
@@ -332,7 +332,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-11-14 16:47:42.173349",
+ "modified": "2023-12-29 19:19:49.832960",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Bank Payment",
