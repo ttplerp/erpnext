@@ -1,19 +1,47 @@
 frappe.ready(function() {
     // bind events here
 
+	
+
+
+
 	//Setting date and time to now
 	var today = frappe.datetime.get_today() + " " + frappe.datetime.now_time();
 	$('[data-fieldname="application_date_and_time"]').val(today);
 
 	//checking if cid exist in Housing application
 
-	frappe.web_form.on('cid',(field,value)=>{
+	let typingTimer;
+	    const timeoutDuration = 2000;
+	    const inputField = document.querySelector('[data-fieldname="cid"]');
+		
 
-		if(value.length==11){
-			checkCidExistence(value)
-		}
+	    inputField.addEventListener('input', function(event) {
+	        clearTimeout(typingTimer);
+			const inputValue = frappe.web_form.get_value('cid');
 
-	});
+	        typingTimer = setTimeout(() => {
+	            //  frappe.throw(inputValue);
+				console.log(inputValue)
+				checkCidExistence(inputValue)
+				
+	        }, timeoutDuration);
+		});
+
+	// frappe.web_form.on('cid',(field,value)=>{
+
+	
+
+
+	// 	if(value.length==11){
+	// 		checkCidExistence(value)
+	// 	}
+
+
+	// });
+
+	
+
 
 	
 
@@ -34,6 +62,15 @@ frappe.ready(function() {
 			});
 
 			frappe.web_form.on('spouse_employment_type',(field,value)=>{
+				
+				frappe.web_form.set_value('spouse_employee_id', '');
+				frappe.web_form.set_value('spouse_ministryagency', '');
+				frappe.web_form.set_value('spouse_designation', '');
+				frappe.web_form.set_value('spouse_name_of_agency', '');
+				frappe.web_form.set_value('spouse_grade', '');
+				frappe.web_form.set_value('spouse_gross_salary', '');
+				
+
 
 				if(value=='Civil Servant'){
 					// frappe.throw(cid)
@@ -41,6 +78,8 @@ frappe.ready(function() {
 				}
 		
 			});
+
+			
 		}
 	});
 })
@@ -60,7 +99,12 @@ function checkCidExistence(cid){
 				getApplicantDetails(cid)
 			}
 			else{
+				frappe.web_form.set_value('cid', '');
+				frappe.web_form.set_value('applicant_name', '');
+				frappe.web_form.set_value('gender', '');
+				frappe.web_form.set_value('marital_status', '');
 				frappe.throw("You haven't applied for housing before")
+
 			}
 			}
 		
@@ -80,10 +124,13 @@ frappe.call({
 		const applicant_name = r.message[0].applicant_name;
 		const gender = r.message[0].gender;
 		const marital_status = r.message[0].marital_status;
+		const mobile_no = r.message[0].mobile_no;
 	
 		frappe.web_form.set_value('applicant_name', applicant_name);
 		frappe.web_form.set_value('gender', gender);
 		frappe.web_form.set_value('marital_status', marital_status);
+		frappe.web_form.set_value('mobile_no', mobile_no);
+		
 		
 		}
 	

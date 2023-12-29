@@ -4,7 +4,8 @@ def get_context(context):
 	# do your magic here
 	pass
 
-
+def validate(self):
+	frappe.throw("Hlooooooo")
 
 @frappe.whitelist(allow_guest=True)
 def get_cid_detail(tenant_cid):
@@ -29,9 +30,6 @@ def get_cid_detail(tenant_cid):
 		frappe.log_error(_("Error in get_tenant_name: {0}").format(e))
 		return None
 
-@frappe.whitelist(allow_guest=True)
-def checkCidExistence(tenant_cid):
-	return "hello"
 	
 	# try:
 	# 	# Execute SQL query

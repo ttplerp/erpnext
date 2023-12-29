@@ -366,6 +366,16 @@ doc_events = {
 	"Integration Request": {
 		"validate": "erpnext.accounts.doctype.payment_request.payment_request.validate_payment"
 	},
+    "Housing Application Details Update":{
+        "before_save":"erpnext.rental_management.doctype.housing_application_details_update.housing_application_details_update.update_housing_application_doctype"
+	},
+	"Maintenance Application Form": {
+    "before_save": [
+        "erpnext.rental_management.doctype.maintenance_application_form.maintenance_application_form.notify_after_submitting",
+        "erpnext.rental_management.doctype.maintenance_application_form.maintenance_application_form.after_save"
+    ],
+    "onload": "erpnext.rental_management.doctype.maintenance_application_form.maintenance_application_form.after_save"
+}
 }
 
 # On cancel event Payment Entry will be exempted and all linked submittable doctype will get cancelled.

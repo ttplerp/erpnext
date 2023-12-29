@@ -30,7 +30,8 @@
   "spouse_name_of_agency",
   "spouse_department",
   "spouse_gross_salary",
-  "spouse_employee_id"
+  "spouse_employee_id",
+  "mobile_no"
  ],
  "fields": [
   {
@@ -167,12 +168,17 @@
    "fieldname": "spouse_employee_id",
    "fieldtype": "Data",
    "label": "Spouse Employee id"
+  },
+  {
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "label": "Mobile No"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-12-18 14:29:27.279162",
+ "modified": "2023-12-29 12:28:57.702348",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Housing Application Details Update",

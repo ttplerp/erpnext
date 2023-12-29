@@ -7,6 +7,47 @@ from frappe.model.document import Document
 class HousingApplicationDetailsUpdate(Document):
 	pass
 
+
+
+def update_housing_application_doctype(doc, method):
+	
+	sql_query = """
+			UPDATE `tabHousing Application`
+			SET gender= %s,
+			marital_status =%s,
+			spouse_cid=%s,
+			spouse_name=%s,
+			spouse_dob=%s,
+			spouse_employment_type=%s,
+			spouse_dzongkhag=%s,
+			spouse_gewog=%s,
+			spouse_village=%s,
+			spouse_designation=%s,
+			spouse_grade=%s,
+			spouse_ministry=%s,
+			spouse_agency=%s,
+			spouse_department=%s,
+			spouse_gross_salary=%s,
+			mobile_no=%s
+			
+
+			where cid = %s
+		"""
+	try: 
+		frappe.db.sql(sql_query,(doc.gender,doc.marital_status,doc.spouse_citizen_id,
+						         doc.spouse_name,doc.spouse_date_of_birth,doc.spouse_employment_type, 
+						         doc.spouse_dzongkhag,doc.spouse_gewog,
+								 doc.spouse_village,doc.spouse_designation,
+								 doc.spouse_grade,doc.spouse_ministryagency,
+								 doc.spouse_name_of_agency,doc.spouse_department,doc.spouse_gross_salary or 0,
+								 doc.mobile_no,doc.cid))
+		frappe.db.commit()
+		# frappe.msgprint(f"Data updated succefully for CID: {doc.cid}")
+	except Exception as e:
+		frappe.msgprint(f"Error updating data: {str(e)}")
+	
+	
+
 @frappe.whitelist(allow_guest=True)
 def checkCidExistence(cid):
 	try:
@@ -41,7 +82,7 @@ def getApplicantDetails(cid):
 	try:
 		# Execute SQL query
 		sql_query = """
-		SELECT name, applicant_name, gender, marital_status
+		SELECT name, mobile_no,applicant_name, gender, marital_status
 		FROM `tabHousing Application` 
 		WHERE cid = %(cid)s
 		"""

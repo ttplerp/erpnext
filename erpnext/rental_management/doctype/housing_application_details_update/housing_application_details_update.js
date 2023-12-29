@@ -5,4 +5,5 @@ frappe.ui.form.on('Housing Application Details Update', {
 	// refresh: function(frm) {
 
 	// }
+	
 });
