@@ -97,19 +97,23 @@ def after_save(doc,method):
 					pass
 
 def notify_after_submitting(doc,method):
-	message  = f"The Maintenance Application {doc.name}  has been successfully received. "
-	recipients = doc.email
-	subject = "Maintenance Application Received Notification"
-	
-	try:
-		frappe.sendmail(
-			recipients=recipients,
-					subject=_(subject),
-					message= _(message)
-					
-				)
-	except:
-			pass
+	creation_time  = get_datetime(doc.creation )
+	current_time = now_datetime()
+	time_difference = current_time - creation_time
+	if time_difference.total_seconds() < 2:
+				message  = f"The Maintenance Application {doc.name}  has been successfully received. "
+				recipients = doc.email
+				subject = "Maintenance Application Received Notification"
+				
+				try:
+					frappe.sendmail(
+						recipients=recipients,
+								subject=_(subject),
+								message= _(message)
+								
+							)
+				except:
+						pass
 	
 
 @frappe.whitelist(allow_guest=True)
