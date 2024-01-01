@@ -3,7 +3,9 @@
 
 frappe.ui.form.on('Maintenance Application Form', {
 
-	
+	onupdate: function(frm) {
+		frappe.throw("ju")
+	},
 	
 	refresh: function(frm) {
 		if (!frm.doc.technical_sanction && frm.doc.docstatus == 1) {

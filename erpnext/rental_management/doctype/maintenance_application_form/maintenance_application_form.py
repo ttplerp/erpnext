@@ -1,12 +1,14 @@
 # Copyright (c) 2023, Frappe Technologies Pvt. Ltd. and contributors
 # For license information, please see license.txt
 
+import datetime
 import frappe
 import re
 from frappe.model.document import Document
 from frappe.model.mapper import get_mapped_doc
 
 from frappe import _
+from frappe.utils.data import get_datetime, now_datetime
 
 class MaintenanceApplicationForm(Document):
 	def get_query(self, doctype, txt, searchfield, start, page_len, filters):
@@ -22,6 +24,8 @@ class MaintenanceApplicationForm(Document):
 				"start": start,
 				"page_len": page_len
 			})
+	
+		
 	def validate(self):
 		self.get_branch_missing()
 		if self.maf_status =="On Hold":
@@ -34,6 +38,8 @@ class MaintenanceApplicationForm(Document):
 		
 		if self.email and not re.match(pattern, self.email):
 			frappe.throw("Email Format is not right") 
+	
+	
 	
 	def get_branch_missing(self):
 		if self.tenant_id and frappe.db.get_value("Tenant Information", self.tenant_id, "branch"):
@@ -67,6 +73,44 @@ def make_technical_sanction(source_name, target_doc=None):
 import frappe
 import json
 from frappe import _
+
+def after_save(doc,method):
+		if doc.maf_status =="Completed":
+			
+			modified_date_time = get_datetime(doc.modified)
+			current_time = now_datetime()
+			time_difference = current_time - modified_date_time
+			if time_difference.total_seconds() < 2:
+				# frappe.msgprint("HIOOOOO")
+				message  = f"The Maintenance for the Maintenance Application {doc.name}  has been successfully completed. "
+				recipients = doc.email
+				subject = "Maintenance Completion Notification"
+				
+				try:
+					frappe.sendmail(
+					recipients=recipients,
+					subject=_(subject),
+					message= _(message)
+					
+				)
+				except:
+					pass
+
+def notify_after_submitting(doc,method):
+	message  = f"The Maintenance Application {doc.name}  has been successfully received. "
+	recipients = doc.email
+	subject = "Maintenance Application Received Notification"
+	
+	try:
+		frappe.sendmail(
+			recipients=recipients,
+					subject=_(subject),
+					message= _(message)
+					
+				)
+	except:
+			pass
+	
 
 @frappe.whitelist(allow_guest=True)
 def get_cid_detail(tenant_cid):
