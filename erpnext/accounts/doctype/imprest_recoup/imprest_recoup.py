@@ -28,8 +28,8 @@ class ImprestRecoup(Document):
 		tot_bal_amt = sum(d.balance_amount for d in self.imprest_advance_list)
 		total_payable_amt = sum(d.amount for d in self.items) if self.items else 0
 		self.total_amount = total_payable_amt
-		self.opening_balance = sum(d.advance_amount for d in self.imprest_advance_list)
-		self.balance_amount = flt(self.opening_balance) - flt(self.total_amount)
+		self.opening_balance = total_payable_amt + tot_bal_amt
+		self.balance_amount = tot_bal_amt
 
 		if self.docstatus != 1 and tot_bal_amt < self.total_amount and self.workflow_state == "Draft":
 			frappe.throw("Expense amount cannot be more than balance amount.")
@@ -68,8 +68,11 @@ class ImprestRecoup(Document):
 	def post_final_claim_je(self):
 		total_balance = sum(d.balance_amount for d in self.imprest_advance_list)
 
-		if total_balance <= 0:
-			frappe.throw(_("Final Settlement Amount should be greater than zero"))
+		# if total_balance <= 0:
+		# 	frappe.throw(_("Final Settlement Amount should be greater than zero"))
+		
+		if flt(total_balance) == 0:
+			return
 
 		credit_account = frappe.db.get_value('Company', self.company, 'imprest_advance_account')
 		debit_account = frappe.db.get_value('Branch', self.branch, 'expense_bank_account')

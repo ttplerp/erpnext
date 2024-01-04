@@ -32,7 +32,7 @@ def get_data(filters):
 			modified_by as modifyby,
 			modified as modifydt
 		FROM `tabImprest Advance`
-		WHERE docstatus != 2
+		WHERE docstatus = 1
 		{}
 		UNION ALL
 		SELECT
@@ -51,7 +51,7 @@ def get_data(filters):
 			modified_by as modifyby,
 			modified as modifydt
 		FROM `tabImprest Recoup`
-		WHERE docstatus != 2
+		WHERE docstatus = 1
 		{}
 		ORDER BY branch, imprest_type, tran_date
 	""".format(cond, cond)
