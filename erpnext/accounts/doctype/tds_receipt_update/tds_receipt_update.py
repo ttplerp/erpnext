@@ -53,9 +53,12 @@ class TDSReceiptUpdate(Document):
 	def get_entries(self):
 		entries = []
 		if self.purpose in ["Employee Salary","PBVA","Bonus"]:
+			months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+			month = str(int(months.index(self.month))+1).rjust(2,"0")
+			
 			name = make_autoname('TDSRE.YYYY.MM.#######')
 			entries.append((name, str(today()), self.branch, self.cost_center, 
-				self.purpose, self.fiscal_year, self.month or "", self.pbva or "" if self.purpose == "PBVA" else "", "", 
+				self.purpose, self.fiscal_year, month or "", self.pbva or "" if self.purpose == "PBVA" else "", "", 
 				"", "", "", 
 				self.tds_receipt_date, self.tds_receipt_number, self.cheque_no, self.cheque_date,
 				self.name, "", 0, 0, frappe.session.user, str(get_datetime()), str(get_datetime()), frappe.session.user))
