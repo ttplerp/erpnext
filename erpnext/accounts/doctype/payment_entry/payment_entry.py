@@ -732,6 +732,12 @@ class PaymentEntry(AccountsController):
 		self.difference_amount = flt(
 			self.difference_amount - total_deductions - included_taxes, self.precision("difference_amount")
 		)
+		if self.mode_of_payment=="Adjustment":
+			self.difference_amount = 0
+		if self.deductions and self.mode_of_payment!="Adjustment":
+			ded_amt = sum(flt(d.amount) for d in self.get("deductions"))
+			# frappe.throw(str(self.difference_amount))
+			self.difference_amount = flt(ded_amt)+flt(self.difference_amount)
 
 	def get_included_taxes(self):
 		included_taxes = 0
@@ -866,7 +872,10 @@ class PaymentEntry(AccountsController):
 			if self.payment_type == "Receive":
 				against_account = self.paid_to
 			else:
-				against_account = self.paid_from
+				if self.mode_of_payment !="Adjustment":
+					against_account = self.paid_from
+				else:
+					against_account = self.paid_to
 
 			party_gl_dict = self.get_gl_dict(
 				{
@@ -927,35 +936,70 @@ class PaymentEntry(AccountsController):
 
 	def add_bank_gl_entries(self, gl_entries):
 		if self.payment_type in ("Pay", "Internal Transfer"):
-			gl_entries.append(
-				self.get_gl_dict(
-					{
-						"account": self.paid_from,
-						"account_currency": self.paid_from_account_currency,
-						"against": self.party if self.payment_type == "Pay" else self.paid_to,
-						"credit_in_account_currency": self.paid_amount,
-						"credit": self.base_paid_amount,
-						"cost_center": self.cost_center,
-						"post_net_value": True,
-					},
-					item=self,
-				)
-			)
+			if self.mode_of_payment !="Adjustment":
+				if self.deductions:
+					total_deductions = sum(flt(d.amount) for d in self.get("deductions"))
+					cr_amount =flt(self.base_paid_amount) - flt(total_deductions)
+					gl_entries.append(
+						self.get_gl_dict(
+							{
+								"account": self.paid_from,
+								"account_currency": self.paid_from_account_currency,
+								"against": self.party if self.payment_type == "Pay" else self.paid_to,
+								"credit_in_account_currency": self.paid_amount,
+								"credit": cr_amount,
+								"cost_center": self.cost_center,
+								"post_net_value": True,
+							},
+							item=self,
+						)
+					)
+				else:
+					gl_entries.append(
+						self.get_gl_dict(
+							{
+								"account": self.paid_from,
+								"account_currency": self.paid_from_account_currency,
+								"against": self.party if self.payment_type == "Pay" else self.paid_to,
+								"credit_in_account_currency": self.paid_amount,
+								"credit": self.base_paid_amount,
+								"cost_center": self.cost_center,
+								"post_net_value": True,
+							},
+							item=self,
+						)
+					)
 		if self.payment_type in ("Receive", "Internal Transfer"):
-			gl_entries.append(
-				self.get_gl_dict(
-					{
-						"account": self.paid_to,
-						"account_currency": self.paid_to_account_currency,
-						"against": self.party if self.payment_type == "Receive" else self.paid_from,
-						"debit_in_account_currency": self.received_amount,
-						"debit": self.base_received_amount,
-						"cost_center": self.cost_center,
-						"post_net_value": True,
-					},
-					item=self,
+			if self.mode_of_payment !="Adjustment":
+				gl_entries.append(
+					self.get_gl_dict(
+						{
+							"account": self.paid_to,
+							"account_currency": self.paid_to_account_currency,
+							"against": self.party if self.payment_type == "Receive" else self.paid_from,
+							"debit_in_account_currency": self.received_amount,
+							"debit": self.base_received_amount,
+							"cost_center": self.cost_center,
+							"post_net_value": True,
+						},
+						item=self,
+					)
 				)
-			)
+		# if self.mode_of_payment !="Adjustment":
+		# 	gl_entries.append(
+		# 		self.get_gl_dict(
+		# 			{
+		# 				"account": self.paid_to,
+		# 				"account_currency": self.paid_to_account_currency,
+		# 				"against": self.party,
+		# 				"debit_in_account_currency": self.total_allocated_amount,
+		# 				"debit": self.total_allocated_amount,
+		# 				"cost_center": self.cost_center,
+		# 				"post_net_value": True,
+		# 			},
+		# 			item=self,
+		# 		)
+		# 	)
 
 	def add_tax_gl_entries(self, gl_entries):
 		for d in self.get("taxes"):
@@ -1017,20 +1061,40 @@ class PaymentEntry(AccountsController):
 				account_currency = get_account_currency(d.account)
 				if account_currency != self.company_currency:
 					frappe.throw(_("Currency for {0} must be {1}").format(d.account, self.company_currency))
-
-				gl_entries.append(
-					self.get_gl_dict(
-						{
-							"account": d.account,
-							"account_currency": account_currency,
-							"against": self.party or self.paid_from,
-							"debit_in_account_currency": d.amount,
-							"debit": d.amount,
-							"cost_center": d.cost_center,
-						},
-						item=d,
+				if self.mode_of_payment =="Adjustment":
+					gl_entries.append(
+						self.get_gl_dict(
+							{
+								"account": d.account,
+								"account_currency": account_currency,
+								"party_type": self.party_type,
+								"party": self.party,
+								"against": self.party,
+								"credit_in_account_currency": d.amount,
+								"credit": d.amount,
+								"cost_center": d.cost_center,
+								"post_net_value": True,
+							},
+							item=self,
+						)
 					)
-				)
+				else:
+					gl_entries.append(
+						self.get_gl_dict(
+							{
+								"account": d.account,
+								"account_currency": account_currency,
+								"party_type": self.party_type,
+								"party": self.party,
+								"against": self.party or self.paid_from,
+								"credit_in_account_currency": d.amount,
+								"credit": d.amount,
+								"cost_center": d.cost_center,
+							},
+							item=d,
+						)
+					)
+
 
 	def get_party_account_for_taxes(self):
 		if self.payment_type == "Receive":
