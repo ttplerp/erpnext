@@ -201,7 +201,7 @@ class POLReceive(StockController):
 				(pol_exp.use_common_fuelbook == 1)
 			)
 		
-		query = query.orderby(pol_exp.entry_date, order=qb.desc)
+		query = query.orderby(pol_exp.entry_date)
 		data = query.run(as_dict=True)
 		
 		if not data:
