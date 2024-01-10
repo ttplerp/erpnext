@@ -16,6 +16,8 @@ class ImprestRecoup(Document):
 		self.set_recoup_account(validate=True)
 		if self.workflow_state != "Recouped":
 			notify_workflow_states(self)
+		self.calculate_amount_final()
+		
 	
 	def set_recoup_account(self, validate=False):
 		for d in self.items:
@@ -25,10 +27,12 @@ class ImprestRecoup(Document):
 				]
 
 	def calculate_amount(self):
-		tot_bal_amt = sum(d.balance_amount for d in self.imprest_advance_list)
 		total_payable_amt = sum(d.amount for d in self.items) if self.items else 0
 		self.total_amount = total_payable_amt
-		self.opening_balance = total_payable_amt + tot_bal_amt
+	
+	def calculate_amount_final(self):
+		tot_bal_amt = sum(d.balance_amount for d in self.imprest_advance_list)
+		self.opening_balance = tot_bal_amt + self.total_amount
 		self.balance_amount = tot_bal_amt
 
 		if self.docstatus != 1 and tot_bal_amt < self.total_amount and self.workflow_state == "Draft":
