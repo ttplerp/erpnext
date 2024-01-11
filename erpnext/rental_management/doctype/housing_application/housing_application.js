@@ -2,7 +2,11 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Housing Application', {
+
+	
+
 	refresh: function(frm) {
+		
 		// Write your magic codes here
 		if(frm.doc.docstatus==1 && frm.doc.application_status!="Alloted" && !frm.doc.tenant_id){
 			frm.page.set_primary_action(__('Create Allotment'), () => {

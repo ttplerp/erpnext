@@ -31,7 +31,8 @@
   "spouse_department",
   "spouse_gross_salary",
   "spouse_employee_id",
-  "mobile_no"
+  "mobile_no",
+  "spouse_gross_salary_info"
  ],
  "fields": [
   {
@@ -41,8 +42,8 @@
   },
   {
    "fieldname": "application_date_and_time",
-   "fieldtype": "Datetime",
-   "label": "Application Date and Time",
+   "fieldtype": "Date",
+   "label": "Application Date",
    "read_only": 1
   },
   {
@@ -173,12 +174,17 @@
    "fieldname": "mobile_no",
    "fieldtype": "Data",
    "label": "Mobile No"
+  },
+  {
+   "fieldname": "spouse_gross_salary_info",
+   "fieldtype": "Data",
+   "label": "Spouse Gross Salary Info"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-12-29 12:28:57.702348",
+ "modified": "2024-01-08 16:23:57.529959",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Housing Application Details Update",

@@ -6,7 +6,7 @@ frappe.ready(function() {
 
 
 	//Setting date and time to now
-	var today = frappe.datetime.get_today() + " " + frappe.datetime.now_time();
+	var today = frappe.datetime.get_today();
 	$('[data-fieldname="application_date_and_time"]').val(today);
 
 	//checking if cid exist in Housing application
@@ -75,6 +75,7 @@ frappe.ready(function() {
 				if(value=='Civil Servant'){
 					// frappe.throw(cid)
 					get_employee_detail(cid)
+					frappe.web_form.set_value('spouse_gross_salary_info', 'Your spouse gross salary will be fetched from EPEMS.');
 				}
 		
 			});
