@@ -204,6 +204,7 @@ function get_employee_detail(applicant_cid){
 					$('[data-fieldname="spouse_department"]').val(r.message['OrganogramLevel2']);
 					$('[data-fieldname="spouse_employee_id"]').val(r.message['employeeNumber']);
 					$('[data-fieldname="spouse_gross_salary"]').val(r.message['GrossPay']);
+					frappe.web_form.set_value('spouse_gross_salary',r.message['GrossPay']);
 				// }
 			}else{
 				frappe.throw("No record found in Civil Servant DB for provided CID ")
