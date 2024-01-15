@@ -65,7 +65,6 @@ function get_cid_detail(cid, category){
 					$('[data-fieldname="gewog"]').val(r.message['gewogName']);
 					$('[data-fieldname="village"]').val(r.message['permanentVillagename']);
 					$('[data-fieldname="date_of_birth"]').val(r.message['dob']);
-					$('[data-fieldname="employment_type"]').val('Civil Servant');
 					frappe.web_form.set_value('date_of_birth',r.message['dob']);
 				}else if(category=="Spouse"){
 					$('[data-fieldname="spouse_name"]').val(applicant_name);

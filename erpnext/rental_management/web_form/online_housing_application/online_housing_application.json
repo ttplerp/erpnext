@@ -24,7 +24,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2024-01-15 21:32:06.084993",
+ "modified": "2024-01-15 21:51:12.661567",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "online-housing-application",
@@ -143,19 +143,6 @@
    "options": "Dzongkhag",
    "read_only": 0,
    "reqd": 1,
-   "show_in_filter": 0
-  },
-  {
-   "allow_read_on_all_link_options": 0,
-   "depends_on": "eval:doc.employment_type!=\"Civil Servant\"",
-   "fieldname": "date_of_birth",
-   "fieldtype": "Data",
-   "hidden": 0,
-   "label": "Date of Birth",
-   "max_length": 0,
-   "max_value": 0,
-   "read_only": 0,
-   "reqd": 0,
    "show_in_filter": 0
   },
   {
@@ -561,6 +548,19 @@
    "max_length": 0,
    "max_value": 0,
    "options": "",
+   "read_only": 0,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "depends_on": "eval:doc.employment_type!=\"Civil Servant\"",
+   "fieldname": "date_of_birth",
+   "fieldtype": "Data",
+   "hidden": 0,
+   "label": "Date of Birth",
+   "max_length": 0,
+   "max_value": 0,
    "read_only": 0,
    "reqd": 0,
    "show_in_filter": 0
