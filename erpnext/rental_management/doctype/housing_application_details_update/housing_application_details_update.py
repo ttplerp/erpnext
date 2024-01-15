@@ -28,6 +28,7 @@ def update_housing_application_doctype(doc, method):
 			spouse_agency=%s,
 			spouse_department=%s,
 			spouse_gross_salary=%s,
+			date_of_birth=%s,
 			mobile_no=%s
 			
 
@@ -40,7 +41,7 @@ def update_housing_application_doctype(doc, method):
 								 doc.spouse_village,doc.spouse_designation,
 								 doc.spouse_grade,doc.spouse_ministryagency,
 								 doc.spouse_name_of_agency,doc.spouse_department,doc.spouse_gross_salary or 0,
-								 doc.mobile_no,doc.cid))
+								 doc.date_of_birth,doc.mobile_no,doc.cid))
 		frappe.db.commit()
 		# frappe.msgprint(f"Data updated succefully for CID: {doc.cid}")
 	except Exception as e:
@@ -82,7 +83,33 @@ def getApplicantDetails(cid):
 	try:
 		# Execute SQL query
 		sql_query = """
-		SELECT name, mobile_no,applicant_name, gender, marital_status
+		SELECT name,
+		   
+		  mobile_no,
+		  applicant_name, 
+		  gender, 
+		  marital_status,
+		  spouse_cid,
+
+		  spouse_name,
+		  spouse_dzongkhag,
+		  spouse_gewog,
+		  spouse_dob,
+		  spouse_village,
+		  spouse_employment_type,
+		  spouse_employee_id,
+		  spouse_ministry,
+		  spouse_designation,
+		  spouse_agency,
+		  spouse_grade,
+		  spouse_gross_salary,
+		  date_of_birth
+
+
+
+
+
+
 		FROM `tabHousing Application` 
 		WHERE cid = %(cid)s
 		"""

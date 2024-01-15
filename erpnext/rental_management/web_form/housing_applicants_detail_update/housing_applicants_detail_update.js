@@ -121,16 +121,50 @@ frappe.call({
 		cid: cid,
 	},
 	callback: function(r) {
-		console.log(r.message)
+		// console.log(r.message)
+	
 		const applicant_name = r.message[0].applicant_name;
 		const gender = r.message[0].gender;
 		const marital_status = r.message[0].marital_status;
 		const mobile_no = r.message[0].mobile_no;
+		const date_of_birth = r.message[0].date_of_birth;
+		const spouse_citizen_id = r.message[0].spouse_cid;
+
+		const spouse_name = r.message[0].spouse_name;
+		const spouse_dzongkhag = r.message[0].spouse_dzongkhag;
+		const spouse_gewog = r.message[0].spouse_gewog;
+		const spouse_dob = r.message[0].spouse_dob;
+		const spouse_village = r.message[0].spouse_village;
+		const spouse_employment_type = r.message[0].spouse_employment_type;
+		const spouse_employee_id = r.message[0].spouse_employee_id;
+		const spouse_ministry = r.message[0].spouse_ministry;
+		const spouse_designation = r.message[0].spouse_designation;
+		const spouse_agency = r.message[0].spouse_agency;
+		const spouse_grade = r.message[0].spouse_grade;
+		const spouse_gross_salary = r.message[0].spouse_gross_salary;
+		
+		
 	
 		frappe.web_form.set_value('applicant_name', applicant_name);
 		frappe.web_form.set_value('gender', gender);
 		frappe.web_form.set_value('marital_status', marital_status);
 		frappe.web_form.set_value('mobile_no', mobile_no);
+		frappe.web_form.set_value('spouse_citizen_id', spouse_citizen_id);
+
+		frappe.web_form.set_value('spouse_name', spouse_name);
+		frappe.web_form.set_value('spouse_dzongkhag', spouse_dzongkhag);
+		frappe.web_form.set_value('spouse_gewog', spouse_gewog);
+		frappe.web_form.set_value('spouse_date_of_birth', spouse_dob);
+		frappe.web_form.set_value('spouse_village', spouse_village);
+		frappe.web_form.set_value('spouse_employment_type', spouse_employment_type);
+		frappe.web_form.set_value('spouse_employee_id', spouse_employee_id);
+		frappe.web_form.set_value('spouse_ministryagency', spouse_ministry);
+		frappe.web_form.set_value('spouse_designation', spouse_designation);
+		frappe.web_form.set_value('spouse_name_of_agency', spouse_agency);
+		frappe.web_form.set_value('spouse_grade', spouse_grade);
+		frappe.web_form.set_value('spouse_gross_salary', spouse_gross_salary);
+		frappe.web_form.set_value('date_of_birth', date_of_birth);
+		
 		
 		
 		}

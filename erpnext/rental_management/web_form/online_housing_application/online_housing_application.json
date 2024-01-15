@@ -24,7 +24,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2024-01-15 11:49:58.496428",
+ "modified": "2024-01-15 20:50:55.812651",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "online-housing-application",
@@ -143,6 +143,18 @@
    "options": "Dzongkhag",
    "read_only": 0,
    "reqd": 1,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "date_of_birth",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Date of Birth",
+   "max_length": 0,
+   "max_value": 0,
+   "read_only": 0,
+   "reqd": 0,
    "show_in_filter": 0
   },
   {

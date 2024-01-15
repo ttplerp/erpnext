@@ -28,6 +28,7 @@
   "dzongkhag",
   "gewog",
   "village",
+  "date_of_birth",
   "column_break_11",
   "email_id",
   "mobile_no",
@@ -43,6 +44,7 @@
   "spouse_gewog",
   "spouse_village",
   "section_break_26",
+  "spouse_employee_id",
   "spouse_designation",
   "spouse_grade",
   "spouse_ministry",
@@ -442,13 +444,23 @@
    "fieldname": "spouse_gross_salary_info",
    "fieldtype": "Data",
    "label": "Spouse Gross Salary Info"
+  },
+  {
+   "fieldname": "date_of_birth",
+   "fieldtype": "Date",
+   "label": "Date of Birth"
+  },
+  {
+   "fieldname": "spouse_employee_id",
+   "fieldtype": "Data",
+   "label": "Spouse Employee ID"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2024-01-08 15:05:37.834426",
+ "modified": "2024-01-15 16:38:11.279250",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Housing Application",

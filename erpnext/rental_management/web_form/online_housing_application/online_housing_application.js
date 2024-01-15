@@ -64,6 +64,7 @@ function get_cid_detail(cid, category){
 					$('[data-fieldname="dzongkhag"]').val(r.message['dzongkhagName']);
 					$('[data-fieldname="gewog"]').val(r.message['gewogName']);
 					$('[data-fieldname="village"]').val(r.message['permanentVillagename']);
+					$('[data-fieldname="date_of_birth"]').val(r.message['dob']);
 				}else if(category=="Spouse"){
 					$('[data-fieldname="spouse_name"]').val(applicant_name);
 					$('[data-fieldname="spouse_dzongkhag"]').val(r.message['dzongkhagName']);
@@ -97,6 +98,7 @@ function get_employee_detail(applicant_cid, category){
 					$('[data-fieldname="gross_salary"]').val(r.message['GrossPay']);
 					$('[data-fieldname="email_id"]').val(r.message['Email']);
 					$('[data-fieldname="mobile_no"]').val(r.message['MobileNo']);
+					
 				} else if(category=="Spouse"){
 					$('[data-fieldname="spouse_designation"]').val(r.message['positionTitle']);
 					$('[data-fieldname="spouse_ministry"]').val(r.message['OrganogramLevel1']);
