@@ -712,7 +712,7 @@ class PurchaseReceipt(BuyingController):
                         remarks=self.remarks or _("Accounting Entry for Stock"),
                         against_account=against_account,
                         item=tax,
-                        party=tax.party,
+                        party=self.supplier if tax.category == "Valuation and Total" else tax.party,
                     )
 
                     i += 1

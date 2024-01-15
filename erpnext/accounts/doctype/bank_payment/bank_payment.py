@@ -532,6 +532,8 @@ class BankPayment(Document):
             data = self.get_loan_detail()
         elif self.transaction_type == "PBVA":
             data = self.get_pbva()
+        elif self.transaction_type == "Bulk Leave Encashment":
+            data = self.get_bulk_leave_encashment()
         data = merge_similar_entries(data)
         return data
 
@@ -997,6 +999,48 @@ class BankPayment(Document):
             ),
             as_dict=1,
         )
+    
+    # Added by Dawa Tshering on 15-01-2024
+    def get_bulk_leave_encashment(self):
+        cond = ''
+        if not self.fiscal_year:
+            frappe.throw(_("Please select Fiscal Year"))
+        if self.transaction_no:
+            cond = "and t1.name = '{}'".format(self.transaction_no)
+        # if self.branch:
+        #     cond = "and p.branch='{}'".format(self.branch)
+        if self.fiscal_year:
+            cond += "and t1.fiscal_year='{}'".format(self.fiscal_year)
+        
+        return frappe.db.sql("""
+                           SELECT "Bulk Leave Encashment" transaction_type, t1.name transaction_id, 
+                            t1.name transaction_reference, t1.modified transaction_date,
+                            t2.employee, t2.employee_name beneficiary_name, 
+                            e.bank_name bank_name, 
+                            e.bank_branch bank_branch, fib.financial_system_code,
+                            e.bank_account_type,
+                            IFNULL(t2.bank_ac_no, e.bank_ac_no) bank_account_no, 
+                            round(t2.payable_amount,2) amount,
+                            'Bulk Leave Encashment for {fiscal_year}' remarks, "Draft" status						
+                        FROM `tabBulk Leave Encashment` t1 JOIN `tabBulk Leave Encashment Item` t2
+                            ON t1.name = t2.parent
+                            JOIN `tabEmployee` e ON t2.employee = e.name
+                            LEFT JOIN `tabFinancial Institution Branch` fib ON fib.name =  e.bank_branch
+                        WHERE t1.docstatus = 1
+                        AND e.salary_mode = 'Bank'
+                        {cond}
+                        AND IFNULL(t2.payable_amount,0) > 0
+                        AND NOT EXISTS(select 1
+                            FROM `tabBank Payment Item` bpi, `tabBank Payment` bp
+                            WHERE bpi.transaction_type = 'Bulk Leave Encashment'
+                            AND bp.name=bpi.parent
+                            AND bp.transaction_type not in ('Employee Loan Payment')
+                            AND bpi.transaction_id = t1.name
+                            AND bpi.parent != '{bank_payment}'
+                            AND bpi.docstatus != 2
+                            AND bpi.status NOT IN ('Cancelled', 'Failed')
+                        )
+                        """.format(fiscal_year=self.fiscal_year, bank_payment = self.name, cond = cond), as_dict=True)
 
 
 def process_one_to_one_payment(doc, publish_progress=True):

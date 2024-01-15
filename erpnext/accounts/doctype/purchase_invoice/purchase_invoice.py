@@ -837,7 +837,6 @@ class PurchaseInvoice(BuyingController):
         self.make_item_gl_entries(gl_entries)
         # if self.check_asset_cwip_enabled():
         self.get_asset_gl_entry(gl_entries)
-
         self.make_tax_gl_entries(gl_entries)
         self.make_exchange_gain_loss_gl_entries(gl_entries)
         self.make_internal_transfer_gl_entries(gl_entries)
@@ -1566,6 +1565,14 @@ class PurchaseInvoice(BuyingController):
                             if account_currency == self.company_currency
                             else amount,
                             "cost_center": tax.cost_center,
+                            "party": self.supplier
+                            if frappe.db.get_value("Account", tax.account_head, "account_type")
+                            in ("Payable", "Receivable")
+                            else None,
+                            "party_type": "Supplier"
+                            if frappe.db.get_value("Account", tax.account_head, "account_type")
+                            in ("Payable", "Receivable")
+                            else None,
                         },
                         account_currency,
                         item=tax,
@@ -1614,6 +1621,14 @@ class PurchaseInvoice(BuyingController):
                                 "against": self.supplier,
                                 "credit": applicable_amount,
                                 "remarks": self.remarks or _("Accounting Entry for Stock"),
+                                "party": self.supplier
+                                if frappe.db.get_value("Account", tax.account_head, "account_type")
+                                in ("Payable", "Receivable")
+                                else None,
+                                "party_type": "Supplier"
+                                if frappe.db.get_value("Account", tax.account_head, "account_type")
+                                in ("Payable", "Receivable")
+                                else None,
                             },
                             item=tax,
                         )

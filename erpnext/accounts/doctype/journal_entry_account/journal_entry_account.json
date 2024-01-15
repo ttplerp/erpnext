@@ -222,7 +222,7 @@
    "fieldname": "reference_type",
    "fieldtype": "Select",
    "label": "Reference Type",
-   "options": "\nSales Invoice\nPurchase Invoice\nJournal Entry\nSales Order\nPurchase Order\nExpense Claim\nAsset\nLoan\nPayroll Entry\nEmployee Advance\nExchange Rate Revaluation\nInvoice Discounting\nHire Charge Invoice\nFees\nPBVA\nBonus\nLeave Travel Concession\nFull and Final Statement\nPOL Expense\nPOL Receive\nCoal Raising Invoice\nEmployee Benefit Claim\nInsurance and Registration\nTransporter Invoice\nEME Invoice\nCoal Raising Invoice\nEmployee Benefits\nMR Employee Invoice\nRepair And Service Invoice\nPurchase Receipt\nProject Advance\nMR Invoice Entry\nPOL Issue\nTransportation Charge\nHire Charge Advance\nMR Employee Advance\nAdvance"
+   "options": "\nSales Invoice\nPurchase Invoice\nJournal Entry\nSales Order\nPurchase Order\nExpense Claim\nAsset\nLoan\nPayroll Entry\nEmployee Advance\nExchange Rate Revaluation\nInvoice Discounting\nHire Charge Invoice\nFees\nPBVA\nBonus\nLeave Travel Concession\nFull and Final Statement\nPOL Expense\nPOL Receive\nCoal Raising Invoice\nEmployee Benefit Claim\nInsurance and Registration\nTransporter Invoice\nEME Invoice\nCoal Raising Invoice\nEmployee Benefits\nMR Employee Invoice\nRepair And Service Invoice\nPurchase Receipt\nProject Advance\nMR Invoice Entry\nPOL Issue\nTransportation Charge\nHire Charge Advance\nMR Employee Advance\nOvertime Application\nAdvance\nBulk Leave Encashment"
   },
   {
    "fieldname": "reference_name",
@@ -417,7 +417,7 @@
  "idx": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-12-18 16:52:35.762656",
+ "modified": "2024-01-15 10:15:11.820315",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry Account",
