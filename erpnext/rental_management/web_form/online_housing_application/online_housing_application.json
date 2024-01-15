@@ -24,7 +24,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2024-01-15 21:20:20.792384",
+ "modified": "2024-01-15 21:32:06.084993",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "online-housing-application",
@@ -147,6 +147,7 @@
   },
   {
    "allow_read_on_all_link_options": 0,
+   "depends_on": "eval:doc.employment_type!=\"Civil Servant\"",
    "fieldname": "date_of_birth",
    "fieldtype": "Data",
    "hidden": 0,

@@ -28,7 +28,7 @@ def update_housing_application_doctype(doc, method):
 			spouse_agency=%s,
 			spouse_department=%s,
 			spouse_gross_salary=%s,
-			date_of_birth=%s,
+			
 			mobile_no=%s
 			
 
@@ -41,7 +41,7 @@ def update_housing_application_doctype(doc, method):
 								 doc.spouse_village,doc.spouse_designation,
 								 doc.spouse_grade,doc.spouse_ministryagency,
 								 doc.spouse_name_of_agency,doc.spouse_department,doc.spouse_gross_salary or 0,
-								 doc.date_of_birth,doc.mobile_no,doc.cid))
+								doc.mobile_no,doc.cid))
 		frappe.db.commit()
 		# frappe.msgprint(f"Data updated succefully for CID: {doc.cid}")
 	except Exception as e:
