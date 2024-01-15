@@ -24,7 +24,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2024-01-08 15:30:21.063864",
+ "modified": "2024-01-15 11:49:58.496428",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "online-housing-application",
@@ -672,7 +672,7 @@
   },
   {
    "allow_read_on_all_link_options": 0,
-   "depends_on": "eval:doc.employment_type!=\"Civil Servant\"",
+   "depends_on": "eval:doc.employment_type!=\"Civil Servant\" || doc.spouse_employment_type!=\"Civil Servant\"",
    "fieldname": "",
    "fieldtype": "Section Break",
    "hidden": 0,
