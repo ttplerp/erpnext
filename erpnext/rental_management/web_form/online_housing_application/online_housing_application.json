@@ -24,7 +24,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2024-01-15 21:51:12.661567",
+ "modified": "2024-01-15 21:54:23.940843",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "online-housing-application",
@@ -147,6 +147,7 @@
   },
   {
    "allow_read_on_all_link_options": 0,
+   "depends_on": "",
    "fieldname": "",
    "fieldtype": "Section Break",
    "hidden": 0,
