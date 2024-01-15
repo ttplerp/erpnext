@@ -45,6 +45,7 @@ class CustomWorkflow:
                 "Budget Reappropiation",
                 "Transportation Charge",
                 "Employee Advance",
+                "Bulk Leave Encashment",
                 "POL Receive",
                 "Employee Advance Settlement",
             )
@@ -186,7 +187,7 @@ class CustomWorkflow:
                     if not self.leave_supervisor:
                         frappe.throw(
                             "Plesse set Reports To for employee {} in Employee List".format(
-                                self.employee
+                                self.doc.employee
                             )
                         )
                     self.project_head = frappe.db.get_value(
@@ -245,6 +246,15 @@ class CustomWorkflow:
                     )
                     if not self.hrgm:
                         frappe.throw("Plesse set HRGM in HR Settings")
+
+        if self.doc.doctype == "Bulk Leave Encashment":
+            self.hrgm = frappe.db.get_value(
+                        "Employee",
+                        frappe.db.get_single_value("HR Settings", "hrgm"),
+                        self.field_list,
+                    )
+            if not self.hrgm:
+                frappe.throw("Plesse set HRGM in HR Settings")
 
         if self.doc.doctype == "Expense Claim":
             self.expense_approver = frappe.db.get_value(
@@ -1635,6 +1645,8 @@ class CustomWorkflow:
             self.employee_transfer_request()
         elif self.doc.doctype == "Leave Encashment":
             self.leave_encashment()
+        elif self.doc.doctype == "Bulk Leave Encashment":
+            self.bulk_leave_encashment()
         elif self.doc.doctype == "Salary Advance":
             self.salary_advance()
         elif self.doc.doctype == "Travel Request":
@@ -2418,6 +2430,23 @@ class CustomWorkflow:
         """
         if self.new_state.lower() == "Waiting Approval".lower():
             self.set_approver("HRGM")
+            
+        elif self.new_state.lower() == "Approved".lower():
+            if self.doc.approver != frappe.session.user and "HR Manager" not in frappe.get_roles(
+                frappe.session.user
+            ):
+                frappe.throw("Only {} can Approve this Encashment".format(self.doc.approver_name))
+        elif self.new_state.lower() in ("Rejected"):
+            if self.doc.approver != frappe.session.user:
+                frappe.throw("Only {} can Reject this Encashment".format(self.doc.approver_name))
+
+    def bulk_leave_encashment(self):
+        """Leave Encashment Workflow
+        1. HR User -> HR Manager
+        """
+        if self.new_state.lower() == "Waiting Approval".lower():
+            self.set_approver("HRGM")
+            
         elif self.new_state.lower() == "Approved".lower():
             if self.doc.approver != frappe.session.user and "HR Manager" not in frappe.get_roles(
                 frappe.session.user
@@ -3913,6 +3942,7 @@ def get_field_map():
             "advance_approver_designation",
         ],
         "Leave Encashment": ["approver", "approver_name", "approver_designation"],
+        "Bulk Leave Encashment": ["approver", "approver_name", "approver_designation"],
         "Leave Application": [
             "leave_approver",
             "leave_approver_name",
