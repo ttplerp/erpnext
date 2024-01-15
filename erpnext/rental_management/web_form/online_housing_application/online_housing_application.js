@@ -72,6 +72,7 @@ function get_cid_detail(cid, category){
 					$('[data-fieldname="spouse_gewog"]').val(r.message['gewogName']);
 					$('[data-fieldname="spouse_village"]').val(r.message['permanentVillagename']);
 					$('[data-fieldname="spouse_dob"]').val(r.message['dob']);
+					frappe.web_form.set_value('spouse_dob',r.message['dob']);
 				}
 			}else{
 				frappe.throw("No such CID details found")
