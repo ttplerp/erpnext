@@ -106,23 +106,20 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Dzongkhag",
-   "read_only": 1,
-   "reqd": 1
+   "read_only": 1
   },
   {
    "fieldname": "gewog",
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Gewog",
-   "read_only": 1,
-   "reqd": 1
+   "read_only": 1
   },
   {
    "fieldname": "village",
    "fieldtype": "Data",
    "label": "Village",
-   "read_only": 1,
-   "reqd": 1
+   "read_only": 1
   },
   {
    "fieldname": "gender",
@@ -459,7 +456,7 @@
  "is_submittable": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2024-01-17 10:17:40.653049",
+ "modified": "2024-01-17 11:27:46.629736",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Housing Application",
