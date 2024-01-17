@@ -16,6 +16,7 @@ from erpnext.utilities.transaction_base import delete_events
 from erpnext.custom_utils import get_year_start_date, get_year_end_date, round5, check_future_date
 from datetime import datetime, timedelta
 from frappe.utils.data import get_first_day, get_last_day, add_years
+import pandas as pd
 
 class EmployeeUserDisabledError(frappe.ValidationError):
 	pass
@@ -36,6 +37,8 @@ class Employee(NestedSet):
 		self.validate_status()
 		self.validate_reports_to()
 		self.validate_preferred_email()
+		if self.status == "Left":
+			self.unmap_pms_evaluator()
 
 		if self.user_id:
 			self.validate_user_details()
@@ -76,6 +79,45 @@ class Employee(NestedSet):
 		self.reset_employee_emails_cache()
 		if self.employment_status != 'Probation':
 			self.post_casual_leave()
+	
+	def unmap_pms_evaluator(self):
+		# unmap from Evaluator mapper
+		query = frappe.db.sql("""
+				select name, document_type, evaluator from `tabPerformance Evaluator`
+				where parent={}
+				""".format(self.employee), as_dict=True)
+		
+		for a in query:
+			if a.document_type == "Employee":
+				for i in frappe.db.sql("""
+					select t2.name, t2.employee, t2.employee_name from `tabEmployee PMS Evaluator Mapper` as t1
+					inner join `tabPMS Evaluator Employees` as t2 
+					on t1.name = t2.parent
+					where t1.evaluator = {}
+					and t2.employee={}
+					""".format(a.evaluator, self.employee), as_dict=True):
+					frappe.db.sql("""
+				  				delete from `tabPMS Evaluator Employees` where name = '{}' 
+				  			""".format(i.name))
+				
+				frappe.db.sql("""
+				  				delete from `tabPerformance Evaluator` where name = '{}' 
+				  			""".format(a.name))
+			else:
+				for i in frappe.db.sql("""
+					select t2.name, t2.muster_roll_employee, t2.muster_roll_employee_name from `tabEmployee PMS Evaluator Mapper` as t1
+					inner join `tabPMS Evaluator MR Employee` as t2 
+					on t1.name = t2.parent
+					where t1.evaluator = {}
+					and t2.employee={}
+					""".format(a.evaluator, self.employee), as_dict=True):
+					frappe.db.sql("""
+				  				delete from `tabPMS Evaluator MR Employee` where name = '{}' 
+				  			""".format(i.name))
+				
+				frappe.db.sql("""
+				  				delete from `tabPerformance Evaluator` where name = '{}' 
+				  			""".format(a.name))
 
 	def post_casual_leave(self):
 		from_date = getdate(self.probation_end_date)
@@ -374,7 +416,7 @@ def deactivate_sales_person(status=None, employee=None):
 		if sales_person:
 			frappe.db.set_value("Sales Person", sales_person, "enabled", 0)
 
-
+		
 @frappe.whitelist()
 def create_user(employee, user=None, email=None):
 	emp = frappe.get_doc("Employee", employee)
@@ -412,20 +454,166 @@ def create_user(employee, user=None, email=None):
 	return user.name
 
 @frappe.whitelist()
-def get_overtime_rate(employee, posting_date):
+def get_overtime_rate(employee, from_date, to_date):
+	days = pd.date_range(datetime.strptime(from_date.split(" ")[0],"%Y-%m-%d"),datetime.strptime(to_date.split(" ")[0],"%Y-%m-%d")-timedelta(days=1),freq='d')
+	normal_hour = 0
+	odd_hour = 0
+	normal_hour_rate = 0
+	odd_hour_rate = 0
+	
+	count = 0
+	if len(days) > 0:
+		for d in days:
+			tdelta = None
+			tdelta_one = None
+			time_difference = None
+			time_difference_one = None
+
+			if count == 0:
+				if datetime.strptime(from_date, "%Y-%m-%d %H:%M:%S") >= datetime.strptime(from_date.split(" ")[0]+" 08:00:00","%Y-%m-%d %H:%M:%S") and datetime.strptime(from_date, "%Y-%m-%d %H:%M:%S") <= datetime.strptime(from_date.split(" ")[0]+" 21:59:59","%Y-%m-%d %H:%M:%S"):
+
+					tdelta = datetime.strptime(from_date.split(" ")[0]+" 22:00:00", "%Y-%m-%d %H:%M:%S") - datetime.strptime(from_date, "%Y-%m-%d %H:%M:%S")
+					time_difference = (tdelta.seconds/60/60)
+
+					normal_hour += flt(time_difference)
+					odd_hour += 2
+
+				elif datetime.strptime(from_date, "%Y-%m-%d %H:%M:%S") >= datetime.strptime(from_date.split(" ")[0]+" 22:00:00","%Y-%m-%d %H:%M:%S"):
+					tdelta = datetime.strptime(from_date.split(" ")[0]+" 23:59:59","%Y-%m-%d %H:%M:%S") - datetime.strptime(from_date, "%Y-%m-%d %H:%M:%S")
+					time_difference = (tdelta.seconds/60/60)
+					odd_hour += flt(time_difference)
+
+				elif datetime.strptime(from_date, "%Y-%m-%d %H:%M:%S") <= datetime.strptime(from_date.split(" ")[0]+" 08:00:00","%Y-%m-%d %H:%M:%S"):
+					tdelta = datetime.strptime(from_date.split(" ")[0]+" 07:59:59","%Y-%m-%d %H:%M:%S") - datetime.strptime(from_date, "%Y-%m-%d %H:%M:%S")
+					time_difference = (tdelta.seconds/60/60)
+					odd_hour += flt(time_difference) + 2
+					normal_hour += 18
+			else:
+				odd_hour += 10
+				normal_hour += 14
+			
+			count += 1
+			
+		tdelta = None
+		time_difference = None
+
+		if datetime.strptime(to_date, "%Y-%m-%d %H:%M:%S") >= datetime.strptime(to_date.split(" ")[0]+" 08:00:00","%Y-%m-%d %H:%M:%S") and datetime.strptime(to_date, "%Y-%m-%d %H:%M:%S") <= datetime.strptime(to_date.split(" ")[0]+" 21:59:59","%Y-%m-%d %H:%M:%S"):
+			tdelta = datetime.strptime(to_date,"%Y-%m-%d %H:%M:%S") - datetime.strptime(to_date.split(" ")[0]+" 08:00:00", "%Y-%m-%d %H:%M:%S")
+			time_difference = (tdelta.seconds/60/60)
+			odd_hour += 8
+			normal_hour += flt(time_difference)
+			if frappe.session.user == "Administrator":
+				frappe.msgprint('HERE 1')
+
+		elif datetime.strptime(to_date, "%Y-%m-%d %H:%M:%S") >= datetime.strptime(to_date.split(" ")[0]+" 22:00:00","%Y-%m-%d %H:%M:%S") and datetime.strptime(to_date, "%Y-%m-%d %H:%M:%S") <= datetime.strptime(to_date.split(" ")[0]+" 23:59:59","%Y-%m-%d %H:%M:%S"):
+			tdelta = datetime.strptime(to_date, "%Y-%m-%d %H:%M:%S") - datetime.strptime(to_date.split(" ")[0]+" 22:00:00","%Y-%m-%d %H:%M:%S")
+			time_difference = (tdelta.seconds/60/60)
+			odd_hour += flt(time_difference) + 8
+			normal_hour += 6
+			if frappe.session.user == "Administrator":
+				frappe.msgprint('HERE 4')
+
+		elif datetime.strptime(to_date, "%Y-%m-%d %H:%M:%S") < datetime.strptime(to_date.split(" ")[0]+" 08:00:00","%Y-%m-%d %H:%M:%S"):
+			tdelta = datetime.strptime(to_date, "%Y-%m-%d %H:%M:%S") - datetime.strptime(to_date.split(" ")[0]+" 00:00:00","%Y-%m-%d %H:%M:%S")
+			time_difference = (tdelta.seconds/60/60)
+			odd_hour += flt(time_difference)
+			if frappe.session.user == "Administrator":
+				frappe.msgprint('HERE 5')
+		else:
+			tdelta =  datetime.strptime(to_date, "%Y-%m-%d %H:%M:%S") - datetime.strptime(to_date.split(" ")[0]+" 00:00:00","%Y-%m-%d %H:%M:%S")
+			time_difference = (tdelta.seconds/60/60)
+			odd_hour += flt(time_difference)
+		
+	else:
+		tdelta = None
+		time_difference = None
+		time_difference_one = None
+		time_difference_two = None
+
+		if datetime.strptime(from_date, "%Y-%m-%d %H:%M:%S") >= datetime.strptime(from_date.split(" ")[0]+" 08:00:00","%Y-%m-%d %H:%M:%S") and datetime.strptime(to_date, "%Y-%m-%d %H:%M:%S") <= datetime.strptime(from_date.split(" ")[0]+" 21:59:59","%Y-%m-%d %H:%M:%S"):
+			tdelta = datetime.strptime(to_date,"%Y-%m-%d %H:%M:%S") - datetime.strptime(from_date, "%Y-%m-%d %H:%M:%S")
+			time_difference = (tdelta.seconds/60/60)
+
+			normal_hour += flt(time_difference)
+			# frappe.throw(str(normal_hour))
+			if frappe.session.user == "Administrator":
+				frappe.msgprint("here 1")
+
+		# from_date > 8 and to_date < 00
+		elif datetime.strptime(from_date, "%Y-%m-%d %H:%M:%S") >= datetime.strptime(from_date.split(" ")[0]+" 08:00:00","%Y-%m-%d %H:%M:%S") and datetime.strptime(to_date, "%Y-%m-%d %H:%M:%S") <= datetime.strptime(from_date.split(" ")[0]+" 23:59:59","%Y-%m-%d %H:%M:%S"):
+			tdelta_one = datetime.strptime(to_date.split(" ")[0]+" 22:00:00","%Y-%m-%d %H:%M:%S") - datetime.strptime(from_date, "%Y-%m-%d %H:%M:%S")
+			tdelta_two = datetime.strptime(to_date, "%Y-%m-%d %H:%M:%S") - datetime.strptime(to_date.split(" ")[0]+" 21:59:59","%Y-%m-%d %H:%M:%S")
+			time_difference_one = (tdelta_one.seconds/60/60)
+			time_difference_two = (tdelta_two.seconds/60/60)
+			
+			normal_hour += flt(time_difference_one)
+			odd_hour += flt(time_difference_two)
+
+			if frappe.session.user == "Administrator":
+				frappe.throw("here 10: "+str(tdelta_one) +" <--> "+str(tdelta_two))
+
+		# from_date < 8 and to_date > 22
+		elif datetime.strptime(from_date, "%Y-%m-%d %H:%M:%S") <= datetime.strptime(from_date.split(" ")[0]+" 07:59:59","%Y-%m-%d %H:%M:%S") and datetime.strptime(to_date, "%Y-%m-%d %H:%M:%S") >= datetime.strptime(from_date.split(" ")[0]+" 22:00:00","%Y-%m-%d %H:%M:%S"):
+			tdelta = datetime.strptime(to_date.split(" ")[0]+" 22:00:00", "%Y-%m-%d %H:%M:%S") - datetime.strptime(from_date.split(" ")[0]+" 08:00:00", "%Y-%m-%d %H:%M:%S")
+			tdelta_one = datetime.strptime(to_date,"%Y-%m-%d %H:%M:%S") - datetime.strptime(to_date.split(" ")[0]+" 22:00:00", "%Y-%m-%d %H:%M:%S")
+			tdelta_two = datetime.strptime(from_date.split(" ")[0]+" 08:00:00", "%Y-%m-%d %H:%M:%S") - datetime.strptime(from_date,"%Y-%m-%d %H:%M:%S")
+			
+			time_difference = (tdelta.seconds/60/60)
+			time_difference_one = (tdelta_one.seconds/60/60)
+			time_difference_two = (tdelta_two.seconds/60/60)
+
+			normal_hour += flt(time_difference)
+			odd_hour += flt(time_difference_one) + flt(time_difference_two)
+			
+			if frappe.session.user == "Administrator":
+				frappe.msgprint("here 10: "+str(tdelta_one) +" <--> "+str(tdelta_two) +" <--> "+str(tdelta))
+
+		# from_date < 8 am and to_date < 10 pm
+		elif datetime.strptime(from_date, "%Y-%m-%d %H:%M:%S") <= datetime.strptime(from_date.split(" ")[0]+" 07:59:59","%Y-%m-%d %H:%M:%S") and datetime.strptime(to_date, "%Y-%m-%d %H:%M:%S") <= datetime.strptime(from_date.split(" ")[0]+" 21:59:59","%Y-%m-%d %H:%M:%S"):
+			tdelta = datetime.strptime(to_date,"%Y-%m-%d %H:%M:%S") - datetime.strptime(from_date.split(" ")[0]+" 08:00:00", "%Y-%m-%d %H:%M:%S")
+			tdelta_one = datetime.strptime(to_date.split(" ")[0]+" 08:00:00", "%Y-%m-%d %H:%M:%S") - datetime.strptime(from_date,"%Y-%m-%d %H:%M:%S")
+			time_difference = (tdelta.seconds/60/60)
+			time_difference_one = (tdelta_one.seconds/60/60)
+
+			normal_hour += flt(time_difference)
+			odd_hour += flt(time_difference_one)
+			
+			if frappe.session.user == "Administrator":
+				frappe.msgprint("here 11 "+str(tdelta) +" <--> "+str(tdelta_one))
+
+		elif datetime.strptime(from_date, "%Y-%m-%d %H:%M:%S") <= datetime.strptime(from_date.split(" ")[0]+" 07:59:59","%Y-%m-%d %H:%M:%S") and datetime.strptime(to_date, "%Y-%m-%d %H:%M:%S") <= datetime.strptime(from_date.split(" ")[0]+" 23:59:59","%Y-%m-%d %H:%M:%S"):
+			tdelta = datetime.strptime(to_date.split(" ")[0]+" 22:00:00", "%Y-%m-%d %H:%M:%S") - datetime.strptime(from_date.split(" ")[0]+" 08:00:00", "%Y-%m-%d %H:%M:%S")
+			tdelta_one = datetime.strptime(to_date.split(" ")[0]+" 08:00:00", "%Y-%m-%d %H:%M:%S") - datetime.strptime(from_date,"%Y-%m-%d %H:%M:%S")
+			tdelta_two = datetime.strptime(from_date.split(" ")[0]+" 23:59:59", "%Y-%m-%d %H:%M:%S") - datetime.strptime(to_date,"%Y-%m-%d %H:%M:%S")
+			time_difference_one = (tdelta_one.seconds/60/60)
+			time_difference_two = (tdelta_two.seconds/60/60)
+
+			normal_hour += flt(tdelta)
+			odd_hour += flt(time_difference_two) + flt(time_difference_one)
+
+			if frappe.session.user == "Administrator":
+				frappe.msgprint("here 12: "+str(tdelta_one) +" <--> "+str(tdelta_two) +" <--> "+str(tdelta))
+
+
+	
 	basic = frappe.db.sql("select b.eligible_for_overtime_and_payment, a.amount as basic_pay from `tabSalary Detail` a, `tabSalary Structure` b where a.parent = b.name and a.salary_component = 'Basic Pay' and b.is_active = 'Yes' and b.employee = \'" + str(employee) + "\'", as_dict=True)
 	if basic:
 		# if not cint(basic[0].eligible_for_overtime_and_payment):
 		# 	if not frappe.db.get_value("Employee Grade", frappe.db.get_value("Employee", employee, "grade"), "eligible_for_overtime"):
 		# 		frappe.throw(_("Employee is not eligible for Overtime"))
 		
-		no_of_days_in_month = date_diff(get_last_day(getdate(posting_date)),get_first_day(getdate(posting_date)))+1
+		# no_of_days_in_month = date_diff(get_last_day(getdate(posting_date)),get_first_day(getdate(posting_date)))+1
 
 		# hourly_rate: basic pay / number of days in month * 7.5 (*1.5 on holidays)
-		if is_holiday(employee=employee, date=posting_date):
-			return ((flt(basic[0].basic_pay) * 1.5) / (no_of_days_in_month * 7.5))
-		else:
-			return (flt(basic[0].basic_pay) / (no_of_days_in_month * 7.5))
+		# if is_holiday(employee=employee, date=posting_date):
+		# 	return ((flt(basic[0].basic_pay) * 1.5) / (no_of_days_in_month * 7.5))
+		# else:
+		# 	return (flt(basic[0].basic_pay) / (no_of_days_in_month * 7.5))
+		
+		normal_hour_rate = flt(basic[0].basic_pay)/flt(240)
+		odd_hour_rate = flt(basic[0].basic_pay)/flt(240) * 1.5
+		amount = (normal_hour_rate * normal_hour) + (odd_hour_rate * odd_hour)
+		return normal_hour_rate, odd_hour_rate, normal_hour, odd_hour, amount
 	else:
 		frappe.throw("No Salary Structure found for the employee")
 
