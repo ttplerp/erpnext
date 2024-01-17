@@ -153,8 +153,7 @@
   {
    "fieldname": "mobile_no",
    "fieldtype": "Data",
-   "label": "Mobile No",
-   "reqd": 1
+   "label": "Mobile No"
   },
   {
    "fieldname": "telephone_office",
@@ -460,7 +459,7 @@
  "is_submittable": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2024-01-15 16:38:11.279250",
+ "modified": "2024-01-17 10:17:40.653049",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Housing Application",
