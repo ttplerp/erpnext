@@ -117,17 +117,17 @@ class RentalPayment(AccountsController):
 			if self.is_opening == 'No':
 				a.pre_rent_amount = flt(a.pre_rent_amount_received + a.tds_pre_rent_amount, 2)
 			
-			rent_received_amt = flt(a.rent_received) + flt(a.tds_amount) + flt(a.discount_amount)
-			if a.rent_write_off:
-				a.balance_rent = round(a.bill_amount) - round(a.rent_received) - round(a.tds_amount) - round(a.discount_amount) - round(a.rent_write_off_amount)
-			else:
-				a.balance_rent = round(a.bill_amount) - round(a.rent_received) - round(a.tds_amount) - round(a.discount_amount)
-				# frappe.throw(str(a.balance_rent))
-			if flt(rent_received_amt) > flt(a.bill_amount):
-				a.rent_received = flt(a.bill_amount) - flt(a.tds_amount) - flt(a.discount_amount)
-				a.balance_rent = flt(a.bill_amount) - flt(a.rent_received) - flt(a.tds_amount) - flt(a.discount_amount)
-				
-				frappe.msgprint("Rent Received amount is changed to {} as the total of Rent receive + Discount + TDS cannot be more than Bill Amount {} for tenant {}".format(a.rent_received, a.bill_amount, a.tenant_name))
+				rent_received_amt = flt(a.rent_received) + flt(a.tds_amount) + flt(a.discount_amount)
+				if a.rent_write_off:
+					a.balance_rent = round(a.bill_amount) - round(a.rent_received) - round(a.tds_amount) - round(a.discount_amount) - round(a.rent_write_off_amount)
+				else:
+					a.balance_rent = round(a.bill_amount) - round(a.rent_received) - round(a.tds_amount) - round(a.discount_amount)
+					# frappe.throw(str(a.balance_rent))
+				if flt(rent_received_amt) > flt(a.bill_amount):
+					a.rent_received = flt(a.bill_amount) - flt(a.tds_amount) - flt(a.discount_amount)
+					a.balance_rent = flt(a.bill_amount) - flt(a.rent_received) - flt(a.tds_amount) - flt(a.discount_amount)
+					
+					frappe.msgprint("Rent Received amount is changed to {} as the total of Rent receive + Discount + TDS cannot be more than Bill Amount {} for tenant {}".format(a.rent_received, a.bill_amount, a.tenant_name))
 			a.total_amount_received = flt(a.rent_received) + flt(a.security_deposit_amount) + flt(a.penalty) + flt(a.excess_amount) + flt(a.pre_rent_amount_received)
 			# frappe.throw("not here! check on balance rent")
 			""" commented below code to enable opening accumulated rent receive in chunks with excess amount. for time being. """
@@ -187,6 +187,7 @@ class RentalPayment(AccountsController):
 		pre_rent_account = frappe.db.get_single_value("Rental Account Setting", "pre_rent_account")
 		excess_payment_account = frappe.db.get_single_value("Rental Account Setting", "excess_payment_account")
 		security_deposit_account = frappe.db.get_single_value("Rental Account Setting", "security_deposit_account")
+		debtor_rental = frappe.db.get_single_value("Rental Account Setting", "revenue_claim_account")
 		debit_account = 'Clearing Account - NHDCL'
 		voucher_type = "Journal Entry"
 		voucher_series = "Journal Voucher"
@@ -245,6 +246,17 @@ class RentalPayment(AccountsController):
 				je.append("accounts", {
 					"account": excess_payment_account,
 					"credit_in_account_currency": i.excess_amount,
+					"cost_center": cost_center,
+					"reference_type": "Rental Payment",
+					"reference_name": self.name,
+					"party_type": 'Customer',
+					"party": i.customer,
+					"business_activity": business_activity,
+				})
+			if i.rent_received > 0:
+				je.append("accounts", {
+					"account": debtor_rental,
+					"credit_in_account_currency": i.rent_received,
 					"cost_center": cost_center,
 					"reference_type": "Rental Payment",
 					"reference_name": self.name,
