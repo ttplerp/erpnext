@@ -24,7 +24,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2024-01-15 23:00:36.118472",
+ "modified": "2024-01-18 15:30:42.139688",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "online-housing-application",
@@ -543,7 +543,7 @@
   {
    "allow_read_on_all_link_options": 0,
    "fieldname": "date_of_birth",
-   "fieldtype": "Date",
+   "fieldtype": "Data",
    "hidden": 0,
    "label": "Date of Birth",
    "max_length": 0,
