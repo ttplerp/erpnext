@@ -205,7 +205,7 @@ class RentalPayment(AccountsController):
 			"user_remark": remarks_str if remarks_str else f"Note: Opening Entry - {self.name}",
 			"posting_date": self.posting_date,
 			"company": self.company,
-			"is_opening:": "Yes",
+			"is_opening": "Yes",
 			"total_amount_in_words": money_in_words(self.total_amount_received),
 			"branch": self.branch
 		})
