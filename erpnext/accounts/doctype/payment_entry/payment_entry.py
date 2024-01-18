@@ -985,21 +985,23 @@ class PaymentEntry(AccountsController):
 						item=self,
 					)
 				)
-		# if self.mode_of_payment !="Adjustment":
-		# 	gl_entries.append(
-		# 		self.get_gl_dict(
-		# 			{
-		# 				"account": self.paid_to,
-		# 				"account_currency": self.paid_to_account_currency,
-		# 				"against": self.party,
-		# 				"debit_in_account_currency": self.total_allocated_amount,
-		# 				"debit": self.total_allocated_amount,
-		# 				"cost_center": self.cost_center,
-		# 				"post_net_value": True,
-		# 			},
-		# 			item=self,
-		# 		)
-		# 	)
+		if self.mode_of_payment =="Adjustment" and not self.deductions:
+			gl_entries.append(
+				self.get_gl_dict(
+					{
+						"account": self.paid_to,
+						"account_currency": self.paid_to_account_currency,
+						"party_type": self.adj_party_type,
+						"party": self.adj_party,
+						"against": self.adj_party,	
+						"debit_in_account_currency": self.total_allocated_amount,
+						"debit": self.total_allocated_amount,
+						"cost_center": self.cost_center,
+						"post_net_value": True,
+					},
+					item=self,
+				)
+			)
 
 	def add_tax_gl_entries(self, gl_entries):
 		for d in self.get("taxes"):

@@ -42,6 +42,10 @@
   "paid_to_account_type",
   "paid_to_account_currency",
   "paid_to_account_balance",
+  "adjustment_party_type_section",
+  "adj_party_type",
+  "column_break_39",
+  "adj_party",
   "payment_amounts_section",
   "paid_amount",
   "paid_amount_after_tax",
@@ -783,12 +787,34 @@
    "fieldtype": "Check",
    "hidden": 1,
    "label": "Avoid Cost Center Filter"
+  },
+  {
+   "depends_on": "eval: doc.mode_of_payment ==\"Adjustment\"",
+   "fieldname": "adjustment_party_type_section",
+   "fieldtype": "Section Break",
+   "label": "adjustment Party Type"
+  },
+  {
+   "fieldname": "adj_party_type",
+   "fieldtype": "Select",
+   "label": "Adjustment Party Type",
+   "options": "Customer\nSupplier"
+  },
+  {
+   "fieldname": "adj_party",
+   "fieldtype": "Dynamic Link",
+   "label": "Adjustment Party ",
+   "options": "adj_party_type"
+  },
+  {
+   "fieldname": "column_break_39",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-12-26 16:32:43.296765",
+ "modified": "2024-01-18 15:43:53.381422",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Payment Entry",
