@@ -544,7 +544,8 @@ class CustomWorkflow:
 
 		elif self.new_state.lower() == ("Verified By Supervisor".lower()):
 			if self.doc.supervisor != frappe.session.user:
-				frappe.throw("Only {} can Verify this Application".format(self.doc.supervisor_name))
+				if self.doc.owner != frappe.session.user:
+					frappe.throw("Only {} can Verify this Application".format(self.doc.supervisor_name))
 
 		elif self.new_state.lower() == ("Waiting Approval".lower()):
 			if self.doc.supervisor != frappe.session.user:
