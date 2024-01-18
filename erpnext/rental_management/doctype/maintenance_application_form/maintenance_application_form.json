@@ -189,9 +189,8 @@
   },
   {
    "fieldname": "technical_sanction",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "label": "Technical Sanction",
-   "options": "Technical Sanction",
    "read_only": 1
   },
   {
@@ -299,7 +298,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-12-18 10:24:40.781708",
+ "modified": "2024-01-18 09:51:39.264092",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Maintenance Application Form",
