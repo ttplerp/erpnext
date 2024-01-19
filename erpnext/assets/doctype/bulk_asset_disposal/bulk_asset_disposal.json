@@ -1,0 +1,128 @@
+{
+ "actions": [],
+ "autoname": "BAD.######",
+ "creation": "2024-01-19 16:33:30.000640",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "scrap_date",
+  "asset_category",
+  "branch",
+  "column_break_2",
+  "scrap",
+  "customer",
+  "section_break_4",
+  "item",
+  "amended_from",
+  "sales_invoice"
+ ],
+ "fields": [
+  {
+   "fieldname": "scrap_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Scrap Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "scrap",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Scrap/Sale",
+   "options": "\nScrap Asset",
+   "reqd": 1
+  },
+  {
+   "allow_bulk_edit": 1,
+   "fieldname": "item",
+   "fieldtype": "Table",
+   "options": "Bulk Asset Disposal Item"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_4",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "asset_category",
+   "fieldtype": "Link",
+   "label": "Asset Category",
+   "options": "Asset Category",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.scrap == \"Sale Asset\"",
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "depends_on": "eval:doc.scrap == \"Sale Asset\"",
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch"
+  },
+  {
+   "fieldname": "sales_invoice",
+   "fieldtype": "Link",
+   "label": "Sales Invoice",
+   "options": "Sales Invoice"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Bulk Asset Disposal",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-01-19 17:24:14.375895",
+ "modified_by": "Administrator",
+ "module": "Assets",
+ "name": "Bulk Asset Disposal",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Asset Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

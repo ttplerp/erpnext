@@ -339,9 +339,9 @@ def scrap_asset(asset_name,scrap_date=None):
 	)
 	# reset_asset_value_for_scrap_sales(asset_name, getdate(today()))
 	je = frappe.new_doc("Journal Entry")
-	je.voucher_type = "Depreciation Entry"
-	je.naming_series = depreciation_series
-	je.posting_date = today()
+	je.voucher_type = "Journal Entry"
+	# je.naming_series = depreciation_series
+	je.posting_date = scrap_date if scrap_date else nowdate()
 	je.company = asset.company
 	je.remark = "Scrap Entry for asset {0}".format(asset_name)
 	je.branch = asset.branch
@@ -352,11 +352,12 @@ def scrap_asset(asset_name,scrap_date=None):
 	je.flags.ignore_permissions = True
 	je.submit()
 
-	frappe.db.set_value("Asset", asset_name, "disposal_date", today())
+	frappe.db.set_value("Asset", asset_name, "disposal_date", scrap_date if scrap_date else nowdate())
 	frappe.db.set_value("Asset", asset_name, "journal_entry_for_scrap", je.name)
 	asset.set_status("Scrapped")
 
-
+	frappe.msgprint(_("Asset scrapped via Journal Entry {0}").format(je.name))
+	return je.name
 
 @frappe.whitelist()
 def restore_asset(asset_name):
