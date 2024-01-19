@@ -1,7 +1,6 @@
 {
  "actions": [],
- "allow_rename": 1,
- "autoname": "HCA.YY.MM.###",
+ "autoname": "HCA.YYYY.MM.####",
  "creation": "2023-12-01 11:18:05.391133",
  "default_view": "List",
  "doctype": "DocType",
@@ -21,6 +20,8 @@
   "customer_details",
   "supplier",
   "supplier_details",
+  "settle_imprest_advance_account",
+  "imprest_party",
   "section_break_10",
   "payment_type",
   "currency",
@@ -37,6 +38,12 @@
   "reference_no",
   "column_break_40",
   "reference_date",
+  "approver_details_section",
+  "approver",
+  "column_break_2qgpd",
+  "approver_name",
+  "column_break_lp9sm",
+  "approver_designation",
   "section_break_20",
   "remarks",
   "status",
@@ -45,6 +52,9 @@
   "journal_entry",
   "journal_entry_status",
   "column_break_jfixm",
+  "reference_doctype",
+  "reference_name",
+  "credit_account",
   "amended_from"
  ],
  "fields": [
@@ -86,12 +96,13 @@
    "fieldtype": "Column Break"
   },
   {
+   "default": "Supplier",
    "fieldname": "party_type",
-   "fieldtype": "Link",
+   "fieldtype": "Select",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Party Type",
-   "options": "DocType",
+   "options": "Supplier",
    "reqd": 1
   },
   {
@@ -107,7 +118,9 @@
    "fieldname": "advance_account",
    "fieldtype": "Link",
    "label": "Advance Account",
-   "options": "Account"
+   "options": "Account",
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "fieldname": "party_address",
@@ -322,12 +335,79 @@
   {
    "fieldname": "column_break_jfixm",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "label": "Reference Doctype",
+   "options": "DocType",
+   "read_only": 1
+  },
+  {
+   "fieldname": "reference_name",
+   "fieldtype": "Dynamic Link",
+   "label": "Reference Name",
+   "options": "reference_doctype",
+   "read_only": 1
+  },
+  {
+   "fieldname": "credit_account",
+   "fieldtype": "Link",
+   "label": "Credit Account",
+   "options": "Account",
+   "read_only": 1
+  },
+  {
+   "fieldname": "approver_details_section",
+   "fieldtype": "Section Break",
+   "label": "Approver Details"
+  },
+  {
+   "fieldname": "approver",
+   "fieldtype": "Link",
+   "label": "Approver",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_2qgpd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "approver_name",
+   "fieldtype": "Data",
+   "label": "Approver Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_lp9sm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "approver_designation",
+   "fieldtype": "Link",
+   "label": "Approver Designation",
+   "options": "Designation",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "settle_imprest_advance_account",
+   "fieldtype": "Check",
+   "label": " Settle Imprest Advance Account"
+  },
+  {
+   "depends_on": "settle_imprest_advance_account",
+   "fieldname": "imprest_party",
+   "fieldtype": "Link",
+   "label": "Imprest Party",
+   "options": "Employee"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-12-01 16:04:02.675244",
+ "modified": "2024-01-18 17:46:26.635749",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Hire Charge Advance",

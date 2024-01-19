@@ -17,6 +17,10 @@ frappe.ui.form.on('Hire Charge Advance', {
 		set_defaults(frm.doc);
 	},
 
+	party: function(frm) {
+		set_advance_account(frm.doc);
+	},
+
 	currency: function(frm){
 		update_advance_amount(frm);
 		set_exchange_rate_label(frm);
@@ -34,6 +38,13 @@ frappe.ui.form.on('Hire Charge Advance', {
 var set_defaults = function(frm) {
 	cur_frm.call({
 		method: "set_defaults",
+		doc: frm
+	})
+}
+
+var set_advance_account = function(frm) {
+	cur_frm.call({
+		method: "set_advance_account",
 		doc: frm
 	})
 }

@@ -8,11 +8,13 @@ from frappe.model.document import Document
 from erpnext.accounts.party import get_party_account
 from erpnext.setup.utils import get_exchange_rate
 from frappe.utils import flt, money_in_words, now_datetime, nowdate
+from erpnext.custom_workflow import validate_workflow_states, notify_workflow_states
 
 class HireChargeAdvance(Document):
-	def valiate(self):
+	def validate(self):
 		self.set_status()
 		self.set_defaults()
+		validate_workflow_states(self)
 
 	def on_submit(self):
 		if flt(self.advance_amount <= 0):
@@ -27,6 +29,13 @@ class HireChargeAdvance(Document):
 		}[str(self.docstatus or 0)]
 
 	@frappe.whitelist()
+	def set_advance_account(self):
+		if not self.advance_account:
+			self.advance_account = frappe.db.get_single_value("Maintenance Settings", "fuel_advance_account")
+			if not self.advance_account:
+				frappe.throw("Please set account in <strong>Maintenance Settings</strong>.")
+				
+	@frappe.whitelist()
 	def set_defaults(self):
 		if self.docstatus < 2:
 			self.journal_entry = None
@@ -37,8 +46,8 @@ class HireChargeAdvance(Document):
 			self.balance_amount = 0
 			self.payment_type  = "Receive" if self.party_type == "Customer" else "Pay"
 		
-		if not self.advance_account:
-			self.advance_account = get_party_account(self.party_type, self.party, self.company, is_advance=True)
+		# if not self.advance_account:
+		# 	self.advance_account = get_party_account(self.party_type, self.party, self.company, is_advance=True)
 
 		if self.company and not self.exchange_rate:
 			company_currency = erpnext.get_company_currency(self.company)
@@ -50,6 +59,23 @@ class HireChargeAdvance(Document):
 
 		if self.advance_amount_requested and not self.advance_amount:
 			self.advance_amount = flt(self.advance_amount_requested)*flt(self.exchange_rate)
+
+	def set_mode_of_payment(self):
+		if self.settle_imprest_advance_account:
+			return "Adjustment Entry"
+		else:
+			return "Online Payment"
+		
+	def set_voucher_type_and_series(self):
+		voucher = series = ''
+		if self.settle_imprest_advance_account:
+			voucher = "Journal Entry"
+			series = "Journal Voucher"
+		else:
+			voucher = "Bank Entry"
+			series = "Bank Receipt Voucher" if self.payment_type == "Receive" else "Bank Payment Voucher"
+		return voucher, series
+			
 	
 	def post_journal_entry(self):
 		if self.advance_account:
@@ -60,19 +86,29 @@ class HireChargeAdvance(Document):
 		adv_gl_det = frappe.db.get_value(doctype="Account", filters=adv_gl, fieldname=["account_type","is_an_advance_account"], as_dict=True)
 
 		# Fetching Revenue & Expense GLs
-		rev_gl, exp_gl = frappe.db.get_value("Branch",self.branch,["revenue_bank_account", "expense_bank_account"])
-		if self.payment_type == "Receive":
-			if not rev_gl:
-				frappe.throw(_("Revenue GL is not defined for this Branch '{0}'.").format(self.branch), title="Data Missing")
-			rev_gl_det = frappe.db.get_value(doctype="Account", filters=rev_gl, fieldname=["account_type","is_an_advance_account"], as_dict=True)
+		if self.settle_imprest_advance_account:
+			exp_gl = frappe.db.get_value("Company", self.company, "imprest_advance_account")			
 		else:
-			if not exp_gl:
-					frappe.throw(_("Expense GL is not defined for this Branch '{0}'.").format(self.branch), title="Data Missing")
-			exp_gl_det = frappe.db.get_value(doctype="Account", filters=exp_gl, fieldname=["account_type","is_an_advance_account"], as_dict=True)
+			if self.reference_doctype in ("POL Issue", "POL Receive"):
+				exp_gl = self.credit_account
+			else:
+				rev_gl, exp_gl = frappe.db.get_value("Branch",self.branch,["revenue_bank_account", "expense_bank_account"])
+				if self.payment_type == "Receive":
+					if not rev_gl:
+						frappe.throw(_("Revenue GL is not defined for this Branch '{0}'.").format(self.branch), title="Data Missing")
+					rev_gl_det = frappe.db.get_value(doctype="Account", filters=rev_gl, fieldname=["account_type","is_an_advance_account"], as_dict=True)
+				else:
+					if not exp_gl:
+						frappe.throw(_("Expense GL is not defined for this Branch '{0}'.").format(self.branch), title="Data Missing")
+		exp_gl_det = frappe.db.get_value(doctype="Account", filters=exp_gl, fieldname=["account_type","is_an_advance_account"], as_dict=True)
+
+		voucher_type, naming_series = self.set_voucher_type_and_series()
+		mode_of_payment = self.set_mode_of_payment()
 
 		# Posting Journal Entry
 		accounts = []
-		accounts.append({"account": adv_gl,
+		accounts.append({
+			"account": adv_gl,
 			"credit_in_account_currency" if self.party_type == "Customer" else "debit_in_account_currency": flt(self.advance_amount),
 			"cost_center": self.cost_center,
 			"party_check": 1,
@@ -93,21 +129,25 @@ class HireChargeAdvance(Document):
 				"is_advance": "Yes" if rev_gl_det.is_an_advance_account == 1 else "No",
 			})
 		else:
-			accounts.append({"account": exp_gl,
+			accounts.append({
+				"account": exp_gl,
 				"credit_in_account_currency": flt(self.advance_amount),
 				"cost_center": self.cost_center,
 				"party_check": 0,
 				"account_type": exp_gl_det.account_type,
 				"is_advance": "Yes" if exp_gl_det.is_an_advance_account == 1 else "No",
+				"party_type": "Employee" if self.settle_imprest_advance_account else "",
+				"party": self.imprest_party if self.settle_imprest_advance_account else "",
 			})
 
 		je = frappe.new_doc("Journal Entry")
 		
 		je.update({
 				"doctype": "Journal Entry",
-				"voucher_type": "Bank Entry",
-				"naming_series": "Bank Receipt Voucher" if self.payment_type == "Receive" else "Bank Payment Voucher",
+				"voucher_type": voucher_type,
+				"naming_series": naming_series,
 				"title": "Hire Charge Advance - "+self.name,
+                "mode_of_payment": mode_of_payment,
 				"user_remark": "Hire Charge Advance - "+self.name,
 				"posting_date": nowdate(),
 				"company": self.company,
