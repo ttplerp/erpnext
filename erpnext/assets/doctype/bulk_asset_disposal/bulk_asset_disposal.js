@@ -7,8 +7,8 @@ frappe.ui.form.on('Bulk Asset Disposal', {
 			return {
 				filters: {
 					asset_category:doc.asset_category,
-					// status: ["not in", ["Draft","Sold","Scrapped","Submitted","Cancelled"]],
-					status: ["in", ["Fully Depreciated"]],
+					status: ["not in", ["Draft","Sold","Scrapped","Submitted","Cancelled"]],
+					// status: ["in", ["Fully Depreciated"]],
 				}
 			}
 		})
