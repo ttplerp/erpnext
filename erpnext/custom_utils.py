@@ -457,21 +457,17 @@ def check_tds_remittance(transaction_id):
 
 
 #sending bulk email to housing applicants
-from frappe.utils import nowdate
+
 
 def send_bulk_email_nhdcl_housing_applicant():
-	current_date = nowdate()
-	desired_date = "2024-01-20" 
+	emails = frappe.db.sql("""SELECT email_id, name FROM `tabHousing Application` WHERE email_id IS NOT NULL AND mail_send = 0""",as_dict=True)
 	
-	if current_date == desired_date:
-		emails = frappe.db.sql("""select email_id from `tabHousing Application` where email_id IS NOT NULL""",as_dict=True)
-	
-		if emails:
-			for email in emails:
-				recipient_email = email.get('email_id')
-				# print(recipient_email)
-				subject = "Updating of Applicant details"
-				message = """
+	if emails:
+		for email in emails:
+			recipient_email = email.get('email_id')
+			# print(recipient_email)
+			subject = "Updating of Applicant details"
+			message = """
 				<html>
 		<head>
 			<style>
@@ -516,10 +512,22 @@ def send_bulk_email_nhdcl_housing_applicant():
 		</body>
 	</html>
 				"""
-				
-				frappe.sendmail(recipients=recipient_email, subject=subject, message=message)
-		else:
-			frappe.throw("No emails to send.")
+			frappe.sendmail(recipients=recipient_email, subject=subject, message=message)
+
+			sql_query = """
+
+			UPDATE `tabHousing Application`
+        SET mail_send = 1
+        WHERE email_id IS NOT NULL AND name = %s;
+	
+		"""
+			try: 
+				frappe.db.sql(sql_query,(email.get('name')))
+			
+			except Exception as e:
+				frappe.msgprint(f"Error updating data: {str(e)}")
+			
 	else:
-		return
+			frappe.throw("No emails to send.")
+
 	
