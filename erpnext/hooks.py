@@ -387,6 +387,9 @@ auto_cancel_exempted_doctypes = [
 
 scheduler_events = {
 	"cron": {
+        #   "30 15 * * *": [
+        #     "erpnext.custom_utils.send_bulk_email_nhdcl_housing_applicant",
+        # ],
 		"0/5 * * * *": [
 			"erpnext.manufacturing.doctype.bom_update_log.bom_update_log.resume_bom_cost_update_jobs",
 		],
@@ -448,6 +451,7 @@ scheduler_events = {
 		"erpnext.loan_management.doctype.process_loan_security_shortfall.process_loan_security_shortfall.create_process_loan_security_shortfall",
 		"erpnext.loan_management.doctype.process_loan_interest_accrual.process_loan_interest_accrual.process_loan_interest_accrual_for_term_loans",
 		"erpnext.crm.utils.open_leads_opportunities_based_on_todays_event",
+        "erpnext.custom_utils.send_bulk_email_nhdcl_housing_applicant",
 	],
 	"monthly_long": [
 		"erpnext.accounts.deferred_revenue.process_deferred_accounting",
