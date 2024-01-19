@@ -135,11 +135,11 @@ def generate_receipt_no(doctype, docname, branch, fiscal_year):
 #  get_prev_doc() function added by SHIV on 03/22/2018
 ##
 @frappe.whitelist()
-def get_prev_doc(doctype,docname,col_list=""):
+def get_prev_doc(doctype, docname, col_list=""):
 	if col_list:
-		return frappe.db.get_value(doctype,docname,col_list.split(","),as_dict=1)
+		return frappe.db.get_value(doctype, docname, col_list.split(","), as_dict=1)
 	else:
-		return frappe.get_doc(doctype,docname)
+		return frappe.get_doc(doctype, docname)
 
 ##
 # Prepre the basic stock ledger 
@@ -454,3 +454,64 @@ def check_tds_remittance(transaction_id):
 	value = frappe.db.sql("""select parent from `tabTDS Remittance Item` where docstatus=1 and invoice_no='{}'""".format(transaction_id))
 	if value:
 		frappe.throw("Linked to {} cannot cancel this transaction.".format(frappe.get_desk_link("TDS Remittance", value[0][0])))
+
+
+#sending bulk email to housing applicants
+
+def send_bulk_email_nhdcl_housing_applicant():
+	emails = frappe.db.sql("""select email_id from `tabHousing Application` where email_id IS NOT NULL""",as_dict=True)
+	
+	if emails:
+		for email in emails:
+			recipient_email = email.get('email_id')
+			# print(recipient_email)
+			subject = "Updating of Applicant details"
+			message = """
+			<html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                line-height: 1.6;
+            }
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+            .greeting {
+                color: #333;
+            }
+            .message {
+                margin-top: 20px;
+            }
+            .note {
+                margin-top: 20px;
+                color: #999;
+            }
+            .link {
+                margin-top: 20px;
+                color: #007BFF;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <p class="greeting">Sir/Madam,</p>
+            <p class="greeting">Warm Greetings from National Housing Development Corporation Limited (NHDCL)</p>
+            
+            <div class="message">
+                <p>This is to bring under your kind notice that NHDCL is soon going to launch an online application system for availing NHDCL units. In this regard, since your application is already with us, we would like to request you to update further required information so that we could update your details in the system to protect your seniority in the Application List.</p>
+                <p class="note"><strong>NOTE:</strong> Last date for update is on January 31st, 2024.</p>
+                <p class="link">For update, use the link below:</p>
+                <a href="https://erp.nhdcl.bt/housing-applicant's-detail-update/new" target="_blank">https://erp.nhdcl.bt/housing-applicant's-detail-update/new</a>
+            </div>
+            
+            <p class="greeting">Thank you with regards.</p>
+        </div>
+    </body>
+</html>
+			"""
+			
+			frappe.sendmail(recipients=recipient_email, subject=subject, message=message)
+	else:
+		frappe.throw("No emails to send.")
