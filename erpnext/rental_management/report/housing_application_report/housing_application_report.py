@@ -89,7 +89,19 @@ def get_columns():
         },
      {
             'fieldname': 'gross_salary',
-            'label': 'Gross Salary',
+            'label': 'Applicant Gross Salary',
+            'fieldtype': 'Int',
+            'options': 'Gross Salary'
+        },
+      {
+            'fieldname': 'spouse_gross_salary',
+            'label': 'Spouse Gross Salary',
+            'fieldtype': 'Int',
+            'options': 'Gross Salary'
+        },
+     {
+            'fieldname': 'total_gross_salary',
+            'label': 'Total Gross Salary',
             'fieldtype': 'Int',
             'options': 'Gross Salary'
         },
@@ -224,7 +236,8 @@ def get_data(filters):
     # data = frappe.db.get_all("Housing Application",fields=get_fields_name(), filters = conditions)
     # return data
     query = """
-                     SELECT *
+                     SELECT *,
+                     gross_salary + spouse_gross_salary AS total_gross_salary
         
            FROM `tabHousing Application`
            WHERE {conditions}""".format(conditions = conditions)
