@@ -21,7 +21,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2024-01-22 11:06:30.372747",
+ "modified": "2024-01-22 12:48:19.576339",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "housing-applicants-detail-update",
@@ -56,6 +56,7 @@
    "max_length": 0,
    "max_value": 0,
    "read_only": 1,
+   "read_only_depends_on": "",
    "reqd": 0,
    "show_in_filter": 0
   },
@@ -88,12 +89,13 @@
   {
    "allow_read_on_all_link_options": 0,
    "fieldname": "application_date_and_time",
-   "fieldtype": "Date",
+   "fieldtype": "Data",
    "hidden": 0,
    "label": "Application Date",
    "max_length": 0,
    "max_value": 0,
    "read_only": 1,
+   "read_only_depends_on": "eval:1",
    "reqd": 0,
    "show_in_filter": 0
   },

@@ -8,6 +8,9 @@ frappe.ready(function() {
 	//Setting date and time to now
 	var today = frappe.datetime.get_today();
 	$('[data-fieldname="application_date_and_time"]').val(today);
+	frappe.web_form.set_value('application_date_and_time',today);
+	
+
 
 	//checking if cid exist in Housing application
 
@@ -23,7 +26,8 @@ frappe.ready(function() {
 	        typingTimer = setTimeout(() => {
 	            //  frappe.throw(inputValue);
 				console.log(inputValue)
-				checkCidExistence(inputValue)
+				checkCidExistence(inputValue);
+				
 				
 	        }, timeoutDuration);
 		});
