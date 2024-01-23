@@ -556,6 +556,7 @@ regional_overrides = {
 }
 
 has_permission = {
+    "eNote": "erpnext.enote.doctype.enote.enote.get_permission_query_conditions",
 	# "Material Request":"erpnext.stock.doctype.material_request.material_request.has_record_permission", 
 	"Employee": "erpnext.setup.doctype.employee.employee.has_record_permission",
 	"Salary Structure": "hrms.payroll.doctype.salary_structure.salary_structure.has_record_permission",
@@ -565,6 +566,7 @@ has_permission = {
 }
 
 permission_query_conditions = {
+    "eNote": "erpnext.enote.doctype.enote.enote.get_permission_query_conditions",
 	"Asset": "erpnext.assets.doctype.asset.asset.get_permission_query_conditions",
 	"Journal Entry": "erpnext.accounts.doctype.journal_entry.journal_entry.get_permission_query_conditions",
 	"Payment Entry": "erpnext.accounts.doctype.payment_entry.payment_entry.get_permission_query_conditions",
