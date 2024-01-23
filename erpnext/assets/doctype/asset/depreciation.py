@@ -195,8 +195,8 @@ def reset_asset_value_for_scrap_sales(asset_name, posting_date):
 
 		reverse_start_date = posting_date
 
-	if getdate(posting_date) < getdate(frappe.defaults.get_user_default("year_start_date")):
-		frappe.throw(_("Asset Sales and Scrap date should be within the current fiscal year"))
+	# if getdate(posting_date) < getdate(frappe.defaults.get_user_default("year_start_date")):
+	# 	frappe.throw(_("Asset Sales and Scrap date should be within the current fiscal year"))
 	
 	schedules = frappe.db.sql('''SELECT name, journal_entry, depreciation_amount 
 								FROM `tabDepreciation Schedule` 
