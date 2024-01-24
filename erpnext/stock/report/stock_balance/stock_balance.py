@@ -352,6 +352,9 @@ def get_item_warehouse_map(filters: StockBalanceFilter, sle: List[SLEntry]):
 
 	inventory_dimensions = get_inventory_dimension_fields()
 
+	mines_product = frappe.db.sql("select name, item_name from `tabItem` where item_group = 'Mines Product'", as_dict=1)
+	item_codes = {d['name'] for d in mines_product}
+
 	for d in sle:
 		group_by_key = get_group_by_key(d, filters, inventory_dimensions)
 		if group_by_key not in iwb_map:
@@ -398,7 +401,11 @@ def get_item_warehouse_map(filters: StockBalanceFilter, sle: List[SLEntry]):
 
 		qty_dict.val_rate = d.valuation_rate
 		qty_dict.bal_qty += qty_diff
-		qty_dict.bal_val += value_diff
+		
+		if d.item_code in item_codes:
+			qty_dict.bal_val = 0
+		else:
+			qty_dict.bal_val += value_diff
 
 	iwb_map = filter_items_with_no_transactions(iwb_map, float_precision, inventory_dimensions)
 

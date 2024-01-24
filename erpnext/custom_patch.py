@@ -4,6 +4,62 @@ import pandas as pd
 import csv
 from frappe.utils import flt, cint, nowdate, getdate, formatdate
 import math
+
+from erpnext.integrations.bps import process_files
+
+def delete_cogm_gl():
+    # Fetch voucher_no values to delete
+    voucher_nos = frappe.db.sql_list("""
+        SELECT voucher_no
+        FROM `tabGL Entry`
+        WHERE account = 'Cost of Goods Manufactured - SMCL' AND posting_date <= '2023-12-31'
+        GROUP BY voucher_no
+        LIMIT 7500
+    """)
+
+    # Delete records based on voucher_no
+    count = frappe.db.sql("""
+        DELETE FROM `tabGL Entry`
+        WHERE voucher_no IN (%s)
+    """ % ', '.join(['%s'] * len(voucher_nos)), tuple(voucher_nos), as_dict=1)
+
+    print("DONE: Deleted {} records.".format(count))
+
+def delete_mines_inventory_gl():
+    accounts = [
+        'CDM Warehouse 3 - Lhamokhola Crusher - SMCL',
+        'CDM Warehouse 4 - Lhamokhola Stockyard - SMCL',
+        'Chamkar Consumable Warehouse - SMCL',
+        'Chunaikhola Dolomite Mine Warehouse - SMCL - SMCL',
+		'DSQ Warehouse 1 - Dzongthung Crusher - SMCL',
+		'DSQ Warehouse 2 - Dzungdi Crusher - SMCL',
+		'DSQ Warehouse 2 - Dzungdi Crusher - SMCL',
+		'Khothakpa Gypsum Mine - SMCL',
+		'Motanga Stockyard - SMCL',
+		'Rangia Stockyard - SMCL',
+		'Rishore Coal Warehouse - SMCL',
+		'Round Off - SMCL',
+		'Samdrup Jongkhar Gypsum Stockyard - SMCL',
+		'Tshophangma Coal Warehouse - SMCL'
+    ]
+
+    # Use a single SQL DELETE statement with an IN clause
+    frappe.db.sql("""
+        DELETE FROM `tabGL Entry`
+        WHERE account IN (%s)
+        AND posting_date BETWEEN '2023-01-01' AND '2023-12-31'
+    """ % ', '.join(['%s'] * len(accounts)), tuple(accounts))
+
+    print('DONE')
+
+def test_bank_payment():
+	# ack_file = "/home/frappe/erp/apps/erpnext/PEMSPAY_20231127_SL2023112700000003_VALERR.csv"
+	# file_name = 'PEMSPAY_20231127_SL2023112700000003.csv'
+	# file_status = 'Failed'
+	# bank ='BOBL'
+	doc = frappe.get_doc("Bank Payment", "BPO23110306")
+	doc.append_bank_response_in_bpi()
+
 #change
 def update_salary_structure():
 	count = 1
