@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "autoname": "format:AVD-{YY}-{MM}-{####}",
  "creation": "2018-05-11 00:22:43.695151",
  "doctype": "DocType",
@@ -161,7 +162,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-11-09 16:42:41.627456",
+ "modified": "2024-01-24 12:17:53.312410",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset Value Adjustment",
