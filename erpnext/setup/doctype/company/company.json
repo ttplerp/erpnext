@@ -129,6 +129,10 @@
   "salary_advance_account",
   "employee_loan_account",
   "imprest_advance_account",
+  "muster_roll_account_settings_section",
+  "foreign_worker_advance_account",
+  "column_break_7v1n9",
+  "national_worker_advance_account",
   "other_settings_tab",
   "budget_detail",
   "exception_budget_approver_role",
@@ -1147,6 +1151,27 @@
    "fieldtype": "Link",
    "label": "Fines And Penalties",
    "options": "Account"
+  },
+  {
+   "fieldname": "muster_roll_account_settings_section",
+   "fieldtype": "Section Break",
+   "label": "Muster Roll Account Settings"
+  },
+  {
+   "fieldname": "foreign_worker_advance_account",
+   "fieldtype": "Link",
+   "label": "Foreign Worker Advance Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "column_break_7v1n9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "national_worker_advance_account",
+   "fieldtype": "Link",
+   "label": "National Worker Advance Account",
+   "options": "Account"
   }
  ],
  "icon": "fa fa-building",
@@ -1154,7 +1179,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2023-12-14 11:04:15.454251",
+ "modified": "2024-01-25 11:00:13.919568",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",
