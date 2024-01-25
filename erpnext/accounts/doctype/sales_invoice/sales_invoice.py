@@ -182,6 +182,7 @@ class SalesInvoice(SellingController):
 		for d in self.other_charges:
 			total_charges += flt(d.amount)
 		self.total_charges = total_charges
+	
 	def validate_fixed_asset(self):
 		for d in self.get("items"):
 			if d.is_fixed_asset and d.meta.get_field("asset") and d.asset:
@@ -400,6 +401,27 @@ class SalesInvoice(SellingController):
 			"Repost Item Valuation",
 			"Payment Ledger Entry",
 		)
+		self.reverse_asset_sale_je()
+
+	def reverse_asset_sale_je(self):
+		for item in self.get("items"):
+			if flt(item.base_net_amount, item.precision("base_net_amount")):
+				if item.is_fixed_asset:
+					asset = self.get_asset(item)
+
+					fixed_asset_gl_entries = get_gl_entries_on_asset_regain(
+						asset, item.base_net_amount, item.finance_book
+					)
+					asset.db_set("disposal_date", None)
+
+					if asset.calculate_depreciation:
+						self.reverse_depreciation_entry_made_after_sale(asset)
+						self.reset_depreciation_schedule(asset)
+					
+					for gle in fixed_asset_gl_entries:
+						gle["against"] = self.customer
+
+					self.set_asset_status(asset)
 
 	def update_status_updater_args(self):
 		if cint(self.update_stock):
