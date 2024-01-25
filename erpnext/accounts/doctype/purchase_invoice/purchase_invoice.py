@@ -84,6 +84,7 @@ class PurchaseInvoice(BuyingController):
 			self.is_opening = "No"
 
 		self.validate_posting_time()
+		self.validate_purchase_order()
 
 		super(PurchaseInvoice, self).validate()
 
@@ -128,7 +129,10 @@ class PurchaseInvoice(BuyingController):
 	def validate_release_date(self):
 		if self.release_date and getdate(nowdate()) >= getdate(self.release_date):
 			frappe.throw(_("Release date must be in the future"))
-
+	def validate_purchase_order(self):
+		for row in self.get("items"):
+			if not row.purchase_receipt:
+				frappe.throw("Cannot create PI from PO it can only be done from PR")
 	def validate_cash(self):
 		if not self.cash_bank_account and flt(self.paid_amount):
 			frappe.throw(_("Cash or Bank Account is mandatory for making payment entry"))
