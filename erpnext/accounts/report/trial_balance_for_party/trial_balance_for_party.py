@@ -108,6 +108,7 @@ def get_balances(filters):
 		where company='{company}' 
 		and ifnull(party_type, '') = '{party_type}' and ifnull(party, '') != ''
 		and posting_date <= '{to_date}'
+		and is_cancelled = 0
 		{cond}
 		group by {group_by}""".format(
 					company = filters.company,
