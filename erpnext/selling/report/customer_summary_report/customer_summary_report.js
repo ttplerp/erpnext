@@ -44,12 +44,5 @@ frappe.query_reports["Customer Summary Report"] = {
 			"fieldtype": "Link",
 			"options": "Country"
 		},
-		// {
-		// 	"fieldname": "cost_center",
-		// 	"label": __("Cost Center"),
-		// 	"fieldtype": "Link",
-		// 	"options": "Cost Center",
-		// 	// "get_query": function() {return {'filters': [['Cost Center', 'is_disabled', '!=', '1']]}}
-		// }
 	]
 };

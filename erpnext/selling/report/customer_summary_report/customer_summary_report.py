@@ -34,39 +34,17 @@ def get_columns(filters):
 			"width": 100
 		},
 		{
-			"fieldname": "item_code",
-			"label": "ITEM CODE",
-			"fieldtype": "Link",
-			"options": "Item",
+			"fieldname": "customer_type",
+			"label": "Customer Type",
+			"fieldtype": "Data",
 			"width": 100
 		},
-		{
-			"fieldname": "item_name",
-			"label": "ITEM 	NAME",
-			"fieldtype": "data",
-			"width": 150
-		},
-		{
-			"fieldname": "item_type",
-			"label": "ITEM  TYPE",
-			"fieldtype": "Link",
-			"options": "Item Type",
-			"width": 150
-		},
-
 		{
 			"fieldname": "opening",
 			"label": "OPENING",
 			"fieldtype": "Currency",
 			"options": "currency",
 			"width": 150
-		},
-		{
-			"fieldname": "qty",
-			"label": "QUANTITY SOLD",
-			"fieldtype": "Float",
-			"fieldtype": "data",
-			"width": 120
 		},
 		{
 			"fieldname": "billed_amount",
@@ -94,40 +72,60 @@ def get_columns(filters):
 def get_data(filters):
 	data = []
 	row = []
-	query = """ select si.name, si.customer, sii.item_code, sii.item_name, sii.item_type, sum(case when si.posting_date < '{from_date}' then ifnull(si.outstanding_amount, 0) else 0 end) as opening, sum(case when si.posting_date between '{from_date}' and '{to_date}' then ifnull(sii.accepted_qty, 0) else 0 end) as accepted_qty, sum(case when si.posting_date between '{from_date}' and '{to_date}' then ifnull(sii.amount + sii.excess_amt + si.total_charges + sii.normal_loss_amt + sii.abnormal_loss_amt, 0) else 0 end) as billed_amount from `tabSales Invoice` si, `tabSales Invoice Item` sii where sii.parent = si.name and si.docstatus = 1""".format(from_date = filters.from_date, to_date = filters.to_date)
-	if filters.item_code:
-		query += " and sii.item_code = '{0}'".format(filters.item_code)
+	cus_list = frappe.db.sql("""
+			select name from `tabCustomer` where disabled != 1
+		""",as_dict=True)
+	for q in cus_list:
+		query = """ select sum(case when si.posting_date between '{from_date}' and '{to_date}' then ifnull(sii.amount + sii.excess_amt + si.total_charges + sii.normal_loss_amt + sii.abnormal_loss_amt, 0) else 0 end) as billed_amount from `tabSales Invoice` si, `tabSales Invoice Item` sii where sii.parent = si.name and si.docstatus = 1 and si.customer="{customer}" """.format(from_date = filters.from_date, to_date = filters.to_date, customer=q.name)
+		
+		if filters.item_code:
+			query += " and sii.item_code = '{0}'".format(filters.item_code)
 
-	if filters.cost_center:
-		query += " and si.cost_center = '{0}'".format(filters.cost_center)
+		if filters.country:
+			query += " and exists ( select 1 from `tabCustomer` where country = '{0}') ".format(filters.country)
 
-	if filters.country:
-		query += " and exists ( select 1 from `tabCustomer` where country = '{0}') ".format(filters.country)
+		if filters.item_type:
+			query += " and sii.item_type = '{0}'".format(filters.item_type)
 
-	if filters.item_type:
-		query += " and sii.item_type = '{0}'".format(filters.item_type)
+		# query += " group by si.customer, sii.item_code"
+		dat = frappe.db.sql(query, as_dict = 1)
 
-	query += " group by si.customer, sii.item_code"
-	dat = frappe.db.sql(query, as_dict = 1)
-	for d in dat:
-		territory, country = get_customer_details(filters, d.customer)
-		received_amount = payment_details(filters, d.name)
-		closing_amt =  flt(d.opening) + flt(d.billed_amount) - flt(received_amount)	
-		if flt(d.opening) + flt(d.accepted_qty) + flt(d.billed_amount) + flt(received_amount) + flt(closing_amt) > 0:
-			row = [d.customer, country, territory, d.item_code, d.item_name, d.item_type, d.opening, d.accepted_qty, d.billed_amount, received_amount, closing_amt]
-			data.append(row)
+
+		for d in dat:
+			territory, country , customer_type = get_customer_details(filters, q.name)
+			openning_amount = get_openning_amount(filters, q.name)
+			received_amount = payment_details(filters, q.name)
+			closing_amt =  flt(openning_amount) + flt(d.billed_amount) - flt(received_amount)	
+			if flt(openning_amount) + flt(d.billed_amount) + flt(received_amount) + flt(closing_amt) != 0:
+				row = [q.name, country, territory,customer_type, openning_amount, d.billed_amount, received_amount, closing_amt]
+				data.append(row)
 	return data
 
 def get_customer_details(filters, customer):
-	cust = frappe.db.sql(""" select territory, country from `tabCustomer` where name = "{0}" """.format(customer), as_dict = 1)
+	cust = frappe.db.sql(""" select territory, country, customer_type from `tabCustomer` where name = "{0}" """.format(customer), as_dict = 1)
 	if cust:
-		return cust[0].territory, cust[0].country
+		return cust[0].territory, cust[0].country, cust[0].customer_type
 	else:
 		 return ''
-
-def payment_details(filters, sales_invoice = None):
-	payment = frappe.db.sql(""" select sum(ifnull(per.allocated_amount, 0)) as payment_received from `tabPayment Entry Reference` per, `tabPayment Entry` pe  where per.parent = pe.name and pe.posting_date between '{0}' and '{1}' and per.reference_name = "{2}" and pe.docstatus = 1 """.format(filters.from_date, filters.to_date, sales_invoice), as_dict = 1)
-	if payment:
-		return payment[0].payment_received
-	else:
-		return 0.0
+def get_openning_amount(filters, customer):
+	credit = debit =0
+	opening_data = frappe.db.sql("""
+			select debit as debit, credit as credit
+			from
+				`tabGL Entry`
+			where is_cancelled =0
+			and party_type='Customer'
+			and party='{0}'
+			and posting_date < '{1}'
+		""".format(customer,filters.from_date),as_dict=True)
+	for d in opening_data:
+		credit += flt(d.credit)
+		debit += flt(d.debit)
+	opening_amount =flt(debit)-flt(credit)
+	return opening_amount
+def payment_details(filters, party):
+	received_amount = 0
+	payment = frappe.db.sql("""select paid_amount from `tabPayment Entry`where party_type='Customer' and posting_date between '{0}' and '{1}' and party='{2}' and docstatus = 1 """.format(filters.from_date, filters.to_date,party), as_dict = 1)
+	for d in payment:
+		received_amount += d.paid_amount
+	return received_amount
