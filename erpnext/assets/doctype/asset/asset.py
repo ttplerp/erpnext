@@ -930,7 +930,7 @@ class Asset(AccountsController):
 				"cost_center": self.cost_center
 				})
 			je.submit()
-		if self.is_existing_asset:
+		if self.is_existing_asset and self.opening_accumulated_depreciation > 0:
 			je = frappe.new_doc("Journal Entry")
 			je.flags.ignore_permissions = 1 
 			je.update({

@@ -256,11 +256,9 @@
    "label": "Is Existing Asset"
   },
   {
-   "depends_on": "is_existing_asset",
    "fieldname": "opening_accumulated_depreciation",
    "fieldtype": "Currency",
    "label": "Opening Accumulated Depreciation",
-   "mandatory_depends_on": "is_existing_asset",
    "no_copy": 1,
    "options": "Company:company:default_currency"
   },
@@ -682,7 +680,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2023-04-23 00:51:30.287999",
+ "modified": "2024-01-25 14:35:55.487681",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",
