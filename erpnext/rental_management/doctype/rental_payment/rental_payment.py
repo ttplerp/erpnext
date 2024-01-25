@@ -31,6 +31,7 @@ class RentalPayment(AccountsController):
 		self.update_security_deposit_check(cancel=0)
 
 	def on_cancel(self):
+		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
 		if self.is_opening == 'No':
 			self.flags.ignore_links = True
 			if self.clearance_date:
