@@ -146,8 +146,8 @@ class JournalEntry(AccountsController):
         # Update Repair & Service Status
         if self.reference_type == "Repair And Service Invoice":
             self.update_repair_and_service_status(status="Paid")
-        # if self.reference_type == "Advance":
-        #     self.update_supplier_advance()
+        if self.reference_type == "Advance":
+            self.update_supplier_advance()
 
     def update_repair_and_service_status(self, status):
         if self.reference_doctype:
@@ -161,16 +161,69 @@ class JournalEntry(AccountsController):
                 )
             )
 
-    def update_supplier_advance(self):
+    def update_supplier_advance(self, cancel=None):
         ad_doc = frappe.get_doc("Advance", self.reference_doctype)
         supplier_doc = frappe.get_doc(ad_doc.party_type, ad_doc.party)
-        if supplier_doc.advances:
-            for ad in supplier_doc.advances:
-                frappe.db.sql(
-                    """
-					SELECT name, 
-				"""
-                )
+        cond = ""
+        if ad_doc.advance_type == "National Subcontractor Advance":
+            cond += " AND project = '{}'".format(ad_doc.project)
+        advances = frappe.db.sql(
+            """
+            SELECT 
+            	name, 
+                advance_type,
+                advance_account, 
+                advance_amount, 
+                balance_amount,
+                general_purpose,
+                advance_date
+			FROM 
+            	`tabAdvance Item` 
+			WHERE 
+            	advance_type = '{0}'
+                and parent = '{1}' {cond}
+		""".format(
+                ad_doc.advance_type, ad_doc.party, cond=cond
+            ),
+            as_dict=1,
+        )
+        if advances:
+            if cancel:
+                advance_amount = flt(advances[0].advance_amount - ad_doc.advance_amount)
+                balance_amount = flt(advances[0].balance_amount - ad_doc.advance_amount)
+                if advance_amount < 0 or balance_amount < 0:
+                    frappe.throw("Advance transaction already in use.")
+            else:
+                advance_amount = flt(advances[0].advance_amount + ad_doc.advance_amount)
+                balance_amount = flt(advances[0].balance_amount + ad_doc.advance_amount)
+            frappe.db.sql(
+                """
+				UPDATE
+					`tabAdvance Item` 
+                SET
+                    advance_amount = '{0}',
+                    balance_amount = '{1}'
+                WHERE name = '{2}' """.format(
+                    advance_amount, balance_amount, advances[0].name
+                ),
+                as_dict=1,
+            )
+        else:
+            supplier_doc.append(
+                "advances",
+                {
+                    "advance_amount": ad_doc.advance_amount,
+                    "balance_amount": ad_doc.advance_amount,
+                    "advance_type": ad_doc.advance_type,
+                    "advance_account": ad_doc.advance_account,
+                    "advance_date": ad_doc.advance_date,
+                    "project": ad_doc.project,
+                    "branch": ad_doc.branch,
+                    "cost_center": ad_doc.cost_center,
+                    "payment_type": ad_doc.payment_type,
+                },
+            )
+            supplier_doc.save(ignore_permissions=True)
 
     def on_cancel(self):
         from erpnext.accounts.utils import unlink_ref_doc_from_payment_entries
@@ -195,6 +248,8 @@ class JournalEntry(AccountsController):
         self.update_mr_employee_advance(cancel=self.docstatus == 2)
         if self.reference_type == "Repair And Service Invoice":
             self.update_repair_and_service_status(status="Unpaid")
+        if self.reference_type == "Advance":
+            self.update_supplier_advance(cancel=True)
 
     def update_hire_charge_advance(self, cancel=False):
         hire_charge_advance = frappe._dict()
@@ -239,7 +294,7 @@ class JournalEntry(AccountsController):
     def update_mr_employee_advance(self, cancel=False):
         mr_employee_advance = frappe._dict()
         for a in self.accounts:
-            if a.reference_type == "MR Employee Advance" and a.reference_name:
+            if a.reference_type == "Muster Roll Advance" and a.reference_name:
                 if mr_employee_advance in [a.reference_name]:
                     mr_employee_advance[a.reference_name]["credit"] += flt(a.credit)
                     mr_employee_advance[a.reference_name]["debit"] += flt(a.debit)
@@ -250,7 +305,7 @@ class JournalEntry(AccountsController):
 
         factor = 1
         for key, value in mr_employee_advance.items():
-            doc = frappe.get_doc("MR Employee Advance", key)
+            doc = frappe.get_doc("Muster Roll Advance", key)
             if cancel:
                 factor = -1
                 doc.journal_entry_status = "Cancelled on {0}".format(
@@ -286,6 +341,7 @@ class JournalEntry(AccountsController):
                     )
                     == 1
                     and self.mode_of_payment
+                    and self.mode_of_payment != "Adjustment Entry"
                 ):
                     frappe.throw("Mode of Payment not applicable for settlement transaction")
 
