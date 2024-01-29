@@ -3,9 +3,29 @@
 
 frappe.ui.form.on('Housing Application', {
 
+	building_classification: function(frm){
+		
+		
+	
+	},
 	
 
 	refresh: function(frm) {
+		var value = frm.doc.building_classification;
+
+		// console.log(value)
+
+
+		frm.set_query("flat_no", function(frm) {
+			
+			return {
+				filters: [
+					["building_classification", "=", value],
+					["status","!=","Allocated"]
+					
+				]
+			}
+		});
 		
 		// Write your magic codes here
 		if(frm.doc.docstatus==1 && frm.doc.application_status!="Alloted" && !frm.doc.tenant_id){

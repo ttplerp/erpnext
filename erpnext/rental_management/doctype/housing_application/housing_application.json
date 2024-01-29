@@ -20,10 +20,14 @@
   "aplication_status_section",
   "applicant_rank",
   "flat_no",
+  "old_flat_no",
+  "total_floor_area_sqft",
   "tenant_id",
   "column_break_8",
   "application_status",
   "building_classification",
+  "location_name",
+  "status",
   "permanent_address_section",
   "dzongkhag",
   "gewog",
@@ -367,7 +371,7 @@
    "fieldtype": "Select",
    "label": "Application Status",
    "no_copy": 1,
-   "options": "Pending\nAllotted\nRejected\nWithdrawn\nCancelled"
+   "options": "Pending\nAllotted\nRejected\nWithdrawn\nCancelled\nNot Eligible"
   },
   {
    "allow_on_submit": 1,
@@ -460,14 +464,39 @@
    "default": "0",
    "fieldname": "mail_send",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Mail Send"
+  },
+  {
+   "fetch_from": "flat_no.old_flat_no",
+   "fieldname": "old_flat_no",
+   "fieldtype": "Data",
+   "label": "Old Flat No"
+  },
+  {
+   "fetch_from": "flat_no.location_name",
+   "fieldname": "location_name",
+   "fieldtype": "Data",
+   "label": "Location Name"
+  },
+  {
+   "fetch_from": "flat_no.status",
+   "fieldname": "status",
+   "fieldtype": "Data",
+   "label": "Status"
+  },
+  {
+   "fetch_from": "flat_no.total_floor_area",
+   "fieldname": "total_floor_area_sqft",
+   "fieldtype": "Data",
+   "label": "Total Floor Area (Sqft)"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2024-01-19 16:11:08.494146",
+ "modified": "2024-01-29 14:25:18.223259",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Housing Application",
