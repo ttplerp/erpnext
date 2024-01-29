@@ -25,24 +25,24 @@ frappe.query_reports["Customer Summary Report"] = {
 			"fieldtype": "Date",
 			"default": get_today(),
 		},
-		{
-			"fieldname": "item_code",
-			"label": __("Material Code"),
-			"fieldtype": "Link",
-			"options": "Item",
-			"get_query": function() {return {'filters': [['Item', 'disabled', '!=', '1']]}}
-		},
-		{
-			"fieldname": "item_type",
-			"label": __("Item Type"),
-			"fieldtype": "Link",
-			"options": "Item Type"
-		},
-		{
-			"fieldname": "country",
-			"label": __("Country"),
-			"fieldtype": "Link",
-			"options": "Country"
-		},
+		// {
+		// 	"fieldname": "item_code",
+		// 	"label": __("Material Code"),
+		// 	"fieldtype": "Link",
+		// 	"options": "Item",
+		// 	"get_query": function() {return {'filters': [['Item', 'disabled', '!=', '1']]}}
+		// },
+		// {
+		// 	"fieldname": "item_type",
+		// 	"label": __("Item Type"),
+		// 	"fieldtype": "Link",
+		// 	"options": "Item Type"
+		// },
+		// {
+		// 	"fieldname": "country",
+		// 	"label": __("Country"),
+		// 	"fieldtype": "Link",
+		// 	"options": "Country"
+		// },
 	]
 };
