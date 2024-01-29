@@ -95,10 +95,10 @@ def get_data(filters):
 		openning_amount = get_openning_amount(filters, q.name)
 		received_amount = payment_details(filters, q.name)
 		billed_amount = get_billed_amount(filters, q.name)
-		total_bill_amount=flt(billed_amount)-flt(openning_amount)
-		closing_amt =  flt(openning_amount) + flt(total_bill_amount) - flt(received_amount)	
+		# total_bill_amount=flt(billed_amount)-flt(openning_amount)
+		closing_amt =  flt(openning_amount) + flt(billed_amount) - flt(received_amount)	
 		# if flt(openning_amount) + flt(total_bill_amount) + flt(received_amount) + flt(closing_amt) != 0:
-		row = [q.name, country, territory,customer_type, openning_amount, total_bill_amount, received_amount, closing_amt]
+		row = [q.name, country, territory,customer_type, openning_amount, billed_amount, received_amount, closing_amt]
 		data.append(row)
 	return data
 
