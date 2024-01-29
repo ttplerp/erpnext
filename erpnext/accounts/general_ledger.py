@@ -309,7 +309,7 @@ def make_entry(args, adv_adj, update_outstanding, from_repost=False):
 		if args.voucher_type in transactions and args.against_voucher_type != 'Asset':
 			validate_expense_against_budget(args)
 			account_types = [d.account_type for d in frappe.get_all("Budget Settings Account Types", fields='account_type')]
-			if frappe.db.get_value("Account", args.account, "account_type") in account_types:
+			if frappe.db.get_value("Account", args.account, "account_type") in account_types and not args.is_cancelled:
 				#Commit Budget
 				cc_doc = frappe.get_doc("Cost Center", args.cost_center)
 				budget_cost_center = cc_doc.budget_cost_center if cc_doc.use_budget_from_parent else args.cost_center
