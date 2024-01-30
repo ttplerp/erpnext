@@ -154,23 +154,30 @@ def get_journal_entries(filters):
 def get_payment_entries(filters):
 	return frappe.db.sql(
 		"""
-		select
-			"Payment Entry" as payment_document, name as payment_entry,
-			reference_no, reference_date as ref_date,
-			if(paid_to=%(account)s, received_amount_after_tax, 0) as debit,
-			if(paid_from=%(account)s, paid_amount_after_tax, 0) as credit,
-			posting_date, ifnull(party,if(paid_from=%(account)s,paid_to,paid_from)) as against_account, clearance_date,
-			if(paid_to=%(account)s, paid_to_account_currency, paid_from_account_currency) as account_currency
-		from `tabPayment Entry`
-		where
-			(paid_from=%(account)s or paid_to=%(account)s) and docstatus=1
-			and posting_date <= %(report_date)s
-			and ifnull(clearance_date, '4000-01-01') > %(report_date)s
+		SELECT
+			"Payment Entry" as payment_document,
+			pe.name as payment_entry,
+			pe.reference_no,
+			pe.reference_date as ref_date,
+			IF(pe.paid_to = %(account)s, IFNULL(pe.received_amount_after_tax, 0) - IFNULL(ped.amount, 0), 0) as debit,
+			IF(pe.paid_from = %(account)s, IFNULL(pe.paid_amount_after_tax, 0) - IFNULL(ped.amount, 0), 0) as credit,
+			pe.posting_date,
+			IFNULL(pe.party, IF(pe.paid_from = %(account)s, pe.paid_to, pe.paid_from)) as against_account,
+			pe.clearance_date,
+			IF(pe.paid_to = %(account)s, IFNULL(pe.paid_to_account_currency, ''), IFNULL(pe.paid_from_account_currency, '')) as account_currency
+		FROM
+			`tabPayment Entry` pe
+		LEFT JOIN
+			`tabPayment Entry Deduction` ped ON ped.parent = pe.name
+		WHERE
+			pe.docstatus = 1
+			AND (pe.paid_from = %(account)s OR pe.paid_to = %(account)s)
+			AND pe.posting_date <= %(report_date)s
+			AND IFNULL(pe.clearance_date, '4000-01-01') > %(report_date)s;
 	""",
 		filters,
 		as_dict=1,
 	)
-
 
 def get_pos_entries(filters):
 	return frappe.db.sql(
