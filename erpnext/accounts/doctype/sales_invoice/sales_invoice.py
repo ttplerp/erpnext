@@ -92,6 +92,7 @@ class SalesInvoice(SellingController):
 			self.indicator_title = _("Paid")
 
 	def validate(self):
+	
 		super(SalesInvoice, self).validate()
 		self.validate_auto_set_posting_time()
 
@@ -236,13 +237,14 @@ class SalesInvoice(SellingController):
 		for d in to_remove:
 			self.remove(d)
 
-		# calculate totals again after applying TDS
+		# calculate totals again after applying TDS 2012
 		self.calculate_taxes_and_totals()
 
 	def before_save(self):
 		set_account_for_mode_of_payment(self)
 
 	def on_submit(self):
+		# frappe.throw(self.outstanding_amount)
 		self.validate_pos_paid_amount()
 
 		if not self.auto_repeat:

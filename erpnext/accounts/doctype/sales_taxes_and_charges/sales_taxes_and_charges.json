@@ -6,6 +6,8 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "category",
+  "add_deduct_tax",
   "charge_type",
   "row_id",
   "account_head",
@@ -128,8 +130,7 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Total",
-   "options": "currency",
-   "read_only": 1
+   "options": "currency"
   },
   {
    "fieldname": "tax_amount_after_discount_amount",
@@ -154,6 +155,7 @@
   {
    "fieldname": "base_total",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Total (Company Currency)",
    "oldfieldname": "total",
    "oldfieldtype": "Currency",
@@ -198,7 +200,6 @@
    "default": "0",
    "fieldname": "dont_recompute_tax",
    "fieldtype": "Check",
-   "hidden": 1,
    "label": "Dont Recompute tax",
    "print_hide": 1,
    "read_only": 1
@@ -210,18 +211,33 @@
    "label": "Account Currency",
    "options": "Currency",
    "read_only": 1
+  },
+  {
+   "fieldname": "add_deduct_tax",
+   "fieldtype": "Select",
+   "label": "Add or Deduct",
+   "options": "Add\nDeduct",
+   "reqd": 1
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Select",
+   "label": "Consider Tax or Charge for",
+   "options": "Valuation and Total\nValuation\nTotal",
+   "reqd": 1
   }
  ],
  "idx": 1,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2021-08-05 20:04:01.726867",
+ "modified": "2024-01-16 16:47:46.046080",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Sales Taxes and Charges",
  "owner": "Administrator",
  "permissions": [],
  "sort_field": "modified",
- "sort_order": "ASC"
+ "sort_order": "ASC",
+ "states": []
 }
