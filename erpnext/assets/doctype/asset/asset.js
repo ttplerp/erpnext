@@ -523,16 +523,28 @@ frappe.ui.form.on('Asset Finance Book', {
 	},
 
 	depreciation_start_date: function(frm, cdt, cdn) {
-		const book = locals[cdt][cdn];
+		var book = locals[cdt][cdn];
 		if (frm.doc.available_for_use_date && book.depreciation_start_date == frm.doc.available_for_use_date) {
 			frappe.msgprint(__("Depreciation Posting Date should not be equal to Available for Use Date."));
 			book.depreciation_start_date = "";
 			frm.refresh_field("finance_books");
 		}
 		if (frm.doc.available_for_use_date){
-			book.depreciation_start_date = frappe.datetime.month_end(frm.doc.available_for_use_date)
-			frm.refresh_field("finance_books");
+			frappe.call({
+				method:'get_month_end',
+				doc:frm.doc,
+				async: false,
+				args:{
+					available_for_use_date:frm.doc.available_for_use_date
+				},
+				callback:function(r){
+					console.log(r.message)
+					book.depreciation_start_date = r.message
+				}
+			})
 		}
+		console.log("here "+book.depreciation_start_date)
+		frm.refresh_fields();
 	}
 });
 
@@ -571,19 +583,53 @@ erpnext.asset.set_accumulated_depreciation = function(frm) {
 	})
 };
 
-erpnext.asset.scrap_asset = function(frm) {
-	frappe.confirm(__("Do you really want to scrap this asset?"), function () {
-		frappe.call({
-			args: {
-				"asset_name": frm.doc.name
-			},
+// erpnext.asset.scrap_asset = function(frm) {
+// 	frappe.confirm(__("Do you really want to scrap this asset?"), function () {
+// 		frappe.call({
+// 			args: {
+// 				"asset_name": frm.doc.name
+// 			},
+// 			method: "erpnext.assets.doctype.asset.depreciation.scrap_asset",
+// 			callback: function(r) {
+// 				cur_frm.reload_doc();
+// 			}
+// 		})
+// 	})
+// };
+
+erpnext.asset.scrap_asset = function (frm) {
+	var dialog = new frappe.ui.Dialog({
+		title: __("Scrap Asset"),
+		fields: [
+			{
+				"label": __("Scrap Date"),
+				"fieldname": "scrap_date",
+				"fieldtype": "Date",
+				"reqd": 1,
+				"default": frappe.datetime.nowdate(),
+				"read_only": 0
+			}
+		]
+	});
+
+	dialog.set_primary_action(__("Scrap"), function () {
+		var args = dialog.get_values();
+		if (!args) return;
+		dialog.hide();
+		return frappe.call({
 			method: "erpnext.assets.doctype.asset.depreciation.scrap_asset",
-			callback: function(r) {
-				cur_frm.reload_doc();
+			args: {
+				"asset_name": frm.doc.name,
+				"scrap_date": args.scrap_date
+			},
+			callback: function (r) {
+				// console.log(r.message)
+				frappe.set_route("Form", "Journal Entry", r.message);
 			}
 		})
-	})
-};
+	});
+	dialog.show();
+}
 
 erpnext.asset.restore_asset = function(frm) {
 	frappe.confirm(__("Do you really want to restore this scrapped asset?"), function () {
