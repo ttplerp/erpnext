@@ -9,8 +9,8 @@ frappe.ui.form.on('POL Receive', {
 				function () {
 				  frappe.route_options = {
 					voucher_no: frm.doc.name,
-					from_date: frm.doc.entry_date,
-					to_date: frm.doc.entry_date,
+					from_date: frm.doc.posting_date,
+					to_date: frm.doc.posting_date,
 					company: frm.doc.company,
 					group_by_voucher: false,
 				  };
