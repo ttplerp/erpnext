@@ -433,7 +433,8 @@ class Asset(AccountsController):
 					self.available_for_use_date, -1
 				)  
 				days = date_diff(finance_book.depreciation_start_date, from_date)
-				depreciation_amount = get_depreciation_amount(self, value_after_depreciation, finance_book, schedule_date, days, has_pro_rata)
+				if schedule_date:
+					depreciation_amount = get_depreciation_amount(self, value_after_depreciation, finance_book, schedule_date, days, has_pro_rata)
 				# if str(schedule_date) == '2024-02-29':
 				# frappe.throw("here "+str(schedule_date)+" "+str(depreciation_amount))
 			# For last row
