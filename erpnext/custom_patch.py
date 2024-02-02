@@ -7,6 +7,40 @@ import math
 
 from erpnext.integrations.bps import process_files
 
+def save_asset():
+	assets = frappe.db.sql("""
+                        select name from `tabAsset` where docstatus = 0
+                        """,as_dict=1)
+	for a in assets:
+		asset = frappe.get_doc("Asset", a.name)
+		asset.save(ignore_permissions=1)
+		print(a.name)
+
+def delete_depreciation_schedule_with_journal():
+	ds = frappe.db.sql("""
+                       select name, journal_entry from `tabDepreciation Schedule` where journal_entry is not null
+                       """,as_dict=1)
+	for a in ds:
+		# je = frappe.get_doc("Journal Entry", a.journal_entry)
+		frappe.db.sql("""
+                delete from `tabDepreciation Schedule` where name = '{}'
+                """.format(a.name))
+		# if je.docstatus == 1:
+		# 	je.cancel()
+		print(a.name)
+
+def change_asset_status():
+    count=0
+    for d in frappe.db.sql("select name from `tabAsset` where docstatus!=1 and posting_date <='2023-12-31'", as_dict=1):
+        # frappe.db.sql("update `tabAsset Finance Book` set docstatus=0 where parent='{}'".format(d.name))
+        # frappe.db.sql("update `tabDepreciation Schedule` set docstatus=0 where parent='{}'".format(d.name))
+        # frappe.db.sql("update `tabAsset` set docstatus=0 where name='{}'".format(d.name))
+
+        frappe.db.sql("delete from `tabAsset Finance Book` where parent='{}'".format(d.name))
+        frappe.db.sql("delete from `tabDepreciation Schedule` where parent='{}'".format(d.name))
+        frappe.db.sql("delete from `tabAsset` where name='{}'".format(d.name))
+        count+=1
+    print(str(count))
 def delete_cogm_gl():
     # Fetch voucher_no values to delete
     voucher_nos = frappe.db.sql_list("""
