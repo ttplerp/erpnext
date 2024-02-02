@@ -531,8 +531,8 @@
    "fieldname": "item_defaults",
    "fieldtype": "Table",
    "label": "Item Defaults",
-   "options": "Item Default",
-   "reqd": 1
+   "mandatory_depends_on": "eval: doc.is_fixed_asset==0 && doc.is_stock_item == 1;",
+   "options": "Item Default"
   },
   {
    "default": "1",
@@ -990,7 +990,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-02-02 11:14:54.005302",
+ "modified": "2024-02-02 11:55:12.064184",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",
