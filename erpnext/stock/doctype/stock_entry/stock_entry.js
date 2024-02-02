@@ -727,7 +727,14 @@ frappe.ui.form.on('Stock Entry', {
 		}
 	},
 });
-
+cur_frm.fields_dict['items'].grid.get_field('equipment').get_query = function(frm, cdt, cdn) {
+	return {
+        filters: {
+            "enabled": 1,
+			"branch": cur_frm.doc.branch
+		}
+    };
+}
 frappe.ui.form.on('Stock Entry Detail', {
 	qty: function (frm, cdt, cdn) {
 		frm.events.set_serial_no(frm, cdt, cdn, () => {
