@@ -531,7 +531,8 @@
    "fieldname": "item_defaults",
    "fieldtype": "Table",
    "label": "Item Defaults",
-   "options": "Item Default"
+   "options": "Item Default",
+   "reqd": 1
   },
   {
    "default": "1",
@@ -989,7 +990,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-23 14:15:34.867116",
+ "modified": "2024-02-02 11:14:54.005302",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",
