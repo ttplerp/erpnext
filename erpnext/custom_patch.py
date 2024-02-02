@@ -13,9 +13,9 @@ def save_asset():
                         select name from `tabAsset` where docstatus = 0
                         """,as_dict=1)
 	for a in assets:
+		print(a.name)
 		asset = frappe.get_doc("Asset", a.name)
 		asset.save(ignore_permissions=1)
-		print(a.name)
 
 def depreciate_asset():
     count=0

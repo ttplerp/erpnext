@@ -261,7 +261,8 @@ class Asset(AccountsController):
 			
 		for finance_book in self.get("finance_books"):
 			if self.number_of_depreciations_booked > 0:
-				self.opening_accumulated_depreciation = (flt(self.gross_purchase_amount)/flt(self.total_number_of_depreciations))*flt(self.number_of_depreciations_booked)
+				finance_book.expected_value_after_useful_life = 1
+				self.opening_accumulated_depreciation = (flt(self.gross_purchase_amount)/flt(finance_book.total_number_of_depreciations))*flt(self.number_of_depreciations_booked)
 			self._make_depreciation_schedule(finance_book, start, date_of_sale)
 		# if frappe.session.user == "Administrator":
 		# 	frappe.throw("here")
