@@ -131,7 +131,7 @@ class PurchaseInvoice(BuyingController):
 			frappe.throw(_("Release date must be in the future"))
 	def validate_purchase_order(self):
 		for row in self.get("items"):
-			if not row.purchase_receipt:
+			if frappe.db.get_value("Item",row.item_code,"item_group")=="Service" and not row.purchase_receipt:
 				frappe.throw("Cannot create PI from PO it can only be done from PR")
 	def validate_cash(self):
 		if not self.cash_bank_account and flt(self.paid_amount):
