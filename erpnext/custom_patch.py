@@ -7,8 +7,10 @@ import math
 
 from erpnext.integrations.bps import process_files
 from erpnext.assets.doctype.asset.depreciation import make_depreciation_entry
+import pandas as pd
 
 def save_asset():
+    count = 1
 	assets = frappe.db.sql("""
                         select name from `tabAsset` where docstatus = 0
                         """,as_dict=1)
@@ -16,6 +18,9 @@ def save_asset():
 		print(a.name)
 		asset = frappe.get_doc("Asset", a.name)
 		asset.save(ignore_permissions=1)
+        if count % 100 == 0:
+            frappe.db.commit()
+        count += 1
 
 def depreciate_asset():
     count=0
