@@ -1234,7 +1234,7 @@
    "fieldtype": "Column Break"
   },
   {
-   "default": "Thanking you.</br></br></br>\n\n\n\nYours sincerely,</br></br></br></br></br>\n\n\n\n\n\n\n\n(Lt. Col Sisir Chhetri)</br>\nOfficer on Special Duty</br>\nCc:</br>",
+   "default": "Thanking you.</br></br></br>\n\n\n\nYours sincerely,</br></br></br></br></br>\n\n\n\n\n\n\n\n(Colonel Sisir Chhetri)</br>\nOfficer on Special Duty</br>\nCc:</br>",
    "fieldname": "dhq_po_footer",
    "fieldtype": "Text Editor",
    "label": "Purchase Order Footer"
@@ -1244,7 +1244,7 @@
  "idx": 105,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-30 14:32:16.013004",
+ "modified": "2024-02-06 16:34:22.211412",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Purchase Order",
