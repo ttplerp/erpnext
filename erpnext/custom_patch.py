@@ -9,6 +9,53 @@ from erpnext.integrations.bps import process_files
 from erpnext.assets.doctype.asset.depreciation import make_depreciation_entry
 import pandas as pd
 
+
+def update_asset_journal_entry():
+    journal_entries = frappe.db.sql("""
+                                    select name, title from `tabJournal Entry` where creation > '2024-02-01' and title like '%Legacy%'
+                                or title like '%Accumulated%' and posting_date = '2022-12-31';
+                                    """,as_dict=1)
+    for je in journal_entries:
+        count = 0
+        fixed_asset_account = accumulated_depreciation_account = None
+        je = frappe.get_doc("Journal Entry", je.name)
+        gles = frappe.db.sql("""
+                                    select name from `tabGL Entry` where voucher_no = '{}'
+                                    """.format(je.name),as_dict=1)
+        for d in je.accounts:
+            if 'Legacy Clearing' not in d.account and 'Legacy Clearing' in je.title:
+                fixed_asset_account = frappe.get_value("Asset Category Account", {"parent":frappe.db.get_value("Asset", d.reference_name, "asset_category")}, "fixed_asset_account")
+                frappe.db.sql("""
+                              update `tabJournal Entry Account` set account = '{}' where name = '{}'
+                              """.format(fixed_asset_account, d.name))
+                gle = frappe.db.sql("""
+                                    select name from `tabGL Entry` where account not like '%Legacy Clearing%' and voucher_no = '{}'
+                                    """.format(je.name),as_dict=1)
+                if gle:
+                    frappe.db.sql("""
+                                update `tabGL Entry` set account = '{}' where name = '{}'
+                                """.format(fixed_asset_account, gle[0].name))
+            if 'Legacy Clearing' not in d.account and 'Accumulated' in je.title:
+                accumulated_depreciation_account = frappe.get_value("Asset Category Account", {"parent":frappe.db.get_value("Asset", d.reference_name, "asset_category")}, "accumulated_depreciation_account")
+                frappe.db.sql("""
+                              update `tabJournal Entry Account` set account = '{}' where name = '{}'
+                              """.format(accumulated_depreciation_account, d.name))
+                gle = frappe.db.sql("""
+                                    select name from `tabGL Entry` where account not like '%Legacy Clearing%' and voucher_no = '{}'
+                                    """.format(je.name),as_dict=1)
+                if gle:
+                    frappe.db.sql("""
+                                update `tabGL Entry` set account = '{}' where name = '{}'
+                                """.format(accumulated_depreciation_account, gle[0].name))
+
+        frappe.db.sql("""
+                    update `tabJournal Entry` set posting_date = '2023-01-01' where name = '{}'
+                      """.format(je.name))
+        for gl in gles:
+            frappe.db.sql("""
+                        update `tabGL Entry` set posting_date = '2023-01-01' where name = '{}'
+                        """.format(gl.name))
+        print(je.name)
 def save_asset():
     count = 1
 	assets = frappe.db.sql("""
