@@ -1,0 +1,64 @@
+{%
+	if (report.columns.length > 10) {
+		frappe.throw(__("Too many columns. Export the report and print it using a spreadsheet application."));
+	}
+%} 
+
+<h4 class="text-center">TDS Certificate</h4>
+{% if (filters.from_date) { %}
+	<h4 class="text-center">{%= dateutil.str_to_user(filters.from_date) %} to {%= dateutil.str_to_user(filters.to_date) %}</h4>
+{% } %}
+<div style="float: right;">
+	<strong>Date: </strong>{%= dateutil.str_to_user(dateutil.get_datetime_as_string().split(' ')[0]) %}
+</div>
+
+<table style="width: 100%;">
+	<tr>
+        {% if (filters.dsp_dhq == "DSP") { %}
+		<td width="250px">Widthholding Agency:</td><td><strong>De-suung Skilling Programme</strong></td>
+		<td width="250px">Agency TPN Code: </td><td><strong>DAY02721</strong></td>
+        {% } %}
+        {% if (filters.dsp_dhq == "DHQ") { %}
+		<td width="250px">Widthholding Agency:</td><td><strong>De-suung</strong></td>
+		<td width="250px">Agency TPN Code: </td><td><strong>DAY02711</strong></td>
+        {% } %}
+	</tr>
+	<tr>
+		<td>Name of Vendor:</td><td><strong>{%= filters.supplier %}</strong></td>
+		<td>Vendor TPN Code: </td><td><strong>{%= filters.vendor_tpn_no %}</strong></td>
+	</tr>
+</table>
+
+<hr>
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			{% for(var i=0, l=report.columns.length; i<l; i++) { %}
+				<th class="text-right">{%= report.columns[i].label %}</th>
+			{% } %}
+		</tr>
+	</thead>
+	<tbody>
+		{% for(var j=0, k=data.length; j<k; j++) { %}
+			{%
+				var row = data[j]
+			%}
+			<tr>
+				{% for(var i=0, l=report.columns.length; i<l; i++) { %}
+					<td class="text-right">
+						{% var fieldname = report.columns[i].fieldname; %}
+						{% if (!is_null(row[fieldname])) { %}
+							{%= row[fieldname] %}
+						{% } %}
+					</td>
+				{% } %}
+			</tr>
+		{% } %}
+	</tbody>
+</table>
+<div>
+I hereby certify that the information given in this certificate is true and correct to the best of my knowledge. In case any information is found untrue and false, I shall be liable for fines and penalities as per chapter 5, General Provisions of the Income Tax Act of the Kindom of Bhutan,2001
+</div>
+<div style="margin-top: 100px; float: right;">
+	Name and Signature of Disbursing Officer
+</div>

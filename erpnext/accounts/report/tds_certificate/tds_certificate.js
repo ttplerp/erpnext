@@ -5,6 +5,14 @@
 frappe.query_reports["TDS Certificate"] = {
 	"filters": [
 		{
+			"fieldname": "dsp_dhq",
+			"label": __("DSP/DHQ"),
+			"fieldtype": "Select",
+			"options": "\nDSP\nDHQ",
+			"reqd": 1,
+			"default": "DSP"
+		},
+		{
 			"fieldname": "party_type",
 			"label": __("Party Type"),
 			"fieldtype": "Select",
