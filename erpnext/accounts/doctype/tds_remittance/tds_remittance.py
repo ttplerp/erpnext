@@ -223,7 +223,7 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 				'' as business_activity, (select cost_center from tabBranch where name=t.branch) as cost_center,
 				t.tds_taxable_amount as bill_amount, 
 				t.tds_amount,
-				t.tds_account, tre.tds_remittance, tre.tds_receipt_update,'' as bill_no, t.posting_date,
+				t.tds_account as tax_account, tre.tds_remittance, tre.tds_receipt_update,'' as bill_no, t.posting_date,
 				(case when tre.tds_receipt_update is not null then 'Paid' else 'Unpaid' end) remittance_status
 			from `tabTechnical Sanction Bill` t
 				left join `tabSupplier` s on s.name = t.supplier
