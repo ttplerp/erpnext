@@ -534,7 +534,7 @@ def get_accumulated_monthly_budget(cost_center, budget_account, transaction_date
 		month_name = "January"
 	elif month == 2:
 		monthly_amount = budget_amount[0].february
-		month_name = "Feburary"
+		month_name = "February"
 	elif month == 3:
 		monthly_amount = budget_amount[0].march
 		month_name = "March"
