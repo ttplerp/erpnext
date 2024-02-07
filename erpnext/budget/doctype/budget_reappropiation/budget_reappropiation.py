@@ -109,6 +109,7 @@ class BudgetReappropiation(Document):
 						(self.company, from_budget_against, self.fiscal_year, d.from_account),
 						as_dict=1,
 					)
+				
 				monthly_budget_check = frappe.db.get_single_value("Budget Settings","monthly_budget_check")
 				if from_account:
 					from_budget_account = frappe.get_doc("Budget Account", from_account[0].name)
@@ -131,7 +132,7 @@ class BudgetReappropiation(Document):
 									sent = flt(from_budget_account.bs_january) + flt(d.amount)
 									from_budget_account.db_set("bs_january", flt(sent,2))
 									from_budget_account.db_set("budget_amount", flt(total,2))
-							elif from_month =="Februery":
+							elif from_month =="February":
 								if cancel:
 									sent = flt(from_budget_account.bs_february) - flt(d.amount)
 									from_budget_account.db_set("bs_february", flt(sent,2))
@@ -256,6 +257,7 @@ class BudgetReappropiation(Document):
 						budget_received = flt(from_budget_account.budget_received) - flt(d.amount)
 					to_budget_account.db_set("budget_received", flt(budget_received,2))
 					if monthly_budget_check:
+						# frappe.throw(str(to_month))
 						if to_month:
 							if to_month =="January":
 								if cancel:
@@ -266,7 +268,7 @@ class BudgetReappropiation(Document):
 									received = flt(to_budget_account.br_january) + flt(d.amount)
 									to_budget_account.db_set("br_january", received)
 									to_budget_account.db_set("budget_amount", total)
-							elif to_month =="Februery":
+							elif to_month =="February":
 								if cancel:
 									received = flt(to_budget_account.br_february) - flt(d.amount)
 									to_budget_account.db_set("br_february", received)
