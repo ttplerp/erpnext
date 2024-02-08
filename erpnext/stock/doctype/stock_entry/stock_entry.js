@@ -731,7 +731,7 @@ cur_frm.fields_dict['items'].grid.get_field('equipment').get_query = function(fr
 	return {
         filters: {
             "enabled": 1,
-			"branch": cur_frm.doc.branch
+			// "branch": cur_frm.doc.branch
 		}
     };
 }
