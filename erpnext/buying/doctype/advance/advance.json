@@ -46,8 +46,7 @@
   "journal_entry_html",
   "journal_entry",
   "journal_entry_status",
-  "column_break_jfixm",
-  "amended_from"
+  "column_break_jfixm"
  ],
  "fields": [
   {
@@ -245,24 +244,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Advance",
-   "print_hide": 1,
-   "read_only": 1
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Advance",
-   "print_hide": 1,
-   "read_only": 1
-  },
-  {
    "fieldname": "advance_type",
    "fieldtype": "Link",
    "label": "Advance Type",
@@ -330,7 +311,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-02-12 11:30:53.912523",
+ "modified": "2024-02-12 12:08:39.739871",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Advance",
