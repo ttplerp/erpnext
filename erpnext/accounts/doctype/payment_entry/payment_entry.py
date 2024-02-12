@@ -1363,7 +1363,6 @@ class PaymentEntry(AccountsController):
                 advance_amount,
                 adjusted_amount,
                 balance_amount,
-                general_purpose,
                 advance_date
             FROM 
                 `tabAdvance Item` 
@@ -1738,7 +1737,6 @@ class PaymentEntry(AccountsController):
             SELECT
                 advance_type,
                 advance_account,
-                general_purpose,
                 advance_amount,
                 balance_amount,
                 adjusted_amount,

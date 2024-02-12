@@ -92,28 +92,25 @@ class GLEntry(Document):
                 )
 
         if not (self.party_type and self.party):
-            account_type = frappe.get_cached_value(
-                "Account", self.account, "account_type"
-            )
+            account_type = frappe.get_cached_value("Account", self.account, "account_type")
             if account_type == "Receivable":
                 frappe.msgprint(
-                    _(
-                        "{0} {1}: Customer is required against Receivable account {2}"
-                    ).format(self.voucher_type, self.voucher_no, self.account),
+                    _("{0} {1}: Customer is required against Receivable account {2}").format(
+                        self.voucher_type, self.voucher_no, self.account
+                    ),
                     raise_exception=True,
                 )
             elif account_type == "Payable":
                 frappe.msgprint(
-                    _(
-                        "{0} {1}: Supplier is required against Payable account {2}"
-                    ).format(self.voucher_type, self.voucher_no, self.account),
+                    _("{0} {1}: Supplier is required against Payable account {2}").format(
+                        self.voucher_type, self.voucher_no, self.account
+                    ),
                     raise_exception=True,
                 )
 
         # Zero value transaction is not allowed
         if not (
-            flt(self.debit, self.precision("debit"))
-            or flt(self.credit, self.precision("credit"))
+            flt(self.debit, self.precision("debit")) or flt(self.credit, self.precision("credit"))
         ):
             frappe.msgprint(
                 _("{0} {1}: Either debit or credit amount is required for {2}").format(
@@ -128,13 +125,10 @@ class GLEntry(Document):
         if self.cost_center or self.voucher_type == "Period Closing Voucher":
             return
 
-        if (
-            frappe.get_cached_value("Account", self.account, "report_type")
-            == "Profit and Loss"
-        ):
-            msg = _(
-                "{0} {1}: Cost Center is required for 'Profit and Loss' account {2}."
-            ).format(self.voucher_type, self.voucher_no, self.account)
+        if frappe.get_cached_value("Account", self.account, "report_type") == "Profit and Loss":
+            msg = _("{0} {1}: Cost Center is required for 'Profit and Loss' account {2}.").format(
+                self.voucher_type, self.voucher_no, self.account
+            )
             msg += " "
             msg += _(
                 "Please set the cost center field in {0} or setup a default Cost Center for the Company."
@@ -206,10 +200,7 @@ class GLEntry(Document):
                             raise_exception=True,
                         )
                 else:
-                    if (
-                        self.get(dimension)
-                        and self.get(dimension) in value["allowed_dimensions"]
-                    ):
+                    if self.get(dimension) and self.get(dimension) in value["allowed_dimensions"]:
                         frappe.msgprint(
                             _("Invalid value {0} for {1} against account {2}").format(
                                 frappe.bold(self.get(dimension)),
@@ -223,8 +214,7 @@ class GLEntry(Document):
     def check_pl_account(self):
         if (
             self.is_opening == "Yes"
-            and frappe.db.get_value("Account", self.account, "report_type")
-            == "Profit and Loss"
+            and frappe.db.get_value("Account", self.account, "report_type") == "Profit and Loss"
             and not self.is_cancelled
         ):
             frappe.throw(
@@ -283,9 +273,7 @@ class GLEntry(Document):
             frappe.throw(
                 _(
                     """{0} {1}: Cost Center {2} is a group cost center and group cost centers cannot be used in transactions"""
-                ).format(
-                    self.voucher_type, self.voucher_no, frappe.bold(self.cost_center)
-                )
+                ).format(self.voucher_type, self.voucher_no, frappe.bold(self.cost_center))
             )
 
     def validate_party(self):
@@ -300,9 +288,7 @@ class GLEntry(Document):
 
         if account_currency != self.account_currency:
             frappe.throw(
-                _(
-                    "{0} {1}: Accounting Entry for {2} can only be made in currency: {3}"
-                ).format(
+                _("{0} {1}: Accounting Entry for {2} can only be made in currency: {3}").format(
                     self.voucher_type,
                     self.voucher_no,
                     self.account,
@@ -318,9 +304,7 @@ class GLEntry(Document):
 
     def validate_and_set_fiscal_year(self):
         if not self.fiscal_year:
-            self.fiscal_year = get_fiscal_year(self.posting_date, company=self.company)[
-                0
-            ]
+            self.fiscal_year = get_fiscal_year(self.posting_date, company=self.company)[0]
 
     def on_cancel(self):
         msg = _("Individual GL Entry cannot be cancelled.")
@@ -349,7 +333,13 @@ def validate_balance_type(account, adv_adj=False):
 
 
 def update_outstanding_amt(
-    account, party_type, party, against_voucher_type, against_voucher, voucher_type, on_cancel=False
+    account,
+    party_type,
+    party,
+    against_voucher_type,
+    against_voucher,
+    voucher_type,
+    on_cancel=False,
 ):
     if party_type and party:
         party_condition = " and party_type={0} and party={1}".format(
@@ -359,9 +349,7 @@ def update_outstanding_amt(
         party_condition = ""
 
     if against_voucher_type == "Sales Invoice":
-        party_account = frappe.db.get_value(
-            against_voucher_type, against_voucher, "debit_to"
-        )
+        party_account = frappe.db.get_value(against_voucher_type, against_voucher, "debit_to")
         account_condition = "and account in ({0}, {1})".format(
             frappe.db.escape(account), frappe.db.escape(party_account)
         )
@@ -387,18 +375,18 @@ def update_outstanding_amt(
     elif against_voucher_type == "Journal Entry":
         if voucher_type and voucher_type == "TDS Remittance":
             against_voucher_amount = flt(
-            frappe.db.sql(
-                """
+                frappe.db.sql(
+                    """
 			select sum(debit_in_account_currency) - sum(credit_in_account_currency)
 			from `tabGL Entry` where voucher_type = 'Journal Entry' and voucher_no = %s
 			and account = %s {0}""".format(
-                    party_condition
-                ),
-                (against_voucher, account),
-            )[0][0]
+                        party_condition
+                    ),
+                    (against_voucher, account),
+                )[0][0]
             )
-            
-        else:    
+
+        else:
             against_voucher_amount = flt(
                 frappe.db.sql(
                     """
@@ -433,9 +421,7 @@ def update_outstanding_amt(
         # frappe.throw(str(bal))
         # Didn't use db_set for optimization purpose
         ref_doc.outstanding_amount = bal
-        frappe.db.set_value(
-            against_voucher_type, against_voucher, "outstanding_amount", bal
-        )
+        frappe.db.set_value(against_voucher_type, against_voucher, "outstanding_amount", bal)
 
         ref_doc.set_status(update=True)
 
@@ -496,17 +482,13 @@ def rename_gle_sle_docs():
 
 def rename_temporarily_named_docs(doctype):
     """Rename temporarily named docs using autoname options"""
-    docs_to_rename = frappe.get_all(
-        doctype, {"to_rename": "1"}, order_by="creation", limit=50000
-    )
+    docs_to_rename = frappe.get_all(doctype, {"to_rename": "1"}, order_by="creation", limit=50000)
     for doc in docs_to_rename:
         oldname = doc.name
         set_name_from_naming_options(frappe.get_meta(doctype).autoname, doc)
         newname = doc.name
         frappe.db.sql(
-            "UPDATE `tab{}` SET name = %s, to_rename = 0 where name = %s".format(
-                doctype
-            ),
+            "UPDATE `tab{}` SET name = %s, to_rename = 0 where name = %s".format(doctype),
             (newname, oldname),
             auto_commit=True,
         )
