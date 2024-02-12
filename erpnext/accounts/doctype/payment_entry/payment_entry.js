@@ -45,6 +45,15 @@ frappe.ui.form.on('Payment Entry', {
 			}
 		});
 
+		frm.set_query("advance_type", function() {
+			frm.events.validate_company(frm);
+			return{
+				filters: {
+					"party_type": frm.doc.party_type
+				}
+			}
+		});
+
 		frm.set_query("party_bank_account", function() {
 			return {
 				filters: {
@@ -171,6 +180,10 @@ frappe.ui.form.on('Payment Entry', {
 		if (!frm.doc.company){
 			frappe.throw({message:__("Please select a Company first."), title: __("Mandatory")});
 		}
+	},
+
+	get_advances: function (frm) { 
+		get_advances(frm)
 	},
 
 	company: function(frm) {
@@ -628,31 +641,86 @@ frappe.ui.form.on('Payment Entry', {
 	get_outstanding_invoice: function(frm) {
 		const today = frappe.datetime.get_today();
 		const fields = [
-			{fieldtype:"Section Break", label: __("Posting Date")},
-			{fieldtype:"Date", label: __("From Date"),
-				fieldname:"from_posting_date", default:frappe.datetime.add_days(today, -30)},
-			{fieldtype:"Column Break"},
-			{fieldtype:"Date", label: __("To Date"), fieldname:"to_posting_date", default:today},
-			{fieldtype:"Section Break", label: __("Due Date")},
-			{fieldtype:"Date", label: __("From Date"), fieldname:"from_due_date"},
-			{fieldtype:"Column Break"},
-			{fieldtype:"Date", label: __("To Date"), fieldname:"to_due_date"},
-			{fieldtype:"Section Break", label: __("Outstanding Amount")},
-			{fieldtype:"Float", label: __("Greater Than Amount"),
-				fieldname:"outstanding_amt_greater_than", default: 0},
-			{fieldtype:"Column Break"},
-			{fieldtype:"Float", label: __("Less Than Amount"), fieldname:"outstanding_amt_less_than"},
-			{fieldtype:"Section Break"},
-			{fieldtype:"Link", label:__("Cost Center"), fieldname:"cost_center", options:"Cost Center",
+			{
+				fieldtype: "Section Break",
+				label: __("Posting Date")
+			},
+			{
+				fieldtype: "Date",
+				label: __("From Date"),
+				fieldname: "from_posting_date",
+				default: frappe.datetime.add_days(today, -30)
+			},			
+			{
+				fieldtype: "Column Break"
+			},
+			{
+				fieldtype: "Date",
+				label: __("To Date"),
+				fieldname: "to_posting_date",
+				default: today
+			},
+			{
+				fieldtype: "Section Break",
+				label: __("Due Date")
+			},
+			{
+				fieldtype: "Date",
+				label: __("From Date"),
+				fieldname: "from_due_date"
+			},
+			{
+				fieldtype: "Column Break"
+			},
+			{
+				fieldtype: "Date",
+				label: __("To Date"),
+				fieldname: "to_due_date"
+			},
+			{
+				fieldtype: "Section Break",
+				label: __("Outstanding Amount")
+			},
+			{
+				fieldtype: "Float",
+				label: __("Greater Than Amount"),
+				fieldname: "outstanding_amt_greater_than",
+				default: 0
+			},
+			{
+				fieldtype: "Column Break"
+			},
+			{
+				fieldtype: "Float",
+				label: __("Less Than Amount"),
+				fieldname: "outstanding_amt_less_than"
+			},
+			{
+				fieldtype: "Section Break"
+			},
+			{
+				fieldtype: "Link",
+				label: __("Cost Center"),
+				fieldname: "cost_center",
+				options: "Cost Center",
 				"get_query": function() {
 					return {
 						"filters": {"company": frm.doc.company}
 					}
 				}
 			},
-			{fieldtype:"Column Break"},
-			{fieldtype:"Section Break"},
-			{fieldtype:"Check", label: __("Allocate Payment Amount"), fieldname:"allocate_payment_amount", default:1},
+			{
+				fieldtype: "Column Break"
+			},
+			{
+				fieldtype: "Section Break"
+			},
+			{
+				fieldtype: "Check",
+				label: __("Allocate Payment Amount"),
+				fieldname: "allocate_payment_amount",
+				default: 1
+			},
 		];
 
 		frappe.prompt(fields, function(filters){
@@ -1426,3 +1494,15 @@ var create_custom_buttons = function(frm){
 	}
 }
 /* ePayment Ends */
+
+var get_advances = function(frm){
+	frappe.call({
+		method: "get_advance",
+		doc: frm.doc,
+		callback: function(r){
+			cur_frm.refresh();
+		},
+		freeze: true,
+		freeze_message: "Fetching advances the files.... Please Wait",
+	})
+}

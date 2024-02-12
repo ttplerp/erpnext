@@ -66,6 +66,15 @@
   "unallocated_amount",
   "difference_amount",
   "write_off_difference_amount",
+  "advance_payment",
+  "advance_type",
+  "get_advances",
+  "column_break_hqbtb",
+  "difference",
+  "total_outstanding_amount",
+  "advance_settlement",
+  "section_break_oexxp",
+  "advances",
   "taxes_and_charges_section",
   "purchase_taxes_and_charges_template",
   "sales_taxes_and_charges_template",
@@ -802,12 +811,63 @@
    "label": "Is Advance",
    "options": "\nYes\nNo",
    "read_only": 1
+  },
+  {
+   "fieldname": "advance_payment",
+   "fieldtype": "Section Break",
+   "label": "Advance Payment"
+  },
+  {
+   "fieldname": "get_advances",
+   "fieldtype": "Button",
+   "label": "Get Advances"
+  },
+  {
+   "fieldname": "advances",
+   "fieldtype": "Table",
+   "label": "Advance",
+   "options": "Advance Item",
+   "read_only": 1
+  },
+  {
+   "fieldname": "advance_type",
+   "fieldtype": "Link",
+   "label": "Advance Type",
+   "options": "Advance Type"
+  },
+  {
+   "fieldname": "section_break_oexxp",
+   "fieldtype": "Section Break"
+  },
+  {
+   "description": "(Total advance - Total allocated amt). *** Used on cancellation.",
+   "fieldname": "difference",
+   "fieldtype": "Float",
+   "label": "Advance Difference",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_hqbtb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "advance_settlement",
+   "fieldtype": "Read Only",
+   "label": "Advance Settlement",
+   "read_only": 1
+  },
+  {
+   "description": "(total allocated amt - total advance amt)",
+   "fieldname": "total_outstanding_amount",
+   "fieldtype": "Currency",
+   "label": "Total Outstanding Amount",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-10-17 12:17:09.761187",
+ "modified": "2024-01-03 10:53:09.331048",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Payment Entry",

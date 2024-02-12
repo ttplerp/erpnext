@@ -29,7 +29,11 @@
   "column_break_gfnlq",
   "machine_expense_account",
   "pol_account_settings_section",
-  "pol_receive_account"
+  "pol_receive_account",
+  "pol_payable",
+  "column_break_jgskp",
+  "fuel_advance_account",
+  "hired_fuel_expense_account"
  ],
  "fields": [
   {
@@ -166,12 +170,34 @@
    "fieldtype": "Link",
    "label": "POL Receive Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "column_break_jgskp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "fuel_advance_account",
+   "fieldtype": "Link",
+   "label": "Fuel Advance Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "hired_fuel_expense_account",
+   "fieldtype": "Link",
+   "label": "Hired Fuel Expense Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "pol_payable",
+   "fieldtype": "Link",
+   "label": "POL Payable (Temporary)",
+   "options": "Account"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-12-20 16:06:21.566318",
+ "modified": "2024-01-22 16:24:00.221049",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Maintenance Settings",

@@ -6,8 +6,8 @@ from frappe.model.mapper import get_mapped_doc
 from frappe.model.document import Document
 from erpnext.custom_utils import check_future_date
 from erpnext.controllers.accounts_controller import AccountsController
-from frappe import _, qb, throw, msgprint
-from frappe.utils import flt, cint, money_in_words
+from frappe import _
+from frappe.utils import flt, money_in_words
 from erpnext.accounts.party import get_party_account
 
 
@@ -19,10 +19,14 @@ class RepairAndServiceInvoice(AccountsController):
         if not self.credit_account:
             self.credit_account = get_party_account(self.party_type, self.party, self.company)
 
+    def onload(self):
+        self.calculate_total()
+
     def on_submit(self):
-        # self.make_gl_entry()
-        self.update_repair_and_service()
-        self.post_journal_entry()
+        if self.settle_imprest_advance:
+            self.post_journal_entry()
+        else:
+            self.make_gl_entry()
 
     def before_cancel(self):
         self.check_journal_entry()
@@ -33,8 +37,8 @@ class RepairAndServiceInvoice(AccountsController):
             "Stock Ledger Entry",
             "Payment Ledger Entry",
         )
-        # self.make_gl_entry()
-        self.update_repair_and_service()
+        if not self.settle_imprest_advance:
+            self.make_gl_entry()
 
     def check_journal_entry(self):
         if self.journal_entry:
@@ -56,20 +60,18 @@ class RepairAndServiceInvoice(AccountsController):
         if self.is_new():
             self.status = "Draft"
             return
-
         outstanding_amount = flt(self.outstanding_amount, 2)
         if not status:
             if self.docstatus == 2:
                 status = "Cancelled"
             elif self.docstatus == 1:
-                if outstanding_amount > 0 and self.total_amount > outstanding_amount:
-                    self.status = "Partly Paid"
-                elif outstanding_amount > 0:
-                    self.status = "Paid"
-                elif outstanding_amount <= 0:
-                    self.status = "Paid"
+                if update:
+                    if outstanding_amount > 0 and self.total_amount > outstanding_amount:
+                        self.status = "Partly Paid"
+                    elif outstanding_amount == 0.00:
+                        self.status = "Paid"
                 else:
-                    self.status = "Submitted"
+                    self.status = "Unpaid"
             else:
                 self.status = "Draft"
 
@@ -116,23 +118,59 @@ class RepairAndServiceInvoice(AccountsController):
                 self.currency,
             )
         )
-        gl_entries.append(
-            self.get_gl_dict(
-                {
-                    "account": self.credit_account,
-                    "party_type": self.party_type,
-                    "party": self.party,
-                    "credit": self.total_amount,
-                    "credit_in_account_currency": self.total_amount,
-                    "cost_center": self.cost_center,
-                    "voucher_no": self.name,
-                    "voucher_type": self.doctype,
-                    "against_voucher": self.name,
-                    "against_voucher_type": self.doctype,
-                },
-                self.currency,
+        if self.tds_account and self.tds_amount:
+            gl_entries.append(
+                self.get_gl_dict(
+                    {
+                        "account": self.credit_account,
+                        "party_type": self.party_type,
+                        "party": self.party,
+                        "credit": self.net_amount,
+                        "credit_in_account_currency": self.net_amount,
+                        "cost_center": self.cost_center,
+                        "voucher_no": self.name,
+                        "voucher_type": self.doctype,
+                        "against_voucher": self.name,
+                        "against_voucher_type": self.doctype,
+                    },
+                    self.currency,
+                )
             )
-        )
+            gl_entries.append(
+                self.get_gl_dict(
+                    {
+                        "account": self.tds_account,
+                        "party_type": self.party_type,
+                        "party": self.party,
+                        "credit": self.tds_amount,
+                        "credit_in_account_currency": self.tds_amount,
+                        "cost_center": self.cost_center,
+                        "voucher_no": self.name,
+                        "voucher_type": self.doctype,
+                        "against_voucher": self.name,
+                        "against_voucher_type": self.doctype,
+                    },
+                    self.currency,
+                )
+            )
+        else:
+            gl_entries.append(
+                self.get_gl_dict(
+                    {
+                        "account": self.credit_account,
+                        "party_type": self.party_type,
+                        "party": self.party,
+                        "credit": self.total_amount,
+                        "credit_in_account_currency": self.total_amount,
+                        "cost_center": self.cost_center,
+                        "voucher_no": self.name,
+                        "voucher_type": self.doctype,
+                        "against_voucher": self.name,
+                        "against_voucher_type": self.doctype,
+                    },
+                    self.currency,
+                )
+            )
         make_gl_entries(
             gl_entries,
             update_outstanding="No",

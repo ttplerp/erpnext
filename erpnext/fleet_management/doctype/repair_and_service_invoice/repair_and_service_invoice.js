@@ -12,6 +12,7 @@ frappe.ui.form.on('Repair And Service Invoice', {
 					group_by_voucher: false
 				};
 				frappe.set_route("query-report", "General Ledger");
+				
 			})
 			if (self.status != "Paid"){
 				cur_frm.add_custom_button(__('Pay'), function(doc) {
@@ -45,6 +46,8 @@ frappe.ui.form.on('Repair And Service Invoice', {
 			});
 		}
 	},
+
+
 
 
 	make_payment_entry:function(frm){
@@ -99,6 +102,7 @@ frappe.ui.form.on('Repair And Service Invoice', {
 		frm.refresh_field("credit_account");
 	}
 });
+
 frappe.ui.form.on('Repair And Services Invoice Item', {
 	rate:function(frm, cdt, cdn){
 		calculate_amount(frm, cdt, cdn)

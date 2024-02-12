@@ -146,8 +146,10 @@
    "fieldtype": "Small Text"
   },
   {
+   "collapsible": 1,
    "fieldname": "section_break_54",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Additional Information"
   },
   {
    "fieldname": "currency",
@@ -343,7 +345,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-12-11 09:04:19.453020",
+ "modified": "2023-12-27 14:24:28.095076",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Repair And Service Invoice",

@@ -84,15 +84,17 @@ class PaymentEntry(AccountsController):
         self.set_remarks()
         self.validate_duplicate_entry()
         self.validate_payment_type_with_outstanding()
-        self.validate_allocated_amount()
+        # self.validate_allocated_amount()
         self.validate_paid_invoices()
         self.ensure_supplier_is_not_blocked()
         self.set_status()
         self.update_expense_claim()
+        # self.get_advance()
+        self.set_outstanding_amt()
 
     def on_submit(self):
         if self.difference_amount:
-            frappe.throw(_("Difference Amount must be zero"))
+            frappe.throw(_("Difference Amount must be zero. {}".format(self.difference_amount)))
         self.make_gl_entries()
         self.update_outstanding_amounts()
         self.update_advance_paid()
@@ -101,6 +103,9 @@ class PaymentEntry(AccountsController):
         self.update_employee_advance()
         self.update_expense_claim(submit=1)
         self.update_outstanding()
+        # self.get_advance()
+        if self.advances:
+            self.update_supplier_advance()
 
     def on_cancel(self):
         check_clearance_date(self.doctype, self.name)
@@ -114,6 +119,8 @@ class PaymentEntry(AccountsController):
         self.set_payment_req_status()
         self.set_status()
         self.update_expense_claim(cancel=1)
+        if self.advances:
+            self.update_supplier_advance(cancel=True)
 
     def set_payment_req_status(self):
         from erpnext.accounts.doctype.payment_request.payment_request import (
@@ -163,6 +170,60 @@ class PaymentEntry(AccountsController):
                     )
                 )
                 frappe.msgprint("Updated Project Invoice {}".format(a.reference_name))
+
+            elif a.reference_doctype == "POL Receive Invoice":
+                payment_status = ""
+                outstanding_amount = frappe.db.get_value("POL Receive Invoice", a.reference_name, "outstanding_amount")
+                total_balance_amount = frappe.db.get_value("POL Receive Invoice", a.reference_name, "amount")
+                if not cancel:
+                    outstanding_amount -= self.paid_amount
+                else:
+                    outstanding_amount += self.paid_amount
+                if outstanding_amount == 0:
+                    payment_status = "Paid"
+                elif flt(outstanding_amount, 2) < flt(total_balance_amount):
+                    payment_status = "Partly Paid"
+                else:
+                    payment_status = "Unpaid"
+
+                frappe.db.sql(
+                    """
+					update `tabPOL Receive Invoice` set outstanding_amount = {}, status = '{}'
+					where name = '{}'
+				""".format(
+                        flt(outstanding_amount, 2),
+                        payment_status,
+                        a.reference_name,
+                    )
+                )
+                frappe.msgprint("Updated POL Receive Invoice {}".format(a.reference_name))
+
+            elif a.reference_doctype == "Hire Charge Invoice":
+                payment_status = ""
+                outstanding_amount = frappe.db.get_value("Hire Charge Invoice", a.reference_name, "outstanding_amount")
+                total_balance_amount = frappe.db.get_value("Hire Chagre Invoice", a.reference_name, "payable_amount")
+                if not cancel:
+                    outstanding_amount -= self.paid_amount
+                else:
+                    outstanding_amount += self.paid_amount
+                if outstanding_amount == 0:
+                    payment_status = "Paid"
+                elif flt(outstanding_amount, 2) < flt(total_balance_amount):
+                    payment_status = "Partly Paid"
+                else:
+                    payment_status = "Unpaid"
+
+                frappe.db.sql(
+                    """
+					update `tabHire Charge Invoice` set outstanding_amount = {}, status = '{}'
+					where name = '{}'
+				""".format(
+                        flt(outstanding_amount, 2),
+                        payment_status,
+                        a.reference_name,
+                    )
+                )
+                frappe.msgprint("Updated Hire Charge Invoice {}".format(a.reference_name))
 
     def update_employee_advance(self):
         if self.references:
@@ -342,7 +403,6 @@ class PaymentEntry(AccountsController):
                 ref_details = get_reference_details(
                     d.reference_doctype, d.reference_name, self.party_account_currency
                 )
-
                 for field, value in ref_details.items():
                     if d.exchange_gain_loss:
                         # for cases where gain/loss is booked into invoice
@@ -432,7 +492,7 @@ class PaymentEntry(AccountsController):
         ):
             if not self.get(field):
                 frappe.msgprint(
-                    _("{0} is mandatory").format(self.meta.get_label(field)), raise_exception
+                    _("{0} is mandatory").format(self.meta.get_label(field)), raise_exception=True
                 )
 
     def validate_reference_documents(self):
@@ -462,6 +522,8 @@ class PaymentEntry(AccountsController):
                         "Journal Entry",
                         "Repair And Service Invoice",
                         "Project Invoice",
+                        "POL Receive Invoice",
+                        "Hire Charge Invoice",
                     ):
                         if self.party != ref_doc.get(scrub(self.party_type)):
                             frappe.throw(
@@ -523,6 +585,8 @@ class PaymentEntry(AccountsController):
                 "Journal Entry",
                 "Repair And Service Invoice",
                 "Project Invoice",
+                "POL Receive Invoice",
+                "Hire Charge Invoice",
             )
         elif self.party_type == "Shareholder":
             return ("Journal Entry",)
@@ -779,6 +843,7 @@ class PaymentEntry(AccountsController):
     def set_amounts_after_tax(self):
         applicable_tax = 0
         base_applicable_tax = 0
+        advance_amount = 0
         for tax in self.get("taxes"):
             if not tax.included_in_paid_amount:
                 amount = -1 * tax.tax_amount if tax.add_deduct_tax == "Deduct" else tax.tax_amount
@@ -790,9 +855,12 @@ class PaymentEntry(AccountsController):
 
                 applicable_tax += amount
                 base_applicable_tax += base_amount
+        
+        for adv in self.get("advances"):
+            advance_amount += -1 * flt(adv.advance_amount)
 
         self.paid_amount_after_tax = flt(
-            flt(self.paid_amount) + flt(applicable_tax), self.precision("paid_amount_after_tax")
+            flt(self.paid_amount) + flt(applicable_tax) +flt(advance_amount), self.precision("paid_amount_after_tax")
         )
         self.base_paid_amount_after_tax = flt(
             flt(self.paid_amount_after_tax) * flt(self.source_exchange_rate),
@@ -1022,6 +1090,7 @@ class PaymentEntry(AccountsController):
         self.add_bank_gl_entries(gl_entries)
         self.add_deductions_gl_entries(gl_entries)
         self.add_tax_gl_entries(gl_entries)
+        frappe.throw(str(gl_entries))
         return gl_entries
 
     def make_gl_entries(self, cancel=0, adv_adj=0):
@@ -1115,36 +1184,241 @@ class PaymentEntry(AccountsController):
             )
         else:
             if self.payment_type in ("Pay", "Internal Transfer"):
-                gl_entries.append(
-                    self.get_gl_dict(
-                        {
-                            "account": self.paid_from,
-                            "account_currency": self.paid_from_account_currency,
-                            "against": self.party if self.payment_type == "Pay" else self.paid_to,
-                            "credit_in_account_currency": self.paid_amount,
-                            "credit": self.base_paid_amount,
-                            "cost_center": self.cost_center,
-                            "post_net_value": True,
-                        },
-                        item=self,
+                if self.advances:
+                    balance_amount = flt(self.advances[0].balance_amount)
+                    advance_account = self.advances[0].advance_account
+                    if self.total_outstanding_amount > 0.00:
+                        gl_entries.append(
+                            self.get_gl_dict(
+                                {
+                                    "account": self.paid_from,
+                                    "account_currency": self.paid_from_account_currency,
+                                    "against": self.party
+                                    if self.payment_type == "Pay"
+                                    else self.paid_to,
+                                    "credit_in_account_currency": self.total_outstanding_amount,
+                                    "credit": self.total_outstanding_amount,
+                                    "cost_center": self.cost_center,
+                                    "post_net_value": True,
+                                },
+                                item=self,
+                            )
+                        )
+                        gl_entries.append(
+                            self.get_gl_dict(
+                                {
+                                    "account": advance_account,
+                                    "account_currency": self.paid_from_account_currency,
+                                    "against": self.party
+                                    if self.payment_type == "Pay"
+                                    else self.paid_to,
+                                    "party": self.party,
+                                    "party_type": "Supplier",
+                                    "credit_in_account_currency": balance_amount,
+                                    "credit": balance_amount,
+                                    "cost_center": self.cost_center,
+                                    "post_net_value": True,
+                                },
+                                item=self,
+                            )
+                        )
+                    else:
+                        gl_entries.append(
+                            self.get_gl_dict(
+                                {
+                                    "account": advance_account,
+                                    "account_currency": self.paid_from_account_currency,
+                                    "against": self.party
+                                    if self.payment_type == "Pay"
+                                    else self.paid_to,
+                                    "party": self.party,
+                                    "party_type": "Supplier",
+                                    "credit_in_account_currency": self.paid_amount,
+                                    "credit": self.base_paid_amount,
+                                    "cost_center": self.cost_center,
+                                    "post_net_value": True,
+                                },
+                                item=self,
+                            )
+                        )
+                else:
+                    gl_entries.append(
+                        self.get_gl_dict(
+                            {
+                                "account": self.paid_from,
+                                "account_currency": self.paid_from_account_currency,
+                                "against": self.party
+                                if self.payment_type == "Pay"
+                                else self.paid_to,
+                                "credit_in_account_currency": self.paid_amount,
+                                "credit": self.base_paid_amount,
+                                "cost_center": self.cost_center,
+                                "post_net_value": True,
+                            },
+                            item=self,
+                        )
                     )
-                )
             if self.payment_type in ("Receive", "Internal Transfer"):
-                gl_entries.append(
-                    self.get_gl_dict(
-                        {
-                            "account": self.paid_to,
-                            "account_currency": self.paid_to_account_currency,
-                            "against": self.party
-                            if self.payment_type == "Receive"
-                            else self.paid_from,
-                            "debit_in_account_currency": self.received_amount,
-                            "debit": self.base_received_amount,
-                            "cost_center": self.cost_center,
-                        },
-                        item=self,
+                if self.advances:
+                    balance_amount = flt(self.advances[0].balance_amount)
+                    advance_account = self.advances[0].advance_account
+                    out = flt(self.total_allocated_amount - balance_amount, 2)
+                    if self.total_outstanding_amount > 0.00:
+                        gl_entries.append(
+                            self.get_gl_dict(
+                                {
+                                    "account": self.paid_to,
+                                    "account_currency": self.paid_to_account_currency,
+                                    "against": self.party
+                                    if self.payment_type == "Receive"
+                                    else self.paid_from,
+                                    "debit_in_account_currency": self.total_outstanding_amount,
+                                    "debit": self.total_outstanding_amount,  # base_received_amount
+                                    "cost_center": self.cost_center,
+                                },
+                                item=self,
+                            )
+                        )
+                        gl_entries.append(
+                            self.get_gl_dict(
+                                {
+                                    "account": advance_account,
+                                    "account_currency": self.paid_to_account_currency,
+                                    "against": self.party
+                                    if self.payment_type == "Receive"
+                                    else self.paid_from,
+                                    "debit_in_account_currency": balance_amount,  # self.received_amount,
+                                    "debit": balance_amount,  # base_received_amount
+                                    "cost_center": self.cost_center,
+                                    "party": self.party,
+                                    "party_type": "Customer",
+                                },
+                                item=self,
+                            )
+                        )
+                    else:
+                        gl_entries.append(
+                            self.get_gl_dict(
+                                {
+                                    "account": advance_account,
+                                    "account_currency": self.paid_from_account_currency,
+                                    "against": self.party
+                                    if self.payment_type == "Receive"
+                                    else self.paid_from,
+                                    "party": self.party,
+                                    "party_type": "Customer",
+                                    "debit_in_account_currency": self.paid_amount,
+                                    "debit": self.base_paid_amount,
+                                    "cost_center": self.cost_center,
+                                    "post_net_value": True,
+                                },
+                                item=self,
+                            )
+                        )
+                else:
+                    gl_entries.append(
+                        self.get_gl_dict(
+                            {
+                                "account": self.paid_to,
+                                "account_currency": self.paid_to_account_currency,
+                                "against": self.party
+                                if self.payment_type == "Receive"
+                                else self.paid_from,
+                                "debit_in_account_currency": self.received_amount,
+                                "debit": self.base_received_amount,
+                                "cost_center": self.cost_center,
+                            },
+                            item=self,
+                        )
                     )
+
+    def update_supplier_advance(self, cancel=False):
+        cond = ""
+        if self.project:
+            cond += " AND project='{}'".format(self.project)
+
+        supplier_advances = frappe.db.sql(
+            """
+            SELECT 
+                name, 
+                advance_type,
+                advance_account, 
+                advance_amount,
+                adjusted_amount,
+                balance_amount,
+                general_purpose,
+                advance_date
+            FROM 
+                `tabAdvance Item` 
+            WHERE 
+                advance_type = '{0}' and 
+                parent = '{1}' {cond}
+        """.format(
+                self.advance_type, self.party, cond=cond
+            ),
+            as_dict=1,
+        )
+        if supplier_advances:
+            if cancel:
+                balance_amount = flt(self.paid_amount - self.total_outstanding_amount, 2)
+                adjusted_amount = (
+                    flt(supplier_advances[0].advance_amount - balance_amount, 2)
+                    if self.total_outstanding_amount > 0
+                    else flt(supplier_advances[0].adjusted_amount - self.paid_amount, 2)
                 )
+                # frappe.msgprint(str(adjusted_amount) + " : can : " + str(balance_amount))
+
+                if balance_amount < 0.00 or adjusted_amount < 0.00:
+                    frappe.throw(
+                        str("The advance amount is less than the paid amount.")
+                        + str(balance_amount)
+                        + " : "
+                        + str(adjusted_amount)
+                    )
+            else:
+                adjusted_amount = (
+                    flt(
+                        flt(supplier_advances[0].adjusted_amount)
+                        + supplier_advances[0].balance_amount,
+                        2,
+                    )
+                    if self.total_outstanding_amount > 0
+                    else flt(flt(supplier_advances[0].adjusted_amount) + self.paid_amount, 2)
+                )
+                balance_amount = flt(supplier_advances[0].advance_amount - adjusted_amount)
+                # frappe.msgprint(str(adjusted_amount) + " : sub : " + str(balance_amount))
+                doc = frappe.new_doc("Advance Settlement")
+                doc.title = "Advance Settlement Against " + str(self.party)
+                doc.posting_date = nowdate()
+                doc.advance_type = supplier_advances[0].advance_type
+                doc.advance_account = supplier_advances[0].advance_account
+                doc.advance_amount = supplier_advances[0].advance_amount
+                doc.balance_amount = balance_amount
+                doc.adjusted_amount = adjusted_amount
+                doc.reference_type = self.doctype
+                doc.reference_name = self.name
+                doc.docstatus = "1"
+                doc.insert(ignore_permissions=True)
+                frappe.msgprint(str("created advance settlement {}".format(doc.name)))
+                frappe.db.set_value("Payment Entry", self.name, "advance_settlement", doc.name)
+                self.set("advance_settlement", doc.name)
+            frappe.db.sql(
+                """
+                UPDATE
+                    `tabAdvance Item` 
+                SET
+                    balance_amount = '{0}',
+                    adjusted_amount = '{1}'
+                WHERE 
+                    name = '{2}'
+                """.format(
+                    balance_amount,
+                    adjusted_amount,
+                    supplier_advances[0].name,
+                    self.name,
+                ),
+                as_dict=1,
+            )
 
     def add_tax_gl_entries(self, gl_entries):
         for d in self.get("taxes"):
@@ -1178,29 +1452,31 @@ class PaymentEntry(AccountsController):
                         else d.tax_amount,
                         "cost_center": d.cost_center,
                         "post_net_value": True,
+                        "party_type": "Customer" if self.payment_type == "Receive" else "Supplier",
+                        "party": self.party,
                     },
                     account_currency,
                     item=d,
                 )
             )
-
-            if not d.included_in_paid_amount:
-                gl_entries.append(
-                    self.get_gl_dict(
-                        {
-                            "account": payment_account,
-                            "against": against,
-                            rev_dr_or_cr: tax_amount,
-                            rev_dr_or_cr + "_in_account_currency": base_tax_amount
-                            if account_currency == self.company_currency
-                            else d.tax_amount,
-                            "cost_center": self.cost_center,
-                            "post_net_value": True,
-                        },
-                        account_currency,
-                        item=d,
-                    )
-                )
+            # the field has no meaning "included_in_paid_amount"
+            # if not d.included_in_paid_amount:
+            #     gl_entries.append(
+            #         self.get_gl_dict(
+            #             {
+            #                 "account": payment_account,
+            #                 "against": against,
+            #                 rev_dr_or_cr: tax_amount,
+            #                 rev_dr_or_cr + "_in_account_currency": base_tax_amount
+            #                 if account_currency == self.company_currency
+            #                 else d.tax_amount,
+            #                 "cost_center": self.cost_center,
+            #                 "post_net_value": True,
+            #             },
+            #             account_currency,
+            #             item=d,
+            #         )
+            #     )
 
     def add_deductions_gl_entries(self, gl_entries):
         for d in self.get("deductions"):
@@ -1416,6 +1692,67 @@ class PaymentEntry(AccountsController):
 
         return current_tax_fraction
 
+    def set_outstanding_amt(self):
+        total_advance = 0.00
+        if self.advances:
+            for val in self.advances:
+                if flt(val.balance_amount) > 0.00:
+                    total_advance += flt(val.balance_amount)
+        self.set(
+            "total_outstanding_amount",
+            flt(
+                self.total_allocated_amount - total_advance - (self.total_taxes_and_charges * -1),
+                2,
+            ),
+        )
+
+    @frappe.whitelist()
+    def get_advance(self):
+        cond = ""
+        if not self.advance_type and not self.project and self.party_type == "Customer":
+            frappe.throw("Advance Type is required to pull the advance.")
+        if self.project:
+            cond += " AND project='{}'".format(self.project)
+            if self.party_type == "Supplier":
+                self.advance_type = "National Subcontractor Advance"
+
+        self.set("advances", [])
+        query = """
+            SELECT
+                advance_type,
+                advance_account,
+                general_purpose,
+                advance_amount,
+                balance_amount,
+                adjusted_amount,
+                advance_date
+            FROM
+                `tabAdvance Item`
+            WHERE
+                parent = '{0}'  and 
+                advance_type = '{1}' {cond}
+        """.format(
+            self.party, self.advance_type, cond=cond
+        )
+        row_data = frappe.db.sql(query, as_dict=1)
+        if row_data:
+            total_advance = 0.00
+            for value in row_data:
+                if flt(value.balance_amount) > 0.00:
+                    total_advance += flt(value.balance_amount)
+                    self.append("advances", value)
+                else:
+                    self.set("total_outstanding_amount", self.total_allocated_amount)
+                    frappe.msgprint(
+                        str("There is no advance for {0} {1}.".format(self.party, self.party_type))
+                    )
+        else:
+            self.set("total_outstanding_amount", self.total_allocated_amount)
+            frappe.msgprint(
+                str("There is no advance for {0} {1}".format(self.party, self.party_type))
+            )
+        self.set_outstanding_amt()
+
 
 def validate_inclusive_tax(tax, doc):
     def _on_previous_row_error(row_range):
@@ -1455,7 +1792,7 @@ def get_outstanding_reference_documents(args):
     if args.get("party_type") == "Member":
         return
 
-    ple = qb.DocType("Payment Ledger Entry")
+    ple = qb.DocType("Payment Ledger Entry")  # "tabPayment Ledger Entry"
     common_filter = []
     posting_and_due_date = []
 
@@ -1484,9 +1821,11 @@ def get_outstanding_reference_documents(args):
         common_filter.append(ple.voucher_type == args["voucher_type"])
         common_filter.append(ple.voucher_no == args["voucher_no"])
     # Add cost center condition
-    if args.get("cost_center") and flt(args.get("avoid_cost_center_filter")) == 0:
-        condition += " and cost_center='%s'" % args.get("cost_center")
-        common_filter.append(ple.cost_center == args.get("cost_center"))
+    # if args.get("cost_center"):
+    #     condition += " and cost_center='%s'" % args.get("cost_center")
+    #     common_filter.append(ple.cost_center == args.get("cost_center"))
+    # frappe.msgprint(str(args))
+
     date_fields_dict = {
         "posting_date": ["from_posting_date", "to_posting_date"],
         "due_date": ["from_due_date", "to_due_date"],
@@ -1978,7 +2317,7 @@ def get_payment_entry(
     paid_amount, received_amount, discount_amount = apply_early_payment_discount(
         paid_amount, received_amount, doc
     )
-    if dt in ["Repair And Service Invoice", "Project Invoice"]:
+    if dt in ["Repair And Service Invoice", "Project Invoice", "POL Receive Invoice", "Hire Charge Invoice"]:
         party = doc.party
     else:
         party = doc.get(scrub(party_type))
@@ -2018,7 +2357,6 @@ def get_payment_entry(
         pe.project = doc.get("project") or reduce(
             lambda prev, cur: prev or cur, [x.get("project") for x in doc.get("items")], None
         )  # get first non-empty project from items
-
     if pe.party_type in ["Customer", "Supplier"]:
         bank_account = get_party_bank_account(pe.party_type, pe.party)
         pe.set("bank_account", bank_account)
@@ -2130,7 +2468,7 @@ def set_party_account(dt, dn, doc, party_type, is_advance=None):
         party_account = get_party_account_based_on_invoice_discounting(dn) or doc.debit_to
     elif dt == "Purchase Invoice":
         party_account = doc.credit_to
-    elif dt in ["Transporter Invoice", "EME Invoice", "Repair And Service Invoice"]:
+    elif dt in ["Transporter Invoice", "EME Invoice", "Repair And Service Invoice", "POL Receive Invoice", "HIre Charge Invoice"]:
         party_account = doc.credit_account
     elif dt == "Project Invoice":
         party_account = doc.debit_credit_account
@@ -2149,6 +2487,8 @@ def set_party_account_currency(dt, party_account, doc):
         "Transporter Invoice",
         "EME Invoice",
         "Repair And Service Invoice",
+        "POL Receive Invoice",
+        "HIre Charge Invoice",
     ):
         party_account_currency = get_account_currency(party_account)
     else:
@@ -2186,12 +2526,15 @@ def set_grand_total_and_outstanding_amount(party_amount, dt, party_account_curre
     elif dt in ["Transporter Invoice", "EME Invoice", "Repair And Service Invoice"]:
         grand_total = doc.grand_total
         outstanding_amount = doc.outstanding_amount
+        if dt == "Repair And Service Invoice" and doc.tds_account and doc.tds_amount:
+            grand_total = outstanding_amount = flt(doc.net_amount)
+    elif dt in ["POL Receive Invoice"]:
+        grand_total = outstanding_amount = doc.amount
     else:
         if party_account_currency == doc.company_currency:
             grand_total = flt(doc.get("base_rounded_total") or doc.get("base_grand_total"))
         else:
             grand_total = flt(doc.get("rounded_total") or doc.get("grand_total"))
-        # outstanding_amount = doc.get("outstanding_amount")
         outstanding_amount = doc.get("outstanding_amount") or (grand_total - flt(doc.advance_paid))
     return grand_total, outstanding_amount
 

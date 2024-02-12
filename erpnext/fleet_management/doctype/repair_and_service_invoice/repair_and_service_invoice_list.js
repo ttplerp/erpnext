@@ -1,6 +1,5 @@
 // Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and Contributors
 // License: GNU General Public License v3. See license.txt
-
 frappe.listview_settings['Repair And Service Invoice'] = {
 	add_fields: ["status"],
 	has_indicator_for_draft: 1,
@@ -22,3 +21,4 @@ frappe.listview_settings['Repair And Service Invoice'] = {
 		}
 	}
 };
+
