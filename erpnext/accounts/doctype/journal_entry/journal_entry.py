@@ -175,7 +175,6 @@ class JournalEntry(AccountsController):
                 advance_account, 
                 advance_amount, 
                 balance_amount,
-                general_purpose,
                 advance_date
 			FROM 
             	`tabAdvance Item` 
