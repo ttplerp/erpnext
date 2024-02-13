@@ -33,8 +33,10 @@
   "printing_settings",
   "select_print_heading",
   "letter_head",
+  "print_message",
   "more_info",
-  "opportunity"
+  "opportunity",
+  "footer_text"
  ],
  "fields": [
   {
@@ -271,13 +273,23 @@
    "fieldname": "schedule_date",
    "fieldtype": "Date",
    "label": "Required Date"
+  },
+  {
+   "fieldname": "print_message",
+   "fieldtype": "Data",
+   "label": "Print Message"
+  },
+  {
+   "fieldname": "footer_text",
+   "fieldtype": "Data",
+   "label": "Footer Text"
   }
  ],
  "icon": "fa fa-shopping-cart",
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-04-06 17:47:49.909000",
+ "modified": "2024-01-31 17:10:37.045651",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Request for Quotation",
@@ -345,5 +357,6 @@
  "search_fields": "status, transaction_date",
  "show_name_in_global_search": 1,
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "states": []
 }
