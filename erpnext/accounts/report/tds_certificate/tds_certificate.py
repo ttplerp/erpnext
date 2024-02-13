@@ -196,6 +196,6 @@ def get_journal_entries(filters):
 			AND t.docstatus = 1
 			AND t1.apply_tds = 1
 			AND t1.party = "{supplier}"
-			group by rr.name
+			group by tl.name
 			
 		""".format(supplier = filters.supplier, from_date = str(filters.from_date), to_date = str(filters.to_date)), as_dict=True)
