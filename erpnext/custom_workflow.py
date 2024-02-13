@@ -700,7 +700,7 @@ class CustomWorkflow:
             self.approver_data = frappe.db.sql("""
                                     select ai.approver from `tabSupervisor And Approver Mapper` sam,
                                     `tabApprover Item` ai where ai.parent = sam.name and ai.branch = '{}' and sam.employee = '{}'
-                                  """.format(self.doc.branch, self.doc.employee))
+                                  """.format(self.doc.expense_branch, self.doc.employee))
             if self.approver_data:
                 self.approver = self.approver_data[0][0]
                 self.imprest_approver = frappe.db.get_value("Employee", self.approver, self.field_list) 
