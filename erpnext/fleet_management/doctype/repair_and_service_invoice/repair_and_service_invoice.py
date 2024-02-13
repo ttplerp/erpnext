@@ -23,6 +23,7 @@ class RepairAndServiceInvoice(AccountsController):
         self.calculate_total()
 
     def on_submit(self):
+        self.update_repair_and_service()
         if self.settle_imprest_advance:
             self.post_journal_entry()
         else:
@@ -32,6 +33,7 @@ class RepairAndServiceInvoice(AccountsController):
         self.check_journal_entry()
 
     def on_cancel(self):
+        self.update_repair_and_service()
         self.ignore_linked_doctypes = (
             "GL Entry",
             "Stock Ledger Entry",
