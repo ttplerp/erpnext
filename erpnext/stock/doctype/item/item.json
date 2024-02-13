@@ -168,7 +168,6 @@
    "oldfieldname": "item_name",
    "oldfieldtype": "Data",
    "reqd": 1,
-   "set_only_once": 1,
    "unique": 1
   },
   {
@@ -957,7 +956,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-02 13:43:34.171221",
+ "modified": "2024-02-13 17:42:09.135131",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",
