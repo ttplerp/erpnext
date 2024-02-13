@@ -13,20 +13,27 @@
   "column_break_2",
   "posting_date",
   "posting_time",
-  "warehouse",
+  "hired_equipment",
   "section_break_2",
   "pol_type",
   "item_name",
   "stock_uom",
   "column_break_10",
   "receive_in_barrel",
+  "warehouse",
   "tanker",
   "total_quantity",
   "section_break_3",
-  "journal_entry",
   "items",
+  "hired_equipment_details_section",
+  "fuel_policy",
+  "hired_required_items",
   "section_break_5",
   "remarks",
+  "section_break_twto7",
+  "journal_entry",
+  "advance",
+  "column_break_kqbfx",
   "amended_from"
  ],
  "fields": [
@@ -126,7 +133,7 @@
    "read_only": 1
   },
   {
-   "depends_on": "eval:doc.pol_type",
+   "depends_on": "eval: doc.hired_equipment == 0;",
    "fieldname": "section_break_3",
    "fieldtype": "Section Break",
    "label": "POL Issue Details"
@@ -135,8 +142,7 @@
    "fieldname": "items",
    "fieldtype": "Table",
    "label": "Items",
-   "options": "POL Issue Items",
-   "reqd": 1
+   "options": "POL Issue Items"
   },
   {
    "fieldname": "section_break_5",
@@ -160,15 +166,56 @@
   },
   {
    "fieldname": "journal_entry",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "label": "Journal Entry",
+   "options": "Journal Entry",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "hired_equipment",
+   "fieldtype": "Check",
+   "label": "Hired Equipment"
+  },
+  {
+   "depends_on": "eval:doc.hired_equipment",
+   "fieldname": "hired_equipment_details_section",
+   "fieldtype": "Section Break",
+   "label": "Hired Equipment Details"
+  },
+  {
+   "fieldname": "hired_required_items",
+   "fieldtype": "Table",
+   "mandatory_depends_on": "hired_equipment",
+   "options": "POL Issue Hired Equipment Item"
+  },
+  {
+   "fieldname": "section_break_twto7",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "fuel_policy",
+   "fieldtype": "Select",
+   "label": "Fuel Policy",
+   "mandatory_depends_on": "hired_equipment",
+   "options": "\nWith Fuel\nWithout Fuel"
+  },
+  {
+   "fieldname": "column_break_kqbfx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "advance",
+   "fieldtype": "Link",
+   "label": "Advance",
+   "options": "Advance",
    "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-08-18 15:37:22.905042",
+ "modified": "2024-02-13 12:19:27.486808",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Issue",

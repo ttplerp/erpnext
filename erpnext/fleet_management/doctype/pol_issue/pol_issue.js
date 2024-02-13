@@ -115,3 +115,24 @@ frappe.ui.form.on('POL Issue Items', {
 		frappe.model.set_value(cdt, cdn, "rate", rate);
 	}
 })
+
+frappe.ui.form.on('POL Issue Hired Equipment Item', {
+	qty: function(frm, cdt, cdn){
+		calculate_amount(frm, cdt, cdn);
+	},
+	rate: function(frm, cdt, cdn){
+		calculate_amount(frm, cdt, cdn);
+	},
+	hired_required_items_add: function(frm, cdt, cdn){
+		var row = locals[cdt][cdn];
+		var rate = get_item_rate(frm)
+		frappe.model.set_value(cdt, cdn, "rate", rate);
+	}
+})
+
+var calculate_amount = function(frm, cdt, cdn) {
+	let child = locals[cdt][cdn];
+	let amount = child.qty * child.rate
+	frappe.model.set_value(cdt, cdn, 'amount', parseFloat(amount));
+	frm.refresh_field("amount", cdt, cdn)
+}

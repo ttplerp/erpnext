@@ -34,75 +34,125 @@ class POLIssue(StockController):
         if self.tanker and self.receive_in_barrel == 1:
             frappe.throw("Cannot Issue In Barrel if Tanker is selected.")
         total_quantity = 0
-        for a in self.items:
-            if flt(a.qty) <= 0:
-                frappe.throw(
-                    "Quantity for <b>"
-                    + str(a.equipment)
-                    + "</b> should be greater than 0"
-                )
-            total_quantity = flt(total_quantity) + flt(a.qty)
-            previous_km_reading = frappe.db.sql(
-                """
-				select cur_km_reading
-				from `tabPOL Issue` p inner join `tabPOL Issue Items` pi on p.name = pi.parent	
-				where p.docstatus = 1 and p.name != '{}' and pi.equipment = '{}'
-				and pi.uom = '{}' 
-				order by p.posting_date desc, p.posting_time desc
-				limit 1
-			""".format(
-                    self.name, a.equipment, a.uom
-                )
-            )
-            previous_pol_rev_km_reading = frappe.db.sql(
-                """
-				select cur_km_reading from `tabPOL Receive` where equipment = '{}' and docstatus = 1 and uom = '{}'
-				order by posting_date desc, posting_time desc
-				limit 1
-			""".format(
-                    a.equipment, a.uom
-                )
-            )
-            pv_km = 0
-            if not previous_km_reading and previous_pol_rev_km_reading:
-                previous_km_reading = previous_pol_rev_km_reading
-            elif previous_km_reading and previous_pol_rev_km_reading:
-                if flt(previous_km_reading[0][0]) < previous_pol_rev_km_reading[0][0]:
-                    previous_km_reading = previous_pol_rev_km_reading
 
-            if not previous_km_reading:
-                pv_km = frappe.db.get_value(
-                    "Equipment", a.equipment, "initial_km_reading"
-                )
-            else:
-                pv_km = previous_km_reading[0][0]
-
-            if flt(pv_km) >= flt(a.cur_km_reading):
-                frappe.throw(
-                    "Current KM/Hr Reading cannot be less than Previous KM/Hr Reading({}) for Equipment Number <b>{}</b>".format(
-                        pv_km, a.equipment
+        if self.hired_equipment:
+            for a in self.hired_required_items:
+                total_quantity = flt(total_quantity) + flt(a.qty)
+        else:
+            for a in self.items:
+                if flt(a.qty) <= 0:
+                    frappe.throw(
+                        "Quantity for <b>"
+                        + str(a.equipment)
+                        + "</b> should be greater than 0"
+                    )
+                total_quantity = flt(total_quantity) + flt(a.qty)
+                previous_km_reading = frappe.db.sql(
+                    """
+                    select cur_km_reading
+                    from `tabPOL Issue` p inner join `tabPOL Issue Items` pi on p.name = pi.parent	
+                    where p.docstatus = 1 and p.name != '{}' and pi.equipment = '{}'
+                    and pi.uom = '{}' 
+                    order by p.posting_date desc, p.posting_time desc
+                    limit 1
+                """.format(
+                        self.name, a.equipment, a.uom
                     )
                 )
-            a.km_difference = flt(a.cur_km_reading) - flt(pv_km)
-            if a.uom == "Hour":
-                a.mileage = flt(a.qty) / flt(a.km_difference)
-            else:
-                a.mileage = flt(a.km_difference) / a.qty
-            a.previous_km = pv_km
-            a.amount = flt(a.rate) * flt(a.qty)
+                previous_pol_rev_km_reading = frappe.db.sql(
+                    """
+                    select cur_km_reading from `tabPOL Receive` where equipment = '{}' and docstatus = 1 and uom = '{}'
+                    order by posting_date desc, posting_time desc
+                    limit 1
+                """.format(
+                        a.equipment, a.uom
+                    )
+                )
+                pv_km = 0
+                if not previous_km_reading and previous_pol_rev_km_reading:
+                    previous_km_reading = previous_pol_rev_km_reading
+                elif previous_km_reading and previous_pol_rev_km_reading:
+                    if flt(previous_km_reading[0][0]) < previous_pol_rev_km_reading[0][0]:
+                        previous_km_reading = previous_pol_rev_km_reading
+
+                if not previous_km_reading:
+                    pv_km = frappe.db.get_value(
+                        "Equipment", a.equipment, "initial_km_reading"
+                    )
+                else:
+                    pv_km = previous_km_reading[0][0]
+
+                if flt(pv_km) >= flt(a.cur_km_reading):
+                    frappe.throw(
+                        "Current KM/Hr Reading cannot be less than Previous KM/Hr Reading({}) for Equipment Number <b>{}</b>".format(
+                            pv_km, a.equipment
+                        )
+                    )
+                a.km_difference = flt(a.cur_km_reading) - flt(pv_km)
+                if a.uom == "Hour":
+                    a.mileage = flt(a.qty) / flt(a.km_difference)
+                else:
+                    a.mileage = flt(a.km_difference) / a.qty
+                a.previous_km = pv_km
+                a.amount = flt(a.rate) * flt(a.qty)
         self.total_quantity = total_quantity
 
     def on_submit(self):
-        
-        if self.receive_in_barrel == 0:
-            self.check_tanker_hsd_balance()
-            if self.tanker:
+        if self.hired_equipment:
+            if self.receive_in_barrel == 0:
+                self.check_tanker_hsd_balance()
+                if self.tanker:
+                    if self.fuel_policy == "Without Fuel":
+                        self.post_advance()
+                    else:
+                        self.post_journal_entry()
+            elif self.receive_in_barrel == 1:
+                self.update_stock_ledger()
+                self.repost_future_sle_and_gle()
+                if self.fuel_policy == "Without Fuel":
+                    self.post_advance()
+                else:
+                    self.post_journal_entry()
+        else:
+            if self.receive_in_barrel == 0:
+                self.check_tanker_hsd_balance()
+                if self.tanker:
+                    self.post_journal_entry()
+            elif self.receive_in_barrel == 1:
+                self.update_stock_ledger()
+                self.repost_future_sle_and_gle()
                 self.post_journal_entry()
-        elif self.receive_in_barrel == 1:
-            self.update_stock_ledger()
-            self.repost_future_sle_and_gle()
-            self.post_journal_entry()
         self.make_pol_entry()
+
+    def post_advance(self):
+        for a in self.hired_required_items:
+            advance = frappe.new_doc("Advance")
+            advance.flags.ignore_permissions = 1
+            advance_account = frappe.db.get_single_value("Maintenance Settings", "fuel_advance_account")
+            if self.receive_in_barrel == 1:
+                credit_account = frappe.db.get_value("Warehouse", self.warehouse, "account")
+            else:
+                credit_account = frappe.db.get_value("Equipment Category", frappe.db.get_value("Equipment", self.tanker, "equipment_category"), "pol_receive_account")
+            if not credit_account:
+                frappe.throw("Please set account in warehouse '{}'".format(self.warehouse))
+            advance.update({
+                "doctype": "Advance",
+                "posting_date": self.posting_date,
+                "party_type": "Supplier",
+                "party": a.supplier,
+                "branch": self.branch,
+                "advance_account": advance_account,
+                "advance_amount_requested": a.amount,
+                "advance_amount": a.amount,
+                "reference_doctype": self.doctype,
+                "reference_name": self.name,
+                "credit_account": credit_account,
+                "advance_type": "Hire Fuel Advance"
+            })
+
+            advance.insert()
+            self.db_set("advance", advance.name)
+        frappe.msgprint(_('{} posted to hire charge advance').format(frappe.get_desk_link(advance.doctype, advance.name)))
 
     def before_cancel(self):
         if self.receive_in_barrel == 1:
@@ -157,7 +207,7 @@ class POLIssue(StockController):
             qty += a.qty
         if flt(qty) > flt(balance_qty):
             frappe.throw(f"""
-                            Not Enough Balance for POL Item {self.item_name} in Tanker {self.tanker}. Balance is less by {flt(qty)-flt(balance_qty)}
+                            Not Enough Balance for POL Item <strong>{self.item_name}</strong> in Tanker <strong>{self.tanker}</strong>. Balance is less by <strong>{flt(qty)-flt(balance_qty)}</strong>.
                          """)
         
 
@@ -184,8 +234,12 @@ class POLIssue(StockController):
 
     def post_journal_entry(self):
         total_amount = 0
-        for a in self.items:
-            total_amount += flt(a.amount)
+        if self.hired_equipment:
+            for a in self.hired_required_items:
+                total_amount += flt(a.amount)
+        else:
+            for a in self.items:
+                total_amount += flt(a.amount)
         if not total_amount:
             frappe.throw(_("Amount should be greater than zero"))
         # if self.settle_imprest_advance == 1:
@@ -206,6 +260,40 @@ class POLIssue(StockController):
         je = frappe.new_doc("Journal Entry")
         je.flags.ignore_permissions = 1
         accounts = []
+        if self.hired_equipment:
+            for a in self.hired_required_items:
+                debit_account = frappe.db.get_single_value("Maintenance Settings", "hired_fuel_expense_account")
+                if not debit_account:
+                    frappe.throw('Plese set Hired Fuel Expense Account in Maintenance Settings.')
+                accounts.append(
+                    {
+                        "account": debit_account,
+                        "debit_in_account_currency": flt(a.qty * a.rate, 2),
+                        "debit": flt(a.qty * a.rate, 2),
+                        "cost_center": self.cost_center,
+                        "party_type": "Supplier",
+                        "party": a.supplier,
+                        "business_activity": get_default_ba,
+                    }
+                )
+        else:
+            for a in self.items:
+                debit_account = frappe.db.get_value(
+                    "Equipment Category", a.equipment_category, "pol_advance_account"
+                )
+                if not debit_account:
+                    debit_account = frappe.db.get_value(
+                        "Company", self.company, "pol_expense_account"
+                    )
+                accounts.append(
+                    {
+                        "account": debit_account,
+                        "debit_in_account_currency": flt(a.qty * a.rate, 2),
+                        "debit": flt(a.qty * a.rate, 2),
+                        "cost_center": self.cost_center,
+                        "business_activity": get_default_ba,
+                    }
+                )
         accounts.append(
             {
                 "account": credit_account,
@@ -218,23 +306,6 @@ class POLIssue(StockController):
             }
         )
         # credit
-        for a in self.items:
-            debit_account = frappe.db.get_value(
-                "Equipment Category", a.equipment_category, "pol_advance_account"
-            )
-            if not debit_account:
-                debit_account = frappe.db.get_value(
-                    "Company", self.company, "pol_expense_account"
-                )
-            accounts.append(
-                {
-                    "account": debit_account,
-                    "debit_in_account_currency": flt(a.qty * a.rate, 2),
-                    "debit": flt(a.qty * a.rate, 2),
-                    "cost_center": self.cost_center,
-                    "business_activity": get_default_ba,
-                }
-            )
 
         je.update(
             {
@@ -326,6 +397,7 @@ class POLIssue(StockController):
         # make sl entries for source warehouse first
         self.get_sle_for_source_warehouse(sl_entries)
 
+
         # SLE for target warehouse
         # self.get_sle_for_target_warehouse(sl_entries)
 
@@ -377,26 +449,48 @@ class POLIssue(StockController):
         # 					quantity -= flt(stock_balances[bal]['balance'])
         # 					sl_entries.append(sle)
         # stock_balances = {}
-        for a in self.items:
-            if cstr(self.warehouse):
-                # if self.stock_entry_type == "Material Transfer" and flt(d.difference_qty) < 0:
-                # 	sle = self.get_sl_entries(
-                # 		d, {"warehouse": cstr(d.s_warehouse),
-                # 			"actual_qty": -(flt(d.transfer_qty) - flt(d.difference_qty)),
-                # 			"incoming_rate": 0
-                # 			})
-                # else:
-                sle = self.get_sl_entries(
-                    {"item_code": a.item_code, "name": self.name},
-                    {
-                        "warehouse": cstr(self.warehouse),
-                        "actual_qty": -1 * flt(a.qty),
-                        "incoming_rate": 0,
-                        "valuation_rate": a.rate,
-                    },
-                )
+        if self.hired_equipment:
+            for a in self.hired_required_items:
+                if cstr(self.warehouse):
+                    # if self.stock_entry_type == "Material Transfer" and flt(d.difference_qty) < 0:
+                    # 	sle = self.get_sl_entries(
+                    # 		d, {"warehouse": cstr(d.s_warehouse),
+                    # 			"actual_qty": -(flt(d.transfer_qty) - flt(d.difference_qty)),
+                    # 			"incoming_rate": 0
+                    # 			})
+                    # else:
+                    sle = self.get_sl_entries(
+                        {"item_code": self.pol_type, "name": self.name},
+                        {
+                            "warehouse": cstr(self.warehouse),
+                            "actual_qty": -1 * flt(a.qty),
+                            "incoming_rate": 0,
+                            "valuation_rate": a.rate,
+                        },
+                    )
 
                 sl_entries.append(sle)
+        else:
+            for a in self.items:
+                if cstr(self.warehouse):
+                    # if self.stock_entry_type == "Material Transfer" and flt(d.difference_qty) < 0:
+                    # 	sle = self.get_sl_entries(
+                    # 		d, {"warehouse": cstr(d.s_warehouse),
+                    # 			"actual_qty": -(flt(d.transfer_qty) - flt(d.difference_qty)),
+                    # 			"incoming_rate": 0
+                    # 			})
+                    # else:
+                    sle = self.get_sl_entries(
+                        {"item_code": a.item_code, "name": self.name},
+                        {
+                            "warehouse": cstr(self.warehouse),
+                            "actual_qty": -1 * flt(a.qty),
+                            "incoming_rate": 0,
+                            "valuation_rate": a.rate,
+                        },
+                    )
+
+                    sl_entries.append(sle)
 
     @frappe.whitelist()
     def get_balance(pol_type, warehouse):

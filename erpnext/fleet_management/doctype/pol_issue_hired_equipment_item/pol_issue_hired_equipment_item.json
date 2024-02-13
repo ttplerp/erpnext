@@ -1,0 +1,172 @@
+{
+ "actions": [],
+ "creation": "2023-12-27 14:25:15.911397",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "hired_equipment_details_section",
+  "hired_equipment_type",
+  "hired_equipment",
+  "column_break_hh56b",
+  "supplier",
+  "section_break_7",
+  "qty",
+  "cur_km_reading",
+  "previous_km",
+  "mileage",
+  "column_break_11",
+  "rate",
+  "km_difference",
+  "amount",
+  "section_break_9",
+  "warehouse",
+  "cost_center",
+  "item_code",
+  "project",
+  "stock_uom"
+ ],
+ "fields": [
+  {
+   "fieldname": "hired_equipment_details_section",
+   "fieldtype": "Section Break",
+   "label": "Hired Equipment Details"
+  },
+  {
+   "fieldname": "hired_equipment_type",
+   "fieldtype": "Select",
+   "label": "Hired Equipment Type",
+   "options": "\nVehicle\nMachine",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_7",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Quantity",
+   "precision": "2",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cur_km_reading",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Current KM/Hr"
+  },
+  {
+   "fieldname": "previous_km",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Previous KM/Hr",
+   "read_only": 1
+  },
+  {
+   "fieldname": "mileage",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Mileage"
+  },
+  {
+   "fieldname": "column_break_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "label": "Rate Per Unit",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "km_difference",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "KM/Hr Difference",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_9",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Warehouse",
+   "options": "Warehouse",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Item Code",
+   "options": "Item",
+   "read_only": 1
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Ptoject",
+   "options": "Project"
+  },
+  {
+   "fetch_from": "item_code.stock_uom",
+   "fieldname": "stock_uom",
+   "fieldtype": "Link",
+   "label": "Stock UOM",
+   "options": "UOM",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_hh56b",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "hired_equipment",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Hired Equipment",
+   "reqd": 1
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier",
+   "options": "Supplier",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-01-17 12:42:31.215193",
+ "modified_by": "Administrator",
+ "module": "Fleet Management",
+ "name": "POL Issue Hired Equipment Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_views": 1
+}

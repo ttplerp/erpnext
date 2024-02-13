@@ -5,6 +5,6 @@ def get_data():
 	return {
 		"fieldname": "reference_name",
 		"transactions": [
-			{"label": _("Payment"), "items": ["Journal Entry"]},
+			{"label": _("Related Transactions"), "items": ["Journal Entry", "POL Receive Invoice"]},
 		],
 	}

@@ -14,7 +14,9 @@
   "column_break_3",
   "posting_date",
   "posting_time",
+  "hired_equipment",
   "direct_consumption",
+  "receive_in_barrel",
   "settle_imprest_advance",
   "party",
   "section_break_6",
@@ -26,10 +28,15 @@
   "section_break_15",
   "equipment_category",
   "fuelbook_branch",
+  "hired_equipment_details_section",
+  "hired_equipment_type",
+  "fuel_policy",
+  "column_break_spcy7",
+  "hired_equipment_no",
   "supplier",
-  "hired_equipment",
+  "section_break_ky3pt",
+  "paid_to",
   "section_break_4",
-  "receive_in_barrel",
   "pol_type",
   "item_name",
   "column_break_6",
@@ -57,6 +64,7 @@
   "remarks",
   "currency",
   "ad_info_section_break",
+  "advance",
   "journal_entry_html",
   "journal_entry",
   "journal_entry_status",
@@ -125,7 +133,7 @@
    "label": "Direct Consumption"
   },
   {
-   "depends_on": "eval:doc.receive_in_barrel == 0;",
+   "depends_on": "eval:(doc.receive_in_barrel == 0 && doc.hired_equipment == 0);",
    "fieldname": "section_break_6",
    "fieldtype": "Section Break",
    "label": "Equipment Details"
@@ -138,7 +146,6 @@
    "fieldname": "supplier",
    "fieldtype": "Link",
    "label": "Supplier",
-   "mandatory_depends_on": "eval:doc.out_sourced == 1",
    "options": "Supplier"
   },
   {
@@ -187,6 +194,7 @@
   {
    "fieldname": "rate",
    "fieldtype": "Currency",
+   "in_list_view": 1,
    "label": "Rate Per Unit",
    "reqd": 1
   },
@@ -258,7 +266,7 @@
    "in_filter": 1,
    "in_standard_filter": 1,
    "label": "Equipment",
-   "mandatory_depends_on": "eval:doc.receive_in_barrel == 0;",
+   "mandatory_depends_on": "eval:(doc.receive_in_barrel == 0 && doc.hired_equipment == 0);",
    "options": "Equipment"
   },
   {
@@ -336,14 +344,6 @@
   {
    "fieldname": "column_break_33",
    "fieldtype": "Column Break"
-  },
-  {
-   "default": "0",
-   "fetch_from": "equipment.hired_equipment",
-   "fieldname": "hired_equipment",
-   "fieldtype": "Check",
-   "label": "Hired Equipment",
-   "read_only": 1
   },
   {
    "fieldname": "pol_slip_no",
@@ -453,12 +453,64 @@
   {
    "fieldname": "column_break_zja4w",
    "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.hired_equipment == 1;",
+   "fieldname": "hired_equipment_details_section",
+   "fieldtype": "Section Break",
+   "label": "Hired Equipment Details"
+  },
+  {
+   "fieldname": "hired_equipment_type",
+   "fieldtype": "Select",
+   "label": "Hired Equipment Type",
+   "options": "\nVehicle\nMachine"
+  },
+  {
+   "fieldname": "column_break_spcy7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "hired_equipment_no",
+   "fieldtype": "Data",
+   "label": "Hired Equipment No"
+  },
+  {
+   "fieldname": "fuel_policy",
+   "fieldtype": "Select",
+   "label": "Fuel Policy",
+   "options": "\nWith Fuel\nWithout Fuel"
+  },
+  {
+   "default": "0",
+   "fieldname": "hired_equipment",
+   "fieldtype": "Check",
+   "label": "Hired Equipment"
+  },
+  {
+   "fieldname": "section_break_ky3pt",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "paid_to",
+   "fieldtype": "Link",
+   "label": "Paid To",
+   "options": "Supplier",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.fuel_policy == \"Without Fuel\";",
+   "fieldname": "advance",
+   "fieldtype": "Link",
+   "label": "Advance",
+   "options": "Advance",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-12-22 12:25:55.830549",
+ "modified": "2024-02-13 11:47:11.047791",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Receive",

@@ -70,6 +70,14 @@ frappe.ui.form.on("Journal Entry", {
 		}
 		draw_tds_table(frm)
 		create_custom_buttons(frm);
+
+		frm.fields_dict.accounts.grid.get_field("account").get_query = function(doc) {
+            return {
+                filters: {
+                    "parent": 0
+                }
+            };
+        }
 	},
 
 	make_inter_company_journal_entry: function(frm) {

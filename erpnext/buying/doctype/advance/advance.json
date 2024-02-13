@@ -17,6 +17,7 @@
   "company",
   "party",
   "advance_account",
+  "credit_account",
   "cost_center",
   "advanced_paid_from_imprest_money",
   "imprest_party",
@@ -46,7 +47,8 @@
   "journal_entry_html",
   "journal_entry",
   "journal_entry_status",
-  "column_break_jfixm"
+  "column_break_jfixm",
+  "amended_from"
  ],
  "fields": [
   {
@@ -306,12 +308,28 @@
    "label": "Approver Designation",
    "options": "Designation",
    "read_only": 1
+  },
+  {
+   "fieldname": "credit_account",
+   "fieldtype": "Link",
+   "label": "Credit Account",
+   "options": "Account",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Advance",
+   "print_hide": 1,
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-02-12 12:08:39.739871",
+ "modified": "2024-02-13 12:27:32.508743",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Advance",

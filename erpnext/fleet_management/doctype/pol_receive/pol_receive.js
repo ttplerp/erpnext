@@ -4,22 +4,18 @@
 frappe.ui.form.on('POL Receive', {
 	refresh: function(frm) {
 		refresh_html(frm);
-		if (frm.doc.docstatus === 1 && frm.doc.out_sourced == 1) {
-			frm.add_custom_button(
-				__("Ledger"),
-				function () {
-				  frappe.route_options = {
-					voucher_no: frm.doc.name,
-					from_date: frm.doc.entry_date,
-					to_date: frm.doc.entry_date,
-					company: frm.doc.company,
-					group_by_voucher: false,
-				  };
-				  frappe.set_route("query-report", "General Ledger");
-				},
-				__("View")
-			  );
-		}
+		// if (frm.doc.docstatus === 1 ) {
+		// 	frm.add_custom_button(__("Ledger"), function () {
+		// 		frappe.route_options = {
+		// 			voucher_no: frm.doc.name,
+		// 			from_date: frm.doc.entry_date,
+		// 			to_date: frm.doc.entry_date,
+		// 			company: frm.doc.company,
+		// 			group_by_voucher: false,
+		// 		};
+		// 		frappe.set_route("query-report", "General Ledger");
+		// 	}, __("View"));
+		// }
 		if(!frm.doc.__islocal){
 			// if(frappe.model.can_read("Project")) {
 				if(frm.doc.journal_entry){
@@ -30,7 +26,7 @@ frappe.ui.form.on('POL Receive', {
 				}
 			// }
 		}
-		if(frm.doc.docstatus==1) {
+		if(frm.doc.docstatus==1 && frm.doc.receive_in_barrel ==1) {
 			frm.add_custom_button(__('Stock Ledger'), function() {
 				frappe.route_options = {
 					"voucher_no": frm.doc.name,
@@ -41,6 +37,13 @@ frappe.ui.form.on('POL Receive', {
 				frappe.set_route("query-report", "Stock Ledger");
 			}, __('View'));
 		}
+
+		// if (frm.doc.docstatus == 1 && frm.doc.settle_imprest_advance != 1) {
+		// 	cur_frm.add_custom_button(__('POL Receive Invoice'), function(doc) {
+		// 		frm.events.make_pol_receive_invoice(frm)
+		// 	},__("Create"))
+		// 	frm.page.set_inner_btn_group_as_primary(__('Create'));
+		// }
 	},
 	qty: function(frm) {
 		calculate_total(frm)
@@ -87,6 +90,18 @@ frappe.ui.form.on('POL Receive', {
 	reset_items:function(frm){
 		cur_frm.clear_table("items");
 	},
+
+	make_pol_receive_invoice: function(frm) {
+		frappe.call({
+			method: "make_pol_receive_invoice",
+			doc:frm.doc,
+			callback:function(r){
+                cur_frm.reload_doc()
+            },
+			// freeze: true,
+			// freeze_message: '<span style="color:white; background-color: red; padding: 10px 50px; border-radius: 5px;">Posting To account.....</span>'
+		})
+	}
 });
 cur_frm.set_query("pol_type", function() {
 	return {

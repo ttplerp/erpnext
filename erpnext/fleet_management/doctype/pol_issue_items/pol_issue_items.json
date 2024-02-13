@@ -5,6 +5,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "equipment_details_section",
   "equipment",
   "equipment_category",
   "uom",
@@ -175,12 +176,17 @@
    "fieldtype": "Float",
    "label": "Mileage",
    "read_only": 1
+  },
+  {
+   "fieldname": "equipment_details_section",
+   "fieldtype": "Section Break",
+   "label": "Equipment Details"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-06-30 11:46:01.698743",
+ "modified": "2023-12-27 14:26:10.120700",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Issue Items",

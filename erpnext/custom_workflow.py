@@ -715,7 +715,7 @@ class CustomWorkflow:
             # if not self.imprest_approver:
             #     frappe.throw("Imprest Approver not set for the branch {}.".format(self.doc.expense_branch))
 
-        if self.doc.doctype in ("Hire Charge Advance", "Muster Roll Advance", "Advance", "Hire Charge Entry"):
+        if self.doc.doctype in ("Hire Charge Advance", "Muster Roll Advance", "Advance", "Hire Charge Entry", "POL Receive"):
             employee = frappe.db.get_value("Employee", {"user_id": self.doc.owner}, "name")
             user_id = frappe.db.get_value("Employee", {"user_id": self.doc.owner}, "user_id")
             if user_id != self.doc.owner:
@@ -749,79 +749,79 @@ class CustomWorkflow:
                 frappe.throw("Please set advance approver for employee <strong>{}</strong>".format(employee))
 
 
-        if (self.doc.doctype == "POL Receive" or self.doc.doctype == "Transportation Charge"):
-            self.expense = frappe.db.get_value(
-                "Employee", {"user_id": self.doc.owner}, "expense_approver"
-            )
-            if not self.expense:
-                frappe.throw(
-                    "Expense Approver not set for the Employee {}.".format(self.doc.owner)
-                )
-            self.expense_approver = frappe.db.get_value(
-                "Employee",
-                {"user_id": self.expense},
-                self.field_list,
-            )
+        # if (self.doc.doctype == "POL Receive" or self.doc.doctype == "Transportation Charge"):
+        #     self.expense = frappe.db.get_value(
+        #         "Employee", {"user_id": self.doc.owner}, "expense_approver"
+        #     )
+        #     if not self.expense:
+        #         frappe.throw(
+        #             "Expense Approver not set for the Employee {}.".format(self.doc.owner)
+        #         )
+        #     self.expense_approver = frappe.db.get_value(
+        #         "Employee",
+        #         {"user_id": self.expense},
+        #         self.field_list,
+        #     )
 
-            if not self.expense_approver:
-                frappe.throw(
-                    "Expense Approver not set for the Employee {}.".format(self.doc.owner)
-                )
-            if self.doc.doctype == "POL Receive" and self.old_state == "Draft":
-                self.expense = frappe.db.get_value(
-                    "Employee", {"user_id": self.doc.owner}, "expense_approver"
-                )
-                if not self.expense:
-                    frappe.throw(
-                        "Expense Approver not set for the Employee {}.".format(self.doc.owner)
-                    )
-                self.imprest_approver = frappe.db.get_value(
-                    "Employee",
-                    {"user_id": self.expense},
-                    self.field_list,
-                )
-                if not self.imprest_approver:
-                    frappe.throw(
-                        "Expense Approver not set for the Employee {}.".format(self.doc.owner)
-                    )
-            else:
-                self.imprest_approver = frappe.db.get_value(
-                    "Employee",
-                    {
-                        "user_id": frappe.db.get_value(
-                            "Branch",
-                            {
-                                "name": frappe.db.get_value(
-                                    "Employee", {"user_id": self.doc.owner}, "branch"
-                                )
-                            },
-                            "imprest_approver",
-                        )
-                    },
-                    self.field_list,
-                )
-                if not self.imprest_approver:
-                    frappe.throw(
-                        "Imprest Approver not set for the branch {}.".format(self.doc.branch)
-                    )
-            if self.doc.doctype == "Transportation Charge":
-                self.imprest_approver = frappe.db.get_value(
-                    "Employee",
-                    frappe.db.get_single_value("HR Settings", "project_gm"),
-                    self.field_list,
-                )
-                if not self.imprest_approver:
-                    frappe.throw("Project Gm not set HR setting.")
+        #     if not self.expense_approver:
+        #         frappe.throw(
+        #             "Expense Approver not set for the Employee {}.".format(self.doc.owner)
+        #         )
+        #     if self.doc.doctype == "POL Receive" and self.old_state == "Draft":
+        #         self.expense = frappe.db.get_value(
+        #             "Employee", {"user_id": self.doc.owner}, "expense_approver"
+        #         )
+        #         if not self.expense:
+        #             frappe.throw(
+        #                 "Expense Approver not set for the Employee {}.".format(self.doc.owner)
+        #             )
+        #         self.imprest_approver = frappe.db.get_value(
+        #             "Employee",
+        #             {"user_id": self.expense},
+        #             self.field_list,
+        #         )
+        #         if not self.imprest_approver:
+        #             frappe.throw(
+        #                 "Expense Approver not set for the Employee {}.".format(self.doc.owner)
+        #             )
+        #     else:
+        #         self.imprest_approver = frappe.db.get_value(
+        #             "Employee",
+        #             {
+        #                 "user_id": frappe.db.get_value(
+        #                     "Branch",
+        #                     {
+        #                         "name": frappe.db.get_value(
+        #                             "Employee", {"user_id": self.doc.owner}, "branch"
+        #                         )
+        #                     },
+        #                     "imprest_approver",
+        #                 )
+        #             },
+        #             self.field_list,
+        #         )
+        #         if not self.imprest_approver:
+        #             frappe.throw(
+        #                 "Imprest Approver not set for the branch {}.".format(self.doc.branch)
+        #             )
+        #     if self.doc.doctype == "Transportation Charge":
+        #         self.imprest_approver = frappe.db.get_value(
+        #             "Employee",
+        #             frappe.db.get_single_value("HR Settings", "project_gm"),
+        #             self.field_list,
+        #         )
+        #         if not self.imprest_approver:
+        #             frappe.throw("Project Gm not set HR setting.")
 
-        self.login_user = frappe.db.get_value(
-            "Employee", {"user_id": frappe.session.user}, self.field_list
-        )
-        self.final_approver = []
+        # self.login_user = frappe.db.get_value(
+        #     "Employee", {"user_id": frappe.session.user}, self.field_list
+        # )
+        # self.final_approver = []
 
-        if not self.login_user and frappe.session.user != "Administrator":
-            if "System Manager" in frappe.get_roles(frappe.session.user):
-                return
-            frappe.throw("{0} is not added as the employee".format(frappe.session.user))
+        # if not self.login_user and frappe.session.user != "Administrator":
+        #     if "System Manager" in frappe.get_roles(frappe.session.user):
+        #         return
+        #     frappe.throw("{0} is not added as the employee".format(frappe.session.user))
 
     def update_employment_status(self):
         emp_status = frappe.db.get_value(
@@ -881,7 +881,6 @@ class CustomWorkflow:
                 "Travel Request",
                 "Employee Separation",
                 "Employee Advance Settlement",
-                "POL Receive",
                 "Transportation Charge",
                 "Vehicle Request",
                 "Material Request",
@@ -919,7 +918,7 @@ class CustomWorkflow:
                 vars(self.doc)[self.doc_approver[2]] = (
                     officiating[2] if officiating else self.reports_to[2]
                 )
-            elif self.doc.doctype in ("Employee Advance", "Hire Charge Advance", "Muster Roll Advance", "Advance", "Hire Charge Entry"):
+            elif self.doc.doctype in ("Employee Advance", "Hire Charge Advance", "Muster Roll Advance", "Advance", "Hire Charge Entry", "POL Receive"):
                 officiating = get_officiating_employee(self.advance_supervisor[3])
                 if officiating:
                     officiating = frappe.db.get_value(
@@ -2779,20 +2778,18 @@ class CustomWorkflow:
                 frappe.throw("Only {} can Cancel this request".format(self.doc.approver_name))
 
     def pol_receive(self):
-        # Employee [Apply] -> Waiting Supervisor Approver - [Forward] -> [Approve] - [Waiting Approver]
-        # Account user                      Supervisor                       Head off. Account officer
-        if self.new_state.lower() in ("Waiting Supervisor Approval".lower(),):
+        if not self.old_state:
+            return
+        elif self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
             if self.doc.owner != frappe.session.user:
                 frappe.throw("Only {} can Apply this request".format(self.doc.owner))
             self.set_approver("Supervisor")
+
         elif self.new_state.lower() == "Waiting Approval".lower():
-            if self.old_state.lower() != "Draft".lower():
-                if self.doc.approver != frappe.session.user:
-                    frappe.throw("Only {} can Forward this request".format(self.doc.approver_name))
-            else:
-                if self.doc.owner != frappe.session.user:
-                    frappe.throw("Only {} can Apply this request".format(self.doc.owner))
-            self.set_approver("Imprest Approver")
+            if self.doc.approver != frappe.session.user:
+                frappe.throw("Only {} can Forward this request".format(self.doc.approver_name))
+            self.set_approver("Advance Approver")
+            
         elif self.new_state.lower() == "Approved".lower():
             if self.doc.approver != frappe.session.user:
                 frappe.throw("Only {} can Approve this request".format(self.doc.approver_name))

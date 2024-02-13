@@ -21,6 +21,12 @@ class Advance(Document):
         if getdate(self.advance_date) > getdate(nowdate()):
             frappe.throw(_("Entry Date cannot be future date"))
 
+    def get_credit_account(self, exp_gl, imprest_advance_account):
+        if self.credit_account:
+            return self.credit_account
+        else:
+            return imprest_advance_account if self.advanced_paid_from_imprest_money == 1 else exp_gl,
+
     def post_journal_entry(self):
         if not self.advance_account:
             frappe.throw(
@@ -65,6 +71,7 @@ class Advance(Document):
         imprest_advance_account = frappe.db.get_value(
             "Company", self.company, "imprest_advance_account"
         )
+        credit_account = self.get_credit_account(exp_gl, imprest_advance_account)
         # Posting Journal Entry
         accounts = []
         accounts.append(
@@ -100,9 +107,7 @@ class Advance(Document):
         else:
             accounts.append(
                 {
-                    "account": imprest_advance_account
-                    if self.advanced_paid_from_imprest_money == 1
-                    else exp_gl,
+                    "account": credit_account,
                     "credit_in_account_currency": flt(self.advance_amount),
                     "cost_center": self.cost_center,
                     "party_type": "Employee"
