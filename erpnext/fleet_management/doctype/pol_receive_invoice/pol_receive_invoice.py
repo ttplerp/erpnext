@@ -34,7 +34,7 @@ class POLReceiveInvoice(AccountsController):
 				status = "Cancelled"
 			elif self.docstatus == 1:
 				if outstanding_amount > 0 and self.amount > outstanding_amount:
-					self.status = "Partly Paid"
+					self.status = "Unpaid"
 				elif outstanding_amount <= 0:
 					self.status = "Paid"
 				else:
