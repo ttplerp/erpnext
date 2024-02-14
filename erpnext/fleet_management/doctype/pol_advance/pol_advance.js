@@ -25,6 +25,7 @@ frappe.ui.form.on('POL Advance', {
 	equipment:function(frm){
 		frm.events.set_fuelbook_filter(frm)
 		frm.events.set_advance_limit(frm)
+		frm.events.set_advance_amount(frm)
 	},
 	use_common_fuelbook:function(frm){
 		frm.events.set_fuelbook_filter(frm)
@@ -50,6 +51,7 @@ frappe.ui.form.on('POL Advance', {
 	},
 	fuel_book: function(frm){
 		frm.events.set_advance_limit(frm)
+		frm.events.set_advance_amount(frm)
 	},
 	set_advance_limit: function(frm){
 		if (frm.doc.equipment || frm.doc.fuel_book){
@@ -60,6 +62,20 @@ frappe.ui.form.on('POL Advance', {
 				callback: function(r) {
 					frm.refresh_field("advance_limit");
 					frm.dirty()
+				}
+			});
+		}
+	},
+	set_advance_amount: function(frm){
+		if (frm.doc.equipment || frm.doc.fuel_book){
+			frappe.call({
+				method: "set_auto_advance_amount",
+				doc: frm.doc,
+
+				callback: function(r) {
+					frm.set_value("amount", r.message);
+					frm.refresh_field("amount");
+					// frm.dirty()
 				}
 			});
 		}

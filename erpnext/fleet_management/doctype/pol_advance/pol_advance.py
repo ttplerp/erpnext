@@ -22,6 +22,7 @@ class POLAdvance(AccountsController):
 		# if flt(self.is_opening) == 0:
 		# 	validate_workflow_states(self)
 		self.set_advance_limit()
+		# self.set_auto_advance_amount()
 		self.posting_date = self.entry_date
 		self.validate_amount()
 
@@ -62,7 +63,28 @@ class POLAdvance(AccountsController):
 
 			if flt(self.advance_limit) <= 0 and self.equipment_type:
 				self.advance_limit = frappe.db.get_value("Equipment Type", self.equipment_type, "pol_expense_limit")
+	
+	@frappe.whitelist()
+	def set_auto_advance_amount(self):
+		if not self.fuel_book:
+			frappe.throw("Fuel book is missing")
+		if not self.equipment:
+			frappe.throw("Equipment or Fuel book is missing")
 		
+		advance_amount = frappe.db.sql("""
+							SELECT SUM(amount) - sum(adjusted_amount) as bal
+							FROM `tabPOL Advance`
+							WHERE docstatus = 1 AND equipment = '{0}' 
+							AND fuel_book = '{1}' AND entry_date < '{2}'
+						""".format(self.equipment, self.fuel_book, self.entry_date), as_list=True)
+
+		if advance_amount and advance_amount[0][0]:
+			new_amount = self.advance_limit - flt(advance_amount[0][0])
+			if new_amount > 0:
+				return self.advance_limit - flt(advance_amount[0][0])
+			else:
+				return 0
+
 	def post_journal_entry(self):
 		if self.is_opening:
 			return
