@@ -8,18 +8,25 @@ from frappe.utils import (
 	flt,
 	money_in_words,
 )
+from erpnext.custom_workflow import validate_workflow_states, notify_workflow_states
+
 
 class HireChargeEntry(Document):
 	def validate(self):
 		self.calculate_tds()
 		self.validate_advance_allocated_amount()
+		validate_workflow_states(self)
 
 	def calculate_tds(self):
 		for a in self.items:
 			a.tds_amount = flt(a.tds_percent)/100 * a.amount
 
 	def on_submit(self):
-		self.submit_hire_charge_invoice()
+		# self.submit_hire_charge_invoice()
+		if not self.settle_imprest_advance_account:
+			self.create_hire_charge_invoice()
+		else:
+			self.post_to_account()
 		self.update_advance_balance
 	
 	def on_cancel(self):
@@ -87,7 +94,7 @@ class HireChargeEntry(Document):
 					"party": d.party,
 					# "reference_row": d.reference_row,
 					# "remarks": d.remarks,
-					"cost_center": d.cost_center,
+					"cost_center": self.cost_center,
 					"advance_amount": flt(d.advance_amount),
 					"advance_account": d.account,
 					# "allocated_amount": allocated_amount,
@@ -131,11 +138,10 @@ class HireChargeEntry(Document):
 			args.update({
 				"hire_charge_entry": self.name,
 				"doctype": "Hire Charge Invoice",
-				'branch': a.branch,
-				'cost_center': a.cost_center,
+				'branch': self.branch,
+				'cost_center': self.cost_center,
 				'party_type': a.party_type,
 				'party': a.party,
-				'status': 'Draft',
 				'tds_percent': a.tds_percent,
 				'tds_amount': a.tds_amount,
 				'tds_account': a.tds_account,
@@ -171,20 +177,27 @@ class HireChargeEntry(Document):
 								"amount": d.allocated_amount,
 							},
 						)
-				hire_charge_invoice.insert()
+				hire_charge_invoice.submit()
 				successful += 1
 
 			except Exception as e:
 				error = e
 				failed += 1
-
-		self.hire_charge_invoice_created = 1
+		if failed != 1:
+			self.hire_charge_invoice_created = 1
+			self.hire_charge_invoice_submitted = 1
 		self.save()
 		self.reload()
+	
+	@frappe.whitelist()
+	def get_tds_account(self, args):
+		account = frappe.db.sql("select account from `tabTDS Account Item` where tds_percent='{}'".format(args.tds_percent))[0][0]
+		return account
 
 	@frappe.whitelist()
 	def post_to_account(self):
 		total_payable_amount = 0
+		total_tds_amount = 0
 		accounts = []
 		if self.settle_imprest_advance_account == 1:
 			bank_account = frappe.db.get_value("Company", self.company, "imprest_advance_account")
@@ -201,23 +214,52 @@ class HireChargeEntry(Document):
 						and hire_charge_entry = '{}'
 						and outstanding_amount > 0	
 					""".format(self.name, self.branch), as_dict=True)
-		for a in query:
-			hire_charge_invoice = frappe.get_doc("Hire Charge Invoice", a.name)
-			total_payable_amount += flt(hire_charge_invoice.payable_amount, 2)
-			accounts.append({
-				"account": hire_charge_payable_acc,
-				"debit_in_account_currency": flt(hire_charge_invoice.payable_amount,2),
-				"cost_center": hire_charge_invoice.cost_center,
-				"party_check": 1,
-				"party_type": hire_charge_invoice.party_type,
-				"party": hire_charge_invoice.party,
-				"reference_type": hire_charge_invoice.doctype,
-				"reference_name": hire_charge_invoice.name,
-			})
+		if self.settle_imprest_advance_account == 1:
+			for a in self.items:
+				total_payable_amount += flt(a.amount)
+				total_tds_amount += flt(a.tds_amount)
+				exp_account = frappe.db.get_single_value("Maintenance Settings", "vehicle_expense_account" if a.equipment_type=="Vehicle" else "machine_expense_account")
+				accounts.append({
+					"account": exp_account,
+					"debit_in_account_currency": flt(a.amount),
+					"cost_center": self.cost_center,
+					"party_check": 1,
+					"party_type": a.party_type,
+					"party": a.party,
+					"reference_type": self.doctype,
+					"reference_name": self.name,
+				})
+
+				if a.tds_percent:
+					accounts.append({
+						"account": a.tds_account,
+						"credit_in_account_currency": flt(a.tds_amount),
+						"cost_center": self.cost_center,
+						"party_check": 1,
+						"party_type": a.party_type,
+						"party": a.party,
+						"reference_type": self.doctype,
+						"reference_name": self.name,
+					})
+		else:
+			for a in query:
+				hire_charge_invoice = frappe.get_doc("Hire Charge Invoice", a.name)
+				total_payable_amount += flt(hire_charge_invoice.payable_amount, 2)
+				accounts.append({
+					"account": hire_charge_payable_acc,
+					"debit_in_account_currency": flt(hire_charge_invoice.payable_amount,2),
+					"cost_center": hire_charge_invoice.cost_center,
+					"party_check": 1,
+					"party_type": hire_charge_invoice.party_type,
+					"party": hire_charge_invoice.party,
+					"reference_type": hire_charge_invoice.doctype,
+					"reference_name": hire_charge_invoice.name,
+				})
+		
 		if self.settle_imprest_advance_account == 1:
 			accounts.append({
 				"account": bank_account,
-				"credit_in_account_currency": flt(total_payable_amount, 2),
+				"credit_in_account_currency": flt(flt(total_payable_amount)-flt(total_tds_amount) ,2),
 				"cost_center": self.cost_center,
 				"party_type": "Employee",
 				"party": self.imprest_party,

@@ -59,6 +59,21 @@ frappe.ui.form.on('Hire Charge Entry Item', {
 	},
 	tds_percent: function(frm, cdt, cdn) {
 		calculate_tds_amount(frm, cdt, cdn)
+
+		let child = locals[cdt][cdn];
+		if (child.tds_percent != 0 || child.tds_percent != ''){
+			frappe.call({
+				method: "get_tds_account",
+				doc: frm.doc,
+				args: {
+					"tds_percent": child.tds_percent,
+				},
+				callback: function(r) {
+					frappe.model.set_value(cdt, cdn, 'tds_account', r.message)
+					frm.refresh_field("tds_account", cdt, cdn)
+				}
+			})
+		}
 	},
 });
 

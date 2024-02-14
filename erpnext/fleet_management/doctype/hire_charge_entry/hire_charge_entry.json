@@ -25,6 +25,12 @@
   "hire_charge_invoice_created",
   "column_break_rc5sl",
   "hire_charge_invoice_submitted",
+  "approver_details_section",
+  "approver",
+  "column_break_b2y5o",
+  "approver_name",
+  "column_break_52b4x",
+  "approver_designation",
   "section_break_1dttw",
   "company",
   "amended_from"
@@ -79,17 +85,20 @@
    "fieldtype": "Section Break"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "hire_charge_invoice_created",
    "fieldtype": "Check",
    "label": "Hire Charge Invoice Created",
-   "no_copy": 1
+   "no_copy": 1,
+   "read_only": 1
   },
   {
    "fieldname": "column_break_rc5sl",
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "hire_charge_invoice_submitted",
    "fieldtype": "Check",
@@ -113,6 +122,7 @@
   {
    "fieldname": "deductions",
    "fieldtype": "Table",
+   "hidden": 1,
    "label": "Deductions",
    "options": "Hire Charge Deduction Item"
   },
@@ -140,18 +150,53 @@
   {
    "fieldname": "get_advance",
    "fieldtype": "Button",
+   "hidden": 1,
    "label": "Get Advance"
   },
   {
    "fieldname": "advances",
    "fieldtype": "Table",
+   "hidden": 1,
    "options": "Hire Charge Entry Advance"
+  },
+  {
+   "fieldname": "approver_details_section",
+   "fieldtype": "Section Break",
+   "label": "Approver Details"
+  },
+  {
+   "fieldname": "approver",
+   "fieldtype": "Link",
+   "label": "Approver",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_b2y5o",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "approver_name",
+   "fieldtype": "Data",
+   "label": "Approver Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_52b4x",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "approver_designation",
+   "fieldtype": "Link",
+   "label": "Approver Designation",
+   "options": "Designation",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-11-29 12:59:20.037387",
+ "modified": "2024-01-30 11:29:57.750654",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Hire Charge Entry",

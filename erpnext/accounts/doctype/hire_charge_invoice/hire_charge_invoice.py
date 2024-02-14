@@ -30,12 +30,12 @@ class HireChargeInvoice(AccountsController):
 
     def on_submit(self):
         self.update_logbook()
-        self.make_gl_entries()
+        self.make_gl_entry()
 
     def on_cancel(self):
         self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
         self.update_logbook()
-        self.make_gl_entries()
+        self.make_gl_entry()
 
     def update_logbook(self):
         for a in self.items:
@@ -139,9 +139,9 @@ class HireChargeInvoice(AccountsController):
     # 		throw("No rates defined in Equipment Hiring Form <b>{}</b> for date <b>{}</b>".format(frappe.get_desk_link("Equipment Hiring Form", ehf), posting_date),title="Hiring Rate Not Found")
 
     def set_status(self, update=False, status=None, update_modified=True):
-        if self.is_new():
-            self.status = "Draft"
-            return
+        # if self.is_new():
+        #     self.status = "Draft"
+        #     return
 
         if cint(self.is_internal_customer) == 0 and self.party_type=="Customer":
             outstanding_amount = flt(self.outstanding_amount, 2)
@@ -156,12 +156,12 @@ class HireChargeInvoice(AccountsController):
                     elif outstanding_amount <= 0:
                         self.status = "Paid"
                     else:
-                        self.status = "Submitted"
+                        self.status = "Unpaid"
                 else:
                     self.status = "Draft"
         else:
             if self.docstatus == 1:
-                self.status = "Submitted"
+                self.status = "Unpaid"
 
         if update:
             self.db_set("status", self.status, update_modified=update_modified)
@@ -217,14 +217,12 @@ class HireChargeInvoice(AccountsController):
         )
         self.total_hours = total_hrs
 
-    def make_gl_entries(self):
+    def make_gl_entry(self):
         gl_entries = []
         self.make_supplier_gl_entry(gl_entries)
         self.make_customer_gl_entry(gl_entries)
         if self.party_type == "Customer":
             self.make_item_gl_entries(gl_entries)
-        else:
-            self.make_grand_total_entries(gl_entries)
         self.deduction_gl_entries(gl_entries)
         self.advance_gl_entries(gl_entries)
         self.make_tds_gl_entries(gl_entries)
@@ -332,6 +330,8 @@ class HireChargeInvoice(AccountsController):
     def make_grand_total_entries(self, gl_entries):
         account = "vehicle_expense_account" if self.equipment_type=="Vehicle" else "machine_expense_account"
         expense_account = frappe.db.get_single_value("Maintenance Settings", account)
+        if not expense_account:
+            frappe.throw("Please set <strong>{}</strong> in Maintenance Settings.".format('Vechile Expense Account' if account=='vehicle_expense_account' else "Machine Expense Account"))
         gl_entries.append(
             self.get_gl_dict({
                 "account": expense_account,
@@ -470,6 +470,17 @@ class HireChargeInvoice(AccountsController):
     def make_supplier_gl_entry(self, gl_entries):
         if flt(self.payable_amount) > 0 and self.party_type == "Supplier":
             hire_charge_payable_acc = frappe.db.get_single_value("Maintenance Settings", "hire_charge_payable_account")
+            if not hire_charge_payable_acc:
+                frappe.throw("Plese set <strong>Hire Charge Payable Account </strong>in Maintenance Settings")
+
+            account = "vehicle_expense_account" if self.equipment_type=="Vehicle" else "machine_expense_account"
+            expense_account = frappe.db.get_single_value("Maintenance Settings", account)
+            if not expense_account:
+                frappe.throw("Please set <strong>{}</strong> in Maintenance Settings.".format('Vechile Expense Account' if account=='vehicle_expense_account' else "Machine Expense Account"))
+            
+            if hire_charge_payable_acc == expense_account:
+                frappe.throw('Payable and Expense account are same')
+
             # Did not use base_grand_total to book rounding loss gle
             gl_entries.append(
                 self.get_gl_dict(
@@ -488,6 +499,21 @@ class HireChargeInvoice(AccountsController):
                     self.currency,
                 )
             )
+
+        gl_entries.append(
+            self.get_gl_dict({
+                "account": expense_account,
+                "debit": self.grand_total,
+                "debit_in_account_currency": self.grand_total,
+                "against_voucher": self.name,
+                "against_voucher_type": self.doctype,
+                "party_type": self.party_type,
+                "party": self.party,
+                "cost_center": self.cost_center,
+                "voucher_type": self.doctype,
+                "voucher_no": self.name,
+            }, self.currency)
+        )
 
     def make_customer_gl_entry(self, gl_entries):
         if flt(self.payable_amount) > 0 and self.party_type == "Customer":

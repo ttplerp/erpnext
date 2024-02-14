@@ -45,6 +45,12 @@ frappe.ui.form.on('Hire Charge Invoice', {
 			cur_frm.page.set_inner_btn_group_as_primary(__('Create'));
 		}
 		cur_frm.page.set_inner_btn_group_as_primary(__('View'));
+
+		if (frm.doc.docstatus == 1 && frm.doc.status != "Paid"){
+			cur_frm.add_custom_button(__('Pay'), function(doc) {
+				frm.events.make_payment_entry(frm)
+			})
+		}
 	},
 	settle_imprest_advance: function(frm){
 		if(frm.doc.settle_imprest_advance == 0 || frm.doc.settle_imprest_advance == undefined){
@@ -150,6 +156,20 @@ frappe.ui.form.on('Hire Charge Invoice', {
 			doc: frm.doc,
 			callback: function (r, rt) {
 					frm.refresh_fields();
+			},
+		});
+	},
+	make_payment_entry: function(frm) {
+		frappe.call({
+			method:"erpnext.accounts.doctype.payment_entry.payment_entry.get_payment_entry",
+			args: {
+				dt: frm.doc.doctype,
+				dn: frm.doc.name,
+				party_type:frm.doc.party_type
+			},
+			callback: function (r) {
+				var doc = frappe.model.sync(r.message);
+				frappe.set_route("Form", doc[0].doctype, doc[0].name);
 			},
 		});
 	}
