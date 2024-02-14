@@ -21,9 +21,9 @@ from erpnext.accounts.party import get_party_account
 class POLReceive(StockController):
 	def validate(self):
 		check_future_date(self.posting_date)
-		self.calculate_km_diff()
+		# self.calculate_km_diff()
 		self.validate_data()
-		validate_workflow_states(self)
+		# validate_workflow_states(self)
 		# if self.workflow_state != "Approved":
 		#     notify_workflow_states(self)
 		# self.balance_check()
@@ -36,7 +36,8 @@ class POLReceive(StockController):
 		self.make_pol_entry()
 		self.post_journal_entry()
 		self.post_advance()
-		self.make_pol_receive_invoice()
+		if not self.direct_consumption and self.settle_imprest_advance:
+			self.make_pol_receive_invoice()
 		# notify_workflow_states(self)
 
 	def post_advance(self):
@@ -186,7 +187,10 @@ class POLReceive(StockController):
 				],
 			)
 		if (enable_pol_receive_acc == 1 and frappe.db.get_value("Equipment", self.equipment, "is_container") == 1):
-			debit_account = pol_receive_account
+			if self.direct_consumption:
+				debit_account = pol_advance_account
+			else:
+				debit_account = pol_receive_account
 		else:
 			if self.hired_equipment:
 				if self.fuel_policy == "With Fuel":
@@ -197,9 +201,7 @@ class POLReceive(StockController):
 					frappe.throw("Set <strong>{}</strong> account in Maintenance Settings.".format("Fuel Advance" if self.fuel_policy == "With Fuel" else "Hired Fuel Expense"))
 			else:
 				debit_account = pol_advance_account
-			# debit_account = frappe.db.get_value(
-			#     "Equipment Category", self.equipment_category, "pol_advance_account"
-			# )
+	
 		if not debit_account and self.receive_in_barrel == 1:
 			debit_account = frappe.db.get_value("Warehouse", self.warehouse, "account")
 
@@ -389,7 +391,7 @@ class POLReceive(StockController):
 
 	@frappe.whitelist()
 	def populate_child_table(self):
-		self.calculate_km_diff()
+		# self.calculate_km_diff()
 		pol_exp = qb.DocType("POL Expense")
 		je = qb.DocType("Journal Entry")
 		data = []
