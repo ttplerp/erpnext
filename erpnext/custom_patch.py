@@ -1,239 +1,248 @@
 import frappe
 from erpnext.setup.doctype.employee.employee import create_user
 import pandas as pd
+import csv
 
+def update_pol_entry():
+	pol_receive = frappe.db.sql("""
+		select name from `tabPOL Receive` where docstatus = 1 and receive_in_barrel = 1;
+	""",as_dict=1)
+	if pol_receive:
+		for pr in pol_receive:
+			pol_entry = frappe.db.get_value("POL Entry", {"reference":pr.name}, "name" )
+			print(pr.name)
 def update_evaluator():
-    for a in frappe.db.sql("""
-        select name from `tabEmployee PMS Evaluator Mapper`
-    """,as_dict=1):
-        doc = frappe.get_doc("Employee PMS Evaluator Mapper", a.name)
-        emps = []
-        for b in doc.employees:
-            emps.append(b.employee)
-            emp = frappe.get_doc("Employee", b.employee)
-            if not frappe.db.exists("Performance Evaluator", {"parent": b.employee, "evaluator": doc.evaluator}):
-                row = emp.append("evaluators", {})
-                row.evaluator = doc.evaluator
-                row.evaluator_name = doc.evaluator_name
-            emp.save(ignore_permissions=1)
-        for b in frappe.db.sql("""
-            select pe.name from `tabPerformance Evaluator` pe, `tabEmployee` e where pe.parent = e.name and
-            e.name not in ({})
-        """.format(", ".join("'"+em+"'" for em in emps)), as_dict=1):
-            frappe.db.sql("""
-                delete from `tabPerformance Evaluator` where name = '{}'
-            """.format(b.name))
-        print("Updated Evaluator Information in Employees")
-        
+	for a in frappe.db.sql("""
+		select name from `tabEmployee PMS Evaluator Mapper`
+	""",as_dict=1):
+		doc = frappe.get_doc("Employee PMS Evaluator Mapper", a.name)
+		emps = []
+		for b in doc.employees:
+			emps.append(b.employee)
+			emp = frappe.get_doc("Employee", b.employee)
+			if not frappe.db.exists("Performance Evaluator", {"parent": b.employee, "evaluator": doc.evaluator}):
+				row = emp.append("evaluators", {})
+				row.evaluator = doc.evaluator
+				row.evaluator_name = doc.evaluator_name
+			emp.save(ignore_permissions=1)
+		for b in frappe.db.sql("""
+			select pe.name from `tabPerformance Evaluator` pe, `tabEmployee` e where pe.parent = e.name and
+			e.name not in ({})
+		""".format(", ".join("'"+em+"'" for em in emps)), as_dict=1):
+			frappe.db.sql("""
+				delete from `tabPerformance Evaluator` where name = '{}'
+			""".format(b.name))
+		print("Updated Evaluator Information in Employees")
+		
 
 
 def update_department_abbr():
-    deps = frappe.db.sql(
-        """
-        select name, parent_department from `tabDepartment` where name like '%- VBPL%' and parent_department != 'All Departments';
-    """,
-        as_dict=1,
-    )
-    for a in deps:
-        new_name = str(a.name).split(" - VBPL")[0].strip() + " - Vajra"
-        if a.parent_department and a.parent_department != "All Departments":
-            new_parent_dep = (
-                str(a.parent_department).split(" - VBPL")[0].strip() + " - Vajra"
-            )
-            frappe.db.sql(
-                """
-                update `tabDepartment` set parent_department = '{}' where name = '{}'
-            """.format(
-                    new_parent_dep, a.name
-                )
-            )
-        frappe.db.sql(
-            """
-            update `tabDepartment` set name = '{}' where name = '{}'
-        """.format(
-                new_name, a.name
-            )
-        )
-        print(a.name)
+	deps = frappe.db.sql(
+		"""
+		select name, parent_department from `tabDepartment` where name like '%- VBPL%' and parent_department != 'All Departments';
+	""",
+		as_dict=1,
+	)
+	for a in deps:
+		new_name = str(a.name).split(" - VBPL")[0].strip() + " - Vajra"
+		if a.parent_department and a.parent_department != "All Departments":
+			new_parent_dep = (
+				str(a.parent_department).split(" - VBPL")[0].strip() + " - Vajra"
+			)
+			frappe.db.sql(
+				"""
+				update `tabDepartment` set parent_department = '{}' where name = '{}'
+			""".format(
+					new_parent_dep, a.name
+				)
+			)
+		frappe.db.sql(
+			"""
+			update `tabDepartment` set name = '{}' where name = '{}'
+		""".format(
+				new_name, a.name
+			)
+		)
+		print(a.name)
 
 
 def update_branch():
-    branch = frappe.db.sql(
-        """
-        select name from `tabBranch`
-    """,
-        as_dict=1,
-    )
-    for a in branch:
-        frappe.db.sql(
-            """
-            update `tabBranch` set expense_bank_account= NULL where name = '{}'
-        """.format(
-                a.name
-            )
-        )
-        print(a.name)
+	branch = frappe.db.sql(
+		"""
+		select name from `tabBranch`
+	""",
+		as_dict=1,
+	)
+	for a in branch:
+		frappe.db.sql(
+			"""
+			update `tabBranch` set expense_bank_account= NULL where name = '{}'
+		""".format(
+				a.name
+			)
+		)
+		print(a.name)
 
 
 def delete_material_request():
-    mr = frappe.db.sql(
-        """
-        select name from `tabGL Entry` where voucher_type in ('Stock Entry', 'Purchase Reciept', 'Purchase Invoice', 'Payment Entry')
-    """,
-        as_dict=1,
-    )
-    for a in mr:
-        frappe.db.sql(
-            """
-            delete from `tabGL Entry` where name = '{}'
-        """.format(
-                a.name
-            )
-        )
-        print(a.name)
+	mr = frappe.db.sql(
+		"""
+		select name from `tabGL Entry` where voucher_type in ('Stock Entry', 'Purchase Reciept', 'Purchase Invoice', 'Payment Entry')
+	""",
+		as_dict=1,
+	)
+	for a in mr:
+		frappe.db.sql(
+			"""
+			delete from `tabGL Entry` where name = '{}'
+		""".format(
+				a.name
+			)
+		)
+		print(a.name)
 
 
 def update_item_valuation_method():
-    items = frappe.db.sql(
-        """
-        select name from `tabItem`
-    """,
-        as_dict=1,
-    )
-    for a in items:
-        frappe.db.sql(
-            """
-            update `tabItem` set valuation_method = 'FIFO'
-            where name = '{}'
-        """.format(
-                str(a.name)
-            )
-        )
-        print(a.name)
+	items = frappe.db.sql(
+		"""
+		select name from `tabItem`
+	""",
+		as_dict=1,
+	)
+	for a in items:
+		frappe.db.sql(
+			"""
+			update `tabItem` set valuation_method = 'FIFO'
+			where name = '{}'
+		""".format(
+				str(a.name)
+			)
+		)
+		print(a.name)
 
 
 def update_approver_emp():
-    emps = frappe.db.sql(
-        """
-        select name from `tabEmployee`
-    """,
-        as_dict=1,
-    )
-    for a in emps:
-        pe = frappe.db.sql(
-            """
-            select name from `tabPerformance Evaluator` where parent = '{}'
-        """.format(
-                a.name
-            ),
-            as_dict=1,
-        )
-        for b in pe:
-            frappe.db.sql(
-                """
-                delete from `tabPerformance Evaluator` where name = '{}'
-            """.format(
-                    b.name
-                )
-            )
-        print(a.name)
+	emps = frappe.db.sql(
+		"""
+		select name from `tabEmployee`
+	""",
+		as_dict=1,
+	)
+	for a in emps:
+		pe = frappe.db.sql(
+			"""
+			select name from `tabPerformance Evaluator` where parent = '{}'
+		""".format(
+				a.name
+			),
+			as_dict=1,
+		)
+		for b in pe:
+			frappe.db.sql(
+				"""
+				delete from `tabPerformance Evaluator` where name = '{}'
+			""".format(
+					b.name
+				)
+			)
+		print(a.name)
 
 
 def cost_center_correction_budget():
-    for d in frappe.db.get_list(
-        "Committed Budget",
-        filters={"reference_type": "Journal Entry"},
-        fields=["cost_center", "name"],
-    ):
-        parent_cost_center = frappe.db.get_value(
-            "Cost Center",
-            {"name": d.cost_center, "use_budget_from_parent": 1},
-            ["budget_cost_center"],
-        )
-        if parent_cost_center:
-            frappe.db.sql(
-                "update `tabCommitted Budget` set cost_center = '{}' where name = '{}'".format(
-                    parent_cost_center, d.name
-                )
-            )
-            print(d.cost_center, " ", d.name)
-    print("<===================================================>")
-    for d in frappe.db.get_list(
-        "Consumed Budget",
-        filters={"reference_type": "Journal Entry"},
-        fields=["cost_center", "name"],
-    ):
-        parent_cost_center = frappe.db.get_value(
-            "Cost Center",
-            {"name": d.cost_center, "use_budget_from_parent": 1},
-            ["budget_cost_center"],
-        )
-        if parent_cost_center:
-            frappe.db.sql(
-                "update `tabConsumed Budget` set cost_center = '{}' where name = '{}'".format(
-                    parent_cost_center, d.name
-                )
-            )
-            print(parent_cost_center, " ", d.name)
-    print("done")
-    frappe.db.commit()
+	for d in frappe.db.get_list(
+		"Committed Budget",
+		filters={"reference_type": "Journal Entry"},
+		fields=["cost_center", "name"],
+	):
+		parent_cost_center = frappe.db.get_value(
+			"Cost Center",
+			{"name": d.cost_center, "use_budget_from_parent": 1},
+			["budget_cost_center"],
+		)
+		if parent_cost_center:
+			frappe.db.sql(
+				"update `tabCommitted Budget` set cost_center = '{}' where name = '{}'".format(
+					parent_cost_center, d.name
+				)
+			)
+			print(d.cost_center, " ", d.name)
+	print("<===================================================>")
+	for d in frappe.db.get_list(
+		"Consumed Budget",
+		filters={"reference_type": "Journal Entry"},
+		fields=["cost_center", "name"],
+	):
+		parent_cost_center = frappe.db.get_value(
+			"Cost Center",
+			{"name": d.cost_center, "use_budget_from_parent": 1},
+			["budget_cost_center"],
+		)
+		if parent_cost_center:
+			frappe.db.sql(
+				"update `tabConsumed Budget` set cost_center = '{}' where name = '{}'".format(
+					parent_cost_center, d.name
+				)
+			)
+			print(parent_cost_center, " ", d.name)
+	print("done")
+	frappe.db.commit()
 
 
 def create_gl_for_previous_production():
-    for p in frappe.db.get_list(
-        "Production",
-        filters={"creation": ["<=", "2023-03-02"], "docstatus": 1},
-        fields=["name", "creation"],
-    ):
-        doc = frappe.get_doc("Production", p.name)
-        if len(doc.raw_materials) > 0:
-            frappe.db.sql(
-                "delete from `tabGL Entry` where voucher_no = '{}' and voucher_type = 'Production'".format(
-                    doc.name
-                )
-            )
-            doc.make_gl_entries()
-            print(doc.name)
-    frappe.db.commit()
-    print("done")
+	for p in frappe.db.get_list(
+		"Production",
+		filters={"creation": ["<=", "2023-03-02"], "docstatus": 1},
+		fields=["name", "creation"],
+	):
+		doc = frappe.get_doc("Production", p.name)
+		if len(doc.raw_materials) > 0:
+			frappe.db.sql(
+				"delete from `tabGL Entry` where voucher_no = '{}' and voucher_type = 'Production'".format(
+					doc.name
+				)
+			)
+			doc.make_gl_entries()
+			print(doc.name)
+	frappe.db.commit()
+	print("done")
 
 
 def create_leave_ledger_entry():
-    for e in frappe.db.sql(
-        '''select name from `tabEmployee` where status = "Active"''', as_dict=1
-    ):
-        if frappe.db.exists(
-            "Leave Allocation",
-            {"employee": e.name, "leave_type": "Earned Leave", "docstatus": 1},
-        ):
-            leave_allocation = frappe.get_doc(
-                "Leave Allocation",
-                {"employee": e.name, "leave_type": "Earned Leave", "docstatus": 1},
-            )
-            print(
-                leave_allocation.employee,
-                " : ",
-                leave_allocation.name,
-                " : ",
-                leave_allocation.leave_type,
-            )
-            leave_ledger_entry = frappe.new_doc("Leave Ledger Entry")
-            leave_ledger_entry.flags.ignore_permissions = 1
-            leave_ledger_entry.update(
-                {
-                    "employee": leave_allocation.employee,
-                    "employee_name": leave_allocation.employee_name,
-                    "leave_type": leave_allocation.leave_type,
-                    "transaction_type": "Leave Allocation",
-                    "transaction_name": leave_allocation.name,
-                    "leaves": 2.5,
-                    "company": leave_allocation.company,
-                    "from_date": "2023-01-01",
-                    "to_date": "2023-12-31",
-                }
-            )
-            leave_ledger_entry.insert()
-            leave_ledger_entry.submit()
+	for e in frappe.db.sql(
+		'''select name from `tabEmployee` where status = "Active"''', as_dict=1
+	):
+		if frappe.db.exists(
+			"Leave Allocation",
+			{"employee": e.name, "leave_type": "Earned Leave", "docstatus": 1},
+		):
+			leave_allocation = frappe.get_doc(
+				"Leave Allocation",
+				{"employee": e.name, "leave_type": "Earned Leave", "docstatus": 1},
+			)
+			print(
+				leave_allocation.employee,
+				" : ",
+				leave_allocation.name,
+				" : ",
+				leave_allocation.leave_type,
+			)
+			leave_ledger_entry = frappe.new_doc("Leave Ledger Entry")
+			leave_ledger_entry.flags.ignore_permissions = 1
+			leave_ledger_entry.update(
+				{
+					"employee": leave_allocation.employee,
+					"employee_name": leave_allocation.employee_name,
+					"leave_type": leave_allocation.leave_type,
+					"transaction_type": "Leave Allocation",
+					"transaction_name": leave_allocation.name,
+					"leaves": 2.5,
+					"company": leave_allocation.company,
+					"from_date": "2023-01-01",
+					"to_date": "2023-12-31",
+				}
+			)
+			leave_ledger_entry.insert()
+			leave_ledger_entry.submit()
 
 
 # def post_payment_je_leave_encashment():
@@ -250,222 +259,297 @@ def create_leave_ledger_entry():
 
 
 def change_account_name():
-    # print('here')
-    for d in [
-        {
-            "old_name": "Tshophhangma Consumable Warehouse",
-            "new_name": "Tshophangma Consumable Warehouse - SMCL",
-        }
-    ]:
-        if frappe.db.exists("Account", {"account_name": d.get("old_name")}):
-            doc = frappe.get_doc("Account", {"account_name": d.get("old_name")})
-            print("old : ", doc.account_name, "\nNew Name : ", d.get("new_name"))
-            doc.account_name = d.get("new_name")
-            doc.save()
+	# print('here')
+	for d in [
+		{
+			"old_name": "Tshophhangma Consumable Warehouse",
+			"new_name": "Tshophangma Consumable Warehouse - SMCL",
+		}
+	]:
+		if frappe.db.exists("Account", {"account_name": d.get("old_name")}):
+			doc = frappe.get_doc("Account", {"account_name": d.get("old_name")})
+			print("old : ", doc.account_name, "\nNew Name : ", d.get("new_name"))
+			doc.account_name = d.get("new_name")
+			doc.save()
 
 
 def assign_je_in_invoice():
-    print(
-        "<------------------------------------------------------------------------------------------------>"
-    )
-    for d in frappe.db.sql(
-        """
-                select reference_name, reference_type, parent from `tabJournal Entry Account` where reference_type in ('Transporter Invoice','EME Invoice')
-                """,
-        as_dict=True,
-    ):
-        if (
-            d.reference_type
-            and d.reference_name
-            and frappe.db.exists(d.reference_type, d.reference_name)
-        ):
-            doc = frappe.get_doc(str(d.reference_type), str(d.reference_name))
-            doc.db_set("journal_entry", d.parent)
-    print("Done")
+	print(
+		"<------------------------------------------------------------------------------------------------>"
+	)
+	for d in frappe.db.sql(
+		"""
+				select reference_name, reference_type, parent from `tabJournal Entry Account` where reference_type in ('Transporter Invoice','EME Invoice')
+				""",
+		as_dict=True,
+	):
+		if (
+			d.reference_type
+			and d.reference_name
+			and frappe.db.exists(d.reference_type, d.reference_name)
+		):
+			doc = frappe.get_doc(str(d.reference_type), str(d.reference_name))
+			doc.db_set("journal_entry", d.parent)
+	print("Done")
 
 
 def assign_ess_role():
-    users = frappe.db.sql(
-        """
-        select name from `tabUser` where name not in ('Guest', 'Administrator')
-    """,
-        as_dict=1,
-    )
-    for a in users:
-        user = frappe.get_doc("User", a.name)
-        user.flags.ignore_permissions = True
-        if "Employee Self Service" not in frappe.get_roles(a.name):
-            user.add_roles("Employee Self Service")
-            print("Employee Self Service role added for user {}".format(a.name))
+	users = frappe.db.sql(
+		"""
+		select name from `tabUser` where name not in ('Guest', 'Administrator')
+	""",
+		as_dict=1,
+	)
+	for a in users:
+		user = frappe.get_doc("User", a.name)
+		user.flags.ignore_permissions = True
+		if "Employee Self Service" not in frappe.get_roles(a.name):
+			user.add_roles("Employee Self Service")
+			print("Employee Self Service role added for user {}".format(a.name))
 
 
 def delete_salary_detail_salary_slip():
-    ssd = frappe.db.sql(
-        """
-        select name from `tabSalary Detail` where parenttype = 'Salary Slip'
-    """,
-        as_dict=1,
-    )
-    for a in ssd:
-        frappe.db.sql("delete from `tabSalary Detail` where name = '{}'".format(a.name))
-        print(a.name)
+	ssd = frappe.db.sql(
+		"""
+		select name from `tabSalary Detail` where parenttype = 'Salary Slip'
+	""",
+		as_dict=1,
+	)
+	for a in ssd:
+		frappe.db.sql("delete from `tabSalary Detail` where name = '{}'".format(a.name))
+		print(a.name)
 
 
 def create_users():
-    print("here")
+	print("here")
 
-    employees = frappe.db.sql(
-        """
-        select name from `tabEmployee` where company_email is not NULL and user_id is NULL
-    """,
-        as_dict=1,
-    )
-    if employees:
-        for a in employees:
-            employee = frappe.get_doc("Employee", a.name)
-            if not frappe.db.exists("User", employee.company_email):
-                create_user(a.name, email=employee.company_email)
-                print("User created for employee {}".format(a.name))
-                employee.db_set("user_id", employee.company_email)
-    frappe.db.commit()
+	employees = frappe.db.sql(
+		"""
+		select name from `tabEmployee` where company_email is not NULL and user_id is NULL
+	""",
+		as_dict=1,
+	)
+	if employees:
+		for a in employees:
+			employee = frappe.get_doc("Employee", a.name)
+			if not frappe.db.exists("User", employee.company_email):
+				create_user(a.name, email=employee.company_email)
+				print("User created for employee {}".format(a.name))
+				employee.db_set("user_id", employee.company_email)
+	frappe.db.commit()
 
 
 def update_employee_user_id():
-    print()
-    users = frappe.db.sql(
-        """
-        select name from `tabUser`
-    """,
-        as_dict=1,
-    )
-    if users:
-        for a in users:
-            employee = frappe.db.get_value(
-                "Employee", {"company_email": a.name}, "name"
-            )
-            if employee:
-                employee_doc = frappe.get_doc("Employee", employee)
-                employee_doc.db_set("user_id", a.name)
-                print("Updated email for " + str(a.name))
-    frappe.db.commit()
+	print()
+	users = frappe.db.sql(
+		"""
+		select name from `tabUser`
+	""",
+		as_dict=1,
+	)
+	if users:
+		for a in users:
+			employee = frappe.db.get_value(
+				"Employee", {"company_email": a.name}, "name"
+			)
+			if employee:
+				employee_doc = frappe.get_doc("Employee", employee)
+				employee_doc.db_set("user_id", a.name)
+				print("Updated email for " + str(a.name))
+	frappe.db.commit()
 
 
 def update_benefit_type_name():
-    bt = frappe.db.sql(
-        """
-        select name, benefit_type from `tabEmployee Benefit Type`;
-    """,
-        as_dict=True,
-    )
-    if bt:
-        for a in bt:
-            frappe.db.sql(
-                "update `tabEmployee Benefit Type` set name = '{}' where name = '{}'".format(
-                    a.benefit_type, a.name
-                )
-            )
-            print(a.name)
+	bt = frappe.db.sql(
+		"""
+		select name, benefit_type from `tabEmployee Benefit Type`;
+	""",
+		as_dict=True,
+	)
+	if bt:
+		for a in bt:
+			frappe.db.sql(
+				"update `tabEmployee Benefit Type` set name = '{}' where name = '{}'".format(
+					a.benefit_type, a.name
+				)
+			)
+			print(a.name)
 
 
 def update_department():
-    el = frappe.db.sql(
-        """
-        select name from `tabEmployee`
-        where department = 'Habrang & Tshophangma Coal Mine - SMCL'
-        and status = 'Active'
-    """,
-        as_dict=1,
-    )
-    if el:
-        for a in el:
-            frappe.db.sql(
-                """
-                update `tabEmployee` set department = 'PROJECTS & MINES DEPARTMENT - SMCL'
-                where name = '{}'
-            """.format(
-                    a.name
-                )
-            )
-            print(a.name)
+	el = frappe.db.sql(
+		"""
+		select name from `tabEmployee`
+		where department = 'Habrang & Tshophangma Coal Mine - SMCL'
+		and status = 'Active'
+	""",
+		as_dict=1,
+	)
+	if el:
+		for a in el:
+			frappe.db.sql(
+				"""
+				update `tabEmployee` set department = 'PROJECTS & MINES DEPARTMENT - SMCL'
+				where name = '{}'
+			""".format(
+					a.name
+				)
+			)
+			print(a.name)
 
 
 def update_user_pwd():
-    user_list = frappe.db.sql(
-        "select name from `tabUser` where name not in ('Administrator', 'Guest')",
-        as_dict=1,
-    )
-    c = 1
-    non_employee = []
-    for i in user_list:
-        print("NAME '{}':  '{}'".format(c, str(i.name)))
-        # if not frappe.db.exists("Employee", {"user_id":i.name}):
-        #     non_employee.append({"User ID":i.name, "User Name":frappe.db.get_value("User",i.name,"full_name")})
-        ds = frappe.get_doc("User", i.name)
-        ds.new_password = "erp@2023"
-        ds.save(ignore_permissions=1)
-        c += 1
-    # df = pd.DataFrame(data = non_employee) # convert dict to dataframe
-    # df.to_excel("Users Without Employee Data.xlsx", index=False)
-    # print("Dictionery Converted in to Excel")
+	user_list = frappe.db.sql(
+		"select name from `tabUser` where name not in ('Administrator', 'Guest')",
+		as_dict=1,
+	)
+	c = 1
+	non_employee = []
+	for i in user_list:
+		print("NAME '{}':  '{}'".format(c, str(i.name)))
+		# if not frappe.db.exists("Employee", {"user_id":i.name}):
+		#     non_employee.append({"User ID":i.name, "User Name":frappe.db.get_value("User",i.name,"full_name")})
+		ds = frappe.get_doc("User", i.name)
+		ds.new_password = "erp@2023"
+		ds.save(ignore_permissions=1)
+		c += 1
+	# df = pd.DataFrame(data = non_employee) # convert dict to dataframe
+	# df.to_excel("Users Without Employee Data.xlsx", index=False)
+	# print("Dictionery Converted in to Excel")
 
 
 def update_ref_doc():
-    for a in frappe.db.sql(
-        """
-                            select name 
-                            from 
-                                `tabExpense Claim` 
-                            where 
-                                docstatus != 2
-                            """
-    ):
-        print(a[0])
-        reference = frappe.db.sql(
-            """
-                            select expense_type
-                            from 
-                                `tabExpense Claim Detail` 
-                            where 
-                            parent = "{}"
-                            """.format(
-                a[0]
-            )
-        )
-        print(reference[0][0])
-        frappe.db.sql(
-            """
-            update 
-                `tabExpense Claim`
-            set ref_doc ="{0}"
-            where name ="{1}"
-        """.format(
-                reference[0][0], a[0]
-            )
-        )
+	for a in frappe.db.sql(
+		"""
+							select name 
+							from 
+								`tabExpense Claim` 
+							where 
+								docstatus != 2
+							"""
+	):
+		print(a[0])
+		reference = frappe.db.sql(
+			"""
+							select expense_type
+							from 
+								`tabExpense Claim Detail` 
+							where 
+							parent = "{}"
+							""".format(
+				a[0]
+			)
+		)
+		print(reference[0][0])
+		frappe.db.sql(
+			"""
+			update 
+				`tabExpense Claim`
+			set ref_doc ="{0}"
+			where name ="{1}"
+		""".format(
+				reference[0][0], a[0]
+			)
+		)
 
 def update_advance_approver_name():
-    for a in frappe.db.sql("""
-        select 
-            e.name 
-        from 
-            `tabEmployee` e
-        """, as_dict=1
-    ):
-        for n in frappe.db.sql("""
-            select e.employee_name 
-            from 
-                `tabEmployee` e 
-            where 
-                e.advance_approver = {}
-            """.format(a.name), as_dict=1
-        ):
-            print(n.employee_name)
-            print(a.name)
+	for a in frappe.db.sql("""
+		select 
+			e.name 
+		from 
+			`tabEmployee` e
+		""", as_dict=1
+	):
+		for n in frappe.db.sql("""
+			select e.employee_name 
+			from 
+				`tabEmployee` e 
+			where 
+				e.advance_approver = {}
+			""".format(a.name), as_dict=1
+		):
+			print(n.employee_name)
+			print(a.name)
 
 
-    print("sss")
-    
+	print("sss")
+	
 def leave_application_update_attendance():
-    la = frappe.get_doc("Leave Application", {"name": "HR-LAP-2023-00166"})
-    la.update_attendance()
-    print('Done')
+	la = frappe.get_doc("Leave Application", {"name": "HR-LAP-2023-00166"})
+	la.update_attendance()
+	print('Done')
+
+def update_stock_leadger_21000017():
+	data_list = frappe.db.sql("select * from `tabStock Ledger Entry` where item_code='21000017' and warehouse='Paro Satsam project-Warehouse'", as_dict=True)
+	count = 0
+	for a in data_list:
+		count +=1
+	print(str(count))
+
+	c = 0
+	try:
+		with open("/home/frappe/erp/stock_ledger_paro.csv") as f:
+			reader = csv.reader(f)
+			mylist = list(reader)
+			for i in mylist:
+				print(str(i[0]))
+				frappe.db.sql("update `tabStock Ledger Entry` set valuation_rate = '{}', stock_value_difference = '{}', stock_value = '{}', stock_queue = '{}'  where name = '{}'".format(i[3], i[4], i[5], i[2], i[0]))
+				c+=1
+			print("Done" +str(c))
+
+	except Exception as e:
+		print(f"An error occurred: {e}")
+
+
+def delete_gl_entries():
+	count = 0
+	get_gl = frappe.db.sql("""select name, voucher_type, posting_date from `tabGL Entry` where docstatus=1 and voucher_type in ('POL Receive', 'POL Issue')""", as_dict=1)
+	for a in get_gl:
+		count += 1
+		print(str(count)+' '+a.name+' '+str(a.voucher_type)+' '+str(a.posting_date))
+		# frappe.db.sql(""" delete from `tabGL Entry` where name = '{}' """.format(a.name))
+		# print('Done')
+	print('DONE ->'+str(count))
+
+
+def update_sle():
+	# sl = frappe.db.sql(""" select name, item_code from `tabStock Ledger Entry` where item_code='29000005'""", as_dict=True)
+	# for a in sl:
+	# 	frappe.db.sql("delete from `tabStock Ledger Entry` where name='{}'".format(a.name))
+	# 	print(str(a.name)+' '+str(a.item_code))
+	
+	data = frappe.db.sql("""select sle.voucher_type, sle.voucher_no, posting_date from `tabStock Ledger Entry` sle where docstatus=1 and is_cancelled=0 group by sle.voucher_no order by sle.posting_date asc, sle.posting_time asc""", as_dict=True)
+	voucher_type = set()
+	transactions = []
+	for a in data:
+		voucher_type.add(a.voucher_type)
+		transaction = {
+			'voucher_type': a.voucher_type,
+			'voucher_no': a.voucher_no,
+		}
+		transactions.append(transaction)
+
+	frappe.db.sql("delete from `tabStock Ledger Entry` where docstatus=1")
+	print('done')
+		
+		
+	for tran in transactions:
+		if tran['voucher_type'] == "POL Issue":
+			print(tran['voucher_type'], tran['voucher_no'])
+			pi = frappe.get_doc("POL Issue", tran['voucher_no'])
+			pi.update_stock_ledger()
+			
+		elif tran['voucher_type'] == "POL Receive":
+			print(tran['voucher_type'], tran['voucher_no'])
+			pr = frappe.get_doc("POL Receive", tran['voucher_no'])
+			pr.update_stock_ledger()
+		elif tran['voucher_type'] == "Purchase Receipt":
+			print(tran['voucher_type'], tran['voucher_no'])
+			pur = frappe.get_doc("Purchase Receipt", tran['voucher_no'])
+			pur.update_stock_ledger()
+		elif tran['voucher_type'] == "Stock Entry":
+			print(tran['voucher_type'], tran['voucher_no'])
+			se = frappe.get_doc("Stock Entry", tran['voucher_no'])
+			se.update_stock_ledger()
+	print(voucher_type)
+	print("DONE")
