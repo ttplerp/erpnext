@@ -93,7 +93,7 @@ class AssetIssueDetails(Document):
                 "branch": self.branch,
                 "custodian": self.issued_to,
                 "custodian_name": self.employee_name,
-                "available_for_use_date": self.issued_date,
+                # "available_for_use_date": self.issued_date,
                 "asset_account": fixed_asset_account,
                 "credit_account": credit_account,
                 "asset_issue_details":self.name,

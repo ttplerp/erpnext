@@ -43,6 +43,7 @@ class Asset(AccountsController):
         self.validate_item()
         self.validate_cost_center()
         self.set_missing_values()
+        self.set_depreciation_start_date()
         if not self.split_from:
             self.prepare_depreciation_data()
         self.validate_gross_and_purchase_amount()
@@ -96,6 +97,10 @@ class Asset(AccountsController):
                     "Purchase Invoice cannot be made against an existing asset {0}"
                 ).format(self.name)
             )
+
+    def set_depreciation_start_date(self):
+        for a in self.finance_books:
+            a.depreciation_start_date = get_last_day(self.available_for_use_date)
 
     def prepare_depreciation_data(self, date_of_sale=None, date_of_return=None):
         if self.calculate_depreciation:
