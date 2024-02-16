@@ -1829,6 +1829,7 @@ class AccountsController(TransactionBase):
 		jv = frappe.new_doc("Journal Entry")
 		jv.voucher_type = "Journal Entry"
 		jv.posting_date = self.posting_date
+		jv.branch = self.branch
 		jv.company = self.company
 		jv.remark = "Adjustment for {} {}".format(self.doctype, self.name)
 
