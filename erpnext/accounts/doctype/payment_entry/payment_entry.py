@@ -1187,23 +1187,7 @@ class PaymentEntry(AccountsController):
                     if self.advances:
                         balance_amount = flt(self.advances[0].balance_amount)
                         advance_account = self.advances[0].advance_account
-                    if self.total_outstanding_amount > 0.00:
-                        gl_entries.append(
-                            self.get_gl_dict(
-                                {
-                                    "account": self.paid_from,
-                                    "account_currency": self.paid_from_account_currency,
-                                    "against": self.party
-                                    if self.payment_type == "Pay"
-                                    else self.paid_to,
-                                    "credit_in_account_currency": self.total_outstanding_amount,
-                                    "credit": self.total_outstanding_amount,
-                                    "cost_center": self.cost_center,
-                                    "post_net_value": True,
-                                },
-                                item=self,
-                            )
-                        )
+
                         gl_entries.append(
                             self.get_gl_dict(
                                 {
@@ -1222,6 +1206,25 @@ class PaymentEntry(AccountsController):
                                 item=self,
                             )
                         )
+                        
+                    if self.total_outstanding_amount > 0.00:
+                        gl_entries.append(
+                            self.get_gl_dict(
+                                {
+                                    "account": self.paid_from,
+                                    "account_currency": self.paid_from_account_currency,
+                                    "against": self.party
+                                    if self.payment_type == "Pay"
+                                    else self.paid_to,
+                                    "credit_in_account_currency": self.total_outstanding_amount,
+                                    "credit": self.total_outstanding_amount,
+                                    "cost_center": self.cost_center,
+                                    "post_net_value": True,
+                                },
+                                item=self,
+                            )
+                        )
+                        
                     else:
                         gl_entries.append(
                             self.get_gl_dict(
