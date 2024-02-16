@@ -198,10 +198,10 @@ class PaymentEntry(AccountsController):
                 )
                 frappe.msgprint("Updated POL Receive Invoice {}".format(a.reference_name))
 
-            elif a.reference_doctype == "Hire Charge Invoice":
+            elif a.reference_doctype == "Transportation and Hire Charge Invoice":
                 payment_status = ""
-                outstanding_amount = frappe.db.get_value("Hire Charge Invoice", a.reference_name, "outstanding_amount")
-                total_balance_amount = frappe.db.get_value("Hire Chagre Invoice", a.reference_name, "payable_amount")
+                outstanding_amount = frappe.db.get_value("Transportation and Hire Charge Invoice", a.reference_name, "outstanding_amount")
+                total_balance_amount = frappe.db.get_value("Transportation and Hire Charge Invoice", a.reference_name, "payable_amount")
                 if not cancel:
                     outstanding_amount -= self.paid_amount
                 else:
@@ -215,7 +215,7 @@ class PaymentEntry(AccountsController):
 
                 frappe.db.sql(
                     """
-					update `tabHire Charge Invoice` set outstanding_amount = {}, status = '{}'
+					update `tabTransportation and Hire Charge Invoice` set outstanding_amount = {}, status = '{}'
 					where name = '{}'
 				""".format(
                         flt(outstanding_amount, 2),
@@ -223,7 +223,7 @@ class PaymentEntry(AccountsController):
                         a.reference_name,
                     )
                 )
-                frappe.msgprint("Updated Hire Charge Invoice {}".format(a.reference_name))
+                frappe.msgprint("Updated Transportation and Hire Charge Invoice {}".format(a.reference_name))
 
     def update_employee_advance(self):
         if self.references:
@@ -523,7 +523,7 @@ class PaymentEntry(AccountsController):
                         "Repair And Service Invoice",
                         "Project Invoice",
                         "POL Receive Invoice",
-                        "Hire Charge Invoice",
+                        "Transportation and Hire Charge Invoice",
                     ):
                         if self.party != ref_doc.get(scrub(self.party_type)):
                             frappe.throw(
@@ -586,7 +586,7 @@ class PaymentEntry(AccountsController):
                 "Repair And Service Invoice",
                 "Project Invoice",
                 "POL Receive Invoice",
-                "Hire Charge Invoice",
+                "Transportation and Hire Charge Invoice",
             )
         elif self.party_type == "Shareholder":
             return ("Journal Entry",)
@@ -1911,7 +1911,7 @@ def get_outstanding_reference_documents(args):
 def split_invoices_based_on_payment_terms(outstanding_invoices):
     invoice_ref_based_on_payment_terms = {}
     for idx, d in enumerate(outstanding_invoices):
-        if d.voucher_type in ["Sales Invoice", "Purchase Invoice"]:
+        if d.voucher_type in ["Sales Invoice", "Purchase Invoice", "Transportation and Hire Charge Invoice"]:
             payment_term_template = frappe.db.get_value(
                 d.voucher_type, d.voucher_no, "payment_terms_template"
             )
@@ -2319,7 +2319,7 @@ def get_payment_entry(
     paid_amount, received_amount, discount_amount = apply_early_payment_discount(
         paid_amount, received_amount, doc
     )
-    if dt in ["Repair And Service Invoice", "Project Invoice", "POL Receive Invoice", "Hire Charge Invoice"]:
+    if dt in ["Repair And Service Invoice", "Project Invoice", "POL Receive Invoice", "Transportation and Hire Charge Invoice"]:
         party = doc.party
     else:
         party = doc.get(scrub(party_type))

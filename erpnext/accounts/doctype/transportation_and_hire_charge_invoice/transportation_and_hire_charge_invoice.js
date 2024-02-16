@@ -1,7 +1,7 @@
 // Copyright (c) 2023, Frappe Technologies Pvt. Ltd. and contributors
 // For license information, please see license.txt
 
-frappe.ui.form.on('Hire Charge Invoice', {
+frappe.ui.form.on('Transportation and Hire Charge Invoice', {
 	refresh: function(frm) {
 		if (frm.doc.docstatus === 1) {
 			frm.add_custom_button(__('Accounting Ledger'), function () {
@@ -32,7 +32,7 @@ frappe.ui.form.on('Hire Charge Invoice', {
 			frappe.route_options = {
 					name: frm.doc.name
 			};
-			frappe.set_route("query-report", "Hire Charge Invoice Details");
+			frappe.set_route("query-report", "Transportation and Hire Charge Invoice Details");
 			}, __("View"));
 		
 		if (frm.doc.party_type =="Customer") {

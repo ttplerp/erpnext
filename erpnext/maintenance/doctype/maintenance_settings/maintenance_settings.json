@@ -28,6 +28,10 @@
   "hire_charge_payable_account",
   "column_break_gfnlq",
   "machine_expense_account",
+  "transportation_charges_section",
+  "transportation_expense_account",
+  "column_break_dhuaf",
+  "transportation_payable_account",
   "pol_account_settings_section",
   "pol_receive_account",
   "pol_payable",
@@ -192,12 +196,33 @@
    "fieldtype": "Link",
    "label": "POL Payable (Temporary)",
    "options": "Account"
+  },
+  {
+   "fieldname": "transportation_charges_section",
+   "fieldtype": "Section Break",
+   "label": "Transportation Charges"
+  },
+  {
+   "fieldname": "transportation_expense_account",
+   "fieldtype": "Link",
+   "label": "Transportation Expense Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "column_break_dhuaf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "transportation_payable_account",
+   "fieldtype": "Link",
+   "label": "Transportation Payable Account",
+   "options": "Account"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-01-22 16:24:00.221049",
+ "modified": "2024-02-16 17:25:14.416884",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Maintenance Settings",

@@ -48,7 +48,7 @@ class CustomWorkflow:
                 "Bulk Leave Encashment",
                 "POL Receive",
                 "Hire Charge Advance",
-                "Hire Charge Entry",
+                "Transportation and Hire Charge Entry",
                 "Muster Roll Advance",
                 "Advance",
                 "Employee Advance Settlement",
@@ -702,7 +702,7 @@ class CustomWorkflow:
             # if not self.imprest_approver:
             #     frappe.throw("Imprest Approver not set for the branch {}.".format(self.doc.expense_branch))
 
-        if self.doc.doctype in ("Hire Charge Advance", "Muster Roll Advance", "Advance", "Hire Charge Entry", "POL Receive"):
+        if self.doc.doctype in ("Hire Charge Advance", "Muster Roll Advance", "Advance", "Transportation and Hire Charge Entry", "POL Receive"):
             employee = frappe.db.get_value("Employee", {"user_id": self.doc.owner}, "name")
             user_id = frappe.db.get_value("Employee", {"user_id": self.doc.owner}, "user_id")
             if user_id != self.doc.owner:
@@ -829,7 +829,7 @@ class CustomWorkflow:
                 vars(self.doc)[self.doc_approver[2]] = (
                     officiating[2] if officiating else self.reports_to[2]
                 )
-            elif self.doc.doctype in ("Employee Advance", "Hire Charge Advance", "Muster Roll Advance", "Advance", "Hire Charge Entry", "POL Receive", "Repair And Services"):
+            elif self.doc.doctype in ("Employee Advance", "Hire Charge Advance", "Muster Roll Advance", "Advance", "Transportation and Hire Charge Entry", "POL Receive", "Repair And Services"):
                 officiating = get_officiating_employee(self.advance_supervisor[3])
                 if officiating:
                     officiating = frappe.db.get_value(
@@ -1692,7 +1692,7 @@ class CustomWorkflow:
             self.muster_roll_advance()
         elif self.doc.doctype == "Advance":
             self.supplier_advance()
-        elif self.doc.doctype == "Hire Charge Entry":
+        elif self.doc.doctype == "Transportation and Hire Charge Entry":
             self.hire_charge_entry()
         else:
             frappe.throw(_("Workflow not defined for {}").format(self.doc.doctype))
@@ -4086,7 +4086,7 @@ def get_field_map():
         "Hire Charge Advance": ["approver", "approver_name", "approver_designation"],
         "Muster Roll Advance": ["approver", "approver_name", "approver_designation"],
         "Advance": ["approver", "approver_name", "approver_designation"],
-        "Hire Charge Entry": ["approver", "approver_name", "approver_designation"],
+        "Transportation and Hire Charge Entry": ["approver", "approver_name", "approver_designation"],
 
         "PMS Appeal": [],
         "Asset Issue Details": [],

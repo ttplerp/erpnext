@@ -7,6 +7,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "invoice_type",
   "branch",
   "cost_center",
   "bill_no",
@@ -43,8 +44,6 @@
   "tds_amount",
   "column_break_22",
   "tds_account",
-  "advance_detail_section",
-  "advances",
   "section_break_32",
   "deduct_items",
   "section_break_20",
@@ -53,7 +52,7 @@
   "section_break_19",
   "company",
   "status",
-  "hire_charge_entry",
+  "transportation_and_hire_charge_entry",
   "amended_from",
   "column_break_32",
   "currency",
@@ -131,7 +130,7 @@
    "fieldname": "arrear_eme_payment",
    "fieldtype": "Link",
    "label": "Arrear EME Payment",
-   "options": "Hire Charge Invoice",
+   "options": "Transportation and Hire Charge Invoice",
    "read_only": 1
   },
   {
@@ -269,7 +268,7 @@
    "fieldtype": "Link",
    "label": "Amended From",
    "no_copy": 1,
-   "options": "Hire Charge Invoice",
+   "options": "Transportation and Hire Charge Invoice",
    "print_hide": 1,
    "read_only": 1
   },
@@ -361,12 +360,6 @@
    "options": "Employee"
   },
   {
-   "fieldname": "hire_charge_entry",
-   "fieldtype": "Link",
-   "label": "Hire Charge Entry",
-   "options": "Hire Charge Entry"
-  },
-  {
    "fieldname": "equipment_type",
    "fieldtype": "Select",
    "label": "Equipment Type",
@@ -378,22 +371,25 @@
    "label": "Equipment No"
   },
   {
-   "fieldname": "advance_detail_section",
-   "fieldtype": "Section Break",
-   "label": "Advance Detail"
+   "fieldname": "invoice_type",
+   "fieldtype": "Select",
+   "label": "Invoice Type",
+   "options": "\nTransportation Charge Invoice\nHire Charge Invoice",
+   "reqd": 1
   },
   {
-   "fieldname": "advances",
-   "fieldtype": "Table",
-   "options": "Hire Charge Invoice Advance"
+   "fieldname": "transportation_and_hire_charge_entry",
+   "fieldtype": "Link",
+   "label": "Transportation and Hire Charge Entry",
+   "options": "Transportation and Hire Charge Entry"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-11-29 12:52:03.947949",
+ "modified": "2024-02-16 18:03:26.206763",
  "modified_by": "Administrator",
  "module": "Accounts",
- "name": "Hire Charge Invoice",
+ "name": "Transportation and Hire Charge Invoice",
  "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [

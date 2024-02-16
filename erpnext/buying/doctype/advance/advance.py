@@ -11,7 +11,7 @@ class Advance(Document):
     def validate(self):
         self.validate_date()
         self.payment_type = "Receive" if self.party_type == "Customer" else "Pay"
-        validate_workflow_states(self)
+        # validate_workflow_states(self)
 
     def on_submit(self):
         if flt(self.advance_amount) > 0.00:
@@ -68,18 +68,15 @@ class Advance(Document):
                 fieldname=["account_type", "is_an_advance_account"],
                 as_dict=True,
             )
-        imprest_advance_account = frappe.db.get_value(
-            "Company", self.company, "imprest_advance_account"
-        )
+        imprest_advance_account = frappe.db.get_value("Company", self.company, "imprest_advance_account")
         credit_account = self.get_credit_account(exp_gl, imprest_advance_account)
+
         # Posting Journal Entry
         accounts = []
         accounts.append(
             {
                 "account": self.advance_account,
-                "credit_in_account_currency"
-                if self.party_type == "Customer"
-                else "debit_in_account_currency": flt(self.advance_amount),
+                "credit_in_account_currency" if self.party_type == "Customer" else "debit_in_account_currency": flt(self.advance_amount),
                 "cost_center": self.cost_center,
                 "party_check": 1,
                 "party_type": self.party_type,
@@ -110,12 +107,8 @@ class Advance(Document):
                     "account": credit_account,
                     "credit_in_account_currency": flt(self.advance_amount),
                     "cost_center": self.cost_center,
-                    "party_type": "Employee"
-                    if self.advanced_paid_from_imprest_money == 1
-                    else None,
-                    "party": self.imprest_party
-                    if self.advanced_paid_from_imprest_money == 1
-                    else None,
+                    "party_type": "Employee" if self.advanced_paid_from_imprest_money == 1 else None,
+                    "party": self.imprest_party if self.advanced_paid_from_imprest_money == 1 else None,
                     "party_check": 0,
                     "account_type": exp_gl_det.account_type,
                     "is_advance": "Yes" if exp_gl_det.is_an_advance_account == 1 else "No",
@@ -137,9 +130,7 @@ class Advance(Document):
         je.update(
             {
                 "doctype": "Journal Entry",
-                "voucher_type": "Journal Entry"
-                if self.advanced_paid_from_imprest_money == 1
-                else "Bank Entry",
+                "voucher_type": "Journal Entry" if self.advanced_paid_from_imprest_money == 1 else "Bank Entry",
                 "naming_series": naming_series,
                 "title": "Advance Paid to " + self.party,
                 "user_remark": self.remarks,
@@ -147,9 +138,7 @@ class Advance(Document):
                 "company": self.company,
                 "total_amount_in_words": money_in_words(self.advance_amount),
                 "accounts": accounts,
-                "mode_of_payment": "Adjustment Entry"
-                if self.advanced_paid_from_imprest_money == 1
-                else "Online Payment",
+                "mode_of_payment": "Adjustment Entry" if self.advanced_paid_from_imprest_money == 1 else "Online Payment",
                 "branch": self.branch,
                 "reference_type": self.doctype,
                 "reference_doctype": self.name,
