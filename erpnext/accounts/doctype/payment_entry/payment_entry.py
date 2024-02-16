@@ -1184,8 +1184,9 @@ class PaymentEntry(AccountsController):
         else:
             if self.payment_type in ("Pay", "Internal Transfer"):
                 if self.advances or self.taxes:
-                    balance_amount = flt(self.advances[0].balance_amount)
-                    advance_account = self.advances[0].advance_account
+                    if self.advances:
+                        balance_amount = flt(self.advances[0].balance_amount)
+                        advance_account = self.advances[0].advance_account
                     if self.total_outstanding_amount > 0.00:
                         gl_entries.append(
                             self.get_gl_dict(
