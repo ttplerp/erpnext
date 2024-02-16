@@ -628,7 +628,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Hire Transaction",
-   "link_count": 4,
+   "link_count": 3,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -655,25 +655,15 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Hire Charge Invoice",
+   "label": "Transportation and Hire Charge Entry",
    "link_count": 0,
-   "link_to": "Hire Charge Invoice",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Hire Charge Entry",
-   "link_count": 0,
-   "link_to": "Hire Charge Entry",
+   "link_to": "Transportation and Hire Charge Entry",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
   }
  ],
- "modified": "2024-02-12 10:02:25.209948",
+ "modified": "2024-02-16 17:31:26.329333",
  "modified_by": "pema.dhendup@thimphutechpark.bt",
  "module": "Fleet Management",
  "name": "Fleet Management",
