@@ -14,7 +14,7 @@ from erpnext.custom_workflow import validate_workflow_states, notify_workflow_st
 class TransportationandHireChargeEntry(Document):
 	def validate(self):
 		self.calculate_tds()
-		# validate_workflow_states(self)
+		validate_workflow_states(self)
 
 	def calculate_tds(self):
 		for a in self.items:
