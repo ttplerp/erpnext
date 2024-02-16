@@ -582,6 +582,7 @@ permission_query_conditions = {
 	"Leave Application": "hrms.hr.doctype.leave_application.leave_application.get_permission_query_conditions",
 	"Leave Encashment": "hrms.hr.doctype.leave_encashment.leave_encashment.get_permission_query_conditions",
 	"Training Management": "erpnext.training_and_skilling.doctype.training_management.training_management.get_permission_query_conditions",
+	"Expense Claim": "hrms.hr.doctype.expense_claim.expense_claim.get_permission_query_conditions",
 }
 
 user_privacy_documents = [

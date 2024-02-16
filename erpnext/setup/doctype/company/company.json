@@ -62,6 +62,7 @@
   "exchange_gain_loss_account",
   "unrealized_exchange_gain_loss_account",
   "unrealized_profit_loss_account",
+  "default_expense_claim_payable_account",
   "column_break0",
   "allow_account_creation_against_child_company",
   "default_payable_account",
@@ -901,6 +902,12 @@
    "fieldtype": "Link",
    "label": "DHQ Default Cost Center",
    "options": "Cost Center"
+  },
+  {
+   "fieldname": "default_expense_claim_payable_account",
+   "fieldtype": "Link",
+   "label": "Default Expense Claim Payable Account",
+   "options": "Account"
   }
  ],
  "icon": "fa fa-building",
@@ -908,7 +915,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2023-06-21 09:56:17.988943",
+ "modified": "2024-02-14 14:48:31.519184",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",
