@@ -69,7 +69,7 @@ class Advance(Document):
                 as_dict=True,
             )
         imprest_advance_account = frappe.db.get_value("Company", self.company, "imprest_advance_account")
-        credit_account = self.get_credit_account(exp_gl, imprest_advance_account)
+        credit_account = self.get_credit_account(exp_gl, imprest_advance_account)[0]
 
         # Posting Journal Entry
         accounts = []
