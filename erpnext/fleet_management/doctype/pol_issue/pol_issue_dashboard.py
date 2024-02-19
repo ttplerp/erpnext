@@ -8,6 +8,6 @@
 #             "Journal Entry": "reference_doctype",
 #         },
 #         "transactions": [
-#             {"label": _("Related Transaction"), "items": ["Hire Charge Invoice","Journal Entry"]},
+#             {"label": _("Related Transaction"), "items": ["Transportation and Hire Charge Invoice","Journal Entry"]},
 #         ],
 #     }

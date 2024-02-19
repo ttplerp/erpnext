@@ -581,6 +581,7 @@ permission_query_conditions = {
 	"POL Receive": "erpnext.fleet_management.doctype.pol_receive.pol_receive.get_permission_query_conditions",
 	"Repair And Services": "erpnext.fleet_management.doctype.repair_and_services.repair_and_services.get_permission_query_conditions",
 	"Repair And Services Invoice": "erpnext.fleet_management.doctype.repair_and_services_invoice.repair_and_services_invoice.get_permission_query_conditions",
+	"Pol Issue": "erpnext.fleet_management.doctype.pol_issue.pol_issue.get_permission_query_conditions",
 	"Trip Log": "erpnext.production.doctype.trip_log.trip_log.get_permission_query_conditions",
 	"Vehicle Request": "erpnext.fleet_management.doctype.vehicle_request.vehicle_request.get_permission_query_conditions",
 	# "Asset Movement": "erpnext.asset.doctype.asset_movement.asset_movement.get_permission_query_conditions",
