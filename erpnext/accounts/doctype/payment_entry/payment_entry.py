@@ -1714,8 +1714,8 @@ class PaymentEntry(AccountsController):
         cond = ""
         if not self.advance_type and not self.project and self.party_type == "Customer":
             frappe.throw("Advance Type is required to pull the advance.")
-        if self.project:
-            cond += " AND project='{}'".format(self.project)
+        # if self.project:
+        #     cond += " AND project='{}'".format(self.project)
             # if self.party_type == "Supplier":
             #     self.advance_type = "National Subcontractor Advance"
 
