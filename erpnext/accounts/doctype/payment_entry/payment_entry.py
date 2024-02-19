@@ -1911,7 +1911,7 @@ def get_outstanding_reference_documents(args):
 def split_invoices_based_on_payment_terms(outstanding_invoices):
     invoice_ref_based_on_payment_terms = {}
     for idx, d in enumerate(outstanding_invoices):
-        if d.voucher_type in ["Sales Invoice", "Purchase Invoice", "Transportation and Hire Charge Invoice"]:
+        if d.voucher_type in ["Sales Invoice", "Purchase Invoice"]:
             payment_term_template = frappe.db.get_value(
                 d.voucher_type, d.voucher_no, "payment_terms_template"
             )
