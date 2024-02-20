@@ -36,8 +36,7 @@ class POLReceive(StockController):
 		self.make_pol_entry()
 		self.post_journal_entry()
 		self.post_advance()
-		if not self.direct_consumption and self.settle_imprest_advance:
-			self.make_pol_receive_invoice()
+		self.make_pol_receive_invoice()
 		# notify_workflow_states(self)
 
 	def post_advance(self):
@@ -164,46 +163,39 @@ class POLReceive(StockController):
 		
 		if not self.total_amount:
 			frappe.throw(_("Amount should be greater than zero"))
-		credit_account = frappe.get_value("Company", self.company, "default_bank_account")
+
+		credit_account = debit_account = pol_receive_account = pol_advance_account = None
+
+		# getting credit account 
 		if self.settle_imprest_advance == 1:
 			credit_account = frappe.get_value("Company", self.company, "imprest_advance_account")
-		# debit_account = frappe.db.get_value(
-		#     "Equipment Category", self.equipment_category, "r_m_expense_account"
-		# )
-		# if self.direct_consumption:
-		enable_pol_receive_acc = pol_receive_account = pol_advance_account = None
+		else:
+			credit_account = frappe.get_value("Company", self.company, "default_bank_account")
+	
 		if self.equipment:
-			(
-				enable_pol_receive_acc,
-				pol_receive_account,
-				pol_advance_account,
-			) = frappe.db.get_value(
-				"Equipment Category",
-				self.equipment_category,
+			(pol_receive_account, pol_advance_account) = frappe.db.get_value("Equipment Category", self.equipment_category,
 				[
-					"enable_pol_receive_account",
 					"pol_receive_account",
 					"pol_advance_account",
 				],
 			)
-		if (enable_pol_receive_acc == 1 and frappe.db.get_value("Equipment", self.equipment, "is_container") == 1):
+
+		if self.hired_equipment:
+			if self.fuel_policy == "With Fuel":
+				if self.hired_equipment_type == "Vehicle":
+					debit_account = frappe.db.get_single_value("Maintenance Settings", "vehicle_expense_account")
+				else:
+					debit_account = frappe.db.get_single_value("Maintenance Settings", "machine_expense_account")
+			if not debit_account:
+				frappe.throw("Set <strong>{}</strong> account in Maintenance Settings.".format("Vehicle Expense Advance" if self.hired_equipment_type == "Vehicle" else "Machine Expense Account"))
+		else:
 			if self.direct_consumption:
 				debit_account = pol_advance_account
 			else:
-				debit_account = pol_receive_account
-		else:
-			if self.hired_equipment:
-				if self.fuel_policy == "With Fuel":
-					debit_account = frappe.db.get_single_value("Maintenance Settings", "fuel_advance_account")
+				if not debit_account and self.receive_in_barrel == 1:
+					debit_account = frappe.db.get_value("Warehouse", self.warehouse, "account")
 				else:
-					debit_account = frappe.db.get_single_value("Maintenance Settings", "hired_fuel_expense_account")
-				if not debit_account:
-					frappe.throw("Set <strong>{}</strong> account in Maintenance Settings.".format("Fuel Advance" if self.fuel_policy == "With Fuel" else "Hired Fuel Expense"))
-			else:
-				debit_account = pol_advance_account
-	
-		if not debit_account and self.receive_in_barrel == 1:
-			debit_account = frappe.db.get_value("Warehouse", self.warehouse, "account")
+					debit_account = pol_receive_account
 
 		# Posting Journal Entry
 		je = frappe.new_doc("Journal Entry")
@@ -513,7 +505,7 @@ class POLReceive(StockController):
 
 	@frappe.whitelist()
 	def make_pol_receive_invoice(self, submit=True):
-		if self.hired_equipment:
+		if self.settle_imprest_advance or self.hired_equipment:
 			return
 		
 		if self.equipment:
