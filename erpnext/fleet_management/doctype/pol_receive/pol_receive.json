@@ -381,6 +381,7 @@
    "fieldtype": "Data",
    "hidden": 1,
    "label": "Journal Entry",
+   "no_copy": 1,
    "read_only": 1
   },
   {
@@ -503,6 +504,7 @@
    "fieldname": "advance",
    "fieldtype": "Link",
    "label": "Advance",
+   "no_copy": 1,
    "options": "Advance",
    "read_only": 1
   }
@@ -510,7 +512,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-02-13 11:47:11.047791",
+ "modified": "2024-02-20 12:40:21.752436",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Receive",

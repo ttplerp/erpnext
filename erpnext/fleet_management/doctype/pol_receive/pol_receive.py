@@ -40,8 +40,8 @@ class POLReceive(StockController):
 		# notify_workflow_states(self)
 
 	def post_advance(self):
-		if self.fuel_policy != "Without Fuel":
-			return
+		if self.fuel_policy != "Without Fuel" or not self.direct_consumption or (self.direct_consumption and not self.hired_equipment):
+			return 
 		
 		if self.settle_imprest_advance:
 			credit_account = frappe.db.get_value("Company", self.company, "imprest_advance_account")
@@ -158,8 +158,12 @@ class POLReceive(StockController):
 	# 		frappe.throw("<b>Payable Amount({})</b> cannot be greater than <b>Total Advance Balance({})</b>".format(self.total_amount,total_balance))
 
 	def post_journal_entry(self):
-		if self.fuel_policy == "Without Fuel" or not self.settle_imprest_advance:
-			return
+		if self.hired_equipment:
+			if self.fuel_policy == "Without Fuel" or not self.settle_imprest_advance:
+				return
+		else:
+			if not self.settle_imprest_advance:
+				return
 		
 		if not self.total_amount:
 			frappe.throw(_("Amount should be greater than zero"))
@@ -505,9 +509,17 @@ class POLReceive(StockController):
 
 	@frappe.whitelist()
 	def make_pol_receive_invoice(self, submit=True):
-		if self.settle_imprest_advance or self.hired_equipment:
+		if self.settle_imprest_advance:
 			return
-		
+
+		if self.hired_equipment:
+			if self.fuel_policy == "Without Fuel":
+				return
+			
+			if self.hired_equipment_type == "Machine":
+				debit_account = frappe.db.get_single_value("Maintenance Settings", "machine_expense_account")
+			elif self.hired_equipment_type == "Vehicle":
+				debit_account = frappe.db.get_single_value("Maintenance Settings", "vehicle_expense_account")
 		if self.equipment:
 			if self.direct_consumption:
 				debit_account = frappe.db.get_value("Equipment Category", self.equipment_category, "pol_advance_account")
