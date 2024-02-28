@@ -10,7 +10,7 @@
  "idx": 0,
  "is_standard": "Yes",
  "letter_head": "NHDCL Letter Head",
- "modified": "2023-11-15 10:12:01.581924",
+ "modified": "2024-02-28 12:41:16.590219",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Housing Application Report",
@@ -26,6 +26,9 @@
   },
   {
    "role": "Rental Master"
+  },
+  {
+   "role": "Allotment Manager"
   }
  ]
 }
