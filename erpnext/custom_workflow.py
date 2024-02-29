@@ -2894,78 +2894,55 @@ class CustomWorkflow:
         # item group : Personal Protective Equipment
         5.  Employee -> supervisor -> QHSE -> QHSE Head
         """
-        if self.new_state.lower() in ("Draft".lower()):
+        if self.new_state.lower() == "Draft".lower():
             if self.doc.owner != frappe.session.user:
                 frappe.throw("Only the document owner can Apply this material request.")
 
-        elif self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
-            if (
-                self.doc.owner != frappe.session.user
-                and self.new_state.lower() != self.old_state.lower()
-            ):
+        elif (self.old_state.lower() == "Draft".lower() and self.new_state.lower() != "Draft".lower()):
+            if self.doc.owner != frappe.session.user:
                 frappe.throw("Only the document owner can Apply this material request.")
-            self.set_approver("Supervisor")
+            if self.doc.item_group == "POL":
+                if self.doc.item_sub_group == "Fuel":
+                    self.doc.workflow_state = "Waiting Supervisor Approval"
+                    self.set_approver("Supervisor")
+                else:
+                    self.doc.workflow_state = "Waiting Mechanical GM Approval"
+                    self.set_approver("Fleet Manager")                    
 
-        elif self.new_state.lower() in ("Waiting QHSE Approval".lower()):
-            if self.doc.approver != frappe.session.user:
-                frappe.throw(
-                    "Only the {} can Approve this material request".format(self.doc.approver)
-                )
-            if self.doc.item_group == "Personal Protective Equipment's":
-                self.set_approver("PPE Approver")
+            elif self.doc.item_group in ("Property, Plant and Equipment", "Spare parts- Light Vehicle", "Spare parts - Heavy Earth movers", "Spare parts- Heavy Vehicle", "Spare Parts- Plants & Equipment"):
+                self.doc.workflow_state = "Waiting Mechanical GM Approval"
+                self.set_approver("Fleet Manager")
             else:
-                self.set_approver("QHSE")
+                self.doc.workflow_state = "Waiting Supervisor Approval"
+                self.set_approver("Supervisor")
+                
+        elif self.old_state.lower() in ("Waiting Mechanical GM Approval".lower()):
+            if self.doc.approver != frappe.session.user:
+                frappe.throw("Only the {} can Approve this material request".format(self.doc.approver))
+            self.doc.workflow_state = "Waiting Mechanical Central Store Approval"
+            self.set_approver("Mechanical Manager")
+        
+        elif self.old_state.lower() in ("Waiting Supervisor Approval".lower()):
+            if (self.doc.approver != frappe.session.user):
+                frappe.throw("Only the {0} can Forward this material request ".format(self.doc.approver))
+            if self.doc.item_group == "Fixed Assets":
+                self.doc.workflow_state = "Waiting HR Approval"
+                self.set_approver("HRGM")
+            
+            elif self.doc.item_group in ("Personal Protective Equipment's", "Mess","First Aid Kit"):
+                self.doc.workflow_state = "Waiting QHSE Approval"
+                if self.doc.item_group == "Personal Protective Equipment's":
+                    self.set_approver("PPE Approver")
+                else:
+                    self.set_approver("QHSE")
+            else:
+                self.doc.workflow_state = "Waiting Central Store approval"
+                self.set_approver("MR Manager")
 
         elif self.new_state.lower() in ("Waiting QHSE GM Approval".lower()):
             if self.doc.approver != frappe.session.user:
-                frappe.throw(
-                    "Only the {} can Approve this material request".format(self.doc.approver)
-                )
+                frappe.throw("Only the {} can Approve this material request".format(self.doc.approver))
             self.set_approver("QHSE GM")
-
-        elif self.new_state.lower() in ("Waiting Mechanical GM Approval".lower()):
-            if self.doc.owner != frappe.session.user:
-                frappe.throw("Only the document owner can Apply this material request.")
-            self.set_approver("Fleet Manager")
-
-        elif self.new_state.lower() in ("Waiting Mechanical Central Store Approval".lower()):
-            if (self.doc.approver != frappe.session.user):
-                frappe.throw("Only the {0} can Forward this material request ".format(self.doc.approver))
-            self.set_approver("Mechanical Manager")
-
-        elif self.new_state.lower() in ("Waiting HR Approval".lower()):
-            if self.doc.approver != frappe.session.user:
-                frappe.throw(
-                    "Only the {} can Approve this material request".format(self.doc.approver)
-                )
-            self.set_approver("HRGM")
-
-        elif self.new_state.lower() in ("Waiting Approval".lower()):
-            if self.old_state.lower() == "Waiting Central Store approval".lower():
-                submit_flag = 0
-                if self.mr_approvers:
-                    for approver in self.mr_approvers:
-                        if approver.user == str(frappe.session.user):
-                            submit_flag = 1
-                    if submit_flag == 0:
-                        frappe.throw(
-                            "Only {} can submit/edit this document".format(
-                                tuple(self.mr_approvers)
-                            )
-                        )
-            else:
-                if self.doc.approver != frappe.session.user:
-                    frappe.throw(
-                        "Only the {} can Approve this material request".format(self.doc.approver)
-                    )
-            self.set_approver("MR Master")
-
-        elif self.new_state.lower() in ("Waiting Central Store approval".lower()):
-            if self.doc.approver != frappe.session.user:
-                frappe.throw(
-                    "Only the {} can Approve this material request".format(self.doc.approver)
-                )
-            self.set_approver("MR Manager")
 
         elif self.new_state.lower() == "Approved".lower():
             if self.old_state.lower() == "Waiting Central Store approval".lower():

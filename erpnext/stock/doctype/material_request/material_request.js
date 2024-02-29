@@ -72,6 +72,14 @@ frappe.ui.form.on('Material Request', {
 				filters:{'is_group':1}
 			};
 		});
+		frm.set_query("item_sub_group", function (doc) {
+			return {
+				filters:{
+					'is_sub_group':1,
+					'parent_item_group': doc.item_group
+				}
+			};
+		});
 		erpnext.accounts.dimensions.setup_dimension_filters(frm, frm.doctype);
 
 		frm.fields_dict["items"].grid.get_field("item_code").get_query = function (doc) {
@@ -111,6 +119,13 @@ frappe.ui.form.on('Material Request', {
 		frm.fields_dict["items"].grid.get_field("item_code").get_query = function (doc) {
 			return {
 				filters: { 'item_group': frm.doc.item_group}
+			};
+		};
+	},
+	item_sub_group: function(frm){
+		frm.fields_dict["items"].grid.get_field("item_code").get_query = function (doc) {
+			return {
+				filters: { 'item_sub_group': frm.doc.item_sub_group}
 			};
 		};
 	},
