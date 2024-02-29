@@ -530,4 +530,143 @@ def send_bulk_email_nhdcl_housing_applicant():
 	else:
 			frappe.throw("No emails to send.")
 
+
+
+
+
+#update date for housing applicants		
+import datetime
+
+def update_date():
+	update_list = frappe.get_all("Date Update Housing Applicants", filters={}, fields=["name","citizen_id_no","application_date_and_time"])
+	applicant_list = frappe.get_all("Housing Application", filters={}, fields=["name","cid"])
+
+	for itemx in update_list:
+		# print(item.get('name'))
+		for itemy in applicant_list:
+			if itemx.get('citizen_id_no') == itemy.get('cid'):
+				print(itemx.get('citizen_id_no'))
+
+				expected_format = "%Y-%m-%d %H:%M:%S"  # Adjust based on column definition
+				correct_datetime = datetime.datetime.strptime(itemx.get('application_date_and_time'), "%d-%m-%Y %H:%M:%S").strftime(expected_format)
+				update_query = """
+    					UPDATE `tabHousing Application`
+    					SET application_date_time = %s
+    					WHERE cid = %s;
+							"""
+				frappe.db.sql(update_query, (correct_datetime, itemy.get('cid')))
+		
+
+
+# update the grosssalary for every applicants
+from erpnext.rental_management.doctype.api_setting.api_setting import get_cid_detail, get_civil_servant_detail
+
+def update_gross():
+	applicant_list = frappe.get_all("Housing Application", filters={}, fields=["name","cid"])
+	# print(applicant_list)
+	for item in applicant_list:
+		data1=get_civil_servant_detail(item.get('cid'))
+		if data1:
+			frappe.db.set_value("Housing Application", item.get('name'), "gross_salary", data1['GrossPay'])
+			print(f"{item.get('cid')} {data1['GrossPay']}  {item.get('name')}")
+			break
+
+
+
+#updating housing applicants ranking to zero for those total gross 80k plus
+			
+def update_ranking():
+	housing_applications = frappe.get_all("Housing Application",filters={},fields=["name","gross_salary","spouse_gross_salary"])
+
+	for application in housing_applications:
+		applicant_salary = application.get('gross_salary') if application.get('gross_salary') is not None else 0
+		spouse_salary = application.get('spouse_gross_salary') if application.get('spouse_gross_salary') is not None else 0
+			
+		total_gross_salary = flt(applicant_salary) + flt(spouse_salary)
+
+		class_ib_maxincome= frappe.db.sql("""
+		select maximum_income from `tabBuilding Classification` where name = "Class IB"
+									""")
+		max_income_value = class_ib_maxincome[0][0]
+		if total_gross_salary >= max_income_value:
+			# print(f"{application.get('name')} is not eligible")
+			update_query = """
+    					UPDATE `tabHousing Application`
+    					SET application_status = 'Not Eligible',
+        				applicant_rank = 0
+    					WHERE name = %s;
+							"""
+
+			# frappe.db.sql(update_query, (application.name,))
+			print(f"{application.name}")
+			break
+
+
 	
+
+#setting the ranks again for 
+def update_ranks():
+    # Fetch the applicant list sorted by application_date_time
+    applicant_list = frappe.get_all(
+        "Housing Application",
+        filters={"application_status":"Pending"},
+        fields=["name", "application_date_time", "building_classification"],
+        order_by="application_date_time ASC",
+    )
+
+    # Initialize rank counters for different building classifications
+    class1A_rank = 1
+    class1B_rank = 1
+    class2_rank = 1
+    class3_rank = 1
+    class4_rank = 1
+    class5_rank = 1
+    # Add more classes as needed
+
+    for applicant in applicant_list:
+        # Assuming you have a function to determine building classification
+        building_classification = applicant.get("building_classification")
+
+        # Assign ranks based on building classification
+        if building_classification == "Class IA":
+            frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class1A_rank)
+            class1A_rank += 1
+        elif building_classification == "Class IB":
+            frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class1B_rank)
+            class1B_rank += 1
+        elif building_classification == "Class II":
+            frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class2_rank)
+            class2_rank += 1
+        elif building_classification == "Class III":
+            frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class3_rank)
+            class3_rank += 1
+        elif building_classification == "Class IV":
+            frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class4_rank)
+            class4_rank += 1
+        elif building_classification == "Class V":
+            frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class5_rank)
+            class5_rank += 1
+        # Add more conditions for other building classifications
+
+        # Print the updated record (optional)
+        print(f"Updated {applicant.get('name')} - Rank: {frappe.get_value('Housing Application', applicant.get('name'), 'applicant_rank')}")
+
+
+
+
+
+#update the building category
+def update_builCate():
+	applicant_list = frappe.get_all("Housing Application", filters={}, fields=["name","cid","gross_salary","spouse_gross_salary"])
+	for applicant in applicant_list:
+		gross_income = flt(applicant.get('gross_salary'),2) + flt(applicant.get('spouse_gross_salary'),2)
+		building_class=frappe.db.sql("""
+								select name from `tabBuilding Classification`
+								where '{gross_income}' between 	minimum_income and maximum_income
+							""".format(gross_income=gross_income))[0][0]
+		
+		print(f"{building_class} for {applicant.get('cid')} {gross_income}")
+		frappe.db.set_value("Housing Application", applicant.get('name'), "building_classification", building_class)
+		break
+
+

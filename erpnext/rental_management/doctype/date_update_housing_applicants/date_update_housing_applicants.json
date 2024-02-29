@@ -1,0 +1,48 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-02-28 14:20:35.236434",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "citizen_id_no",
+  "application_date_and_time"
+ ],
+ "fields": [
+  {
+   "fieldname": "citizen_id_no",
+   "fieldtype": "Data",
+   "label": "Citizen ID No"
+  },
+  {
+   "fieldname": "application_date_and_time",
+   "fieldtype": "Data",
+   "label": "Application Date and Time"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-02-28 14:20:35.236434",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Date Update Housing Applicants",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
