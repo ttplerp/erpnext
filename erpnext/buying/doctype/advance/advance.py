@@ -11,7 +11,7 @@ class Advance(Document):
     def validate(self):
         self.validate_date()
         self.payment_type = "Receive" if self.party_type == "Customer" else "Pay"
-        validate_workflow_states(self)
+        # validate_workflow_states(self)
 
     def on_submit(self):
         if flt(self.advance_amount) > 0.00:
@@ -25,7 +25,8 @@ class Advance(Document):
         if self.credit_account:
             return self.credit_account
         else:
-            return imprest_advance_account if self.advanced_paid_from_imprest_money == 1 else exp_gl,
+            account = imprest_advance_account if self.advanced_paid_from_imprest_money == 1 else exp_gl,
+            return account[0]
 
     def post_journal_entry(self):
         if not self.advance_account:
@@ -69,7 +70,9 @@ class Advance(Document):
                 as_dict=True,
             )
         imprest_advance_account = frappe.db.get_value("Company", self.company, "imprest_advance_account")
-        credit_account = self.get_credit_account(exp_gl, imprest_advance_account)[0]
+        credit_account = self.get_credit_account(exp_gl, imprest_advance_account)
+        if self.reference_doctype == 'POL Receive':
+            party = frappe.db.get_value("POL Receive", self.reference_name, "paid_to")
 
         # Posting Journal Entry
         accounts = []
@@ -80,7 +83,7 @@ class Advance(Document):
                 "cost_center": self.cost_center,
                 "party_check": 1,
                 "party_type": self.party_type,
-                "party": self.party,
+                "party": party if self.reference_doctype == "POL Receive" else self.party,
                 "account_type": adv_gl_det.account_type,
                 "is_advance": "Yes" if adv_gl_det.is_an_advance_account == 1 else "No",
                 "reference_type": self.doctype,
@@ -116,9 +119,7 @@ class Advance(Document):
                     "reference_doctype": self.name,
                 }
             )
-
         je = frappe.new_doc("Journal Entry")
-
         naming_series = ""
         if self.advanced_paid_from_imprest_money == 1 and self.payment_type == "Pay":
             naming_series = "Journal Voucher"

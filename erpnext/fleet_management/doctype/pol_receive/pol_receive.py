@@ -51,6 +51,8 @@ class POLReceive(StockController):
 		advance_doc = frappe.new_doc("Advance")
 		advance_doc.flags.ignore_permissions = 1
 		advance_account = frappe.db.get_single_value("Maintenance Settings", "fuel_advance_account")
+		if not advance_account:
+			frappe.throw("Please set Fuel Advance Account in Maintenance Settings")
 		advance_doc.update({
 			"doctype": "Advance",
 			"posting_date": self.posting_date,
@@ -65,7 +67,7 @@ class POLReceive(StockController):
 			"credit_account": credit_account,
 			"advanced_paid_from_imprest_money": 1 if self.settle_imprest_advance else 0,
 			"imprest_party": self.party if self.settle_imprest_advance else "",
-			"advance_type": "Hire Fuel Advance"
+			"advance_type": "Hired Fuel Advance"
 		})
 
 		advance_doc.insert()
