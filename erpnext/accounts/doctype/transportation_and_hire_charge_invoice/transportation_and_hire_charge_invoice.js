@@ -165,7 +165,8 @@ frappe.ui.form.on('Transportation and Hire Charge Invoice', {
 			args: {
 				dt: frm.doc.doctype,
 				dn: frm.doc.name,
-				party_type:frm.doc.party_type
+				party_type:frm.doc.party_type,
+				invoice_type: frm.doc.invoice_type,
 			},
 			callback: function (r) {
 				var doc = frappe.model.sync(r.message);

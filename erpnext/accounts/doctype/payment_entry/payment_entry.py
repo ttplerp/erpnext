@@ -89,6 +89,7 @@ class PaymentEntry(AccountsController):
         self.ensure_supplier_is_not_blocked()
         self.set_status()
         self.update_expense_claim()
+        self.cal_allocated_advance_amt_after_tax()
         # self.get_advance()
         self.set_outstanding_amt()
 
@@ -109,7 +110,7 @@ class PaymentEntry(AccountsController):
 
     def on_cancel(self):
         check_clearance_date(self.doctype, self.name)
-        self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
+        self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry", "Advance Settlement")
         self.make_gl_entries(cancel=1)
         self.update_outstanding_amounts()
         self.update_outstanding(cancel=True)
@@ -857,7 +858,7 @@ class PaymentEntry(AccountsController):
                 base_applicable_tax += base_amount
         
         for adv in self.get("advances"):
-            advance_amount += -1 * flt(adv.advance_amount)
+            advance_amount += -1 * flt(adv.allocated_amount)
 
         self.paid_amount_after_tax = flt(
             flt(self.paid_amount) + flt(applicable_tax) +flt(advance_amount), self.precision("paid_amount_after_tax")
@@ -1090,6 +1091,7 @@ class PaymentEntry(AccountsController):
         self.add_bank_gl_entries(gl_entries)
         self.add_deductions_gl_entries(gl_entries)
         self.add_tax_gl_entries(gl_entries)
+        # frappe.throw(str(gl_entries))
         return gl_entries
 
     def make_gl_entries(self, cancel=0, adv_adj=0):
@@ -1185,7 +1187,7 @@ class PaymentEntry(AccountsController):
             if self.payment_type in ("Pay", "Internal Transfer"):
                 if self.advances or self.taxes:
                     if self.advances:
-                        balance_amount = flt(self.advances[0].balance_amount)
+                        balance_amount = flt(self.advances[0].allocated_amount)
                         advance_account = self.advances[0].advance_account
 
                         gl_entries.append(
@@ -1225,25 +1227,25 @@ class PaymentEntry(AccountsController):
                             )
                         )
                         
-                    else:
-                        gl_entries.append(
-                            self.get_gl_dict(
-                                {
-                                    "account": advance_account,
-                                    "account_currency": self.paid_from_account_currency,
-                                    "against": self.party
-                                    if self.payment_type == "Pay"
-                                    else self.paid_to,
-                                    "party": self.party,
-                                    "party_type": "Supplier",
-                                    "credit_in_account_currency": flt(self.paid_amount)+flt(self.total_taxes_and_charges),
-                                    "credit": flt(self.base_paid_amount)+flt(self.total_taxes_and_charges),
-                                    "cost_center": self.cost_center,
-                                    "post_net_value": True,
-                                },
-                                item=self,
-                            )
-                        )
+                    # if self.taxes:
+                    #     gl_entries.append(
+                    #         self.get_gl_dict(
+                    #             {
+                    #                 "account": advance_account,
+                    #                 "account_currency": self.paid_from_account_currency,
+                    #                 "against": self.party
+                    #                 if self.payment_type == "Pay"
+                    #                 else self.paid_to,
+                    #                 "party": self.party,
+                    #                 "party_type": "Supplier",
+                    #                 "credit_in_account_currency": flt(self.paid_amount)+flt(self.total_taxes_and_charges),
+                    #                 "credit": flt(self.base_paid_amount)+flt(self.total_taxes_and_charges),
+                    #                 "cost_center": self.cost_center,
+                    #                 "post_net_value": True,
+                    #             },
+                    #             item=self,
+                    #         )
+                    #     )
                 
                 else:
                     gl_entries.append(
@@ -1363,13 +1365,9 @@ class PaymentEntry(AccountsController):
         )
         if supplier_advances:
             if cancel:
-                balance_amount = flt(self.paid_amount - self.total_outstanding_amount, 2)
-                adjusted_amount = (
-                    flt(supplier_advances[0].advance_amount - balance_amount, 2)
-                    if self.total_outstanding_amount > 0
-                    else flt(supplier_advances[0].adjusted_amount - self.paid_amount, 2)
-                )
-                # frappe.msgprint(str(adjusted_amount) + " : can : " + str(balance_amount))
+                balance_amount = flt(supplier_advances[0].balance_amount + self.total_advance_amount, 2)
+                adjusted_amount =flt(supplier_advances[0].adjusted_amount - self.total_advance_amount, 2)
+                # frappe.throw(str(adjusted_amount) + " : can : " + str(balance_amount))
 
                 if balance_amount < 0.00 or adjusted_amount < 0.00:
                     frappe.throw(
@@ -1379,32 +1377,24 @@ class PaymentEntry(AccountsController):
                         + str(adjusted_amount)
                     )
             else:
-                adjusted_amount = (
-                    flt(
-                        flt(supplier_advances[0].adjusted_amount)
-                        + supplier_advances[0].balance_amount,
-                        2,
-                    )
-                    if self.total_outstanding_amount > 0
-                    else flt(flt(supplier_advances[0].adjusted_amount) + self.paid_amount, 2)
-                )
+                adjusted_amount = flt(supplier_advances[0].adjusted_amount + self.total_advance_amount, 2)
                 balance_amount = flt(supplier_advances[0].advance_amount - adjusted_amount)
-                # frappe.msgprint(str(adjusted_amount) + " : sub : " + str(balance_amount))
-                doc = frappe.new_doc("Advance Settlement")
-                doc.title = "Advance Settlement Against " + str(self.party)
-                doc.posting_date = nowdate()
-                doc.advance_type = supplier_advances[0].advance_type
-                doc.advance_account = supplier_advances[0].advance_account
-                doc.advance_amount = supplier_advances[0].advance_amount
-                doc.balance_amount = balance_amount
-                doc.adjusted_amount = adjusted_amount
-                doc.reference_type = self.doctype
-                doc.reference_name = self.name
-                doc.docstatus = "1"
-                doc.insert(ignore_permissions=True)
-                frappe.msgprint(str("created advance settlement {}".format(doc.name)))
-                frappe.db.set_value("Payment Entry", self.name, "advance_settlement", doc.name)
-                self.set("advance_settlement", doc.name)
+                # frappe.throw(str(adjusted_amount) + " : sub : " + str(balance_amount))
+                # doc = frappe.new_doc("Advance Settlement")
+                # doc.title = "Advance Settlement Against " + str(self.party)
+                # doc.posting_date = nowdate()
+                # doc.advance_type = supplier_advances[0].advance_type
+                # doc.advance_account = supplier_advances[0].advance_account
+                # doc.advance_amount = supplier_advances[0].advance_amount
+                # doc.balance_amount = balance_amount
+                # doc.adjusted_amount = adjusted_amount
+                # doc.reference_type = self.doctype
+                # doc.reference_name = self.name
+                # doc.docstatus = "1"
+                # doc.insert(ignore_permissions=True)
+                # frappe.msgprint(str("created advance settlement {}".format(doc.name)))
+                # frappe.db.set_value("Payment Entry", self.name, "advance_settlement", doc.name)
+                # self.set("advance_settlement", doc.name)
             frappe.db.sql(
                 """
                 UPDATE
@@ -1699,8 +1689,8 @@ class PaymentEntry(AccountsController):
         total_advance = 0.00
         if self.advances:
             for val in self.advances:
-                if flt(val.balance_amount) > 0.00:
-                    total_advance += flt(val.balance_amount)
+                if flt(val.allocated_amount) > 0.00:
+                    total_advance += flt(val.allocated_amount)
         self.set(
             "total_outstanding_amount",
             flt(
@@ -1711,15 +1701,39 @@ class PaymentEntry(AccountsController):
 
     @frappe.whitelist()
     def get_advance(self):
-        cond = ""
-        if not self.advance_type and not self.project and self.party_type == "Customer":
+        if not self.advance_type or not self.project and self.party_type == "Customer":
             frappe.throw("Advance Type is required to pull the advance.")
         # if self.project:
         #     cond += " AND project='{}'".format(self.project)
             # if self.party_type == "Supplier":
             #     self.advance_type = "National Subcontractor Advance"
 
+        row_data = self.get_advance_data()
         self.set("advances", [])
+        if row_data:
+            total_advance_amount = 0
+            row = {}
+            for a in row_data:
+                row.update({
+                    'advance_type': a.advance_type,
+                    'advance_account': a.advance_account,
+                    'advance_date': a.advance_date,
+                    'total_amount': a.balance_amount,
+                    'allocated_amount': a.balance_amount if a.balance_amount <= self.total_allocated_amount else self.total_allocated_amount,
+                    'outstanding_amount': 0 if a.balance_amount <= self.total_allocated_amount else a.balance_amount - self.total_allocated_amount
+                })
+            self.append("advances", row)
+
+            for item in self.advances:
+                total_advance_amount += item.allocated_amount 
+            self.set("total_advance_amount", total_advance_amount)
+        else:
+            frappe.msgprint(
+                str("There is no advance for {0} {1}".format(self.party, self.party_type))
+            )
+
+    def get_advance_data(self):
+        cond = ""
         query = """
             SELECT
                 advance_type,
@@ -1736,25 +1750,22 @@ class PaymentEntry(AccountsController):
         """.format(
             self.party, self.advance_type, cond=cond
         )
-        row_data = frappe.db.sql(query, as_dict=1)
-        if row_data:
-            total_advance = 0.00
-            for value in row_data:
-                if flt(value.balance_amount) > 0.00:
-                    total_advance += flt(value.balance_amount)
-                    self.append("advances", value)
-                else:
-                    self.set("total_outstanding_amount", self.total_allocated_amount)
-                    frappe.msgprint(
-                        str("There is no advance for {0} {1}.".format(self.party, self.party_type))
-                    )
-        else:
-            self.set("total_outstanding_amount", self.total_allocated_amount)
-            frappe.msgprint(
-                str("There is no advance for {0} {1}".format(self.party, self.party_type))
-            )
-        self.set_outstanding_amt()
 
+        return frappe.db.sql(query, as_dict=1)
+       
+    def cal_allocated_advance_amt_after_tax(self):
+        if not self.taxes or not self.advances:
+            return
+        else:
+            advance_list = self.get_advance_data()
+            if flt(advance_list[0].balance_amount) > self.total_allocated_amount:
+                balance_amount = flt(advance_list[0].balance_amount) if flt(advance_list[0].balance_amount) <= self.total_allocated_amount else self.total_allocated_amount
+                new_allocated_amount = balance_amount + self.total_taxes_and_charges
+                outstanding_advance_amt = flt(advance_list[0].balance_amount) if flt(advance_list[0].balance_amount) <= self.total_allocated_amount else flt(advance_list[0].balance_amount) - (self.total_allocated_amount + self.total_taxes_and_charges)
+                for item in self.advances:
+                    item.allocated_amount = new_allocated_amount 
+                    item.outstanding_amount = outstanding_advance_amt 
+                self.set("total_advance_amount", new_allocated_amount)
 
 def validate_inclusive_tax(tax, doc):
     def _on_previous_row_error(row_range):
@@ -2263,6 +2274,7 @@ def get_payment_entry(
     bank_amount=None,
     party_type=None,
     payment_type=None,
+    invoice_type=None
 ):
     reference_doc = None
     is_advance = False
@@ -2282,6 +2294,12 @@ def get_payment_entry(
         party_type = set_party_type(dt)
 
     party_account = set_party_account(dt, dn, doc, party_type, is_advance)
+    if dt == "Transportation and Hire Charge Invoice":
+        if invoice_type == "Transportation Charge Invoice":
+            party_account = frappe.db.get_single_value("Maintenance Settings", "transportation_payable_account")
+        elif invoice_type == "Hire Charge Invoice":
+            party_account = frappe.db.get_single_value("Maintenance Settings", "hire_charge_payable_account")
+
     if dt == "Purchase Order":
         supplier_type = frappe.db.get_value("Supplier", doc.supplier, "supplier_type")
         if supplier_type == "Domestic Vendor":

@@ -30,7 +30,7 @@
  ],
  "in_create": 1,
  "links": [],
- "modified": "2023-04-17 12:12:48.679550",
+ "modified": "2023-11-07 16:27:55.213501",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Party Type",
@@ -38,13 +38,15 @@
  "owner": "Administrator",
  "permissions": [
   {
+   "create": 1,
    "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
    "role": "System Manager",
-   "share": 1
+   "share": 1,
+   "write": 1
   },
   {
    "email": 1,

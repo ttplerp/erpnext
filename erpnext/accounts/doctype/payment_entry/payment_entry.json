@@ -75,6 +75,7 @@
   "advance_settlement",
   "section_break_oexxp",
   "advances",
+  "total_advance_amount",
   "taxes_and_charges_section",
   "purchase_taxes_and_charges_template",
   "sales_taxes_and_charges_template",
@@ -825,9 +826,8 @@
   {
    "fieldname": "advances",
    "fieldtype": "Table",
-   "label": "Advance",
-   "options": "Advance Item",
-   "read_only": 1
+   "label": "Advances",
+   "options": "Payment Entry Advance"
   },
   {
    "fieldname": "advance_type",
@@ -862,12 +862,20 @@
    "fieldtype": "Currency",
    "label": "Total Outstanding Amount",
    "read_only": 1
+  },
+  {
+   "fieldname": "total_advance_amount",
+   "fieldtype": "Float",
+   "label": "Total Advance Amount",
+   "options": "Company:company:default_currency",
+   "precision": "2",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-01-03 10:53:09.331048",
+ "modified": "2024-02-28 12:57:40.712631",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Payment Entry",
