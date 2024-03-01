@@ -18,6 +18,7 @@ from frappe.utils import (
     formatdate,
     getdate,
     nowdate,
+    nowtime
 )
 
 import erpnext
@@ -133,7 +134,8 @@ class StockEntry(StockController):
         if self.work_order:
             self.pro_doc = frappe.get_doc("Work Order", self.work_order)
 
-        self.validate_posting_time()
+        self.validate_posting_date_time()
+        # self.validate_posting_time()
         self.validate_purpose()
         self.validate_item()
         self.validate_customer_provided_item()
@@ -194,7 +196,7 @@ class StockEntry(StockController):
         self.repost_future_sle_and_gle()
         self.update_cost_in_project()
         self.validate_reserved_serial_no_consumption()
-        self.update_transferred_qty()
+        self.update_transferred_qtprevious_sley()
         self.update_quality_inspection()
 
         if self.work_order and self.purpose == "Manufacture":
@@ -204,6 +206,61 @@ class StockEntry(StockController):
             self.set_material_request_transfer_status("In Transit")
         if self.purpose == "Material Transfer" and self.outgoing_stock_entry:
             self.set_material_request_transfer_status("Completed")
+
+    def validate_posting_date_time(self):
+        for a in self.items:
+            data_list = frappe.db.sql("""
+                    select *, timestamp(posting_date, posting_time) as "timestamp"
+                    from `tabStock Ledger Entry`
+                    where item_code = '{}'
+                    and warehouse = '{}'
+                    and is_cancelled = 0
+                    order by timestamp(posting_date, posting_time) desc, creation desc
+                    limit 1
+                """.format(a.item_code, a.s_warehouse or a.t_warehouse), as_dict=1)
+            
+            if not data_list:
+                return
+            else:
+                previous_sle = data_list[0]
+
+            if getdate(self.posting_date) < previous_sle.get("posting_date"):
+                frappe.throw(
+                    _(
+                        "Row {0}: Cannot perform transaction for item {4} in warehouse {1} at the posting time of the entry ({2} {3})"
+                    ).format(
+                        a.idx,
+                        frappe.bold(a.s_warehouse),
+                        formatdate(self.posting_date),
+                        format_time(self.posting_time),
+                        frappe.bold(a.item_code),
+                    )
+                    + "<br><br>"
+                    + _("Transactions can only be performed from the posting time of the entry ({0} {1})").format(
+                        frappe.bold(previous_sle.get("posting_date")),
+                        frappe.bold(previous_sle.get("posting_time"))
+                    ),
+                    title=_("Posting Date & Time"),
+                )
+            elif getdate(self.posting_date) == getdate(previous_sle.get("posting_date")):
+                if format_time(self.posting_time) < format_time(previous_sle.get("posting_time")):
+                    frappe.throw(
+                        _(
+                            "Row {0}: Cannot perform transaction for item {4} in warehouse {1} at the posting time of the entry ({2} {3})"
+                        ).format(
+                            a.idx,
+                            frappe.bold(a.s_warehouse),
+                            formatdate(self.posting_date),
+                            format_time(self.posting_time),
+                            frappe.bold(a.item_code),
+                        )
+                        + "<br><br>"
+                        + _("Transactions can only be performed from the posting time of the entry ({0} {1})").format(
+                            frappe.bold(previous_sle.get("posting_date")),
+                            frappe.bold(previous_sle.get("posting_time"))
+                        ),
+                        title=_("Posting Date & Time"),
+                    )
 
     def validate_received_qty(self):
         if self.stock_entry_type == "Material Transfer":

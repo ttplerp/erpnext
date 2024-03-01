@@ -6,7 +6,19 @@ import frappe
 from frappe import _, throw
 from frappe.desk.notifications import clear_doctype_notifications
 from frappe.model.mapper import get_mapped_doc
-from frappe.utils import cint, flt, getdate, nowdate, date_diff, money_in_words
+from frappe.utils import (
+    cint,
+    comma_or,
+    cstr,
+    flt,
+    format_time,
+    formatdate,
+    getdate,
+    nowdate,
+    nowtime,
+    money_in_words,
+    date_diff
+)
 
 import erpnext
 from erpnext.accounts.utils import get_account_currency
@@ -111,6 +123,7 @@ class PurchaseReceipt(BuyingController):
 
     def validate(self):
         self.validate_posting_time()
+        self.validate_posting_date_time()
         super(PurchaseReceipt, self).validate()
         if self._action == "submit":
             self.make_batches("warehouse")
@@ -133,6 +146,62 @@ class PurchaseReceipt(BuyingController):
         self.reset_default_field_value("set_warehouse", "items", "warehouse")
         self.reset_default_field_value("rejected_warehouse", "items", "rejected_warehouse")
         self.reset_default_field_value("set_from_warehouse", "items", "from_warehouse")
+    
+    def validate_posting_date_time(self):
+        
+        for a in self.items:
+            data_list = frappe.db.sql("""
+                    select *, timestamp(posting_date, posting_time) as "timestamp"
+                    from `tabStock Ledger Entry`
+                    where item_code = '{}'
+                    and warehouse = '{}'
+                    and is_cancelled = 0
+                    order by timestamp(posting_date, posting_time) desc, creation desc
+                    limit 1
+                """.format(a.item_code, a.warehouse), as_dict=1)
+            
+            if not data_list:
+                return
+            else:
+                previous_sle = data_list[0]
+
+            if getdate(self.posting_date) < previous_sle.get("posting_date"):
+                frappe.throw(
+                    _(
+                        "Row {0}: Cannot perform transaction for item {4} in warehouse {1} at the posting time of the entry ({2} {3})"
+                    ).format(
+                        a.idx,
+                        frappe.bold(a.warehouse),
+                        formatdate(self.posting_date),
+                        format_time(self.posting_time),
+                        frappe.bold(a.item_code),
+                    )
+                    + "<br><br>"
+                    + _("Transactions can only be performed from the posting time of the entry ({0} {1})").format(
+                        frappe.bold(previous_sle.get("posting_date")),
+                        frappe.bold(previous_sle.get("posting_time"))
+                    ),
+                    title=_("Posting Date & Time"),
+                )
+            elif getdate(self.posting_date) == getdate(previous_sle.get("posting_date")):
+                if format_time(self.posting_time) < format_time(previous_sle.get("posting_time")):
+                    frappe.throw(
+                        _(
+                            "Row {0}: Cannot perform transaction for item {4} in warehouse {1} at the posting time of the entry ({2} {3})"
+                        ).format(
+                            a.idx,
+                            frappe.bold(a.warehouse),
+                            formatdate(self.posting_date),
+                            format_time(self.posting_time),
+                            frappe.bold(a.item_code),
+                        )
+                        + "<br><br>"
+                        + _("Transactions can only be performed from the posting time of the entry ({0} {1})").format(
+                            frappe.bold(previous_sle.get("posting_date")),
+                            frappe.bold(previous_sle.get("posting_time"))
+                        ),
+                        title=_("Posting Date & Time"),
+                    )
 
     def calculate_delay_days(self):
         if self.actual_receipt_date and self.schedule_date < self.actual_receipt_date:
