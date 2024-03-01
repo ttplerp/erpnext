@@ -94,6 +94,7 @@ def construct_query(filters=None):
 				t.name as name, t.branch as branch,t.tenant_name as tenant_name, t.tenant_department_name as tenant_department_name, t.ministry_and_agency as ministry_and_agency, t.allocated_date as allocated_date, t.flat_no as flat_no
 			from `tabTenant Information` t
 			where t.docstatus = 1
+		  	and t.status !='Surrendered'
 			{}
 			""".format(conditions))
 	return query	
