@@ -561,15 +561,18 @@ def update_date():
 # update the grosssalary for every applicants
 from erpnext.rental_management.doctype.api_setting.api_setting import get_cid_detail, get_civil_servant_detail
 
-def update_gross():
-	applicant_list = frappe.get_all("Housing Application", filters={}, fields=["name","cid"])
-	# print(applicant_list)
-	for item in applicant_list:
-		data1=get_civil_servant_detail(item.get('cid'))
-		if data1:
-			frappe.db.set_value("Housing Application", item.get('name'), "gross_salary", data1['GrossPay'])
-			print(f"{item.get('cid')} {data1['GrossPay']}  {item.get('name')}")
-			break
+def update_gross_sal():
+    applicant_list = frappe.get_all("Housing Application", filters={}, fields=["name", "cid"])
+
+    for item in applicant_list:
+        try:
+            data1 = get_civil_servant_detail(item.get('cid'))
+            if data1:
+                frappe.db.set_value("Housing Application", item.get('name'), "gross_salary", data1.get('GrossPay', 0))
+                print(f"{item.get('cid')} {data1.get('GrossPay', 0)}  {item.get('name')}")
+                break
+        except KeyError as e:
+            print(f"Error updating {item.get('name')}: {e}")
 
 
 
