@@ -599,9 +599,9 @@ def update_ranking():
     					WHERE name = %s;
 							"""
 
-			# frappe.db.sql(update_query, (application.name,))
+			frappe.db.sql(update_query, (application.name,))
 			print(f"{application.name}")
-			break
+			
 
 
 	
