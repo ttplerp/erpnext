@@ -567,10 +567,9 @@ def update_gross_sal():
     for item in applicant_list:
         try:
             data1 = get_civil_servant_detail(item.get('cid'))
-            if data1:
-                frappe.db.set_value("Housing Application", item.get('name'), "gross_salary", data1.get('GrossPay', 0))
-                print(f"{item.get('cid')} {data1.get('GrossPay', 0)}  {item.get('name')}")
-                break
+            if data1 and 'GrossPay' in data1:
+                frappe.db.set_value("Housing Application", item.get('name'), "gross_salary", data1['GrossPay'])
+                print(f"{item.get('cid')} {data1['GrossPay']}  {item.get('name')}")
         except KeyError as e:
             print(f"Error updating {item.get('name')}: {e}")
 
