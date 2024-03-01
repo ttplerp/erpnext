@@ -46,8 +46,8 @@ class AssetIssueDetails(Document):
                         """.format(self.item_code, self.branch, self.purchase_receipt, self.name))[0][0]
         
         balance_qty = flt(total_qty) - flt(issued_qty)
-        if flt(self.qty) > flt(balance_qty):
-            frappe.throw(_("Issuing Quantity cannot be greater than Balance Quantity i.e., {}").format(flt(balance_qty)), title="Insufficient Balance")
+        # if flt(self.qty) > flt(balance_qty):
+        #     frappe.throw(_("Issuing Quantity cannot be greater than Balance Quantity i.e., {}").format(flt(balance_qty)), title="Insufficient Balance")
 
     def make_asset(self, qty):
         item_doc = frappe.get_doc("Item",self.item_code)
