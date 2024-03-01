@@ -194,9 +194,9 @@ frappe.ui.form.on('Asset', {
 			frm.set_df_property('purchase_receipt', 'read_only', 1);
 		}
 		else {
-			frm.toggle_reqd('purchase_receipt', 1);
+			// frm.toggle_reqd('purchase_receipt', 1);
 			frm.set_df_property('purchase_receipt', 'read_only', 0);
-			frm.toggle_reqd('purchase_invoice', 1);
+			// frm.toggle_reqd('purchase_invoice', 1);
 			frm.set_df_property('purchase_invoice', 'read_only', 0);
 		}
 	},

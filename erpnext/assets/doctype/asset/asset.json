@@ -34,6 +34,7 @@
   "department",
   "disposal_date",
   "posting_date",
+  "asset_creation_without_pd",
   "accounting_dimensions_section",
   "custodian",
   "custodian_name",
@@ -45,7 +46,9 @@
   "purchase_invoice",
   "available_for_use_date",
   "additional_value",
+  "re_valued",
   "gross_purchase_amount",
+  "revalued_asset_value",
   "column_break_23",
   "asset_rate",
   "asset_quantity",
@@ -225,8 +228,7 @@
    "fieldtype": "Date",
    "label": "Purchase Date",
    "read_only": 1,
-   "read_only_depends_on": "eval:!doc.is_existing_asset",
-   "reqd": 1
+   "read_only_depends_on": "eval:!doc.is_existing_asset"
   },
   {
    "fieldname": "disposal_date",
@@ -249,8 +251,7 @@
    "label": "Gross Purchase Amount",
    "options": "Company:company:default_currency",
    "read_only": 1,
-   "read_only_depends_on": "eval:!doc.is_existing_asset",
-   "reqd": 1
+   "read_only_depends_on": "eval:!doc.is_existing_asset"
   },
   {
    "fieldname": "available_for_use_date",
@@ -666,6 +667,27 @@
    "hidden": 1,
    "label": "Is Single Asset",
    "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "re_valued",
+   "fieldtype": "Check",
+   "label": "Revalued Asset",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "revalued_asset_value",
+   "fieldtype": "Currency",
+   "label": "Revalued Asset Value",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "asset_creation_without_pd",
+   "fieldtype": "Check",
+   "label": "Asset Creation Without Purchase Detail"
   }
  ],
  "idx": 72,
@@ -688,7 +710,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2023-12-12 12:40:43.166102",
+ "modified": "2024-02-29 11:29:38.847841",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",

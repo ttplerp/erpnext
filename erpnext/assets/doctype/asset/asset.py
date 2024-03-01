@@ -196,8 +196,9 @@ class Asset(AccountsController):
 
 		if self.available_for_use_date and getdate(self.available_for_use_date) < getdate(
 			self.purchase_date
-		):
-			frappe.throw(_("Available-for-use Date should be after purchase date"))
+		):	
+			if not self.asset_creation_without_pd:
+				frappe.throw(_("Available-for-use Date should be after purchase date"))
 
 	def validate_gross_and_purchase_amount(self):
 		if self.is_existing_asset:
@@ -210,7 +211,8 @@ class Asset(AccountsController):
 			)
 			error_message += "<br>"
 			error_message += _("Please do not book expense of multiple assets against one single Asset.")
-			frappe.throw(error_message, title=_("Invalid Gross Purchase Amount"))
+			if not self.asset_creation_without_pd:
+				frappe.throw(error_message, title=_("Invalid Gross Purchase Amount"))
 
 	def make_asset_movement(self):
 		reference_doctype = "Purchase Receipt" if self.purchase_receipt else "Purchase Invoice"
@@ -260,12 +262,11 @@ class Asset(AccountsController):
 		start = self.clear_depreciation_schedule()
 			
 		for finance_book in self.get("finance_books"):
+			finance_book.expected_value_after_useful_life = 1
 			if self.number_of_depreciations_booked > 0:
-				finance_book.expected_value_after_useful_life = 1
 				self.opening_accumulated_depreciation = (flt(self.gross_purchase_amount)/flt(finance_book.total_number_of_depreciations))*flt(self.number_of_depreciations_booked)
 			self._make_depreciation_schedule(finance_book, start, date_of_sale)
-		# if frappe.session.user == "Administrator":
-		# 	frappe.throw("here")
+
 
 	def _make_depreciation_schedule(self, finance_book, start, date_of_sale):
 		self.validate_asset_finance_books(finance_book)
@@ -392,13 +393,13 @@ class Asset(AccountsController):
 			# <--------------modified code beings here ---------------->
 			# added by biren
 			# If depreciation is already completed (for double declining balance)
+			schedule_date = None
 			if skip_row:
 				continue
 			if not has_pro_rata or n < cint(number_of_pending_depreciations) - 1:
 				schedule_date = add_months(
 					finance_book.depreciation_start_date, n * cint(finance_book.frequency_of_depreciation)
 				)
-
 				if should_get_last_day:
 					schedule_date = get_last_day(schedule_date)
 				# if frappe.session.user == "Administrator":
@@ -406,6 +407,7 @@ class Asset(AccountsController):
 				# schedule date will be a year later from start date
 				# so monthly schedule date is calculated by removing 11 months from it
 				monthly_schedule_date = add_months(schedule_date, - finance_book.frequency_of_depreciation + 1)
+
 
 			# if asset is being sold
 			if date_of_sale:
@@ -445,7 +447,11 @@ class Asset(AccountsController):
 						self.available_for_use_date,
 						(n + self.number_of_depreciations_booked) * cint(finance_book.frequency_of_depreciation),
 					)
-
+				schedule_date = add_months(
+					finance_book.depreciation_start_date, n * cint(finance_book.frequency_of_depreciation)
+				)
+				if should_get_last_day:
+					schedule_date = get_last_day(schedule_date)
 				depreciation_amount_without_pro_rata = depreciation_amount
 				# days = days = date_diff(self.to_date, schedule_date)
 				from_date = get_first_day(schedule_date)
@@ -454,10 +460,24 @@ class Asset(AccountsController):
 				depreciation_amount = get_depreciation_amount(self, value_after_depreciation, finance_book, schedule_date, days, has_pro_rata)
 
 				monthly_schedule_date = add_months(schedule_date, 1)
-				schedule_date = add_days(schedule_date, days)
-				last_schedule_date = schedule_date		
+				# if frappe.session.user == "Administrator":
+				# 	frappe.throw("here "+str(schedule_date))
+				# schedule_date = add_days(schedule_date, days)
+				# frappe.throw("here "+str(schedule_date))
+				last_schedule_date = schedule_date
+			elif not has_pro_rata and n == cint(number_of_pending_depreciations) - 1:
+				schedule_date = add_months(
+					finance_book.depreciation_start_date, n * cint(finance_book.frequency_of_depreciation)
+				)
+				if should_get_last_day:
+					schedule_date = get_last_day(schedule_date)
+				# if frappe.session.user == "Administrator":
+				# 	frappe.errprint("here "+str(schedule_date)+" ")
+				# schedule date will be a year later from start date
+				# so monthly schedule date is calculated by removing 11 months from it
+				monthly_schedule_date = add_months(schedule_date, - finance_book.frequency_of_depreciation + 1)	
 			else:
-				from_date = get_first_day(schedule_date)  
+				from_date = get_first_day(schedule_date)
 				depreciation_amount, days, months = self.get_pro_rata_amt(
 					finance_book, depreciation_amount, from_date, schedule_date
 				)
@@ -663,11 +683,12 @@ class Asset(AccountsController):
 		if row.depreciation_start_date and getdate(row.depreciation_start_date) < getdate(
 			self.purchase_date
 		):
-			frappe.throw(
-				_("Depreciation Row {0}: Next Depreciation Date cannot be before Purchase Date").format(
-					row.idx
+			if not self.asset_creation_without_pd:
+				frappe.throw(
+					_("Depreciation Row {0}: Next Depreciation Date cannot be before Purchase Date").format(
+						row.idx
+					)
 				)
-			)
 
 		if row.depreciation_start_date and getdate(row.depreciation_start_date) < getdate(
 			self.available_for_use_date
