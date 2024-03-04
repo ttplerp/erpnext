@@ -4,7 +4,17 @@
 import frappe
 from frappe.model.document import Document
 from frappe import _, qb
-from frappe.utils import flt, cint
+from frappe.utils import (
+    cint,
+    comma_or,
+    cstr,
+    flt,
+    format_time,
+    formatdate,
+    getdate,
+    nowdate,
+    nowtime
+)
 from erpnext.custom_utils import check_future_date
 from erpnext.accounts.doctype.business_activity.business_activity import get_default_ba
 from frappe.utils import money_in_words, cstr, flt, formatdate, cint, now_datetime
@@ -27,6 +37,7 @@ class POLReceive(StockController):
 		# if self.workflow_state != "Approved":
 		#     notify_workflow_states(self)
 		# self.balance_check()
+		self.validate_posting_date_time()
 
 	def on_submit(self):
 		if self.direct_consumption == 0 and self.receive_in_barrel == 1:
@@ -158,6 +169,60 @@ class POLReceive(StockController):
 	# 		total_balance = flt(total_balance) + flt(row.balance_amount)
 	# 	if total_balance < self.total_amount :
 	# 		frappe.throw("<b>Payable Amount({})</b> cannot be greater than <b>Total Advance Balance({})</b>".format(self.total_amount,total_balance))
+	def validate_posting_date_time(self):
+		if not self.receive_in_barrel:
+			return
+		else:
+			data_list = frappe.db.sql("""
+					select *, timestamp(posting_date, posting_time) as "timestamp"
+					from `tabStock Ledger Entry`
+					where item_code = '{}'
+					and warehouse = '{}'
+					and is_cancelled = 0
+					order by timestamp(posting_date, posting_time) desc, creation desc
+					limit 1
+				""".format(self.pol_type, self.warehouse), as_dict=1)
+			
+			if not data_list:
+				return
+			else:
+				previous_sle = data_list[0]
+
+			if getdate(self.posting_date) < previous_sle.get("posting_date"):
+				frappe.throw(
+					_(
+						"Cannot perform transaction for item {3} in warehouse {0} at the posting time of the entry ({1} {2})"
+					).format(
+						frappe.bold(self.warehouse),
+						formatdate(self.posting_date),
+						format_time(self.posting_time),
+						frappe.bold(self.pol_type),
+					)
+					+ "<br><br>"
+					+ _("Transactions can only be performed from the posting time of the entry ({0} {1})").format(
+						frappe.bold(previous_sle.get("posting_date")),
+						frappe.bold(previous_sle.get("posting_time"))
+					),
+					title=_("Posting Date & Time"),
+				)
+			elif getdate(self.posting_date) == getdate(previous_sle.get("posting_date")):
+				if format_time(self.posting_time) < format_time(previous_sle.get("posting_time")):
+					frappe.throw(
+						_(
+							"Row Cannot perform transaction for item {3} in warehouse {0} at the posting time of the entry ({1} {2})"
+						).format(
+							frappe.bold(self.warehouse),
+							formatdate(self.posting_date),
+							format_time(self.posting_time),
+							frappe.bold(self.pol_type),
+						)
+						+ "<br><br>"
+						+ _("Transactions can only be performed from the posting time of the entry ({0} {1})").format(
+							frappe.bold(previous_sle.get("posting_date")),
+							frappe.bold(previous_sle.get("posting_time"))
+						),
+						title=_("Posting Date & Time"),
+					)
 
 	def post_journal_entry(self):
 		if self.hired_equipment:
