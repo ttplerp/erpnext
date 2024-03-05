@@ -7,13 +7,83 @@ from frappe.utils import add_to_date, get_last_day, flt, getdate, cint
 from frappe import _
 from frappe.model.mapper import get_mapped_doc
 from erpnext.rental_management.doctype.api_setting.api_setting import get_cid_detail, get_civil_servant_detail
+from erpnext.custom_utils import ji,update_ranks
 
 class HousingApplication(Document):
 	def validate(self):
 		self.check_agree()
+		self.check_salary()
+		
 		self.validate_detail()
 		self.validate_duplicate()
-		self.generate_rank()
+		
+		# self.generate_rank()
+		creation_time = frappe.utils.get_datetime(self.get('creation'))
+		if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2:
+			self.generate_rank()
+		
+		
+
+	def on_update(self):	
+		if self.application_status != "Pending" and self.docstatus == 0:
+			frappe.db.set_value("Housing Application", self.name, "applicant_rank", 0)
+			update_ranks()
+		self.reload()
+			
+		
+
+
+	def check_salary(self):
+		gross_salary = float(self.gross_salary) if self.gross_salary else 0
+		spouse_gross_salary = float(self.spouse_gross_salary) if self.spouse_gross_salary else 0
+		
+		total_salary = gross_salary + spouse_gross_salary
+		
+		if total_salary >= 80000:
+			frappe.throw("Since the total gross salary exceeds Nu.80000, you are not applicable")
+
+	def update_ranks():
+    # Fetch the applicant list sorted by application_date_time
+		applicant_list = frappe.get_all(
+			"Housing Application",
+			filters={"application_status":"Pending"},
+			fields=["name", "application_date_time", "building_classification"],
+			order_by="application_date_time ASC",
+		)
+
+    # Initialize rank counters for different building classifications
+		class1A_rank = 1
+		class1B_rank = 1
+		class2_rank = 1
+		class3_rank = 1
+		class4_rank = 1
+		class5_rank = 1
+    # Add more classes as needed
+
+		for applicant in applicant_list:
+			# Assuming you have a function to determine building classification
+			building_classification = applicant.get("building_classification")
+
+			# Assign ranks based on building classification
+			if building_classification == "Class IA":
+				frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class1A_rank)
+				class1A_rank += 1
+			elif building_classification == "Class IB":
+				frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class1B_rank)
+				class1B_rank += 1
+			elif building_classification == "Class II":
+				frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class2_rank)
+				class2_rank += 1
+			elif building_classification == "Class III":
+				frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class3_rank)
+				class3_rank += 1
+			elif building_classification == "Class IV":
+				frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class4_rank)
+				class4_rank += 1
+			elif building_classification == "Class V":
+				frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class5_rank)
+				class5_rank += 1	
+
 
 	def validate_detail(self):
 		#citizenship Detail
@@ -124,3 +194,6 @@ def make_tenant_information(source_name, target_doc=None):
 			},
 	}, target_doc, ignore_permissions=True)
 	return doc
+
+
+	
