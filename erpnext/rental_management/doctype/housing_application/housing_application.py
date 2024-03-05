@@ -7,7 +7,7 @@ from frappe.utils import add_to_date, get_last_day, flt, getdate, cint
 from frappe import _
 from frappe.model.mapper import get_mapped_doc
 from erpnext.rental_management.doctype.api_setting.api_setting import get_cid_detail, get_civil_servant_detail
-from erpnext.custom_utils import ji,update_ranks
+
 
 class HousingApplication(Document):
 	def validate(self):
