@@ -240,7 +240,7 @@ def get_data(filters):
                      gross_salary + spouse_gross_salary AS total_gross_salary
         
            FROM `tabHousing Application`
-           WHERE {conditions}""".format(conditions = conditions)
+           WHERE {conditions} and applicant_rank != 0 """.format(conditions = conditions)
            
     data = frappe.db.sql(query, filters,as_dict=True)
     return data
