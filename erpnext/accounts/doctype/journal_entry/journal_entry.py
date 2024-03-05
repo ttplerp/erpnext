@@ -294,30 +294,37 @@ class JournalEntry(AccountsController):
         mr_employee_advance = frappe._dict()
         for a in self.accounts:
             if a.reference_type == "Muster Roll Advance" and a.reference_name:
-                if mr_employee_advance in [a.reference_name]:
+                if mr_employee_advance in [str(a.reference_name)+':'+str(a.party)]:
                     mr_employee_advance[a.reference_name]["credit"] += flt(a.credit)
                     mr_employee_advance[a.reference_name]["debit"] += flt(a.debit)
                 else:
-                    mr_employee_advance[a.reference_name] = frappe._dict(
+                    mr_employee_advance[str(a.reference_name)+':'+str(a.party)] = frappe._dict(
                         {"credit": flt(a.credit), "debit": flt(a.debit)}
                     )
 
         factor = 1
-        for key, value in mr_employee_advance.items():
-            doc = frappe.get_doc("Muster Roll Advance", key)
+        for key, value in mr_employee_advance.items():            
+            doctype_name = key.split(":")[0]
+            party = key.split(":")[1]
+            doc = frappe.get_doc("Muster Roll Advance", doctype_name)
             if cancel:
                 factor = -1
-                doc.journal_entry_status = "Cancelled on {0}".format(
-                    now_datetime().strftime("%Y-%m-%d %H:%M:%S")
-                )
+                # doc.journal_entry_status = "Cancelled on {0}".format(
+                #     now_datetime().strftime("%Y-%m-%d %H:%M:%S")
+                # )
+                doc.journal_entry_status = "Cancelled"
             else:
                 doc.journal_entry = self.name
-                doc.journal_entry_status = "Paid on {0}".format(
-                    now_datetime().strftime("%Y-%m-%d %H:%M:%S")
-                )
+                doc.journal_entry_status = "Paid"
+            if doc.muster_roll_group == "National":
                 doc.balance_amount = flt(doc.balance_amount) + (value["debit"] * factor)
                 doc.paid_amount = flt(doc.paid_amount) + (value["debit"] * factor)
-
+            elif doc.muster_roll_group == "Non-National":
+                for a in doc.items:
+                    if party == a.mr_employee:
+                        a.balance_amount = flt(a.balance_amount) + (value["debit"] * factor)
+                        a.paid_amount = flt(a.paid_amount) + (value["debit"] * factor)
+                
             doc.save(ignore_permissions=True)
 
     def on_trash(self):
@@ -2069,7 +2076,6 @@ def naming_series_query(entry_type):
 @frappe.whitelist()
 def make_bank_payment(source_name, target_doc=None):
     def set_missing_values(obj, target, source_parent):
-        target.payment_type = "One-One Payment"
         target.transaction_type = "Journal Entry"
         target.posting_date = get_datetime()
         target.from_date = None
