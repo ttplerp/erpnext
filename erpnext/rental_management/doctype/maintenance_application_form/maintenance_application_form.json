@@ -20,6 +20,7 @@
   "cidd",
   "tenant_name",
   "mobile_no",
+  "phone_number",
   "email",
   "maintenance_type",
   "column_break_12",
@@ -206,8 +207,9 @@
    "fetch_from": "tenant_id.phone_no",
    "fieldname": "mobile_no",
    "fieldtype": "Data",
-   "label": "Mobile No.",
-   "read_only": 1
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "Mobile No."
   },
   {
    "fetch_from": "tenant.flat_no",
@@ -293,12 +295,17 @@
    "fieldname": "email",
    "fieldtype": "Data",
    "label": "Email"
+  },
+  {
+   "fieldname": "phone_number",
+   "fieldtype": "Data",
+   "label": "Phone Number"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-01-18 09:51:39.264092",
+ "modified": "2024-03-05 14:25:30.698122",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Maintenance Application Form",

@@ -17,7 +17,7 @@ function getApplicantInfo() {
                 alert("Error: Unable to retrieve applicant information.");
                 return;
             }
-            
+            console.log(r.message) 
             displayApplicantInfo(r.message);
         }
     });
@@ -39,6 +39,8 @@ function displayApplicantInfo(response) {
             '<tr><td class="table-heading">Applicant Rank</td><td>' + applicant.applicant_rank + '</td></tr>' +
             '<tr><td class="table-heading">Mobile No</td><td>' + applicant.mobile_no + '</td></tr>' +
             '<tr><td class="table-heading">Status</td><td>' + applicant.application_status + '</td></tr>' +
+            '<tr><td class="table-heading">Building Classification</td><td>' + applicant.building_classification + '</td></tr>' +
+            '<tr><td class="table-heading">Application Date & Time</td><td>' + applicant.application_date_time + '</td></tr>' +
             '</tbody></table>';
 
         infoContainer.innerHTML = tableHTML;
