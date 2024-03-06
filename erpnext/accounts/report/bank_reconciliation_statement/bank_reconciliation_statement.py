@@ -170,8 +170,8 @@ def get_payment_entries(filters):
 			"Payment Entry" as payment_document, pe.name as payment_entry,
 			pe.reference_no, pe.reference_date as ref_date,
 			if(pe.paid_to=%(account)s, pe.received_amount, 0) as debit,
-			(if(pe.paid_from=%(account)s, pe.paid_amount, 0) + (select sum(tax_amount) from 
-            `tabAdvance Taxes and Charges` tc where tc.parent = pe.name)) as credit,
+			(if(pe.paid_from=%(account)s, pe.paid_amount, 0) + ifnull((select sum(tax_amount) from 
+            `tabAdvance Taxes and Charges` tc where tc.parent = pe.name), 0)) as credit,
 			pe.posting_date, ifnull(pe.party,if(pe.paid_from=%(account)s,pe.paid_to,pe.paid_from)) as against_account, pe.clearance_date,
 			if(pe.paid_to=%(account)s, pe.paid_to_account_currency, pe.paid_from_account_currency) as account_currency
 		from `tabPayment Entry` pe
