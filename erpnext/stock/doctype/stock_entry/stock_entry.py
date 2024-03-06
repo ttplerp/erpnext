@@ -196,7 +196,6 @@ class StockEntry(StockController):
         self.repost_future_sle_and_gle()
         self.update_cost_in_project()
         self.validate_reserved_serial_no_consumption()
-        self.update_transferred_qtprevious_sley()
         self.update_quality_inspection()
 
         if self.work_order and self.purpose == "Manufacture":
