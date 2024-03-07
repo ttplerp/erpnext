@@ -2491,7 +2491,16 @@ def set_party_account(dt, dn, doc, party_type, is_advance=None):
     elif dt in ["Transporter Invoice", "EME Invoice", "Repair And Service Invoice", "POL Receive Invoice", "HIre Charge Invoice"]:
         party_account = doc.credit_account
     elif dt == "Project Invoice":
-        party_account = doc.debit_credit_account
+        account_name = ''
+        supplier_type = frappe.db.get_value("Supplier", {"name":doc.party}, "supplier_type")
+        if supplier_type == "Domestic Vendor":
+            account_name = 'national_wage_payable'
+        elif supplier_type == "International Vendor":
+            account_name = 'foreign_wage_payable'
+        else:
+            frappe.throw("Supplier Type for supplier {} must be either {} or {}.".format(frappe.bold(doc.party), frappe.bold("International Vendor"), frappe.bold("Domestic Vendor")))
+        party_account = frappe.db.get_single_value("Projects Settings", account_name)
+
     else:
         party_account = get_party_account(
             party_type, doc.get(party_type.lower()), doc.company, is_advance
