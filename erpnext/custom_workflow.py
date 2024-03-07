@@ -2500,8 +2500,8 @@ class CustomWorkflow:
                 if self.doc.advance_approver != frappe.session.user:
                     frappe.throw("Only {} can Forward this request".format(self.doc.advance_approver_name))
             else:
-                if self.doc.owner != frappe.session.user:
-                    frappe.throw("Only {} can Apply this request".format(self.doc.owner))
+                if self.doc.advance_approver != frappe.session.user:
+                    frappe.throw("Only {} can forward this request".format(self.doc.advance_approver))
             self.set_approver("Imprest Approver")
 
         elif self.new_state.lower() == "Approved".lower():
