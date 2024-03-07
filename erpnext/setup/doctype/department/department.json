@@ -22,6 +22,8 @@
   "lft",
   "rgt",
   "old_parent",
+  "department_approver",
+  "section_break_vwpwb",
   "approver",
   "approver_name",
   "approver_level"
@@ -144,13 +146,23 @@
    "label": "Department Abbreviation",
    "mandatory_depends_on": "eval:doc.is_department == 1;",
    "read_only_depends_on": "eval:doc.is_department == 1;"
+  },
+  {
+   "fieldname": "department_approver",
+   "fieldtype": "Table",
+   "label": "Department Approver",
+   "options": "Department Approver"
+  },
+  {
+   "fieldname": "section_break_vwpwb",
+   "fieldtype": "Section Break"
   }
  ],
  "icon": "fa fa-sitemap",
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2023-07-27 10:43:58.679308",
+ "modified": "2024-02-26 11:40:53.267369",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Department",
