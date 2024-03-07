@@ -5,6 +5,7 @@
 from __future__ import unicode_literals
 import frappe
 from frappe import _
+from frappe.utils import get_fullname
 from frappe.utils import (
     cint,
     cstr,
@@ -113,7 +114,8 @@ class BankPayment(Document):
                         approver_dtl
                     )
                 )
-            self.approver = frappe.session.user_fullname
+            self.approver = get_fullname(frappe.session.user)
+            
 
     def update_pi_number(self):
         if self.payment_type == "One-One Payment":
