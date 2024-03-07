@@ -48,7 +48,8 @@
   "sb_additional_information",
   "company",
   "amended_from",
-  "workflow_state"
+  "workflow_state",
+  "approver"
  ],
  "fields": [
   {
@@ -328,11 +329,16 @@
    "fieldtype": "Link",
    "label": "Beneficiary",
    "options": "Supplier"
+  },
+  {
+   "fieldname": "approver",
+   "fieldtype": "Data",
+   "label": "Approver"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-01-15 10:21:18.130741",
+ "modified": "2024-03-07 12:44:13.369652",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Bank Payment",

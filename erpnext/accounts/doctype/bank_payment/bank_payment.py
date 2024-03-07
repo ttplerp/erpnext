@@ -113,6 +113,7 @@ class BankPayment(Document):
                         approver_dtl
                     )
                 )
+            self.approver = frappe.session.user_fullname
 
     def update_pi_number(self):
         if self.payment_type == "One-One Payment":
