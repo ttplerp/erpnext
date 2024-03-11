@@ -375,8 +375,15 @@ class JournalEntry(AccountsController):
                                     taxes_doc.reference_type, taxes_doc.reference_no
                                 )
                             )
+                if a.reference_type == "MR Employee Invoice" and a.reference_name:
+                    doc = frappe.get_doc("MR Employee Invoice", a.reference_name)
+                    doc.db_set("payment_status", "Paid")
         else:
             for a in self.get("accounts"):
+                if a.reference_type == "MR Employee Invoice" and a.reference_name:
+                    doc = frappe.get_doc("MR Employee Invoice", a.reference_name)
+                    doc.db_set("payment_status", "Unpaid")
+
                 if frappe.db.exists(
                     "Purchase Taxes and Charges",
                     {"reference_type": self.doctype, "reference_no": self.name},
