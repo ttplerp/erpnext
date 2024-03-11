@@ -433,20 +433,31 @@ class CustomWorkflow:
 
                 if not self.advance_supervisor:
                     frappe.throw("Please set expense approver for employee <strong>{}</strong>".format(self.doc.employee))
+            
+            # Approver for Employee Advance
+            if self.doc.advance_type == "Salary Advance":
+                self.imprest_approver = frappe.db.get_value("Employee", frappe.db.get_single_value("HR Settings", "hrgm"), self.field_list)
+                if not self.imprest_approver:
+                    frappe.throw("Please set HRGM approver in HR Settings.")
 
-             # Set Approver
-            self.approver_data = frappe.db.sql("""
-                                    select ai.approver from `tabSupervisor And Approver Mapper` sam,
-                                    `tabApprover Item` ai where ai.parent = sam.name and ai.branch = '{}' and sam.employee = '{}'
-                                  """.format(self.doc.branch, self.doc.employee))
-            if self.approver_data:
-                self.approver = self.approver_data[0][0]
-                self.imprest_approver = frappe.db.get_value("Employee", self.approver, self.field_list) 
+                self.advance_approver = frappe.db.get_value("Employee", frappe.db.get_single_value("HR Settings", "imprest_approver"), self.field_list)
+                if not self.advance_approver:
+                    frappe.throw("Please set imprest approver in HR Settings.")
+            
             else:
-                # frappe.throw(str(employee))
-                self.imprest_approver = frappe.db.get_value("Employee", frappe.db.get_value("Employee", self.doc.employee, "advance_approver"), self.field_list)
-            if not self.imprest_approver:
-                frappe.throw("Please set advance approver for employee <strong>{}</strong>".format(self.doc.employee))
+                # Set Approver
+                self.approver_data = frappe.db.sql("""
+                                        select ai.approver from `tabSupervisor And Approver Mapper` sam,
+                                        `tabApprover Item` ai where ai.parent = sam.name and ai.branch = '{}' and sam.employee = '{}'
+                                    """.format(self.doc.branch, self.doc.employee))
+                if self.approver_data:
+                    self.approver = self.approver_data[0][0]
+                    self.imprest_approver = frappe.db.get_value("Employee", self.approver, self.field_list) 
+                else:
+                    # frappe.throw(str(employee))
+                    self.imprest_approver = frappe.db.get_value("Employee", frappe.db.get_value("Employee", self.doc.employee, "advance_approver"), self.field_list)
+                if not self.imprest_approver:
+                    frappe.throw("Please set advance approver for employee <strong>{}</strong>".format(self.doc.employee))
 
         if self.doc.doctype == "Material Request":
             self.mechanical_cs = frappe.db.get_value(
@@ -2501,8 +2512,17 @@ class CustomWorkflow:
                     frappe.throw("Only {} can Forward this request".format(self.doc.advance_approver_name))
             else:
                 if self.doc.advance_approver != frappe.session.user:
-                    frappe.throw("Only {} can forward this request".format(self.doc.advance_approver))
+                    frappe.throw("Only {} can Forward this request".format(self.doc.advance_approver))
             self.set_approver("Imprest Approver")
+
+        elif self.new_state.lower() == "Payment Awaited".lower():
+            if self.old_state.lower() != "Draft".lower():
+                if self.doc.advance_approver != frappe.session.user:
+                    frappe.throw("Only {} can Forward this request".format(self.doc.advance_approver_name))
+            else:
+                if self.doc.advance_approver != frappe.session.user:
+                    frappe.throw("Only {} can Forward this request".format(self.doc.advance_approver))
+            self.set_approver("Advance Approver")
 
         elif self.new_state.lower() == "Approved".lower():
             if self.doc.advance_approver != frappe.session.user:
