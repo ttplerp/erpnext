@@ -86,10 +86,10 @@
    "allow_on_submit": 1,
    "fieldname": "title",
    "fieldtype": "Data",
-   "hidden": 1,
    "label": "Title",
    "no_copy": 1,
-   "print_hide": 1
+   "print_hide": 1,
+   "reqd": 1
   },
   {
    "default": "Journal Entry",
@@ -634,7 +634,7 @@
    "link_fieldname": "journal_entry"
   }
  ],
- "modified": "2023-12-18 16:50:24.620550",
+ "modified": "2024-03-11 11:24:17.580933",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",
