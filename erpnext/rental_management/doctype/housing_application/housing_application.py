@@ -27,7 +27,7 @@ class HousingApplication(Document):
 	def on_update(self):	
 		if self.application_status != "Pending" and self.docstatus == 0:
 			frappe.db.set_value("Housing Application", self.name, "applicant_rank", 0)
-			update_ranks()
+			self.update_ranks()
 		self.reload()
 			
 		
@@ -42,7 +42,7 @@ class HousingApplication(Document):
 		if total_salary >= 80000:
 			frappe.throw("Since the total gross salary exceeds Nu.80000, you are not applicable")
 
-	def update_ranks():
+	def update_ranks(self):
     # Fetch the applicant list sorted by application_date_time
 		applicant_list = frappe.get_all(
 			"Housing Application",
