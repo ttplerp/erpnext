@@ -39,7 +39,9 @@ class HousingApplication(Document):
 		
 		total_salary = gross_salary + spouse_gross_salary
 		
-		if total_salary >= 80000:
+		grade = self.grade
+		
+		if total_salary >= 80000 and grade not in  ('ES3','EX3') :
 			frappe.throw("Since the total gross salary exceeds Nu.80000, you are not applicable")
 
 	def update_ranks(self):
