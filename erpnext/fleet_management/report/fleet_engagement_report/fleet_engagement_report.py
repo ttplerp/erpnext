@@ -34,7 +34,7 @@ def get_data(filters):
 				date_format(ei.end_time, '%h:%i %p') AS end_time, ei.total_hours, ei.trip_or_hole,
 				CASE WHEN ei.trip_or_hole = 'Trip' THEN ei.no_of_trip ELSE ei.no_of_holes END as no_of_trip,
 				ifnull(ei.hole_depth,0) as hole_depth,
-				ei.meterage_drilled,ei.qtymt, ei.ot_hr, ei.expense_head
+				ei.meterage_drilled,ei.qtymt, ei.ot_hr, ei.expense_head, ei.remarks
 			FROM `tabFleet Engagement` e
 			INNER JOIN 
 			`tabFleet Engagement Item` ei
@@ -93,5 +93,6 @@ def get_cols(filters):
 		{ "fieldname":"qtymt","fieldtype":"Float","width":100,"label":"Qty(MT)"},
 		{ "fieldname":"ot_hr","fieldtype":"Float","width":100,"label":"OT Hours"},
 		{ "fieldname":"expense_head","fieldtype":"Link","options":"Expense Head","width":120,"label":"Nature Of Work"},
+		{ "fieldname":"remarks","fieldtype":"Data","width":100,"label":"Remarks"},
 	]
 
