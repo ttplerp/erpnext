@@ -33,7 +33,7 @@ class POLReceive(StockController):
 		check_future_date(self.posting_date)
 		# self.calculate_km_diff()
 		self.validate_data()
-		# validate_workflow_states(self)
+		validate_workflow_states(self)
 		# if self.workflow_state != "Approved":
 		#     notify_workflow_states(self)
 		# self.balance_check()
