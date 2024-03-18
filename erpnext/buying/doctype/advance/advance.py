@@ -11,7 +11,7 @@ class Advance(Document):
     def validate(self):
         self.validate_date()
         self.payment_type = "Receive" if self.party_type == "Customer" else "Pay"
-        # validate_workflow_states(self)
+        validate_workflow_states(self)
 
     def on_submit(self):
         if flt(self.advance_amount) > 0.00:
