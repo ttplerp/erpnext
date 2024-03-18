@@ -13,8 +13,9 @@ class HousingApplication(Document):
 	def validate(self):
 		self.check_agree()
 		self.check_salary()
-		
-		self.validate_detail()
+		if self.application_status == None or self.application_status== 'Pending':
+			self.validate_detail()
+		# self.validate_detail()
 		self.validate_duplicate()
 		
 		# self.generate_rank()
@@ -41,7 +42,7 @@ class HousingApplication(Document):
 		
 		grade = self.grade
 		
-		if total_salary >= 80000 and grade not in  ('ES3','EX3') :
+		if total_salary >= 80000 and grade not in  ('ES3','EX3','ES2','EX2','ES1','EX1') :
 			frappe.throw("Since the total gross salary exceeds Nu.80000, you are not applicable")
 
 	def update_ranks(self):

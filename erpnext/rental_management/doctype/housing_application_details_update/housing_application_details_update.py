@@ -28,6 +28,8 @@ def update_housing_application_doctype(doc, method):
 			spouse_agency=%s,
 			spouse_department=%s,
 			spouse_gross_salary=%s,
+			gross_salary=%s,
+			
 			
 			mobile_no=%s
 			
@@ -40,7 +42,7 @@ def update_housing_application_doctype(doc, method):
 						         doc.spouse_dzongkhag,doc.spouse_gewog,
 								 doc.spouse_village,doc.spouse_designation,
 								 doc.spouse_grade,doc.spouse_ministryagency,
-								 doc.spouse_name_of_agency,doc.spouse_department,doc.spouse_gross_salary or 0,
+								 doc.spouse_name_of_agency,doc.spouse_department,doc.spouse_gross_salary or 0,doc.gross_salary,
 								doc.mobile_no,doc.cid))
 		frappe.db.commit()
 		# frappe.msgprint(f"Data updated succefully for CID: {doc.cid}")
@@ -103,7 +105,8 @@ def getApplicantDetails(cid):
 		  spouse_agency,
 		  spouse_grade,
 		  spouse_gross_salary,
-		  date_of_birth
+		  date_of_birth,
+		  gross_salary
 
 
 

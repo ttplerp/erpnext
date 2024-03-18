@@ -21,7 +21,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2024-01-22 14:16:50.949462",
+ "modified": "2024-03-18 12:18:55.054153",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "housing-applicants-detail-update",
@@ -69,6 +69,18 @@
    "max_length": 0,
    "max_value": 0,
    "options": "Single\nMarried\nDivorced\nSeparated\nWidowed",
+   "read_only": 0,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "gross_salary",
+   "fieldtype": "Currency",
+   "hidden": 0,
+   "label": "Gross Salary",
+   "max_length": 0,
+   "max_value": 0,
    "read_only": 0,
    "reqd": 0,
    "show_in_filter": 0

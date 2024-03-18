@@ -146,6 +146,7 @@ frappe.call({
 		const spouse_agency = r.message[0].spouse_agency;
 		const spouse_grade = r.message[0].spouse_grade;
 		const spouse_gross_salary = r.message[0].spouse_gross_salary;
+		const gross_salary = r.message[0].gross_salary;
 		
 		
 	
@@ -168,6 +169,7 @@ frappe.call({
 		frappe.web_form.set_value('spouse_grade', spouse_grade);
 		frappe.web_form.set_value('spouse_gross_salary', spouse_gross_salary);
 		frappe.web_form.set_value('date_of_birth', date_of_birth);
+		frappe.web_form.set_value('gross_salary', gross_salary);
 		
 		
 		
