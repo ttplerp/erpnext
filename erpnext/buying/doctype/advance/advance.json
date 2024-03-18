@@ -75,7 +75,8 @@
    "in_standard_filter": 1,
    "label": "Branch",
    "mandatory_depends_on": "eval:doc.advance_type==\"National Subcontractor Advance\"",
-   "options": "Branch"
+   "options": "Branch",
+   "reqd": 1
   },
   {
    "fetch_from": "branch.cost_center",
@@ -338,7 +339,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-02-28 11:09:35.215632",
+ "modified": "2024-03-18 15:52:48.012761",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Advance",
