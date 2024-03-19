@@ -2502,7 +2502,7 @@ class CustomWorkflow:
 
     def employee_advance(self):
         if self.new_state.lower() in ("Waiting Supervisor Approval".lower(),):
-            if self.doc.owner != frappe.session.user:
+            if self.doc.owner != frappe.session.user and self.new_state.lower() != self.old_state.lower():
                 frappe.throw("Only {} can Apply this request".format(self.doc.owner))
             self.set_approver("Supervisor")
 
