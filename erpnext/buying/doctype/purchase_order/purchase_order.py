@@ -516,6 +516,17 @@ class PurchaseOrder(BuyingController):
     # function to create PO tracking
     def create_purchase_order_tracking(self):
         pass
+    @frappe.whitelist()
+    def create_supplier_advance(self):
+        adv_doc = frappe.new_doc("Advance")
+        adv_doc.advance_date = self.transaction_date
+        adv_doc.party_type = "Supplier"
+        adv_doc.party = self.supplier
+        adv_doc.branch = self.branch
+        adv_doc.cost_center = self.cost_center
+        adv_doc.reference_doctype = self.doctype
+        adv_doc.reference_name = self.name
+        return adv_doc
 
 
 def item_last_purchase_rate(name, conversion_rate, item_code, conversion_factor=1.0):

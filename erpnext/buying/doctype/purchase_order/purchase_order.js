@@ -248,9 +248,9 @@ erpnext.buying.PurchaseOrderController = class PurchaseOrderController extends e
 						cur_frm.add_custom_button(__('Purchase Invoice'),
 							this.make_purchase_invoice, __('Create'));
 
-					if(flt(doc.per_billed)==0 && doc.status != "Delivered") {
-						cur_frm.add_custom_button(__('Payment'), cur_frm.cscript.make_payment_entry, __('Create'));
-					}
+					// if(flt(doc.per_billed)==0 && doc.status != "Delivered") {
+					// 	cur_frm.add_custom_button(__('Payment'), cur_frm.cscript.make_payment_entry, __('Create'));
+					// }
  
 					if(flt(doc.per_billed)==0) {
 						this.frm.add_custom_button(__('Payment Request'),
@@ -266,6 +266,11 @@ erpnext.buying.PurchaseOrderController = class PurchaseOrderController extends e
 					if(doc.order_tracking === 0) {
 						cur_frm.add_custom_button(__('Track Order'),
 							this.create_order_tracking, __('Create'))
+					}
+
+					if(doc.docstatus === 1) {
+						cur_frm.add_custom_button(__('Advance'),
+							this.create_supplier_advance, __('Create'))
 					}
 
 					if (doc.docstatus === 1 && !doc.inter_company_order_reference) {
@@ -470,6 +475,17 @@ erpnext.buying.PurchaseOrderController = class PurchaseOrderController extends e
 	create_order_tracking(){
 		frappe.call({
 			method: "create_purchase_order_tracking",
+			doc:cur_frm.doc,
+			callback: function(r) {
+				const doclist = frappe.model.sync(r.message);
+				frappe.set_route('Form', doclist[0].doctype, doclist[0].name);
+			}
+		});
+	}
+
+	create_supplier_advance() {
+		frappe.call({
+			method: "create_supplier_advance",
 			doc:cur_frm.doc,
 			callback: function(r) {
 				const doclist = frappe.model.sync(r.message);
