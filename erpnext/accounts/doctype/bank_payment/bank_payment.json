@@ -36,6 +36,7 @@
   "column_break_6",
   "department",
   "division",
+  "filter_branch",
   "sb_transaction_details",
   "items",
   "total_amount",
@@ -328,11 +329,17 @@
    "fieldtype": "Link",
    "label": "PF Vendor",
    "options": "Supplier"
+  },
+  {
+   "fieldname": "filter_branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2022-11-23 14:46:07.603357",
+ "modified": "2024-03-20 15:06:39.508879",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Bank Payment",
