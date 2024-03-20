@@ -322,6 +322,8 @@ class InsuranceandRegistration(Document):
                 account = frappe.db.get_single_value("Maintenance Settings", "emission")
             elif args.get("type") == "Fitness":
                 account = frappe.db.get_single_value("Maintenance Settings", "fitness")
+            elif args.get("type") == "Offense":
+                account = frappe.db.get_single_value("Maintenance Settings", "offense")
 
             if not account:
                 frappe.throw(

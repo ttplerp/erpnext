@@ -385,7 +385,7 @@ class PurchaseReceipt(BuyingController):
     def update_asset_receive_entries(self):
         for a in self.items:
             item_group = frappe.db.get_value("Item", a.item_code, "item_group")
-            if item_group and item_group == "Fixed Assets":
+            if item_group and item_group in ("Fixed Assets","Property, Plant and Equipment"):
                 ae = frappe.new_doc("Asset Received Entries")
                 ae.item_code = a.item_code
                 ae.child_ref = a.name

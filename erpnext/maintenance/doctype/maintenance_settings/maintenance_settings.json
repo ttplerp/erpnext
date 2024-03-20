@@ -19,6 +19,7 @@
   "bluebook",
   "emission",
   "fitness",
+  "offense",
   "column_break_goxlq",
   "equipment_hire_income_account",
   "equipment_hire_expense_account",
@@ -217,12 +218,18 @@
    "fieldtype": "Link",
    "label": "Transportation Payable Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "offense",
+   "fieldtype": "Link",
+   "label": "Offense GL",
+   "options": "Account"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-02-16 17:25:14.416884",
+ "modified": "2024-03-19 11:45:44.321207",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Maintenance Settings",
