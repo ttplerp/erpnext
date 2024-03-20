@@ -3,11 +3,18 @@
 
 frappe.ui.form.on('Housing Application', {
 
+	validate: function(frm) {
+        if (frm.doc.docstatus == 0 && frm.doc.application_status =="Pending") {
+            frappe.throw('Cannot submit the document while it is pending or cannot change the status to pending once set.');
+            
+        }},
+
 	building_classification: function(frm){
 		
 		
 	
 	},
+	
 	
 
 	refresh: function(frm) {
@@ -28,7 +35,7 @@ frappe.ui.form.on('Housing Application', {
 		});
 		
 		// Write your magic codes here
-		if(frm.doc.docstatus==1 && frm.doc.application_status!="Alloted" && !frm.doc.tenant_id){
+		if(frm.doc.docstatus==1 && frm.doc.application_status=="Allotted" && !frm.doc.tenant_id){
 			frm.page.set_primary_action(__('Create Allotment'), () => {
 				frappe.model.open_mapped_doc({
 					method: "erpnext.rental_management.doctype.housing_application.housing_application.make_tenant_information",

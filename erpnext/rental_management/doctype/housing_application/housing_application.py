@@ -13,8 +13,8 @@ class HousingApplication(Document):
 	def validate(self):
 		self.check_agree()
 		self.check_salary()
-		if self.application_status == None or self.application_status== 'Pending':
-			self.validate_detail()
+		# if self.application_status == None or self.application_status== 'Pending':
+		# 	self.validate_detail()
 		# self.validate_detail()
 		self.validate_duplicate()
 		
@@ -22,7 +22,6 @@ class HousingApplication(Document):
 		creation_time = frappe.utils.get_datetime(self.get('creation'))
 		if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2:
 			self.generate_rank()
-		
 		
 
 	def on_update(self):	
