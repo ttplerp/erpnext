@@ -13,8 +13,8 @@ class HousingApplication(Document):
 	def validate(self):
 		self.check_agree()
 		self.check_salary()
-		# if self.application_status == None or self.application_status== 'Pending':
-		# 	self.validate_detail()
+		if self.application_status == None or self.application_status== 'Pending':
+			self.validate_detail()
 		# self.validate_detail()
 		self.validate_duplicate()
 		
