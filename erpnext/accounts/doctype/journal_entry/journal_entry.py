@@ -164,37 +164,38 @@ class JournalEntry(AccountsController):
     def update_supplier_advance(self, cancel=None):
         ad_doc = frappe.get_doc("Advance", self.reference_doctype)
         supplier_doc = frappe.get_doc(ad_doc.party_type, ad_doc.party)
+
         cond = ""
         if ad_doc.advance_type == "National Subcontractor Advance":
             cond += " AND project = '{}'".format(ad_doc.project)
-        advances = frappe.db.sql(
-            """
-            SELECT 
-            	name, 
-                advance_type,
-                advance_account, 
-                advance_amount, 
-                balance_amount,
-                advance_date
-			FROM 
-            	`tabAdvance Item` 
-			WHERE 
-            	advance_type = '{0}'
-                and parent = '{1}' {cond}
-		""".format(
-                ad_doc.advance_type, ad_doc.party, cond=cond
-            ),
-            as_dict=1,
-        )
+
+        advances = frappe.db.sql("""
+                SELECT 
+                    name, advance_type, advance_account, advance_amount, balance_amount,advance_date
+                FROM 
+                    `tabAdvance Item` 
+                WHERE 
+                    advance_type = '{0}'
+                    and parent = '{1}' {cond}
+            """.format(ad_doc.advance_type, ad_doc.party, cond=cond), as_dict=1)
+        
         if advances:
             if cancel:
                 advance_amount = flt(advances[0].advance_amount - ad_doc.advance_amount)
                 balance_amount = flt(advances[0].balance_amount - ad_doc.advance_amount)
                 if advance_amount < 0 or balance_amount < 0:
                     frappe.throw("Advance transaction already in use.")
+                
+                # update journal status in Advance doctype
+                ad_doc.db_set('payment_status', 'Unpaid')
+                ad_doc.db_set('journal_entry_status', "Cancelled on {0}".format(now_datetime().strftime("%Y-%m-%d %H:%M:%S")))
             else:
                 advance_amount = flt(advances[0].advance_amount + ad_doc.advance_amount)
                 balance_amount = flt(advances[0].balance_amount + ad_doc.advance_amount)
+
+                ad_doc.db_set('payment_status', 'Piad')
+                ad_doc.db_set('journal_entry_status', "Paid on {0}".format(now_datetime().strftime("%Y-%m-%d %H:%M:%S")))
+
             frappe.db.sql(
                 """
 				UPDATE
@@ -353,6 +354,11 @@ class JournalEntry(AccountsController):
 
     def update_reference_document(self, cancel=0):
         if cint(cancel) == 0:
+            # Updating status for MR Invoice Entry
+            if self.reference_type == "MR Invoice Entry" and self.reference_doctype:
+                doc = frappe.get_doc("MR Invoice Entry", self.reference_doctype)
+                doc.db_set("status", "Paid")
+
             for a in self.get("accounts"):
                 if a.reference_type == "Purchase Receipt" and a.reference_name:
                     taxes_doc = frappe.get_doc(
@@ -379,6 +385,11 @@ class JournalEntry(AccountsController):
                     doc = frappe.get_doc("MR Employee Invoice", a.reference_name)
                     doc.db_set("payment_status", "Paid")
         else:
+            # Updating status for MR Invoice Entry
+            if self.reference_type == "MR Invoice Entry" and self.reference_doctype:
+                doc = frappe.get_doc("MR Invoice Entry", self.reference_doctype)
+                doc.db_set("status", "Unpaid")
+
             for a in self.get("accounts"):
                 if a.reference_type == "MR Employee Invoice" and a.reference_name:
                     doc = frappe.get_doc("MR Employee Invoice", a.reference_name)
