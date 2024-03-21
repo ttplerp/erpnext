@@ -23,7 +23,11 @@
   "old_parent",
   "branch_created",
   "use_budget_from_parent",
-  "budget_cost_center"
+  "budget_cost_center",
+  "clearance_section_section",
+  "approver",
+  "column_break_18",
+  "approver_name"
  ],
  "fields": [
   {
@@ -151,13 +155,34 @@
    "fieldname": "is_company",
    "fieldtype": "Check",
    "label": "Is Company"
+  },
+  {
+   "fieldname": "clearance_section_section",
+   "fieldtype": "Section Break",
+   "label": "Clearance Section"
+  },
+  {
+   "fieldname": "approver",
+   "fieldtype": "Link",
+   "label": "Approver",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "approver.employee_name",
+   "fieldname": "approver_name",
+   "fieldtype": "Data",
+   "label": "Approver Name"
+  },
+  {
+   "fieldname": "column_break_18",
+   "fieldtype": "Column Break"
   }
  ],
  "icon": "fa fa-money",
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2022-11-16 14:03:11.464668",
+ "modified": "2024-03-21 11:05:37.643951",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Cost Center",
