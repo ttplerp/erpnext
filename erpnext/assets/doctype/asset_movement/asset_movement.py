@@ -203,7 +203,7 @@ class AssetMovement(Document):
 			frappe.throw("From Employee missing!")
 		else:
 			asset_list = frappe.db.sql("""
-				select name, cost_center, issued_to
+				select name, cost_center, issued_to, asset_name, description 
 				from `tabAsset` 
 				where issue_to_employee = '{}' 
 				and docstatus = 1 
@@ -214,6 +214,8 @@ class AssetMovement(Document):
 					row = self.append("assets",{})
 					data = {
 							"asset":x.name, 
+							"asset_name":x.asset_name, 
+							"description":x.description, 
 							"from_employee":self.from_employee, 
 							"from_employee_name":frappe.db.get_value("Employee", self.from_employee, 'employee_name'), 
 							"source_cost_center": x.cost_center,
