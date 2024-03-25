@@ -30,6 +30,10 @@ class MaintenanceApplicationForm(Document):
 		self.get_branch_missing()
 		if self.maf_status =="On Hold":
 			pass
+		elif self.maf_status =="Completed":
+			s_entries = frappe.db.get_value("Stock Entry", {"maintenance_application_form": self.name, "docstatus": ("!=", 2)}, "name")
+			if s_entries and not self.material_items:
+				frappe.throw("There exist Stock Issue on this MAF. Pull the Items from Stock Issue before you update as Completed.")
 		elif self.workflow_state == "Waiting Supervisor Approval":
 			self.maf_status ="In Process"
 		
@@ -44,6 +48,32 @@ class MaintenanceApplicationForm(Document):
 	def get_branch_missing(self):
 		if self.tenant_id and frappe.db.get_value("Tenant Information", self.tenant_id, "branch"):
 			self.db_set("branch", frappe.db.get_value("Tenant Information", self.tenant_id, "branch"))
+
+	@frappe.whitelist()
+	def get_stock_entry_items(self):
+		items = frappe.db.sql("select se.name as stock_entry, sed.name as stock_entry_detail, sed.item_code as item, sed.item_name as item_name, sed.stock_uom as uom, sed.qty as quantity, sed.amount \
+					from `tabStock Entry Detail` sed, `tabStock Entry` se \
+					where se.docstatus = 1 and sed.parent = se.name and se.purpose = 'Material Issue' and se.maintenance_application_form = \'"+ str(self.name) +"\'", as_dict=True)
+		material_amount = 0.00
+		if items:
+			if self.material_items:
+				for d in items:
+					material_amount += d.amount
+					for a in self.material_items:
+						check = 0
+						if a.stock_entry != d.stock_entry and d.stock_entry_detail != a.stock_entry_detail:
+							check = 1
+					if check:
+						row = self.append('material_items', {})
+						row.update(d)	
+			else:
+				for d in items:
+					material_amount += d.amount
+					row = self.append('material_items', {})
+					row.update(d)	
+			self.material_charges = material_amount
+		else:
+			frappe.msgprint("No stock entries for this MAF. or Entries might not have submitted?")
 
 @frappe.whitelist()
 def make_technical_sanction(source_name, target_doc=None):
@@ -73,6 +103,10 @@ def make_technical_sanction(source_name, target_doc=None):
 import frappe
 import json
 from frappe import _
+
+def validate(self):
+	pass
+	# if self.maf_status == "Completed":
 
 def after_save(doc,method):
 		if doc.maf_status =="Completed":
@@ -190,9 +224,4 @@ def checkCidExistence(tenant_cid):
 		frappe.log_error(_("Error in check_cid_existence: {0}").format(e))
 		return None
 
-	
-
-
-	   
- 
 	

@@ -44,5 +44,16 @@ frappe.ui.form.on('Maintenance Application Form', {
 		if(frm.doc.no_current_tenant == 1){
 			frm.set_value("tenant_id", "");
 		}
-	}
+	},
+	"get_items": function (frm) {
+		return frappe.call({
+			method: "get_stock_entry_items",
+
+			doc: frm.doc,
+			callback: function (r, rt) {
+				frm.refresh_field("material_items");
+				frm.refresh_fields();
+			}
+		});
+	},
 });
