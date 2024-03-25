@@ -4,14 +4,7 @@
 frappe.provide("erpnext.item");
 
 frappe.ui.form.on("Item", {
-	setup: function(frm) {
-		frm.add_fetch('attribute', 'numeric_values', 'numeric_values');
-		frm.add_fetch('attribute', 'from_range', 'from_range');
-		frm.add_fetch('attribute', 'to_range', 'to_range');
-		frm.add_fetch('attribute', 'increment', 'increment');
-		frm.add_fetch('tax_type', 'tax_rate', 'tax_rate');
-		cur_frm.set_df_property('item_code','reqd',0)
-	},
+	setup: function(frm) {},
 	onload: function(frm) {
 		erpnext.item.setup_queries(frm);
 		frm.set_df_property('item_code','reqd',0)
@@ -251,7 +244,10 @@ frappe.ui.form.on("Item", {
 		if (frm.doc.asset_category){
 			frm.set_query('asset_sub_category',(doc)=>{
 				return {
-					filters: {'asset_category':frm.doc.asset_category}
+					filters: {
+						'asset_category':frm.doc.asset_category,
+						'is_disable':0
+					}
 				}
 				
 			})

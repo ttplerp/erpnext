@@ -9,7 +9,9 @@
  "engine": "InnoDB",
  "field_order": [
   "asset_category",
-  "asset_sub_category"
+  "column_break_2",
+  "asset_sub_category",
+  "is_disable"
  ],
  "fields": [
   {
@@ -27,11 +29,22 @@
    "label": "Asset Sub Category",
    "reqd": 1,
    "unique": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_disable",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Disable"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-26 16:25:56.408679",
+ "modified": "2024-03-25 11:42:24.458609",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset Sub Category",
