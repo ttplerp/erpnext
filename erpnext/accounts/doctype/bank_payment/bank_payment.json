@@ -334,12 +334,13 @@
    "fieldname": "filter_branch",
    "fieldtype": "Link",
    "label": "Branch",
+   "no_copy": 1,
    "options": "Branch"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-03-20 15:06:39.508879",
+ "modified": "2024-03-22 16:05:27.639918",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Bank Payment",
