@@ -357,7 +357,7 @@ def prepare_hire_charge_invoice(source_name, target_doc=None):
         target.vehicle_logbook = obj.name
     doc = get_mapped_doc("Vehicle Logbook", source_name,{
         "Vehicle Logbook": {
-            "doctype": "Hire Charge Invoice", "field_map": {
+            "doctype": "Transportation and Hire Charge Invoice", "field_map": {
                 "equipment_hiring_form": "ehf_name"
 
             },
