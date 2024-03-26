@@ -796,12 +796,14 @@
    "default": "0",
    "fieldname": "settle_project_imprest",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Settle project imprest"
   },
   {
    "depends_on": "eval:doc.settle_project_imprest==1",
    "fieldname": "imprest_party",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Imprest party",
    "mandatory_depends_on": "eval:doc.settle_project_imprest==1",
    "options": "Employee"
@@ -875,7 +877,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-02-28 12:57:40.712631",
+ "modified": "2024-03-26 14:17:22.871854",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Payment Entry",
