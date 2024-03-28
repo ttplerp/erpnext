@@ -86,7 +86,9 @@
   "sales_team",
   "customer_pos_id",
   "section_break_63",
-  "company"
+  "company",
+  "advances_tab",
+  "advances"
  ],
  "fields": [
   {
@@ -614,6 +616,17 @@
    "fieldname": "tpn_no",
    "fieldtype": "Data",
    "label": "TPN No"
+  },
+  {
+   "fieldname": "advances_tab",
+   "fieldtype": "Tab Break",
+   "label": "Advances"
+  },
+  {
+   "fieldname": "advances",
+   "fieldtype": "Table",
+   "options": "Advance Item",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-user",
@@ -627,7 +640,7 @@
    "link_fieldname": "party"
   }
  ],
- "modified": "2023-07-25 10:28:12.110998",
+ "modified": "2024-01-03 09:45:45.627119",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Customer",

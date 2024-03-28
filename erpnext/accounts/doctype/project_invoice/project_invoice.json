@@ -291,11 +291,13 @@
   {
    "fieldname": "get_advances",
    "fieldtype": "Button",
+   "hidden": 1,
    "label": "Get Advances"
   },
   {
    "fieldname": "advances",
    "fieldtype": "Table",
+   "hidden": 1,
    "options": "Project Invoice Advance"
   },
   {
@@ -457,7 +459,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-08-17 11:21:59.237861",
+ "modified": "2024-01-01 15:04:22.551773",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Project Invoice",

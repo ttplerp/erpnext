@@ -100,6 +100,68 @@ def get_depreciation_details(filters):
     return depreciation_details, depreciation_details_two
 
 def get_data(filters):
+    q = """
+        SELECT
+            a.name, a.asset_name, a.asset_category, a.asset_sub_category,
+            a.vehicle_number, a.serial_number, a.old_asset_code,
+            a.cost_center, a.purchase_date, a.posting_date as date_of_issue, a.status, a.asset_status, 
+            a.disposal_date, a.journal_entry_for_scrap,
+            a.custodian as issued_to, a.custodian_name as employee_name,
+            a.asset_quantity, a.asset_rate, a.additional_value,
+            a.gross_purchase_amount,
+            a.opening_accumulated_depreciation,
+            a.income_tax_opening_depreciation_amount as iopening,
+            a.residual_value, a.remarks,
+            (
+                (CASE WHEN a.purchase_date < '{from_date}' THEN IFNULL(a.asset_rate,0)*IFNULL(a.asset_quantity,1)
+                    ELSE 0 END)
+                +
+                (
+                    IFNULL((SELECT SUM(IFNULL(am.difference_amount,0))
+                    FROM `tabAsset Value Adjustment` am
+                    WHERE am.asset = a.name
+                    AND am.docstatus = 1
+                    AND am.date < '{from_date}'
+                    ),0)
+                ) 
+            ) gross_opening,
+            (
+                (CASE WHEN a.purchase_date BETWEEN '{from_date}' AND '{to_date}' THEN IFNULL(a.asset_rate,0)*IFNULL(a.asset_quantity,1)
+                    ELSE 0 END)
+                +
+                (
+                    IFNULL((SELECT SUM(IFNULL(am.difference_amount,0))
+                    FROM `tabAsset Value Adjustment` am
+                    WHERE am.asset = a.name
+                    AND am.docstatus = 1
+                    AND am.date BETWEEN '{from_date}' AND '{to_date}'
+                    AND am.difference_amount > 0
+                    ),0)
+                ) 
+            ) gross_addition,
+            (CASE WHEN a.status in ('Scrapped', 'Sold') AND a.disposal_date BETWEEN '{from_date}' AND '{to_date}'
+                THEN IFNULL(a.gross_purchase_amount,0)
+                ELSE 0
+            END) AS gross_adjustment,
+            0 AS dep_opening,
+            0 AS dep_addition,
+            (CASE WHEN a.status in ('Scrapped', 'Sold') AND a.disposal_date BETWEEN '{from_date}' AND '{to_date}'
+                THEN IFNULL(a.gross_purchase_amount,0)-IFNULL(a.value_after_depreciation,0)
+                ELSE 0
+            END) AS dep_adjustment,
+            0 AS opening_income,
+            0 AS depreciation_income_tax
+        FROM `tabAsset` AS a     
+        WHERE a.docstatus = 1
+        AND a.calculate_depreciation != 1 
+        AND a.purchase_date <= '{to_date}'
+        AND (
+            a.status not in ('Scrapped', 'Sold')
+            OR
+            (a.status in ('Scrapped', 'Sold') AND a.disposal_date >= '{from_date}')
+        )
+        """.format(from_date=filters.from_date, to_date=filters.to_date)
+
     query = """
             SELECT
             a.name, a.asset_name, a.asset_category, a.asset_sub_category,
@@ -165,10 +227,10 @@ def get_data(filters):
             limit 1
             ) as depreciation_percent,
             0 AS depreciation_income_tax
-                FROM 
-            `tabAsset` AS a
-            INNER JOIN `tabAsset Finance Book` AS f ON f.parent = a.name       
-        WHERE a.docstatus = 1 
+        FROM `tabAsset` AS a
+        INNER JOIN `tabAsset Finance Book` AS f ON f.parent = a.name       
+        WHERE a.docstatus = 1
+        AND a.calculate_depreciation = 1 
         AND a.purchase_date <= '{to_date}'
         AND (
             a.status not in ('Scrapped', 'Sold')
@@ -186,7 +248,7 @@ def get_data(filters):
     if filters.asset_code:
         query +=" and a.name in %(asset_code)s "
 
-    asset_data = frappe.db.sql(query, filters, as_dict=True)
+    asset_data = frappe.db.sql(query, filters, as_dict=True) + frappe.db.sql(q, filters, as_dict=True)
     depreciation_details, depreciation_details_two = get_depreciation_details(filters)
     data = []
 

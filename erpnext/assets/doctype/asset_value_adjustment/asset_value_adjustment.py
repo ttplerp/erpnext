@@ -174,8 +174,12 @@ class AssetValueAdjustment(Document):
 
 @frappe.whitelist()
 def get_current_asset_value(asset, finance_book=None):
-	cond = {"parent": asset, "parenttype": "Asset"}
-	if finance_book:
-		cond.update({"finance_book": finance_book})
+	asset_category = frappe.db.get_value("Asset", asset, "asset_category")
+	if asset_category == "Land":
+		return frappe.db.get_value("Asset", asset, "asset_rate")
+	else:
+		cond = {"parent": asset, "parenttype": "Asset"}
+		if finance_book:
+			cond.update({"finance_book": finance_book})
 
-	return frappe.db.get_value("Asset Finance Book", cond, "value_after_depreciation")
+		return frappe.db.get_value("Asset Finance Book", cond, "value_after_depreciation")
