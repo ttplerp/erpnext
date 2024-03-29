@@ -1452,6 +1452,7 @@
   {
    "fieldname": "invoice_no",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Supplier Invoice No"
   },
   {
@@ -1481,7 +1482,7 @@
  "idx": 204,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-09-05 17:05:18.863548",
+ "modified": "2024-03-29 14:37:10.307467",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Purchase Invoice",
