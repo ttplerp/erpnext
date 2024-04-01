@@ -7,7 +7,7 @@
  "document_type": "Document",
  "engine": "InnoDB",
  "field_order": [
-  "company",
+  "is_self_manufactured",
   "item_code",
   "item_name",
   "asset_identification_code",
@@ -23,6 +23,7 @@
   "asset_label",
   "old_asset_code",
   "column_break_3",
+  "company",
   "asset_status",
   "naming_series",
   "asset_barcode",
@@ -38,6 +39,7 @@
   "accounting_dimensions_section",
   "custodian",
   "custodian_name",
+  "asset_station",
   "dimension_col_break",
   "branch",
   "cost_center",
@@ -226,9 +228,8 @@
    "fieldname": "purchase_date",
    "fieldtype": "Date",
    "label": "Purchase Date",
-   "read_only": 1,
-   "read_only_depends_on": "eval:!doc.is_existing_asset",
-   "reqd": 1
+   "mandatory_depends_on": "eval:(doc.is_existing_asset || doc.is_self_manufactured)",
+   "read_only_depends_on": "eval:(!doc.is_existing_asset && !doc.is_self_manufactured)"
   },
   {
    "fieldname": "disposal_date",
@@ -437,6 +438,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "depends_on": "eval:!doc.is_self_manufactured",
    "fieldname": "purchase_receipt",
    "fieldtype": "Link",
    "label": "Purchase Receipt",
@@ -454,6 +456,7 @@
    "read_only": 1
   },
   {
+   "depends_on": "eval:!doc.is_self_manufactured",
    "fieldname": "purchase_invoice",
    "fieldtype": "Link",
    "label": "Purchase Invoice",
@@ -680,6 +683,18 @@
    "fieldtype": "Data",
    "label": "Asset Identification Code",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_self_manufactured",
+   "fieldtype": "Check",
+   "label": "Is Self Manufactured Asset"
+  },
+  {
+   "fieldname": "asset_station",
+   "fieldtype": "Link",
+   "label": "Asset Station ",
+   "options": "Asset Station"
   }
  ],
  "idx": 72,
@@ -702,7 +717,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2023-11-09 14:12:12.307437",
+ "modified": "2024-03-12 16:13:38.834048",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",

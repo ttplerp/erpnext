@@ -7,13 +7,25 @@ frappe.provide("erpnext.accounts.dimensions");
 frappe.ui.form.on('Asset', {
 	onload: function(frm) {
 		frm.set_query("item_code", function() {
-			return {
-				"filters": {
-					"disabled": 0,
-					"is_fixed_asset": 1,
-					"is_stock_item": 0
-				}
-			};
+			if (frm.doc.is_self_manufactured) {
+				return {
+					"filters": {
+						"disabled": 0,
+						"is_fixed_asset": 1,
+						"is_stock_item": 0,
+						"item_group": "Self Manufactured"
+					}
+				};
+			} else {
+				return {
+					"filters": {
+						"disabled": 0,
+						"is_fixed_asset": 1,
+						"is_stock_item": 0
+					}
+				};
+			}
+			
 		});
 
 		frm.set_query("warehouse", function() {
@@ -29,6 +41,22 @@ frappe.ui.form.on('Asset', {
 			return {
 				"filters": {
 					"company": frm.doc.company,
+				}
+			};
+		});
+
+		frm.set_query("credit_account", function() {
+			return {
+				"filters": {
+					"is_group": 0
+				}
+			};
+		});
+
+		frm.set_query("asset_account", function() {
+			return {
+				"filters": {
+					"is_group": 0
 				}
 			};
 		});
@@ -194,9 +222,9 @@ frappe.ui.form.on('Asset', {
 			frm.set_df_property('purchase_receipt', 'read_only', 1);
 		}
 		else {
-			frm.toggle_reqd('purchase_receipt', 1);
+			// frm.toggle_reqd('purchase_receipt', 1);
 			frm.set_df_property('purchase_receipt', 'read_only', 0);
-			frm.toggle_reqd('purchase_invoice', 1);
+			// frm.toggle_reqd('purchase_invoice', 1);
 			frm.set_df_property('purchase_invoice', 'read_only', 0);
 		}
 	},

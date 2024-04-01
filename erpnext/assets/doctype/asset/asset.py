@@ -217,8 +217,8 @@ class Asset(AccountsController):
 
         if not self.calculate_depreciation:
             return
-        elif not self.finance_books:
-            frappe.throw(_("Enter depreciation details"))
+        # elif not self.finance_books:
+        #     frappe.throw(_("Enter depreciation details"))
 
         if self.is_existing_asset:
             return
@@ -231,11 +231,10 @@ class Asset(AccountsController):
     def validate_gross_and_purchase_amount(self):
         if self.is_existing_asset:
             return
+        if self.is_self_manufactured:
+            return
 
-        if (
-            self.gross_purchase_amount
-            and self.gross_purchase_amount != self.purchase_receipt_amount
-        ):
+        if (self.gross_purchase_amount and self.gross_purchase_amount != self.purchase_receipt_amount):
             error_message = _(
                 "Gross Purchase Amount should be <b>equal</b> to purchase amount of one single Asset."
             )
