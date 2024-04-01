@@ -157,7 +157,7 @@ frappe.ui.form.on("Item", {
 	},
 	item_group:function(frm){
 		frm.events.apply_filter(frm)
-		if(frm.doc.item_group == 'Fixed Assets'){
+		if((frm.doc.item_group == 'Fixed Assets') || (frm.doc.item_group =='Property, Plant and Equipment')){
 			frm.set_value('is_fixed_asset',1)
 			frm.trigger('is_fixed_asset')
 		}
