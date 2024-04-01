@@ -33,13 +33,13 @@ frappe.ui.form.on('Imprest Recoup', {
 		frm.set_value('imprest_advance_list', '');
 		frm.refresh_field('imprest_advance_list')
 
-		frm.set_query('party', function() {
-			return {
-				filters: {
-					"branch": frm.doc.branch
-				}
-			};
-		});
+		// frm.set_query('party', function() {
+		// 	return {
+		// 		filters: {
+		// 			"branch": frm.doc.branch
+		// 		}
+		// 	};
+		// });
 	},
 	project: function(frm){
 		frm.set_query("project", function() {
