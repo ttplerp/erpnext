@@ -724,18 +724,18 @@ class BankPayment(Document):
         for field_name in ("employee", "department", "division"):
             if self.get(field_name):
                 cond.append('t1.{} = "{}"'.format(field_name, self.get(field_name)))
-        if self.region and self.branch:
+        if self.region and self.filter_branch:
             frappe.throw("Branch and Region filter cannot be used together")
         if self.region:
             child_cc = get_child_cost_centers(self.region)
             if child_cc:
                 if len(child_cc) == 1:
-                    cond.append("""t1.cost_center = "{}" """.format(child_cc[0]))
+                    cond.append("""t1.cost_center = '{}' """.format(child_cc[0]))
                 else:
                     child_cc = map(str, child_cc)
                     cond.append("""t1.cost_center in {}""".format(tuple(child_cc)))
-        if self.branch:
-            cond.append("""t1.branch = '{}'""".format(self.branch))
+        if self.filter_branch:
+            cond.append("""t1.branch = '{}'""".format(self.filter_branch))
         if cond:
             cond = ' AND ' + ' AND '.join(cond)
         return cond if cond else ""

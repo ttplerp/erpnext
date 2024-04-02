@@ -22,14 +22,14 @@ frappe.ui.form.on('Bank Payment', {
 			};
 		});
 
-		cur_frm.set_query("region", function() {
-			return {
-				"filters": {
-					"is_disabled": 0,
-					"is_region": 1
-				}
-			};
-		});
+		// cur_frm.set_query("region", function() {
+		// 	return {
+		// 		"filters": {
+		// 			"is_disabled": 0,
+		// 			"is_region": 1
+		// 		}
+		// 	};
+		// });
 	},
 	refresh: function(frm) {
 		enable_disable(frm);
