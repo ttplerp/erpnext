@@ -1445,6 +1445,8 @@ class StockEntry(StockController):
 
     @frappe.whitelist()
     def get_item_details(self, args=None, for_update=False):
+        # Commented by Dawa Tshering on 05-04-2024
+        '''
         item = frappe.db.sql(
             """select i.name, i.stock_uom, i.description, i.image, i.item_name, i.item_group,
 				i.has_batch_no, i.sample_quantity, i.has_serial_no, i.allow_alternative_item,
@@ -1454,6 +1456,20 @@ class StockEntry(StockController):
 				and i.disabled=0
 				and (i.end_of_life is null or i.end_of_life<'1900-01-01' or i.end_of_life > %s)""",
             (self.company, args.get("item_code"), nowdate()),
+            as_dict=1,
+        )
+        '''
+        # Commented code end here
+
+        # Added by Dawa Tshering
+        item = frappe.db.sql(
+            """select i.name, i.stock_uom, i.description, i.image, i.item_name, i.item_group,
+				i.has_batch_no, i.sample_quantity, i.has_serial_no, i.allow_alternative_item
+			from `tabItem` i
+			where i.name=%s
+				and i.disabled=0
+				and (i.end_of_life is null or i.end_of_life<'1900-01-01' or i.end_of_life > %s)""",
+            (args.get("item_code"), nowdate()),
             as_dict=1,
         )
 
@@ -1466,6 +1482,19 @@ class StockEntry(StockController):
 
         item = item[0]
         item_group_defaults = get_item_group_defaults(item.name, self.company)
+
+        expense_account = item_group_defaults.expense_account
+        if not expense_account:
+            frappe.throw(
+                        _(
+                            "Please set Exepense Account either in {} or {}.".format(
+                                frappe.get_desk_link('Item Group', frappe.db.get_value('Item', item, 'item_group')),
+                                frappe.get_desk_link('Item Group', frappe.db.get_value('Item', item, 'item_sub_group')),
+                            )
+                        ), 
+                        title=_("Expense Account Missing"),
+                    )
+
         brand_defaults = get_brand_defaults(item.name, self.company)
 
         ret = frappe._dict(
@@ -1488,7 +1517,7 @@ class StockEntry(StockController):
                 "has_serial_no": item.has_serial_no,
                 "has_batch_no": item.has_batch_no,
                 "sample_quantity": item.sample_quantity,
-                "expense_account": item.expense_account,
+                "expense_account": item_group_defaults.expense_account,
             }
         )
 
