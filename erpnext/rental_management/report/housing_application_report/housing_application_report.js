@@ -60,7 +60,9 @@ frappe.query_reports["Housing Application Report"] = {
 				"Allotted",
 				"Rejected",
 				"Withdrawn",
-				"Cancelled"
+				"Cancelled",
+                "Not Eligible",
+                "Resigned/Superannuated"
 			]
         },
     
