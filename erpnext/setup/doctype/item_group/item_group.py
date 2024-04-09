@@ -202,10 +202,11 @@ def invalidate_cache_for(doc, item_group=None):
 def get_item_group_defaults(item, company):
 	item = frappe.get_cached_doc("Item", item)
 	item_group = frappe.get_cached_doc("Item Group", item.item_group)
-	item_sub_group = frappe.get_cached_doc("Item Group", item.item_sub_group)
 	
+	if item.item_sub_group:
+		item_group = frappe.get_cached_doc("Item Group", item.item_sub_group)
 
-	for d in item_sub_group.item_group_defaults if len(item_sub_group.item_group_defaults) > 0 else item_group.item_group_defaults or []:
+	for d in item_group.item_group_defaults or []:
 		if d.company == company:
 			row = copy.deepcopy(d.as_dict())
 			row.pop("name")
