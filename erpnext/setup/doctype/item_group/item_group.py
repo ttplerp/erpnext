@@ -41,11 +41,13 @@ class ItemGroup(NestedSet, WebsiteGenerator):
 
 	def validate_item_code(self):
 		if self.item_code_base:
-			code = frappe.db.sql("""
-				SELECT item_code_base from `tabItem Group` where item_code_base = '{}'
-			""".format(self.item_code_base), as_dict=1)
-			if code and code[0].item_code_base:
-				frappe.throw(str(" Item code already in use."))
+			# Query the database to check if the item code exists
+			existing_item = frappe.db.get_value('Item Group', {'item_code_base': self.item_code_base})
+
+			# If the item code exists, raise an error
+			if existing_item and existing_item != self.name:
+				frappe.throw("Item code already in use.")
+
 
 	def on_update(self):
 		NestedSet.on_update(self)
@@ -200,8 +202,10 @@ def invalidate_cache_for(doc, item_group=None):
 def get_item_group_defaults(item, company):
 	item = frappe.get_cached_doc("Item", item)
 	item_group = frappe.get_cached_doc("Item Group", item.item_group)
+	item_sub_group = frappe.get_cached_doc("Item Group", item.item_sub_group)
+	
 
-	for d in item_group.item_group_defaults or []:
+	for d in item_sub_group.item_group_defaults if len(item_sub_group.item_group_defaults) > 0 else item_group.item_group_defaults or []:
 		if d.company == company:
 			row = copy.deepcopy(d.as_dict())
 			row.pop("name")
