@@ -17,6 +17,7 @@ class ImprestRecoup(Document):
 		if self.workflow_state != "Recouped":
 			notify_workflow_states(self)
 		self.calculate_amount_final()
+		
 	
 	def set_recoup_account(self, validate=False):
 		for d in self.items:
@@ -34,7 +35,7 @@ class ImprestRecoup(Document):
 		self.opening_balance = tot_bal_amt + self.total_amount
 		self.balance_amount = tot_bal_amt
 
-		if self.docstatus != 1 and tot_bal_amt <= 0 and self.workflow_state == "Draft":
+		if self.docstatus != 1 and tot_bal_amt < self.total_amount and self.workflow_state == "Draft":
 			frappe.throw("Expense amount cannot be more than balance amount.")
 
 	def on_submit(self):

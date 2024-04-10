@@ -150,8 +150,8 @@ def get_data(filters):
 			item['executed_qty'] = executed_qty[0][0] if (executed_qty and executed_qty[0][0] is not None) else 0
 			item['qty_within'] = 1.2 * item['boq_qty'] if item['boq_qty'] else 0
 			item['qty_beyond'] = item['executed_qty'] - item['qty_within']
-			item['rate_within'] = 100
-			item['rate_beyond'] = 100
+			item['rate_within'] = item['boq_rate']
+			item['rate_beyond'] = item['boq_rate']
 			item['check_percent'] = item['boq_rate'] * item['qty_beyond'] / item['total_amount'] * 100
 			item['boq_amount'] = item['boq_qty'] * item['boq_rate']
 			item['amount_within'] = item['qty_within'] * item['rate_within']
