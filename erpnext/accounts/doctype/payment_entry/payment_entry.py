@@ -979,21 +979,61 @@ class PaymentEntry(AccountsController):
 				account_currency = get_account_currency(d.account)
 				if account_currency != self.company_currency:
 					frappe.throw(_("Currency for {0} must be {1}").format(d.account, self.company_currency))
-
-				gl_entries.append(
-					self.get_gl_dict(
-						{
-							"account": d.account,
-							"account_currency": account_currency,
-							"against": self.party or self.paid_from,
-							"debit_in_account_currency": d.amount,
-							"debit": d.amount,
-							"cost_center": d.cost_center,
-							"business_activity": self.business_activity,
-						},
-						item=d,
+				if self.mode_of_payment =="Adjustment":
+					gl_entries.append(
+						self.get_gl_dict(
+							{
+								"account": d.account,
+								"account_currency": account_currency,
+								"party_type": self.party_type,
+								"party": self.party,
+								"against": self.party,
+								"credit_in_account_currency": d.amount,
+								"credit": d.amount,
+								"cost_center": d.cost_center,
+								"post_net_value": True,
+								"business_activity": self.business_activity,
+							},
+							item=self,
+						)
 					)
-				)
+				else:
+					gl_entries.append(
+						self.get_gl_dict(
+							{
+								"account": d.account,
+								"account_currency": account_currency,
+								"party_type": self.party_type,
+								"party": self.party,
+								"against": self.party or self.paid_from,
+								"credit_in_account_currency": d.amount,
+								"credit": d.amount,
+								"cost_center": d.cost_center,
+								"business_activity": self.business_activity,
+							},
+							item=d,
+						)
+					)
+		# for d in self.get("deductions"):
+		# 	if d.amount:
+		# 		account_currency = get_account_currency(d.account)
+		# 		if account_currency != self.company_currency:
+		# 			frappe.throw(_("Currency for {0} must be {1}").format(d.account, self.company_currency))
+
+		# 		gl_entries.append(
+		# 			self.get_gl_dict(
+		# 				{
+		# 					"account": d.account,
+		# 					"account_currency": account_currency,
+		# 					"against": self.party or self.paid_from,
+		# 					"debit_in_account_currency": d.amount,
+		# 					"debit": d.amount,
+		# 					"cost_center": d.cost_center,
+		# 					"business_activity": self.business_activity,
+		# 				},
+		# 				item=d,
+		# 			)
+		# 		)
 
 	def get_party_account_for_taxes(self):
 		if self.payment_type == "Receive":
