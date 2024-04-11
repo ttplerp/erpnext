@@ -26,15 +26,15 @@ frappe.ui.form.on('Imprest Advance', {
 		}
 	},
 
-	party: function(frm){
-		frm.set_query("party", function() {
-			return {
-				"filters": {
-					"branch": frm.doc.branch
-				}
-			}
-		 });
-	},
+	// party: function(frm){
+	// 	frm.set_query("party", function() {
+	// 		return {
+	// 			"filters": {
+	// 				"branch": frm.doc.branch
+	// 			}
+	// 		}
+	// 	 });
+	// },
 	project: function(frm){
 		frm.set_query("project", function() {
 			return {
