@@ -3,14 +3,14 @@
 
 frappe.ui.form.on('Imprest Advance', {
 	refresh: function(frm) {
-		frm.set_query('party', function() {
-			return {
-				filters: {
-					"branch": frm.doc.branch,
-					"status":"Active"
-				}
-			}
-		});
+		// frm.set_query('party', function() {
+		// 	return {
+		// 		filters: {
+		// 			"branch": frm.doc.branch,
+		// 			"status":"Active"
+		// 		}
+		// 	}
+		// });
 		frm.set_query("project", function() {
 			return {
 				"filters": {
