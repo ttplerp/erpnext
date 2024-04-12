@@ -303,10 +303,10 @@ class POLIssue(StockController):
 		total_amount = 0
 		if self.hired_equipment:
 			for a in self.hired_required_items:
-				total_amount += flt(a.amount)
+				total_amount += flt(a.amount, 2)
 		else:
 			for a in self.items:
-				total_amount += flt(a.amount)
+				total_amount += flt(a.amount, 2)
 		if not total_amount:
 			frappe.throw(_("Amount should be greater than zero"))
 		# if self.settle_imprest_advance == 1:
