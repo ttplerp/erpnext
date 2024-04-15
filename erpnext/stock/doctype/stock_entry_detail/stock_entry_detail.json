@@ -737,6 +737,7 @@
    "fieldtype": "Link",
    "ignore_user_permissions": 1,
    "label": "Issue To Equipment",
+   "mandatory_depends_on": "eval:parent.item_group == \"Spare Parts- Plants & Equipment\" || parent.item_group == \"Spare parts - Heavy Earth movers\" || parent.item_group ==\"Spare parts- Heavy Vehicle\" || parent.item_group == \"Spare parts- Light Vehicle\"",
    "options": "Equipment"
   },
   {
@@ -769,7 +770,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-04-09 09:57:17.719247",
+ "modified": "2024-04-15 17:11:41.876225",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Entry Detail",
