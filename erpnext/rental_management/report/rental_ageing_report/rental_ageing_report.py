@@ -3,143 +3,154 @@
 
 import frappe
 from frappe import _
-from frappe.utils import formatdate, date_diff, today, nowdate, getdate, flt, cint
-
+from frappe.utils import date_diff, getdate, flt, cint
 
 def execute(filters=None):
-	columns = get_columns(filters)
-	data = get_data(filters)
+	columns, data = [], []
+	columns = get_columns(data)
+	queries = construct_query(filters)
+	data = get_data(queries,filters)
+
 	return columns, data
 
-def get_data(filters):
-	fiscal_year = formatdate(filters.get("date"), "YYYY")
-	month = formatdate(filters.get("date"), "MM")
+def get_columns(data):
+	return [
+		{
+			"fieldname": "tenant",
+			"label": "Tenant",
+			"fieldtype": "Link",
+			"options": "Tenant Information",
+			"width": 100
+		},
+		{
+			"fieldname": "tenant_name",
+			"label": "Tenant Name",
+			"fieldtype": "Data",
+			"width": 150
+		},
+		{
+			"fieldname": "rental_bill_id",
+			"label": "Rental Bill",
+			"fieldtype": "Link",
+			"options": "Rental bill",
+			"width": 150
+		},
+		{
+			"fieldname": "zero",
+			"label": "0 to 30 Days",
+			"fieldtype": "Currency",
+			"width":150
+		},
+		{
+			"fieldname": "one",
+			"label": "31 to 90 Days",
+			"fieldtype": "Currency",
+			"width":150
+		},
+		{
+			"fieldname": "two",
+			"label": "91 to 365 Days",
+			"fieldtype": "Currency",
+			"width":150
+		},
+		{
+			"fieldname": "above_one",
+			"label": "Above 1 Year",
+			"fieldtype": "Currency",
+			"width":150
+		},
+		{
+			"fieldname": "balance",
+			"label": "Balance",
+			"fieldtype": "Currency",
+			"width":100
+		},
+		{
+			"fieldname": "status",
+			"label": "Current Status",
+			"fieldtype": "Data",
+			"width":150
+		},
+	]
+def construct_query(filters=None):
+	conditions, filters = get_conditions(filters)
+	query = ("""select name, posting_date, outstanding_amount, tenant, tenant_name
+			from `tabRental Bill`
+			where docstatus = 1
+			and posting_date between '{0}' and '{1}'
+			{2}
+		""".format(filters.get("from_date"),filters.get("to_date"),conditions))
+	return query	
 
+def get_data(query, filters):
 	data = []
-	rental_map = frappe._dict()
-	os_lists = get_os_lists(filters, fiscal_year, month)
-	# frappe.throw("<pre>{}</pre>".format(frappe.as_json(os_lists)))
-	for osl in os_lists:
-		if filters.get("based_on") == "Dzongkhag":
-			rental_map.setdefault(osl.get("dzongkhag"), []).append(osl)
+	datas = frappe.db.sql(query, as_dict=True)
+	# frappe.msgprint(str(datas))
+	for d in datas:
+		# frappe.throw(str(datas))
+		if d.outstanding_amount <= 0:
+			bill = frappe.db.sql("""select p.payment_date, p.received_amount from 
+									`tabRental Bill` r
+									inner join `tabRental Payment Details`p
+									on p.parent=r.name
+									where r.name='{}'
+								""".format(d.name), as_dict=True)
+			for x in bill:
+				if str(x.payment_date) > str(filters.get("to_date")):
+					zero = one = two = above_one = balance = 0
+					count_days = date_diff(getdate(filters.get("to_date")), getdate(d.posting_date))
+					if cint(count_days) >= 0 and cint(count_days) <= 30:
+						zero = balance =x.received_amount
+					elif cint(count_days) >= 31 and cint(count_days) <= 90:
+						one = balance =x.received_amount
+					elif cint(count_days) >= 91 and cint(count_days) <= 365:
+						two = balance =x.received_amount
+					elif cint(count_days) > 365: #more the 1 year
+						above_one = balance =x.received_amount
+					row = {
+						"tenant": d.tenant,
+						"tenant_name": d.tenant_name,
+						"rental_bill_id": d.name,
+						"zero": zero,
+						"one": one,
+						"two":two,
+						"above_one":above_one,
+						"balance":balance,
+						"status": "Paid"
+					}
+					data.append(row)
 		else:
-			rental_map.setdefault(osl.get("tenant"), []).append(osl)
-
-	for key, value in rental_map.items():
-		if filters.get("based_on") == "Dzongkhag":
-			filter_data = frappe._dict({
-					"dzongkhag": key,
-					"employee_name": frappe.db.get_value("Employee", key, "employee_name"),
-				})
-		else:
-			filter_data = frappe._dict({
-					"tenant": key,
-					"tenant_name": frappe.db.get_value("Tenant Information", key, "tenant_name"),
-				})
-
-		filter_data.update({
-			"one_month_os": 0.0,
-			"two_to_three_month_os": 0.0,
-			"more_than_three_month_os": 0.0,
-			"above_one_year_os": 0.0,
-			"balance_os": 0.0
-		})
-
-		flag=0
-		for d in value:
-			count_days = date_diff(getdate(filters.get("date")), getdate(d.posting_date))
+			zero = one = two = above_one = balance = 0
+			count_days = date_diff(getdate(filters.get("to_date")), getdate(d.posting_date))
 			if cint(count_days) >= 0 and cint(count_days) <= 30:
-				flag=1
-				filter_data['one_month_os'] = flt(filter_data['one_month_os'] + d.outstanding_amount, 2)
+				zero = balance =d.outstanding_amount
 			elif cint(count_days) >= 31 and cint(count_days) <= 90:
-				flag=1
-				filter_data['two_to_three_month_os'] = flt(filter_data['two_to_three_month_os'] + d.outstanding_amount, 2)
+				one = balance =d.outstanding_amount
 			elif cint(count_days) >= 91 and cint(count_days) <= 365:
-				flag=1
-				filter_data['more_than_three_month_os'] = flt(filter_data['more_than_three_month_os'] + d.outstanding_amount, 2)
+				two = balance =d.outstanding_amount
 			elif cint(count_days) > 365: #more the 1 year
-				flag=1
-				filter_data['above_one_year_os'] = flt(filter_data['above_one_year_os'] + d.outstanding_amount, 2)
-
-			if flag:	
-				filter_data['balance_os'] = flt(filter_data['balance_os'] + d.outstanding_amount, 2)
-		data.append(filter_data)
-
+				above_one = balance =d.outstanding_amount
+			row = {
+				"tenant": d.tenant,
+				"tenant_name": d.tenant_name,
+				"rental_bill_id":d.name,
+				"zero": zero,
+				"one": one,
+				"two":two,
+				"above_one":above_one,
+				"balance":balance,
+				"status": "Unpaid"
+			}
+			data.append(row)
 	return data
+def get_conditions(filters):
+	conditions = ""
+	if filters.get("branch"):
+		conditions += """and branch ='{}'""".format(filters.get("branch"))
+	if filters.get("ministry_and_agency"):
+		conditions += """and ministry_agency ='{}'""".format(filters.get("ministry_and_agency"))
+	if filters.get("tenant"):
+		conditions += """and tenant ='{}'""".format(filters.get("tenant"))
+	return conditions, filters
 
-def get_os_lists(filters, fiscal_year, month):
-	cond = ''
-	if filters.get('based_on') == 'Tenant' and filters.get('dzongkhag'):
-		cond += " and dzongkhag='{}'".format(str(filters.get('dzongkhag')))
-	if filters.get('department'):
-		cond += " and tenant_department='{}'".format(filters.get("department"))
-
-	result = frappe.db.sql("""select * from `tabRental Bill` 
-		where docstatus=1 and gl_entry=1 and outstanding_amount > 0 and fiscal_year <= '{fiscal_year}' and month <= '{month}' {cond} order by tenant, posting_date""".format(fiscal_year=fiscal_year, month=month, cond=cond), as_dict=1)
-	return result
-
-def get_columns(filters):
-	if filters.get("based_on") == "Dzongkhag":
-		columns = [
-			{
-				"fieldname": "dzongkhag",
-				"label": "Dzongkhag",
-				"fieldtype": "Link",
-				"options": "Dzongkhag",
-				"width": 100
-			},
-		]
-	else:
-		columns = [
-			{
-				"fieldname": "tenant",
-				"label": "Tenant",
-				"fieldtype": "Link",
-				"options": "Tenant Information",
-				"width": 100
-			},
-			{
-				"fieldname": "tenant_name",
-				"label": "Tenant Name",
-				"fieldtype": "Data",
-				"width": 150
-			},
-		]
-	
-	columns.extend(
-		[	
-			{
-				"fieldname": "one_month_os",
-				"label": "0 to 30 Days",
-				"fieldtype": "Currency",
-				"width": 120
-			},
-			{
-				"fieldname": "two_to_three_month_os",
-				"label": "31 to 90 Days",
-				"fieldtype": "Currency",
-				"width": 120
-			},
-			{
-				"fieldname": "more_than_three_month_os",
-				"label": "91 to 365 Days",
-				"fieldtype": "Currency",
-				"width": 120
-			},
-			{
-				"fieldname": "above_one_year_os",
-				"label": "Above 1 Year",
-				"fieldtype": "Currency",
-				"width": 120
-			},
-			{
-				"fieldname": "balance_os",
-				"label": "Balance",
-				"fieldtype": "Currency",
-				"width": 120
-			},
-		]
-	)
-
-	return columns
 
