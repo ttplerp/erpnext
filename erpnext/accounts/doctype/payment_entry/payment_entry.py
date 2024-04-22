@@ -919,6 +919,11 @@ class PaymentEntry(AccountsController):
 
 	def add_tax_gl_entries(self, gl_entries):
 		for d in self.get("taxes"):
+			acc_type = frappe.db.get_value("Account", d.account_head)
+			party_type = party = ''
+			if acc_type in ('Payable', 'Receivable'):
+				party_type = self.party_type
+				party = self.party
 			account_currency = get_account_currency(d.account_head)
 			if account_currency != self.company_currency:
 				frappe.throw(_("Currency for {0} must be {1}").format(d.account_head, self.company_currency))
@@ -948,6 +953,8 @@ class PaymentEntry(AccountsController):
 						"cost_center": d.cost_center,
 						"post_net_value": True,
 						"business_activity": self.business_activity,
+						"party_type": party_type,
+						"party": party,
 					},
 					account_currency,
 					item=d,
