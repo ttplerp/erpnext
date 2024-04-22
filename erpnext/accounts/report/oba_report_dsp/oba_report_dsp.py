@@ -18,7 +18,7 @@ def get_data(filters):
 	if filters.get("account"):
 		cond=" and account in %(account)s"
 	
-	gl_entries = frappe.db.sql("""select posting_date,debit,credit,is_opening,party_type,party,cost_center,voucher_no from `tabGL Entry` where party_type='{0}' 
+	gl_entries = frappe.db.sql("""select posting_date,debit,credit,is_opening,party_type,party,cost_center,voucher_no from `tabGL Entry` where is_cancelled = 0 and party_type='{0}' 
 		and cost_center in (select name from `tabCost Center` where cost_center_for='{1}') and posting_date <= '{2}' {cond}""".format(filters.get("party_type"), filters.get('cost_center_for'), filters.get("to_date"), cond=cond),filters, as_dict=True)
 	
 	for gle in gl_entries:
