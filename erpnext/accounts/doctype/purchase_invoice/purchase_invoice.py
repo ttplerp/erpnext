@@ -1309,6 +1309,13 @@ class PurchaseInvoice(BuyingController):
 
 		for tax in self.get("taxes"):
 			amount, base_amount = self.get_tax_amounts(tax, None)
+			""" below added by Jai party party_type"""
+			acc_type = frappe.db.get_value("Account", tax.account_head, "account_type")
+			party_type = party = ''
+			if acc_type in ('Payable', 'Receivable'):
+				party_type = "Supplier"
+				party = self.supplier
+
 			if tax.category in ("Total", "Valuation and Total") and flt(base_amount):
 				account_currency = get_account_currency(tax.account_head)
 
@@ -1325,6 +1332,8 @@ class PurchaseInvoice(BuyingController):
 							else amount,
 							"cost_center": tax.cost_center,
 							"business_activity": self.business_activity,
+							"party_type": party_type,
+							"party": party,
 						},
 						account_currency,
 						item=tax,
