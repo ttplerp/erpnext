@@ -106,20 +106,22 @@ def get_data(query, filters):
             ad+=adjustment
 
     if filters.budget_against != "Project":	
-        row = {
-            "date":"",
-            "account": "Total",
-            "account_number":'',
-            "cost_center": "",
-            "initial": ini,
-            "supplementary": su,
-            "adjustment": ad,
-            "current":flt(ini)+flt(ad)+flt(su),
-            "committed": cm,
-            "consumed": co,
-            "available": flt(ini) + flt(ad) + flt(su) - flt(co) - flt(cm)
-        }
-        data.insert(0, row)
+        # this folling code is commented by rinzin as it gives wrong total and also not required
+        # row = {
+        #     "date":"",
+        #     "account": "Total",
+        #     "account_number":'',
+        #     "cost_center": "",
+        #     "initial": ini,
+        #     "supplementary": su,
+        #     "adjustment": ad,
+        #     "current":flt(ini)+flt(ad)+flt(su),
+        #     "committed": cm,
+        #     "consumed": co,
+        #     "available": flt(ini) + flt(ad) + flt(su) - flt(co) - flt(cm)
+        # }
+        # data.insert(0, row)
+        pass
     else:
         row = {
             "date":"",
