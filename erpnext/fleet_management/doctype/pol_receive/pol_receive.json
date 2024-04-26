@@ -407,6 +407,7 @@
    "fieldname": "party",
    "fieldtype": "Link",
    "label": "Party",
+   "mandatory_depends_on": "eval:doc.settle_imprest_advance",
    "options": "Employee"
   },
   {
@@ -512,7 +513,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-02-20 12:40:21.752436",
+ "modified": "2024-04-26 15:57:54.895844",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Receive",
