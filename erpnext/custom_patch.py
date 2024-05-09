@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 import frappe
+import erpnext
 from frappe import _
 from frappe.model.document import Document
 from frappe import msgprint
@@ -12,7 +13,37 @@ from datetime import timedelta, date,datetime
 import frappe.model.rename_doc as rd
 from frappe.model.rename_doc import rename_doc
 from erpnext.assets.doctype.asset.depreciation import make_depreciation_entry
+from erpnext.assets.doctype.asset_category.asset_category import get_asset_category_account
+from erpnext.budget.doctype.budget.budget import validate_expense_against_budget
 import csv
+
+def update_pp():
+	for a in frappe.db.sql("""
+					select name, programme, domain from `tabTraining Management`
+				""", as_dict=True):
+		#print(a.name, a.programme, a.domain)
+		doc = frappe.get_doc("Programme", a.programme)
+		if doc.domain != a.domain:
+			print(doc.domain, a.domain)
+		'''
+		frappe.db.sql("""update `tabTraining Management` 
+						set domain='{}', 
+						programme_classification='{}' 
+						where name='{}'
+					""".format(doc.domain, doc.programme_classification, a.name))
+		frappe.db.commit()
+		'''
+		
+def update_lo():
+	for a in frappe.db.sql("select name, lo_user, lo_name, lo_email, lo_mobile from `tabTraining Center`", as_dict=True):
+		doc = frappe.get_doc("Training Center", a.name)
+		doc.append("item",{
+					"user": a.lo_user,
+					"lo_name": a.lo_name,
+					"mobile_no": a.lo_mobile,
+					"email": a.lo_email
+				})
+		doc.save()
 
 def update_deployment():
 	for a in frappe.db.sql("""select name, deployment_title from `tabDeployment` where deployment_title like '%"%' """, as_dict=True):
@@ -621,3 +652,335 @@ def delete_cost_center():
 			frappe.db.commit()
 			c += 1
 	print("done")
+
+def cancel_asset_am_jv():
+	i=0
+	# for asset in frappe.get_list("Asset", filters={"is_existing_asset": 1, "posting_date":"2023-03-17", "owner":"pema.dhendup@thimphutechpark.bt"}):
+	# 	i+=1
+	# 	asset_name = str(asset.name)
+	# 	doc = frappe.get_doc("Asset Movement Item", {"asset":asset_name})
+	# 	if doc.parent:
+	# 		am_doc = frappe.get_doc("Asset Movement", doc.parent)
+	# 		am_doc.cancel()
+	# 		print("cancelled AM: " + am_doc.name)
+	# 		frappe.delete_doc("Asset Movement", am_doc.name)
+	# 		frappe.db.commit()
+
+	# 	for d in frappe.get_list("Journal Entry Account", filters={"reference_type":"Asset", "reference_name":asset_name}, fields=["parent"], distinct="parent"):
+	# 		if d.parent:
+	# 			jv_doc = frappe.get_doc("Journal Entry", d.parent)
+	# 			jv_doc.cancel()
+	# 			print("JV Cancelled: " + jv_doc.name)
+	# 			frappe.db.commit()
+
+	# 	asset_doc = frappe.get_doc("Asset", asset_name)
+	# 	asset_doc.cancel()
+	# 	frappe.db.commit()
+
+	# for jv in frappe.get_list("Journal Entry",  filters={"docstatus": 2, "posting_date":"2023-03-17", "owner":"pema.dhendup@thimphutechpark.bt"}):
+	# 	i+=1
+	# 	frappe.delete_doc("Journal Entry", jv.name)
+	# 	frappe.db.commit()
+
+	for asset in frappe.get_list("Asset", filters={"is_existing_asset": 1, "posting_date":"2023-03-17", "owner":"pema.dhendup@thimphutechpark.bt", "docstatus": 2}):
+		i += 1
+		# frappe.delete_doc("Asset", asset.name)
+		# frappe.db.commit()
+
+	print(i)
+
+def update_ba():
+	i=0
+	for a in frappe.db.sql("select * from `tabPol Advance` where docstatus=1 and is_opening=0", as_dict=True):
+		i+=1
+		# print(a.business_activity +" "+ a.journal_entry)
+		frappe.db.sql("update `tabJournal Entry Account` set business_activity='{}' where parent='{}'".format(a.business_activity, a.journal_entry))
+		if frappe.db.get_value("Journal Entry", a.journal_entry, "docstatus"):
+			# print("JE sumitted: " + a.journal_entry)
+			frappe.db.sql("update `tabCommitted Budget` set business_activity='{}' where reference_no='{}'".format(a.business_activity, a.journal_entry))
+			frappe.db.sql("update `tabConsumed Budget` set business_activity='{}' where reference_no='{}'".format(a.business_activity, a.journal_entry))
+			frappe.db.sql("update `tabGL Entry` set business_activity='{}' where voucher_no='{}'".format(a.business_activity, a.journal_entry))
+		print(i)
+
+def update_mr_ba():
+	i=0
+	for a in frappe.db.sql("select * from `tabMaterial Request` where branch='De-suung Headquarter'", as_dict=1):
+		i+=1
+		print(a.business_activity +" - "+ str(a.docstatus))
+		if a.docstatus == 1:
+			cb_name = frappe.db.get_value("Committed Budget", {"reference_no": a.name}, "name")
+			ba_activity = frappe.db.get_value("Committed Budget", {"reference_no": a.name}, "business_activity")
+			if cb_name and a.business_activity != ba_activity:
+				print(str(cb_name))
+				frappe.db.sql("update `tabCommitted Budget` set business_activity='{}' where reference_no='{}'".format(a.business_activity, a.name))
+				print(i)
+
+def update_pi_ba():
+	j=i=0
+	for a in frappe.db.sql("select * from `tabPurchase Invoice` where branch='De-suung Headquarter'", as_dict=1):
+		i+=1
+		print(a.business_activity +" - "+ str(a.docstatus))
+		if a.docstatus == 1:
+			cb_name = frappe.db.get_value("Consumed Budget", {"reference_no": a.name}, "name")
+			ba_activity = frappe.db.get_value("Consumed Budget", {"reference_no": a.name}, "business_activity")
+			if cb_name and a.business_activity != ba_activity:
+				j+=1
+				print(str(cb_name))
+				print("J- "+ str(j))
+				frappe.db.sql("update `tabCommitted Budget` set business_activity='{}' where reference_no='{}'".format(a.business_activity, a.name))
+				frappe.db.sql("update `tabConsumed Budget` set business_activity='{}' where reference_no='{}'".format(a.business_activity, a.name))
+		print(i)
+
+def cancel_payment_ledger():
+	i=0
+	for a in frappe.db.sql("select * from `tabPayment Ledger Entry` where voucher_no='JEJV230300053'", as_dict=1):
+		i += 1
+		# print(a.against_voucher_no)
+		doc = frappe.get_doc("Payment Ledger Entry", a.name)
+		doc.cancel()
+		frappe.db.commit()
+	print(i)
+
+def update_clearing_acc():
+	count=0
+	for d in frappe.db.sql("""select je.name jv_name, jea.account jea_account, jea.name jea_name from `tabJournal Entry` je, `tabJournal Entry Account` jea 
+			where jea.parent=je.name and je.voucher_type='Journal Entry' and jea.account = '116001 - Stock Assets - DS'
+			and exists (select 1 from tabAsset a where a.name = jea.reference_name and a.is_existing_asset=1) limit 1000""", as_dict=1):
+		print(d.jv_name, d.jea_name, d.jea_account)
+		count += 1
+		# frappe.db.sql("update `tabJournal Entry Account` set account='130001 - Clearing Account - DS' where name='{0}' and account='116001 - Stock Assets - DS' and parent='{1}'".format(d.jea_name, d.jv_name))
+		# frappe.db.sql("update `tabGL Entry` set account='130001 - Clearing Account - DS' where voucher_no='{0}' and account='116001 - Stock Assets - DS'".format(d.jv_name))
+
+	print(count)
+
+def update_budget_cc():
+	""" update journal entry trans """
+	count = 0
+	# for d in frappe.db.sql("select distinct reference_no from `tabCommitted Budget` where reference_type='Journal Entry' and cost_center='Other Domain - DS'", as_dict=1):
+	# 	frappe.db.sql("delete from `tabCommitted Budget` where reference_no='{}'".format(d.reference_no))
+	# 	frappe.db.sql("delete from `tabConsumed Budget` where reference_no='{}'".format(d.reference_no))
+	# 	for args in frappe.db.sql("select * from `tabJournal Entry Account` where parent='{}'".format(d.reference_no), as_dict=1):
+	# 		account_types = [d.account_type for d in frappe.get_all("Budget Settings Account Types", fields='account_type')]
+	# 		if frappe.db.get_value("Account", args.account, "account_type") in account_types:
+	# 			count += 1
+	# 			#Commit Budget
+	# 			cc_doc = frappe.get_doc("Cost Center", args.cost_center)
+	# 			budget_cost_center = cc_doc.budget_cost_center if cc_doc.use_budget_from_parent else args.cost_center
+				
+	# 			bud_obj = frappe.get_doc({
+	# 				"doctype": "Committed Budget",
+	# 				"account": args.account,
+	# 				"cost_center": budget_cost_center,
+	# 				"project": args.project,
+	# 				"reference_type": args.parenttype,
+	# 				"reference_no": args.parent,
+	# 				"reference_date": frappe.db.get_value("Journal Entry", args.parent, "posting_date"),
+	# 				"amount": flt(args.debit_in_account_currency) - flt(args.credit_in_account_currency),
+	# 				"company": 'De-suung',
+	# 				"closed": 1,
+	# 				"business_activity": args.business_activity,
+	# 			})
+	# 			bud_obj.flags.ignore_permissions=1
+	# 			bud_obj.submit()
+			
+	# 			#Consume Budget
+	# 			con_obj = frappe.get_doc({
+	# 				"doctype": "Consumed Budget",
+	# 				"account": args.account,
+	# 				"cost_center": budget_cost_center,
+	# 				"project": args.project,
+	# 				"reference_type": args.parenttype,
+	# 				"reference_no": args.parent,
+	# 				"reference_date": frappe.db.get_value("Journal Entry", args.parent, "posting_date"),
+	# 				"amount": flt(args.debit_in_account_currency) - flt(args.credit_in_account_currency),
+	# 				"company": 'De-suung',
+	# 				"com_ref": bud_obj.name,
+	# 				"business_activity": args.business_activity,
+	# 			})
+	# 			con_obj.flags.ignore_permissions=1
+	# 			con_obj.submit()
+	
+	""" update Purchase invoice trans """
+	# for a in frappe.db.sql("select distinct reference_no from `tabCommitted Budget` where reference_type='Purchase Invoice' ", as_dict=1):
+	# 	frappe.db.sql("delete from `tabCommitted Budget` where reference_no='{}'".format(a.reference_no))
+	# 	frappe.db.sql("delete from `tabConsumed Budget` where reference_no='{}'".format(a.reference_no))
+
+	# 	for item in frappe.db.sql("select * from `tabPurchase Invoice Item` where parent='{}'".format(a.reference_no), as_dict=1):
+	# 		bud_acc_dtl = frappe.get_doc("Account", item.expense_account)
+	# 		if bud_acc_dtl.account_type in ("Fixed Asset", "Expense Account"):
+	# 			count += 1
+	# 			cc_doc = frappe.get_doc("Cost Center", item.cost_center)
+	# 			budget_cost_center = cc_doc.budget_cost_center if cc_doc.use_budget_from_parent else item.cost_center
+
+	# 			bud_obj = frappe.get_doc({
+	# 				"doctype": "Committed Budget",
+	# 				"account": item.expense_account,
+	# 				"cost_center": budget_cost_center,
+	# 				"project": item.project,
+	# 				"reference_type": item.parenttype,
+	# 				"reference_no": item.parent,
+	# 				"reference_date": frappe.db.get_value("Purchase Invoice", item.parent,"posting_date"),
+	# 				"company": 'De-suung',
+	# 				"amount": flt(item.amount,2),
+	# 				"reference_id": item.name,
+	# 				"item_code": item.item_code,
+	# 				"closed":1,
+	# 				"business_activity": frappe.db.get_value("Purchase Invoice", item.parent,"business_activity"),
+	# 			})
+	# 			bud_obj.flags.ignore_permissions=1
+	# 			bud_obj.submit()
+	# 			commited_budget_id = bud_obj.name
+
+	# 			consume = frappe.get_doc({
+	# 				"doctype": "Consumed Budget",
+	# 				"account": item.expense_account,
+	# 				"cost_center": budget_cost_center,
+	# 				"project": item.project,
+	# 				"reference_type": item.parenttype,
+	# 				"reference_no": item.parent,
+	# 				"reference_date": frappe.db.get_value("Purchase Invoice", item.parent,"posting_date"),
+	# 				"company": 'De-suung',
+	# 				"amount": flt(item.amount,2),
+	# 				"reference_id": item.name,
+	# 				"item_code": item.item_code,
+	# 				"com_ref": commited_budget_id,
+	# 				"business_activity": frappe.db.get_value("Purchase Invoice", item.parent,"business_activity"),
+	# 			})
+	# 			consume.flags.ignore_permissions=1
+	# 			consume.submit()
+
+	""" MR """
+	for a in frappe.db.sql("select distinct reference_no from `tabCommitted Budget` where reference_type='Material Request' and cost_center='Other Domain - DS'", as_dict=1):
+		cc_doc = frappe.get_doc("Cost Center", frappe.db.get_value("Material Request",a.reference_no, "cost_center"))
+		budget_cost_center = cc_doc.budget_cost_center
+
+		for d in frappe.db.sql("select * from `tabCommitted Budget` where reference_no='{}'".format(a.reference_no), as_dict=1):
+			frappe.db.sql("update `tabCommitted Budget` set cost_center='{0}' where name='{1}'".format(budget_cost_center, d.name))
+			if frappe.db.get_value("Consumed Budget", {"com_ref": d.name}, "docstatus"):
+				con_id = frappe.db.get_value("Consumed Budget", {"com_ref": d.name}, "name")
+				frappe.db.sql("update `tabConsumed Budget` set cost_center='{0}' where name='{1}'".format(budget_cost_center, con_id))
+		print(budget_cost_center)
+		count += 1
+	print(count)
+	
+def delete_consumed_bud():
+	count = 0
+	for a in frappe.db.sql("select distinct(pi.name) as pi_name from `tabPurchase Invoice` pi where docstatus=2 and exists (select 1 from `tabConsumed Budget` where reference_type='Purchase Invoice' and reference_no=pi.name)", as_dict=1):
+		count += 1
+		# print(str(a.pi_name))
+		frappe.db.sql("delete from `tabConsumed Budget` where reference_type='Purchase Invoice' and reference_no='{}'".format(str(a.pi_name)))
+	print(count)
+
+def consume_budget():
+	self = frappe.get_doc("Purchase Invoice", "PI23070015")
+	for item in self.get("items"):
+		# print(item.item_code)
+		expense, cost_center = item.expense_account, item.cost_center
+		if item.po_detail:
+			expense, cost_center = frappe.db.get_value("Purchase Order Item", item.po_detail, ["expense_account", "cost_center"])
+		else:
+			if frappe.db.get_value("Item", item.item_code, "is_fixed_asset"):
+				expense = get_asset_category_account('fixed_asset_account', item=item.item_code,
+																company=self.company)
+		budget_cost_center = budget_account = ""
+		bud_acc_dtl = frappe.get_doc("Account", expense)
+		if bud_acc_dtl.centralized_budget:
+			budget_cost_center = bud_acc_dtl.cost_center
+		else:
+			#check Budget Cost for child cost centers
+			cc_doc = frappe.get_doc("Cost Center", cost_center)
+			budget_cost_center = cc_doc.budget_cost_center if cc_doc.use_budget_from_parent else cost_center
+		if expense:
+			if bud_acc_dtl.account_type in ("Fixed Asset", "Expense Account"):
+				reference_date = commited_budget_id = None
+				amount = item.base_net_amount if flt(item.base_net_amount,2) else flt(item.base_amount,2)
+				if frappe.db.get_single_value("Budget Settings", "budget_commit_on") == "Material Request":
+					mr_name = frappe.db.get_value("Purchase Order Item", {"parent":item.purchase_order, "item_code":item.item_code}, "material_request")
+					mr_child_id = frappe.db.get_value("Material Request Item", {"parent": mr_name, "item_code": item.item_code}, "name")
+					if mr_name:
+						reference_date = frappe.db.get_value("Material Request", mr_name, "transaction_date") if mr_name else self.posting_date
+						commited_budget_id = frappe.db.get_value("Committed Budget", {"reference_type":"Material Request", "reference_no": mr_name, "reference_id": mr_child_id}, "name")
+				else:
+					reference_date = frappe.db.get_value("Purchase Order", item.purchase_order, "transaction_date") if item.purchase_order else self.posting_date
+					commited_budget_id = frappe.db.get_value("Committed Budget", {"reference_type":"Purchase Order", "reference_no":item.purchase_order, "reference_id":item.po_detail},"name")
+				args = frappe._dict({
+						"account": expense,
+						"cost_center": budget_cost_center,
+						"project": item.project,
+						"posting_date": self.posting_date,
+						"company": self.company,
+						"amount": flt(amount,2),
+						"business_activity": self.business_activity,
+					})
+				if not commited_budget_id:					
+					validate_expense_against_budget(args)
+					#Commit Budget
+					bud_obj = frappe.get_doc({
+						"doctype": "Committed Budget",
+						"account": expense,
+						"cost_center": budget_cost_center,
+						"project": item.project,
+						"reference_type": self.doctype,
+						"reference_no": self.name,
+						"reference_date": self.posting_date,
+						"company": self.company,
+						"amount": flt(amount,2),
+						"reference_id": item.name,
+						"item_code": item.item_code,
+						"company": self.company,
+						"closed":1,
+						"business_activity": self.business_activity,
+					})
+					bud_obj.flags.ignore_permissions=1
+					bud_obj.submit()
+					commited_budget_id = bud_obj.name
+
+				consume = frappe.get_doc({
+					"doctype": "Consumed Budget",
+					"account": expense,
+					"cost_center": budget_cost_center,
+					"project": item.project,
+					"reference_type": self.doctype,
+					"reference_no": self.name,
+					"reference_date": reference_date if reference_date else self.posting_date,
+					"company": self.company,
+					"amount": flt(amount,2),
+					"reference_id": item.name,
+					"item_code": item.item_code,
+					"com_ref": commited_budget_id,
+					"business_activity": self.business_activity,
+				})
+				consume.flags.ignore_permissions=1
+				consume.submit()
+				com_doc = frappe.get_doc("Committed Budget", commited_budget_id)
+				if amount == com_doc.amount and not com_doc.closed:
+					frappe.db.sql("update `tabCommitted Budget` set closed = 1 where name = '{}'".format(commited_budget_id))
+
+				print("commited id: " + str(commited_budget_id) + ":" + "consumed id: " + str(consume.name))
+
+def consumed_budget_jv():
+	doc = frappe.get_doc("Journal Entry", "JEBP230900118")
+	doc.make_gl_entries()
+	frappe.db.commit()
+
+def create_asset_received():
+	doc = frappe.get_doc("Purchase Receipt", "PR23080001")
+	# doc.update_asset_receive_entries()
+	doc.update_stock_ledger()
+	doc.make_gl_entries()
+	frappe.db.commit()
+	print("Done")
+
+def update_gl_240422():
+	pass
+	li = ['SEMR23090003', "SEMR23080019", "SEMR23090016", "SEMI23090228","SEMR23090014-1","SEMI23090152-1","SEMR23090004","SEMI23080409-1","SEMI23080496","SEMR23090007-1","SEMR23070005","SEMR23060002-1","SEMR23040009","SEMR23040008","SEMI23030654-2","SEMI23030384-4","SEMR23030004","SEMI23030481"]
+	for a in li:
+		frappe.db.sql("delete from `tabGL Entry` where voucher_no='{}'".format(a))
+		doc = frappe.get_doc("Stock Entry", a)
+		doc.make_gl_entries()
+	print('Done')
+
+def update_cid_did_training():
+	for a in frappe.db.sql("select name, desuup_id, desuup_cid from `tabTrainee Details` where desuup_cid like 'DS%'", as_dict=True):
+		frappe.db.sql("update `tabTrainee Details` set desuup_id='{}', desuup_cid='{}' where name='{}'".format(a.desuup_cid, a.desuup_id, a.name))
+		print(str(a.name)+' '+str(a.desuup_id)+' '+str(a.desuup_cid))

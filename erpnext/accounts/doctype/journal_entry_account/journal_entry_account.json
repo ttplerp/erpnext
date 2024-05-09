@@ -48,7 +48,13 @@
   "col_break3",
   "is_advance",
   "user_remark",
-  "against_account"
+  "against_account",
+  "epayment_beneficiary_details_section",
+  "beneficiary_type",
+  "column_break_45",
+  "beneficiary",
+  "invoice_number",
+  "invoice_date"
  ],
  "fields": [
   {
@@ -368,12 +374,48 @@
    "fieldtype": "Link",
    "label": "Business Activity",
    "options": "Business Activity"
+  },
+  {
+   "depends_on": "eval:doc.account_type != \"Bank\"",
+   "fieldname": "epayment_beneficiary_details_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "ePayment Beneficiary Details"
+  },
+  {
+   "allow_on_submit": 1,
+   "description": "<b>Select the following to make payment to: </b><br>\n<i>Employee - Individual employee<br>\nSupplier - Vendor <br>\nBranch - Branch Imprest Bank Account <br>\nAccount - Bank Accounts maintain in COA</i>",
+   "fieldname": "beneficiary_type",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Beneficiary Type",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "column_break_45",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "beneficiary",
+   "fieldtype": "Dynamic Link",
+   "label": "Beneficiary",
+   "options": "beneficiary_type"
+  },
+  {
+   "fieldname": "invoice_number",
+   "fieldtype": "Data",
+   "label": "Bill / Invoice number"
+  },
+  {
+   "fieldname": "invoice_date",
+   "fieldtype": "Data",
+   "label": "Bill / Invoice date"
   }
  ],
  "idx": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-04-23 18:22:35.143439",
+ "modified": "2024-05-07 14:34:34.850821",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry Account",

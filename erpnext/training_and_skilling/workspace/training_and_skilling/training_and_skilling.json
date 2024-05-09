@@ -61,34 +61,6 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Report",
-   "link_count": 2,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Deployment Report",
-   "link_count": 0,
-   "link_to": "Deployment Report",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Training Selection Report",
-   "link_count": 0,
-   "link_to": "Training Selection Report",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Deployment Record",
    "link_count": 4,
    "onboard": 0,
@@ -229,9 +201,77 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Report",
+   "link_count": 6,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Deployment Report",
+   "link_count": 0,
+   "link_to": "Deployment Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Training Selection Report",
+   "link_count": 0,
+   "link_to": "Training Selection Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Desuups Completed Programmes by Domain",
+   "link_count": 0,
+   "link_to": "Desuups Completed Programmes by Domain",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Number Of Programme Attended",
+   "link_count": 0,
+   "link_to": "Number Of Programme Attended",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Training Detail Report",
+   "link_count": 0,
+   "link_to": "Desuung Undergone DSP",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Total Desuups by Programme Status",
+   "link_count": 0,
+   "link_to": "Total Desuups by Programme Status",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-06-14 07:16:37.507569",
+ "modified": "2024-05-01 14:28:44.623237",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training And Skilling",
@@ -246,7 +286,7 @@
    "color": "Grey",
    "doc_view": "List",
    "label": "Dashboard",
-   "link_to": "Training and Skilling",
+   "link_to": "DSP Dashboard",
    "type": "Dashboard"
   }
  ],

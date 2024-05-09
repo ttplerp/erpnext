@@ -18,9 +18,10 @@
   "process_deferred_accounting",
   "reversal_of",
   "column_break1",
+  "posting_date",
+  "mode_of_payment",
   "from_template",
   "company",
-  "posting_date",
   "apply_tds",
   "tax_withholding_category",
   "2_add_edit_gl_entries",
@@ -61,13 +62,14 @@
   "letter_head",
   "select_print_heading",
   "addtional_info",
-  "mode_of_payment",
   "payment_order",
+  "payment_status",
   "column_break3",
   "is_opening",
   "stock_entry",
   "subscription_section",
   "auto_repeat",
+  "bank_payment",
   "amended_from"
  ],
  "fields": [
@@ -86,14 +88,13 @@
    "print_hide": 1
   },
   {
-   "default": "Journal Entry",
    "fieldname": "voucher_type",
    "fieldtype": "Select",
    "in_standard_filter": 1,
    "label": "Entry Type",
    "oldfieldname": "voucher_type",
    "oldfieldtype": "Select",
-   "options": "Journal Entry\nBank Entry\nCash Entry\nContra Entry\nOpening Entry\nDepreciation Entry",
+   "options": "\nJournal Entry\nBank Entry\nCash Entry\nContra Entry\nOpening Entry\nDepreciation Entry",
    "reqd": 1,
    "search_index": 1
   },
@@ -572,13 +573,28 @@
    "fieldtype": "HTML",
    "label": "TDS Table",
    "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "bank_payment",
+   "fieldtype": "Link",
+   "label": "Bank Payment",
+   "options": "Bank Payment",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "payment_status",
+   "fieldtype": "Data",
+   "label": "Payment Status",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 176,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-24 22:10:40.993099",
+ "modified": "2024-05-09 11:32:46.529546",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",
@@ -631,6 +647,18 @@
    "report": 1,
    "role": "Maintenance Manager",
    "share": 1
+  },
+  {
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "permlevel": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "write": 1
   }
  ],
  "search_fields": "voucher_type,posting_date, due_date, cheque_no",

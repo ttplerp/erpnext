@@ -21,7 +21,9 @@
   "sb_accounts_settings",
   "expense_bank_account",
   "column_break_11",
-  "revenue_bank_account"
+  "revenue_bank_account",
+  "epayment_bank_accounts_section",
+  "branch_bank_account"
  ],
  "fields": [
   {
@@ -111,12 +113,22 @@
    "label": "For DSP/DHQ",
    "options": "\nDSP\nDHQ",
    "read_only": 1
+  },
+  {
+   "fieldname": "epayment_bank_accounts_section",
+   "fieldtype": "Section Break",
+   "label": "ePayment Bank Accounts"
+  },
+  {
+   "fieldname": "branch_bank_account",
+   "fieldtype": "Table",
+   "options": "Branch Bank Account"
   }
  ],
  "icon": "fa fa-code-fork",
  "idx": 1,
  "links": [],
- "modified": "2023-01-26 22:53:11.930261",
+ "modified": "2024-05-06 11:01:01.489537",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Branch",

@@ -17,7 +17,11 @@
   "disabled",
   "lft",
   "rgt",
-  "old_parent"
+  "old_parent",
+  "approver_details_section",
+  "approver",
+  "column_break_14",
+  "approver_name"
  ],
  "fields": [
   {
@@ -97,13 +101,35 @@
    "fieldname": "is_section",
    "fieldtype": "Check",
    "label": "Is Section"
+  },
+  {
+   "fieldname": "approver_details_section",
+   "fieldtype": "Section Break",
+   "label": "Approver Details"
+  },
+  {
+   "fieldname": "approver",
+   "fieldtype": "Link",
+   "label": "Approver",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "column_break_14",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "approver.employee_name",
+   "fieldname": "approver_name",
+   "fieldtype": "Data",
+   "label": "Approver Name",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-sitemap",
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2022-09-13 16:35:24.827699",
+ "modified": "2024-05-09 14:39:25.671955",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Department",

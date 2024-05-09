@@ -28,7 +28,7 @@
   }
  ],
  "links": [],
- "modified": "2022-09-24 20:38:08.258341",
+ "modified": "2024-05-07 11:03:33.418413",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Bank Account Type",
@@ -73,6 +73,7 @@
   }
  ],
  "quick_entry": 1,
+ "search_fields": "description",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

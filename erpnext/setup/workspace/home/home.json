@@ -17,7 +17,7 @@
    "label": "Employees by Branch"
   }
  ],
- "content": "[{\"type\":\"chart\",\"data\":{\"chart_name\":\"Employees by Branch\",\"col\":12}},{\"type\":\"chart\",\"data\":{\"chart_name\":\"Employees by Grade\",\"col\":12}},{\"type\":\"chart\",\"data\":{\"chart_name\":\"Department Wise Employee Count\",\"col\":12}},{\"type\":\"chart\",\"data\":{\"chart_name\":\"Profit and Loss\",\"col\":12}}]",
+ "content": "[{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"DSP Dashboard\",\"col\":3}},{\"type\":\"chart\",\"data\":{\"chart_name\":\"Employees by Branch\",\"col\":12}},{\"type\":\"chart\",\"data\":{\"chart_name\":\"Employees by Grade\",\"col\":12}},{\"type\":\"chart\",\"data\":{\"chart_name\":\"Department Wise Employee Count\",\"col\":12}},{\"type\":\"chart\",\"data\":{\"chart_name\":\"Profit and Loss\",\"col\":12}}]",
  "creation": "2020-01-23 13:46:38.833076",
  "docstatus": 0,
  "doctype": "Workspace",
@@ -171,7 +171,7 @@
    "type": "Link"
   }
  ],
- "modified": "2023-01-13 10:59:15.019819",
+ "modified": "2024-05-01 14:28:43.210631",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Home",
@@ -182,6 +182,14 @@
  "restrict_to_domain": "",
  "roles": [],
  "sequence_id": 1.0,
- "shortcuts": [],
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "DSP Dashboard",
+   "link_to": "DSP Dashboard",
+   "type": "Dashboard"
+  }
+ ],
  "title": "Home"
 }
