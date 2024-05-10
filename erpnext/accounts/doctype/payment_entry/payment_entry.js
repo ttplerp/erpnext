@@ -1467,7 +1467,7 @@ frappe.ui.form.on('Payment Entry', {
 var create_custom_buttons = function(frm){
 	var status = ["Failed", "Upload Failed", "Cancelled", "Payment Failed", "Payment Cancelled"];
 
-	if(frm.doc.docstatus == 1 && frm.doc.payment_type == "Pay" && frm.doc.party_type == 'Supplier' && frm.doc.mode_of_payment == "ePayment"){
+	if(frm.doc.docstatus == 1 && frm.doc.payment_type == "Pay" && frm.doc.party_type == 'Supplier' && frm.doc.mode_of_payment == "ePayment" && frm.doc.payment_status != "Payment Successful"){
 		if(!frm.doc.bank_payment || status.includes(frm.doc.payment_status) ){
 			frm.page.set_primary_action(__('Process Payment'), () => {
 				frappe.model.open_mapped_doc({
