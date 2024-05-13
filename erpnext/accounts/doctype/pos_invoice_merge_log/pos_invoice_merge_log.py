@@ -198,6 +198,10 @@ class POSInvoiceMergeLog(Document):
 						pay.base_amount = flt(pay.base_amount) + flt(payment.base_amount)
 						found = True
 				if not found:
+					""" Jai """
+					if payment.mode_of_payment == 'Online':
+						pos_f = frappe.db.get_value("POS Invoice", payment.parent, "pos_profile")
+						payment.account = frappe.db.get_value("POS Profile", pos_f, "bank_account")
 					payments.append(payment)
 
 			rounding_adjustment += doc.rounding_adjustment
