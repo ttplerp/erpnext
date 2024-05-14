@@ -77,13 +77,13 @@
    "depends_on": "eval:doc.type == \"Common\"",
    "fieldname": "expense_limit",
    "fieldtype": "Currency",
-   "label": "Expense Limit",
+   "label": "Advance Limit",
    "mandatory_depends_on": "eval:doc.type == \"Common\""
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-02-10 13:41:25.800875",
+ "modified": "2023-12-07 16:07:52.564232",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Fuelbook",

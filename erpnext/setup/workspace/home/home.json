@@ -5,14 +5,16 @@
    "label": "Employee Leave Balance"
   }
  ],
- "content": "[{\"type\":\"header\",\"data\":{\"text\":\"<br>\",\"col\":12}},{\"type\":\"chart\",\"data\":{\"chart_name\":\"Employee Leave Balance\",\"col\":12}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Human Resource</b></span>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Employee Self Services\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Other Transaction\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}}]",
+ "content": "[{\"id\":\"On0_Imh0Dm\",\"type\":\"header\",\"data\":{\"text\":\"<br>\",\"col\":12}},{\"id\":\"QAUGonGBy8\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Employee Leave Balance\",\"col\":12}},{\"id\":\"gsRiswdOKl\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Human Resource</b></span>\",\"col\":12}},{\"id\":\"6UAn5i7OtU\",\"type\":\"card\",\"data\":{\"card_name\":\"Employee Self Services\",\"col\":4}},{\"id\":\"euFqQFf15f\",\"type\":\"card\",\"data\":{\"card_name\":\"Other Transaction\",\"col\":4}},{\"id\":\"30VgNeZagL\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}}]",
  "creation": "2020-01-23 13:46:38.833076",
+ "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
  "for_user": "",
  "hide_custom": 0,
  "icon": "getting-started",
  "idx": 0,
+ "is_hidden": 0,
  "label": "Home",
  "links": [
   {
@@ -317,10 +319,11 @@
    "type": "Link"
   }
  ],
- "modified": "2022-12-15 17:11:01.903199",
+ "modified": "2024-05-13 16:10:56.609972",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Home",
+ "number_cards": [],
  "owner": "Administrator",
  "parent_page": "",
  "public": 1,

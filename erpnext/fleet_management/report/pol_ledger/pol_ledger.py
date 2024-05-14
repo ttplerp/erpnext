@@ -49,7 +49,7 @@ def get_data(filters=None):
 		else:
 			balance = 0
 		if eq.type == "Issue":
-			trans_qty = eq.qty*-1
+			trans_qty = -eq.qty
 		else:
 			trans_qty = eq.qty
 

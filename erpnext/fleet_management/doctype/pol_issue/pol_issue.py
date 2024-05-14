@@ -6,13 +6,8 @@ from frappe.model.document import Document
 from erpnext.custom_utils import check_future_date
 from frappe.utils import flt, cint
 from erpnext.controllers.stock_controller import StockController
-from erpnext.fleet_management.fleet_utils import get_pol_till, get_previous_km
-from erpnext.accounts.general_ledger import (
-	get_round_off_account_and_cost_center,
-	make_gl_entries,
-	make_reverse_gl_entries,
-	merge_similar_entries,
-)
+from erpnext.fleet_management.fleet_utils import get_pol_till, get_pol_till, get_previous_km
+
 class POLIssue(StockController):
 	def __init__(self, *args, **kwargs):
 		super(POLIssue, self).__init__(*args, **kwargs)
@@ -20,7 +15,6 @@ class POLIssue(StockController):
 		check_future_date(self.posting_date)
 		self.validate_uom_is_integer("stock_uom", "qty")
 		self.update_items()
-		self.validate_duplicate_equipment()
 		self.validate_data()
 	
 	def validate_data(self):
@@ -68,49 +62,12 @@ class POLIssue(StockController):
 		self.total_quantity = total_quantity
 	
 	def on_submit(self):
-		self.validate_duplicate_equipment()
 		self.check_tanker_hsd_balance()
 		self.make_pol_entry()
-		self.make_gl_entries()
-	def on_cancel(self):
-		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry", "POL Entry")
-		self.delete_pol_entry()
-		self.make_gl_entries()
-	def make_gl_entries(self):
-		expense_account = frappe.db.get_value("Company", self.company,'pol_expense_account')
-		gl_entries=[]
-		for d in self.items:
-			party = frappe.db.get_value("Fuelbook", d.fuelbook,"supplier")
-			pol_expense_account = frappe.db.get_value("Equipment Category", d.equipment_category,"pol_expense_account")
-			gl_entries.append(
-				self.get_gl_dict({
-					"account": pol_expense_account,
-					"debit": d.amount,
-					"debit_in_account_currency": d.amount,
-					"against_voucher": self.name,
-					"party_type": "Supplier",
-					"party": party,
-					"against_voucher_type": self.doctype,
-					"cost_center": d.cost_center,
-					"voucher_type":self.doctype,
-					"voucher_no":self.name
-				}))
-			gl_entries.append(
-				self.get_gl_dict({
-					"account": expense_account,
-					"credit": d.amount,
-					"credit_in_account_currency": d.amount,
-					"against_voucher": self.name,
-					"party_type": "Supplier",
-					"party": party,
-					"against_voucher_type": self.doctype,
-					"cost_center": d.cost_center,
-					"voucher_type":self.doctype,
-					"voucher_no":self.name
-				}))
-		gl_entries = merge_similar_entries(gl_entries)
-		make_gl_entries(gl_entries,update_outstanding="No",cancel=self.docstatus == 2)
 
+	def on_cancel(self):
+		self.delete_pol_entry()
+	
 	def check_tanker_hsd_balance(self):
 		if not self.tanker:
 			return
@@ -136,13 +93,13 @@ class POLIssue(StockController):
 			con1.is_opening = 0
 			con1.cost_center = self.cost_center
 			con1.submit()
+		
 		for item in self.items:
 			con = frappe.new_doc("POL Entry")
 			con.flags.ignore_permissions = 1	
 			con.equipment = item.equipment
 			con.pol_type = self.pol_type
 			con.branch = self.branch
-			con.cost_center = item.cost_center
 			con.posting_date = self.posting_date
 			con.posting_time = self.posting_time
 			con.qty = item.qty
@@ -153,28 +110,18 @@ class POLIssue(StockController):
 			con.cost_center = self.cost_center
 			con.current_km = item.cur_km_reading
 			con.mileage = item.mileage
-			con.km_difference = item.km_difference
 			con.type = "Receive"
-			con.rate = item.rate
-			con.amount = item.amount
-			con.fuelbook = item.fuelbook
-			con.submit() 
+			con.submit()
 
 	def delete_pol_entry(self):
 		frappe.db.sql("delete from `tabPOL Entry` where reference = %s", self.name)
-	def validate_duplicate_equipment(self):
-		for a in self.items:
-			for b in self.items:
-				if a.idx != b.idx:
-					if a.equipment == b.equipment and a.equipment_category == b.equipment_category:
-						frappe.throw("duplicate equipment {0} at row {1} and row {2}".format(a.equipment,a.idx,b.idx))
 
 	def update_items(self):
 		for a in self.items:
 			# item code 
 			a.item_code = self.pol_type
 			# cost center
-			# a.cost_center = self.cost_center		
+			a.cost_center = self.cost_center		
 			# Warehouse
 			a.warehouse = self.warehouse
 			# Expense Account

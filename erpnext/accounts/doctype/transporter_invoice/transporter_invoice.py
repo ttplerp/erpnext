@@ -6,7 +6,6 @@ from frappe import _, qb, throw, msgprint
 from erpnext.custom_utils import check_future_date
 from erpnext.controllers.accounts_controller import AccountsController
 from pypika import Case, functions as fn
-from erpnext.production.doctype.transporter_rate.transporter_rate import get_transporter_rate
 from frappe.utils import flt, cint, money_in_words
 from erpnext.accounts.utils import get_tds_account,get_account_type
 from erpnext.accounts.general_ledger import (

@@ -16,8 +16,8 @@ class RepairAndServices(StockController):
 		super(RepairAndServices, self).__init__(*args, **kwargs)
 
 	def validate(self):
-		if cint(self.out_source) == 1:
-			validate_workflow_states(self)
+		# if cint(self.out_source) == 1:
+		# 	validate_workflow_states(self)
 		check_future_date(self.posting_date)
 		if not self.posting_time:
 			self.posting_time = nowtime()
@@ -222,6 +222,4 @@ def get_permission_query_conditions(user):
 			and ab.employee = e.name
 			and bi.parent = ab.name
 			and bi.branch = `tabRepair And Services`.branch)
-		or 
-		(`tabRepair And Services`.approver = '{user}' and `tabRepair And Services`.workflow_state not in  ('Draft','Approved','Rejected','Cancelled'))
 	)""".format(user=user)

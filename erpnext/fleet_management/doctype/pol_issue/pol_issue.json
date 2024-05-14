@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "POLI.-.YY.-.MM.-.DD.-.###",
+ "autoname": "format:POLI-{YY}-{MM}-{DD}-{###}",
  "creation": "2022-10-24 13:33:04.821483",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -31,8 +31,6 @@
   {
    "fieldname": "branch",
    "fieldtype": "Link",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
    "label": "Branch",
    "options": "Branch",
    "reqd": 1
@@ -75,8 +73,6 @@
   {
    "fieldname": "pol_type",
    "fieldtype": "Link",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
    "label": "POL Item Code",
    "options": "Item",
    "reqd": 1
@@ -101,10 +97,8 @@
    "fieldname": "tanker",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "in_standard_filter": 1,
    "label": "Tanker",
-   "options": "Equipment",
-   "reqd": 1
+   "options": "Equipment"
   },
   {
    "fetch_from": "branch.cost_center",
@@ -134,7 +128,6 @@
    "label": "POL Issue Details"
   },
   {
-   "allow_bulk_edit": 1,
    "fieldname": "items",
    "fieldtype": "Table",
    "label": "Items",
@@ -159,11 +152,11 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-26 11:33:02.654790",
+ "modified": "2023-12-07 16:08:03.892368",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Issue",
- "naming_rule": "Expression (old style)",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {

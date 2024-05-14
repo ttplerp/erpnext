@@ -27,19 +27,19 @@ class VehicleRequest(Document):
 
 	def check_duplicate_entry(self):
 		data = frappe.db.sql("""
-			SELECT vehicle
+			SELECT vehicle, employee
 			FROM `tabVehicle Request`
 			WHERE vehicle = '{0}'
-			AND docstatus = 1
-			AND (from_date BETWEEN '{1}' AND '{2}'
-				OR to_date BETWEEN '{1}' AND '{2}')
-		""".format(self.vehicle,self.from_date,self.to_date),as_dict=1)
+			AND docstatus = 1 AND status = 'Booked'
+		""".format(self.vehicle), as_dict=1)
+		
 		if data:
-			frappe.throw("Vehicle <b>{}</b> is already booked".format(self.vehicle_number))
+			frappe.throw("Vehicle <b>{}</b> is already booked by Employee <b>{}</b>".format(self.vehicle_number, data[0].employee))
 
 	def check_vehicle(self):
 		if not self.vehicle:
 			frappe.throw("Vehicle is Mandatory")
+	
 	def calculate_time(self):
 		time = time_diff(self.to_date, self.from_date)
 		self.total_days_and_hours=time
@@ -53,11 +53,17 @@ class VehicleRequest(Document):
 	def  check_date(self):
 		if self.from_date > self.to_date:
 			frappe.throw("From Date cannot be before than To Date")
+	
+	@frappe.whitelist()
+	def open_the_vehicle_for_booking(self):
+		if self.docstatus == 1 and self.status == "Booked":
+			self.db_set("status", "Closed")
 
 @frappe.whitelist()  
 def check_form_date_and_to_date(from_date, to_date):
 	if from_date > to_date:
 		frappe.throw("From Date cannot be before than To Date")
+
 @frappe.whitelist()
 def create_logbook(source_name, target_doc=None):
 	doclist = get_mapped_doc("Vehicle Request", source_name, {
@@ -81,7 +87,7 @@ def get_previous_km(vehicle, vehicle_number):
 def create_vr_extension(source_name, target_doc=None):
 	doclist = get_mapped_doc("Vehicle Request", source_name, {
 		"Vehicle Request": {
-			"doctype": "Vechicle Request Extension",
+			"doctype": "Vehicle Request Extension",
 			"field_map": {
 				"vehicle_request": "name",
 				"from_date":"from_date",
@@ -98,7 +104,11 @@ def get_permission_query_conditions(user):
 
 	if user == "Administrator" or "System Manager" in user_roles: 
 		return
-	if "ADM User" in user_roles or  "Branch Manager" in user_roles or "Fleet Manager" in user_roles:
+		
+	if "Fleet Manager" in user_roles:
+		return
+
+	if "ADM User" in user_roles or "Fleet User" in user_roles:
 		return """(
 			exists(select 1
 				from `tabEmployee` as e

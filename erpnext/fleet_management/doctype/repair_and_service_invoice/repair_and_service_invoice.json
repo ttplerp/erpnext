@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "RSI.-.YY.-.MM.-.DD.-.###",
+ "autoname": "format:R&SI-{YY}-{MM}-{DD}-{###}",
  "creation": "2022-10-28 12:22:53.086162",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -20,10 +20,6 @@
   "party_type",
   "party",
   "credit_account",
-  "tds_details_section",
-  "tds_percent",
-  "column_break_16",
-  "tds_account",
   "section_break_2",
   "items",
   "checked_by",
@@ -31,7 +27,6 @@
   "total_amount",
   "grand_total",
   "column_break_34",
-  "tds_amount",
   "outstanding_amount",
   "section_break_5",
   "repair_and_services_date",
@@ -114,7 +109,7 @@
   {
    "fieldname": "total_amount",
    "fieldtype": "Currency",
-   "label": "Net Amount",
+   "label": "Total Amount",
    "read_only": 1
   },
   {
@@ -285,44 +280,16 @@
    "fieldtype": "Date",
    "label": "Bill Date",
    "reqd": 1
-  },
-  {
-   "fieldname": "tds_details_section",
-   "fieldtype": "Section Break",
-   "label": "TDS Details"
-  },
-  {
-   "fieldname": "tds_percent",
-   "fieldtype": "Select",
-   "label": "TDS Percent",
-   "options": "\n2\n3\n5\n10"
-  },
-  {
-   "fieldname": "column_break_16",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "tds_account",
-   "fieldtype": "Link",
-   "label": "TDS Account",
-   "options": "Account",
-   "read_only": 1
-  },
-  {
-   "fieldname": "tds_amount",
-   "fieldtype": "Currency",
-   "label": "TDS Amount",
-   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-11-16 10:05:58.885206",
+ "modified": "2023-12-07 16:07:47.848089",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Repair And Service Invoice",
- "naming_rule": "Expression (old style)",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
@@ -366,5 +333,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }

@@ -3,38 +3,51 @@
 
 frappe.ui.form.on('Vehicle Request', {
 	refresh: function (frm) {
-        if(frm.doc.workflow_state == "Waiting MTO Approval" || frm.doc.workflow_state == "Approved"){
-            frm.set_df_property('vehicle', 'reqd',  frappe.user.has_role(["ADM User","Branch Manager","Fleet Manager"]))
-            frm.set_df_property('kilometer_reading', 'reqd',  frappe.user.has_role(["ADM User","Branch Manager","Fleet Manager"]))
-            frm.toggle_display("fleet_details_section", frappe.user.has_role(["Fleet Manager","System Manager"]));
-            frm.refresh_fields();
-        }
-        else{
-            cur_frm.toggle_display("fleet_details_section", false);
-        }
-        if (frm.doc.docstatus == 1 ){
+        // if(frm.doc.workflow_state == "Waiting MTO Approval" || frm.doc.workflow_state == "Approved"){
+        //     frm.set_df_property('vehicle', 'reqd',  frappe.user.has_role(["ADM User","Fleet Manager"]))
+        //     frm.set_df_property('kilometer_reading', 'reqd',  frappe.user.has_role(["ADM User","Fleet Manager"]))
+        //     frm.toggle_display("fleet_details_section", frappe.user.has_role(["Fleet Manager","System Manager"]));
+        //     frm.refresh_fields();
+        // }
+        // else{
+        //     cur_frm.toggle_display("fleet_details_section", false);
+        // }
+        if (frm.doc.docstatus == 1 && frm.doc.status == "Booked"){
             open_extension(frm)
+        }
+        frm.set_df_property("to_date", "allow_on_submit", frm.doc.status == "Booked" ? 1 : 0);
+
+        if (frm.doc.docstatus === 1 && frm.doc.status == "Booked" && (frappe.session.user == frm.doc.owner || frappe.user.has_role(["Fleet Manager", "System Manager"]))){
+            frm.add_custom_button('Close', () => {
+                frappe.call({
+                    method:"open_the_vehicle_for_booking",
+                    doc: frm.doc,
+                    callback: function(r) {
+                        frm.refresh_field("status")
+                        frm.reload_doc();
+                    }
+                });
+            }).addClass("btn-primary");
         }
     },
 
-	setup: function (frm) {
-        frm.get_field('items').grid.editable_fields = [
-            { fieldname: 'employee', columns: 2 },
-            { fieldname: 'employee_name', columns: 2 },
-            { fieldname: 'designation', columns: 2 },
-            { fieldname: 'division', columns: 3 },
-        ];
-        frappe.form.link_formatters['Employee'] = function(value) {
-                return value;
-        }
-    },
+	// setup: function (frm) {
+    //     frm.get_field('items').grid.editable_fields = [
+    //         { fieldname: 'employee', columns: 2 },
+    //         { fieldname: 'employee_name', columns: 2 },
+    //         { fieldname: 'designation', columns: 2 },
+    //         { fieldname: 'division', columns: 3 },
+    //     ];
+    //     frappe.form.link_formatters['Employee'] = function(value) {
+    //             return value;
+    //     }
+    // },
     from_date: function(frm){
         get_date(frm);
     },
     to_date: function(frm){
         check_date(frm);
     },
-
     vehicle: function(frm){
         get_previous_km(frm)
     },
@@ -45,6 +58,14 @@ frappe.ui.form.on('Vehicle Request', {
 				filters: {
 					equipment_type: frm.doc.vehicle_type,
                     hired_equipment: 0
+				}
+			}
+		})
+
+        frm.set_query('driver', () => {
+			return {
+				filters: {
+					designation: ["like", "driver"],
 				}
 			}
 		})
@@ -61,9 +82,8 @@ function open_extension(frm){
 }
 
 function get_date(frm){
-    var get_date = cur_frm.doc.from_date;
+    var get_date = frm.doc.from_date;
     frappe.model.set_value("time_of_departure", get_date);
-
 }
 
 function check_date(frm){

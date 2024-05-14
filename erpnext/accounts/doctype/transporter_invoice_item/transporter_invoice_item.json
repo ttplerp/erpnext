@@ -46,7 +46,7 @@
    "fieldname": "reference_type",
    "fieldtype": "Select",
    "label": "Reference Type",
-   "options": "Stock Entry\nProduction\nDelivery Note\nTrip Log",
+   "options": "Stock Entry\nDelivery Note\nTrip Log",
    "read_only": 1
   },
   {

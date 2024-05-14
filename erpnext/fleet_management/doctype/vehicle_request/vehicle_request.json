@@ -21,17 +21,18 @@
   "parent_cost_center",
   "column_break001",
   "posting_date",
+  "status",
   "travel_information",
   "from_date",
   "vehicle_type",
   "approver",
+  "total_days_and_hours",
   "columb_break04",
   "to_date",
   "approver_id",
   "place",
   "column_break04",
   "purpose",
-  "total_days_and_hours",
   "fleet_details_section",
   "vehicle",
   "vehicle_model",
@@ -118,7 +119,6 @@
    "read_only": 1
   },
   {
-   "collapsible": 1,
    "fieldname": "travel_information",
    "fieldtype": "Section Break",
    "label": "Travel Information"
@@ -126,7 +126,7 @@
   {
    "fieldname": "from_date",
    "fieldtype": "Datetime",
-   "label": "From Date",
+   "label": "From Date Time",
    "reqd": 1
   },
   {
@@ -143,7 +143,7 @@
    "allow_on_submit": 1,
    "fieldname": "to_date",
    "fieldtype": "Datetime",
-   "label": "To Date",
+   "label": "To Date Time",
    "reqd": 1
   },
   {
@@ -220,7 +220,8 @@
   {
    "fieldname": "time_of_departure",
    "fieldtype": "Datetime",
-   "label": "Time Of Departure"
+   "label": "Time Of Departure",
+   "reqd": 1
   },
   {
    "fetch_from": "vehicle.equipment_type",
@@ -234,7 +235,8 @@
    "fieldname": "vehicle",
    "fieldtype": "Link",
    "label": "Vehicle",
-   "options": "Equipment"
+   "options": "Equipment",
+   "reqd": 1
   },
   {
    "fetch_from": "vehicle.equipment_model",
@@ -257,13 +259,15 @@
    "fieldtype": "Link",
    "ignore_user_permissions": 1,
    "label": "Driver",
-   "options": "Employee"
+   "options": "Employee",
+   "reqd": 1
   },
   {
    "fetch_from": "driver.employee_name",
    "fieldname": "driver_name",
    "fieldtype": "Data",
-   "label": "Driver Name"
+   "label": "Driver Name",
+   "read_only": 1
   },
   {
    "allow_on_submit": 1,
@@ -305,11 +309,21 @@
    "fieldname": "fleet_details_section",
    "fieldtype": "Section Break",
    "label": "Fleet Details"
+  },
+  {
+   "default": "Booked",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Closed\nBooked",
+   "read_only": 1,
+   "reqd": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2022-11-30 18:31:10.835868",
+ "modified": "2023-12-07 16:07:49.966101",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Vehicle Request",
@@ -332,55 +346,6 @@
    "write": 1
   },
   {
-   "amend": 1,
-   "cancel": 1,
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "ADM User",
-   "share": 1,
-   "submit": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "if_owner": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Employee",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Fleet Manager",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Fleet User",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
@@ -388,7 +353,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "CEO",
+   "role": "System Manager",
    "share": 1,
    "submit": 1,
    "write": 1
@@ -400,8 +365,22 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "Branch Manager",
+   "role": "Employee",
+   "select": 1,
    "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Fleet Manager",
+   "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],

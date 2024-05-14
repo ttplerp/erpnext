@@ -20,10 +20,6 @@ frappe.ui.form.on('Repair And Service Invoice', {
 			}			
 		}
 	},
-	tds_percent:function(frm){
-		frm.set_value("tds_account","")
-		frm.refresh_field("tds_account")
-	},
 	make_payment_entry:function(frm){
 		frappe.call({
 			method:"erpnext.accounts.doctype.payment_entry.payment_entry.get_payment_entry",

@@ -19,8 +19,8 @@ from erpnext.accounts.general_ledger import (
 
 class POLExpense(AccountsController):
 	def validate(self):
-		if flt(self.is_opening) == 0:
-			validate_workflow_states(self)
+		# if flt(self.is_opening) == 0:
+		# 	validate_workflow_states(self)
 		self.posting_date = self.entry_date
 		self.validate_amount()
 		self.calculate_pol()
@@ -29,8 +29,8 @@ class POLExpense(AccountsController):
 		else:
 			self.credit_account = get_party_account(self.party_type, self.party, self.company)
 
-		if flt(self.is_opening) == 0 and self.workflow_state != "Approved" :
-			notify_workflow_states(self)
+		# if flt(self.is_opening) == 0 and self.workflow_state != "Approved" :
+		# 	notify_workflow_states(self)
 		self.set_status()
 
 	
@@ -38,8 +38,8 @@ class POLExpense(AccountsController):
 		if cint(self.use_common_fuelbook) == 0:
 			self.make_gl_entries()
 		self.post_journal_entry()
-		if flt(self.is_opening) == 0:
-			notify_workflow_states(self)
+		# if flt(self.is_opening) == 0:
+			# notify_workflow_states(self)
 
 	def before_cancel(self):
 		if self.is_opening:

@@ -3,22 +3,6 @@
 
 frappe.ui.form.on('POL Issue', {
 	refresh: function(frm) {
-        if (frm.doc.docstatus === 1) {
-			frm.add_custom_button(
-				__("Ledger"),
-				function () {
-				  frappe.route_options = {
-					voucher_no: frm.doc.name,
-					from_date: frm.doc.posting_date,
-					to_date: frm.doc.posting_date,
-					company: frm.doc.company,
-					group_by_voucher: false,
-				  };
-				  frappe.set_route("query-report", "General Ledger");
-				},
-				__("View")
-			  );
-		}
 		if(frm.doc.docstatus == 1 && cint(frm.doc.out_source) == 0) {
 			cur_frm.add_custom_button(__('POL Ledger'), function() {
 				frappe.route_options = {
@@ -52,14 +36,6 @@ var set_equipment_filter=function(frm){
 			query: "erpnext.fleet_management.fleet_utils.get_container_filtered",
 			filters:{}
 		};
-	});
-	frm.set_query('equipment', 'items', function (doc, cdt, cdn) {
-		return {
-			filters: {
-				"enabled": 1,
-				"is_container":0
-			}
-		}
 	});
 }
 

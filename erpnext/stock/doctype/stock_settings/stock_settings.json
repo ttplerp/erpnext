@@ -351,15 +351,13 @@
    "fieldname": "mr_status_notification_template",
    "fieldtype": "Link",
    "label": "MR Status Notification Template",
-   "options": "Email Template",
-   "reqd": 1
+   "options": "Email Template"
   },
   {
    "fieldname": "mr_approval_notification_template",
    "fieldtype": "Link",
    "label": "MR Approvel Notification",
-   "options": "Email Template",
-   "reqd": 1
+   "options": "Email Template"
   }
  ],
  "icon": "icon-cog",

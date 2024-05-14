@@ -1,13 +1,15 @@
 {
  "charts": [],
- "content": "[{\"type\":\"header\",\"data\":{\"text\":\"<span style=\\\"font-size: 18px;\\\"><b>Quick Access</b></span>\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Equipment\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"POL Expense\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"POL Receive\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"POL Issue\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Repair &amp; Services\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"R &amp; Service Invoice\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Equipment Modifier Tool\",\"col\":3}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Master Data\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Repair and Services\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Fleet Transaction\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Fleet Report\",\"col\":4}}]",
+ "content": "[{\"id\":\"wAKCzSLvAW\",\"type\":\"header\",\"data\":{\"text\":\"<span style=\\\"font-size: 18px;\\\"><b>Quick Access</b></span>\",\"col\":12}},{\"id\":\"NUa75KwDps\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Equipment\",\"col\":3}},{\"id\":\"HVgS_KMDYK\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"POL Advance\",\"col\":3}},{\"id\":\"tRsDH4W_iX\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"POL Receive\",\"col\":3}},{\"id\":\"JI0bTlJY8H\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"POL Issue\",\"col\":3}},{\"id\":\"-0bxEs_7WY\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Repair &amp; Services\",\"col\":3}},{\"id\":\"N2MjD1Z-Ho\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"R &amp; Service Invoice\",\"col\":3}},{\"id\":\"ybrjqiHc80\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Equipment Modifier Tool\",\"col\":3}},{\"id\":\"jJ05wj0_1u\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"id\":\"NJoZVFmL-a\",\"type\":\"card\",\"data\":{\"card_name\":\"Master Data\",\"col\":4}},{\"id\":\"6vAxV59cu4\",\"type\":\"card\",\"data\":{\"card_name\":\"Repair & Services\",\"col\":4}},{\"id\":\"pWjZw2bN6T\",\"type\":\"card\",\"data\":{\"card_name\":\"Fleet Transaction\",\"col\":4}},{\"id\":\"rkmOtJpEAB\",\"type\":\"card\",\"data\":{\"card_name\":\"Fleet Report\",\"col\":4}}]",
  "creation": "2023-03-14 12:40:35.110706",
+ "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
  "for_user": "",
  "hide_custom": 0,
  "icon": "getting-started",
  "idx": 0,
+ "is_hidden": 0,
  "label": "Fleet Management",
  "links": [
   {
@@ -405,8 +407,185 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "Repair and Services",
+   "link_count": 0,
+   "link_to": "Repair And Services",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Repair And Services Invoice",
+   "link_count": 0,
+   "link_to": "Repair And Service Invoice",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "POL Advance",
+   "link_count": 0,
+   "link_to": "POL Advance",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "POL Receive",
+   "link_count": 0,
+   "link_to": "POL Receive",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "POL Issue",
+   "link_count": 0,
+   "link_to": "POL Issue",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Fleet Transaction",
+   "link_count": 3,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Vehicle Request",
+   "link_count": 0,
+   "link_to": "Vehicle Request",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Insurance and Registration",
+   "link_count": 0,
+   "link_to": "Insurance and Registration",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Fleet Engagement",
+   "link_count": 0,
+   "link_to": "Fleet Engagement",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Fleet Report",
+   "link_count": 8,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "POL Receive Report",
+   "link_count": 0,
+   "link_to": "POL Receive Report",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "POL Advance Report",
+   "link_count": 0,
+   "link_to": "POL Advance Report",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Vehicle Request History Report",
+   "link_count": 0,
+   "link_to": "Vehicle Request History Report",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Repair And Services Report",
+   "link_count": 0,
+   "link_to": "Repair And Services Report",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Fleet Engagement Report",
+   "link_count": 0,
+   "link_to": "Fleet Engagement Report",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "POL Ledger",
+   "link_count": 0,
+   "link_to": "POL Ledger",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Equipment Hire Report",
+   "link_count": 0,
+   "link_to": "Equipment Hire Report",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Vehicle Booking Status Report",
+   "link_count": 0,
+   "link_to": "Vehicle Booking Status Report",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "Master Data",
    "link_count": 5,
+   "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
   },
@@ -453,9 +632,9 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Shift",
+   "label": "Fuelbook",
    "link_count": 0,
-   "link_to": "Shift Type",
+   "link_to": "Fuelbook",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -463,17 +642,18 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Fleet Transaction",
-   "link_count": 4,
+   "label": "Repair & Services",
+   "link_count": 5,
+   "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
   },
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Vehicle Request",
+   "label": "Repair and Services",
    "link_count": 0,
-   "link_to": "Vehicle Request",
+   "link_to": "Repair And Services",
    "link_type": "DocType",
    "onboard": 1,
    "type": "Link"
@@ -481,9 +661,19 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "POL Expense",
+   "label": "Repair and Services Invoice",
    "link_count": 0,
-   "link_to": "POL Expense",
+   "link_to": "Repair And Service Invoice",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "POL Advance",
+   "link_count": 0,
+   "link_to": "POL Advance",
    "link_type": "DocType",
    "onboard": 1,
    "type": "Link"
@@ -501,171 +691,33 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Insurance and Registration",
-   "link_count": 0,
-   "link_to": "Insurance and Registration",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Equipment Modifier Tool",
-   "link_count": 0,
-   "link_to": "Equipment Modifier Tool",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Fleet Engagement",
-   "link_count": 0,
-   "link_to": "Fleet Engagement",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Hole Depth",
-   "link_count": 0,
-   "link_to": "Hole Depth",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "POL Issue",
    "link_count": 0,
    "link_to": "POL Issue",
    "link_type": "DocType",
    "onboard": 1,
    "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Repair and Services",
-   "link_count": 0,
-   "link_to": "Repair And Services",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Repair And Services Invoice",
-   "link_count": 0,
-   "link_to": "Repair And Services Invoice Item",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Fleet Report",
-   "link_count": 7,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "POL Balance Report",
-   "link_count": 0,
-   "link_to": "POL Balance Report",
-   "link_type": "Report",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "POL Receive Report",
-   "link_count": 0,
-   "link_to": "POL Receive Report",
-   "link_type": "Report",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "POL Expense Report",
-   "link_count": 0,
-   "link_to": "POL Expense Report",
-   "link_type": "Report",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Vehicle Request Report",
-   "link_count": 0,
-   "link_to": "Vehicle Request Report",
-   "link_type": "Report",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Repair And Services Report",
-   "link_count": 0,
-   "link_to": "Repair And Services Report",
-   "link_type": "Report",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Fleet Engagement Report",
-   "link_count": 0,
-   "link_to": "Fleet Engagement Report",
-   "link_type": "Report",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "POL Ledger",
-   "link_count": 0,
-   "link_to": "POL Ledger",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
   }
  ],
- "modified": "2023-04-20 11:43:09.897034",
+ "modified": "2024-05-13 16:11:03.430705",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Fleet Management",
+ "number_cards": [],
  "owner": "Administrator",
  "parent_page": "",
  "public": 1,
  "quick_lists": [],
  "restrict_to_domain": "",
  "roles": [],
- "sequence_id": 6.1,
+ "sequence_id": 18.0,
  "shortcuts": [
   {
    "color": "Red",
    "doc_view": "List",
    "format": "{} Draft",
-   "label": "POL Expense",
-   "link_to": "POL Expense",
-   "stats_filter": "{\"docstatus\":[\"=\",\"0\"]}",
+   "label": "POL Advance",
+   "link_to": "POL Advance",
    "type": "DocType"
   },
   {

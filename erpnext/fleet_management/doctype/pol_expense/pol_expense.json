@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "POLE.-.YY.-.MM.-.###",
+ "autoname": "format:POLE-{YY}-{MM}-{####}",
  "creation": "2022-10-19 15:24:00.939251",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -505,11 +505,11 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-26 11:30:25.264964",
+ "modified": "2023-12-07 16:07:59.934934",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Expense",
- "naming_rule": "Expression (old style)",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {

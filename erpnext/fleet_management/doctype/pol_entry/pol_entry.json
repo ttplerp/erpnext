@@ -8,11 +8,7 @@
   "branch",
   "cost_center",
   "equipment",
-  "supplier",
-  "equipment_category",
-  "equipment_type",
   "pol_type",
-  "item_name",
   "posting_date",
   "qty",
   "reference_type",
@@ -22,14 +18,8 @@
   "amended_from",
   "posting_time",
   "current_km",
-  "km_difference",
   "mileage",
-  "uom",
-  "rate",
-  "amount",
-  "memo_number",
-  "pol_slip_no",
-  "fuelbook"
+  "uom"
  ],
  "fields": [
   {
@@ -125,70 +115,13 @@
    "fieldtype": "Select",
    "label": "Reading UOM",
    "options": "\nHour\nKM"
-  },
-  {
-   "fieldname": "rate",
-   "fieldtype": "Currency",
-   "label": "Rate"
-  },
-  {
-   "fieldname": "amount",
-   "fieldtype": "Currency",
-   "label": "Amount"
-  },
-  {
-   "fieldname": "memo_number",
-   "fieldtype": "Data",
-   "label": "Cash Memo"
-  },
-  {
-   "fieldname": "pol_slip_no",
-   "fieldtype": "Data",
-   "label": "POL Slip No"
-  },
-  {
-   "fieldname": "km_difference",
-   "fieldtype": "Float",
-   "label": "KM Difference"
-  },
-  {
-   "fetch_from": "equipment.equipment_type",
-   "fieldname": "equipment_type",
-   "fieldtype": "Link",
-   "label": "Equipment Type",
-   "options": "Equipment Type"
-  },
-  {
-   "fetch_from": "equipment.equipment_category",
-   "fieldname": "equipment_category",
-   "fieldtype": "Link",
-   "label": "Equipment Category",
-   "options": "Equipment Category"
-  },
-  {
-   "fieldname": "fuelbook",
-   "fieldtype": "Link",
-   "label": "Fuelbook",
-   "options": "Fuelbook"
-  },
-  {
-   "fieldname": "supplier",
-   "fieldtype": "Link",
-   "label": "Supplier",
-   "options": "Supplier"
-  },
-  {
-   "fetch_from": "pol_type.item_name",
-   "fieldname": "item_name",
-   "fieldtype": "Data",
-   "label": "Item Name"
   }
  ],
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-24 10:34:49.491284",
+ "modified": "2023-12-07 16:08:03.053800",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Entry",
@@ -230,5 +163,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }

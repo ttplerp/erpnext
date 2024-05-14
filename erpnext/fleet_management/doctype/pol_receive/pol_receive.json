@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "POLR.-.YY.-.MM.-.DD.-.###",
+ "autoname": "format:POLR-{YY}-{MM}-{DD}-{###}",
  "creation": "2022-10-20 14:46:05.098826",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -11,7 +11,6 @@
   "branch",
   "cost_center",
   "company",
-  "is_opening",
   "column_break_3",
   "posting_date",
   "posting_time",
@@ -43,7 +42,7 @@
   "column_break_33",
   "mileage",
   "advance_details_section",
-  "get_pol_expense",
+  "get_pol_advance",
   "items",
   "section_break_10",
   "total_amount",
@@ -228,7 +227,7 @@
   {
    "fieldname": "advance_details_section",
    "fieldtype": "Section Break",
-   "label": "Expenses Details"
+   "label": "Advance Details"
   },
   {
    "fieldname": "items",
@@ -277,12 +276,6 @@
    "label": "Fuelbook",
    "options": "Fuelbook",
    "reqd": 1
-  },
-  {
-   "depends_on": "eval:doc.docstatus == 0",
-   "fieldname": "get_pol_expense",
-   "fieldtype": "Button",
-   "label": "Get Pol Expense"
   },
   {
    "fetch_from": "fuelbook.branch",
@@ -346,20 +339,20 @@
    "read_only": 1
   },
   {
-   "default": "0",
-   "fieldname": "is_opening",
-   "fieldtype": "Check",
-   "label": "Is Opening"
+   "depends_on": "eval:doc.docstatus == 0",
+   "fieldname": "get_pol_advance",
+   "fieldtype": "Button",
+   "label": "Get Pol Advance"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-26 11:31:47.850771",
+ "modified": "2023-12-07 16:07:51.543276",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Receive",
- "naming_rule": "Expression (old style)",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {

@@ -56,7 +56,7 @@ frappe.ui.form.on('POL Expense', {
 	},
 	refresh: function(frm){
 		enable_disable(frm);
-		if (frm.doc.docstatus === 1 && frm.doc.is_opening == 0) {
+		if (frm.doc.docstatus === 1 && frm.doc.use_common_fuelbook == 0 && frm.doc.is_opening == 0) {
 			frm.add_custom_button(
 			  __("Ledger"),
 			  function () {

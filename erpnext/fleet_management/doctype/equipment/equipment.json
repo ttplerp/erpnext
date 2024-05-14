@@ -95,8 +95,7 @@
    "in_standard_filter": 1,
    "label": "Equipment/Vehicle Category",
    "options": "Equipment Category",
-   "reqd": 1,
-   "set_only_once": 1
+   "reqd": 1
   },
   {
    "fetch_from": "asset_issue_details.equipment_type",
@@ -107,8 +106,7 @@
    "in_standard_filter": 1,
    "label": "Equipment/Vehicle Type",
    "options": "Equipment Type",
-   "reqd": 1,
-   "set_only_once": 1
+   "reqd": 1
   },
   {
    "fieldname": "column_break_8",
@@ -122,8 +120,7 @@
    "in_list_view": 1,
    "label": "Equipment/Vehicle Model",
    "options": "Equipment Model",
-   "reqd": 1,
-   "set_only_once": 1
+   "reqd": 1
   },
   {
    "fetch_from": "asset_issue_details.reg_number",
@@ -308,8 +305,7 @@
    "fetch_from": "equipment_type.is_container",
    "fieldname": "is_container",
    "fieldtype": "Check",
-   "label": "Is Container?",
-   "read_only": 1
+   "label": "Is Container?"
   },
   {
    "fieldname": "company",
@@ -350,8 +346,7 @@
    "fieldname": "wheeler",
    "fieldtype": "Select",
    "label": "Wheeler",
-   "options": "\n26\n10\n6\n4\n2",
-   "set_only_once": 1
+   "options": "\n26\n10\n6\n4\n2"
   },
   {
    "fieldname": "capacity",
@@ -368,7 +363,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-05 10:33:09.367848",
+ "modified": "2023-12-07 16:07:57.906559",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment",
@@ -415,21 +410,14 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "Sales User",
-   "share": 1
-  },
-  {
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Stock User",
+   "role": "Employee",
+   "select": 1,
    "share": 1
   }
  ],
  "search_fields": "equipment_category,equipment_type, equipment_model",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }
