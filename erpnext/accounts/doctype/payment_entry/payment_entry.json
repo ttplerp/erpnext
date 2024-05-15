@@ -99,8 +99,12 @@
   "payment_order",
   "subscription_section",
   "auto_repeat",
+  "title",
   "amended_from",
-  "title"
+  "bank_payment_detail_section",
+  "bank_payment",
+  "column_break_97",
+  "payment_status"
  ],
  "fields": [
   {
@@ -776,12 +780,35 @@
    "fieldname": "from_party_name",
    "fieldtype": "Data",
    "label": "Advance Party Name"
+  },
+  {
+   "fieldname": "bank_payment_detail_section",
+   "fieldtype": "Section Break",
+   "label": "Bank Payment Detail"
+  },
+  {
+   "fieldname": "bank_payment",
+   "fieldtype": "Link",
+   "label": "Bank Payment",
+   "options": "Bank Payment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_97",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "payment_status",
+   "fieldtype": "Select",
+   "label": "Payment Status",
+   "options": "\nPayment Under Process\nPayment Successful\nPayment Failed\nPartial Payment\nPayment Cancelled",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-05-09 10:42:35.229837",
+ "modified": "2024-05-15 19:28:00.526363",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Payment Entry",
