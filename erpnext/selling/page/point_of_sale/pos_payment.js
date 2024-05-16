@@ -207,7 +207,7 @@ erpnext.PointOfSale.Payment = class {
 			const jrn = doc.jrnal_no;
 			let flag = 0
 			payments.forEach(p =>{
-				if (p.amount > 0 && p.type == "Bank") {
+				if (p.amount > 0 && (p.type == "Bank" || p.mode_of_payment == "Online")) {
 					flag = 1;
 				}
 			});
