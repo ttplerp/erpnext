@@ -202,6 +202,22 @@ erpnext.PointOfSale.Payment = class {
 			const doc = this.events.get_frm().doc;
 			const paid_amount = doc.paid_amount;
 			const items = doc.items;
+			// jai
+			const payments = doc.payments;
+			const jrn = doc.jrnal_no;
+			let flag = 0
+			payments.forEach(p =>{
+				if (p.amount > 0 && p.type == "Bank") {
+					flag = 1;
+				}
+			});
+
+			if (flag == 1 && jrn == '') {
+				const message = __("Bank and Jrnl/Reference No. is missing for Online payment.");
+				frappe.show_alert({ message, indicator: "orange" });
+				frappe.utils.play_sound("error");
+				return;
+			}
 
 			if (paid_amount == 0 || !items.length) {
 				const message = items.length ? __("You cannot submit the order without payment.") : __("You cannot submit empty order.");
