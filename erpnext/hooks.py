@@ -583,6 +583,9 @@ permission_query_conditions = {
 	"Leave Encashment": "hrms.hr.doctype.leave_encashment.leave_encashment.get_permission_query_conditions",
 	"Training Management": "erpnext.training_and_skilling.doctype.training_management.training_management.get_permission_query_conditions",
 	"Expense Claim": "hrms.hr.doctype.expense_claim.expense_claim.get_permission_query_conditions",
+	"POS Profile": "erpnext.accounts.doctype.pos_profile.pos_profile.get_permission_query_conditions",
+	"POS Opening Entry": "erpnext.accounts.doctype.pos_opening_entry.pos_opening_entry.get_permission_query_conditions",
+	"POS Closing Entry": "erpnext.accounts.doctype.pos_closing_entry.pos_closing_entry.get_permission_query_conditions",
 }
 
 user_privacy_documents = [

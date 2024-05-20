@@ -45,3 +45,20 @@ class POSOpeningEntry(StatusUpdater):
 
 	def on_submit(self):
 		self.set_status(update=True)
+
+def get_permission_query_conditions(user):
+	if not user: user = frappe.session.user
+	user_roles = frappe.get_roles(user)
+
+	if user == "Administrator" or "System Manager" in user_roles: 
+		return
+
+	return """(
+		`tabPOS Opening Entry`.owner = '{user}'
+		or
+		exists(select 1
+			from `tabPOS Profile User` as e, `tabPOS Profile` p
+			where e.parent = p.name
+			and p.name = `tabPOS Opening Entry`.pos_profile
+			and e.user = '{user}')
+	)""".format(user=user)

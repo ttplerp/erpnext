@@ -201,3 +201,20 @@ def make_closing_entry_from_opening(opening_entry):
 	closing_entry.set("taxes", taxes)
 
 	return closing_entry
+
+def get_permission_query_conditions(user):
+	if not user: user = frappe.session.user
+	user_roles = frappe.get_roles(user)
+
+	if user == "Administrator" or "System Manager" in user_roles: 
+		return
+
+	return """(
+		`tabPOS Closing Entry`.owner = '{user}'
+		or
+		exists(select 1
+			from `tabPOS Profile User` as e, `tabPOS Profile` p
+			where e.parent = p.name
+			and p.name = `tabPOS Closing Entry`.pos_profile
+			and e.user = '{user}')
+	)""".format(user=user)
