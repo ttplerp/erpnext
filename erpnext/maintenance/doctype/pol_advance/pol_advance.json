@@ -215,8 +215,7 @@
    "fieldname": "company",
    "fieldtype": "Link",
    "label": "Company",
-   "options": "Company",
-   "read_only": 1
+   "options": "Company"
   },
   {
    "fetch_from": "fuelbook.branch",
@@ -342,7 +341,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-10-19 15:23:47.225116",
+ "modified": "2024-05-20 11:35:04.745126",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Pol Advance",
