@@ -1330,7 +1330,7 @@ class PurchaseInvoice(BuyingController):
 							dr_or_cr + "_in_account_currency": base_amount
 							if account_currency == self.company_currency
 							else amount,
-							"cost_center": tax.cost_center,
+							"cost_center": tax.cost_center if tax.cost_center else self.cost_center,
 							"business_activity": self.business_activity,
 							"party_type": party_type,
 							"party": party,

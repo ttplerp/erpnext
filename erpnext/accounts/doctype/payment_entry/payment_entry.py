@@ -953,7 +953,7 @@ class PaymentEntry(AccountsController):
 						dr_or_cr + "_in_account_currency": base_tax_amount
 						if account_currency == self.company_currency
 						else d.tax_amount,
-						"cost_center": d.cost_center,
+						"cost_center": d.cost_center if d.cost_center else self.cost_center,
 						"post_net_value": True,
 						"business_activity": self.business_activity,
 						"party_type": party_type,
