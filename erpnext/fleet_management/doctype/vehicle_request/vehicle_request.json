@@ -255,6 +255,7 @@
    "read_only": 1
   },
   {
+   "fetch_from": "vehicle.driver",
    "fieldname": "driver",
    "fieldtype": "Link",
    "ignore_user_permissions": 1,
@@ -323,7 +324,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-12-07 16:07:49.966101",
+ "modified": "2024-05-20 09:45:44.476285",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Vehicle Request",

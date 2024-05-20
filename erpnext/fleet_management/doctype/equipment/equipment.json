@@ -18,6 +18,7 @@
   "enabled",
   "hired_equipment",
   "status",
+  "driver",
   "equipment_information_section",
   "equipment_name",
   "equipment_category",
@@ -359,11 +360,17 @@
    "fieldtype": "Data",
    "label": "Reading UOM",
    "read_only": 1
+  },
+  {
+   "fieldname": "driver",
+   "fieldtype": "Link",
+   "label": "Driver",
+   "options": "Employee"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-07 16:07:57.906559",
+ "modified": "2024-05-20 09:44:49.093958",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment",
