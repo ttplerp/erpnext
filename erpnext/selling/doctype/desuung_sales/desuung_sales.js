@@ -30,19 +30,17 @@ frappe.ui.form.on('Desuung Sales', {
 	onload: function(frm) {
 		// Updating default information based on loggedin user
 		if(frm.doc.__islocal) {
-			if(!frm.doc.company){
-				frappe.call({
-						method: "erpnext.custom_utils.get_user_info",
-						args: {
-							"user": frappe.session.user
-						},
-						callback(r) {
-							if(r.message){
-								cur_frm.set_value("company", r.message.company);
-							}
+			frappe.call({
+					method: "erpnext.custom_utils.get_user_info",
+					args: {
+						"user": frappe.session.user
+					},
+					callback(r) {
+						if(r.message){
+							cur_frm.set_value("company", r.message.company);
 						}
-				});
-			}
+					}
+			});
         }
 
 		frm.set_query("from_warehouse", function (doc) {
