@@ -59,33 +59,32 @@ class DesuungSales(Document):
 
 	def post_gl_entry(self):
 		gl_entries = []
-		if self.company == "De-Suung":
-			gl_entries.append(
-				self.get_gl_dict({
-						"account": self.debit_account,
-						"debit": self.total,
-						"debit_in_account_currency": self.total,
-						"voucher_no": self.name,
-						"voucher_type": self.doctype,
-						"cost_center": self.cost_center,					
-						"company": self.company,
-						"remarks": self.remarks,
-						"business_activity": self.business_activity,
-					})
-				)
-			gl_entries.append(
-				self.get_gl_dict({
-						"account": self.credit_account,
-						"credit": self.total,
-						"credit_in_account_currency": self.total,
-						"voucher_no": self.name,
-						"voucher_type": self.doctype,
-						"cost_center": self.cost_center,
-						"company": self.company,
-						"remarks": self.remarks,
-						"business_activity": self.business_activity,
-					})
-				)
+		gl_entries.append(
+			self.get_gl_dict({
+					"account": self.debit_account,
+					"debit": self.total,
+					"debit_in_account_currency": self.total,
+					"voucher_no": self.name,
+					"voucher_type": self.doctype,
+					"cost_center": self.cost_center,					
+					"company": self.company,
+					"remarks": self.remarks,
+					"business_activity": self.business_activity,
+				})
+			)
+		gl_entries.append(
+			self.get_gl_dict({
+					"account": self.credit_account,
+					"credit": self.total,
+					"credit_in_account_currency": self.total,
+					"voucher_no": self.name,
+					"voucher_type": self.doctype,
+					"cost_center": self.cost_center,
+					"company": self.company,
+					"remarks": self.remarks,
+					"business_activity": self.business_activity,
+				})
+			)
 		make_gl_entries(gl_entries, cancel=(self.docstatus == 2), update_outstanding="No", merge_entries=False)
 
 	def update_stock_ledger(self):

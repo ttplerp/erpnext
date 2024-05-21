@@ -86,6 +86,7 @@ def get_user_info(user=None, employee=None, cost_center=None):
 		# Normal Employee
 		cost_center = frappe.db.get_value("Employee", {"user_id": user}, "cost_center")
 		branch      = frappe.db.get_value("Employee", {"user_id": user}, "branch")
+		company      = frappe.db.get_value("Employee", {"user_id": user}, "company")
 
 		# DES Employee
 		if not cost_center:
@@ -96,7 +97,7 @@ def get_user_info(user=None, employee=None, cost_center=None):
 		if not cost_center:
 			cost_center = frappe.db.get_value("Muster Roll Employee", {"user_id": user}, "cost_center")
 			branch      = frappe.db.get_value("Muster Roll Employee", {"user_id": user}, "branch")
-		
+		info.setdefault('company', company)
 	# warehouse   = frappe.db.get_value("Cost Center", cost_center, "warehouse")
 	# approver    = frappe.db.get_value("Approver Item", {"cost_center": cost_center}, "approver")
 	# customer    = frappe.db.get_value("Customer", {"cost_center": cost_center}, "name")
