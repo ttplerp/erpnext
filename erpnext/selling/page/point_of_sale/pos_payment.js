@@ -205,6 +205,7 @@ erpnext.PointOfSale.Payment = class {
 			// jai
 			const payments = doc.payments;
 			const jrn = doc.jrnal_no;
+			const phone = doc.phone_no;
 			let flag = 0
 			payments.forEach(p =>{
 				if (p.amount > 0 && (p.type == "Bank" || p.mode_of_payment == "Online")) {
@@ -214,6 +215,13 @@ erpnext.PointOfSale.Payment = class {
 
 			if (flag == 1 && jrn == '') {
 				const message = __("Bank and Jrnl/Reference No. is missing for Online payment.");
+				frappe.show_alert({ message, indicator: "orange" });
+				frappe.utils.play_sound("error");
+				return;
+			}
+			
+			if (flag == 1 && phone == '') {
+				const message = __("Phone No. is missing.");
 				frappe.show_alert({ message, indicator: "orange" });
 				frappe.utils.play_sound("error");
 				return;
