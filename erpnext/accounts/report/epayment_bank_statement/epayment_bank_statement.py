@@ -31,7 +31,7 @@ def get_data(filters):
 	condition = ""
 	if filters.get("account"):
 		bank_account_no = frappe.db.get_value("Account", filters.get("account"), "bank_account_no")
-		condition += " and account='{}'".format(bank_account_no)
+		condition += " and account_no='{}'".format(bank_account_no)
 	
 	if filters.get("company"):
 		condition += " and company = '{}'".format(filters.get("company"))
