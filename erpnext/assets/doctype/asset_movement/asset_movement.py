@@ -124,7 +124,7 @@ class AssetMovement(Document):
 			return
 
 		for d in self.assets:
-			if d.source_cost_center != d.target_cost_center:
+			if d.source_cost_center != d.target_cost_center && d.target_cost_center is not None:
 				make_asset_transfer_gl(self, d.asset, self.transaction_date, d.source_cost_center, d.target_cost_center)
 	
 	def cancel_asset_transfer_gl_entry(self):
@@ -161,6 +161,7 @@ class AssetMovement(Document):
 			# frappe.throw(str(latest_movement_entry))
 			if latest_movement_entry:
 				current_cost_center = latest_movement_entry[0]['target_cost_center']
+				current_cost_center = current_cost_center if current_cost_center else d.source_cost_center
 				current_custodian_type = latest_movement_entry[0]['target_custodian_type']
 				if current_custodian_type == 'Employee':
 					frappe.db.set_value("Asset", d.asset, "issue_to_employee", latest_movement_entry[0]['to_employee'])
