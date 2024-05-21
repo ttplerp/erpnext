@@ -47,13 +47,13 @@ class DesuungSales(Document):
 		self.total = Amount
 	
 	def on_submit(self):
-		self.post_gl_entry()
+		# self.post_gl_entry() #account is not posted for this trans.
 		self.update_stock_ledger()
 		#self.consume_budget()
 	
 	def on_cancel(self):
 		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
-		self.post_gl_entry()
+		# self.post_gl_entry()
 		self.update_stock_ledger()
 		#self.cancel_budget_entry()
 
