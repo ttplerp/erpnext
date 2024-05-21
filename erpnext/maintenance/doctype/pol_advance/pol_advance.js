@@ -12,6 +12,16 @@ frappe.ui.form.on('Pol Advance', {
 				]
 			}
 		});
+		// Ver 2.0 Begins, following code added by SHIV on 28/11/2017
+		if(frm.doc.__islocal) {
+			frappe.call({
+				method: "erpnext.custom_utils.get_user_info",
+				args: {"user": frappe.session.user},
+				callback(r) {
+					cur_frm.set_value("company", r.message.company);
+				}
+			});
+		}
 	},
 	party_type: (frm)=>{
 		set_party_type(frm);

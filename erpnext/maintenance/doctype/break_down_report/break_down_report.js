@@ -38,6 +38,7 @@ frappe.ui.form.on('Break Down Report', {
 				callback(r) {
 					cur_frm.set_value("cost_center", r.message.cost_center);
 					cur_frm.set_value("branch", r.message.branch);
+					cur_frm.set_value("company", r.message.company);
 				}
 			});
 		}

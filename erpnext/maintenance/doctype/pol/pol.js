@@ -5,6 +5,17 @@ frappe.ui.form.on('POL', {
 		if (!frm.doc.posting_date) {
 			frm.set_value("posting_date", get_today());
 		}
+
+		// Ver 2.0 Begins, following code added by SHIV on 28/11/2017
+		if(frm.doc.__islocal) {
+			frappe.call({
+				method: "erpnext.custom_utils.get_user_info",
+				args: {"user": frappe.session.user},
+				callback(r) {
+					cur_frm.set_value("company", r.message.company);
+				}
+			});
+		}
 	},
 	refresh: function (frm) {
 		if (frm.doc.jv) {
