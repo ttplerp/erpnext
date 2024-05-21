@@ -124,7 +124,7 @@ class AssetMovement(Document):
 			return
 
 		for d in self.assets:
-			if d.source_cost_center != d.target_cost_center && d.target_cost_center is not None:
+			if d.source_cost_center != d.target_cost_center and d.target_cost_center is not None:
 				make_asset_transfer_gl(self, d.asset, self.transaction_date, d.source_cost_center, d.target_cost_center)
 	
 	def cancel_asset_transfer_gl_entry(self):
