@@ -12,6 +12,7 @@
   "expense_account",
   "bank_account",
   "column_break_4",
+  "company",
   "posting_date",
   "utility_services",
   "business_activity",
@@ -193,11 +194,18 @@
    "label": "Journal Entry",
    "options": "Journal Entry",
    "read_only": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-18 16:37:42.364115",
+ "modified": "2024-05-22 12:26:51.822715",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Utility Bill",
