@@ -60,6 +60,7 @@ class BreakDownReport(Document):
 			ent.place = self.branch
 			ent.from_date = self.date
 			ent.from_time = self.time
+			ent.company = self.company
 			ent.to_date = add_years(self.date, 1)
 			ent.submit()
 		
