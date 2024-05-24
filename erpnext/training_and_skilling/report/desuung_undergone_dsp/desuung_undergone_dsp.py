@@ -20,17 +20,18 @@ def get_data(filters=None):
 		condition += """ and tm.programme_classification="{}" """.format(filters.programme)
 	if filters.did:
 		condition += """ and td.desuup_id="{}" """.format(filters.did)
+	if filters.status:
+		condition += """ and td.status = "{}" """.format(filters.status)
 	
 	if filters.detail:
 		query="""
 				select td.desuup_id, 
 				td.desuup_name, td.desuup_cid, td.gender, tm.domain, 
 				tm.programme, tm.programme_classification, tm.training_center,
-				tm.training_start_date, tm.training_end_date, tm.name
+				tm.training_start_date, tm.training_end_date, tm.name, td.status
 				from `tabTraining Management` tm inner join `tabTrainee Details` td 
 				on tm.name=td.parent
 				where tm.docstatus!=2
-				and td.status="Passed"
 				{}
 				order by td.desuup_id
 			 """.format(condition)
@@ -40,7 +41,6 @@ def get_data(filters=None):
 				from `tabTraining Management` tm inner join `tabTrainee Details` td 
 				on tm.name=td.parent
 				where tm.docstatus!=2
-				and td.status="Passed"
 				{}
 				group by td.desuup_id
 				order by count desc
@@ -63,6 +63,7 @@ def get_columns(filters):
 			_("Start Date") + ":Date:100",
 			_("End Date") + ":Date:100",
 			_("Reference") + ":Link/Training Management:100",
+			_("Status") + "::100",
 		]
 	if not filters.detail:
 		columns += [

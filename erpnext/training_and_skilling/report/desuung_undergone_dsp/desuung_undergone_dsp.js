@@ -34,6 +34,13 @@ frappe.query_reports["Desuung Undergone DSP"] = {
 			default:""
 		},
 		{
+			fieldname: "status",
+			label: __("Status"),
+			fieldtype: "Select",
+		    options:["", __("Passed"), __("Withdrawn"), __("Terminated"), __("Suspended"), __("Attendance Shortage"), __("Reported")],
+			default:""
+		},
+		{
 			fieldname: "did",
 			label: __("Desuung ID"),
 			fieldtype: "Link",
