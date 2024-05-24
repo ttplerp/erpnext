@@ -29,8 +29,10 @@ class CostCenter(NestedSet):
 				super(CostCenter, self).on_update()
 
 	def create_branch(self):
+		'''
 		if not self.cost_center_for:
 			frappe.throw("Missing value For DSP/DHQ")
+		'''
 		if cint(self.is_group) == 1 or cint(self.branch_created) == 1:
 			return
 		company = frappe.defaults.get_defaults().company

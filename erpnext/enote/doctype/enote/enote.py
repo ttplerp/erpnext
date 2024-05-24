@@ -9,7 +9,6 @@ from frappe.utils import nowdate, cint
 from erpnext.custom_workflow import notify_workflow_states
 
 class eNote(Document):
-	
 	def on_submit(self):
 		self.enote_format = make_autoname(str(self.enote_series)+".YYYY./.#####")
 		frappe.db.set_value("eNote", self.name, "enote_format", self.enote_format)
@@ -37,6 +36,7 @@ class eNote(Document):
 					self.forward_to = frappe.db.get_value("Employee", doc.reports_to, "user_id")
 		
 		self.forward_to = frappe.session.user if not self.forward_to else self.forward_to
+
 	def before_update_after_submit(self):
 		self.notify_copy_to()
 
@@ -270,7 +270,3 @@ def get_permission_query_conditions(user):
 			from `tabEmployee` e, `tabNote Copy` nc
 			where e.user_id = '{user}' and '{user}' = nc.user_id and nc.parent = `tabeNote`.name)
    		)""".format(user=user)
-   
-   
-   
-   

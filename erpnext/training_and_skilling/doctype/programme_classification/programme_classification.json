@@ -10,7 +10,8 @@
  "field_order": [
   "programme_classification",
   "domain",
-  "code"
+  "code",
+  "cost_center"
  ],
  "fields": [
   {
@@ -30,16 +31,25 @@
    "reqd": 1
   },
   {
+   "bold": 1,
    "fieldname": "code",
    "fieldtype": "Data",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Code"
+   "label": "Code",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-19 22:18:39.289237",
+ "modified": "2024-05-24 15:04:30.675101",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Programme Classification",
@@ -60,7 +70,7 @@
   }
  ],
  "quick_entry": 1,
- "search_fields": "domain",
+ "search_fields": "domain,code",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

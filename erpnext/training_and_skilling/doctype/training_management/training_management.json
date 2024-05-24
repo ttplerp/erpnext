@@ -12,11 +12,13 @@
   "course_name",
   "course_level",
   "col_brk_1",
+  "branch",
   "course_cost_center",
   "programme",
   "domain",
   "programme_classification",
   "col_break_01",
+  "company",
   "cohort",
   "cohort_name",
   "cohort_no",
@@ -95,6 +97,7 @@
   },
   {
    "allow_bulk_edit": 1,
+   "allow_on_submit": 1,
    "fieldname": "trainer_details",
    "fieldtype": "Table",
    "ignore_user_permissions": 1,
@@ -155,6 +158,7 @@
    "reqd": 1
   },
   {
+   "fetch_from": "branch.cost_center",
    "fieldname": "course_cost_center",
    "fieldtype": "Link",
    "label": "Course Cost Center",
@@ -241,12 +245,25 @@
    "options": "Programme Classification",
    "read_only": 1,
    "reqd": 1
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-19 21:16:33.877430",
+ "modified": "2024-05-24 13:20:03.375334",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Management",
