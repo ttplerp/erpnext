@@ -25,7 +25,8 @@
   "branch_created",
   "use_budget_from_parent",
   "budget_cost_center",
-  "training_center"
+  "training_center",
+  "programme_classification"
  ],
  "fields": [
   {
@@ -169,13 +170,19 @@
    "fieldtype": "Link",
    "label": "Training Center",
    "options": "Training Center"
+  },
+  {
+   "fieldname": "programme_classification",
+   "fieldtype": "Link",
+   "label": "Programme Classification",
+   "options": "Programme Classification"
   }
  ],
  "icon": "fa fa-money",
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2024-05-24 13:08:12.754938",
+ "modified": "2024-05-24 16:28:12.306777",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Cost Center",
