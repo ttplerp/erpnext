@@ -284,7 +284,7 @@ def inter_payment(Amt, PayeeAcctNum, BnfcryAcct, BnfcryName, BnfcryAcctTyp, Bnfc
                         <ban:BfscCode>{8}</ban:BfscCode>
                         <ban:BnfcryAmt>{1}</ban:BnfcryAmt>
                         <ban:RemitterAcctTyp>{9}</ban:RemitterAcctTyp>
-                        <ban:SndToRcvrInfo>{6}</ban:SndToRcvrInfo>
+                        <ban:SndToRcvrInfo>{10}</ban:SndToRcvrInfo>
                         <!--Optional:-->
                         <ban:SndToRcvrInfo1></ban:SndToRcvrInfo1>
                         <!--Optional:-->
