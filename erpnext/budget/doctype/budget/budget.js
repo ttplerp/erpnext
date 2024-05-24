@@ -9,7 +9,17 @@ frappe.ui.form.on('Budget', {
 		// 		function(d) {
 		// 			frm.set_value("budget_against", d.budget_level);
 		// 	});
-		// }	
+		// }
+		if(frm.doc.__islocal) {
+			frappe.call({
+				method: "erpnext.custom_utils.get_user_info",
+				args: {"user": frappe.session.user},
+				callback(r) {
+					cur_frm.set_value("company", r.message.company);
+				}
+			});
+		}
+			
 		frm.set_query("cost_center", function() {
 			return {
 				filters: {
