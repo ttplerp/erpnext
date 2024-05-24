@@ -10,6 +10,7 @@
   "center",
   "location",
   "column_break_4",
+  "code",
   "dzongkhag",
   "section_break_9",
   "item"
@@ -50,11 +51,16 @@
    "fieldname": "item",
    "fieldtype": "Table",
    "options": "Laison Officer"
+  },
+  {
+   "fieldname": "code",
+   "fieldtype": "Data",
+   "label": "Training Center Code"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-03 21:48:59.242826",
+ "modified": "2024-05-24 16:51:49.494447",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Center",
