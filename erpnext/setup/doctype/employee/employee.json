@@ -118,6 +118,13 @@
   "column_break_73",
   "date_of_issue",
   "place_of_issue",
+  "location_details_section",
+  "dzongkhag",
+  "gewog",
+  "village",
+  "column_break_114",
+  "thram_no",
+  "house_no",
   "profile_tab",
   "bio",
   "educational_qualification",
@@ -988,13 +995,47 @@
    "fieldname": "gis",
    "fieldtype": "Currency",
    "label": "GIS Amount"
+  },
+  {
+   "fieldname": "location_details_section",
+   "fieldtype": "Section Break",
+   "label": "Location Details"
+  },
+  {
+   "fieldname": "dzongkhag",
+   "fieldtype": "Data",
+   "label": "Dzongkhag"
+  },
+  {
+   "fieldname": "gewog",
+   "fieldtype": "Data",
+   "label": "Gewog"
+  },
+  {
+   "fieldname": "village",
+   "fieldtype": "Data",
+   "label": "Village "
+  },
+  {
+   "fieldname": "column_break_114",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "thram_no",
+   "fieldtype": "Data",
+   "label": "Thram No"
+  },
+  {
+   "fieldname": "house_no",
+   "fieldtype": "Data",
+   "label": "House No"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-05-16 11:59:29.350457",
+ "modified": "2024-05-21 14:47:14.731820",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
@@ -1010,10 +1051,7 @@
   },
   {
    "create": 1,
-   "delete": 1,
-   "email": 1,
    "export": 1,
-   "import": 1,
    "print": 1,
    "read": 1,
    "report": 1,
