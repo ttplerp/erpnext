@@ -326,6 +326,7 @@ def make_entry(args, adv_adj, update_outstanding, from_repost=False):
 					"company": args.company,
 					"closed": 1,
 					"business_activity": args.business_activity,
+					"committed_cost_center": args.cost_center,
 				})
 				bud_obj.flags.ignore_permissions=1
 				bud_obj.submit()
@@ -343,10 +344,10 @@ def make_entry(args, adv_adj, update_outstanding, from_repost=False):
 					"company": args.company,
 					"com_ref": bud_obj.name,
 					"business_activity": args.business_activity,
+					"consumed_cost_center": args.cost_center
 				})
 				con_obj.flags.ignore_permissions=1
 				con_obj.submit()
-
 
 def validate_cwip_accounts(gl_map):
 	"""Validate that CWIP account are not used in Journal Entry"""
