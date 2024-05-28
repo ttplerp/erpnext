@@ -236,6 +236,7 @@ def validate_expense_against_budget(args):
 				condition += " and b.cost_center='{}'".format(budget_cost_center)
 				
 			args.is_tree = False
+			args.committed_cost_center = args.cost_center
 			args.cost_center = budget_cost_center
 			
 			budget_records = frappe.db.sql(
@@ -365,6 +366,7 @@ def commit_budget(args):
 				"item_code": args.item_code,
 				"company": args.company,
 				"business_activity": args.business_activity,
+				"committed_cost_center": args.committed_consumed_budget,
 			}
 		)
 		doc.submit()

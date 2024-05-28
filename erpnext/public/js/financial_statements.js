@@ -86,12 +86,13 @@ function get_filters() {
 			"default": frappe.defaults.get_user_default("Company"),
 			"reqd": 1
 		},
+		/*
 		{
 			"fieldname":"finance_book",
 			"label": __("Finance Book"),
 			"fieldtype": "Link",
 			"options": "Finance Book"
-		},
+		}, */
 		{
 			"fieldname":"filter_based_on",
 			"label": __("Filter Based On"),
@@ -165,13 +166,59 @@ function get_filters() {
 			"options": erpnext.get_presentation_currency_list()
 		},
 		{
+			"fieldname": "category",
+			"label": __("Category"),
+			"fieldtype": "Select",
+			"options": ["", __("DSP Domain"),__("Programme Classification"), __("Training Center")],
+		},
+		{
+			"fieldname": "training_center",
+			"label": __("Training Center"),
+			"fieldtype": "Link",
+			"options": "Training Center",
+			"depends_on": 'eval:doc.category=="Training Center"'
+		},
+		{
+			"fieldname": "programme",
+			"label": __("Programme"),
+			"fieldtype": "Link",
+			"options": "Programme Classification",
+			"depends_on": 'eval:doc.category=="Programme Classification"'
+		},
+		{
 			"fieldname": "cost_center",
 			"label": __("Cost Center"),
 			"fieldtype": "MultiSelectList",
 			get_data: function(txt) {
-				return frappe.db.get_link_options('Cost Center', txt, {
-					company: frappe.query_report.get_filter_value("company")
-				});
+				const category= frappe.query_report.get_filter_value("category");
+				if(category == "DSP Domain"){
+					return frappe.db.get_link_options('Cost Center', txt, {
+						company: frappe.query_report.get_filter_value("company"),
+						center_category: frappe.query_report.get_filter_value("category")
+					});
+				} else if(category == "Programme Classification"){
+					if(frappe.query_report.get_filter_value("programme")){
+						return frappe.db.get_link_options('Cost Center', txt, {
+							company: frappe.query_report.get_filter_value("company"),
+							center_category: frappe.query_report.get_filter_value("category"),
+							domain_programme: frappe.query_report.get_filter_value("programme")
+						});
+					}else{
+						return frappe.db.get_link_options('Cost Center', txt, {
+							company: frappe.query_report.get_filter_value("company"),
+							center_category: frappe.query_report.get_filter_value("category"),
+						});
+					}
+				} else if(category == "Training Center"){
+					return frappe.db.get_link_options('Cost Center', txt, {
+						company: frappe.query_report.get_filter_value("company"),
+						training_center: frappe.query_report.get_filter_value("training_center"),
+					});
+				}else{
+					return frappe.db.get_link_options('Cost Center', txt, {
+						company: frappe.query_report.get_filter_value("company"),
+					});
+				}
 			}
 		}
 	]

@@ -13,7 +13,6 @@
   "cost_center_name",
   "cost_center_number",
   "parent_cost_center",
-  "center_category",
   "company",
   "cost_center_for",
   "cb0",
@@ -25,8 +24,11 @@
   "branch_created",
   "use_budget_from_parent",
   "budget_cost_center",
+  "dsp_details_section",
+  "center_category",
   "training_center",
-  "programme_classification"
+  "column_break_19",
+  "domain_programme"
  ],
  "fields": [
   {
@@ -153,7 +155,7 @@
    "fieldname": "center_category",
    "fieldtype": "Select",
    "label": "Center Category",
-   "options": "\nDomain\nCourse"
+   "options": "\nDSP Domain\nProgramme Classification"
   },
   {
    "allow_in_quick_entry": 1,
@@ -165,24 +167,33 @@
    "reqd": 1
   },
   {
-   "depends_on": "eval:doc.company==\"De-suung Skilling\" && doc.is_group!=1",
+   "depends_on": "eval:doc.center_category!=\"DSP Domain\" && doc.is_group!=1",
    "fieldname": "training_center",
    "fieldtype": "Link",
    "label": "Training Center",
    "options": "Training Center"
   },
   {
-   "fieldname": "programme_classification",
-   "fieldtype": "Link",
-   "label": "Programme Classification",
-   "options": "Programme Classification"
+   "fieldname": "dsp_details_section",
+   "fieldtype": "Section Break",
+   "label": "DSP  Details"
+  },
+  {
+   "fieldname": "domain_programme",
+   "fieldtype": "Dynamic Link",
+   "label": "Domain/Programme Classification",
+   "options": "center_category"
+  },
+  {
+   "fieldname": "column_break_19",
+   "fieldtype": "Column Break"
   }
  ],
  "icon": "fa fa-money",
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2024-05-24 16:28:12.306777",
+ "modified": "2024-05-28 20:56:34.437136",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Cost Center",

@@ -18,7 +18,8 @@
   "company",
   "com_ref",
   "amended_from",
-  "business_activity"
+  "business_activity",
+  "consumed_cost_center"
  ],
  "fields": [
   {
@@ -33,7 +34,7 @@
    "fieldname": "cost_center",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Cost Center",
+   "label": "Budget Cost Center",
    "options": "Cost Center",
    "reqd": 1
   },
@@ -104,13 +105,19 @@
    "fieldtype": "Link",
    "label": "Business Activity",
    "options": "Business Activity"
+  },
+  {
+   "fieldname": "consumed_cost_center",
+   "fieldtype": "Link",
+   "label": "Consumed Budget Cost Center",
+   "options": "Cost Center"
   }
  ],
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-17 14:18:39.163295",
+ "modified": "2024-05-27 16:02:33.160144",
  "modified_by": "Administrator",
  "module": "Budget",
  "name": "Consumed Budget",

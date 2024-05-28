@@ -211,6 +211,7 @@
   {
    "fieldname": "budget_type",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Budget Type",
    "options": "Budget Type"
   },
@@ -270,7 +271,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-12-04 16:15:22.715863",
+ "modified": "2024-05-28 15:32:54.227139",
  "modified_by": "Administrator",
  "module": "Budget",
  "name": "Budget",

@@ -46,20 +46,42 @@ frappe.require("assets/erpnext/js/financial_statements.js", function() {
 				"default": frappe.defaults.get_user_default("year_end_date"),
 			},
 			{
+				"fieldname": "category",
+				"label": __("Category"),
+				"fieldtype": "Select",
+				"options": ["", __("DSP Domain"),__("Programme Classification"),__("Others")],
+			},
+			{
+				"fieldname": "programme",
+				"label": __("Programme"),
+				"fieldtype": "Link",
+				"options": "Programme Classification",
+				"depends_on": 'eval:doc.category=="Programme Classification"'
+			},
+			{
 				"fieldname": "cost_center",
 				"label": __("Cost Center"),
 				"fieldtype": "Link",
 				"options": "Cost Center",
 				"get_query": function() {
 					var company = frappe.query_report.get_filter_value('company');
-					return {
-						"doctype": "Cost Center",
-						"filters": {
-							"company": company,
-						}
+					var category = frappe.query_report.get_filter_value('category');
+					if(category!="Others"){
+						return {'filters': [
+							['Cost Center', 'disabled', '!=', '1'],
+							['Cost Center', 'company', '=', company],
+							['Cost Center', 'center_category', '=', category],
+						]}
+					}else{
+						return {'filters': [
+							['Cost Center', 'disabled', '!=', '1'],
+							['Cost Center', 'company', '=', company],
+							['Cost Center', 'center_category', 'not in', ('DSP Domain','Programme Classification')],
+						]}
 					}
-				}
+				},
 			},
+			/*
 			{
 				"fieldname": "project",
 				"label": __("Project"),
@@ -71,7 +93,7 @@ frappe.require("assets/erpnext/js/financial_statements.js", function() {
 				"label": __("Finance Book"),
 				"fieldtype": "Link",
 				"options": "Finance Book",
-			},
+			}, */
 			{
 				"fieldname": "presentation_currency",
 				"label": __("Currency"),

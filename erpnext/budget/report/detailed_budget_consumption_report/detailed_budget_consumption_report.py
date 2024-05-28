@@ -35,7 +35,8 @@ def get_data(query, filters):
                         com_ref, account, 
                         (select a.account_number from `tabAccount` a where a.name = b.account) as account_number, 
                         reference_date, cost_center, name, amount, reference_type, reference_no, item_code, 
-                        (select a.amount from `tabCommitted Budget` a where b.com_ref=a.name) as committed
+                        (select a.amount from `tabCommitted Budget` a where b.com_ref=a.name) as committed, 
+                        consumed_cost_center
                     FROM `tabConsumed Budget` b
                     WHERE account = '{account}' 
                     and reference_date BETWEEN '{start_date}' and '{end_date}'
@@ -63,75 +64,38 @@ def get_data(query, filters):
             available = flt(d.initial_budget) + flt(adjustment) + flt(d.supplement) - flt(a.amount) - flt(a.committed)
             current   = flt(d.initial_budget) + flt(d.supplement) +flt(d.adjustment)
 
-            if filters.budget_against != "Project":
-                row = {
-                    "date": a.reference_date,
-                    "account": a.account,
-                    "account_number": d.account_number,
-                    "budget_type": d.budget_type,
-                    "cost_center": a.cost_center,
-                    "initial": flt(d.initial_budget),
-                    "supplementary": supplement,
-                    "adjustment": adjustment,
-                    "current": current,
-                    "committed": a.committed,
-                    "consumed": a.amount,
-                    "available": available,
-                    "reference_type": a.reference_type,
-                    "reference_no": a.reference_no,
-                    "item_code": a.item_code
-                }
-            else:
-                row = {
-                    "date": a.reference_date,
-                    "project": a.project,
-                    "account": a.account,
-                    "account_number": a.account_number,
-                    "cost_center": a.cost_center,
-                    "initial": flt(d.initial_budget),
-                    "supplementary": supplement,
-                    "adjustment": adjustment,
-                    "current": current,
-                    "committed": a.committed,
-                    "consumed": a.amount,
-                    "available": available,
-                    "reference_type": a.reference_type,
-                    "reference_no": a.reference_no
-                }
+            row = {
+                "date": a.reference_date,
+                "account": a.account,
+                "account_number": a.account_number,
+                "cost_center": a.cost_center,
+                "initial": flt(d.initial_budget),
+                "supplementary": supplement,
+                "adjustment": adjustment,
+                "current": current,
+                "committed": a.committed,
+                "consumed": a.amount,
+                "available": available,
+                "reference_type": a.reference_type,
+                "reference_no": a.reference_no
+            }
 
             data.append(row)
             cm+=a.committed
             co+=a.amount
             ad+=adjustment
-
-    if filters.budget_against != "Project":	
-        row = {
-            "date":"",
-            "account": "Total",
-            "account_number":'',
-            "cost_center": "",
-            "initial": ini,
-            "supplementary": su,
-            "adjustment": ad,
-            "current":flt(ini)+flt(ad)+flt(su),
-            "committed": cm,
-            "consumed": co,
-            "available": flt(ini) + flt(ad) + flt(su) - flt(co) - flt(cm)
-        }
-        data.insert(0, row)
-    else:
-        row = {
-            "date":"",
-            "project": "Total",
-            "initial": ini,
-            "supplementary": su,
-            "adjustment": ad,
-            "current":flt(ini)+flt(ad)+flt(su),
-            "committed": cm,
-            "consumed": co,
-            "available": flt(ini) + flt(ad) + flt(su) - flt(co) - flt(cm)
-        }
-        data.insert(0, row)
+    row = {
+        "date":"",
+        "project": "Total",
+        "initial": ini,
+        "supplementary": su,
+        "adjustment": ad,
+        "current":flt(ini)+flt(ad)+flt(su),
+        "committed": cm,
+        "consumed": co,
+        "available": flt(ini) + flt(ad) + flt(su) - flt(co) - flt(cm)
+    }
+    data.insert(0, row)
     return data
 
 def construct_query(filters=None):
@@ -154,19 +118,12 @@ def construct_query(filters=None):
                                         ) 
                     or b.cost_center = '{0}')
             """.format(filters.cost_center, lft, rgt)
-    if filters.budget_type:
-        query += " and ba.budget_type = \'" + str(filters.budget_type) + "\' "
-            
+
     if filters.account:
         query += " and ba.account = \'" + str(filters.account) + "\' "
 
     if filters.business_activity:
         query += " and b.business_activity = \'" + str(filters.business_activity) + "\' "
-        
-    if filters.budget_against == "Project":
-        query += " group by ba.account, b.cost_center"
-    else:
-        query += " group by ba.account"
 
     return query
 
@@ -206,192 +163,95 @@ def validate_filters(filters):
 
 
 def get_columns(filters):
-    if filters.budget_against != "Project":
-        return [
-            {
-                "fieldname": "date",
-                "label": "Reference Date",
-                "fieldtype": "Date",
-                "width": 120
-            },
-            {
-                "fieldname": "account",
-                "label": "Account Head",
-                "fieldtype": "Link",
-                "options": "Account",
-                "width": 190
-            },
-            {
-                "fieldname": "account_number",
-                "label": "Account Number",
-                "fieldtype": "Data",
-                "width": 110
-            },
-            {
-                "fieldname": "budget_type",
-                "label": "Budget Type",
-                "fieldtype": "Link",
-                "options": "Budget Type",
-                "width": 120,
-            },
-            {
-                "fieldname": "cost_center",
-                "label": "Cost Center",
-                "fieldtype": "Link",
-                "options": "Cost Center",
-                "width": 140
-            },
-            {
-                "fieldname": "initial",
-                "label": "Initial Budget",
-                "fieldtype": "Currency",
-                "width": 140
-            },
-            {
-                "fieldname": "supplementary",
-                "label": "Supplementary Budget",
-                "fieldtype": "Currency",
-                "width": 110
-            },
-            {
-                "fieldname": "adjustment",
-                "label": "Budget Adjustment",
-                "fieldtype": "Currency",
-                "width": 120
-            },
-            {
-                "fieldname": "current",
-                "label": "Current Budget",
-                "fieldtype": "Currency",
-                "width": 120
-            },
-            {
-                "fieldname": "committed",
-                "label": "Committed Budget",
-                "fieldtype": "Currency",
-                "width": 120
-            },
-            {
-                "fieldname": "consumed",
-                "label": "Consumed Budget",
-                "fieldtype": "Currency",
-                "width": 120
-            },
-            {
-                "fieldname": "available",
-                "label": "Available Budget",
-                "fieldtype": "Currency",
-                "width": 140
-            },
-                        {
-                "fieldname": "reference_type",
-                "label": "Voucher Type",
-                "fieldtype": "Data",
-                "width": 120
-            },
-            {
-                "fieldname": "reference_no",
-                "label": "Voucher No",
-                "fieldtype": "Dynamic Link",
-                "options": "reference_type",
-                "width": 120
-            },
-            {
-                "fieldname": "item_code",
-                "label": "Item Code",
-                "fieldtype": "Link",
-                "options": "Item",
-                "width": 80
-            }
-        ]
-    else:
-        return [
-            {
-                "fieldname": "date",
-                "label": "Reference Date",
-                "fieldtype": "Date",
-                "width": 190
-            },
-            {
-                "fieldname": "project",
-                "label": "Project",
-                "fieldtype": "Link",
-                "options": "Project Definition",
-                "width": 170
-            },
-            {
-                "fieldname": "account",
-                "label": "Account Head",
-                "fieldtype": "Link",
-                "options": "Account",
-                "width": 190
-            },
-            {
-                "fieldname": "account_number",
-                "label": "Account Number",
-                "fieldtype": "Data",
-                "width": 190
-            },
-            {
-                "fieldname": "cost_center",
-                "label": "Cost Center",
-                "fieldtype": "Link",
-                "options": "Cost Center",
-                "width": 210
-            },
-            {
-                "fieldname": "initial",
-                "label": "Initial Budget",
-                "fieldtype": "Currency",
-                "width": 140
-            },
-            {
-                "fieldname": "supplementary",
-                "label": "Supplementary Budget",
-                "fieldtype": "Currency",
-                "width": 110
-            },
-            {
-                "fieldname": "adjustment",
-                "label": "Budget Adjustment",
-                "fieldtype": "Currency",
-                "width": 120
-            },
-            {
-                "fieldname": "current",
-                "label": "Current Budget",
-                "fieldtype": "Currency",
-                "width": 120
-            },
-            {
-                "fieldname": "committed",
-                "label": "Committed Budget",
-                "fieldtype": "Currency",
-                "width": 120
-            },
-            {
-                "fieldname": "consumed",
-                "label": "Consumed Budget",
-                "fieldtype": "Currency",
-                "width": 120
-            },
-            {
-                "fieldname": "available",
-                "label": "Available Budget",
-                "fieldtype": "Currency",
-                "width": 140
-            },
-            {
-                "fieldname": "reference_type",
-                "label": "Voucher Type",
-                "fieldtype": "Data",
-                "width": 120
-            },
-            {
-                "fieldname": "reference_no",
-                "label": "Voucher No",
-                "fieldtype": "Dynamic Link",
-                "options": "reference_type",
-                "width": 120
-            }
-        ]
+    return [
+        {
+            "fieldname": "date",
+            "label": "Reference Date",
+            "fieldtype": "Date",
+            "width": 120
+        },
+        {
+            "fieldname": "account",
+            "label": "Account Head",
+            "fieldtype": "Link",
+            "options": "Account",
+            "width": 190
+        },
+        {
+            "fieldname": "cost_center",
+            "label": "Budget Cost Center",
+            "fieldtype": "Link",
+            "options": "Cost Center",
+            "width": 190
+        },
+        {
+            "fieldname": "consumed_cost_center",
+            "label": "Consumed Cost Center",
+            "fieldtype": "Link",
+            "options": "Cost Center",
+            "width": 190
+        },
+        {
+            "fieldname": "initial",
+            "label": "Initial Budget",
+            "fieldtype": "Currency",
+            "width": 140
+        },
+        {
+            "fieldname": "supplementary",
+            "label": "Supplementary Budget",
+            "fieldtype": "Currency",
+            "width": 110
+        },
+        {
+            "fieldname": "adjustment",
+            "label": "Budget Adjustment",
+            "fieldtype": "Currency",
+            "width": 120
+        },
+        {
+            "fieldname": "current",
+            "label": "Current Budget",
+            "fieldtype": "Currency",
+            "width": 120
+        },
+        {
+            "fieldname": "committed",
+            "label": "Committed Budget",
+            "fieldtype": "Currency",
+            "width": 120
+        },
+        {
+            "fieldname": "consumed",
+            "label": "Consumed Budget",
+            "fieldtype": "Currency",
+            "width": 120
+        },
+        {
+            "fieldname": "available",
+            "label": "Available Budget",
+            "fieldtype": "Currency",
+            "width": 140
+        },
+        {
+            "fieldname": "reference_type",
+            "label": "Voucher Type",
+            "fieldtype": "Data",
+            "width": 120
+        },
+        {
+            "fieldname": "reference_no",
+            "label": "Voucher No",
+            "fieldtype": "Dynamic Link",
+            "options": "reference_type",
+            "width": 120
+        },
+        {
+            "fieldname": "item_code",
+            "label": "Item Code",
+            "fieldtype": "Link",
+            "options": "Item",
+            "width": 80
+        }
+    ]
+    
