@@ -1,0 +1,94 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-05-27 16:40:45.136385",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+    "checklist",
+    "col_break001",
+    "observation_title",
+    "section_break_001",
+    "observation",
+    "section_break_002",
+    "employee",
+    "designation",
+    "column_break_001",
+    "employee_name"
+   ],
+   "fields": [
+    {
+     "fieldname": "checklist",
+     "fieldtype": "Link",
+     "in_list_view": 1,
+     "label": "Checklist",
+     "options": "Audit Checklist",
+     "read_only": 1
+    },
+    {
+     "fieldname": "employee",
+     "fieldtype": "Link",
+     "in_list_view": 1,
+     "label": "Employee",
+     "options": "Employee",
+     "read_only": 1
+    },
+    {
+     "fetch_from": "employee.employee_name",
+     "fieldname": "employee_name",
+     "fieldtype": "Data",
+     "label": "Employee Name",
+     "read_only": 1
+    },
+    {
+     "fetch_from": "employee.designation",
+     "fieldname": "designation",
+     "fieldtype": "Data",
+     "in_list_view": 1,
+     "label": "Designation",
+     "read_only": 1
+    },
+    {
+     "fieldname": "column_break_001",
+     "fieldtype": "Column Break"
+    },
+    {
+     "fieldname": "col_break001",
+     "fieldtype": "Column Break"
+    },
+    {
+     "fieldname": "observation_title",
+     "fieldtype": "Data",
+     "in_list_view": 1,
+     "label": "Observation Title",
+     "read_only": 1
+    },
+    {
+     "fieldname": "section_break_001",
+     "fieldtype": "Section Break"
+    },
+    {
+     "fieldname": "observation",
+     "fieldtype": "Text Editor",
+     "label": "Observation"
+    },
+    {
+     "fieldname": "section_break_002",
+     "fieldtype": "Section Break",
+     "label": "Accountability Details"
+    }
+   ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-05-27 16:40:45.136385",
+ "modified_by": "Administrator",
+ "module": "AMS",
+ "name": "Audit Initial Report DA Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,293 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "FUP.MM.YYYY.####",
+ "creation": "2024-05-27 16:39:57.870132",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+    "branch",
+    "execute_audit_no",
+    "from_date",
+    "supervisor_id",
+    "supervisor_email",
+    "column_break_23",
+    "posting_date",
+    "reference_date",
+    "type",
+    "to_date",
+    "supervisor_name",
+    "column_break_24",
+    "follow_up_by",
+    "auditor_name",
+    "auditor_designation",
+    "supervisor_designation",
+    "section_break_15",
+    "scope_of_audit",
+    "objective_of_audit",
+    "observations_section",
+    "get_observations",
+    "audit_observations",
+    "follow_up_to_section",
+    "get_direct_accountability",
+    "direct_accountability",
+    "reference_no_section",
+    "audit_engagement_letter",
+    "cflg_follow_up",
+    "column_break_26",
+    "prepare_audit_plan_no",
+    "amended_from"
+   ],
+   "fields": [
+    {
+     "fieldname": "branch",
+     "fieldtype": "Link",
+     "label": "Auditee Branch",
+     "options": "Branch",
+     "reqd": 1
+    },
+    {
+     "fetch_from": "execute_audit_no.supervisor_id",
+     "fieldname": "supervisor_id",
+     "fieldtype": "Link",
+     "label": "Supervisor ID",
+     "options": "Employee",
+     "read_only": 1
+    },
+    {
+     "fetch_from": "execute_audit_no.from_date",
+     "fieldname": "from_date",
+     "fieldtype": "Date",
+     "hidden": 1,
+     "in_list_view": 1,
+     "label": "From Date",
+     "read_only": 1
+    },
+    {
+     "fieldname": "column_break_23",
+     "fieldtype": "Column Break"
+    },
+    {
+     "fetch_from": "execute_audit_no.posting_date",
+     "fieldname": "reference_date",
+     "fieldtype": "Date",
+     "label": "Execute Audit Date",
+     "read_only": 1
+    },
+    {
+     "fetch_from": "execute_audit_no.type",
+     "fieldname": "type",
+     "fieldtype": "Data",
+     "label": "Type",
+     "read_only": 1,
+     "reqd": 1
+    },
+    {
+     "fetch_from": "supervisor_id.employee_name",
+     "fieldname": "supervisor_name",
+     "fieldtype": "Data",
+     "label": "Supervisor Name",
+     "read_only": 1
+    },
+    {
+     "fetch_from": "execute_audit_no.to_date",
+     "fieldname": "to_date",
+     "fieldtype": "Date",
+     "hidden": 1,
+     "in_list_view": 1,
+     "label": "To Date",
+     "read_only": 1
+    },
+    {
+     "fieldname": "column_break_24",
+     "fieldtype": "Column Break"
+    },
+    {
+     "default": "Today",
+     "fieldname": "posting_date",
+     "fieldtype": "Date",
+     "label": "Posting Date",
+     "read_only": 1
+    },
+    {
+     "fieldname": "follow_up_by",
+     "fieldtype": "Link",
+     "in_global_search": 1,
+     "label": "Follow Up By",
+     "options": "Employee",
+     "reqd": 1
+    },
+    {
+     "fetch_from": "supervisor_id.designation",
+     "fieldname": "supervisor_designation",
+     "fieldtype": "Data",
+     "label": "Supervisor Designation",
+     "read_only": 1
+    },
+    {
+     "fieldname": "section_break_15",
+     "fieldtype": "Section Break",
+     "hidden": 1
+    },
+    {
+     "fetch_from": "execute_audit_no.scope_of_audit",
+     "fieldname": "scope_of_audit",
+     "fieldtype": "Small Text",
+     "hidden": 1,
+     "label": "Scope of the Audit"
+    },
+    {
+     "fetch_from": "execute_audit_no.objective_of_audit",
+     "fieldname": "objective_of_audit",
+     "fieldtype": "Small Text",
+     "hidden": 1,
+     "label": "Objective of the Audit",
+     "length": 500,
+     "width": "150"
+    },
+    {
+     "fieldname": "follow_up_to_section",
+     "fieldtype": "Section Break",
+     "label": "Direct Accountability (IF Any)"
+    },
+    {
+     "fieldname": "get_direct_accountability",
+     "fieldtype": "Button",
+     "label": "Get Direct Accountability"
+    },
+    {
+     "fieldname": "direct_accountability",
+     "fieldtype": "Table",
+     "label": "Direct Accountability",
+     "options": "Follow Up DA Item",
+     "read_only": 1
+    },
+    {
+     "fieldname": "observations_section",
+     "fieldtype": "Section Break",
+     "label": "Audit Area (Checklist) - Observations"
+    },
+    {
+     "fieldname": "get_observations",
+     "fieldtype": "Button",
+     "label": "Get Observations"
+    },
+    {
+     "collapsible": 1,
+     "fieldname": "reference_no_section",
+     "fieldtype": "Section Break",
+     "label": "Reference Details"
+    },
+    {
+     "fetch_from": "execute_audit_no.audit_engagement_letter",
+     "fieldname": "audit_engagement_letter",
+     "fieldtype": "Link",
+     "label": "Audit Engagement Letter",
+     "options": "Audit Engagement Letter",
+     "read_only": 1
+    },
+    {
+     "fieldname": "column_break_26",
+     "fieldtype": "Column Break"
+    },
+    {
+     "fetch_from": "execute_audit_no.prepare_audit_plan_no",
+     "fieldname": "prepare_audit_plan_no",
+     "fieldtype": "Link",
+     "label": "Prepare Audit Plan No.",
+     "options": "Prepare Audit Plan",
+     "read_only": 1
+    },
+    {
+     "fieldname": "amended_from",
+     "fieldtype": "Link",
+     "hidden": 1,
+     "label": "Amended From",
+     "no_copy": 1,
+     "options": "Follow Up",
+     "print_hide": 1,
+     "read_only": 1
+    },
+    {
+     "fieldname": "amended_from",
+     "fieldtype": "Link",
+     "hidden": 1,
+     "label": "Amended From",
+     "no_copy": 1,
+     "options": "Follow Up",
+     "print_hide": 1,
+     "read_only": 1
+    },
+    {
+     "fetch_from": "follow_up_by.employee_name",
+     "fieldname": "auditor_name",
+     "fieldtype": "Data",
+     "label": "Auditor Name",
+     "read_only": 1
+    },
+    {
+     "fetch_from": "follow_up_by.designation",
+     "fieldname": "auditor_designation",
+     "fieldtype": "Data",
+     "label": "Auditor Designation",
+     "read_only": 1
+    },
+    {
+     "fieldname": "audit_observations",
+     "fieldtype": "Table",
+     "label": "Audit Observations",
+     "options": "Follow Up Checklist Item",
+     "reqd": 1
+    },
+    {
+     "default": "0",
+     "fieldname": "cflg_follow_up",
+     "fieldtype": "Check",
+     "hidden": 1,
+     "label": "Control Flag from Follow Up"
+    },
+    {
+     "fieldname": "execute_audit_no",
+     "fieldtype": "Link",
+     "in_list_view": 1,
+     "label": "Execute Audit No.",
+     "options": "Execute Audit",
+     "reqd": 1
+    },
+    {
+     "fetch_from": "supervisor_id.user_id",
+     "fieldname": "supervisor_email",
+     "fieldtype": "Data",
+     "label": "Supervisor Email",
+     "read_only": 1
+    }
+   ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-05-27 16:39:57.870132",
+ "modified_by": "Administrator",
+ "module": "AMS",
+ "name": "Follow Up",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,54 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-05-27 16:42:32.885309",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+    "audit_area_checklist",
+    "audit_criteria",
+    "col_break_001",
+    "type_of_audit"
+   ],
+   "fields": [
+    {
+     "fieldname": "audit_area_checklist",
+     "fieldtype": "Link",
+     "label": "Audit Checklist",
+     "options": "Audit Checklist"
+    },
+    {
+     "fetch_from": "audit_area_checklist.audit_criteria",
+     "fieldname": "audit_criteria",
+     "fieldtype": "Data",
+     "in_list_view": 1,
+     "label": "Audit Criteria",
+     "read_only": 1
+    },
+    {
+     "fetch_from": "audit_area_checklist.type_of_audit",
+     "fieldname": "type_of_audit",
+     "fieldtype": "Data",
+     "in_list_view": 1,
+     "label": "Type of Audit",
+     "read_only": 1
+    },
+    {
+     "fieldname": "col_break_001",
+     "fieldtype": "Column Break"
+    }
+   ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-05-27 16:42:32.885309",
+ "modified_by": "Administrator",
+ "module": "AMS",
+ "name": "PAP Checklist Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

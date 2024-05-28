@@ -1,0 +1,88 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:audit_checklist",
+ "creation": "2024-05-27 16:42:07.403397",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+    "audit_criteria",
+    "type_of_audit",
+    "audit_checklist",
+    "is_for_ho",
+    "is_for_both",
+    "is_disabled"
+   ],
+"fields": [
+    {
+     "fieldname": "audit_criteria",
+     "fieldtype": "Link",
+     "in_list_view": 1,
+     "label": "Audit Criteria",
+     "options": "Audit Criteria",
+     "reqd": 1
+    },
+    {
+     "fieldname": "audit_checklist",
+     "fieldtype": "Data",
+     "label": "Checklist",
+     "reqd": 1,
+     "unique": 1,
+     "width": "200"
+    },
+    {
+     "fetch_from": "audit_criteria.type_of_audit",
+     "fieldname": "type_of_audit",
+     "fieldtype": "Data",
+     "in_list_view": 1,
+     "label": "Type of Audit",
+     "read_only": 1,
+     "reqd": 1
+    },
+    {
+     "default": "0",
+     "fieldname": "is_disabled",
+     "fieldtype": "Check",
+     "label": "Is Disabled"
+    },
+    {
+     "default": "0",
+     "fieldname": "is_for_both",
+     "fieldtype": "Check",
+     "label": "Is For Both (HO & Branch)"
+    },
+    {
+     "default": "0",
+     "fieldname": "is_for_ho",
+     "fieldtype": "Check",
+     "label": "Is For HO"
+    }
+   ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-05-27 16:42:07.403397",
+ "modified_by": "Administrator",
+ "module": "AMS",
+ "name": "Audit Checklist",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

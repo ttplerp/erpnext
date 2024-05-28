@@ -1,0 +1,56 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:audit_criteria",
+ "creation": "2024-05-27 16:36:33.630794",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "type_of_audit",
+  "audit_criteria"
+ ],
+ "fields": [
+  {
+   "fieldname": "type_of_audit",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Type of Audit",
+   "options": "Audit Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "audit_criteria",
+   "fieldtype": "Data",
+   "label": "Audit Criteria",
+   "reqd": 1,
+   "unique": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-05-27 16:36:33.630794",
+ "modified_by": "Administrator",
+ "module": "AMS",
+ "name": "Audit Criteria",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -51,8 +51,6 @@
   "default_warehouse_for_sales_return",
   "credit_limit",
   "transactions_annual_history",
-  "normal_loss_account",
-  "abnormal_loss_account",
   "default_settings",
   "default_bank_account",
   "default_cash_account",
@@ -63,8 +61,6 @@
   "exchange_gain_loss_account",
   "unrealized_exchange_gain_loss_account",
   "unrealized_profit_loss_account",
-  "security_deposit_account",
-  "weighbridge_account",
   "column_break0",
   "allow_account_creation_against_child_company",
   "default_payable_account",
@@ -136,16 +132,7 @@
   "pol_advance_account",
   "repair_and_service_expense_account",
   "column_break_127",
-  "pol_expense_account",
-  "production_account_settings_section",
-  "default_production_account",
-  "column_break_124",
-  "default_unloading_account",
-  "coal_raising_settings_section",
-  "coal_raising_credit_account",
-  "coal_raising_expense_account",
-  "column_break_131",
-  "coal_raising_penalty_account"
+  "pol_expense_account"
  ],
  "fields": [
   {
@@ -920,48 +907,15 @@
    "label": "Other Settings"
   },
   {
-   "fieldname": "production_account_settings_section",
-   "fieldtype": "Section Break",
-   "label": "Production Account Settings"
-  },
-  {
-   "fieldname": "default_production_account",
-   "fieldtype": "Link",
-   "label": "Default Production Account",
-   "options": "Account"
-  },
-  {
    "fieldname": "repair_and_service_expense_account",
    "fieldtype": "Link",
    "label": "Repair And Service Expense Account",
    "options": "Account"
   },
   {
-   "fieldname": "security_deposit_account",
-   "fieldtype": "Link",
-   "label": "Security Deposit Account",
-   "options": "Account"
-  },
-  {
-   "fieldname": "weighbridge_account",
-   "fieldtype": "Link",
-   "label": "Weighbridge Account",
-   "options": "Account"
-  },
-  {
    "fieldname": "clearing_account",
    "fieldtype": "Link",
    "label": "Clearing Account",
-   "options": "Account"
-  },
-  {
-   "fieldname": "column_break_124",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "default_unloading_account",
-   "fieldtype": "Link",
-   "label": "Default Unloading Account",
    "options": "Account"
   },
   {
@@ -976,48 +930,9 @@
    "label": "TDS Accounts"
   },
   {
-   "fieldname": "coal_raising_settings_section",
-   "fieldtype": "Section Break",
-   "label": "Coal Raising Settings"
-  },
-  {
-   "fieldname": "coal_raising_credit_account",
-   "fieldtype": "Link",
-   "label": "Coal Raising Credit Account",
-   "options": "Account"
-  },
-  {
-   "fieldname": "coal_raising_expense_account",
-   "fieldtype": "Link",
-   "label": "Coal Raising Expense Account",
-   "options": "Account"
-  },
-  {
-   "fieldname": "coal_raising_penalty_account",
-   "fieldtype": "Link",
-   "label": "Coal Raising Penalty Account",
-   "options": "Account"
-  },
-  {
-   "fieldname": "column_break_131",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "imprest_advance_account",
    "fieldtype": "Link",
    "label": "Imprest Advance Account",
-   "options": "Account"
-  },
-  {
-   "fieldname": "normal_loss_account",
-   "fieldtype": "Link",
-   "label": "Normal Loss Account",
-   "options": "Account"
-  },
-  {
-   "fieldname": "abnormal_loss_account",
-   "fieldtype": "Link",
-   "label": "Abnormal Loss Account",
    "options": "Account"
   },
   {
@@ -1037,7 +952,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2023-02-02 14:05:35.977624",
+ "modified": "2024-05-27 10:34:42.582090",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",

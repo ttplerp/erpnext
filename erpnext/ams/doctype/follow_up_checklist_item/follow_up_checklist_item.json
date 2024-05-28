@@ -1,0 +1,99 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-05-27 16:40:16.583809",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+    "audit_area_checklist",
+    "observation_title",
+    "section_break_5",
+    "nature_of_irregularity",
+    "column_break_5",
+    "status",
+    "section_break_9",
+    "audit_remarks",
+    "column_break_11",
+    "auditee_remarks"
+   ],
+"fields": [
+    {
+     "fieldname": "audit_area_checklist",
+     "fieldtype": "Link",
+     "in_list_view": 1,
+     "label": "Audit Areas (Checklist)",
+     "options": "Audit Checklist",
+     "read_only": 1,
+     "reqd": 1
+    },
+    {
+     "fieldname": "nature_of_irregularity",
+     "fieldtype": "Link",
+     "label": "Nature of Irregularity",
+     "options": "Nature of Irregularity",
+     "read_only": 1,
+     "reqd": 1
+    },
+    {
+     "allow_on_submit": 1,
+     "default": "Follow Up",
+     "fieldname": "status",
+     "fieldtype": "Link",
+     "in_list_view": 1,
+     "label": "Status",
+     "options": "Audit Status",
+     "reqd": 1
+    },
+    {
+     "allow_on_submit": 1,
+     "fieldname": "audit_remarks",
+     "fieldtype": "Text Editor",
+     "in_list_view": 1,
+     "label": "Audit Remarks"
+    },
+    {
+     "allow_on_submit": 1,
+     "fieldname": "auditee_remarks",
+     "fieldtype": "Text Editor",
+     "in_list_view": 1,
+     "label": "Auditee Remarks"
+    },
+    {
+     "fieldname": "section_break_5",
+     "fieldtype": "Section Break"
+    },
+    {
+     "fieldname": "column_break_5",
+     "fieldtype": "Column Break"
+    },
+    {
+     "fieldname": "section_break_9",
+     "fieldtype": "Section Break"
+    },
+    {
+     "fieldname": "column_break_11",
+     "fieldtype": "Column Break"
+    },
+    {
+     "fieldname": "observation_title",
+     "fieldtype": "Data",
+     "in_list_view": 1,
+     "label": "Observation Title",
+     "read_only": 1,
+     "reqd": 1
+    }
+   ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-05-27 16:40:16.583809",
+ "modified_by": "Administrator",
+ "module": "AMS",
+ "name": "Follow Up Checklist Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

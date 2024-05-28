@@ -1,0 +1,202 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "AAP-Ext-.#####",
+ "creation": "2024-05-27 16:45:22.206590",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+    "annual_audit_plan",
+    "column_break_1",
+    "phase",
+    "quarter1_section",
+    "q1_start_date",
+    "column_break_2",
+    "q1_end_date",
+    "quarter2_section",
+    "q2_start_date",
+    "column_break_3",
+    "q2_end_date",
+    "quarter3_section",
+    "q3_start_date",
+    "column_break_4",
+    "q3_end_date",
+    "quarter4_section",
+    "q4_start_date",
+    "column_break_5",
+    "q4_end_date",
+    "section_break_22",
+    "remarks",
+    "amended_from"
+   ],
+   "fields": [
+    {
+     "fieldname": "annual_audit_plan",
+     "fieldtype": "Link",
+     "in_list_view": 1,
+     "label": "Annual Audit Plan",
+     "options": "Annual Audit Plan",
+     "reqd": 1
+    },
+    {
+     "fieldname": "column_break_1",
+     "fieldtype": "Column Break"
+    },
+    {
+     "fieldname": "phase",
+     "fieldtype": "Select",
+     "label": "Phase",
+     "options": "\nQuarter 1\nQuarter 2\nQuarter 3\nQuarter 4",
+     "read_only": 1
+    },
+    {
+     "fieldname": "quarter1_section",
+     "fieldtype": "Section Break",
+     "label": "Quarter 1"
+    },
+    {
+     "allow_on_submit": 1,
+     "fieldname": "q1_start_date",
+     "fieldtype": "Date",
+     "in_list_view": 1,
+     "label": "Q1 Start Date",
+     "reqd": 1
+    },
+    {
+     "fieldname": "column_break_2",
+     "fieldtype": "Column Break"
+    },
+    {
+     "allow_on_submit": 1,
+     "fieldname": "q1_end_date",
+     "fieldtype": "Date",
+     "in_list_view": 1,
+     "label": "Q1 End Date",
+     "reqd": 1
+    },
+    {
+     "fieldname": "quarter2_section",
+     "fieldtype": "Section Break",
+     "label": "Quarter 2"
+    },
+    {
+     "allow_on_submit": 1,
+     "fieldname": "q2_start_date",
+     "fieldtype": "Date",
+     "label": "Q2 Start Date",
+     "reqd": 1
+    },
+    {
+     "fieldname": "column_break_3",
+     "fieldtype": "Column Break"
+    },
+    {
+     "allow_on_submit": 1,
+     "fieldname": "q2_end_date",
+     "fieldtype": "Date",
+     "label": "Q2 End Date",
+     "reqd": 1
+    },
+    {
+     "fieldname": "quarter3_section",
+     "fieldtype": "Section Break",
+     "label": "Quarter 3"
+    },
+    {
+     "allow_on_submit": 1,
+     "fieldname": "q3_start_date",
+     "fieldtype": "Date",
+     "label": "Q3 Start Date",
+     "reqd": 1
+    },
+    {
+     "fieldname": "column_break_4",
+     "fieldtype": "Column Break"
+    },
+    {
+     "allow_on_submit": 1,
+     "fieldname": "q3_end_date",
+     "fieldtype": "Date",
+     "label": "Q3 End Date",
+     "reqd": 1
+    },
+    {
+     "fieldname": "quarter4_section",
+     "fieldtype": "Section Break",
+     "label": "Quarter 4"
+    },
+    {
+     "fieldname": "q4_start_date",
+     "fieldtype": "Date",
+     "label": "Q4 Start Date",
+     "reqd": 1
+    },
+    {
+     "fieldname": "column_break_5",
+     "fieldtype": "Column Break"
+    },
+    {
+     "fieldname": "q4_end_date",
+     "fieldtype": "Date",
+     "label": "Q4 End Date",
+     "reqd": 1
+    },
+    {
+     "fieldname": "section_break_22",
+     "fieldtype": "Section Break"
+    },
+    {
+     "allow_on_submit": 1,
+     "fieldname": "remarks",
+     "fieldtype": "Data",
+     "label": "Remarks",
+     "read_only": 1
+    },
+    {
+     "fieldname": "amended_from",
+     "fieldtype": "Link",
+     "label": "Amended From",
+     "no_copy": 1,
+     "options": "Annual Audit Plan Extension",
+     "print_hide": 1,
+     "read_only": 1
+    },
+    {
+     "fieldname": "amended_from",
+     "fieldtype": "Link",
+     "label": "Amended From",
+     "no_copy": 1,
+     "options": "Annual Audit Plan Extension",
+     "print_hide": 1,
+     "read_only": 1
+    }
+   ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-05-27 16:45:22.206590",
+ "modified_by": "Administrator",
+ "module": "AMS",
+ "name": "Annual Audit Plan Extension",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
