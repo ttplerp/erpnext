@@ -36,6 +36,12 @@ class CustomWorkflow:
 			# self.hrd_approver	= frappe.db.get_value("Employee", frappe.db.get_single_value("HR Settings", "hrd_approver"), self.field_list)
 			# self.ceo			= frappe.db.get_value("Employee", frappe.db.get_value("Employee", {"grade": "CEO", "status": "Active"}), self.field_list)
 			self.dept_approver	= frappe.db.get_value("Employee", frappe.db.get_value("Department", frappe.db.get_value("Employee", self.doc.employee, "department"), "approver"), self.field_list)
+			if not self.dept_approver:
+				frappe.throw('Please set department approver in {}'.format(frappe.get_desk_link("Department", self.doc.department)))
+
+			self.hrgm	= frappe.db.get_value("Employee", frappe.db.get_single_value("HR Settings", "hrgm"), self.field_list)
+			if not self.hrgm:
+				frappe.throw('Please set department approver in {}'.format(frappe.get_desk_link("Department", self.doc.department)))
 			# self.dir_approver	= frappe.db.get_value("Employee", frappe.db.get_value("Department", frappe.db.get_value("Department", frappe.db.get_value("Employee", self.doc.employee, "department"), "parent_department"),"approver"), self.field_list)
 		self.login_user		= frappe.db.get_value("Employee", {"user_id": frappe.session.user}, self.field_list)
 		#self.final_approver= frappe.db.get_value("Employee", {"user_id": get_final_approver(doc.branch)}, self.field_list)
@@ -111,6 +117,8 @@ class CustomWorkflow:
 
 		if self.doc.doctype == "Leave Application":
 			self.leave_application()	
+		elif self.doc.doctype == "Travel Request":
+			self.travel_request()
 		elif self.doc.doctype == "Leave Encashment":
 			self.leave_encashment()
 		elif self.doc.doctype == "Salary Advance":
@@ -187,6 +195,33 @@ class CustomWorkflow:
 			else:
 				self.doc.workflow_state = "Waiting Chief, PCD Approval"
 
+	def travel_request(self):
+		''' Travel Request Workflow
+			1. Employee -> Supervisor -> Chair
+		'''
+		if self.new_state.lower() in ("Draft".lower(), "Waiting Supervisor Approval".lower()):
+			self.set_approver("Supervisor")
+			if self.doc.owner != frappe.session.user:
+				frappe.throw("Only <b>{}</b> can apply this Request".format(self.doc.employee_name))
+
+		elif self.new_state.lower() in ("Waiting Approval".lower()):
+			# if self.doc.approver != frappe.session.user:
+			# 	frappe.throw("Only <b>{}</b> can forward this Request".format(self.doc.approver_name))
+			self.set_approver("Department Head")
+
+		elif self.new_state.lower() == "Approved".lower():
+			# if self.doc.approver != frappe.session.user:
+			# 	frappe.throw("Only <b>{}</b> can Approve this Application".format(self.doc.approver_name))
+			self.doc.status= "Approved"
+	
+		elif self.new_state.lower() == 'Rejected'.lower():
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only <b>{}</b> can Reject this request".format(self.doc.approver_name))
+
+		elif self.new_state.lower() == "Cancelled".lower():
+			if frappe.session.user not in (self.doc.supervisor, "Administrator"):
+				frappe.throw(_("Only <b>{}</b> can Cancel this document.").format(self.doc.approver_name))
+
 	def leave_application(self):
 		''' Leave Application Workflow
 			1. Employee -> Supervisor -> Chair
@@ -203,7 +238,7 @@ class CustomWorkflow:
 
 		elif self.new_state.lower() == "Approved".lower():
 			if self.doc.leave_approver != frappe.session.user:
-				frappe.throw("Only {} can Approve this Application".format(self.doc.leave_approver_name))
+				frappe.throw("Only <b>{}</b> can Approve this Application".format(self.doc.leave_approver_name))
 			self.doc.status= "Approved"
 	
 		elif self.new_state.lower() == 'Rejected'.lower():
@@ -786,6 +821,7 @@ def get_field_map():
 	return {
 		"Salary Advance": ["advance_approver","advance_approver_name","advance_approver_designation"],
 		"Leave Encashment": ["approver","approver_name","approver_designation"],
+		"Travel Request": ["approver","approver_name","approver_designation"],
 		"Leave Application": ["leave_approver", "leave_approver_name", "leave_approver_designation"],
 		"Travel Authorization": ["supervisor", "supervisor_name", "supervisor_designation"],
 		"Travel Claim": ["supervisor", "supervisor_name", "supervisor_designation"],
