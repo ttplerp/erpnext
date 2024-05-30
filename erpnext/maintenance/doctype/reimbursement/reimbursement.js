@@ -2,6 +2,18 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Reimbursement', {
+	onload: function(frm) {
+		// Ver 2.0 Begins, following code added by SHIV on 28/11/2017
+		if(frm.doc.__islocal) {
+			frappe.call({
+				method: "erpnext.custom_utils.get_user_info",
+				args: {"user": frappe.session.user},
+				callback(r) {
+					cur_frm.set_value("company", r.message.company);
+				}
+			});
+		}
+	},
 	purpose: function(frm){
 		if(frm.doc.purpose == 'Hiring/Transportation'){
 			frappe.call({
