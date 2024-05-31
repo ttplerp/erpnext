@@ -9,6 +9,7 @@
   "rental_term_year",
   "percent_of_increment",
   "business_activity",
+  "update_hp",
   "cb_1",
   "no_of_year_for_increment",
   "payment_due_on",
@@ -49,12 +50,17 @@
    "fieldname": "penalty_rate",
    "fieldtype": "Percent",
    "label": "Penalty Rate (in Percent)"
+  },
+  {
+   "fieldname": "update_hp",
+   "fieldtype": "Button",
+   "label": "Update Housing Applicants"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-05-01 11:21:59.860686",
+ "modified": "2024-05-30 15:02:23.554474",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Setting",

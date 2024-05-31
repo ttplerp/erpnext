@@ -607,12 +607,13 @@ def update_ranking():
 	
 
 #setting the ranks again for 
+#This is outdated
 def update_ranks():
     # Fetch the applicant list sorted by application_date_time
     applicant_list = frappe.get_all(
         "Housing Application",
         filters={"application_status":"Pending"},
-        fields=["name", "application_date_time", "building_classification"],
+        fields=["name", "application_date_time", "building_classification","work_station","employment_type"],
         order_by="application_date_time ASC",
     )
 
@@ -656,7 +657,6 @@ def update_ranks():
 
 
 
-
 #update the building category
 def update_builCate():
 	applicant_list = frappe.get_all("Housing Application", filters={}, fields=["name","cid","gross_salary","spouse_gross_salary"])
@@ -672,3 +672,78 @@ def update_builCate():
 		break
 
 
+# housing application ranking
+def update_ranking_3pa():
+    # Fetch the applicant list sorted by application_date_time
+    applicant_list = frappe.get_all(
+        "Housing Application",
+        filters={"application_status": "Pending"},
+        fields=["name", "application_date_time", "building_classification", "work_station", "employment_type"],
+        order_by="application_date_time ASC",
+    )
+
+    # Initialize a nested dictionary to hold rank counters
+    rank_counters = {}
+
+    for applicant in applicant_list:
+        building_classification = applicant.get("building_classification")
+        work_station = applicant.get("work_station")
+        employment_type = applicant.get("employment_type")
+
+        # Create a unique key for the combination of building_classification, work_station, and employment_type
+        key = (building_classification, work_station, employment_type)
+
+        # Initialize the rank counter for the combination if it doesn't exist
+        if key not in rank_counters:
+            rank_counters[key] = 1
+
+        # Get the current rank for this combination
+        current_rank = rank_counters[key]
+
+        # Update the applicant's rank
+        frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", current_rank)
+
+        # Increment the rank counter for this combination
+        rank_counters[key] += 1
+
+        # Print the updated record (optional)
+        print(f"Updated {applicant.get('name')} - Rank: {frappe.get_value('Housing Application', applicant.get('name'), 'applicant_rank')}")
+
+
+def updateNotEligibleRanking():
+    applicant_list = frappe.get_all(
+        "Housing Application",
+        filters={"application_status": "Not Eligible"},
+        fields=["name", "application_date_time","work_station", "employment_type"],
+        order_by="application_date_time ASC",
+    )
+
+    # Initialize a nested dictionary to hold rank counters
+    rank_counters = {}
+
+    for applicant in applicant_list:
+        work_station = applicant.get("work_station")
+        employment_type = applicant.get("employment_type")
+
+        # Create a unique key for the combination of building_classification, work_station, and employment_type
+        key = (work_station, employment_type)
+
+        # Initialize the rank counter for the combination if it doesn't exist
+        if key not in rank_counters:
+            rank_counters[key] = 1
+
+        # Get the current rank for this combination
+        current_rank = rank_counters[key]
+
+        # Update the applicant's rank
+        frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", current_rank)
+
+        # Increment the rank counter for this combination
+        rank_counters[key] += 1
+
+        # Print the updated record (optional)
+        print(f"Updated {applicant.get('name')} - Rank: {frappe.get_value('Housing Application', applicant.get('name'), 'applicant_rank')}")
+
+
+def test():
+    frappe.throw()

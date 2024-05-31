@@ -15,14 +15,27 @@ class HousingApplication(Document):
 		self.check_salary()
 		if self.application_status == None or self.application_status== 'Pending':
 			self.validate_detail()
-		# self.validate_detail()
+		self.validate_detail()
 		self.validate_duplicate()
 		
-		# self.generate_rank()
+		self.generate_rank()
 		creation_time = frappe.utils.get_datetime(self.get('creation'))
 		if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2:
 			self.generate_rank()
-		
+	
+	def onload(self):
+		# Initialize the gross salary values
+		gross_sal = 0.0
+		spouse_gross = 0.0
+
+		# Assign values if they exist
+		if self.gross_salary:
+			gross_sal = self.gross_salary
+		if self.spouse_gross_salary:
+			spouse_gross = self.spouse_gross_salary
+
+		# Calculate total gross salary
+		self.total_gross_salary = flt(gross_sal, 2) + flt(spouse_gross, 2)
 
 	def on_update(self):	
 		if self.application_status != "Pending" and self.docstatus == 0:
@@ -45,46 +58,41 @@ class HousingApplication(Document):
 			frappe.throw("Since the total gross salary exceeds Nu.80000, you are not applicable")
 
 	def update_ranks(self):
-    # Fetch the applicant list sorted by application_date_time
+    # Fetch the applicant list filtered by application_status, building_classification, and work_station, sorted by application_date_time
 		applicant_list = frappe.get_all(
 			"Housing Application",
-			filters={"application_status":"Pending"},
+			filters={
+				"application_status": "Pending",
+				"building_classification": self.building_classification,
+				"work_station": self.work_station,
+				"employment_type":self.employment_type
+			},
 			fields=["name", "application_date_time", "building_classification"],
-			order_by="application_date_time ASC",
+			order_by="application_date_time ASC"
 		)
 
-    # Initialize rank counters for different building classifications
-		class1A_rank = 1
-		class1B_rank = 1
-		class2_rank = 1
-		class3_rank = 1
-		class4_rank = 1
-		class5_rank = 1
-    # Add more classes as needed
+		# Initialize rank counters for different building classifications
+		rank_counters = {
+			"Class IA": 1,
+			"Class IB": 1,
+			"Class II": 1,
+			"Class III": 1,
+			"Class IV": 1,
+			"Class V": 1,
+			# Add more classes as needed
+		}
 
 		for applicant in applicant_list:
-			# Assuming you have a function to determine building classification
+			# Get the building classification of the applicant
 			building_classification = applicant.get("building_classification")
 
-			# Assign ranks based on building classification
-			if building_classification == "Class IA":
-				frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class1A_rank)
-				class1A_rank += 1
-			elif building_classification == "Class IB":
-				frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class1B_rank)
-				class1B_rank += 1
-			elif building_classification == "Class II":
-				frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class2_rank)
-				class2_rank += 1
-			elif building_classification == "Class III":
-				frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class3_rank)
-				class3_rank += 1
-			elif building_classification == "Class IV":
-				frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class4_rank)
-				class4_rank += 1
-			elif building_classification == "Class V":
-				frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class5_rank)
-				class5_rank += 1	
+			# Check if the building classification is in the rank_counters dictionary
+			if building_classification in rank_counters:
+				# Update the rank for the current applicant
+				frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", rank_counters[building_classification])
+				
+				# Increment the rank counter for the current building classification
+				rank_counters[building_classification] += 1	
 
 
 	def validate_detail(self):
@@ -134,27 +142,40 @@ class HousingApplication(Document):
 	def check_agree(self):
 		if not self.agree:
 			frappe.throw("You must <b>Agree to Terms</b> in order to submit the application")
-		if self.employment_type != "Civil Servant" and self.work_station != "Thimphu":
-			frappe.throw("Housing Application for <b>Non Civil Servant</b> are accepted only for <b>Thimphu</b>")
+		# if self.employment_type != "Civil Servant" and self.work_station != "Thimphu":
+		# 	frappe.throw("Housing Application for <b>Non Civil Servant</b> are accepted only for <b>Thimphu</b>")
 
 	def generate_rank(self):
-		gross_income = flt(self.gross_salary,2) + flt(self.spouse_gross_salary,2)
-		building_class=frappe.db.sql("""
-								select name from `tabBuilding Classification`
-								where '{gross_income}' between 	minimum_income and maximum_income
-							""".format(gross_income=gross_income))[0][0]
-		if not building_class:
+		gross_income = flt(self.gross_salary, 2) + flt(self.spouse_gross_salary, 2)
+		
+		# Using parameterized queries to prevent SQL injection
+		building_class_result = frappe.db.sql("""
+			SELECT name 
+			FROM `tabBuilding Classification`
+			WHERE %s BETWEEN minimum_income AND maximum_income
+		""", (gross_income,))
+		
+		if not building_class_result or not building_class_result[0]:
 			frappe.throw("Building Classification not found")
+		
+		building_class = building_class_result[0][0]
 		self.building_classification = building_class
 
 		if not self.applicant_rank:
-			highest_rank=frappe.db.sql("""select max(applicant_rank) as ranking 
-						from `tabHousing Application`
-						where employment_type="{employment_type}"
-						and building_classification="{classification}"
-					""".format(employment_type=self.employment_type, classification=self.building_classification))[0][0]
-			self.applicant_rank=cint(highest_rank) + 1
-	
+			highest_rank_result = frappe.db.sql("""
+				SELECT MAX(applicant_rank) AS ranking 
+				FROM `tabHousing Application`
+				WHERE employment_type=%s
+				AND building_classification=%s
+				AND work_station=%s
+			""", (self.employment_type, self.building_classification, self.work_station))
+			
+			if highest_rank_result and highest_rank_result[0][0] is not None:
+				self.applicant_rank = cint(highest_rank_result[0][0]) + 1
+			else:
+				self.applicant_rank = 1
+
+
 	def validate_duplicate(self):
 		if frappe.db.exists("Housing Application", {"cid":self.cid, "name":("!=",self.name), "docstatus":("!=", 2)}):
 			frappe.throw("Applicant with <b>CID No. {} </b>has already registered for Housing application".format(self.cid))
