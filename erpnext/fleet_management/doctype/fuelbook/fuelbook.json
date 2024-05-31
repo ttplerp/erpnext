@@ -74,16 +74,15 @@
    "options": "Equipment"
   },
   {
-   "depends_on": "eval:doc.type == \"Common\"",
    "fieldname": "expense_limit",
    "fieldtype": "Currency",
    "label": "Expense Limit",
-   "mandatory_depends_on": "eval:doc.type == \"Common\""
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-02-10 13:41:25.800875",
+ "modified": "2024-05-31 11:24:20.160979",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Fuelbook",

@@ -295,6 +295,7 @@
    "read_only": 1
   },
   {
+   "fetch_from": "fuel_book.expense_limit",
    "fieldname": "expense_limit",
    "fieldtype": "Currency",
    "label": "Expense Limit",
@@ -505,7 +506,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-26 11:30:25.264964",
+ "modified": "2024-05-31 11:29:09.334201",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Expense",
