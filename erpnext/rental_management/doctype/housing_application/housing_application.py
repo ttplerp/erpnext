@@ -54,8 +54,10 @@ class HousingApplication(Document):
 		
 		grade = self.grade
 		
-		if total_salary >= 80000 and grade not in  ('ES3','EX3','ES2','EX2','ES1','EX1') :
-			frappe.throw("Since the total gross salary exceeds Nu.80000, you are not applicable")
+		# if total_salary >= 80000 and grade not in  ('ES3','EX3','ES2','EX2','ES1','EX1') :
+		# 	frappe.throw("Since the total gross salary exceeds Nu.80000, you are not applicable")
+		if total_salary >= 24000:
+			frappe.throw("Since your total gross salary exceeds Nu. 24,000, you are not eligible, as currently only allowing only those in Class V or IV building categories.")
 
 	def update_ranks(self):
     # Fetch the applicant list filtered by application_status, building_classification, and work_station, sorted by application_date_time
