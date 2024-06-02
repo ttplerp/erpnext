@@ -19,11 +19,6 @@ def get_data(query, filters):
     datas = frappe.db.sql(query, as_dict=True)
     ini = su = cm = co = ad = av = cur = 0
     condition = ""
-    if filters.budget_against == "Project" and filters.project:
-        condition = " and project = '{0}'".format(filters.project)
-    elif filters.budget_against == "Cost Center" and filters.cost_center:
-        condition = " and cost_center = '{0}'".format(filters.cost_center)
-    
     if filters.business_activity:
         condition += " and business_activity = '{0}'".format(filters.business_activity)
     
@@ -40,10 +35,11 @@ def get_data(query, filters):
                     FROM `tabConsumed Budget` b
                     WHERE account = '{account}' 
                     and reference_date BETWEEN '{start_date}' and '{end_date}'
+                    and cost_center = "{cost_center}"
                     {condition}
                     order by reference_date Desc
                 """.format(account=d.account, start_date=filters.from_date, 
-                end_date=filters.to_date, condition=condition)
+                end_date=filters.to_date, cost_center=d.cost_center, condition=condition)
         ini+=flt(d.initial_budget)
         su+=flt(d.supplement)
 
@@ -112,7 +108,7 @@ def construct_query(filters=None):
             
     if filters.cost_center:
         lft, rgt = frappe.db.get_value("Cost Center", filters.cost_center, ["lft", "rgt"])
-        condition = """ and (b.cost_center in (select a.name 
+        query += """ and (b.cost_center in (select a.name 
                                         from `tabCost Center` a 
                                         where a.lft >= {1} and a.rgt <= {2}
                                         ) 
@@ -124,7 +120,6 @@ def construct_query(filters=None):
 
     if filters.business_activity:
         query += " and b.business_activity = \'" + str(filters.business_activity) + "\' "
-
     return query
 
 def validate_filters(filters):
