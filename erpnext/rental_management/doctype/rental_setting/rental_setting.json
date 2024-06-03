@@ -54,13 +54,14 @@
   {
    "fieldname": "update_hp",
    "fieldtype": "Button",
+   "hidden": 1,
    "label": "Update Housing Applicants"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-05-30 15:02:23.554474",
+ "modified": "2024-06-03 10:56:05.595602",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Setting",

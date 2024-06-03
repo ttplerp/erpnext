@@ -24,7 +24,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2024-03-04 15:58:02.738662",
+ "modified": "2024-06-03 10:38:42.355210",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "online-housing-application",
@@ -127,7 +127,7 @@
    "label": "Employment Type",
    "max_length": 0,
    "max_value": 0,
-   "options": "\nCivil Servant\nCorporate Employee\nPrivate Employee\nOthers",
+   "options": "\nCivil Servant\nCorporation, Private and etc",
    "read_only": 0,
    "reqd": 1,
    "show_in_filter": 0

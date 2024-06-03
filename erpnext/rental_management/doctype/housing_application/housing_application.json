@@ -63,10 +63,10 @@
   "grade",
   "ministry_agency",
   "agency",
+  "total_gross_salary",
   "column_break_38",
   "department",
   "gross_salary",
-  "total_gross_salary",
   "provident_fund_no",
   "amended_from",
   "attachment_tab",
@@ -104,7 +104,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Employment Type",
-   "options": "\nCivil Servant\nCorporate Employee\nPrivate Employee\nOthers",
+   "options": "\nCivil Servant\nCorporation, Private and etc",
    "reqd": 1
   },
   {
@@ -494,14 +494,14 @@
   {
    "fieldname": "total_gross_salary",
    "fieldtype": "Data",
-   "label": "Total Gross Salary"
+   "label": "Total Gross Salary(Applicant + Spouse))"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2024-05-29 11:13:36.628309",
+ "modified": "2024-06-03 11:22:39.720681",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Housing Application",

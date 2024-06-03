@@ -18,37 +18,36 @@ frappe.query_reports["Housing Application Report"] = {
             'fieldtype': 'Select',
             'options': [
 				"Civil Servant",
-				"Corporate Employee",
-                "Private Employee",
-                 "Others"
+				"Corporation, Private and etc",
 			]
         },
         {
             'fieldname': 'work_station',
             'label': 'Work Station',
             'fieldtype': 'Select',
-            'options':[
-                "Gasa",
-                "Trongsa",
-                "Trashigang",
-                "Sarpang",
-                "Tsirang",
-                "Samdrup Jongkhar",
-                "Dagana",
-                "Zhemgang",
-                "Paro",
+            options : [
+                "Bumthang",
                 "Chhukha",
-                "Mongar",
-                "Samtse",
-                "Trashi Yangtse",
-                "Lhuentse",
-                "Thimphu",
-                "Pema Gatshel",
-                "Wangdue Phodrang",
+                "Dagana",
+                "Gasa",
                 "Haa",
+                "Lhuentse",
+                "Mongar",
+                "Paro",
+                "Pema Gatshel",
                 "Punakha",
-                "Bumthang"
+                "Samdrup Jongkhar",
+                "Samtse",
+                "Sarpang",
+                "Thimphu",
+                "Trashi Yangtse",
+                "Trashigang",
+                "Trongsa",
+                "Tsirang",
+                "Wangdue Phodrang",
+                "Zhemgang"
             ]
+            
             
         },  
     {

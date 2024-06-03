@@ -5,16 +5,16 @@ frappe.ui.form.on('Rental Setting', {
 	// refresh: function(frm) {
 
 	// }
-	update_hp: function(frm) {
-		var currentUser = frappe.session.user;
-		frappe.call({
-			method: "erpnext.rental_management.doctype.rental_setting.rental_setting.updateHousingApplicants", // Replace with the actual method path
-			args: {
-				user : currentUser
-			},
-			callback: function (r) {
+	// update_hp: function(frm) {
+	// 	var currentUser = frappe.session.user;
+	// 	frappe.call({
+	// 		method: "erpnext.rental_management.doctype.rental_setting.rental_setting.updateHousingApplicants", // Replace with the actual method path
+	// 		args: {
+	// 			user : currentUser
+	// 		},
+	// 		callback: function (r) {
 				
-			}
-		});
-	}
+	// 		}
+	// 	});
+	// }
 });

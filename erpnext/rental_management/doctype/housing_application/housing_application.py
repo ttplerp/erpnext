@@ -12,6 +12,7 @@ from erpnext.rental_management.doctype.api_setting.api_setting import get_cid_de
 class HousingApplication(Document):
 	def validate(self):
 		self.check_agree()
+		self.check_employee_type()
 		self.check_salary()
 		if self.application_status == None or self.application_status== 'Pending':
 			self.validate_detail()
@@ -44,7 +45,12 @@ class HousingApplication(Document):
 		self.reload()
 			
 		
-
+	def check_employee_type(self):
+		if self.employment_type == "Civil Servant":
+			frappe.throw("New applications for civil servants are temporarily suspended, due to a substantial backlog")
+   
+		if self.work_station != "Thimphu":
+			frappe.throw("Applications are currently only allowed for Thimphu.")
 
 	def check_salary(self):
 		gross_salary = float(self.gross_salary) if self.gross_salary else 0
@@ -56,8 +62,8 @@ class HousingApplication(Document):
 		
 		# if total_salary >= 80000 and grade not in  ('ES3','EX3','ES2','EX2','ES1','EX1') :
 		# 	frappe.throw("Since the total gross salary exceeds Nu.80000, you are not applicable")
-		if total_salary >= 24000:
-			frappe.throw("Since your total gross salary exceeds Nu. 24,000, you are not eligible, as currently only allowing only those in Class V or IV building categories.")
+		if total_salary > 16000:
+			frappe.throw("Private applicants of gross houshold income below Nu.16,000 is accepted for now")
 
 	def update_ranks(self):
     # Fetch the applicant list filtered by application_status, building_classification, and work_station, sorted by application_date_time

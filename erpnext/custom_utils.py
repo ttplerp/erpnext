@@ -572,6 +572,7 @@ def update_gross_sal():
                 print(f"{item.get('cid')} {data1['GrossPay']}  {item.get('name')}")
         except KeyError as e:
             print(f"Error updating {item.get('name')}: {e}")
+    frappe.msgprint("salaries for applicants updated successfully")
 
 
 
@@ -601,6 +602,7 @@ def update_ranking():
 
 			frappe.db.sql(update_query, (application.name,))
 			print(f"{application.name}")
+		frappe.msgprint("Rankings for 80K plus updated successfully")
 			
 
 
@@ -659,17 +661,24 @@ def update_ranks():
 
 #update the building category
 def update_builCate():
-	applicant_list = frappe.get_all("Housing Application", filters={}, fields=["name","cid","gross_salary","spouse_gross_salary"])
-	for applicant in applicant_list:
-		gross_income = flt(applicant.get('gross_salary'),2) + flt(applicant.get('spouse_gross_salary'),2)
-		building_class=frappe.db.sql("""
-								select name from `tabBuilding Classification`
-								where '{gross_income}' between 	minimum_income and maximum_income
-							""".format(gross_income=gross_income))[0][0]
-		
-		print(f"{building_class} for {applicant.get('cid')} {gross_income}")
-		frappe.db.set_value("Housing Application", applicant.get('name'), "building_classification", building_class)
-		break
+    applicant_list = frappe.get_all("Housing Application", filters={}, fields=["name", "cid", "gross_salary", "spouse_gross_salary"])
+    for applicant in applicant_list:
+        gross_income = flt(applicant.get('gross_salary'), 2) + flt(applicant.get('spouse_gross_salary'), 2)
+        building_class_result = frappe.db.sql("""
+            select name from `tabBuilding Classification`
+            where %s between minimum_income and maximum_income
+        """, (gross_income,))
+        
+        if building_class_result:
+            building_class = building_class_result[0][0]
+            print(f"{building_class} for {applicant.get('cid')} {gross_income}")
+            frappe.db.set_value("Housing Application", applicant.get('name'), "building_classification", building_class)
+        else:
+            print(f"No building classification found for {applicant.get('cid')} with gross income {gross_income}")
+            
+    frappe.msgprint("Category updated successfully")
+
+
 
 
 # housing application ranking
@@ -708,6 +717,7 @@ def update_ranking_3pa():
 
         # Print the updated record (optional)
         print(f"Updated {applicant.get('name')} - Rank: {frappe.get_value('Housing Application', applicant.get('name'), 'applicant_rank')}")
+        frappe.msgprint("Ranking updated suucess")
 
 
 def updateNotEligibleRanking():
@@ -743,7 +753,16 @@ def updateNotEligibleRanking():
 
         # Print the updated record (optional)
         print(f"Updated {applicant.get('name')} - Rank: {frappe.get_value('Housing Application', applicant.get('name'), 'applicant_rank')}")
+        frappe.msgprint("Noteligible ranking updated")
 
 
 def test():
-    frappe.throw()
+    frappe.throw('test')
+    
+def updateHousingApplicantsdata():
+    # update_gross_sal()
+    update_ranking()
+    update_builCate()
+    update_ranking_3pa()
+    updateNotEligibleRanking()
+    
