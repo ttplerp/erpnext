@@ -318,6 +318,8 @@ class JournalEntry(AccountsController):
                 doc.journal_entry = self.name
                 doc.journal_entry_status = "Paid"
             if doc.muster_roll_group == "National":
+                if doc.adjusted_amount != 0:
+                    frappe.throw("Cannot cancelled as advance is already being used.")
                 doc.balance_amount = flt(doc.balance_amount) + (value["debit"] * factor)
                 doc.paid_amount = flt(doc.paid_amount) + (value["debit"] * factor)
             elif doc.muster_roll_group == "Non-National":
