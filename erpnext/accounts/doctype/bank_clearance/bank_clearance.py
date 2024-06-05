@@ -54,19 +54,23 @@ class BankClearance(Document):
 		payment_entries = frappe.db.sql(
 			"""
 			select
-				"Payment Entry" as payment_document, name as payment_entry,
-				reference_no as cheque_number, reference_date as cheque_date,
-				if(paid_from=%(account)s, paid_amount + total_taxes_and_charges, 0) as credit,
-				if(paid_from=%(account)s, 0, received_amount + total_taxes_and_charges) as debit,
-				posting_date, ifnull(party,if(paid_from=%(account)s,paid_to,paid_from)) as against_account, clearance_date,
-				if(paid_to=%(account)s, paid_to_account_currency, paid_from_account_currency) as account_currency
-			from `tabPayment Entry`
+				"Payment Entry" as payment_document, pe.name as payment_entry,
+				pe.reference_no as cheque_number, pe.reference_date as cheque_date,
+				if(pe.paid_to = %(account)s, IFNULL(pe.received_amount_after_tax, 0) - IFNULL(SUM(ped.amount), 0), 0) as debit,
+				if(pe.paid_from = %(account)s, IFNULL(pe.paid_amount_after_tax, 0) - IFNULL(SUM(ped.amount), 0), 0) as credit,
+				pe.posting_date, ifnull(pe.party,if(pe.paid_from=%(account)s,pe.paid_to,pe.paid_from)) as against_account, pe.clearance_date,
+				if(pe.paid_to=%(account)s, pe.paid_to_account_currency, pe.paid_from_account_currency) as account_currency
+			from `tabPayment Entry` pe
+			LEFT JOIN
+				`tabPayment Entry Deduction` ped ON ped.parent = pe.name
 			where
-				(paid_from=%(account)s or paid_to=%(account)s) and docstatus=1
-				and posting_date >= %(from)s and posting_date <= %(to)s
+				(pe.paid_from=%(account)s or pe.paid_to=%(account)s) and pe.docstatus=1
+				and pe.posting_date >= %(from)s and pe.posting_date <= %(to)s
 				{condition}
+			group by
+				pe.name
 			order by
-				posting_date ASC, name DESC
+				pe.posting_date ASC, pe.name DESC
 		""".format(
 				condition=condition
 			),
