@@ -15,6 +15,7 @@ frappe.ready(function() {
 	// Auto Populate details if the applicant it civil servant
 	frappe.web_form.on('employment_type', (field, value) => {
 		if(value=="Civil Servant"){
+			frappe.throw("New applications for civil servants are temporarily suspended, due to a substantial backlog")
 			get_employee_detail(applicant_cid, category="Applicant");
 			frappe.web_form.set_value('gross_salary_info', 'Your gross salary will be fetched from EPEMS.');
 		}
