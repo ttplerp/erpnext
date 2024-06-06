@@ -32,9 +32,6 @@ def get_data(filters):
 	if filters.get("account"):
 		bank_account_no = frappe.db.get_value("Account", filters.get("account"), "bank_account_no")
 		condition += " and account_no='{}'".format(bank_account_no)
-	
-	if filters.get("company"):
-		condition += " and company = '{}'".format(filters.get("company"))
 
 	if filters.get("from_date") and filters.get("to_date"):
 		condition += " and clearing_date between '{}' and '{}' ".format(filters.get("from_date"), filters.get("to_date"))
