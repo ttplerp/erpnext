@@ -35,7 +35,7 @@ def get_data(filters):
 		SELECT 
 			bp.name, bpi.transaction_type, bpi.transaction_id, bpi.transaction_date, bpi.transaction_reference, bpi.supplier, bpi.beneficiary_name, bpi.bank_account_no, bpi.amount, bpi.status, bpi.bank_journal_no, bpi.pi_number
 		FROM `tabBank Payment` bp, `tabBank Payment Item` bpi
-		WHERE bp.name=bpi.parent
+		WHERE bp.name=bpi.parent and bp.workflow_state not in ('Rejected', 'Cancelled')
 		{condition}
 	""".format(condition=cond))
 	return data
@@ -63,7 +63,7 @@ def get_utility_data(filters):
 		SELECT 
 			uti.utility_service_type, uti.party, ut.expense_account, ut.bank_account, uti.debit_account, uti.consumer_code, uti.outstanding_amount, uti.payment_status, uti.payment_response_msg, uti.create_direct_payment, uti.tds_applicable, uti.pi_number
 		FROM `tabUtility Bill` ut, `tabUtility Bill Item` uti 
-		WHERE ut.name=uti.parent
+		WHERE ut.name=uti.parent and ut.workflow_state not in ('Rejected', 'Cancelled')
 		{condition}
 	""".format(condition=cond))
 	return data
