@@ -33,8 +33,15 @@ frappe.query_reports["Bank Reconciliation Statement"] = {
 			}
 		},
 		{
+			"fieldname":"from_date",
+			"label": __("From Date"),
+			"fieldtype": "Date",
+			"default": frappe.datetime.month_start(),
+			"reqd": 1
+		},
+		{
 			"fieldname":"report_date",
-			"label": __("Date"),
+			"label": __("To Date"),
 			"fieldtype": "Date",
 			"default": frappe.datetime.get_today(),
 			"reqd": 1
