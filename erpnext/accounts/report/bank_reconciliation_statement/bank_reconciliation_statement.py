@@ -156,7 +156,6 @@ def get_journal_entries(filters):
 			`tabJournal Entry Account` jvd, `tabJournal Entry` jv
 		where jvd.parent = jv.name and jv.docstatus=1
 			and jvd.account = %(account)s and jv.posting_date between %(from_date)s and %(report_date)s
-			and ifnull(jv.clearance_date, '4000-01-01') > %(report_date)s
 			and ifnull(jv.is_opening, 'No') = 'No'""",
         filters,
         as_dict=1,
@@ -181,7 +180,6 @@ def get_payment_entries(filters):
 		where pe.docstatus=1 and
             (pe.paid_from=%(account)s or pe.paid_to=%(account)s) 
 			and pe.posting_date between %(from_date)s and %(report_date)s
-			and ifnull(pe.clearance_date, '4000-01-01') > %(report_date)s
 	""",
         filters,
         as_dict=1,
@@ -199,7 +197,6 @@ def get_pos_entries(filters):
 			where
 				sip.account=%(account)s and si.docstatus=1 and sip.parent = si.name
 				and account.name = sip.account and posting_date between %(from_date)s and %(report_date)s and
-				ifnull(sip.clearance_date, '4000-01-01') > %(report_date)s
 			order by
 				si.posting_date ASC, si.name DESC
 		""",
@@ -259,7 +256,7 @@ def get_amounts_not_reflected_in_system(filters):
 		select sum(jvd.debit_in_account_currency - jvd.credit_in_account_currency)
 		from `tabJournal Entry Account` jvd, `tabJournal Entry` jv
 		where jvd.parent = jv.name and jv.docstatus=1 and jvd.account=%(account)s
-		and jv.posting_date > %(report_date)s and jv.clearance_date <= %(report_date)s
+		and jv.posting_date > %(report_date)s
 		and ifnull(jv.is_opening, 'No') = 'No' """,
         filters,
     )
@@ -271,7 +268,7 @@ def get_amounts_not_reflected_in_system(filters):
 		select sum(if(paid_from=%(account)s, paid_amount, received_amount))
 		from `tabPayment Entry`
 		where (paid_from=%(account)s or paid_to=%(account)s) and docstatus=1
-		and posting_date > %(report_date)s and clearance_date <= %(report_date)s""",
+		and posting_date > %(report_date)s """,
         filters,
     )
 

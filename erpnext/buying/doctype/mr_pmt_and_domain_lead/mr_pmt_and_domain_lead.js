@@ -9,8 +9,8 @@ frappe.ui.form.on('MR PMT And Domain Lead', {
 		frm.set_query("cost_center", "domain_item", function() {
 			return {
 				filters: {
-					center_category: "Course",
-					cost_center_for: "DSP",
+					// center_category: "Course",
+					// cost_center_for: "DSP",
 					is_group: 0
 				}
 			};
@@ -18,8 +18,8 @@ frappe.ui.form.on('MR PMT And Domain Lead', {
 		frm.set_query("cost_center", "pmt_item", function() {
 			return {
 				filters: {
-					center_category: "Course",
-					cost_center_for: "DSP",
+					// center_category: "Course",
+					// cost_center_for: "DSP",
 					is_group: 0
 				}
 			};
@@ -40,8 +40,8 @@ frappe.ui.form.on('MR PMT And Domain Lead', {
 					        filters: [
 					            ["Cost Center", "disabled", "=", 0],
 					            ["Cost Center", "is_group", "=", 1],
-					            ["Cost Center", "center_category", "=", "Domain"],
-					            ["Cost Center", "cost_center_for", "=", "DSP"]
+					            // ["Cost Center", "center_category", "=", "Domain"],
+					            // ["Cost Center", "cost_center_for", "=", "DSP"]
 					        ]
 					    };
 					},
@@ -85,8 +85,8 @@ frappe.ui.form.on('MR PMT And Domain Lead', {
 					        filters: [
 					            ["Cost Center", "disabled", "=", 0],
 					            ["Cost Center", "is_group", "=", 1],
-					            ["Cost Center", "center_category", "=", "Domain"],
-					            ["Cost Center", "cost_center_for", "=", "DSP"]
+					            // ["Cost Center", "center_category", "=", "Domain"],
+					            // ["Cost Center", "cost_center_for", "=", "DSP"]
 					        ]
 					    };
 					},
