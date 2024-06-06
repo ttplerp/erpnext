@@ -51,7 +51,7 @@ class TDSRemittance(AccountsController):
 
 	def make_gl_entries(self):
 		gl_entries   = []
-		tds_account  = get_tds_account(self.tax_withholding_category)
+		tds_account  = get_tds_account(self.company, self.tax_withholding_category)
 		default_business_activity = frappe.db.get_value("Business Activity", {"is_default": 1})
 
 		if flt(self.total_tds) > 0:
@@ -176,7 +176,7 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 			(t1.tax_account = "{0}" and ifnull(t1.apply_tds,0) = 1))""".format(accounts[0])
 	else:
 		accounts_cond = """and (t1.account in ({0}) or 
-			t1.tax_accout in ({0}) and ifnull(t1.apply_tds,0) = 1))""".format('"' + '","'.join(accounts) + '"')
+			t1.tax_account in ({0}) and ifnull(t1.apply_tds,0) = 1)""".format('"' + '","'.join(accounts) + '"')
 	
 	if party_type:
 		party_cond = "and t1.party_type = '{}'".format(party_type)
