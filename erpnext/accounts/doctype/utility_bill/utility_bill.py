@@ -241,7 +241,7 @@ class UtilityBill(Document):
         doc.posting_date = self.posting_date
         doc.voucher_type = "Bank Entry"
         doc.naming_series = "Bank Payment Voucher"
-        # doc.company = "State Mining Corporation Ltd"
+        doc.company = self.company
         doc.utility_bill = str(self.name)
         doc.remarks = "Utility Bill Payment " + str(self.name)
         doc.status = "Completed"
