@@ -17,6 +17,7 @@
   "is_group",
   "default_holiday_list",
   "cb0",
+  "company_cost_center",
   "default_letter_head",
   "tax_id",
   "domain",
@@ -73,10 +74,11 @@
   "default_discount_account",
   "payment_terms",
   "cost_center",
-  "company_cost_center",
   "dhq_default_cost_center",
   "default_finance_book",
   "default_payroll_payable_account",
+  "tds_accounts_section",
+  "tds_accounts",
   "auto_accounting_for_stock_settings",
   "enable_perpetual_inventory",
   "enable_provisional_accounting_for_non_stock_items",
@@ -126,7 +128,12 @@
   "registration_details",
   "lft",
   "rgt",
-  "old_parent"
+  "old_parent",
+  "maintenance_accounts_settings_section",
+  "repair_and_maintenance_account",
+  "pol_advance_account",
+  "column_break_123",
+  "pol_account"
  ],
  "fields": [
   {
@@ -565,7 +572,7 @@
    "collapsible": 1,
    "depends_on": "eval: doc.docstatus == 0 && doc.__islocal != 1",
    "fieldname": "company_info",
-   "fieldtype": "Tab Break",
+   "fieldtype": "Section Break",
    "label": "Address & Contact"
   },
   {
@@ -908,6 +915,43 @@
    "fieldtype": "Link",
    "label": "Default Expense Claim Payable Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "tds_accounts_section",
+   "fieldtype": "Section Break",
+   "label": "TDS Accounts"
+  },
+  {
+   "fieldname": "tds_accounts",
+   "fieldtype": "Table",
+   "options": "TDS Account Item"
+  },
+  {
+   "fieldname": "maintenance_accounts_settings_section",
+   "fieldtype": "Tab Break",
+   "label": "Maintenance Accounts Settings"
+  },
+  {
+   "fieldname": "repair_and_maintenance_account",
+   "fieldtype": "Link",
+   "label": "Repair and Maintenance Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "column_break_123",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pol_account",
+   "fieldtype": "Link",
+   "label": "POL Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "pol_advance_account",
+   "fieldtype": "Link",
+   "label": "POL Advance Account",
+   "options": "Account"
   }
  ],
  "icon": "fa fa-building",
@@ -915,7 +959,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2024-02-14 14:48:31.519184",
+ "modified": "2024-06-07 13:01:37.793249",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",
