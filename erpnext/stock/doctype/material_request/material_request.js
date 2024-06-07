@@ -474,6 +474,14 @@ frappe.ui.form.on("Material Request Item", {
 			}
 		}
 	},
+
+	qty: function (frm, cdt, cdn) {
+		calculate_amount(frm, cdt, cdn)
+	},
+
+	rate: function (frm, cdt, cdn) {
+		calculate_amount(frm, cdt, cdn)
+	},
 	
 
 	// issue_to: function (frm, cdt, cdn) {
@@ -485,6 +493,13 @@ frappe.ui.form.on("Material Request Item", {
 	// 	});
 	// }
 });
+
+var calculate_amount = function(frm, cdt, cdn) {
+	let child = locals[cdt][cdn];
+	let amount = child.qty * child.rate
+	frappe.model.set_value(cdt, cdn, 'amount', parseFloat(amount));
+	frm.refresh_field("amount", cdt, cdn)
+}
 
 erpnext.buying.MaterialRequestController = class MaterialRequestController extends erpnext.buying.BuyingController {
 	tc_name() {
