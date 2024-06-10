@@ -1,5 +1,5 @@
 {
- "add_total_row": 0,
+ "add_total_row": 1,
  "columns": [],
  "creation": "2022-09-17 16:42:49.545595",
  "disable_prepared_report": 0,
@@ -9,7 +9,7 @@
  "filters": [],
  "idx": 0,
  "is_standard": "Yes",
- "modified": "2022-09-17 16:42:49.545595",
+ "modified": "2024-06-10 15:21:52.581230",
  "modified_by": "Administrator",
  "module": "Budget",
  "name": "Detailed Budget Consumption Report",
