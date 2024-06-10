@@ -15,7 +15,7 @@ class MRPMTAndDomainLead(Document):
 			if d.cost_center not in data:
 				data.append(d.cost_center)
 			else:
-				frappe.throw("#row {}, duplicate data in Domain List!".format(d.idx))
+				frappe.throw("#row {}, duplicate cost center {} in Domain List!".format(frappe.bold(d.cost_center), d.idx))
 	
 	def pmt_item_duplicate(self):
 		data = []
