@@ -65,6 +65,7 @@ def get_data(query, filters):
                 "account": a.account,
                 "account_number": a.account_number,
                 "cost_center": a.cost_center,
+                "consumed_cost_center": a.consumed_cost_center,
                 "initial": flt(d.initial_budget),
                 "supplementary": supplement,
                 "adjustment": adjustment,
