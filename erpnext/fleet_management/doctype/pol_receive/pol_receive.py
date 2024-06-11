@@ -254,9 +254,9 @@ class POLReceive(StockController):
 		if self.hired_equipment:
 			if self.fuel_policy == "With Fuel":
 				if self.hired_equipment_type == "Vehicle":
-					debit_account = frappe.db.get_single_value("Maintenance Settings", "vehicle_expense_account")
+					debit_account = frappe.db.get_single_value("Maintenance Settings", "hired_fuel_expense_account")
 				else:
-					debit_account = frappe.db.get_single_value("Maintenance Settings", "machine_expense_account")
+					debit_account = frappe.db.get_single_value("Maintenance Settings", "hired_fuel_expense_account")
 			if not debit_account:
 				frappe.throw("Set <strong>{}</strong> account in Maintenance Settings.".format("Vehicle Expense Advance" if self.hired_equipment_type == "Vehicle" else "Machine Expense Account"))
 		else:
