@@ -477,10 +477,12 @@ frappe.ui.form.on("Material Request Item", {
 
 	qty: function (frm, cdt, cdn) {
 		calculate_amount(frm, cdt, cdn)
+		calculate_total_amount(frm);
 	},
 
 	rate: function (frm, cdt, cdn) {
-		calculate_amount(frm, cdt, cdn)
+		calculate_amount(frm, cdt, cdn);
+		calculate_total_amount(frm);
 	},
 	
 
@@ -499,6 +501,22 @@ var calculate_amount = function(frm, cdt, cdn) {
 	let amount = child.qty * child.rate
 	frappe.model.set_value(cdt, cdn, 'amount', parseFloat(amount));
 	frm.refresh_field("amount", cdt, cdn)
+}
+
+var calculate_total_amount = function(frm){
+	var me = frm.doc.items || [];
+	var total_amount = 0.00;
+	
+	if(frm.doc.docstatus != 1)
+	{
+		for(var i=0; i<me.length; i++){
+			if(me[i].amount){
+				total_amount += parseFloat(me[i].amount);
+			}
+		}
+		
+		cur_frm.set_value("total_amount",(total_amount));
+	}
 }
 
 erpnext.buying.MaterialRequestController = class MaterialRequestController extends erpnext.buying.BuyingController {
