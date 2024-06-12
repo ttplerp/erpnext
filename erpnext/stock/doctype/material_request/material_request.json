@@ -22,6 +22,7 @@
   "transaction_date",
   "schedule_date",
   "company",
+  "last_date_of_material_request",
   "amended_from",
   "warehouse_section",
   "set_from_warehouse",
@@ -427,13 +428,18 @@
    "fieldtype": "Link",
    "label": "Business Activity",
    "options": "Business Activity"
+  },
+  {
+   "fieldname": "last_date_of_material_request",
+   "fieldtype": "Date",
+   "label": "Last Date of Material Request"
   }
  ],
  "icon": "fa fa-ticket",
  "idx": 70,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-23 12:29:01.181281",
+ "modified": "2024-06-12 10:10:09.080697",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Material Request",
