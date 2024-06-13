@@ -110,8 +110,8 @@ class JobCard(AccountsController):
 
 		payable_account = self.expense_account
 		if not payable_account:
-			payable_account = frappe.db.get_single_value("Maintenance Accounts Settings", "maintenance_payable_account")
-		maintenance_account = frappe.db.get_single_value("Maintenance Accounts Settings", "maintenance_expense_account")
+			payable_account = frappe.db.get_value("Company", self.company, "default_payable_account")
+		maintenance_account = frappe.db.get_value("Company", self.company, "repair_and_maintenance_account")
 			
 		if not maintenance_account:
 			frappe.throw("Setup Default Goods Account in Maintenance Setting")
@@ -182,7 +182,7 @@ class JobCard(AccountsController):
 			gl_entries = []
 			self.posting_date = self.finish_date
 
-			maintenance_account = frappe.db.get_single_value("Maintenance Accounts Settings", "maintenance_expense_account")
+			maintenance_account = frappe.db.get_value("Company", self.company, "repair_and_maintenance_account")
 			payable_account = frappe.db.get_value("Company", self.company, "default_payable_account")
 			if not maintenance_account:
 				frappe.throw("Setup Default Goods Account in Maintenance Setting")
