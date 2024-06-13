@@ -46,6 +46,7 @@
   "company",
   "department",
   "employee_number",
+  "probation_end_date",
   "column_break_25",
   "branch",
   "cost_center",
@@ -114,6 +115,8 @@
   "health_details",
   "passport_details_section",
   "passport_number",
+  "cid_number",
+  "work_permit_number",
   "valid_upto",
   "column_break_73",
   "date_of_issue",
@@ -1031,13 +1034,32 @@
    "fieldname": "house_no",
    "fieldtype": "Data",
    "label": "House No"
+  },
+  {
+   "depends_on": "eval:doc.employment_type=='Probation'",
+   "fieldname": "probation_end_date",
+   "fieldtype": "Date",
+   "label": "Probation End Date",
+   "mandatory_depends_on": "eval:doc.employment_type == 'Probation'"
+  },
+  {
+   "fieldname": "work_permit_number",
+   "fieldtype": "Data",
+   "label": "Work Permit Number",
+   "unique": 1
+  },
+  {
+   "fieldname": "cid_number",
+   "fieldtype": "Data",
+   "label": "CID Number",
+   "unique": 1
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2024-06-06 16:41:57.535344",
+ "modified": "2024-06-12 12:39:11.674078",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
