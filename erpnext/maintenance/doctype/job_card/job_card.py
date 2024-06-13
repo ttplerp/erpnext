@@ -114,9 +114,9 @@ class JobCard(AccountsController):
 		maintenance_account = frappe.db.get_value("Company", self.company, "repair_and_maintenance_account")
 			
 		if not maintenance_account:
-			frappe.throw("Setup Default Goods Account in Maintenance Setting")
+				frappe.throw("Setup Repair and Maintenance Account in company '{}'".format(frappe.get_desk_link("Company", self.company)))
 		if not payable_account:
-			frappe.throw("Payable Account in mandatory")
+			frappe.throw("Setup Default Payable Account in company '{}'".format(frappe.get_desk_link("Company", self.company)))
 
 		tds_rate, tds_account = 0, ""
 		if self.tds_amount > 0:
@@ -185,9 +185,9 @@ class JobCard(AccountsController):
 			maintenance_account = frappe.db.get_value("Company", self.company, "repair_and_maintenance_account")
 			payable_account = frappe.db.get_value("Company", self.company, "default_payable_account")
 			if not maintenance_account:
-				frappe.throw("Setup Default Goods Account in Maintenance Setting")
+				frappe.throw("Setup Repair and Maintenance Account in company '{}'".format(frappe.get_desk_link("Company", self.company)))
 			if not payable_account:
-				frappe.throw("Setup Default Payable Account in Company Setting")
+				frappe.throw("Setup Default Payable Account in company '{}'".format(frappe.get_desk_link("Company", self.company)))
 
 			gl_entries.append(
 				self.get_gl_dict({
@@ -293,9 +293,9 @@ class JobCard(AccountsController):
 		bank_account = frappe.db.get_value("Company", self.company, "default_bank_account")
 
 		if not bank_account:
-			frappe.throw("Setup Default Bank Account in Company Setting")
+				frappe.throw("Setup Default Bank Account in company '{}'".format(frappe.get_desk_link("Company", self.company)))
 		if not payable_account:
-			frappe.throw("Setup Payable Bank Account in Company Setting")
+			frappe.throw("Setup Default Payable Account in company '{}'".format(frappe.get_desk_link("Company", self.company)))
 
 		tds_rate, tds_account = 0, ""
 		if self.tds_amount > 0:
