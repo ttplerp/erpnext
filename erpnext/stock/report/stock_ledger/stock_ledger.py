@@ -201,29 +201,6 @@ def get_columns(filters):
 				"options": "Company:company:default_currency",
 				"convertible": "rate",
 			},
-			# {
-			# 	"label": _("Voucher #"),
-			# 	"fieldname": "voucher_no",
-			# 	"fieldtype": "Dynamic Link",
-			# 	"options": "voucher_type",
-			# 	"width": 150,
-			# },
-			# {
-			# 	"label": _("Brand"),
-			# 	"fieldname": "brand",
-			# 	"fieldtype": "Link",
-			# 	"options": "Brand",
-			# 	"width": 100,
-			# },
-			# {"label": _("Description"), "fieldname": "description", "width": 200},
-			# {
-			# 	"label": _("Incoming Rate"),
-			# 	"fieldname": "incoming_rate",
-			# 	"fieldtype": "Currency",
-			# 	"width": 110,
-			# 	"options": "Company:company:default_currency",
-			# 	"convertible": "rate",
-			# },
 			{"label": _("Voucher Type"), "fieldname": "voucher_type", "width": 110},
 			{
 				"label": _("Voucher #"),
@@ -246,21 +223,6 @@ def get_columns(filters):
 				"options": "Equipment",
 				"width": 100,
 			},
-			# {
-			# 	"label": _("Batch"),
-			# 	"fieldname": "batch_no",
-			# 	"fieldtype": "Link",
-			# 	"options": "Batch",
-			# 	"width": 100,
-			# },
-			# {
-			# 	"label": _("Serial No"),
-			# 	"fieldname": "serial_no",
-			# 	"fieldtype": "Link",
-			# 	"options": "Serial No",
-			# 	"width": 100,
-			# },
-			# {"label": _("Balance Serial No"), "fieldname": "balance_serial_no", "width": 100},
 			{
 				"label": _("Expense Account"),
 				"fieldname": "expense_account",
@@ -393,9 +355,11 @@ def get_item_details(items, sl_entries, include_uom):
 	res = frappe.db.sql(
 		"""
 		select
-			item.name, item.item_name, item.description, item.item_group, item.item_sub_group, item.brand, item.stock_uom {cf_field}
+			item.name, item.item_name, item.description, item.item_group, item.item_sub_group, item.brand, id.expense_account, item.stock_uom {cf_field}
 		from
 			`tabItem` item
+		inner join 
+			`tabItem Default` id on id.parent = item.name
 			{cf_join}
 		where
 			item.name in ({item_codes})
