@@ -17,6 +17,7 @@
   "column_break_7",
   "branch",
   "column_break_3",
+  "company",
   "out_source",
   "supplier",
   "customer",
@@ -46,20 +47,16 @@
   "items",
   "section_break_15",
   "goods_amount",
-  "column_break_the",
-  "services_amount",
-  "column_break_199",
   "total_amount",
-  "column_break_34",
   "outstanding_amount",
-  "tax_details_section_break",
-  "tax_withholding_category",
-  "column_break_49",
-  "tds_account",
-  "column_break_51",
-  "tds_amount",
-  "column_break_53",
+  "column_break_199",
+  "services_amount",
   "net_amount",
+  "column_break_34",
+  "apply_tds",
+  "tax_withholding_category",
+  "tds_account",
+  "tds_amount",
   "section_break_25",
   "assigned_to",
   "section_break_13",
@@ -75,8 +72,6 @@
   "payment_jv",
   "paid",
   "section_break_54",
-  "company",
-  "workflow_state",
   "column_break_56",
   "currency",
   "amended_from"
@@ -89,13 +84,6 @@
    "in_list_view": 1,
    "label": "Payment Status",
    "read_only": 1
-  },
-  {
-   "fieldname": "workflow_state",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Workflow State",
-   "options": "Workflow State"
   },
   {
    "fieldname": "owned_by",
@@ -326,10 +314,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "column_break_the",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "services_amount",
    "fieldtype": "Currency",
    "label": "Services Amount",
@@ -465,47 +449,39 @@
    "options": "Mechanic Assigned"
   },
   {
-   "fieldname": "tax_details_section_break",
-   "fieldtype": "Section Break",
-   "label": "Tax Details"
-  },
-  {
+   "depends_on": "eval:doc.apply_tds",
    "fieldname": "tax_withholding_category",
    "fieldtype": "Link",
    "label": "Tax Withholding Category",
    "options": "Tax Withholding Category"
   },
   {
-   "fieldname": "column_break_49",
-   "fieldtype": "Column Break"
-  },
-  {
+   "depends_on": "eval:doc.apply_tds",
    "fieldname": "tds_account",
    "fieldtype": "Data",
    "label": "TDS Account"
   },
   {
-   "fieldname": "column_break_51",
-   "fieldtype": "Column Break"
-  },
-  {
+   "depends_on": "eval:doc.apply_tds",
    "fieldname": "tds_amount",
    "fieldtype": "Currency",
    "label": "TDS Amount"
   },
   {
-   "fieldname": "column_break_53",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "net_amount",
    "fieldtype": "Currency",
    "label": "Net Amount"
+  },
+  {
+   "default": "0",
+   "fieldname": "apply_tds",
+   "fieldtype": "Check",
+   "label": "Apply TDS"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-12-15 15:09:47.626544",
+ "modified": "2024-06-13 11:31:12.093687",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Job Card",

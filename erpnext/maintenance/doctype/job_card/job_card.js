@@ -105,10 +105,11 @@ frappe.ui.form.on("Job Card", {
 			method: "get_tax_details",
 			doc: frm.doc,
 			callback: function(r) {
-				console.log(r.message.account);
-				frm.set_value("tds_account", r.message.account);
-				frm.set_value("tds_amount", flt(cur_frm.doc.total_amount * flt(r.message.rate / 100)));
-				frm.set_value("net_amount", cur_frm.doc.total_amount - flt(cur_frm.doc.total_amount * flt(r.message.rate / 100)));
+				console.log(r.message.tax_withholding_account);
+				frm.set_value("tds_account", r.message.tax_withholding_account);
+				frm.set_value("tds_amount", flt(cur_frm.doc.total_amount * flt(r.message.tax_withholding_rate / 100)));
+				frm.set_value("net_amount", cur_frm.doc.total_amount - flt(cur_frm.doc.total_amount * flt(r.message.tax_withholding_rate / 100)));
+				frm.set_value("outstanding_amount", cur_frm.doc.total_amount - flt(cur_frm.doc.total_amount * flt(r.message.tax_withholding_rate / 100)));
 				frm.refresh();
 			}
 		});

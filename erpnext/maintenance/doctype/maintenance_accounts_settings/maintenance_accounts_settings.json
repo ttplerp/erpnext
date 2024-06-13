@@ -12,6 +12,7 @@
   "section_break_5",
   "maintenance_expense_account",
   "repair_and_maintenance_expense_account",
+  "maintenance_payable_account",
   "column_break_5",
   "default_receivable_account",
   "default_bank_account",
@@ -181,11 +182,17 @@
    "fieldtype": "Link",
    "label": "Default Expense Bank Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "maintenance_payable_account",
+   "fieldtype": "Link",
+   "label": "Maintenance Payable Account",
+   "options": "Account"
   }
  ],
  "issingle": 1,
  "links": [],
- "modified": "2022-12-20 17:03:10.123902",
+ "modified": "2024-05-24 10:37:14.923996",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Maintenance Accounts Settings",

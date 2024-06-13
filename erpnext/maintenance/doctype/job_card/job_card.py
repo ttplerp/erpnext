@@ -20,7 +20,9 @@ class JobCard(AccountsController):
 		if self.finish_date:
 			check_future_date(self.finish_date)
 		self.update_breakdownreport()
-
+		self.calculate_total_amount()
+	
+	def calculate_total_amount(self):
 		cc_amount = {}
 		self.services_amount = self.goods_amount = 0
 		for a in self.items:
@@ -33,7 +35,11 @@ class JobCard(AccountsController):
 		if 'Item' in cc_amount:
 			self.goods_amount = cc_amount['Item']
 		self.total_amount = flt(self.services_amount) + flt(self.goods_amount)
-		self.outstanding_amount = self.total_amount
+		
+		if self.tds_amount > 0:
+			self.outstanding_amount = self.total_amount - self.tds_amount
+		else:
+			self.outstanding_amount = self.total_amount
 
 	def on_submit(self):
 		self.check_items()
@@ -103,6 +109,8 @@ class JobCard(AccountsController):
 		ba = self.business_activity
 
 		payable_account = self.expense_account
+		if not payable_account:
+			payable_account = frappe.db.get_single_value("Maintenance Accounts Settings", "maintenance_payable_account")
 		maintenance_account = frappe.db.get_single_value("Maintenance Accounts Settings", "maintenance_expense_account")
 			
 		if not maintenance_account:
@@ -113,8 +121,8 @@ class JobCard(AccountsController):
 		tds_rate, tds_account = 0, ""
 		if self.tds_amount > 0:
 			tds_dtls = self.get_tax_details()
-			tds_rate = tds_dtls['rate']
-			tds_account = tds_dtls['account']
+			tds_rate = tds_dtls['tax_withholding_rate']
+			tds_account = tds_dtls['tax_withholding_account']
 
 		r = []
 		if self.remarks:
@@ -175,7 +183,7 @@ class JobCard(AccountsController):
 			self.posting_date = self.finish_date
 
 			maintenance_account = frappe.db.get_single_value("Maintenance Accounts Settings", "maintenance_expense_account")
-			payable_account = frappe.db.get_value("Company", self.company,"default_payable_account")
+			payable_account = frappe.db.get_value("Company", self.company, "default_payable_account")
 			if not maintenance_account:
 				frappe.throw("Setup Default Goods Account in Maintenance Setting")
 			if not payable_account:
@@ -193,14 +201,25 @@ class JobCard(AccountsController):
 					"business_activity": self.business_activity
 				}, self.currency)
 			)
+			if self.tds_amount > 0:
+				gl_entries.append(
+					self.get_gl_dict({
+						"account": self.tds_account,
+						"against": self.supplier,
+						"credit": self.tds_amount,
+						"credit_in_account_currency": self.tds_amount,
+						"business_activity": self.business_activity,
+						"cost_center": self.cost_center
+						}, self.currency)
+					)
 			gl_entries.append(
 				self.get_gl_dict({
 					"account": payable_account,
 					"party_type": "Supplier",
 					"party": self.supplier,
 					"against": self.supplier,
-					"credit": self.total_amount,
-					"credit_in_account_currency": self.total_amount,
+					"credit": self.net_amount,
+					"credit_in_account_currency": self.net_amount,
 					"business_activity": self.business_activity,
 					"cost_center": self.cost_center
 					}, self.currency)
@@ -271,7 +290,7 @@ class JobCard(AccountsController):
 		ba = self.business_activity
 
 		payable_account = frappe.db.get_value("Company", self.company,"default_payable_account")
-		bank_account = frappe.db.get_value("Company", self.company,"default_bank_account_dhq")
+		bank_account = frappe.db.get_value("Company", self.company, "default_bank_account")
 
 		if not bank_account:
 			frappe.throw("Setup Default Bank Account in Company Setting")
@@ -281,8 +300,8 @@ class JobCard(AccountsController):
 		tds_rate, tds_account = 0, ""
 		if self.tds_amount > 0:
 			tds_dtls = self.get_tax_details()
-			tds_rate = tds_dtls['rate']
-			tds_account = tds_dtls['account']
+			tds_rate = tds_dtls['tax_withholding_rate']
+			tds_account = tds_dtls['tax_withholding_account']
 
 		r = []
 		if self.remarks:
@@ -337,10 +356,20 @@ class JobCard(AccountsController):
 
 	@frappe.whitelist()
 	def get_tax_details(self):
-		tax_account = frappe.db.get_value("Tax Withholding Account", {"parent": self.tax_withholding_category, "company": self.company}, "account")
-		tax_rate = frappe.db.get_value("Tax Withholding Rate", {"parent": self.tax_withholding_category}, "tax_withholding_rate")
 
-		return {"account": tax_account, "rate": tax_rate}
+		account = frappe.db.sql("""select t.name,
+			ifnull((select tax_withholding_rate
+				from `tabTax Withholding Rate` r
+				where r.parent = t.name
+				limit 1),0) as tax_withholding_rate,
+			(select account
+				from `tabTax Withholding Account` a
+				where a.parent = t.name and a.company = '{}'
+				limit 1) as tax_withholding_account
+		from `tabTax Withholding Category` t
+		where t.name = "{}" """.format(self.company, self.tax_withholding_category), as_dict=True)
+		return account[0] if account else None
+	
 
 @frappe.whitelist()
 def get_payment_entry(doc_name, total_amount):

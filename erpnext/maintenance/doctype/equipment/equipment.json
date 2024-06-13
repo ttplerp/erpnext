@@ -7,6 +7,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "company",
   "branch",
   "is_disabled",
   "col_break_2",
@@ -136,8 +137,7 @@
    "fieldname": "equipment_model",
    "fieldtype": "Link",
    "label": "Equipment Model",
-   "options": "Equipment Model",
-   "set_only_once": 1
+   "options": "Equipment Model"
   },
   {
    "fieldname": "column_break_4",
@@ -275,10 +275,17 @@
    "fieldname": "not_dsp",
    "fieldtype": "Check",
    "label": "Other's Equipment"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
   }
  ],
  "links": [],
- "modified": "2023-01-05 17:23:41.259871",
+ "modified": "2024-06-13 10:44:47.322434",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Equipment",
