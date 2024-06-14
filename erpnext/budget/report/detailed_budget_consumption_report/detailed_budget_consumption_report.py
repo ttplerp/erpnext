@@ -107,13 +107,21 @@ def construct_query(filters=None):
             where b.docstatus = 1 and b.name = ba.parent
             and ba.initial_budget != 0 and b.fiscal_year = \'""" + str(filters.fiscal_year) + "\' "
             
-    if filters.cost_center:
-        lft, rgt = frappe.db.get_value("Cost Center", filters.cost_center, ["lft", "rgt"])
+    if filters.branch_cost_center:
+        lft, rgt = frappe.db.get_value("Cost Center", filters.branch_cost_center, ["lft", "rgt"])
         query += """ and (b.cost_center in (select a.name 
                                         from `tabCost Center` a 
                                         where a.lft >= {1} and a.rgt <= {2}
                                         ) 
                     or b.cost_center = '{0}')
+            """.format(filters.branch_cost_center, lft, rgt)
+    if filters.cost_center and not filters.branch_cost_center:
+        lft, rgt = frappe.db.get_value("Cost Center", filters.cost_center, ["lft", "rgt"])
+        query += """ and (b.cost_center in (select a.name 
+                                        from `tabCost Center` a 
+                                        where a.lft >= {1} and a.rgt <= {2}
+                                        ) 
+                    )
             """.format(filters.cost_center, lft, rgt)
 
     if filters.account:
