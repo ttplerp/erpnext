@@ -515,8 +515,7 @@
    "fieldname": "passport_number",
    "fieldtype": "Data",
    "label": "Passport Number",
-   "reqd": 1,
-   "unique": 1
+   "reqd": 1
   },
   {
    "fieldname": "date_of_issue",
@@ -1059,7 +1058,7 @@
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2024-06-12 12:39:11.674078",
+ "modified": "2024-06-14 17:39:43.567999",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
