@@ -514,8 +514,7 @@
   {
    "fieldname": "passport_number",
    "fieldtype": "Data",
-   "label": "Passport Number",
-   "reqd": 1
+   "label": "Passport Number"
   },
   {
    "fieldname": "date_of_issue",
@@ -1051,6 +1050,7 @@
    "fieldname": "cid_number",
    "fieldtype": "Data",
    "label": "CID Number",
+   "reqd": 1,
    "unique": 1
   }
  ],
@@ -1058,7 +1058,7 @@
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2024-06-14 17:39:43.567999",
+ "modified": "2024-06-17 10:51:31.983150",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
