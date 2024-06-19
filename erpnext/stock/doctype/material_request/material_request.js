@@ -123,11 +123,27 @@ frappe.ui.form.on('Material Request', {
 		};
 	},
 	item_sub_group: function(frm){
-		frm.fields_dict["items"].grid.get_field("item_code").get_query = function (doc) {
-			return {
-				filters: { 'item_sub_group': frm.doc.item_sub_group}
+		if (frm.doc.item_group == "Fixed Assets") {
+			frm.fields_dict["items"].grid.get_field("item_code").get_query = function (doc) {
+				return {
+					filters: { 
+						'item_sub_group': frm.doc.item_sub_group,
+						'item_type': frm.doc.item_type
+					}
+				};
 			};
-		};
+		}
+		
+		if (frm.doc.item_group == "POL") {
+			frm.fields_dict["items"].grid.get_field("item_code").get_query = function (doc) {
+				return {
+					filters: { 
+						'item_sub_group': frm.doc.item_sub_group,
+					}
+				};
+			};
+		} 
+		
 	},
 	cost_center: function(frm){
 		frm.doc.items.map(v=>{
