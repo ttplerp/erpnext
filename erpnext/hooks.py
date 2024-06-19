@@ -402,6 +402,9 @@ scheduler_events = {
 		"erpnext.erpnext_integrations.doctype.plaid_settings.plaid_settings.automatic_synchronization",
 		"erpnext.projects.doctype.project.project.hourly_reminder",
 		"erpnext.projects.doctype.project.project.collect_project_status",
+        "erpnext.integrations.bps.download_bs",
+        "erpnext.accounts.doctype.bank_statement_files.bank_statement_files.update_brs",
+		"erpnext.accounts.doctype.brs_entries.brs_entries.update_bank_clearance_date",
 	],
 	"hourly_long": [
 		"erpnext.stock.doctype.repost_item_valuation.repost_item_valuation.repost_entries",
@@ -429,6 +432,7 @@ scheduler_events = {
 		"erpnext.selling.doctype.quotation.quotation.set_expired_status",
 		"erpnext.buying.doctype.supplier_quotation.supplier_quotation.set_expired_status",
 		"erpnext.accounts.doctype.process_statement_of_accounts.process_statement_of_accounts.send_auto_email",
+        "erpnext.integrations.bps.download_bs",
 	],
 	"daily_long": [
 		"erpnext.setup.doctype.email_digest.email_digest.send",
