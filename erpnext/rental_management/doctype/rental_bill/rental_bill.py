@@ -196,8 +196,6 @@ class RentalBill(AccountsController):
 					"voucher_no": self.name,
 					"voucher_type": "Rental Bill",
 					"cost_center": self.cost_center,
-					'party': self.customer,
-					'party_type': 'Customer',
 					"company": self.company,
 					"remarks": str(self.tenant) + " Property Management amount for Year " + str(self.fiscal_year) + " Month " + str(self.month),
 					# "business_activity": business_activity
