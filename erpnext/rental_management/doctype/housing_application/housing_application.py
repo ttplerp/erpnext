@@ -12,6 +12,7 @@ from erpnext.rental_management.doctype.api_setting.api_setting import get_cid_de
 class HousingApplication(Document):
 	def validate(self):
 		self.check_agree()
+		self.check_status()
 		self.check_employee_type()
 		self.check_salary()
 		if self.application_status == None or self.application_status== 'Pending':
@@ -45,7 +46,11 @@ class HousingApplication(Document):
 			self.update_ranks()
 		self.reload()
 			
-		
+	def check_status(self):
+		action = frappe.request.form.get('action')
+		if action and action in ("Submit"):
+			if self.application_status=="Pending":
+				frappe.throw("Cannot submit while the application status is still pending")
 	def check_employee_type(self):
 		if self.is_new() and self.employment_type == "Civil Servant":
 			frappe.throw("New applications for civil servants are temporarily suspended, due to a substantial backlog")
@@ -59,7 +64,7 @@ class HousingApplication(Document):
                         and application_status="Pending"
 
                         ''')
-		if len(limit) > 29:
+		if self.is_new() and len(limit) > 29:
 			frappe.throw("The number of applications has reached the limit of 30 for now.")
 
 	def check_salary(self):
