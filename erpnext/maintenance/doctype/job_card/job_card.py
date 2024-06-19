@@ -37,8 +37,10 @@ class JobCard(AccountsController):
 		self.total_amount = flt(self.services_amount) + flt(self.goods_amount)
 		
 		if self.tds_amount > 0:
+			self.net_amount = self.total_amount - self.tds_amount
 			self.outstanding_amount = self.total_amount - self.tds_amount
 		else:
+			self.net_amount = self.total_amount
 			self.outstanding_amount = self.total_amount
 
 	def on_submit(self):
