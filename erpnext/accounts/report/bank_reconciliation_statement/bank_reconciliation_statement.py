@@ -25,9 +25,7 @@ def execute(filters=None):
 
     data = get_entries(filters)
 
-    balance_as_per_system = get_balance_on(
-        filters["account"], filters["report_date"], filters["from_date"]
-    )
+    balance_as_per_system = get_balance_on(filters["account"], filters["report_date"])
 
     total_debit, total_credit = 0, 0
     for d in data:
@@ -155,7 +153,7 @@ def get_journal_entries(filters):
 		from
 			`tabJournal Entry Account` jvd, `tabJournal Entry` jv
 		where jvd.parent = jv.name and jv.docstatus=1
-			and jvd.account = %(account)s and jv.posting_date between %(from_date)s and %(report_date)s
+			and jvd.account = %(account)s and jv.posting_date <= %(report_date)s
 			and ifnull(jv.clearance_date, '4000-01-01') > %(report_date)s
 			and ifnull(jv.is_opening, 'No') = 'No'""",
         filters,
@@ -177,7 +175,7 @@ def get_payment_entries(filters):
 		from `tabPayment Entry` pe
 		where pe.docstatus=1 and
             (pe.paid_from=%(account)s or pe.paid_to=%(account)s) 
-			and pe.posting_date between %(from_date)s and %(report_date)s
+			and pe.posting_date <= %(report_date)s
 			and ifnull(pe.clearance_date, '4000-01-01') > %(report_date)s
 	""",
         filters,
@@ -195,7 +193,7 @@ def get_pos_entries(filters):
 			from `tabSales Invoice Payment` sip, `tabSales Invoice` si, `tabAccount` account
 			where
 				sip.account=%(account)s and si.docstatus=1 and sip.parent = si.name
-				and account.name = sip.account and posting_date between %(from_date)s and %(report_date)s and
+				and account.name = sip.account and posting_date <= %(report_date)s and
 				ifnull(sip.clearance_date, '4000-01-01') > %(report_date)s
 			order by
 				si.posting_date ASC, si.name DESC
@@ -232,7 +230,6 @@ def get_loan_entries(filters):
             )
             .where(loan_doc.docstatus == 1)
             .where(account == filters.get("account"))
-            .where(posting_date >= getdate(filters.get("from_date")))
             .where(posting_date <= getdate(filters.get("report_date")))
             .where(
                 ifnull(loan_doc.clearance_date, "4000-01-01") > getdate(filters.get("report_date"))

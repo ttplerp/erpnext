@@ -619,7 +619,7 @@ class PaymentEntry(AccountsController):
                 + "<br><br>"
                 + _("If this is undesirable please cancel the corresponding Payment Entry."),
                 title=_("Warning"),
-                indicator="orange",
+                # indicator="orange",
             )
         # msgprint changed to throw to prevent negative outstanding_amount
         # for k, v in no_oustanding_refs.items():

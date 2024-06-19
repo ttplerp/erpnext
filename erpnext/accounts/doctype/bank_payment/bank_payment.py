@@ -44,6 +44,7 @@ class BankPayment(Document):
         self.get_bank_available_balance()
         self.check_one_one_or_bulk_payment()
         self.validate_approver()
+        self.update_pi_number()
 
     def before_submit(self):
         self.validate_timing()
