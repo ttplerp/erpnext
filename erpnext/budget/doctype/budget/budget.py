@@ -142,6 +142,7 @@ class Budget(Document):
 							where a.is_group = 0
 							and (a.freeze_account is null or a.freeze_account != 'Yes')
 							and (a.centralized_budget = 0 or (a.centralized_budget =1 and a.cost_center='{cost_center}'))
+						  	and a.company = '{company}'
 							and NOT EXISTS( select 1
 								from `tabBudget` b 
 								inner join `tabBudget Account` i
@@ -157,7 +158,7 @@ class Budget(Document):
 												where s.parent = 'Budget Settings'
 												and s.account_type = a.account_type)
 							{condition}
-						""".format(fiscal_year =self.fiscal_year, cost_center=self.cost_center, name=self.name, condition = condition), as_dict=True)
+						""".format(fiscal_year =self.fiscal_year, cost_center=self.cost_center, company=self.company, name=self.name, condition = condition), as_dict=True)
 		self.set('accounts', [])
 		p_account = ""
 		for d in entries:
