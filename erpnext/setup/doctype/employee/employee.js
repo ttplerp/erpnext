@@ -27,7 +27,16 @@ erpnext.setup.EmployeeController = class EmployeeController extends frappe.ui.fo
 		}
 	}
 
+	
+
+
+	
+
 };
+
+
+
+
 
 frappe.ui.form.on("Employee", {
 	onload: function (frm) {
@@ -42,6 +51,9 @@ frappe.ui.form.on("Employee", {
 				}
 			};
 		});
+
+		
+
 		frm.set_query("division", function() {
 			return {
 				"filters": {
@@ -80,6 +92,10 @@ frappe.ui.form.on("Employee", {
 		frm.events.update_contact(frm);
 	},
 
+
+	
+	
+
 	personal_email: function(frm) {
 		frm.events.update_contact(frm);
 	},
@@ -108,12 +124,18 @@ frappe.ui.form.on("Employee", {
 		});
 	},
 
+
+	
+
+	
+
+
 	create_user: function(frm) {
 		if (!frm.doc.prefered_email) {
 			frappe.throw(__("Please enter Preferred Contact Email"));
 		}
 		frappe.call({
-			method: "erpnext.setup.doctype.employee.employee.create_user",
+			method: "create_user",			
 			args: {
 				employee: frm.doc.name,
 				email: frm.doc.prefered_email

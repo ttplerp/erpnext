@@ -100,7 +100,8 @@ class JournalEntry(AccountsController):
 
 		self.validate_reference_doc()
 		if self.docstatus == 0:
-			self.set_against_account()
+			pass
+			# self.set_against_account()
 		self.create_remarks()
 		self.set_print_format_fields()
 		self.validate_credit_debit_note()

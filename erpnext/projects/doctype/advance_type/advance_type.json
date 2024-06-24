@@ -23,13 +23,12 @@
    "fieldname": "account",
    "fieldtype": "Link",
    "label": "Account",
-   "options": "Account",
-   "reqd": 1
+   "options": "Account"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-07 16:08:42.136727",
+ "modified": "2024-06-10 09:46:43.094278",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Advance Type",

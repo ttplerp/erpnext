@@ -5,14 +5,16 @@
    "label": "Employee Leave Balance"
   }
  ],
- "content": "[{\"type\":\"header\",\"data\":{\"text\":\"<br>\",\"col\":12}},{\"type\":\"chart\",\"data\":{\"chart_name\":\"Employee Leave Balance\",\"col\":12}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Human Resource</b></span>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Employee Self Services\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Other Transaction\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}}]",
+ "content": "[{\"id\":\"awfH7ylZ2c\",\"type\":\"header\",\"data\":{\"text\":\"<br>\",\"col\":12}},{\"id\":\"UhGm_0jY5x\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Employee Leave Balance\",\"col\":12}},{\"id\":\"LSEPIGwxQm\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Human Resource</b></span>\",\"col\":12}},{\"id\":\"8-US8sO3Yn\",\"type\":\"card\",\"data\":{\"card_name\":\"Employee Self Services\",\"col\":4}},{\"id\":\"xM4IDFGf71\",\"type\":\"card\",\"data\":{\"card_name\":\"Other Transaction\",\"col\":4}},{\"id\":\"mUm_WCOZSh\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}}]",
  "creation": "2020-01-23 13:46:38.833076",
+ "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
  "for_user": "",
  "hide_custom": 0,
  "icon": "getting-started",
  "idx": 0,
+ "is_hidden": 1,
  "label": "Home",
  "links": [
   {
@@ -223,56 +225,9 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Employee Self Services",
-   "link_count": 4,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Leave Application",
-   "link_count": 0,
-   "link_to": "Leave Application",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Employee",
-   "link_count": 0,
-   "link_to": "Employee",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Employee Advance",
-   "link_count": 0,
-   "link_to": "Employee Advance",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Material Request",
-   "link_count": 0,
-   "link_to": "Material Request",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Other Transaction",
    "link_count": 4,
+   "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
   },
@@ -315,12 +270,62 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Employee Self Services",
+   "link_count": 4,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Leave Application",
+   "link_count": 0,
+   "link_to": "Leave Application",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Employee",
+   "link_count": 0,
+   "link_to": "Employee",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Employee Advance",
+   "link_count": 0,
+   "link_to": "Employee Advance",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Employee Alerts",
+   "link_count": 0,
+   "link_to": "Employee Notices",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-06-07 11:26:43.024240",
+ "modified": "2024-06-19 10:52:20.046149",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Home",
+ "number_cards": [],
  "owner": "Administrator",
  "parent_page": "",
  "public": 1,

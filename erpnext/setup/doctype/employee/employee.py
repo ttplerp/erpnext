@@ -29,7 +29,7 @@ class Employee(NestedSet):
 	def validate(self):
 		from erpnext.controllers.status_updater import validate_status
 		validate_status(self.status, ["Active", "Inactive", "Suspended", "Left"])
-		# naming done with combination with joining year, month and 4 digits series
+		# naming done with combination with joining year and 4 digits series
 		if self.old_id:
 			self.employee =	self.name = self.old_id
 			return
@@ -39,6 +39,7 @@ class Employee(NestedSet):
 		self.validate_status()
 		self.validate_reports_to()
 		self.validate_preferred_email()
+		
 
 		if self.user_id:
 			self.validate_user_details()
@@ -46,6 +47,11 @@ class Employee(NestedSet):
 			existing_user_id = frappe.db.get_value("Employee", self.name, "user_id")
 			if existing_user_id:
 				remove_user_permission("Employee", self.name, existing_user_id)
+
+		
+
+	
+
 
 	def after_rename(self, old, new, merge):
 		self.db_set("employee", new)
@@ -377,6 +383,9 @@ def deactivate_sales_person(status=None, employee=None):
 			frappe.db.set_value("Sales Person", sales_person, "enabled", 0)
 
 
+	
+
+
 @frappe.whitelist()
 def create_user(employee, user=None, email=None):
 	emp = frappe.get_doc("Employee", employee)
@@ -458,6 +467,8 @@ def get_employee_emails(employee_list):
 		if email:
 			employee_emails.append(email)
 	return employee_emails
+
+	
 
 
 @frappe.whitelist()

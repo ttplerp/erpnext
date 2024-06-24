@@ -11,8 +11,8 @@
  "field_order": [
   "basic_details_tab",
   "connections_tab",
-  "basic_information",
   "employee",
+  "basic_information",
   "salutation",
   "first_name",
   "middle_name",
@@ -319,7 +319,8 @@
    "fieldtype": "Date",
    "label": "Confirmation Date",
    "oldfieldname": "final_confirmation_date",
-   "oldfieldtype": "Date"
+   "oldfieldtype": "Date",
+   "read_only_depends_on": "eval:frappe.get_roles != \"User\""
   },
   {
    "fieldname": "col_break_22",
@@ -515,7 +516,8 @@
   {
    "fieldname": "passport_number",
    "fieldtype": "Data",
-   "label": "Passport Number"
+   "label": "Passport Number",
+   "unique": 1
   },
   {
    "fieldname": "date_of_issue",
@@ -848,7 +850,7 @@
    "fieldname": "increment_cycle",
    "fieldtype": "Select",
    "label": "Increment Cycle",
-   "options": "\nJanuary\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember"
+   "options": "January\nJuly"
   },
   {
    "fieldname": "promotion_cycle",
@@ -1075,7 +1077,7 @@
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-12-14 14:32:38.147937",
+ "modified": "2024-06-17 15:29:33.957622",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
@@ -1113,6 +1115,18 @@
    "report": 1,
    "role": "HR Manager",
    "set_user_permissions": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
    "share": 1,
    "write": 1
   }
