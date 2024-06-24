@@ -11,6 +11,7 @@ frappe.query_reports["TDS Challen"] = {
 			"default": frappe.defaults.get_user_default("fiscal_year"),
 			"reqd": 1,
 			"on_change": function(query_report) {
+				/*
 				var fiscal_year = query_report.get_values().fiscal_year;
 				if (!fiscal_year) {
 					return;
@@ -21,6 +22,7 @@ frappe.query_reports["TDS Challen"] = {
 					frappe.query_report.set_filter_value("from_date", fy.year_end_date);
 					frappe.query_report.trigger_refresh();
 				});
+				*/
 			}
 		},
 		{
