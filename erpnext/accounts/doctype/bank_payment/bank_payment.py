@@ -455,6 +455,7 @@ class BankPayment(Document):
                             'remarks': "PF Remittance"
                         }))
             return data
+
         cond = ""
         if self.transaction_no:
             cond = 'AND je.name = "{}"'.format(self.transaction_no)
@@ -464,7 +465,7 @@ class BankPayment(Document):
                                 FROM `tabJournal Entry` je 
                                 where je.branch = "{branch}"
                                 {cond}
-                                AND je.voucher_type = 'Bank Entry'
+                                AND je.voucher_type in ('Bank Entry','Contra Entry')
                                 AND je.docstatus = 1
                                 AND NOT EXISTS(select 1
                                     FROM `tabBank Payment Item` bpi
@@ -479,8 +480,9 @@ class BankPayment(Document):
                              bank_payment = self.name, 
                             cond = cond), as_dict=True):
             amount_to_deposit = 0.00
-            party_type = party = reference_type = reference_name = ""
+            party_type = party = reference_type = reference_name = contra_account = ""
             party_count = 0
+            contra_entry = 0
             
             for p in frappe.db.sql("""select party_type, party, count(distinct party) as party_count, user_remark
                                 from `tabJournal Entry Account` 
@@ -501,8 +503,12 @@ class BankPayment(Document):
                                         FROM `tabJournal Entry Account` ja
                                         WHERE ja.parent = '{parent}'
                                     """.format(parent = a.transaction_id), as_dict=True):
-                    if frappe.db.get_value("Account", b.account, "account_type") == "Bank" and b.credit_amount > 0:
+                    doc = frappe.get_doc("Account", b.account)
+                    if doc.account_type == "Bank" and b.credit_amount > 0:
                         amount_to_deposit +=  flt(b.credit_amount)
+                    if doc.bank_account_no and b.debit_amount >0:
+                        contra_entry = 1
+                        contra_account = b.account
                     if not party_type and not party:
                         reference_type = b.reference_type if b.reference_type and not reference_type else ""
                         reference_name = b.reference_name if b.reference_name and not reference_name else ""
@@ -513,8 +519,8 @@ class BankPayment(Document):
                             else:
                                 party_type = "Supplier"
                                 party      = frappe.db.get_value(reference_type, reference_name, "employee")
-                        if not party:
-                            frappe.msgprint("Party missing for Journal Entry {}".format(a.transaction_id))
+                if not party and not contra_entry:
+                    frappe.msgprint("Party missing for Journal Entry {}".format(a.transaction_id))
                 employee = supplier = ""
                 if party_type == "Supplier":
                     query = """select s.bank_name_new as bank_name, s.bank_branch, s.bank_account_type, 
@@ -532,6 +538,14 @@ class BankPayment(Document):
                                     WHERE e.name = '{party}'
                                 """.format(party = party)
                     employee = party
+                else:
+                    query = """select bank_name as bank_name, bank_branch, bank_account_type, 
+                             bank_account_no, account_name as beneficiary_name,
+                            NULL inr_bank_code, NULL inr_purpose_code
+                            from `tabAccount` 
+                            WHERE name = '{account}'
+                            """.format(account = contra_account)
+
                 if amount_to_deposit > 0:
                     for c in frappe.db.sql(query, as_dict=True):					
                         data.append(frappe._dict({
@@ -604,6 +618,28 @@ class BankPayment(Document):
 
     def get_payment_entry(self):
         cond = ""
+        doc = frappe.get_doc("Payment Entry", self.transaction_no)
+        if doc.payment_type=="Internal Transfer" and doc.mode_of_payment=="e-payment":
+            data=[]
+            source_doc = frappe.get_doc("Account", doc.paid_from)
+            receive_doc = frappe.get_doc("Account", doc.paid_to)
+            if receive_doc.bank_account_no:
+                data.append(frappe._dict({
+                    'transaction_type': 'Payment Entry',
+                    'transaction_id': self.transaction_no,
+                    'trnasaction_reference': self.transaction_no,
+                    'transaction_date': doc.posting_date,
+                    'supplier': "",
+                    'beneficiary_name': receive_doc.name,
+                    'bank_name': receive_doc.bank_name,
+                    'bank_branch': receive_doc.bank_branch,
+                    'bank_account_type': receive_doc.bank_account_type,
+                    'bank_account_no': receive_doc.bank_account_no,
+                    'amount': flt(doc.paid_amount),
+                    'status': "Draft"
+                }))
+            return data
+
         if self.transaction_no:
             cond = 'AND pe.name = "{}"'.format(self.transaction_no)
         elif not self.transaction_no and self.from_date and self.to_date:
