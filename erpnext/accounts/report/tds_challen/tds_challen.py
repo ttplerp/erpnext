@@ -143,6 +143,9 @@ def validate_filters(filters):
 	else:
 		filters.year_start_date = getdate(fiscal_year.year_start_date)
 		filters.year_end_date = getdate(fiscal_year.year_end_date)
+	
+	if filters.year_start_date < fiscal_year.year_start_date and filters.year_end_date > fiscal_year.year_end_date:
+		frappe.throw("Start Date or End Date selected is not within the selected Fiscal Year <b>{}</b>".format(filters.fiscal_year))
 
 	if not filters.from_date:
 		filters.from_date = filters.year_start_date
