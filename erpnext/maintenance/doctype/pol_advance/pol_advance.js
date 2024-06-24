@@ -12,6 +12,15 @@ frappe.ui.form.on('Pol Advance', {
 				]
 			}
 		});
+
+		frm.set_query('equipment', function(doc) {
+			return {
+				filters: {
+					"company": doc.company
+				}
+			};
+		});
+
 		// Ver 2.0 Begins, following code added by SHIV on 28/11/2017
 		if(frm.doc.__islocal) {
 			frappe.call({
@@ -44,6 +53,12 @@ frappe.ui.form.on('Pol Advance', {
 			frm.set_df_property('od_outstanding_amount', 'read_only', 1);
 			frm.set_df_property('od_amount', 'read_only', 1);
 			frm.set_df_property('od_adjusted_amount', 'read_only', 1);
+		}
+	},
+	od_amount: (frm)=>{
+		if(frm.doc.is_opening == 1 && frm.doc.od_amount > 0){
+			cur_frm.set_value("od_outstanding_amount", cur_frm.doc.od_amount);
+			cur_frm.set_value("od_adjusted_amount", 0.0);
 		}
 	}
 });

@@ -17,10 +17,11 @@ from frappe.utils import flt, cint, nowdate, getdate, formatdate, money_in_words
 class PolAdvance(AccountsController):
 	def validate(self):
 		self.validate_cheque_info()
-		if self.workflow_state == "Waiting For Payment"	:
-		    if "Accounts Manager" not in frappe.get_roles(frappe.session.user):
-		            self.approved_by = frappe.session.user
 		self.od_adjustment()
+		if self.is_opening and self.od_amount > 0:
+			self.od_outstanding_amount = flt(self.od_amount)
+		else:
+			self.od_amount = self.od_outstanding_amount = 0.0
 
 	def before_cancel(self):
 		if self.is_opening:
@@ -30,7 +31,6 @@ class PolAdvance(AccountsController):
 				frappe.throw(_('Journal Entry {} for this transaction needs to be cancelled first').format(frappe.get_desk_link(self.doctype,self.journal_entry)),title='Not permitted')
 
 	def on_submit(self):
-		advance_account = frappe.db.get_single_value("Maintenance Accounts Settings", "default_pol_advance_account")
 		if not self.is_opening:
 			# check_budget_available(self.cost_center,advance_account,self.entry_date,self.amount,self.business_activity)
 			self.update_od_balance()
@@ -111,7 +111,7 @@ class PolAdvance(AccountsController):
 		ba = self.business_activity
 
 		credit_account = self.expense_account
-		advance_account = frappe.db.get_single_value("Maintenance Accounts Settings", "default_pol_advance_account")
+		advance_account = frappe.db.get_value("Company", self.company, "pol_advance_account")
 			
 		if not credit_account:
 			frappe.throw("Expense Account is mandatory")
@@ -156,6 +156,16 @@ class PolAdvance(AccountsController):
 		})
 
 		je.append("accounts",{
+			"account": advance_account,
+			"debit_in_account_currency": self.amount,
+			"cost_center": self.cost_center,
+			"party_check": 1,
+			"party_type": self.party_type,
+			"party": self.supplier,
+			"business_activity": ba
+		})
+
+		je.append("accounts",{
 			"account": credit_account,
 			"credit_in_account_currency": self.amount,
 			"cost_center": self.cost_center,
@@ -163,15 +173,6 @@ class PolAdvance(AccountsController):
 			"reference_name": self.name,
 			"party_type": party_type,
 			"party": party,
-			"business_activity": ba
-		})
-
-
-		je.append("accounts",{
-			"account": advance_account,
-			"debit_in_account_currency": self.amount,
-			"cost_center": self.cost_center,
-			"party_check": 0,
 			"business_activity": ba
 		})
 

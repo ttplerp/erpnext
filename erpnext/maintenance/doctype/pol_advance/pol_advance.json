@@ -6,10 +6,13 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "workflow_state",
+  "company",
+  "column_break_2",
+  "entry_date",
+  "section_break_3",
   "equipment",
   "equipment_number",
-  "entry_date",
+  "branch",
   "column_break_6",
   "fuelbook",
   "fuelbook_branch",
@@ -30,8 +33,6 @@
   "od_adjusted_amount",
   "od_outstanding_amount",
   "additional_information",
-  "company",
-  "branch",
   "column_break_23",
   "business_activity",
   "od_adjustment",
@@ -47,7 +48,8 @@
   "approved_by",
   "journal_entry",
   "je_status",
-  "amended_from"
+  "amended_from",
+  "workflow_state"
  ],
  "fields": [
   {
@@ -131,6 +133,7 @@
    "read_only": 1
   },
   {
+   "fetch_from": "fuelbook.supplier",
    "fieldname": "supplier",
    "fieldtype": "Link",
    "label": "Supplier",
@@ -215,7 +218,8 @@
    "fieldname": "company",
    "fieldtype": "Link",
    "label": "Company",
-   "options": "Company"
+   "options": "Company",
+   "reqd": 1
   },
   {
    "fetch_from": "fuelbook.branch",
@@ -337,11 +341,19 @@
    "hidden": 1,
    "label": "Workflow State",
    "options": "Workflow State"
+  },
+  {
+   "fieldname": "section_break_3",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-05-20 11:35:04.745126",
+ "modified": "2024-06-07 15:24:27.853314",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Pol Advance",
