@@ -50,6 +50,7 @@ frappe.ui.form.on('Vehicle Request', {
     },
     vehicle: function(frm){
         get_previous_km(frm)
+        set_equipment_operator(frm)
     },
     
 	onload:function(frm){
@@ -106,6 +107,22 @@ function get_previous_km(frm){
     callback: function(r){
             console.log(r.message)
             cur_frm.set_value("previous_km", r.message[0].km)
+        }
+    });
+}
+
+function set_equipment_operator(frm){
+    console.log("heree")
+    frappe.call({
+        method: "erpnext.fleet_management.doctype.vehicle_request.vehicle_request.get_operator",
+        args: {
+        'equipment': frm.doc.vehicle,
+        'posting_date': frm.doc.posting_date
+    },
+    callback: function(r){
+            console.log(r.message)
+            cur_frm.set_value("driver", r.message[0].driver)
+            cur_frm.refresh_field()
         }
     });
 }

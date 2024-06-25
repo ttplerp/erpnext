@@ -364,13 +364,14 @@
   {
    "fieldname": "driver",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Driver",
    "options": "Employee"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-05-20 09:44:49.093958",
+ "modified": "2024-06-25 15:11:44.141278",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment",

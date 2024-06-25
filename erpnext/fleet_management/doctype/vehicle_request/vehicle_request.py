@@ -77,11 +77,22 @@ def create_logbook(source_name, target_doc=None):
 @frappe.whitelist()
 def get_previous_km(vehicle, vehicle_number):
 	return frappe.db.sql(""" 
-	SELECT 
-		vr.kilometer_reading as km
-	FROM `tabVehicle Request` vr 
-	WHERE vr.vehicle ='{}' and vr.vehicle_number='{}' 
-	ORDER BY vr.creation DESC LIMIT 1 """.format(vehicle, vehicle_number),as_dict=1)
+		SELECT 
+			vr.kilometer_reading as km
+		FROM `tabVehicle Request` vr 
+		WHERE vr.vehicle ='{}' and vr.vehicle_number='{}' 
+		ORDER BY vr.creation DESC LIMIT 1 """.format(vehicle, vehicle_number),as_dict=1)
+
+@frappe.whitelist()
+def get_operator(equipment, posting_date):
+    return frappe.db.sql(""" 
+        SELECT 
+            eo.operator as driver
+        FROM `tabEquipment` e
+        JOIN `tabEquipment Operator` eo ON eo.parent = e.name
+        WHERE e.name = %s AND eo.start_date <= %s AND (eo.end_date IS NULL OR eo.end_date >= %s)
+        LIMIT 1 
+    """, (equipment, posting_date, posting_date), as_dict=1)
 
 @frappe.whitelist()
 def create_vr_extension(source_name, target_doc=None):
