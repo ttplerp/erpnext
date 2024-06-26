@@ -35,8 +35,14 @@ class JobCard(AccountsController):
 		if 'Item' in cc_amount:
 			self.goods_amount = cc_amount['Item']
 		self.total_amount = flt(self.services_amount) + flt(self.goods_amount)
+
+		if self.apply_tds:
+			tds_dtls = self.get_tax_details()
+			tds_rate = tds_dtls['tax_withholding_rate']
+			tds_account = tds_dtls['tax_withholding_account']
+			self.tds_amount = flt(tds_rate)/100 * flt(self.total_amount)
 		
-		if self.tds_amount > 0:
+		if self.apply_tds:
 			self.net_amount = self.total_amount - self.tds_amount
 			self.outstanding_amount = self.total_amount - self.tds_amount
 		else:
