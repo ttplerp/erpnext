@@ -18,7 +18,7 @@ class PolAdvance(AccountsController):
 	def validate(self):
 		self.validate_cheque_info()
 		self.od_adjustment()
-		if self.is_opening and self.od_amount > 0:
+		if self.is_opening and flt(self.od_amount) > flt(0.0):
 			self.od_outstanding_amount = flt(self.od_amount)
 		else:
 			self.od_amount = self.od_outstanding_amount = 0.0
