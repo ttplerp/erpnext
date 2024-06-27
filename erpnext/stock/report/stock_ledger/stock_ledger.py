@@ -43,7 +43,7 @@ def execute(filters=None):
 			item_detail = item_details[sle.item_code]
 			sle.update(item_detail)
 		if sle.voucher_type == "Stock Entry":
-			sle.expense_account = frappe.db.get_value("Stock Entry Detail", sle.voucher_detail_no, "Expense Accounts")
+			sle.expense_account = frappe.db.get_value("Stock Entry Detail", sle.voucher_detail_no, "expense_account")
 		if filters.get("batch_no") or inventory_dimension_filters_applied:
 			actual_qty += flt(sle.actual_qty, precision)
 			stock_value += sle.stock_value_difference
