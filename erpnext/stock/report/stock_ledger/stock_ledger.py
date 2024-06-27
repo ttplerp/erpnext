@@ -22,7 +22,7 @@ def execute(filters=None):
 	include_uom = filters.get("include_uom")
 	columns = get_columns(filters)
 	items = get_items(filters)
-	sl_entries = get_stock_ledger_entriesget_stock_ledger_entries(filters, items)
+	sl_entries = get_stock_ledger_entries(filters, items)
 	item_details = get_item_details(items, sl_entries, include_uom)
 	opening_row = get_opening_balance(filters, columns, sl_entries)
 	precision = cint(frappe.db.get_single_value("System Settings", "float_precision"))
@@ -60,7 +60,7 @@ def execute(filters=None):
 				sle.update({"equipment":frappe.db.get_value("Delivery Note Item",{"parent":sle.voucher_no,"item_code":sle.item_code},"vehicle_number")})
 		if sle.serial_no:
 			update_available_serial_nos(available_serial_nos, sle)
-		expense_account = frappe.db.get_value("Stock Entry Detail", sle.voucher_detail_no, "expense_account")
+
 		data.append(sle)
 
 		if include_uom:
@@ -265,7 +265,6 @@ def get_stock_ledger_entries(filters, items):
 			sle.valuation_rate,
 			sle.company,
 			sle.voucher_type,
-			sle.voucher_detail_no,
 			sle.qty_after_transaction,
 			sle.stock_value_difference,
 			sle.voucher_no,
