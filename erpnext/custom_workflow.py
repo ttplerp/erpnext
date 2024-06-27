@@ -594,7 +594,7 @@ class CustomWorkflow:
 			if self.doc.supervisor != frappe.session.user:
 				frappe.throw("Only {} can Approve or Forward this Travel Request".format(self.doc.supervisor_name))
 			if department:
-			self.set_approver("Department Approver")
+				self.set_approver("Department Approver")
 			else:
 				frappe.throw("Couldnot find Department for employee {}".format(self.doc.employee))
 		elif self.new_state.lower() == ("Waiting CEO Approval".lower()):
