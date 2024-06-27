@@ -22,7 +22,7 @@ def execute(filters=None):
 	include_uom = filters.get("include_uom")
 	columns = get_columns(filters)
 	items = get_items(filters)
-	sl_entries = get_stock_ledger_entriesget_stock_ledger_entries(filters, items)
+	sl_entries = get_stock_ledger_entries(filters, items)
 	item_details = get_item_details(items, sl_entries, include_uom)
 	opening_row = get_opening_balance(filters, columns, sl_entries)
 	precision = cint(frappe.db.get_single_value("System Settings", "float_precision"))
@@ -61,8 +61,6 @@ def execute(filters=None):
 		if sle.serial_no:
 			update_available_serial_nos(available_serial_nos, sle)
 		expense_account = frappe.db.get_value("Stock Entry Detail", sle.voucher_detail_no, "expense_account")
-		if expense_account:
-			sle.expense_account = expense_account
 		data.append(sle)
 
 		if include_uom:
@@ -254,8 +252,9 @@ def get_columns(filters):
 
 def get_stock_ledger_entries(filters, items):
 	sle = frappe.qb.DocType("Stock Ledger Entry")
+	sed = frappe.qb.DocType("Stock Entry Detail")
 	query = (
-		frappe.qb.from_(sle)
+		frappe.qb.from_(sle, sed)
 		.select(
 			sle.item_code,
 			CombineDatetime(sle.posting_date, sle.posting_time).as_("date"),
@@ -274,12 +273,14 @@ def get_stock_ledger_entries(filters, items):
 			sle.stock_value,
 			sle.batch_no,
 			sle.serial_no,
-			sle.project
+			sle.project,
+			sed.expense_account
 		)
 		.where(
 			(sle.docstatus < 2)
 			& (sle.is_cancelled == 0)
 			& (sle.posting_date[filters.from_date : filters.to_date])
+			& (sle.voucher_detail_no == sed.name)
 		)
 		.orderby(CombineDatetime(sle.posting_date, sle.posting_time))
 		.orderby(sle.creation)
@@ -358,7 +359,7 @@ def get_item_details(items, sl_entries, include_uom):
 	res = frappe.db.sql(
 		"""
 		select
-			item.name, item.item_name, item.description, item.item_group, item.item_sub_group, item.brand, id.expense_account, item.stock_uom {cf_field}
+			item.name, item.item_name, item.description, item.item_group, item.item_sub_group, item.brand, item.stock_uom {cf_field}
 		from
 			`tabItem` item
 		inner join 
