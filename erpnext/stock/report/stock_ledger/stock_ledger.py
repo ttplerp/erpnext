@@ -39,9 +39,9 @@ def execute(filters=None):
 	inventory_dimension_filters_applied = check_inventory_dimension_filters_applied(filters)
 
 	for sle in sl_entries:
-		item_detail = item_details[sle.item_code]
-
-		sle.update(item_detail)
+		if sle.item_code in item_details:
+			item_detail = item_details[sle.item_code]
+			sle.update(item_detail)
 
 		if filters.get("batch_no") or inventory_dimension_filters_applied:
 			actual_qty += flt(sle.actual_qty, precision)
@@ -60,7 +60,6 @@ def execute(filters=None):
 				sle.update({"equipment":frappe.db.get_value("Delivery Note Item",{"parent":sle.voucher_no,"item_code":sle.item_code},"vehicle_number")})
 		if sle.serial_no:
 			update_available_serial_nos(available_serial_nos, sle)
-
 		data.append(sle)
 
 		if include_uom:
@@ -252,8 +251,11 @@ def get_columns(filters):
 
 def get_stock_ledger_entries(filters, items):
 	sle = frappe.qb.DocType("Stock Ledger Entry")
+	sed = frappe.qb.DocType("Stock Entry Detail")
 	query = (
 		frappe.qb.from_(sle)
+		.inner_join(sed)
+		.on(sed.name == sle.voucher_detail_no)
 		.select(
 			sle.item_code,
 			CombineDatetime(sle.posting_date, sle.posting_time).as_("date"),
@@ -265,13 +267,15 @@ def get_stock_ledger_entries(filters, items):
 			sle.valuation_rate,
 			sle.company,
 			sle.voucher_type,
+			sle.voucher_detail_no,
 			sle.qty_after_transaction,
 			sle.stock_value_difference,
 			sle.voucher_no,
 			sle.stock_value,
 			sle.batch_no,
 			sle.serial_no,
-			sle.project
+			sle.project,
+			sed.expense_account
 		)
 		.where(
 			(sle.docstatus < 2)
@@ -355,7 +359,7 @@ def get_item_details(items, sl_entries, include_uom):
 	res = frappe.db.sql(
 		"""
 		select
-			item.name, item.item_name, item.description, item.item_group, item.item_sub_group, item.brand, id.expense_account, item.stock_uom {cf_field}
+			item.name, item.item_name, item.description, item.item_group, item.item_sub_group, item.brand, item.stock_uom {cf_field}
 		from
 			`tabItem` item
 		inner join 
