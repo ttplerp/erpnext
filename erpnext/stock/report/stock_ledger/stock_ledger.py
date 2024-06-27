@@ -60,7 +60,6 @@ def execute(filters=None):
 				sle.update({"equipment":frappe.db.get_value("Delivery Note Item",{"parent":sle.voucher_no,"item_code":sle.item_code},"vehicle_number")})
 		if sle.serial_no:
 			update_available_serial_nos(available_serial_nos, sle)
-		if 
 
 		data.append(sle)
 
