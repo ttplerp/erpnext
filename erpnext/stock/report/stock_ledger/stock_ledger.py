@@ -40,7 +40,6 @@ def execute(filters=None):
 
 	for sle in sl_entries:
 		item_detail = item_details[sle.item_code]
-
 		sle.update(item_detail)
 
 		if filters.get("batch_no") or inventory_dimension_filters_applied:
@@ -60,7 +59,6 @@ def execute(filters=None):
 				sle.update({"equipment":frappe.db.get_value("Delivery Note Item",{"parent":sle.voucher_no,"item_code":sle.item_code},"vehicle_number")})
 		if sle.serial_no:
 			update_available_serial_nos(available_serial_nos, sle)
-		expense_account = frappe.db.get_value("Stock Entry Detail", sle.voucher_detail_no, "expense_account")
 		data.append(sle)
 
 		if include_uom:
@@ -282,7 +280,6 @@ def get_stock_ledger_entries(filters, items):
 			(sle.docstatus < 2)
 			& (sle.is_cancelled == 0)
 			& (sle.posting_date[filters.from_date : filters.to_date])
-			& (sle.voucher_detail_no == sed.name)
 		)
 		.orderby(CombineDatetime(sle.posting_date, sle.posting_time))
 		.orderby(sle.creation)
