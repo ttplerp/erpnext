@@ -254,7 +254,9 @@ def get_stock_ledger_entries(filters, items):
 	sle = frappe.qb.DocType("Stock Ledger Entry")
 	sed = frappe.qb.DocType("Stock Entry Detail")
 	query = (
-		frappe.qb.from_(sle, sed)
+		frappe.qb.from_(sle)
+		.inner_join(sed)
+		.on(sed.name == sle.voucher_detail_no)
 		.select(
 			sle.item_code,
 			CombineDatetime(sle.posting_date, sle.posting_time).as_("date"),
