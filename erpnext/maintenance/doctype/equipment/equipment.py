@@ -19,7 +19,7 @@ class Equipment(Document):
 			self.equipment_number = self.name
 		
 		if not self.equipment_history:
-                        self.create_equipment_history(branch = self.branch, on_date = today(), ref_doc = self.name, purpose = 'Submit')
+			self.create_equipment_history(branch = self.branch, on_date = today(), ref_doc = self.name, purpose = 'Submit')
 
 		if len(self.operators) > 1:
 			for a in range(len(self.operators)-1):
