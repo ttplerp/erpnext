@@ -44,6 +44,9 @@ def execute(filters=None):
 			sle.update(item_detail)
 		if not sle.item_name:
 			sle.item_name = frappe.db.get_value("Item", sle.item_code, "item_name")
+			sle.item_group = frappe.db.get_value("Item", sle.item_code, "item_group")
+			sle.item_sub_group = frappe.db.get_value("Item", sle.item_code, "item_sub_group")
+			sle.stock_uom = frappe.db.get_value("Item", sle.item_code, "stock_uom")
 		if sle.voucher_type == "Stock Entry":
 			sle.expense_account = frappe.db.get_value("Stock Entry Detail", sle.voucher_detail_no, "expense_account")
 		if sle.voucher_type == "Purchase Receipt":
