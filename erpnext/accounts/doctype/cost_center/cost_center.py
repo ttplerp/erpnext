@@ -22,11 +22,11 @@ class CostCenter(NestedSet):
 		self.validate_mandatory()
 		self.validate_parent_cost_center()
 	def on_update(self):
-			self.create_branch()
-			if frappe.local.flags.ignore_on_update:
-				return
-			else:
-				super(CostCenter, self).on_update()
+		self.create_branch()
+		if frappe.local.flags.ignore_on_update:
+			return
+		else:
+			super(CostCenter, self).on_update()
 
 	def create_branch(self):
 		'''
@@ -146,6 +146,14 @@ class CostCenter(NestedSet):
 				self.cost_center_name = cost_center_name
 				self.db_set("cost_center_name", cost_center_name)
 
+	def on_trash(self):
+		# checks gl entries and if child exists
+		if self.check_gle_exists():
+			throw(_("Cost Center with existing transaction can not be deleted"))
+		if self.check_if_child_exists():
+			frappe.throw(_("Cannot delete Cost Center as it has child nodes"))
+
+		super(CostCenter, self).on_trash(True)
 
 def on_doctype_update():
 	frappe.db.add_index("Cost Center", ["lft", "rgt"])

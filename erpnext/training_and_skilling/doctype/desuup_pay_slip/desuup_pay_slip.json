@@ -1,0 +1,435 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "DPS.YY.MM.####",
+ "creation": "2024-05-14 12:40:12.932794",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "branch",
+  "desuup",
+  "desuup_name",
+  "payment_to",
+  "is_mess_member",
+  "column_break_4",
+  "cost_center",
+  "currency",
+  "deployment_type",
+  "column_break_3",
+  "fiscal_year",
+  "posting_date",
+  "section_break_5",
+  "month_name",
+  "month",
+  "column_break_13",
+  "start_date",
+  "column_break_7",
+  "end_date",
+  "section_break_9",
+  "monthly_stipend",
+  "stipend_amount",
+  "advance_party",
+  "column_break_24",
+  "mess_advance",
+  "advance_amount_used",
+  "advance_party_name",
+  "column_break_26",
+  "refundable_amount",
+  "ojt_payment_details_section",
+  "monthly_pay",
+  "section_break_27",
+  "total_amount",
+  "column_break_35",
+  "deduction_amount",
+  "column_break_36",
+  "net_pay",
+  "attendance_details_section",
+  "get_attendance",
+  "attendances",
+  "total_days_present",
+  "bank_ac_details_section",
+  "bank_name",
+  "bank_branch",
+  "column_break_37",
+  "bank_account_type",
+  "bank_account_no",
+  "additional_information_section",
+  "desuup_payroll_entry",
+  "column_break_23",
+  "company",
+  "section_break_32",
+  "reference_doctype",
+  "column_break_34",
+  "reference_name",
+  "column_break_53",
+  "journal_entry",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "desuup",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Desuup",
+   "options": "Desuup",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "desuup.desuup_name",
+   "fieldname": "desuup_name",
+   "fieldtype": "Data",
+   "label": "Desuup Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Desuup Pay Slip",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_5",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date"
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "End Date"
+  },
+  {
+   "fieldname": "additional_information_section",
+   "fieldtype": "Section Break",
+   "label": "Additional Information"
+  },
+  {
+   "fieldname": "desuup_payroll_entry",
+   "fieldtype": "Data",
+   "label": "Desuup Payroll Entry"
+  },
+  {
+   "depends_on": "eval:doc.payment_to == \"Trainee\"",
+   "fieldname": "section_break_9",
+   "fieldtype": "Section Break",
+   "label": "Stipend Details"
+  },
+  {
+   "fieldname": "net_pay",
+   "fieldtype": "Currency",
+   "label": "Net Payable",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "fiscal_year",
+   "fieldtype": "Link",
+   "label": "Fiscal Year",
+   "options": "Fiscal Year"
+  },
+  {
+   "fieldname": "month",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Month",
+   "options": "\n01\n02\n03\n04\n05\n06\n07\n08\n09\n10\n11\n12"
+  },
+  {
+   "fieldname": "attendance_details_section",
+   "fieldtype": "Section Break",
+   "label": "Attendance Details"
+  },
+  {
+   "fieldname": "get_attendance",
+   "fieldtype": "Button",
+   "label": "Get Attendance"
+  },
+  {
+   "fieldname": "attendances",
+   "fieldtype": "Table",
+   "options": "Desuup Attendance Item",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_days_present",
+   "fieldtype": "Float",
+   "label": "Total Days Present",
+   "precision": "1"
+  },
+  {
+   "fieldname": "payment_to",
+   "fieldtype": "Select",
+   "label": "Payment To",
+   "options": "\nTrainee\nOJT",
+   "reqd": 1
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "branch.cost_center",
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Currency",
+   "options": "Currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_23",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "branch.company",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "month_name",
+   "fieldtype": "Select",
+   "label": "Month",
+   "options": "\nJanuary\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_13",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mess_advance",
+   "fieldtype": "Currency",
+   "label": "Mess Advance",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_24",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_26",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_32",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "label": "Reference DocType",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "column_break_34",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reference_name",
+   "fieldtype": "Dynamic Link",
+   "label": "Reference Name",
+   "options": "reference_doctype"
+  },
+  {
+   "fieldname": "advance_party",
+   "fieldtype": "Link",
+   "label": "Advance Party",
+   "options": "Employee",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "advance_party.employee_name",
+   "fieldname": "advance_party_name",
+   "fieldtype": "Data",
+   "label": "Advance Party Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "stipend_amount",
+   "fieldtype": "Currency",
+   "label": "Stipend Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "monthly_stipend",
+   "fieldtype": "Currency",
+   "label": "Monthly Stipend",
+   "read_only": 1
+  },
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "bank_ac_details_section",
+   "fieldtype": "Section Break",
+   "label": "BANK A/C DETAILS"
+  },
+  {
+   "fieldname": "bank_name",
+   "fieldtype": "Link",
+   "label": "Bank Name",
+   "options": "Financial Institution"
+  },
+  {
+   "fieldname": "bank_branch",
+   "fieldtype": "Link",
+   "label": "Bank Branch",
+   "options": "Financial Institution Branch"
+  },
+  {
+   "fieldname": "column_break_36",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "bank_account_type",
+   "fieldtype": "Link",
+   "label": "Bank Account Type",
+   "options": "Bank Account Type"
+  },
+  {
+   "fieldname": "bank_account_no",
+   "fieldtype": "Data",
+   "label": "Bank A/C No."
+  },
+  {
+   "fieldname": "section_break_27",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.payment_to == 'OJT'",
+   "fieldname": "ojt_payment_details_section",
+   "fieldtype": "Section Break",
+   "label": "OJT Payment Details"
+  },
+  {
+   "fieldname": "monthly_pay",
+   "fieldtype": "Currency",
+   "label": "Monthly Pay",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.payment_to == 'OJT'",
+   "fieldname": "deployment_type",
+   "fieldtype": "Link",
+   "label": "Deployment Type",
+   "mandatory_depends_on": "eval:doc.payment_to == 'OJT'",
+   "options": "Deployment Type"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.payment_to == \"Trainee\"",
+   "fieldname": "is_mess_member",
+   "fieldtype": "Check",
+   "label": "Is Mess Member?"
+  },
+  {
+   "fieldname": "refundable_amount",
+   "fieldtype": "Currency",
+   "label": "Refundable Amount",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "advance_amount_used",
+   "fieldtype": "Currency",
+   "label": "Advance Amount Used",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_53",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "journal_entry",
+   "fieldtype": "Data",
+   "label": "Journal Entry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "deduction_amount",
+   "fieldtype": "Currency",
+   "label": "Deduction Amount",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "label": "Total Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_37",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_35",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-05-28 16:56:26.434624",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Desuup Pay Slip",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

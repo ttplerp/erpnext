@@ -427,6 +427,9 @@ class BankPayment(Document):
             data = self.get_pbva()
         elif self.transaction_type == "Bulk Leave Encashment":
             data = self.get_leave_encashment()
+        elif self.transaction_type == "Desuup Payment":
+            data =self.get_desuup_payment()
+            # frappe.throw(str(data))
         data = merge_similar_entries(data)
         return data
     
@@ -591,45 +594,40 @@ class BankPayment(Document):
                     )
                 supplier, employee, desuup = None, None, None
                 for i in payment_dtl:
+                    party=i["party"]
                     if i["party_type"] == "Supplier":
                         query = """select s.bank_name, s.bank_branch, s.bank_account_type, 
 										s.account_number as bank_account_no, s.supplier_name as beneficiary_name,
 										(CASE WHEN s.bank_name = "INR" THEN s.inr_bank_code ELSE NULL END) inr_bank_code,
 										(CASE WHEN s.bank_name = "INR" THEN s.inr_purpose_code ELSE NULL END) inr_purpose_code
 										from `tabSupplier` s
-										WHERE s.name = '{party}'
-									""".format(
-                            party=i["party"]
-                        )
+										WHERE s.name = %s
+									"""
+                        
                         supplier = i["party"]
                     elif i["party_type"] == "Employee":
                         query = """select e.bank_name, e.bank_branch, e.bank_account_type, e.employee_name as beneficiary_name,
 										e.bank_ac_no as bank_account_no, NULL inr_bank_code, NULL inr_purpose_code
 										from `tabEmployee` e
-										WHERE e.name = '{party}'
-									""".format(
-                            party=i["party"]
-                        )
+										WHERE e.name = %s
+									"""
                         employee = i["party"]
                     elif i["party_type"] == "Muster Roll Employee":
                         query = """select e.bank_name, e.bank_branch, e.bank_account_type, e.person_name as beneficiary_name,
 										e.bank_ac_no as bank_account_no, NULL inr_bank_code, NULL inr_purpose_code
 										from `tabMuster Roll Employee` e
-										WHERE e.name = '{party}'
-									""".format(
-                            party=i["party"]
-                        )
+										WHERE e.name = %s
+									"""
                         employee = i["party"]
                     elif i["party_type"] == "Desuup":
                         query = """select d.bank_name, d.bank_branch, d.bank_account_type, d.desuup_name as beneficiary_name,
 										d.bank_account_number as bank_account_no, NULL inr_bank_code, NULL inr_purpose_code
 										from `tabDesuup` d
-										WHERE d.name = '{party}'
-									""".format(
-                            party=i["party"]
-                        )
+										WHERE d.name = %s
+									"""
                         desuup = i["party"]
-                    dtl = frappe.db.sql(query, as_dict=True)
+                        
+                    dtl = frappe.db.sql(query, party, as_dict=True)
                     data.append(
                         frappe._dict(
                             {
@@ -844,6 +842,48 @@ class BankPayment(Document):
             month=self.month,
             bank_payment = self.name,
             cond = cond), as_dict=True)
+    
+    def get_desuup_payment(self):
+        cond = ""
+        if not self.fiscal_year:
+            frappe.throw(_("Please select Fiscal Year"))
+        elif not self.month:
+            frappe.throw(_("Please select Month"))
+
+        return frappe.db.sql("""
+                             select 'Desuup Pay Slip' transaction_type, t1.name transaction_id,
+                                t1.name transaction_reference, t1.modified transaction_date,
+                                t1.desuup, t1.desuup_name beneficiary_name,
+                                IFNULL(t1.bank_name, d.bank_name) bank_name,
+                                IFNULL(t1.bank_branch, d.bank_branch) bank_branch,
+                                fib.financial_system_code, d.bank_account_type, IFNULL(t1.bank_account_no, d.bank_account_number) bank_account_no, 
+                                round(t1.net_pay,2) amount,
+                                'Payment for {payment_month}-{payment_year}' remarks, "Draft" status
+                             from `tabDesuup Pay Slip` t1
+                             join `tabDesuup` d ON t1.desuup = d.name
+                             left join `tabFinancial Institution Branch` fib ON fib.name = IFNULL(t1.bank_branch, d.bank_branch)
+                             where t1.fiscal_year = '{payment_year}'
+                             and t1.reference_doctype = '{ref_doc}'
+                             and t1.reference_name = '{ref_name}'
+                             and t1.docstatus = 1
+                             and IFNULL(t1.net_pay,0) > 0
+                             and not exists(
+                                select 1 from `tabBank Payment Item` bpi, `tabBank Payment` bp
+                                where bpi.transaction_type = 'Desuup Pay Slip'
+                                and bp.name = bpi.parent=t1.name
+                                AND bpi.transaction_id = t1.name
+                                AND bpi.parent != '{bank_payment}'
+                                AND bpi.docstatus != 2
+                                AND bpi.status NOT IN ('Cancelled', 'Failed')
+                             )
+                        """.format(
+                                payment_year=self.fiscal_year, 
+                                payment_month=self.get_month_id(self.month),
+                                month=self.month,
+                                bank_payment = self.name,
+                                ref_doc = self.desuup_payment_type,
+                                ref_name = self.desuup_transaction_id
+                            ), as_dict=True)
 
     def get_salary_arrear(self):
         cond = ""

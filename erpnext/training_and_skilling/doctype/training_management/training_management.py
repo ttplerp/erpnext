@@ -5,6 +5,7 @@ import frappe
 from frappe.model.document import Document
 from frappe import _
 from frappe.utils import flt, getdate, cint, today, nowdate, add_years, add_months, add_days, date_diff, month_diff
+from frappe.model.mapper import get_mapped_doc
 
 from datetime import datetime
 
@@ -154,6 +155,29 @@ class TrainingManagement(Document):
 			if self.cohort_batch == a.cohort_batch:
 				frappe.throw(_("Cohort Batch " + "{} " + "is being used in Domain: '{}' under Course: '{}'").format(a.cohort, a.domain, a.course_cost_center))
 
+	@frappe.whitelist()
+	def make_mess_advance(self):
+		items = []
+		mess_adv= frappe.new_doc("Desuup Mess Advance")
+		mess_amt = frappe.db.get_single_value("Desuup Settings", "mess_advance")
+		for d in self.trainee_details:
+			if d.is_mess_member and d.status=='Reported':
+				items.append({
+					"desuup": d.desuup_id,
+					"desuup_name": d.desuup_name,
+					"amount": mess_amt,
+				})
+		mess_adv.update({
+			"branch": self.branch,
+			"cost_center": self.course_cost_center,
+			"company": self.company,
+			"items": items,
+			"reference_doctype": self.doctype,
+			"reference_name": self.name,
+		})
+		
+		return mess_adv
+
 	# def on_submit(self):
 
 		# for item in self.trainer_details:
@@ -200,6 +224,7 @@ def set_status():
 			doc.save(ignore_permissions = 1)
 			doc.submit()
 			frappe.db.set_value("Training Management", t.name, "docstatus","1")
+
 
 def get_permission_query_conditions(user):
 	if not user: user = frappe.session.user

@@ -44,6 +44,8 @@
   "total_amount_in_words",
   "reference",
   "clearance_date",
+  "reference_doctype",
+  "reference_name",
   "remark",
   "paid_loan",
   "inter_company_journal_entry_reference",
@@ -128,6 +130,7 @@
    "search_index": 1
   },
   {
+   "fetch_from": "branch.company",
    "fieldname": "company",
    "fieldtype": "Link",
    "in_standard_filter": 1,
@@ -172,7 +175,6 @@
    "in_global_search": 1,
    "in_list_view": 1,
    "label": "Reference Number",
-   "mandatory_depends_on": "eval:doc.voucher_type == \"Bank Entry\"",
    "no_copy": 1,
    "oldfieldname": "cheque_no",
    "oldfieldtype": "Data",
@@ -182,7 +184,6 @@
    "fieldname": "cheque_date",
    "fieldtype": "Date",
    "label": "Reference Date",
-   "mandatory_depends_on": "eval:doc.voucher_type == \"Bank Entry\"",
    "no_copy": 1,
    "oldfieldname": "cheque_date",
    "oldfieldtype": "Date",
@@ -588,13 +589,25 @@
    "fieldtype": "Data",
    "label": "Payment Status",
    "read_only": 1
+  },
+  {
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "label": "Reference DocType",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "reference_name",
+   "fieldtype": "Dynamic Link",
+   "label": "Reference Name",
+   "options": "reference_doctype"
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 176,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-05-09 11:32:46.529546",
+ "modified": "2024-05-28 22:04:24.426374",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",

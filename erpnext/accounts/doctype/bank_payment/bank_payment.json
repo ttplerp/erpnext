@@ -12,6 +12,8 @@
   "institution_name",
   "fiscal_year",
   "month",
+  "desuup_payment_type",
+  "desuup_transaction_id",
   "select_beneficiary",
   "beneficiary",
   "column_break_0",
@@ -63,7 +65,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Transaction Type",
-   "options": "\nSalary\nSalary Arrear\nJournal Entry\nPayment Entry\nEmployee Loan Payment\nBonus\nImprest Recoup\nLTC\nPBVA\nProcess MR Payment\nBulk Leave Encashment",
+   "options": "\nSalary\nSalary Arrear\nJournal Entry\nPayment Entry\nEmployee Loan Payment\nBonus\nImprest Recoup\nLTC\nPBVA\nProcess MR Payment\nBulk Leave Encashment\nDesuup Payment",
    "reqd": 1
   },
   {
@@ -328,11 +330,27 @@
    "fieldtype": "Link",
    "label": "Beneficiary",
    "options": "Supplier"
+  },
+  {
+   "depends_on": "eval:doc.transaction_type == 'Desuup Payment'",
+   "fieldname": "desuup_payment_type",
+   "fieldtype": "Select",
+   "label": "Desuup Payment Type",
+   "mandatory_depends_on": "eval:doc.transaction_type == 'Desuup Payment'",
+   "options": "\nTraining Management\nDesuup Deployment Entry"
+  },
+  {
+   "depends_on": "eval:doc.transaction_type == 'Desuup Payment'",
+   "fieldname": "desuup_transaction_id",
+   "fieldtype": "Dynamic Link",
+   "label": "Desuup Transaction ID",
+   "mandatory_depends_on": "eval:doc.transaction_type == 'Desuup Payment'",
+   "options": "desuup_payment_type"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-12-29 19:19:49.832960",
+ "modified": "2024-05-20 19:14:35.641399",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Bank Payment",

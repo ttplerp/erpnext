@@ -1,0 +1,159 @@
+{
+ "actions": [],
+ "allow_copy": 1,
+ "creation": "2024-05-12 17:19:36.516401",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "date",
+  "domain",
+  "cost_center",
+  "column_break_2",
+  "attendance_for",
+  "training_management",
+  "desuup_deployment",
+  "programme",
+  "column_break_3",
+  "company",
+  "training_center",
+  "unmarked_attendance_section",
+  "desuups_html",
+  "marked_attendance_section",
+  "marked_attendance_html"
+ ],
+ "fields": [
+  {
+   "default": "Today",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "depends_on": "date",
+   "fieldname": "unmarked_attendance_section",
+   "fieldtype": "Section Break",
+   "label": "Unmarked Attendance"
+  },
+  {
+   "fieldname": "desuups_html",
+   "fieldtype": "HTML",
+   "label": "Desuups HTML",
+   "read_only": 1
+  },
+  {
+   "depends_on": "date",
+   "fieldname": "marked_attendance_section",
+   "fieldtype": "Section Break",
+   "label": "Marked Attendance"
+  },
+  {
+   "fieldname": "marked_attendance_html",
+   "fieldtype": "HTML",
+   "label": "Marked Attendance HTML"
+  },
+  {
+   "depends_on": "eval:doc.attendance_for === 'Trainee'",
+   "fieldname": "training_center",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "Training Center",
+   "options": "Training Center"
+  },
+  {
+   "depends_on": "eval:doc.attendance_for === 'Trainee'",
+   "fieldname": "programme",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Programme",
+   "options": "Programme"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "attendance_for",
+   "fieldtype": "Select",
+   "label": "Attendance For",
+   "options": "\nTrainee\nOJT",
+   "reqd": 1
+  },
+  {
+   "fieldname": "domain",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Domain",
+   "options": "DSP Domain"
+  },
+  {
+   "depends_on": "eval:doc.attendance_for == 'Trainee'",
+   "fieldname": "training_management",
+   "fieldtype": "Link",
+   "label": "Training Management",
+   "options": "Training Management"
+  },
+  {
+   "depends_on": "eval:doc.attendance_for == 'OJT'",
+   "fieldname": "desuup_deployment",
+   "fieldtype": "Link",
+   "label": "Desuup Deployment",
+   "options": "Desuup Deployment Entry"
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center"
+  }
+ ],
+ "hide_toolbar": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2024-05-23 20:51:01.271252",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Desuup Attendance Tool",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "read": 1,
+   "role": "HR Manager",
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Training Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Training User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

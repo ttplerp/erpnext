@@ -1,0 +1,141 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2024-05-13 14:48:28.354910",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "desuup",
+  "is_mess_member",
+  "column_break_2",
+  "desuup_name",
+  "section_break_4",
+  "amount",
+  "total_days_present",
+  "column_break_6",
+  "pay_slip",
+  "column_break_9",
+  "status",
+  "error",
+  "section_break_12",
+  "reference_doctype",
+  "deployment_type",
+  "column_break_14",
+  "reference_name"
+ ],
+ "fields": [
+  {
+   "fieldname": "desuup",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Desuup",
+   "options": "Desuup",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "desuup.desuup_name",
+   "fieldname": "desuup_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Desuup Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_4",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount"
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pay_slip",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Pay Slip",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "no_copy": 1,
+   "options": "\nSuccess\nFailed",
+   "read_only": 1
+  },
+  {
+   "fieldname": "error",
+   "fieldtype": "Code",
+   "label": "Error",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_days_present",
+   "fieldtype": "Float",
+   "label": "Total Days Present"
+  },
+  {
+   "fieldname": "section_break_12",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "label": "Reference DocType",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "column_break_14",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reference_name",
+   "fieldtype": "Dynamic Link",
+   "label": "Reference Name",
+   "options": "reference_doctype"
+  },
+  {
+   "depends_on": "eval:doc.reference_doctype =='Desuup Deployment Entry'",
+   "fieldname": "deployment_type",
+   "fieldtype": "Link",
+   "label": "Deployment Type",
+   "options": "Deployment Type"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_mess_member",
+   "fieldtype": "Check",
+   "label": "Is Mess Member",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-05-28 21:54:24.605484",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Desuup Payroll Entry Item",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

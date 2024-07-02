@@ -13,7 +13,11 @@
   "code",
   "dzongkhag",
   "section_break_9",
-  "item"
+  "item",
+  "mess_advance_party_detaiils_section",
+  "party",
+  "column_break_10",
+  "party_name"
  ],
  "fields": [
   {
@@ -21,8 +25,7 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Location",
-   "reqd": 1,
-   "unique": 1
+   "reqd": 1
   },
   {
    "fieldname": "dzongkhag",
@@ -56,11 +59,33 @@
    "fieldname": "code",
    "fieldtype": "Data",
    "label": "Training Center Code"
+  },
+  {
+   "fieldname": "mess_advance_party_detaiils_section",
+   "fieldtype": "Section Break",
+   "label": "Mess Advance Party Detaiils"
+  },
+  {
+   "fieldname": "party",
+   "fieldtype": "Link",
+   "label": "Party",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "party.employee_name",
+   "fieldname": "party_name",
+   "fieldtype": "Data",
+   "label": "Party Name",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-05-24 16:51:49.494447",
+ "modified": "2024-05-27 10:37:55.943292",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Center",

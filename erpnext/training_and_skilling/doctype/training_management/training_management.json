@@ -253,6 +253,7 @@
    "options": "Branch"
   },
   {
+   "fetch_from": "branch.company",
    "fieldname": "company",
    "fieldtype": "Link",
    "label": "Company",
@@ -263,7 +264,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-05-24 13:20:03.375334",
+ "modified": "2024-05-28 22:05:32.414392",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Management",

@@ -38,6 +38,16 @@ frappe.ui.form.on('Bank Payment', {
 		enable_disable(frm);
 		create_custom_buttons(frm);
 		
+		if(frm.doc.__islocal) {
+			frappe.call({
+				method: "erpnext.custom_utils.get_user_info",
+				args: {"user": frappe.session.user},
+				callback(r) {
+					cur_frm.set_value("company", r.message.company);
+				}
+			});
+		}
+		
 		frm.set_query("paid_from", function() {
 			return {
 				query: "erpnext.accounts.doctype.bank_payment.bank_payment.get_paid_from",
@@ -181,14 +191,13 @@ var create_custom_buttons = function(frm){
 }
 
 var enable_disable = function(frm){
-	var permitted_doctypes = ['Bonus', 'Employee Loan Payment', 'LTC', 'PBVA', 'Salary', 'Salary Arrear'];
-	frm.toggle_display(['fiscal_year', 'region', 'employee', 'department', 'division'], permitted_doctypes.includes(frm.doc.transaction_type));
-	frm.toggle_display(['month'], ['Employee Loan Payment', 'Salary', 'Salary Arrear'].includes(frm.doc.transaction_type));
+	var permitted_doctypes = ['Bonus', 'Employee Loan Payment', 'LTC', 'PBVA', 'Salary', 'Salary Arrear','Desuup Payment'];
+	frm.toggle_display(['month'], ['Employee Loan Payment', 'Salary', 'Salary Arrear', 'Desuup Payment'].includes(frm.doc.transaction_type));
 	frm.toggle_display(['transaction_no', 'from_date', 'to_date'], !permitted_doctypes.includes(frm.doc.transaction_type) && frm.doc.transaction_type);
 	frm.toggle_display(['from_date', 'to_date'], !permitted_doctypes.includes(frm.doc.transaction_type) && frm.doc.transaction_type && !frm.doc.transaction_no);
 
 	frm.toggle_reqd(['fiscal_year'], permitted_doctypes.includes(frm.doc.transaction_type));
-	frm.toggle_reqd(['month'], ['Employee Loan Payment', 'Salary', 'Salary Arrear'].includes(frm.doc.transaction_type));
+	frm.toggle_reqd(['month'], ['Employee Loan Payment', 'Salary', 'Salary Arrear','Desuup Payment'].includes(frm.doc.transaction_type));
 	frm.toggle_reqd(['from_date', 'to_date'], !permitted_doctypes.includes(frm.doc.transaction_type) && frm.doc.transaction_type && !frm.doc.transaction_no);
 }
 

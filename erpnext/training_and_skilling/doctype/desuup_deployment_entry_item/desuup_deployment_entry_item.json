@@ -1,0 +1,104 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2024-05-15 15:21:29.880906",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "desuup",
+  "column_break_2",
+  "desuup_name",
+  "ojt_details_section",
+  "status",
+  "deployment_type",
+  "column_break_6",
+  "reported_date",
+  "column_break_8",
+  "withdrawal_date",
+  "section_break_10",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "desuup",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Desuup",
+   "options": "Desuup"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "desuup.desuup_name",
+   "fieldname": "desuup_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Desuup Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "ojt_details_section",
+   "fieldtype": "Section Break",
+   "label": "OJT Details"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "\nReported\nWithdrawn"
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reported_date",
+   "fieldtype": "Date",
+   "label": "Reported Date"
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "withdrawal_date",
+   "fieldtype": "Date",
+   "label": "Withdrawal Date",
+   "mandatory_depends_on": "eval:doc.status == 'Withdrawn'"
+  },
+  {
+   "fieldname": "section_break_10",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "deployment_type",
+   "fieldtype": "Link",
+   "label": "Deployment Type",
+   "options": "Deployment Type",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-05-27 12:50:22.223508",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Desuup Deployment Entry Item",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

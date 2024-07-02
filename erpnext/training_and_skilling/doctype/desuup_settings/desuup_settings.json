@@ -1,0 +1,170 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-05-15 01:58:58.582469",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "payment_settings",
+  "trainee_payment_details_section",
+  "monthly_stipend",
+  "column_break_3",
+  "mess_advance",
+  "ojt_payment_details_section",
+  "normal",
+  "hard",
+  "column_break_9",
+  "medium",
+  "account_settings_tab",
+  "stipend_account_details_section",
+  "stipend_expense_account",
+  "mess_advance_account",
+  "column_break_10",
+  "stipend_payable_account",
+  "ojt_account_details_section",
+  "ojt_expense_account",
+  "column_break_14",
+  "ojt_payable_account",
+  "deduction_account_deatials_section",
+  "deduction_account"
+ ],
+ "fields": [
+  {
+   "fieldname": "trainee_payment_details_section",
+   "fieldtype": "Section Break",
+   "label": "Trainee Payment Details"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ojt_payment_details_section",
+   "fieldtype": "Section Break",
+   "label": "OJT Payment Details"
+  },
+  {
+   "fieldname": "payment_settings",
+   "fieldtype": "Tab Break",
+   "label": "Payment Settings"
+  },
+  {
+   "fieldname": "account_settings_tab",
+   "fieldtype": "Tab Break",
+   "label": "Account Settings"
+  },
+  {
+   "fieldname": "stipend_expense_account",
+   "fieldtype": "Link",
+   "label": "Stipend Expense Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "column_break_9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "stipend_payable_account",
+   "fieldtype": "Link",
+   "label": "Stipend Payable Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "stipend_account_details_section",
+   "fieldtype": "Section Break",
+   "label": "Stipend Account Details"
+  },
+  {
+   "fieldname": "ojt_account_details_section",
+   "fieldtype": "Section Break",
+   "label": "OJT Account Details"
+  },
+  {
+   "fieldname": "ojt_expense_account",
+   "fieldtype": "Link",
+   "label": "OJT Expense Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "column_break_14",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ojt_payable_account",
+   "fieldtype": "Link",
+   "label": "OJT Payable Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "mess_advance_account",
+   "fieldtype": "Link",
+   "label": "Mess Advance Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "monthly_stipend",
+   "fieldtype": "Currency",
+   "label": "Monthly Stipend"
+  },
+  {
+   "fieldname": "mess_advance",
+   "fieldtype": "Currency",
+   "label": "Mess Advance"
+  },
+  {
+   "fieldname": "normal",
+   "fieldtype": "Currency",
+   "label": "Normal"
+  },
+  {
+   "fieldname": "hard",
+   "fieldtype": "Currency",
+   "label": "Hard"
+  },
+  {
+   "fieldname": "medium",
+   "fieldtype": "Currency",
+   "label": "Medium"
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "deduction_account_deatials_section",
+   "fieldtype": "Section Break",
+   "label": "Deduction Account Deatials"
+  },
+  {
+   "fieldname": "deduction_account",
+   "fieldtype": "Link",
+   "label": "Deduction Account",
+   "options": "Account"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2024-05-28 16:59:19.950315",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Desuup Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

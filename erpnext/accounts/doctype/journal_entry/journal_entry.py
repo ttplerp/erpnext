@@ -124,7 +124,7 @@ class JournalEntry(AccountsController):
 			self.title = self.get_title()
 
 	def on_submit(self):
-		self.validate_cheque_info()
+		# self.validate_cheque_info()
 		self.check_credit_limit()
 		self.make_gl_entries()
 		self.update_advance_paid()
@@ -132,6 +132,7 @@ class JournalEntry(AccountsController):
 		self.update_invoice_discounting()
 		self.update_project_transaction_details() #added by Jai
 		self.link_je_to_doc(cancel=self.docstatus == 2)
+		self.update_reference_document()
 
 	def on_cancel(self):
 		from erpnext.accounts.utils import unlink_ref_doc_from_payment_entries
@@ -147,9 +148,32 @@ class JournalEntry(AccountsController):
 		self.update_invoice_discounting()
 		self.update_project_transaction_details() #added by Jai
 		self.link_je_to_doc(cancel=self.docstatus == 2)
+		self.update_reference_document(cancel=1)
 
 	def get_title(self):
 		return self.pay_to_recd_from or self.accounts[0].account
+	
+	def update_reference_document(self, cancel=0):
+		if cint(cancel) == 0:
+			for a in self.get("accounts"):
+				if a.reference_type == "POL" and a.reference_name:
+					doc = frappe.get_doc("POL", a.reference_name)
+					doc.db_set("paid_amount", doc.outstanding_amount)
+					doc.db_set("outstanding_amount", 0)
+
+				if a.reference_type == "Desuup Mess Advance" and a.reference_name:
+					doc = frappe.get_doc("Desuup Mess Advance", a.reference_name)
+					doc.db_set("payment_status", "Paid")
+		else:
+			for a in self.get("accounts"):
+				if a.reference_type == "POL" and a.reference_name:
+					doc = frappe.get_doc("POL", a.reference_name)
+					doc.db_set("paid_amount", 0)
+					doc.db_set("outstanding_amount", doc.total_amount)
+
+				if a.reference_type == "Desuup Mess Advance" and a.reference_name:
+					doc = frappe.get_doc("Desuup Mess Advance", a.reference_name)
+					doc.db_set("payment_status", "Unpaid")
 
 	def link_je_to_doc(self, cancel=False):
 		ref_list = ['Pol Advance', 'Job Card']
@@ -1572,7 +1596,7 @@ def make_reverse_journal_entry(source_name, target_doc=None):
 	return doclist
 
 @frappe.whitelist()
-def get_tds_account(tax_withholding_category):
+def get_tds_account(company, tax_withholding_category):
 	account = frappe.db.sql("""select t.name,
 			ifnull((select tax_withholding_rate
 				from `tabTax Withholding Rate` r
@@ -1580,10 +1604,10 @@ def get_tds_account(tax_withholding_category):
 				limit 1),0) as tax_withholding_rate,
 			(select account
 				from `tabTax Withholding Account` a
-				where a.parent = t.name
+				where a.parent = t.name and a.company = '{}'
 				limit 1) as tax_withholding_account
 		from `tabTax Withholding Category` t
-		where t.name = "{}" """.format(tax_withholding_category), as_dict=True)
+		where t.name = "{}" """.format(company, tax_withholding_category), as_dict=True)
 	return account[0] if account else None
 
 # ePayment Begins
