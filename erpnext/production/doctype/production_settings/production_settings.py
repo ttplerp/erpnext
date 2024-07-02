@@ -11,9 +11,10 @@ class ProductionSettings(Document):
 		# self.check_duplicate()
 
 	def check_percent_total(self):
-		total_percent = 0
+		total_percent = 0.00
 		for a in self.item:
 			total_percent += flt(a.ratio)
+		total_percent = flt(total_percent,2)
 			
 		if cint(total_percent) != 100:
 			frappe.throw("Total percent is {}. It should be equal to 100".format(total_percent))
