@@ -44,8 +44,7 @@
    "fieldname": "raw_material",
    "fieldtype": "Link",
    "label": "Raw Material",
-   "options": "Item",
-   "unique": 1
+   "options": "Item"
   },
   {
    "depends_on": "eval:doc.based_on == \"Raw Material\"",
@@ -135,7 +134,7 @@
   }
  ],
  "links": [],
- "modified": "2023-02-03 12:51:16.532162",
+ "modified": "2024-07-03 11:05:18.225469",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Production Settings",
