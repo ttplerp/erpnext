@@ -55,6 +55,7 @@
   "job_outsource_footer",
   "amended_from",
   "paid",
+  "invoice_created",
   "sb_approver",
   "approver",
   "cb_approver_01",
@@ -403,12 +404,21 @@
   {
    "fieldname": "column_break_13",
    "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "invoice_created",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Invoice Created ",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-26 11:35:22.900160",
+ "modified": "2024-07-04 12:05:41.434244",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Repair And Services",

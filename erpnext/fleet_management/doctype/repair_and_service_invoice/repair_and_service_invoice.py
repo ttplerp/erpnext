@@ -20,6 +20,7 @@ class RepairAndServiceInvoice(AccountsController):
 			self.credit_account = get_party_account(self.party_type,self.party,self.company)
 		if not self.tds_account and flt(self.tds_percent) > 0:
 			self.tds_account = get_tds_account(self.tds_percent, self.company)
+		self.validate_repair_and_service_invoice()
 	def on_submit(self):
 		self.make_gl_entry()
 		self.update_repair_and_service()
@@ -29,6 +30,12 @@ class RepairAndServiceInvoice(AccountsController):
 		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
 		self.make_gl_entry()
 		self.update_repair_and_service()
+	def validate_repair_and_service_invoice(self):
+		if not self.repair_and_services:
+			return
+		invoice_created = frappe.db.get_value("Repair And Services",self.repair_and_services,"invoice_created")
+		if invoice_created == 1:
+			frappe.throw("Invoice Already Created")
 
 	def update_repair_and_service(self):
 		if not self.repair_and_services:
@@ -37,7 +44,7 @@ class RepairAndServiceInvoice(AccountsController):
 		if self.docstatus == 2:
 			value = 0
 		doc = frappe.get_doc("Repair And Services", self.repair_and_services)
-		doc.db_set("paid", value)
+		doc.db_set("invoice_created", value)
 	
 	def set_status(self, update=False, status=None, update_modified=True):
 		if self.is_new():
