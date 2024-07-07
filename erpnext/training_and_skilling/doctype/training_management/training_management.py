@@ -147,7 +147,7 @@ class TrainingManagement(Document):
 			for t in trainee:
 				if self.name != t.name: 
 					if(t.desuup_id == td.desuup_id):
-						frappe.throw(_("At Row {0} Desuup  <b>{1}</b> is already enrolled in training <b>{2}, {3}</b> as it's course till {4}.").format(td.idx, t.desuup_id, t.name, t.programme_classification, t.training_end_date))
+						frappe.throw(_("At Row {0} Desuup  <b>{1}</b> is under going training <b>{2}, {3}</b> as it's course till {4}.").format(td.idx, t.desuup_id, t.name, t.programme_classification, t.training_end_date))
 
 	def validate_trainees(self):
 		data = []

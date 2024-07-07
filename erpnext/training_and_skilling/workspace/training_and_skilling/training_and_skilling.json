@@ -109,44 +109,6 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Training",
-   "link_count": 3,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Training Management",
-   "link_count": 0,
-   "link_to": "Training Management",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Barred Desuups For DSP",
-   "link_count": 0,
-   "link_to": "Barred Desuup",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Desuup List",
-   "link_count": 0,
-   "link_to": "Desuup",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Master Record",
    "link_count": 5,
    "onboard": 0,
@@ -373,9 +335,57 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Training",
+   "link_count": 4,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Training Management",
+   "link_count": 0,
+   "link_to": "Training Management",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Barred Desuups For DSP",
+   "link_count": 0,
+   "link_to": "Barred Desuup",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Desuup List",
+   "link_count": 0,
+   "link_to": "Desuup",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Add Trainee ",
+   "link_count": 0,
+   "link_to": "Trainee Addition",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2024-05-23 22:14:21.369876",
+ "modified": "2024-07-07 15:15:36.257264",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training And Skilling",
