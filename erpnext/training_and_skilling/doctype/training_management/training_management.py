@@ -15,17 +15,23 @@ class TrainingManagement(Document):
 
 		self.old_state = self.get_db_value("workflow_state")
 		self.new_state = self.workflow_state
-		if self.new_state == "Waiting for Verification" and self.old_state == "Draft":
-			self.notify_lo()
+		self.notify_pmt_lo(old_state=self.old_state, new_state=self.new_state)
 		if self.new_state == "Completed" and self.old_state == "On Going":
 			self.update_trainees_status()
 		# self.check_date()
 		# self.validate_trainer_course()
-		# self.validate_desuup_course()
+		self.validate_desuup_course()
 		# self.count_duration()
 		# self.check_cohort_batch()
 		self.validate_trainees()
 		self.validate_deuplicate_record()
+		#self.disallow_adding_trainee()
+
+	def disallow_adding_trainee(self):
+		if self.status in ["On Going","Approved"]:
+			for i in self.get("trainee_details"):
+				if not frappe.db.exists("Trainee Details", {"desuup_id":i.desuup_id, "parent":self.name}):
+					frappe.throw("You are not allowed to add Trainee Desuup ID {}, CID {} after starting training ".format(i.desuup_id,i.desuup_cid))
 	
 	def validate_deuplicate_record(self):
 		check_duplicate = frappe.db.sql("""
@@ -46,13 +52,20 @@ class TrainingManagement(Document):
 				d.status = 'Passed'
 		frappe.db.commit()
 	
-	def notify_lo(self):
+	def notify_pmt_lo(self, old_state, new_state):
 		receipients = []
 		args = self.as_dict()
-		lo_emails = frappe.db.sql(""" select email from `tabLaison Officer` where parent='{}' """.format(self.training_center), as_dict=1)
-		if lo_emails:
-			receipients = [a['email'] for a in lo_emails]
-		
+		emails = []
+		if self.new_state == "Waiting Approval" and self.old_state == "Draft":
+			emails = frappe.db.sql(""" select email from `tabProgramme Management Team` 
+							where parent='{}' """.format(self.programme_classification), as_dict=1)
+		if self.new_state == "Approved" and self.old_state == "Waiting Approval":
+			emails = frappe.db.sql(""" select email from `tabLaison Officer` 
+							where parent='{}' """.format(self.training_center), as_dict=1)
+
+		if emails:
+			receipients = [a['email'] for a in emails]
+
 		email_template = frappe.get_doc("Email Template", "Notify Laison Officer")
 		message = frappe.render_template(email_template.response, args)
 		if receipients:
@@ -92,6 +105,7 @@ class TrainingManagement(Document):
 		self.docstatus = {
 			"Draft": 0,
 			"Created": 0,
+			"Approved": 0,
 			"On Going": 0,
 			"Completed": 1,
 			"Cancelled": 2
@@ -122,18 +136,18 @@ class TrainingManagement(Document):
 
 	def validate_desuup_course(self):
 		trainee = frappe.db.sql("""
-			SELECT
-				td.desuup_id, tm.name, tm.training_end_date, tm.course_cost_center
-			FROM `tabTraining Management` tm inner join `tabTrainee Details` td 
-			ON tm.name=td.parent 
-			WHERE tm.status in ('On Going', 'Created')
-		""", as_dict=True)
+				SELECT
+					td.desuup_id, tm.name, tm.training_end_date, tm.course_cost_center, tm.programme_classification
+				FROM `tabTraining Management` tm inner join `tabTrainee Details` td 
+				ON tm.name=td.parent 
+				WHERE tm.status in ('On Going', 'Created')
+			""", as_dict=True)
 				
 		for td in self.trainee_details:
 			for t in trainee:
 				if self.name != t.name: 
 					if(t.desuup_id == td.desuup_id):
-						frappe.throw(_("At Row {0} Desuup with ID: {1} is already enrolled in training {2} taking ({3}) as it's course till {4}.").format(td.idx, t.desuup_id, t.name, t.course_cost_center, t.training_end_date))
+						frappe.throw(_("At Row {0} Desuup  <b>{1}</b> is already enrolled in training <b>{2}, {3}</b> as it's course till {4}.").format(td.idx, t.desuup_id, t.name, t.programme_classification, t.training_end_date))
 
 	def validate_trainees(self):
 		data = []
@@ -168,6 +182,7 @@ class TrainingManagement(Document):
 					"amount": mess_amt,
 				})
 		mess_adv.update({
+			"training_center": self.training_center,
 			"branch": self.branch,
 			"cost_center": self.course_cost_center,
 			"company": self.company,

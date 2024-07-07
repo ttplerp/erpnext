@@ -1,0 +1,57 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2024-07-04 10:23:29.226582",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "user",
+  "pmt_name",
+  "mobile_no",
+  "email"
+ ],
+ "fields": [
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "User",
+   "options": "User"
+  },
+  {
+   "fetch_from": "user.full_name",
+   "fieldname": "pmt_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "PMT Name"
+  },
+  {
+   "fetch_from": "user.mobile_no",
+   "fieldname": "mobile_no",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Mobile No"
+  },
+  {
+   "fetch_from": "user.email",
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Email"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-07-04 10:23:29.226582",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Programme Management Team",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

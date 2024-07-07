@@ -6,7 +6,9 @@ frappe.ui.form.on('Training Management', {
 		frm.events.make_custom_buttons(frm);
 	},
 	onload: function(frm){
-		
+		if(frm.doc.status=="On Going" || frm.doc.status=="Approved"){
+	 		frm.get_field('trainee_details').grid.cannot_add_rows = true;
+		} 
 	},
 
 	make_custom_buttons: function (frm) {

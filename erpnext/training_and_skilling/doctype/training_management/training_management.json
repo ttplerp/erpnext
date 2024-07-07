@@ -110,7 +110,8 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Training Status",
-   "options": "Draft\nCreated\nOn Going\nCompleted\nCancelled",
+   "no_copy": 1,
+   "options": "Draft\nCreated\nApproved\nOn Going\nCompleted\nCancelled",
    "read_only": 1
   },
   {
@@ -264,7 +265,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-05-28 22:05:32.414392",
+ "modified": "2024-07-07 09:52:57.232205",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Management",

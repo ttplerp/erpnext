@@ -1,0 +1,67 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2024-07-04 11:14:15.517965",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "did",
+  "desuup_name",
+  "column_break_3",
+  "cid",
+  "mobile_no"
+ ],
+ "fields": [
+  {
+   "fieldname": "did",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Desuup ID",
+   "options": "Desuup",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "did.desuup_name",
+   "fieldname": "desuup_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Desuup Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "did.cid_number",
+   "fieldname": "cid",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "CID",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fetch_from": "did.mobile_number",
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Mobile No",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-07-07 13:31:37.917401",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Trainee Addition Item",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

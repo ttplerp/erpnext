@@ -1,0 +1,120 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:AT-{YY}-{MM}-{###}",
+ "creation": "2024-07-04 11:00:15.874867",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "posting_date",
+  "training_management",
+  "training_center",
+  "column_break_3",
+  "programme_classification",
+  "domain",
+  "remark",
+  "trainee_detail_section",
+  "item",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "training_management",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Training Management",
+   "options": "Training Management",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "training_management.training_center",
+   "fieldname": "training_center",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Training Center",
+   "options": "Training Center",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "training_management.programme_classification",
+   "fieldname": "programme_classification",
+   "fieldtype": "Link",
+   "label": "Programme Classification",
+   "options": "Programme Classification",
+   "read_only": 1
+  },
+  {
+   "fieldname": "remark",
+   "fieldtype": "Data",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "trainee_detail_section",
+   "fieldtype": "Section Break",
+   "label": "Trainee Detail"
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Table",
+   "options": "Trainee Addition Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Trainee Addition",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fetch_from": "training_management.domain",
+   "fieldname": "domain",
+   "fieldtype": "Link",
+   "label": "Domain",
+   "options": "DSP Domain"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-07-07 13:30:34.954870",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Trainee Addition",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

@@ -10,7 +10,10 @@
  "field_order": [
   "programme_classification",
   "domain",
-  "code"
+  "column_break_3",
+  "code",
+  "programme_management_team_section",
+  "item"
  ],
  "fields": [
   {
@@ -37,11 +40,25 @@
    "in_standard_filter": 1,
    "label": "Code",
    "reqd": 1
+  },
+  {
+   "fieldname": "programme_management_team_section",
+   "fieldtype": "Section Break",
+   "label": "Programme Management Team(PMT)"
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Table",
+   "options": "Programme Management Team"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-05-24 16:58:07.117982",
+ "modified": "2024-07-04 10:26:40.920952",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Programme Classification",
@@ -61,7 +78,6 @@
    "write": 1
   }
  ],
- "quick_entry": 1,
  "search_fields": "domain,code",
  "sort_field": "modified",
  "sort_order": "DESC",
