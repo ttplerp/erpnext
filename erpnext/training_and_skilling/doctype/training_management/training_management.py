@@ -169,30 +169,6 @@ class TrainingManagement(Document):
 			if self.cohort_batch == a.cohort_batch:
 				frappe.throw(_("Cohort Batch " + "{} " + "is being used in Domain: '{}' under Course: '{}'").format(a.cohort, a.domain, a.course_cost_center))
 
-	@frappe.whitelist()
-	def make_mess_advance(self):
-		items = []
-		mess_adv= frappe.new_doc("Desuup Mess Advance")
-		mess_amt = frappe.db.get_single_value("Desuup Settings", "mess_advance")
-		for d in self.trainee_details:
-			if d.is_mess_member and d.status=='Reported':
-				items.append({
-					"desuup": d.desuup_id,
-					"desuup_name": d.desuup_name,
-					"amount": mess_amt,
-				})
-		mess_adv.update({
-			"training_center": self.training_center,
-			"branch": self.branch,
-			"cost_center": self.course_cost_center,
-			"company": self.company,
-			"items": items,
-			"reference_doctype": self.doctype,
-			"reference_name": self.name,
-		})
-		
-		return mess_adv
-
 	# def on_submit(self):
 
 		# for item in self.trainer_details:
@@ -240,13 +216,13 @@ def set_status():
 			doc.submit()
 			frappe.db.set_value("Training Management", t.name, "docstatus","1")
 
-
 def get_permission_query_conditions(user):
 	if not user: user = frappe.session.user
 	user_roles = frappe.get_roles(user)
-	if "Training User" in user_roles or "Training Manager" in user_roles or "System Manager" in user_roles or "Dashboard Manager" in user_roles:
+
+	if "Training User" in user_roles or "Training Manager" in user_roles or "System Manager" in user_roles or "Data Manager" in user_roles:
 		return
-	else:
+	elif "Laison Officer User" in user_roles:
 		return """(
 			exists(select 1
 				from `tabTraining Center` as t, `tabLaison Officer` as l
@@ -254,15 +230,25 @@ def get_permission_query_conditions(user):
 				and t.name = `tabTraining Management`.training_center
 				and l.user = '{user}')
 		)""".format(user=user)
+	elif "PMT" in user_roles:
+		return """)()
+			exists(select 1
+				from `tabProgramme Classification` as p, `tabProgramme Management Team` as t
+				where p.name=t.parent
+				and p.name = `tabTraining Management`.programme_classification
+				and t.user = '{user}')
+		)""".format(user=user)
 
 def has_record_permission(doc, user):
 	if not user: user = frappe.session.user
 	user_roles = frappe.get_roles(user)
 
-	if "Training User" in user_roles or "Training Manager" in user_roles or "System Manager" in user_roles or "Dashboard Manager" in user_roles:
+	if "Training User" in user_roles or "Training Manager" in user_roles or "System Manager" in user_roles or "Data Manager" in user_roles:
 		return True
 	else:
 		if frappe.db.exists("Laison Officer", {"parent":doc.training_center, "user": user}):
+			return True
+		elif frappe.db.exists("Programme Management Team", {"parent":doc.programme_classification, "user": user}):
 			return True
 		else:
 			return False 

@@ -82,5 +82,39 @@ class TraineeAddition(Document):
 		except frappe.OutgoingEmailError:
 			pass
 
+def get_permission_query_conditions(user):
+	if not user: user = frappe.session.user
+	user_roles = frappe.get_roles(user)
+	if "Training User" in user_roles or "Training Manager" in user_roles or "System Manager" in user_roles or "Data Manager" in user_roles:
+		return
+	elif "Laison Officer User" in user_roles:
+		return """(
+			exists(select 1
+				from `tabTraining Center` as t, `tabLaison Officer` as l
+				where t.name = l.parent 
+				and t.name = `tabTrainee Addition`.training_center
+				and l.user = '{user}')
+		)""".format(user=user)
+	elif "PMT" in user_roles:
+		return """)()
+			exists(select 1
+				from `tabProgramme Classification` as p, `tabProgramme Management Team` as t
+				where p.name=t.parent
+				and p.name = `tabTrainee Addition`.programme_classification
+				and t.user = '{user}')
+		)""".format(user=user)
 
+def has_record_permission(doc, user):
+	if not user: user = frappe.session.user
+	user_roles = frappe.get_roles(user)
+
+	if "Training User" in user_roles or "Training Manager" in user_roles or "System Manager" in user_roles or "Data Manager" in user_roles:
+		return True
+	else:
+		if frappe.db.exists("Laison Officer", {"parent":doc.training_center, "user": user}):
+			return True
+		elif frappe.db.exists("Programme Management Team", {"parent":doc.programme_classification, "user": user}):
+			return True
+		else:
+			return False 
 
