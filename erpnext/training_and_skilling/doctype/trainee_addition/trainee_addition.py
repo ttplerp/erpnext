@@ -96,7 +96,7 @@ def get_permission_query_conditions(user):
 				and l.user = '{user}')
 		)""".format(user=user)
 	elif "PMT" in user_roles:
-		return """)()
+		return """(
 			exists(select 1
 				from `tabProgramme Classification` as p, `tabProgramme Management Team` as t
 				where p.name=t.parent
