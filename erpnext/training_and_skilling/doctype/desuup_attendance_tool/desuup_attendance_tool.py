@@ -17,19 +17,15 @@ def get_desuups(date, attendance_for, cost_center=None, training_management=None
 
 	def get_conditions():
 		cond = ''
-		if cost_center:
-			if training_management:
-				cond += " and t1.course_cost_center = '{}'".format(cost_center)
-			if desuup_deployment:
-				cond += " and t1.cost_center = '{}'".format(cost_center)
+		# if cost_center:
+		# 	if training_management:
+		# 		cond += " and t1.course_cost_center = '{}'".format(cost_center)
+		# 	if desuup_deployment:
+		# 		cond += " and t1.cost_center = '{}'".format(cost_center)
 		if training_management:
 			cond += " and t1.name = '{}'".format(training_management)
 		if desuup_deployment:
 			cond += " and t1.name = '{}'".format(desuup_deployment)
-		if domain:
-			cond += " and t1.domain = '{}'".format(domain)
-		if programme:
-			cond += " and t1.programme = '{}'".format(programme)
 		if training_center:
 			cond += " and t1.training_center = '{}'".format(training_center)
 		return cond
@@ -47,7 +43,6 @@ def get_desuups(date, attendance_for, cost_center=None, training_management=None
 						""".format(getdate(date), cond), as_dict=True)
 		
 	elif attendance_for == "OJT":
-		frappe.throw("Sorry! Attendance for OJT is disabled by Developer.")
 		cond = get_conditions()
 		desuup_list = frappe.db.sql("""
 						select t2.desuup, t2.desuup_name

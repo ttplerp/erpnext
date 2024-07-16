@@ -22,7 +22,6 @@ frappe.ui.form.on('Desuup Attendance Tool', {
 		frm.set_query('desuup_deployment', function(doc) {
 			return {
 				filters: {
-					"cost_center": doc.cost_center,
 					"deployment_status": "On Going",
 				}
 			};
@@ -33,25 +32,16 @@ frappe.ui.form.on('Desuup Attendance Tool', {
 		erpnext.desuup_attendance_tool.load_desuups(frm);
 	},
 
-	// cost_center: function(frm) {
-	// 	erpnext.desuup_attendance_tool.load_desuups(frm);
-	// },
-
 	training_management: function(frm) {
 		erpnext.desuup_attendance_tool.load_desuups(frm);
 	},
+	attendance_for: function(frm) {
+		erpnext.desuup_attendance_tool.load_desuups(frm);
+	},
 
-	// desuup_deployment: function(frm) {
-	// 	erpnext.desuup_attendance_tool.load_desuups(frm);
-	// },
-
-	// domain: function(frm) {
-	// 	erpnext.desuup_attendance_tool.load_desuups(frm);
-	// },
-
-	// programme: function(frm) {
-	// 	erpnext.desuup_attendance_tool.load_desuups(frm);
-	// },
+	desuup_deployment: function(frm) {
+		erpnext.desuup_attendance_tool.load_desuups(frm);
+	},
 	
 	training_center: function(frm) {
 		erpnext.desuup_attendance_tool.load_desuups(frm);

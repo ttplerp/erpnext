@@ -1,5 +1,6 @@
 // Copyright (c) 2024, Frappe Technologies Pvt. Ltd. and contributors
 // For license information, please see license.txt
+{% include "erpnext/public/js/controllers/cheque_details.js" %};
 
 frappe.ui.form.on('Desuup Payout Entry', {
 	onload: function (frm) {
@@ -27,10 +28,10 @@ frappe.ui.form.on('Desuup Payout Entry', {
 			};
 		});
 
-		// create_custom_buttons(frm);
+		create_custom_buttons(frm);
 	},
 	refresh: function(frm) {
-		// create_custom_buttons(frm);
+		create_custom_buttons(frm);
 	},
 
 	get_desuups: function (frm) {
@@ -110,7 +111,7 @@ var create_custom_buttons = function(frm){
 		if(!frm.doc.bank_payment || status.includes(frm.doc.payment_status) ){
 			frm.page.set_primary_action(__('Process Payment'), () => {
 				frappe.model.open_mapped_doc({
-					method: "erpnext.accounts.doctype.payment_entry.payment_entry.make_bank_payment",
+					method: "erpnext.training_and_skilling.doctype.desuup_payout_entry.desuup_payout_entry.make_bank_payment",
 					frm: cur_frm
 				})
 			});

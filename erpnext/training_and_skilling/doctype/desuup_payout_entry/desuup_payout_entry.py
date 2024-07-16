@@ -6,14 +6,24 @@ import calendar
 from frappe import _
 from datetime import date
 from frappe.model.document import Document
-from frappe.utils import cint, flt, nowdate, add_days, getdate, fmt_money, add_to_date, DATE_FORMAT, date_diff, get_last_day
+from frappe.utils import cint, flt, nowdate, add_days, getdate, fmt_money, add_to_date, DATE_FORMAT, date_diff, get_last_day, get_datetime
 from frappe.query_builder.functions import Count, Extract, Sum
+from frappe.model.mapper import get_mapped_doc
 
 class DesuupPayoutEntry(Document):
 	def validate(self):
 		# self.validate_cost_center()
 		# self.set_month_dates()
 		self.calculate_amount()
+		self.validate_present_days()
+
+	def validate_present_days(self):
+		for i in self.get("items"):
+			if i.total_days_present <= 0:
+				frappe.throw("Remove Row #{} or mark attendance for desuup {}".format(
+					frappe.bold(i.idx), 
+					frappe.bold(i.desuup)
+				))
 
 	def calculate_amount(self):
 		month_start_date = "-".join([str(date.today().year), self.month, "01"])
@@ -23,21 +33,25 @@ class DesuupPayoutEntry(Document):
 		for item in self.get("items"):
 			total_days = self.get_desuup_attendance(item.desuup, item.reference_doctype, item.reference_name)
 			item.days_in_month = days_in_month
+			item.total_days_present = total_days
 			
 			if item.reference_doctype == "Training Management":
 				monthly_stipend_amt, monthly_mess_amt = self.get_stipend_amount()
 
 				item.monthly_stipend_amount = monthly_stipend_amt
-				item.total_days_present = total_days
 				mess_adv_amt, adv_party = self.get_advance_amount(item.desuup, item.reference_doctype, item.reference_name)
 				if item.is_mess_member and mess_adv_amt > 0:
 					item.monthly_mess_amount = monthly_mess_amt
-					# item.stipend_amount = flt(monthly_stipend_amt - item.monthly_mess_amount)
+
 					item.mess_advance_party = adv_party
 					item.mess_advance_amount = mess_adv_amt
 
-					stipend = flt(monthly_stipend_amt - monthly_mess_amt)/flt(days_in_month)
-					adv_amt = flt(monthly_mess_amt)/flt(days_in_month)
+					if item.days_in_month == item.total_days_present:
+						stipend = flt(monthly_stipend_amt - monthly_mess_amt)
+						adv_amt = flt(monthly_mess_amt)
+					else:
+						stipend = flt(monthly_stipend_amt - monthly_mess_amt)/flt(30)
+						adv_amt = flt(monthly_mess_amt)/flt(30)
 
 					item.stipend_amount = flt(stipend * total_days, 2)
 					item.mess_advance_used = flt(adv_amt * total_days, 2)
@@ -46,15 +60,25 @@ class DesuupPayoutEntry(Document):
 
 					item.net_amount = flt(item.stipend_amount + item.total_arrear_amount)-flt(item.total_deduction_amount)
 				else:
-					item.stipend_amount = flt(monthly_stipend_amt)/flt(days_in_month) * flt(total_days)
-					item.net_amount = flt(item.stipend_amount + item.total_arrear_amount)-flt(item.total_deduction_amount)
+					if item.days_in_month != item.total_days_present:
+						item.stipend_amount = flt(monthly_stipend_amt)/flt(30) * flt(total_days)
+						item.net_amount = flt(item.stipend_amount + item.total_arrear_amount)-flt(item.total_deduction_amount)
+					else:
+						item.stipend_amount = flt(monthly_stipend_amt) * flt(total_days)
+						item.net_amount = flt(item.stipend_amount + item.total_arrear_amount)-flt(item.total_deduction_amount)
 
 			elif item.reference_doctype == "Desuup Deployment Entry":
 				if item.monthly_pay_amount <= 0:
 					frappe.throw("Monthly Pay amount cannot be 0 or less")
-				total_amount = flt(item.monthly_pay_amount, 2) + flt(item.total_arrear_amount)
+				if item.days_in_month == item.total_days_present:
+					item.total_amount = flt(item.monthly_pay_amount)
+				else:
+					item.total_amount = flt(item.monthly_pay_amount)/30
+					item.total_amount = item.total_amount * total_days
+					
+				total_amount = flt(item.total_amount, 2) + flt(item.total_arrear_amount)
 				if flt(total_amount) < item.total_deduction_amount:
-					frappe.throw("Row #{} cannot be more deductio {} ".format(item.idx, item.total_deduction_amount))
+					frappe.throw("Row #{} cannot be more deduction {} ".format(item.idx, item.total_deduction_amount))
 				else:
 					item.net_amount = flt(total_amount - item.total_deduction_amount, 2)
 
@@ -302,7 +326,7 @@ class DesuupPayoutEntry(Document):
 			aggregated_values[cost_center]['net_amount'] += item.get('net_amount', 0)
 
 			# FOR OJT
-			aggregated_values[cost_center]['ojt_expense'] += item.get('monthly_pay_amount', 0)
+			aggregated_values[cost_center]['ojt_expense'] += item.get('total_amount', 0)
 			aggregated_values[cost_center]['ojt_payable'] += item.get('net_amount', 0)
 
 		# Journal entry templates
@@ -456,6 +480,30 @@ class DesuupPayoutEntry(Document):
 				je.insert()
 				if journal["is_submitable"]:
 					je.submit()
+
+# ePayment Begins
+@frappe.whitelist()
+def make_bank_payment(source_name, target_doc=None):
+	def set_missing_values(obj, target, source_parent):
+		# target.payment_type = "One-One Payment"
+		target.transaction_type = "Desuup Payout Entry"
+		target.posting_date = get_datetime()
+		target.from_date = None
+		target.to_date = None
+		target.paid_from = frappe.db.get_value("Branch", target.branch,"expense_bank_account")
+		target.get_entries()
+
+	doc = get_mapped_doc("Desuup Payout Entry", source_name, {
+			"Desuup Payout Entry": {
+				"doctype": "Bank Payment",
+				"field_map": {
+					"name": "transaction_no",
+				},
+				"postprocess": set_missing_values,
+			},
+	}, target_doc, ignore_permissions=True)
+	return doc
+# ePayment Ends
 
 	# @frappe.whitelist()
 	# def make_accounting_entry(self):

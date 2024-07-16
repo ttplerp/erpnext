@@ -20,23 +20,26 @@
   "to_date",
   "section_break_12",
   "monthly_stipend_amount",
-  "days_in_month",
-  "total_days_present",
-  "column_break_14",
-  "monthly_mess_amount",
   "mess_advance_amount",
   "mess_advance_party",
+  "column_break_14",
+  "monthly_mess_amount",
+  "mess_advance_used",
   "column_break_16",
   "stipend_amount",
-  "mess_advance_used",
   "refundable_amount",
   "deductions_and_arrears_details_section",
+  "monthly_pay_amount",
   "total_arrear_amount",
   "column_break_21",
+  "total_amount",
   "total_deduction_amount",
   "column_break_22",
-  "monthly_pay_amount",
-  "net_amount"
+  "net_amount",
+  "attendance_details_section",
+  "total_days_present",
+  "column_break_32",
+  "days_in_month"
  ],
  "fields": [
   {
@@ -222,12 +225,28 @@
    "fieldtype": "Currency",
    "label": "Monthly Pay Amount",
    "read_only": 1
+  },
+  {
+   "fieldname": "attendance_details_section",
+   "fieldtype": "Section Break",
+   "label": "Attendance Details"
+  },
+  {
+   "fieldname": "column_break_32",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:parent.payment_for == \"OJT\"",
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "label": "Total Amount",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-07-11 00:02:46.122099",
+ "modified": "2024-07-16 18:12:39.610752",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Payout Item",
