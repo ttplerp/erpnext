@@ -89,14 +89,16 @@ def get_data(filters, show_party_name):
 	return data
 
 def get_balances(filters):
-	filters.accounts    = None if filters.get("accounts") == '%' else filters.get("accounts")
+	filters.accounts    = None if filters.get("account") == '%' else filters.get("account")
 	filters.cost_center = None if filters.get("cost_center") == '%' else filters.get("cost_center")
 	filters.project = None if filters.get("project") == '%' else filters.get("project")
+	filters.party = None if filters.get("party") == '%' else filters.get("party")
 	
 	cond = ""
-	cond += " and account = '{0}'".format(filters.accounts) if filters.get("accounts") else ""
+	cond += " and account = '{0}'".format(filters.account) if filters.get("account") else ""
 	cond += " and cost_center = '{0}'".format(filters.cost_center) if filters.get("cost_center") else ""
 	cond += " and project = '{0}'".format(filters.project) if filters.get("project") else ""
+	cond += " and party = '{0}'".format(filters.party) if filters.get("party") else ""
 	sql = """
 		select
 			{group_by} as cost_center, project,
