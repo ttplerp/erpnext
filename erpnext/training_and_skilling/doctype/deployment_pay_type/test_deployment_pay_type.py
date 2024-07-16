@@ -5,5 +5,5 @@
 from frappe.tests.utils import FrappeTestCase
 
 
-class TestDeploymentType(FrappeTestCase):
+class TestDeploymentPayType(FrappeTestCase):
 	pass

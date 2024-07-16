@@ -1,26 +1,18 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:deployment_type",
+ "autoname": "field:deployment_pay_type",
  "creation": "2024-05-27 12:47:06.773553",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "deployment_type",
+  "deployment_pay_type",
   "amount",
   "column_break_2",
   "description"
  ],
  "fields": [
-  {
-   "fieldname": "deployment_type",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Deployment Type",
-   "reqd": 1,
-   "unique": 1
-  },
   {
    "fieldname": "column_break_2",
    "fieldtype": "Column Break"
@@ -36,15 +28,24 @@
   {
    "fieldname": "description",
    "fieldtype": "Small Text",
+   "in_list_view": 1,
    "label": "Description"
+  },
+  {
+   "fieldname": "deployment_pay_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Deployment Pay Type",
+   "reqd": 1,
+   "unique": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-05-27 12:48:34.947344",
+ "modified": "2024-07-17 02:04:13.074340",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
- "name": "Deployment Type",
+ "name": "Deployment Pay Type",
  "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [

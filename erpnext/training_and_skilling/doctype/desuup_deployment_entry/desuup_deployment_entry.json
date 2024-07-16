@@ -25,7 +25,7 @@
   "column_break_9",
   "end_date",
   "column_break_68",
-  "deployment_status",
+  "status",
   "desuup_details_section",
   "items",
   "amended_from"
@@ -132,12 +132,6 @@
    "options": "DSP Domain"
   },
   {
-   "fieldname": "deployment_status",
-   "fieldtype": "Select",
-   "label": "Deployment Status",
-   "options": "\nCreated\nOn Going\nCompleted\nCancelled"
-  },
-  {
    "fieldname": "column_break_7",
    "fieldtype": "Column Break"
   },
@@ -155,12 +149,18 @@
   {
    "fieldname": "column_break_68",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Deployment Status",
+   "options": "\nCreated\nOn Going\nCompleted\nCancelled"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-09 10:25:08.776777",
+ "modified": "2024-07-17 01:57:40.417330",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Deployment Entry",
