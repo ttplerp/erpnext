@@ -98,6 +98,7 @@
    "reqd": 1
   },
   {
+   "default": "De-suung Skilling",
    "fieldname": "company",
    "fieldtype": "Link",
    "label": "Company",
@@ -154,13 +155,14 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Deployment Status",
-   "options": "\nCreated\nOn Going\nCompleted\nCancelled"
+   "options": "\nDraft\nCreated\nOn Going\nCompleted\nCancelled",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-17 01:57:40.417330",
+ "modified": "2024-07-17 04:14:52.042105",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Deployment Entry",

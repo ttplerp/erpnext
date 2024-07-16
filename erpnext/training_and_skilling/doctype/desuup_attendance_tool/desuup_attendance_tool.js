@@ -22,7 +22,7 @@ frappe.ui.form.on('Desuup Attendance Tool', {
 		frm.set_query('desuup_deployment', function(doc) {
 			return {
 				filters: {
-					"deployment_status": "On Going",
+					"status": "On Going",
 				}
 			};
 		});

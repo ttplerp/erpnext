@@ -68,8 +68,8 @@ class DesuupPayoutEntry(Document):
 						item.net_amount = flt(item.stipend_amount + item.total_arrear_amount)-flt(item.total_deduction_amount)
 
 			elif item.reference_doctype == "Desuup Deployment Entry":
-				if item.monthly_pay_amount <= 0:
-					frappe.throw("Monthly Pay amount cannot be 0 or less")
+				# if item.monthly_pay_amount <= 0:
+				# 	frappe.throw("Monthly Pay amount cannot be 0 or less")
 				if item.days_in_month == item.total_days_present:
 					item.total_amount = flt(item.monthly_pay_amount)
 				else:
@@ -151,23 +151,32 @@ class DesuupPayoutEntry(Document):
 		cond = ''
 		if self.training_management and self.payment_for == "Trainee":
 			cond += " and t1.name = '{}'".format(self.training_management)
-		if self.desuup_deployment and self.payment_for == "OJT":
-			cond += " and t1.name = '{}'".format(self.desuup_deployment)
 		if self.training_center and self.payment_for == "Trainee":
 			cond += " and t1.training_center = '{}'".format(self.training_center)
+
+		# OJT addtional condition
+		if self.desuup_deployment and self.payment_for == "OJT":
+			cond += " AND t1.name = '{}'".format(self.desuup_deployment)
+		
 		return cond
 
 	def get_desuup_list(self):
 		desuup_list = []
-		if self.payment_for == "Trainee":
-			cond = self.get_conditions()
+		cond = self.get_conditions()
+		params = {
+			'start_date': getdate(self.start_date),
+			'end_date': getdate(self.end_date)
+		}
 
+		if self.payment_for == "Trainee":
 			desuup_list = frappe.db.sql("""
 				SELECT 
 					t1.name AS reference_name, 
 					'Training Management' AS reference_doctype, 
 					t1.training_start_date AS from_date, 
-					t1.training_end_date AS to_date, 
+					t1.training_end_date AS to_date,
+					t2.reporting_date, 
+					t2.exit_date, 
 					t1.branch, 
 					t1.course_cost_center AS cost_center, 
 					t2.desuup_id AS desuup, 
@@ -178,7 +187,8 @@ class DesuupPayoutEntry(Document):
 				INNER JOIN 
 					`tabTrainee Details` t2 ON t1.name = t2.parent
 				WHERE 
-					t1.status = 'On Going' 
+					t1.status = 'On Going'
+					AND t2.reporting_date IS NOT NULL 
 					AND (
 						t1.training_start_date BETWEEN %(start_date)s AND %(end_date)s 
 						OR t1.training_end_date BETWEEN %(start_date)s AND %(end_date)s
@@ -199,57 +209,74 @@ class DesuupPayoutEntry(Document):
 					{}
 				ORDER BY 
 					t2.desuup_name
-			""".format(cond), {
-				'start_date': getdate(self.start_date),
-				'end_date': getdate(self.end_date)
-			}, as_dict=True)
-
+			""".format(cond), params, as_dict=True)
 
 		elif self.payment_for == "OJT":
-			cond = self.get_conditions()
 			desuup_list = frappe.db.sql("""
-							SELECT 
-							   'Desuup Deployment Entry' as reference_doctype, 
-							   t1.name as reference_name, 
-							   t2.desuup, 
-							   t2.desuup_name, 
-							   t2.amount as monthly_pay_amount, 
-							   t1.branch, 
-							   t1.cost_center,
-							   t1.start_date from_date,
-							   t1.end_date to_date
-							FROM `tabDesuup Deployment Entry` t1, `tabDesuup Deployment Entry Item` t2
-							WHERE t1.name = t2.parent
-							AND t1.deployment_status='On Going' 
-							AND (
-								t1.start_date BETWEEN %(start_date)s AND %(end_date)s 
-								OR t1.end_date BETWEEN %(start_date)s AND %(end_date)s
-								OR %(start_date)s BETWEEN t1.start_date AND t1.end_date
-								OR %(end_date)s BETWEEN t1.start_date AND t1.end_date
-							)
-							AND t2.desuup NOT IN (
-								SELECT desuup
-								FROM `tabDesuup Payout Item` 
-								WHERE (
-									from_date BETWEEN %(start_date)s AND %(end_date)s 
-									OR to_date BETWEEN %(start_date)s AND %(end_date)s
-									OR %(start_date)s BETWEEN from_date AND to_date
-									OR %(end_date)s BETWEEN from_date AND to_date
-								)
-								AND docstatus IN (1)
-							)
-							{} order by t2.desuup_name
-							""".format(cond), {
-								'start_date': getdate(self.start_date),
-								'end_date': getdate(self.end_date)
-							}, as_dict=True)
-			
+				SELECT 
+				'Desuup Deployment Entry' as reference_doctype, 
+				t1.name as reference_name, 
+				t2.desuup, 
+				t2.desuup_name, 
+				t2.amount as monthly_pay_amount, 
+				t1.branch, 
+				t1.cost_center,
+				t1.start_date from_date,
+				t1.end_date to_date,
+				t2.reported_date,
+				t2.exit_date
+				FROM `tabDesuup Deployment Entry` t1, `tabDesuup Deployment Entry Item` t2
+				WHERE t1.name = t2.parent
+				AND t1.status='On Going'
+				AND t2.reported_date IS NOT NULL 
+				AND (
+					t1.start_date BETWEEN %(start_date)s AND %(end_date)s 
+					OR t1.end_date BETWEEN %(start_date)s AND %(end_date)s
+					OR %(start_date)s BETWEEN t1.start_date AND t1.end_date
+					OR %(end_date)s BETWEEN t1.start_date AND t1.end_date
+				)
+				AND t2.desuup NOT IN (
+					SELECT desuup
+					FROM `tabDesuup Payout Item` 
+					WHERE (
+						from_date BETWEEN %(start_date)s AND %(end_date)s 
+						OR to_date BETWEEN %(start_date)s AND %(end_date)s
+						OR %(start_date)s BETWEEN from_date AND to_date
+						OR %(end_date)s BETWEEN from_date AND to_date
+					)
+					AND docstatus IN (1)
+				)
+				{}
+				ORDER BY t2.desuup_name
+			""".format(cond), params, as_dict=True)
+
 		for desuup in desuup_list:
-				if getdate(desuup['from_date']) < getdate(self.start_date):
-					desuup['from_date'] = self.start_date
-				if getdate(desuup['to_date']) > getdate(self.end_date):
-					desuup['to_date'] = self.end_date
-					
+			if getdate(desuup['from_date']) < getdate(self.start_date):
+				desuup['from_date'] = self.start_date
+			if getdate(desuup['to_date']) > getdate(self.end_date):
+				desuup['to_date'] = self.end_date
+			
+			# For Trainee, use reporting_date as from_date if it falls within the same month as start_date
+			if self.payment_for == "Trainee" and desuup.get('reporting_date'):
+				reporting_date = getdate(desuup['reporting_date'])
+				start_date = getdate(desuup['from_date'])
+				if reporting_date.month == start_date.month and reporting_date.year == start_date.year:
+					desuup['from_date'] = reporting_date
+
+			# For OJT, use reported_date as from_date if it falls within the same month as start_date
+			if self.payment_for == "OJT" and desuup.get('reported_date'):
+				reported_date = getdate(desuup['reported_date'])
+				start_date = getdate(desuup['from_date'])
+				if reported_date.month == start_date.month and reported_date.year == start_date.year:
+					desuup['from_date'] = reported_date
+			
+			# Use exit_date as to_date if it exists and falls within the date range
+			if desuup.get('exit_date'):
+				exit_date = getdate(desuup['exit_date'])
+				end_date = getdate(desuup['to_date'])
+				if exit_date < end_date:
+					desuup['to_date'] = exit_date
+
 		return desuup_list
 	
 	@frappe.whitelist()

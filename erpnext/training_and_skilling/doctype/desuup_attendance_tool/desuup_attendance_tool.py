@@ -48,7 +48,8 @@ def get_desuups(date, attendance_for, cost_center=None, training_management=None
 						select t2.desuup, t2.desuup_name
 						from `tabDesuup Deployment Entry` t1, `tabDesuup Deployment Entry Item` t2
 						where t1.name = t2.parent
-						and t1.deployment_status = 'On Going'
+						and t1.status = 'On Going'
+						and t2.status = 'Reported'
 						and '{}' between t1.start_date and t1.end_date {}
 						order by t2.desuup_name
 						""".format(getdate(date), cond), as_dict=True)

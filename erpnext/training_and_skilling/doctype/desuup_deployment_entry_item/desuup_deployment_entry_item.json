@@ -7,6 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "desuup",
+  "location",
   "column_break_2",
   "desuup_name",
   "column_break_4",
@@ -17,7 +18,7 @@
   "column_break_6",
   "reported_date",
   "column_break_8",
-  "withdrawal_date",
+  "exit_date",
   "section_break_10",
   "remarks"
  ],
@@ -69,26 +70,21 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "withdrawal_date",
-   "fieldtype": "Date",
-   "label": "Withdrawal Date",
-   "mandatory_depends_on": "eval:doc.status == 'Withdrawn'"
-  },
-  {
    "fieldname": "section_break_10",
    "fieldtype": "Section Break"
   },
   {
    "fieldname": "remarks",
    "fieldtype": "Small Text",
-   "label": "Remarks"
+   "label": "Remarks",
+   "mandatory_depends_on": "eval:doc.withdrawal_date"
   },
   {
    "fieldname": "column_break_4",
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "deployment_type.amount",
+   "fetch_from": "deployment_pay_type.amount",
    "fieldname": "amount",
    "fieldtype": "Currency",
    "label": "Amount",
@@ -100,12 +96,25 @@
    "label": "Deployment Pay Type",
    "options": "Deployment Pay Type",
    "reqd": 1
+  },
+  {
+   "fieldname": "exit_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Exit Date",
+   "mandatory_depends_on": "eval:doc.status == 'Withdrawn'"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Location",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-07-17 02:08:10.203751",
+ "modified": "2024-07-17 04:24:53.536520",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Deployment Entry Item",
