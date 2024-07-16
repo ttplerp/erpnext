@@ -221,7 +221,7 @@
    "fieldname": "reference_type",
    "fieldtype": "Select",
    "label": "Reference Type",
-   "options": "\nSales Invoice\nPurchase Invoice\nJournal Entry\nSales Order\nPurchase Order\nExpense Claim\nAsset\nLoan\nPayroll Entry\nEmployee Advance\nExchange Rate Revaluation\nInvoice Discounting\nFees\nPBVA\nBonus\nLeave Travel Concession\nFull and Final Statement\nJob Card\nPol Advance\nReimbursement\nHire Charge Invoice\nDesuup Pay Slip\nDesuup Mess Advance\nPOL\nDesuup Payroll Entry"
+   "options": "\nSales Invoice\nPurchase Invoice\nJournal Entry\nSales Order\nPurchase Order\nExpense Claim\nAsset\nLoan\nPayroll Entry\nEmployee Advance\nExchange Rate Revaluation\nInvoice Discounting\nFees\nPBVA\nBonus\nLeave Travel Concession\nFull and Final Statement\nJob Card\nPol Advance\nReimbursement\nHire Charge Invoice\nDesuup Pay Slip\nDesuup Mess Advance\nPOL\nDesuup Payout Entry"
   },
   {
    "fieldname": "reference_name",

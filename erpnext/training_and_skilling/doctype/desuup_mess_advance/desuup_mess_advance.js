@@ -30,6 +30,25 @@ frappe.ui.form.on('Desuup Mess Advance', {
 			}
 		});
 	},
+
+	get_desuups: function (frm) {
+		frm.set_value("number_of_desuups", 0);
+		frm.refresh_field("number_of_desuups");
+		return frappe.call({
+			doc: frm.doc,
+			method: 'get_desuup_details',
+			callback: function(r) {
+				if (r.message){
+					frm.set_value("number_of_desuups", r.message);
+					frm.refresh_field("number_of_desuups");
+					frm.refresh_field("items");
+					frm.dirty();
+				}
+			},
+			freeze: true,
+			freeze_message: '<span style="color:white; background-color: red; padding: 10px 50px; border-radius: 5px;">Fetching Desuup Records...</span>'
+		});
+	},
 });
 
 var calculate_total_advance = function(frm) {

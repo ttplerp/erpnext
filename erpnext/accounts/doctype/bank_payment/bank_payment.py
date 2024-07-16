@@ -274,6 +274,14 @@ class BankPayment(Document):
                 doc.bank_payment = self.name
                 # doc.save(ignore_permissions=True)
                 docs_updated[i.transaction_id] = doc
+            
+            elif self.transaction_type == 'Desuup Payout Entry':
+                if i.transaction_id in docs_updated: continue
+                doc = frappe.get_doc('Desuup Payout Entry', i.transaction_id)
+                doc.payment_status = status
+                doc.bank_payment = self.name
+                # doc.save(ignore_permissions=True)
+                docs_updated[i.transaction_id] = doc
 
         for transaction_id, doc in docs_updated.items():
             doc.save(ignore_permissions=True)
@@ -427,9 +435,8 @@ class BankPayment(Document):
             data = self.get_pbva()
         elif self.transaction_type == "Bulk Leave Encashment":
             data = self.get_leave_encashment()
-        elif self.transaction_type == "Desuup Payment":
+        elif self.transaction_type == "Desuup Payout Entry":
             data =self.get_desuup_payment()
-            # frappe.throw(str(data))
         data = merge_similar_entries(data)
         return data
     
@@ -847,42 +854,39 @@ class BankPayment(Document):
         cond = ""
         if not self.fiscal_year:
             frappe.throw(_("Please select Fiscal Year"))
-        elif not self.month:
-            frappe.throw(_("Please select Month"))
 
         return frappe.db.sql("""
-                             select 'Desuup Pay Slip' transaction_type, t1.name transaction_id,
+                             select 'Desuup Payout Entry' transaction_type, t1.name transaction_id,
                                 t1.name transaction_reference, t1.modified transaction_date,
-                                t1.desuup, t1.desuup_name beneficiary_name,
-                                IFNULL(t1.bank_name, d.bank_name) bank_name,
-                                IFNULL(t1.bank_branch, d.bank_branch) bank_branch,
-                                fib.financial_system_code, d.bank_account_type, IFNULL(t1.bank_account_no, d.bank_account_number) bank_account_no, 
-                                round(t1.net_pay,2) amount,
-                                'Payment for {payment_month}-{payment_year}' remarks, "Draft" status
-                             from `tabDesuup Pay Slip` t1
-                             join `tabDesuup` d ON t1.desuup = d.name
-                             left join `tabFinancial Institution Branch` fib ON fib.name = IFNULL(t1.bank_branch, d.bank_branch)
+                                t2.desuup, t2.desuup_name beneficiary_name,
+                                d.bank_name bank_name,
+                                d.bank_branch bank_branch,
+                                fib.financial_system_code, d.bank_account_type, 
+                                d.bank_account_number bank_account_no, 
+                                round(t2.net_amount,2) amount,
+                                'Payment for {payment_year}' remarks, "Draft" status
+                             from `tabDesuup Payout Entry` t1
+                             inner join `tabDesuup Payout Item` t2 ON t2.parent = t1.name
+                             inner join `tabDesuup` d ON t2.desuup = d.name
+                             left join `tabFinancial Institution Branch` fib ON fib.name = d.bank_branch
                              where t1.fiscal_year = '{payment_year}'
-                             and t1.reference_doctype = '{ref_doc}'
-                             and t1.reference_name = '{ref_name}'
                              and t1.docstatus = 1
-                             and IFNULL(t1.net_pay,0) > 0
+                             and t1.name = '{transaction_no}'
+                             and IFNULL(t2.net_amount, 0) > 0
                              and not exists(
                                 select 1 from `tabBank Payment Item` bpi, `tabBank Payment` bp
-                                where bpi.transaction_type = 'Desuup Pay Slip'
-                                and bp.name = bpi.parent=t1.name
+                                where bp.name = bpi.parent
+                                AND bpi.transaction_type = 'Desuup Payout Entry'
                                 AND bpi.transaction_id = t1.name
+                                AND bpi.desuup = t2.desuup
                                 AND bpi.parent != '{bank_payment}'
                                 AND bpi.docstatus != 2
                                 AND bpi.status NOT IN ('Cancelled', 'Failed')
                              )
                         """.format(
+                                transaction_no = self.transaction_no,
                                 payment_year=self.fiscal_year, 
-                                payment_month=self.get_month_id(self.month),
-                                month=self.month,
                                 bank_payment = self.name,
-                                ref_doc = self.desuup_payment_type,
-                                ref_name = self.desuup_transaction_id
                             ), as_dict=True)
 
     def get_salary_arrear(self):
@@ -1449,7 +1453,7 @@ def merge_similar_entries(data):
 	return merged_data
 
 def check_if_in_list(entry, data):
-	transaction_fieldnames = ['bank_name', 'bank_branch', 'bank_account_no', 'employee', 'supplier']
+	transaction_fieldnames = ['bank_name', 'bank_branch', 'bank_account_no', 'employee', 'desuup', 'supplier']
 	for e in data:
 		same_head = True
 		if e.transaction_id != entry.transaction_id:

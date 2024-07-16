@@ -1,0 +1,240 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2024-07-08 14:06:50.250105",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "desuup_details_section",
+  "desuup",
+  "branch",
+  "reference_doctype",
+  "is_mess_member",
+  "column_break_2",
+  "desuup_name",
+  "cost_center",
+  "reference_name",
+  "column_break_10",
+  "from_date",
+  "to_date",
+  "section_break_12",
+  "monthly_stipend_amount",
+  "days_in_month",
+  "total_days_present",
+  "column_break_14",
+  "monthly_mess_amount",
+  "mess_advance_amount",
+  "mess_advance_party",
+  "column_break_16",
+  "stipend_amount",
+  "mess_advance_used",
+  "refundable_amount",
+  "deductions_and_arrears_details_section",
+  "total_arrear_amount",
+  "column_break_21",
+  "total_deduction_amount",
+  "column_break_22",
+  "monthly_pay_amount",
+  "net_amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "desuup_details_section",
+   "fieldtype": "Section Break",
+   "label": "Desuup Details"
+  },
+  {
+   "fieldname": "desuup",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Desuup",
+   "options": "Desuup",
+   "reqd": 1
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "label": "Reference DocType",
+   "options": "DocType"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:parent.payment_for == 'Trainee'",
+   "fieldname": "is_mess_member",
+   "fieldtype": "Check",
+   "label": "Is Mess Member",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "desuup.desuup_name",
+   "fieldname": "desuup_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Desuup Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
+  },
+  {
+   "fieldname": "reference_name",
+   "fieldtype": "Dynamic Link",
+   "label": "Reference Name",
+   "options": "reference_doctype"
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "From Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:parent.payment_for == 'Trainee'",
+   "fieldname": "section_break_12",
+   "fieldtype": "Section Break",
+   "label": "Amount Details"
+  },
+  {
+   "fieldname": "monthly_stipend_amount",
+   "fieldtype": "Currency",
+   "label": "Monthly Stipend Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "days_in_month",
+   "fieldtype": "Int",
+   "label": "Days in Month",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_days_present",
+   "fieldtype": "Float",
+   "label": "Total Days Present",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_14",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "monthly_mess_amount",
+   "fieldtype": "Currency",
+   "label": "Monthly Mess Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "mess_advance_amount",
+   "fieldtype": "Currency",
+   "label": "Mess Advance Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "mess_advance_party",
+   "fieldtype": "Link",
+   "label": "Mess Advance Party",
+   "options": "Employee",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_16",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "stipend_amount",
+   "fieldtype": "Currency",
+   "label": "Stipend Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "mess_advance_used",
+   "fieldtype": "Currency",
+   "label": "Mess Advance Used",
+   "read_only": 1
+  },
+  {
+   "description": "(Mess Advance - Mess Advance Used)",
+   "fieldname": "refundable_amount",
+   "fieldtype": "Currency",
+   "label": "Refundable Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "deductions_and_arrears_details_section",
+   "fieldtype": "Section Break",
+   "label": "Deductions and Arrears Details"
+  },
+  {
+   "fieldname": "total_arrear_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Arrear Amount"
+  },
+  {
+   "fieldname": "column_break_21",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_deduction_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Deduction Amount"
+  },
+  {
+   "fieldname": "column_break_22",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "net_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Net Amount",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:parent.payment_for == \"OJT\"",
+   "fieldname": "monthly_pay_amount",
+   "fieldtype": "Currency",
+   "label": "Monthly Pay Amount",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-07-11 00:02:46.122099",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Desuup Payout Item",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

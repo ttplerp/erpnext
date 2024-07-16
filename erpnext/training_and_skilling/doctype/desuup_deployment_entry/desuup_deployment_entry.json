@@ -7,27 +7,25 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "branch",
+  "company",
   "deployment_type",
   "column_break_2",
+  "branch",
   "cost_center",
-  "company",
+  "column_break_6",
+  "posting_date",
   "section_break_6",
-  "training_center",
-  "dzongkhag",
-  "location",
-  "column_break_8",
   "programme",
-  "column_break_7",
+  "column_break_8",
   "programme_code",
+  "column_break_7",
   "domain",
   "section_break_4",
   "start_date",
-  "deployment_status",
-  "column_break_6",
+  "column_break_9",
   "end_date",
-  "column_break_16",
-  "duration",
+  "column_break_68",
+  "deployment_status",
   "desuup_details_section",
   "items",
   "amended_from"
@@ -37,7 +35,8 @@
    "fieldname": "branch",
    "fieldtype": "Link",
    "label": "Branch",
-   "options": "Branch"
+   "options": "Branch",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_2",
@@ -95,13 +94,15 @@
    "fieldname": "deployment_type",
    "fieldtype": "Select",
    "label": "Deployment Type",
-   "options": "\nOJT"
+   "options": "\nOJT",
+   "reqd": 1
   },
   {
    "fieldname": "company",
    "fieldtype": "Link",
    "label": "Company",
-   "options": "Company"
+   "options": "Company",
+   "reqd": 1
   },
   {
    "fieldname": "section_break_6",
@@ -131,50 +132,35 @@
    "options": "DSP Domain"
   },
   {
-   "fieldname": "column_break_16",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "duration",
-   "fieldtype": "Data",
-   "label": "Duration"
-  },
-  {
    "fieldname": "deployment_status",
    "fieldtype": "Select",
    "label": "Deployment Status",
    "options": "\nCreated\nOn Going\nCompleted\nCancelled"
   },
   {
-   "fieldname": "training_center",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Training Center",
-   "options": "Training Center"
-  },
-  {
    "fieldname": "column_break_7",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "dzongkhag",
-   "fieldtype": "Data",
-   "label": "Dzongkhag",
-   "read_only": 1
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date",
+   "reqd": 1
   },
   {
-   "fetch_from": "training_center.location",
-   "fieldname": "location",
-   "fieldtype": "Data",
-   "label": "Location",
-   "read_only": 1
+   "fieldname": "column_break_9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_68",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-05-28 21:25:18.014920",
+ "modified": "2024-07-09 10:25:08.776777",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Deployment Entry",

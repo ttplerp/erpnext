@@ -9,9 +9,11 @@
   "desuup",
   "column_break_2",
   "desuup_name",
+  "column_break_4",
+  "deployment_type",
+  "amount",
   "ojt_details_section",
   "status",
-  "deployment_type",
   "column_break_6",
   "reported_date",
   "column_break_8",
@@ -86,12 +88,23 @@
    "label": "Deployment Type",
    "options": "Deployment Type",
    "reqd": 1
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "deployment_type.amount",
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-05-27 12:50:22.223508",
+ "modified": "2024-07-11 00:03:38.651097",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Deployment Entry Item",

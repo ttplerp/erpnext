@@ -11,10 +11,7 @@ class DesuupAttendanceTool(Document):
 	pass
 
 @frappe.whitelist()
-def get_desuups(date, attendance_for, cost_center, training_management=None, desuup_deployment=None, domain=None, programme=None, training_center=None, company=None):
-	if not cost_center:
-		frappe.throw("Please select atlea cost center")
-
+def get_desuups(date, attendance_for, cost_center=None, training_management=None, desuup_deployment=None, domain=None, programme=None, training_center=None, company=None):
 	attendance_not_marked = []
 	attendance_marked = []
 
@@ -50,6 +47,7 @@ def get_desuups(date, attendance_for, cost_center, training_management=None, des
 						""".format(getdate(date), cond), as_dict=True)
 		
 	elif attendance_for == "OJT":
+		frappe.throw("Sorry! Attendance for OJT is disabled by Developer.")
 		cond = get_conditions()
 		desuup_list = frappe.db.sql("""
 						select t2.desuup, t2.desuup_name

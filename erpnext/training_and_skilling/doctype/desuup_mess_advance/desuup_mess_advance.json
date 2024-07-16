@@ -6,30 +6,26 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "branch",
-  "cost_center",
-  "column_break_1",
-  "posting_date",
-  "training_center",
-  "column_break_6",
-  "fiscal_year",
   "company",
-  "payment_status",
-  "section_break_6",
+  "branch",
   "month",
-  "paid_to",
-  "column_break_2",
+  "training_center",
+  "column_break_1",
+  "fiscal_year",
+  "cost_center",
   "from_date",
-  "column_break_3",
+  "training_management",
+  "column_break_6",
+  "posting_date",
+  "payment_status",
   "to_date",
+  "paid_to",
   "section_break_4",
+  "get_desuups",
+  "number_of_desuups",
   "items",
   "total_advance",
   "reference_section",
-  "reference_doctype",
-  "column_break_8",
-  "reference_name",
-  "column_break_20",
   "journal_entry",
   "amended_from"
  ],
@@ -40,10 +36,6 @@
    "fieldtype": "Date",
    "label": "Posting Date",
    "reqd": 1
-  },
-  {
-   "fieldname": "column_break_2",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "company",
@@ -65,23 +57,6 @@
    "fieldname": "reference_section",
    "fieldtype": "Section Break",
    "label": "Reference"
-  },
-  {
-   "fieldname": "reference_doctype",
-   "fieldtype": "Link",
-   "label": "Reference DocType",
-   "options": "DocType"
-  },
-  {
-   "fieldname": "column_break_8",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "reference_name",
-   "fieldtype": "Dynamic Link",
-   "in_list_view": 1,
-   "label": "Reference Name",
-   "options": "reference_doctype"
   },
   {
    "fieldname": "month",
@@ -108,22 +83,16 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "section_break_6",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "from_date",
    "fieldtype": "Date",
-   "label": "From Date"
-  },
-  {
-   "fieldname": "column_break_3",
-   "fieldtype": "Column Break"
+   "label": "From Date",
+   "read_only": 1
   },
   {
    "fieldname": "to_date",
    "fieldtype": "Date",
-   "label": "To Date"
+   "label": "To Date",
+   "read_only": 1
   },
   {
    "fieldname": "paid_to",
@@ -145,13 +114,8 @@
   {
    "fieldname": "branch",
    "fieldtype": "Link",
-   "label": "Branch",
-   "options": "Branch",
-   "reqd": 1
-  },
-  {
-   "fieldname": "column_break_20",
-   "fieldtype": "Column Break"
+   "label": "Processing Branch",
+   "options": "Branch"
   },
   {
    "fieldname": "journal_entry",
@@ -186,12 +150,29 @@
    "label": "Training Center",
    "options": "Training Center",
    "reqd": 1
+  },
+  {
+   "fieldname": "get_desuups",
+   "fieldtype": "Button",
+   "label": "Get Desuups"
+  },
+  {
+   "fieldname": "training_management",
+   "fieldtype": "Link",
+   "label": "Training Management",
+   "options": "Training Management"
+  },
+  {
+   "fieldname": "number_of_desuups",
+   "fieldtype": "Int",
+   "label": "Number of Desuups",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-05-29 07:57:12.951302",
+ "modified": "2024-07-10 22:56:58.628949",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Mess Advance",

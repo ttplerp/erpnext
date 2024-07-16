@@ -44,7 +44,7 @@
    "no_copy": 1,
    "oldfieldname": "naming_series",
    "oldfieldtype": "Select",
-   "options": "DSP-ATT-.YYYY.-",
+   "options": "DSP-ATT-.YYYY.MM.-",
    "reqd": 1,
    "set_only_once": 1
   },
@@ -224,7 +224,7 @@
  "icon": "fa fa-ok",
  "is_submittable": 1,
  "links": [],
- "modified": "2024-05-15 01:43:39.519274",
+ "modified": "2024-07-03 22:27:46.153104",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Attendance",

@@ -13,8 +13,9 @@ frappe.ui.form.on('Desuup Attendance Tool', {
 		frm.set_query('training_management', function(doc) {
 			return {
 				filters: {
-					"course_cost_center": doc.cost_center,
 					"status": "On Going",
+					"training_center": doc.training_center,
+
 				}
 			};
 		});
@@ -32,25 +33,25 @@ frappe.ui.form.on('Desuup Attendance Tool', {
 		erpnext.desuup_attendance_tool.load_desuups(frm);
 	},
 
-	cost_center: function(frm) {
-		erpnext.desuup_attendance_tool.load_desuups(frm);
-	},
+	// cost_center: function(frm) {
+	// 	erpnext.desuup_attendance_tool.load_desuups(frm);
+	// },
 
 	training_management: function(frm) {
 		erpnext.desuup_attendance_tool.load_desuups(frm);
 	},
 
-	desuup_deployment: function(frm) {
-		erpnext.desuup_attendance_tool.load_desuups(frm);
-	},
+	// desuup_deployment: function(frm) {
+	// 	erpnext.desuup_attendance_tool.load_desuups(frm);
+	// },
 
-	domain: function(frm) {
-		erpnext.desuup_attendance_tool.load_desuups(frm);
-	},
+	// domain: function(frm) {
+	// 	erpnext.desuup_attendance_tool.load_desuups(frm);
+	// },
 
-	programme: function(frm) {
-		erpnext.desuup_attendance_tool.load_desuups(frm);
-	},
+	// programme: function(frm) {
+	// 	erpnext.desuup_attendance_tool.load_desuups(frm);
+	// },
 	
 	training_center: function(frm) {
 		erpnext.desuup_attendance_tool.load_desuups(frm);
