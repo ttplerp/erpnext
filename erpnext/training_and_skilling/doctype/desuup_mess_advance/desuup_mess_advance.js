@@ -2,9 +2,15 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Desuup Mess Advance', {
-	// onload: function(frm) {
-	// 	calculate_total_advance(frm);
-	// },
+	onload: function(frm) {
+		frm.set_query('branch', function(doc) {
+			return {
+				filters: {
+					"company": frm.doc.company,
+				}
+			}
+		});
+	},
 	
 	refresh: function(frm) {
 		calculate_total_advance(frm);

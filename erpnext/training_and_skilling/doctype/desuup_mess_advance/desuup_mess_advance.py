@@ -33,7 +33,7 @@ class DesuupMessAdvance(Document):
 		for adv in self.items:
 			days = (getdate(adv.to_date) - getdate(adv.from_date)).days + 1
 			if days != days_in_month:
-				mess_adv_amt = flt(mess_amt)/days_in_month
+				mess_adv_amt = flt(mess_amt)/flt(30)
 				adv.amount = flt(mess_adv_amt * days, 2)
 			else:
 				adv.amount = flt(mess_amt, 2)
@@ -100,7 +100,8 @@ class DesuupMessAdvance(Document):
 				t1.name AS reference_name, 
 				'Training Management' AS reference_doctype, 
 				t1.training_start_date AS from_date, 
-				t1.training_end_date AS to_date, 
+				t1.training_end_date AS to_date,
+				t2.reporting_date,  
 				t1.branch, 
 				t1.course_cost_center AS cost_center, 
 				t2.desuup_id AS desuup, 
@@ -112,6 +113,7 @@ class DesuupMessAdvance(Document):
 				`tabTrainee Details` t2 ON t1.name = t2.parent
 			WHERE 
 				t1.status = 'On Going'
+				AND t2.reporting_date IS NOT NULL
 				AND t2.is_mess_member = 1 
 				AND (
 					t1.training_start_date BETWEEN %(from_date)s AND %(to_date)s 
@@ -143,6 +145,12 @@ class DesuupMessAdvance(Document):
 				desuup['from_date'] = self.from_date
 			if getdate(desuup['to_date']) > getdate(self.to_date):
 				desuup['to_date'] = self.to_date
+
+			if desuup.get('reporting_date'):
+				reporting_date = getdate(desuup['reporting_date'])
+				start_date = getdate(desuup['from_date'])
+				if reporting_date.month == start_date.month and reporting_date.year == start_date.year:
+					desuup['from_date'] = reporting_date
 
 		return desuup_list
 	

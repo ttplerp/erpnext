@@ -11,12 +11,6 @@
   "monthly_stipend",
   "column_break_3",
   "mess_advance",
-  "ojt_payment_details_section",
-  "normal",
-  "hard",
-  "column_break_9",
-  "medium",
-  "account_settings_tab",
   "stipend_account_details_section",
   "stipend_expense_account",
   "mess_advance_account",
@@ -43,29 +37,15 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "ojt_payment_details_section",
-   "fieldtype": "Section Break",
-   "label": "OJT Payment Details"
-  },
-  {
    "fieldname": "payment_settings",
    "fieldtype": "Tab Break",
    "label": "Payment Settings"
-  },
-  {
-   "fieldname": "account_settings_tab",
-   "fieldtype": "Tab Break",
-   "label": "Account Settings"
   },
   {
    "fieldname": "stipend_expense_account",
    "fieldtype": "Link",
    "label": "Stipend Expense Account",
    "options": "Account"
-  },
-  {
-   "fieldname": "column_break_9",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "stipend_payable_account",
@@ -116,21 +96,6 @@
    "label": "Mess Advance"
   },
   {
-   "fieldname": "normal",
-   "fieldtype": "Currency",
-   "label": "Normal"
-  },
-  {
-   "fieldname": "hard",
-   "fieldtype": "Currency",
-   "label": "Hard"
-  },
-  {
-   "fieldname": "medium",
-   "fieldtype": "Currency",
-   "label": "Medium"
-  },
-  {
    "fieldname": "column_break_10",
    "fieldtype": "Column Break"
   },
@@ -165,7 +130,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-07-08 14:16:18.233974",
+ "modified": "2024-07-17 09:56:55.603295",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Settings",
