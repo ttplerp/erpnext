@@ -373,6 +373,8 @@ class CustomWorkflow:
 			self.asset_movement()
 		elif self.doc.doctype == "Vehicle Request":
 			self.vehicle_request()
+		elif self.doc.doctype == "Emergency Attendance":
+			self.emergency_attendance()
 		else:
 			frappe.throw(_("Workflow not defined for {}").format(self.doc.doctype))
 	
@@ -461,7 +463,23 @@ class CustomWorkflow:
 			frappe.throw(_("Invalid Workflow State {}").format(self.doc.workflow_state))
 	
 
-	
+	def emergency_attendance(self):
+		if self.new_state.lower() in ("Draft".lower()):
+			if frappe.session.user != self.doc.owner:
+				frappe.throw("Only {} can apply this Application".format(self.doc.owner))
+		
+		elif self.new_state.lower() == "Waiting Approval".lower():
+			self.set_approver("Supervisor") 
+		elif self.new_state.lower() == ("Approved".lower()):
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Approve this Application".format(self.doc.approver_name))
+
+		elif self.new_state.lower() == ("Rejected".lower()):
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Reject this Application".format(self.doc.approver_name))
+		else:
+			frappe.throw(_("Invalid Workflow State {}").format(self.doc.workflow_state))
+
 	def employee_transfer(self):
 		if self.new_state.lower() in ("Draft".lower()):
 			if frappe.session.user != self.doc.owner:
@@ -1070,6 +1088,7 @@ def get_field_map():
 		"Imprest Advance": ["approver","approver_name","approver_designation"],
 		"Imprest Recoup": ["approver","approver_name","approver_designation"],
 		"Review": ["approver","approver_name","approver_designation"],
+		"Emergency Attendance": ["approver","approver_name","approver_designation"],
 		"Performance Evaluation": ["approver","approver_name","approver_designation"],
 		"Vehicle Request": ["approver_id", "approver"],
 		"PMS Appeal":["approver","approver_name","approver_designation"],
