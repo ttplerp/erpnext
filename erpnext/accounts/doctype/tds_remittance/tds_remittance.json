@@ -272,11 +272,13 @@
   {
    "fieldname": "fines_and_penalties",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Fines and Penalties"
   },
   {
    "fieldname": "grand_total",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Grand Total",
    "read_only": 1
   }
@@ -284,7 +286,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-18 15:45:54.466229",
+ "modified": "2024-07-18 16:15:12.536208",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "TDS Remittance",
