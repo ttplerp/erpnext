@@ -30,6 +30,8 @@
   "cb_6",
   "total_amount",
   "total_tds",
+  "fines_and_penalties",
+  "grand_total",
   "data_24",
   "sb_payment_details",
   "mode_of_payment",
@@ -139,6 +141,7 @@
    "reqd": 1
   },
   {
+   "allow_bulk_edit": 1,
    "fieldname": "items",
    "fieldtype": "Table",
    "options": "TDS Remittance Item"
@@ -233,7 +236,8 @@
   },
   {
    "fieldname": "data_24",
-   "fieldtype": "Data"
+   "fieldtype": "Data",
+   "hidden": 1
   },
   {
    "fieldname": "sb_payment_details",
@@ -264,12 +268,23 @@
    "fieldtype": "Date",
    "label": "Clearance Date",
    "read_only": 1
+  },
+  {
+   "fieldname": "fines_and_penalties",
+   "fieldtype": "Currency",
+   "label": "Fines and Penalties"
+  },
+  {
+   "fieldname": "grand_total",
+   "fieldtype": "Currency",
+   "label": "Grand Total",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-12 17:48:16.617986",
+ "modified": "2024-07-18 15:45:54.466229",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "TDS Remittance",
