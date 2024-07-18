@@ -319,6 +319,7 @@
   {
    "fieldname": "amount",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Amount",
    "read_only": 1
   },
@@ -335,6 +336,7 @@
   {
    "fieldname": "rate",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Rate Per Unit",
    "precision": "2",
    "read_only": 1
@@ -542,7 +544,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-18 11:05:21.512476",
+ "modified": "2024-07-18 12:36:18.477233",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "POL",
