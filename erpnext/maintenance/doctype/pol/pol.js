@@ -42,18 +42,6 @@ frappe.ui.form.on('POL', {
 		}
 	},
 
-	"qty": function (frm) {
-		calculate_total(frm)
-	},
-
-	"rate": function (frm) {
-		calculate_total(frm)
-	},
-
-	"discount_amount": function (frm) {
-		calculate_total(frm)
-	},
-
 	"is_disabled": function (frm) {
 		cur_frm.toggle_reqd("disabled_date", frm.doc.is_disabled)
 	},
@@ -73,28 +61,63 @@ frappe.ui.form.on('POL', {
 	}
 });
 
+// Added by Dawa Tshering on 17/07/2024
+frappe.ui.form.on('POL Item', {
+	qty: function (frm, cdt, cdn) {
+		calculate_amount(frm, cdt, cdn);
+		calculate_total_amount(frm);
+	},
+
+	rate: function (frm, cdt, cdn) {
+		calculate_amount(frm, cdt, cdn);
+		calculate_total_amount(frm);
+	},
+	items_add: function (frm, cdt, cdn) {
+        let child = locals[cdt][cdn];
+        let stock_uom = frm.doc.stock_uom;
+        frappe.model.set_value(child.doctype, child.name, 'uom', stock_uom);
+        frm.refresh_field('items');
+    }
+});
+
+var calculate_amount = function(frm, cdt, cdn) {
+	let child = locals[cdt][cdn];
+	let amount = child.qty * child.rate
+	frappe.model.set_value(cdt, cdn, 'amount', parseFloat(amount));
+	frm.refresh_field("amount", cdt, cdn)
+}
+
+var calculate_total_amount = function(frm){
+	var me = frm.doc.items || [];
+	var total_amount = 0.00;
+	var total_qty = 0.00;
+	
+	if(frm.doc.docstatus != 1)
+	{
+		for(var i=0; i<me.length; i++){
+			if(me[i].amount){
+				total_amount += parseFloat(me[i].amount);
+				total_qty += parseFloat(me[i].qty);
+			}
+		}
+		
+		cur_frm.set_value("total_amount", (total_amount));
+		cur_frm.set_value("outstanding_amount", (total_amount));
+		cur_frm.set_value("qty", (total_qty));
+	}
+}
+// end here
+
 var get_advance = function(frm){
 	if (frm.doc.fuelbook && frm.doc.total_amount) {
 		frappe.call({
-			method: 'populate_child_table',
+			method: 'get_advance',
 			doc: frm.doc,
 			callback:  () =>{
-				frm.refresh_field('items')
+				frm.refresh_field('advances')
 				cur_frm.refresh_fields()
 			}
 		})
-	}
-}
-function calculate_total(frm) {
-	if (frm.doc.qty && frm.doc.rate) {
-		frm.set_value("total_amount", frm.doc.qty * frm.doc.rate)
-		frm.set_value("outstanding_amount", frm.doc.qty * frm.doc.rate)
-		frm.set_value("amount", frm.doc.qty * frm.doc.rate)
-	}
-
-	if (frm.doc.qty && frm.doc.rate && frm.doc.discount_amount) {
-		frm.set_value("total_amount", (frm.doc.qty * frm.doc.rate) - frm.doc.discount_amount)
-		frm.set_value("outstanding_amount", (frm.doc.qty * frm.doc.rate) - frm.doc.discount_amount)
 	}
 }
 

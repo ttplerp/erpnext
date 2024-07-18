@@ -20,21 +20,20 @@
   "owner_name",
   "section_break_2",
   "equipment_category",
+  "fuelbook",
+  "initial_km_reading",
   "column_break_2",
   "equipment_type",
+  "hsd_type",
   "column_break_5",
   "equipment_model",
+  "item_name",
   "column_break_4",
   "equipment_number",
   "section_break_15",
   "engine_number",
   "column_break_17",
   "chassis_number",
-  "column_break_19",
-  "fuelbook",
-  "column_break_23",
-  "hsd_type",
-  "item_name",
   "section_break_8",
   "operators",
   "section_break_6",
@@ -105,7 +104,8 @@
   },
   {
    "fieldname": "section_break_2",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Equipment/Vehicle Information"
   },
   {
    "fieldname": "equipment_category",
@@ -173,18 +173,10 @@
    "unique": 1
   },
   {
-   "fieldname": "column_break_19",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "fuelbook",
    "fieldtype": "Link",
    "label": "Fuelbook",
    "options": "Fuelbook"
-  },
-  {
-   "fieldname": "column_break_23",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "hsd_type",
@@ -194,10 +186,11 @@
    "permlevel": 1
   },
   {
+   "fetch_from": "hsd_type.item_name",
    "fieldname": "item_name",
    "fieldtype": "Data",
-   "hidden": 1,
-   "label": "Material Name"
+   "label": "Material Name",
+   "read_only": 1
   },
   {
    "fieldname": "section_break_8",
@@ -282,10 +275,16 @@
    "label": "Company",
    "options": "Company",
    "reqd": 1
+  },
+  {
+   "fieldname": "initial_km_reading",
+   "fieldtype": "Float",
+   "label": "Initial KM Reading",
+   "precision": "2"
   }
  ],
  "links": [],
- "modified": "2024-06-13 10:44:47.322434",
+ "modified": "2024-07-18 10:42:28.423830",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Equipment",

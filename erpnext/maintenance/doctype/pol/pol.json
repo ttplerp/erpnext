@@ -43,29 +43,33 @@
   "fuelbook_branch",
   "section_break_4",
   "pol_type",
-  "km_difference",
-  "mileage",
+  "rate",
   "column_break_6",
-  "qty",
+  "item_name",
   "amount",
   "column_break_8",
-  "rate",
-  "is_hsd_item",
-  "section_break7",
-  "item_name",
-  "current_km_reading",
-  "column_break_49",
   "stock_uom",
+  "is_hsd_item",
+  "section_break_45",
+  "items",
+  "section_break_52",
+  "qty",
+  "column_break_49",
+  "current_km_reading",
+  "column_break_52",
+  "km_difference",
+  "column_break_54",
+  "mileage",
   "advance_details",
   "get_advance",
-  "items",
-  "od_amount",
+  "advances",
   "section_break_10",
   "discount_amount",
   "total_amount",
   "paid_amount",
   "outstanding_amount",
   "column_break_12",
+  "od_amount",
   "memo_number",
   "remarks",
   "section_break_8",
@@ -115,7 +119,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "depends_on": "eval:doc.branch",
    "fieldname": "warehouse",
    "fieldtype": "Link",
    "label": "Warehouse",
@@ -123,6 +126,7 @@
    "reqd": 1
   },
   {
+   "fetch_from": "branch.company",
    "fieldname": "company",
    "fieldtype": "Link",
    "label": "Company",
@@ -143,8 +147,8 @@
   {
    "fieldname": "posting_time",
    "fieldtype": "Time",
-   "label": "Posting Time",
-   "reqd": 1
+   "hidden": 1,
+   "label": "Posting Time"
   },
   {
    "fieldname": "column_break_2",
@@ -157,7 +161,7 @@
    "options": "Own\nCommon"
   },
   {
-   "default": "1",
+   "default": "0",
    "description": "If the POL is consumed directly by the vehicle, check this. This will consume the POL too",
    "fieldname": "direct_consumption",
    "fieldtype": "Check",
@@ -218,12 +222,10 @@
    "label": "Equipment Branch"
   },
   {
-   "depends_on": "eval:doc.equipment_branch",
    "fieldname": "equipment_warehouse",
    "fieldtype": "Link",
    "label": "Equipment Warehouse",
-   "options": "Warehouse",
-   "reqd": 1
+   "options": "Warehouse"
   },
   {
    "fieldname": "section_break_23",
@@ -310,9 +312,9 @@
    "fieldname": "qty",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "Quantity",
+   "label": "Total Quantity",
    "precision": "2",
-   "reqd": 1
+   "read_only": 1
   },
   {
    "fieldname": "amount",
@@ -334,12 +336,14 @@
    "fieldname": "rate",
    "fieldtype": "Currency",
    "label": "Rate Per Unit",
-   "reqd": 1
+   "precision": "2",
+   "read_only": 1
   },
   {
    "default": "0",
    "fieldname": "is_hsd_item",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Is HSD Item",
    "options": "pol_type.is_hsd_item",
    "read_only": 1
@@ -348,11 +352,8 @@
    "fieldname": "mileage",
    "fieldtype": "Float",
    "label": "Mileage",
+   "precision": "2",
    "read_only": 1
-  },
-  {
-   "fieldname": "section_break7",
-   "fieldtype": "Section Break"
   },
   {
    "fetch_from": "pol_type.item_name",
@@ -368,10 +369,6 @@
    "reqd": 1
   },
   {
-   "fieldname": "column_break_49",
-   "fieldtype": "Column Break"
-  },
-  {
    "fetch_from": "pol_type.stock_uom",
    "fieldname": "stock_uom",
    "fieldtype": "Data",
@@ -384,6 +381,7 @@
    "label": "Advance Details"
   },
   {
+   "depends_on": "eval:doc.direct_consumption != 1 && doc.docstatus == 0",
    "fieldname": "get_advance",
    "fieldtype": "Button",
    "label": "Get Advance"
@@ -392,8 +390,7 @@
    "fieldname": "items",
    "fieldtype": "Table",
    "label": "Items",
-   "options": "POL Advance Item",
-   "read_only": 1
+   "options": "POL Item"
   },
   {
    "fieldname": "od_amount",
@@ -415,9 +412,8 @@
   {
    "fieldname": "total_amount",
    "fieldtype": "Currency",
-   "label": "Payable Amount",
-   "read_only": 1,
-   "reqd": 1
+   "label": "Total Amount",
+   "read_only": 1
   },
   {
    "fieldname": "paid_amount",
@@ -515,11 +511,38 @@
    "fieldtype": "Dynamic Link",
    "label": "Party",
    "options": "party_type"
+  },
+  {
+   "fieldname": "section_break_45",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "advances",
+   "fieldtype": "Table",
+   "label": "Advances",
+   "options": "POL Advance Item",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_52",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_52",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_54",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_49",
+   "fieldtype": "Column Break"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-05-20 11:36:22.750432",
+ "modified": "2024-07-18 11:05:21.512476",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "POL",
@@ -648,5 +671,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }

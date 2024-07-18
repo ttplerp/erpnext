@@ -22,14 +22,25 @@ class POL(StockController):
 		# self.validate_posting_time() #Jai commanted it. 02 March 2023
 		self.validate_uom_is_integer("stock_uom", "qty")
 		self.validate_item()
-		self.calculate_km_diff()
-		self.populate_child_table()
 		self.calculate_amount()
+		self.calculate_km_diff()
+		if not self.direct_consumption:
+			self.get_advance()
+		
 
 	def calculate_amount(self):
-		if self.qty and self.rate:
-			amount = self.qty*self.rate
-			self.amount = flt(amount)
+		total_amount = 0
+		total_qty = 0
+		for item in self.get("items"):
+			if flt(item.qty) <= 0 or flt(item.rate) <= 0:
+				frappe.throw("Quantity and Rate should be greater than 0 in row #{}".format(frappe.bold(item.idx)))
+			item.amount = flt(item.qty, 2) * flt(item.rate, 2)
+			total_amount += flt(item.amount, 2)
+			total_qty += flt(item.qty, 2)
+
+		self.total_amount = flt(total_amount, 2)
+		self.outstanding_amount = flt(total_amount, 2)
+		self.qty = total_qty
 
 	def calculate_km_diff(self):
 		previous_km_reading = frappe.db.sql("""
@@ -49,28 +60,36 @@ class POL(StockController):
 		pv_km = 0
 		if previous_km_reading:
 			pv_km = flt(previous_km_reading[0].current_km_reading)
+		else:
+			pv_km = frappe.db.get_value("Equipment", self.equipment, "initial_km_reading")
+			if not pv_km:
+				frappe.throw("Please set initial km reading in equimpment {}".format(frappe.get_desk_link("Equipment", self.equipment)))
+		
 		if flt(pv_km) >= flt(self.current_km_reading):
 			frappe.throw("Current KM Reading cannot be less than Previous KM Reading<b>({})</b> for Vehicle Number <b>{}</b>".format(pv_km,self.equipment_number))
 		self.km_difference = flt(self.current_km_reading) - flt(pv_km)
 		self.mileage = flt(self.km_difference) / self.qty
 
 	def before_submit(self):
-		self.paid_amount = self.outstanding_amount
-		self.outstanding_amount = 0
+		if not self.direct_consumption:
+			self.paid_amount = self.outstanding_amount
+			self.outstanding_amount = 0
 		
 	def on_submit(self):
 		self.validate_data()
 		self.check_on_dry_hire()
-		if not self.direct_consumption:
-			self.update_stock_ledger()
+		# if not self.direct_consumption and self.company !='De-suung Skilling':
+		# 	self.update_stock_ledger()
 		self.update_advance()
 		self.make_pol_entry()
 		# if self.settled_using_imprest:
 		# 	self.make_gl_entry()
+		if self.direct_consumption:
+			self.post_journal_entry()
 
 	def on_cancel(self):
-		if not self.direct_consumption:
-			self.update_stock_ledger()
+		# if not self.direct_consumption and self.company !='De-suung Skilling':
+		# 	self.update_stock_ledger()
 		# docstatus = frappe.db.get_value("Journal Entry", self.jv, "docstatus")
 		# if docstatus and docstatus != 2:
 		# 	frappe.throw("Cancel the Journal Entry " + str(self.jv) + " and proceed.")
@@ -101,14 +120,18 @@ class POL(StockController):
 		self.hiring_warehouse = None
 
 	def validate_data(self):
+		for i in self.items:
+			if i.uom != self.stock_uom:
+				frappe.throw("Row #{}'s uom must be in {}".format(
+					frappe.bold(i.idx),
+					frappe.bold(self.stock_uom)
+				))
+
 		if not self.fuelbook_branch or not self.equipment_branch:
 			frappe.throw("Fuelbook and Equipment Branch are mandatory")
 
-		if flt(self.qty) <= 0 or flt(self.rate) <= 0:
-			frappe.throw("Quantity and Rate should be greater than 0")
-
-		if not self.warehouse:
-			frappe.throw("Warehouse is Mandatory. Set the Warehouse in Cost Center")
+		# if not self.warehouse:
+		# 	frappe.throw("Warehouse is Mandatory. Set the Warehouse in Cost Center")
 
 		if not self.equipment_category:
 			frappe.throw("Equipment Category Missing")
@@ -283,58 +306,59 @@ class POL(StockController):
 	# 	frappe.db.sql("delete from `tabCommitted Budget` where reference_no = %s", self.name)
 	# 	frappe.db.sql("delete from `tabConsumed Budget` where reference_no = %s", self.name)
 
-	# def post_journal_entry(self):
-	# 	veh_cat = frappe.db.get_value("Equipment", self.equipment, "equipment_category")
-	# 	if veh_cat:
-	# 		if veh_cat == "Pool Vehicle":
-	# 			pol_account = frappe.db.get_single_value("Maintenance Accounts Settings", "pool_vehicle_pol_expenses")
-	# 		else:
-	# 			pol_account = frappe.db.get_single_value("Maintenance Accounts Settings", "default_pol_expense_account")
-	# 	else:
-	# 		frappe.throw("Can not determine machine category")
+	def post_journal_entry(self):
+		veh_cat = frappe.db.get_value("Equipment", self.equipment, "equipment_category")
+		if veh_cat:
+			if veh_cat == "Pool Vehicle":
+				pol_account = frappe.db.get_single_value("Maintenance Accounts Settings", "pool_vehicle_pol_expenses")
+			else:
+				pol_account = frappe.db.get_single_value("Maintenance Accounts Settings", "default_pol_expense_account")
+		else:
+			frappe.throw("Can not determine machine category")
 
-	# 	expense_bank_account = frappe.db.get_value("Company", frappe.defaults.get_user_default("Company"), "default_payable_account")
-	# 	if not expense_bank_account:
- 	# 		frappe.throw("No Default Payable Account set in Company")
+		expense_bank_account = frappe.db.get_value("Company", self.company, "default_payable_account")
+		
+		if not expense_bank_account:
+			frappe.throw("No Default Payable Account set in Company")
+		
+		if expense_bank_account and pol_account:
+			je = frappe.new_doc("Journal Entry")
+			je.flags.ignore_permissions = 1 
+			je.title = "POL (" + self.pol_type + " for " + self.equipment_number + ")"
+			je.voucher_type = 'Bank Entry'
+			je.naming_series = 'Bank Payment Voucher'
+			je.remark = 'Payment against : ' + self.name;
+			je.posting_date = self.posting_date
+			je.branch = self.branch
+			je.company = self.company,
+			je.mode_of_payment = 'ePayment',
 
-	# 	ba = get_equipment_ba(a.equipment) 
+			je.append("accounts", {
+					"account": pol_account,
+					"cost_center": self.cost_center,
+					"reference_type": "POL",
+					"reference_name": self.name,
+					"party_type": "Supplier",
+					"party": self.supplier,
+					"debit_in_account_currency": flt(self.total_amount),
+					"debit": flt(self.total_amount),
+					"business_activity": self.business_activity,
+				})
 
-	# 	if expense_bank_account and pol_account:
-	# 		je = frappe.new_doc("Journal Entry")
-	# 		je.flags.ignore_permissions = 1 
-	# 		je.title = "POL (" + self.pol_type + " for " + self.equipment_number + ")"
-	# 		je.voucher_type = 'Bank Entry'
-	# 		je.naming_series = 'Bank Payment Voucher'
-	# 		je.remark = 'Payment against : ' + self.name;
-	# 		je.posting_date = self.posting_date
-	# 		je.branch = self.branch
+			je.append("accounts", {
+					"account": expense_bank_account,
+					"cost_center": self.cost_center,
+					"credit_in_account_currency": flt(self.total_amount),
+					"credit": flt(self.total_amount),
+					"business_activity": self.business_activity
+				})
 
-	# 		je.append("accounts", {
-	# 				"account": pol_account,
-	# 				"cost_center": self.cost_center,
-	# 				"reference_type": "POL",
-	# 				"reference_name": self.name,
-	# 				"debit_in_account_currency": flt(self.total_amount),
-	# 				"debit": flt(self.total_amount),
-	# 				"business_activity": ba
-	# 			})
+			je.insert()
+			self.db_set("jv", je.name)
+			frappe.msgprint(_('Journal Entry {} posted to accounts').format(frappe.get_desk_link(je.doctype,je.name)))
 
-	# 		je.append("accounts", {
-	# 				"account": expense_bank_account,
-	# 				"cost_center": self.cost_center,
-	# 				"party_type": "Supplier",
-	# 				"party": self.supplier,
-	# 				"credit_in_account_currency": flt(self.total_amount),
-	# 				"credit": flt(self.total_amount),
-	# 				"business_activity": ba
-	# 			})
-
-	# 		je.insert()
-	# 		self.db_set("jv", je.name)
-	# 		frappe.msgprint(_('Journal Entry {} posted to accounts').format(frappe.get_desk_link(je.doctype,je.name)))
-
-	# 	else:
-	# 		frappe.throw("Define POL expense account in Maintenance Setting or Expense Bank in Branch")
+		else:
+			frappe.throw("Define POL expense account in Maintenance Setting or Expense Bank in Branch")
 		
 	def make_pol_entry(self):
 		if getdate(self.posting_date) <= getdate("2018-03-31"):
@@ -402,7 +426,7 @@ class POL(StockController):
 
 	def update_advance(self):
 		if self.docstatus == 2 :
-			for item in self.items:
+			for item in self.advances:
 				doc = frappe.get_doc("Pol Advance", {'name':item.reference,'equipment_number':self.equipment_number})
 				doc.balance_amount  = flt(doc.balance_amount) + flt(item.allocated_amount)
 				doc.adjusted_amount = flt(doc.adjusted_amount) - flt(item.allocated_amount)
@@ -411,7 +435,7 @@ class POL(StockController):
 					doc.od_outstanding_amount = flt(doc.od_outstanding_amount) - flt(self.od_amount)
 				doc.save(ignore_permissions=True)
 			return
-		for item in self.items:
+		for item in self.advances:
 			doc = frappe.get_doc("Pol Advance", {'name':item.reference,'equipment_number':self.equipment_number})
 			doc.balance_amount  = flt(item.advance_balance) - flt(item.allocated_amount)
 			doc.adjusted_amount = flt(doc.adjusted_amount) + flt(item.allocated_amount)
@@ -421,7 +445,7 @@ class POL(StockController):
 			doc.save(ignore_permissions=True)
 
 	@frappe.whitelist()
-	def populate_child_table(self):
+	def get_advance(self):
 		self.calculate_km_diff()
 		data = []
 		data = frappe.db.sql("""
@@ -434,7 +458,7 @@ class POL(StockController):
 				AND balance_amount > 0
 				AND equipment_number = '{}' 
 				ORDER BY entry_date""".format(self.fuelbook,self.equipment_branch,self.equipment_number),as_dict=True)
-		self.set('items',[])
+		self.set('advances',[])
 
 		if not data:
 			data = frappe.db.sql("""
@@ -465,7 +489,7 @@ class POL(StockController):
 				is_submitted = True
 
 			if is_submitted:
-				row = self.append('items',{})
+				row = self.append('advances',{})
 				row.reference         = d.name
 				row.advance_amount    = d.amount 
 				row.advance_balance      = d.balance_amount
@@ -484,12 +508,14 @@ class POL(StockController):
 				row.balance = flt(row.advance_balance) - flt(row.amount) #jai
 				temp_balance = row.balance
 
-		if not self.items:
+		if not self.advances:
 			frappe.throw("NO POL Advance")
 
 		if total_amount_adjusted < flt(self.total_amount):
 			self.od_amount = flt(self.total_amount) - total_amount_adjusted 
-			self.items[len(self.items)-1].has_od = 1
+			self.advances[len(self.advances)-1].has_od = 1
+		else:
+			self.od_amount = 0
 			
 	# def make_gl_entry(self):
 	# 	from erpnext.accounts.general_ledger import make_gl_entries
