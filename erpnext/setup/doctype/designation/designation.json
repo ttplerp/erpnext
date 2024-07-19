@@ -11,7 +11,8 @@
   "designation_name",
   "description",
   "required_skills_section",
-  "skills"
+  "skills",
+  "designation_group"
  ],
  "fields": [
   {
@@ -39,12 +40,18 @@
    "fieldtype": "Table",
    "label": "Skills",
    "options": "Designation Skill"
+  },
+  {
+   "fieldname": "designation_group",
+   "fieldtype": "Link",
+   "label": "Designation Group",
+   "options": "Designation Group"
   }
  ],
  "icon": "fa fa-bookmark",
  "idx": 1,
  "links": [],
- "modified": "2023-04-17 12:13:25.898251",
+ "modified": "2024-07-19 15:44:24.692824",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Designation",
