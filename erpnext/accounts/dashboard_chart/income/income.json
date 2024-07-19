@@ -1,0 +1,35 @@
+{
+ "based_on": "creation",
+ "chart_name": "Income",
+ "chart_type": "Count",
+ "creation": "2024-06-14 15:29:51.929539",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "document_type": "Account",
+ "dynamic_filters_json": "[]",
+ "filters_json": "[]",
+ "group_by_type": "Count",
+ "idx": 0,
+ "is_public": 0,
+ "is_standard": 1,
+ "modified": "2024-06-14 15:29:51.929539",
+ "modified_by": "pema.dhendup@thimphutechpark.bt",
+ "module": "Accounts",
+ "name": "Income",
+ "number_of_groups": 0,
+ "owner": "pema.dhendup@thimphutechpark.bt",
+ "parent_document_type": "",
+ "roles": [
+  {
+   "role": "Accounts Master"
+  }
+ ],
+ "source": "",
+ "time_interval": "Yearly",
+ "timeseries": 1,
+ "timespan": "Last Month",
+ "type": "Percentage",
+ "use_report_chart": 0,
+ "value_based_on": "",
+ "y_axis": []
+}

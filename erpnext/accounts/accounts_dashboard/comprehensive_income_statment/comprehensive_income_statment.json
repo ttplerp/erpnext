@@ -1,0 +1,29 @@
+{
+ "cards": [
+  {
+   "card": "1-1"
+  }
+ ],
+ "charts": [
+  {
+   "chart": "Total Expense",
+   "width": "Half"
+  },
+  {
+   "chart": "Income",
+   "width": "Half"
+  }
+ ],
+ "creation": "2024-06-14 15:33:52.057730",
+ "dashboard_name": "Comprehensive Income Statment",
+ "docstatus": 0,
+ "doctype": "Dashboard",
+ "idx": 0,
+ "is_default": 0,
+ "is_standard": 1,
+ "modified": "2024-06-14 15:33:52.057730",
+ "modified_by": "pema.dhendup@thimphutechpark.bt",
+ "module": "Accounts",
+ "name": "Comprehensive Income Statment",
+ "owner": "pema.dhendup@thimphutechpark.bt"
+}

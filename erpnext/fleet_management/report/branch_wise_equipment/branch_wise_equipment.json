@@ -1,0 +1,90 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2024-07-19 11:22:45.377607",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Vajra Builders Private Limited",
+ "modified": "2024-07-19 11:22:45.377607",
+ "modified_by": "Administrator",
+ "module": "Fleet Management",
+ "name": "Branch wise equipment",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Equipment",
+ "report_name": "Branch wise equipment",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "HR User"
+  },
+  {
+   "role": "Asset User"
+  },
+  {
+   "role": "Mechanical Services All"
+  },
+  {
+   "role": "Fleet User"
+  },
+  {
+   "role": "Asset Manager"
+  },
+  {
+   "role": "HR Manager"
+  },
+  {
+   "role": "Drivers and Operators"
+  },
+  {
+   "role": "POL User"
+  },
+  {
+   "role": "Unit Manager"
+  },
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Management"
+  },
+  {
+   "role": "Fleet Manager"
+  },
+  {
+   "role": "Stock User (other)"
+  },
+  {
+   "role": "Mechanical Master"
+  },
+  {
+   "role": "Workshop User"
+  },
+  {
+   "role": "Workshop Manager"
+  },
+  {
+   "role": "Administrator"
+  },
+  {
+   "role": "Auditor"
+  },
+  {
+   "role": "MR User"
+  },
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Employee"
+  }
+ ]
+}

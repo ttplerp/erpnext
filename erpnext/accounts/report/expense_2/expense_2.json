@@ -1,0 +1,51 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2024-07-17 11:54:17.378613",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Vajra Builders Private Limited",
+ "modified": "2024-07-17 11:54:17.378613",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "expense 2",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Account",
+ "report_name": "expense 2",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "Auditor"
+  },
+  {
+   "role": "Employee"
+  },
+  {
+   "role": "HR User"
+  },
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Purchase User"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Accounts Master"
+  },
+  {
+   "role": "System Manager"
+  }
+ ]
+}

@@ -1,0 +1,37 @@
+{
+ "based_on": "creation",
+ "chart_name": "Total Expense",
+ "chart_type": "Sum",
+ "color": "#761ACB",
+ "creation": "2024-06-14 15:25:39.082314",
+ "custom_options": "",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "document_type": "Account",
+ "dynamic_filters_json": "[]",
+ "filters_json": "[[\"Account\",\"company\",\"=\",\"VAJRA BUILDERS PRIVATE LIMITED\",false],[\"Account\",\"cost_center\",\"=\",\"66/33 Kv Substation Dochula - Vajra\",false],[\"Account\",\"cost_center\",\"=\",\"Bjemina Wood Seasoning - Vajra\",false],[\"Account\",\"cost_center\",\"=\",\"Branch Office P/ling - Vajra\",false],[\"Account\",\"cost_center\",\"=\",\"DHI Project Chumdo - Vajra\",false],[\"Account\",\"cost_center\",\"=\",\"DHI Project Gedu - Vajra\",false],[\"Account\",\"account_type\",\"=\",\"Expense Account\",false],[\"Account\",\"account_type\",\"=\",\"Income Account\",false]]",
+ "group_by_type": "Count",
+ "idx": 0,
+ "is_public": 0,
+ "is_standard": 1,
+ "modified": "2024-06-14 15:26:42.779443",
+ "modified_by": "pema.dhendup@thimphutechpark.bt",
+ "module": "Accounts",
+ "name": "Total Expense",
+ "number_of_groups": 0,
+ "owner": "pema.dhendup@thimphutechpark.bt",
+ "parent_document_type": "",
+ "roles": [
+  {
+   "role": "Accounts Manager"
+  }
+ ],
+ "source": "",
+ "time_interval": "Yearly",
+ "timeseries": 1,
+ "timespan": "Last Year",
+ "type": "Percentage",
+ "use_report_chart": 0,
+ "value_based_on": "",
+ "y_axis": []
+}

@@ -1,0 +1,33 @@
+{
+ "chart_name": "Account Receivable Cost Center Wise",
+ "chart_type": "Report",
+ "creation": "2024-07-18 14:26:16.341064",
+ "custom_options": "{\"x_field\": \"cost_center\", \"chart_type\": \"Bar\", \"y_axis_fields\": [{\"idx\": 1, \"__islocal\": true, \"name\": \"row 1\", \"y_field\": \"accounts_receivable\", \"color\": \"#8307f7\"}], \"y_fields\": [\"accounts_receivable\"], \"colors\": [\"#8307f7\"]}",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "filters_json": "{}",
+ "group_by_type": "Count",
+ "idx": 0,
+ "is_public": 0,
+ "is_standard": 1,
+ "modified": "2024-07-18 14:26:16.360270",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Account Receivable Cost Center Wise",
+ "number_of_groups": 0,
+ "owner": "Administrator",
+ "report_name": "Accounts Receivable Costcenter wise",
+ "roles": [],
+ "time_interval": "Yearly",
+ "timeseries": 0,
+ "timespan": "Last Year",
+ "type": "Bar",
+ "use_report_chart": 0,
+ "x_field": "cost_center",
+ "y_axis": [
+  {
+   "color": "#8307f7",
+   "y_field": "accounts_receivable"
+  }
+ ]
+}
