@@ -74,11 +74,10 @@
    "fieldtype": "Column Break"
   },
   {
-   "default": "Trainee",
    "fieldname": "attendance_for",
    "fieldtype": "Select",
    "label": "Attendance For",
-   "options": "\nTrainee\nOJT",
+   "options": "\nTrainee\nOJT\nProduction",
    "reqd": 1
   },
   {
@@ -89,7 +88,7 @@
    "options": "Training Management"
   },
   {
-   "depends_on": "eval:doc.attendance_for == 'OJT'",
+   "depends_on": "eval:doc.attendance_for != 'Trainee'",
    "fieldname": "desuup_deployment",
    "fieldtype": "Link",
    "label": "Desuup Deployment",
@@ -99,7 +98,7 @@
  "hide_toolbar": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-07-16 17:14:23.212631",
+ "modified": "2024-07-19 14:55:33.636799",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Attendance Tool",

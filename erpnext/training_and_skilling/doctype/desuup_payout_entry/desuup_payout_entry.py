@@ -227,6 +227,47 @@ class DesuupPayoutEntry(Document):
 				t2.exit_date
 				FROM `tabDesuup Deployment Entry` t1, `tabDesuup Deployment Entry Item` t2
 				WHERE t1.name = t2.parent
+				AND t1.deployment_type = 'OJT'
+				AND t1.status='On Going'
+				AND t2.reported_date IS NOT NULL 
+				AND (
+					t1.start_date BETWEEN %(start_date)s AND %(end_date)s 
+					OR t1.end_date BETWEEN %(start_date)s AND %(end_date)s
+					OR %(start_date)s BETWEEN t1.start_date AND t1.end_date
+					OR %(end_date)s BETWEEN t1.start_date AND t1.end_date
+				)
+				AND t2.desuup NOT IN (
+					SELECT desuup
+					FROM `tabDesuup Payout Item` 
+					WHERE (
+						from_date BETWEEN %(start_date)s AND %(end_date)s 
+						OR to_date BETWEEN %(start_date)s AND %(end_date)s
+						OR %(start_date)s BETWEEN from_date AND to_date
+						OR %(end_date)s BETWEEN from_date AND to_date
+					)
+					AND docstatus IN (1)
+				)
+				{}
+				ORDER BY t2.desuup_name
+			""".format(cond), params, as_dict=True)
+
+		elif self.payment_for == "Production":
+			desuup_list = frappe.db.sql("""
+				SELECT 
+				'Desuup Deployment Entry' as reference_doctype, 
+				t1.name as reference_name, 
+				t2.desuup, 
+				t2.desuup_name, 
+				t2.amount as monthly_pay_amount, 
+				t1.branch, 
+				t1.cost_center,
+				t1.start_date from_date,
+				t1.end_date to_date,
+				t2.reported_date,
+				t2.exit_date
+				FROM `tabDesuup Deployment Entry` t1, `tabDesuup Deployment Entry Item` t2
+				WHERE t1.name = t2.parent
+				AND t1.deployment_type = 'Production' 
 				AND t1.status='On Going'
 				AND t2.reported_date IS NOT NULL 
 				AND (
@@ -303,7 +344,7 @@ class DesuupPayoutEntry(Document):
 		if self.payment_for == "Trainee":
 			payable_account = frappe.db.get_single_value("Desuup Settings", "stipend_payable_account")
 			expense_account = frappe.db.get_single_value("Desuup Settings", "stipend_expense_account")
-		elif self.payment_for == "OJT":
+		elif self.payment_for == "OJT" or self.payment_for == "Production":
 			payable_account = frappe.db.get_single_value("Desuup Settings", "ojt_payable_account")
 			expense_account = frappe.db.get_single_value("Desuup Settings", "ojt_expense_account")
 

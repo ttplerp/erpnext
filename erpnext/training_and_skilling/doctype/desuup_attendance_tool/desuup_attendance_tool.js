@@ -23,6 +23,7 @@ frappe.ui.form.on('Desuup Attendance Tool', {
 			return {
 				filters: {
 					"status": "On Going",
+					"deployment_type": frm.doc.attendance_for,
 				}
 			};
 		});

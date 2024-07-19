@@ -80,7 +80,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Payment For",
-   "options": "\nTrainee\nOJT",
+   "options": "\nTrainee\nOJT\nProduction",
    "reqd": 1
   },
   {
@@ -217,7 +217,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-17 01:50:35.686759",
+ "modified": "2024-07-19 15:00:36.618704",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Payout Entry",

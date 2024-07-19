@@ -94,7 +94,7 @@
    "fieldname": "deployment_type",
    "fieldtype": "Select",
    "label": "Deployment Type",
-   "options": "\nOJT",
+   "options": "\nOJT\nProduction",
    "reqd": 1
   },
   {
@@ -113,7 +113,8 @@
    "fieldname": "programme",
    "fieldtype": "Link",
    "label": "Programme",
-   "options": "Programme Classification"
+   "options": "Programme Classification",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_8",
@@ -162,7 +163,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-17 04:14:52.042105",
+ "modified": "2024-07-19 15:06:29.484134",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Deployment Entry",

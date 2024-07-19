@@ -17,18 +17,25 @@ def get_desuups(date, attendance_for, cost_center=None, training_management=None
 
 	def get_conditions():
 		cond = ''
-		# if cost_center:
-		# 	if training_management:
-		# 		cond += " and t1.course_cost_center = '{}'".format(cost_center)
-		# 	if desuup_deployment:
-		# 		cond += " and t1.cost_center = '{}'".format(cost_center)
-		if training_management:
-			cond += " and t1.name = '{}'".format(training_management)
 		if desuup_deployment:
 			cond += " and t1.name = '{}'".format(desuup_deployment)
 		if training_center:
 			cond += " and t1.training_center = '{}'".format(training_center)
+		if training_management:
+			cond += " and t1.name = '{}'".format(training_management)
 		return cond
+	
+	def get_deployment_list(new_cond):
+		cond = get_conditions()
+		return frappe.db.sql("""
+						select t2.desuup, t2.desuup_name
+						from `tabDesuup Deployment Entry` t1, `tabDesuup Deployment Entry Item` t2
+						where t1.name = t2.parent
+						and t1.status = 'On Going'
+						and t2.status = 'Reported'
+						and '{}' between t1.start_date and t1.end_date {} {}
+						order by t2.desuup_name
+						""".format(getdate(date), cond, new_cond), as_dict=True)
 
 	if attendance_for == "Trainee":
 		cond = get_conditions()
@@ -43,16 +50,14 @@ def get_desuups(date, attendance_for, cost_center=None, training_management=None
 						""".format(getdate(date), cond), as_dict=True)
 		
 	elif attendance_for == "OJT":
-		cond = get_conditions()
-		desuup_list = frappe.db.sql("""
-						select t2.desuup, t2.desuup_name
-						from `tabDesuup Deployment Entry` t1, `tabDesuup Deployment Entry Item` t2
-						where t1.name = t2.parent
-						and t1.status = 'On Going'
-						and t2.status = 'Reported'
-						and '{}' between t1.start_date and t1.end_date {}
-						order by t2.desuup_name
-						""".format(getdate(date), cond), as_dict=True)
+		new_cond = ''
+		new_cond += " and t1.deployment_type = 'OJT'"
+		desuup_list = get_deployment_list(new_cond)
+	elif attendance_for == "Production":
+		new_cond = ''
+		new_cond += " and t1.deployment_type = 'Production'"
+		desuup_list = get_deployment_list(new_cond)
+
 	else:
 		desuup_list = []
 	

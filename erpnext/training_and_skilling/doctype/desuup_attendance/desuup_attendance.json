@@ -217,14 +217,14 @@
    "fieldname": "attendance_for",
    "fieldtype": "Select",
    "label": "Attendance For",
-   "options": "\nTrainee\nOJT",
+   "options": "\nTrainee\nOJT\nProduction",
    "reqd": 1
   }
  ],
  "icon": "fa fa-ok",
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-03 22:27:46.153104",
+ "modified": "2024-07-19 14:56:46.027738",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Attendance",
