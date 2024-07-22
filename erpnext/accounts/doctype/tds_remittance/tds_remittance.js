@@ -85,21 +85,132 @@ var show_custom_buttons = function(frm){
 	cur_frm.page.set_inner_btn_group_as_primary(__('View'));
 }
 
-var get_details = function(frm){
+// var get_details = function(frm) {
+// 	frm.clear_table("items");
+// 	frm.refresh_field("items");
+// 	frm.set_value('total_amount', 0);
+// 	frm.set_value('total_tds', 0);
+// 	frm.set_value('fines_and_penalties', 0); // Set initial value to 0
+  
+// 	frappe.call({
+// 	  method: "get_details",
+// 	  doc: frm.doc,
+// 	  callback: function (r, rt) {
+// 		if (r.message) {
+// 		  frm.refresh_field("items");
+// 		  frm.set_value('total_amount', r.message[1]);
+// 		  frm.set_value('total_tds', r.message[0]);
+  
+// 		  // Calculate and set grand total (excluding total_amount)
+// 		  const fines = frm.doc.fines_and_penalties || 0; // Handle potential missing field
+// 		  frm.set_value('grand_total', fines + r.message[0]);
+  
+// 		  frm.refresh_fields();
+// 		}
+// 	  },
+// 	});
+//   };
+
+
+
+// var get_details = function(frm) {
+//     frm.clear_table("items");
+//     frm.refresh_field("items");
+//     frm.set_value('total_amount', 0);
+//     frm.set_value('total_tds', 0);
+//     frm.set_value('fines_and_penalties', 0); // Set initial value to 0
+
+//     frappe.call({
+//         method: "get_details",
+//         doc: frm.doc,
+//         callback: function (r, rt) {
+//             if (r.message) {
+//                 frm.set_value('total_amount', r.message[1]);
+//                 frm.set_value('total_tds', r.message[0]);
+//                 update_grand_total(frm); // Initial calculation
+//             }
+//         },
+//     });
+
+//     var update_grand_total = function(frm) {
+//         const fines = frm.doc.fines_and_penalties || 0;
+//         const total_tds = frm.doc.total_tds || 0;
+//         frm.set_value('grand_total', fines + total_tds);
+//         frm.refresh_field('grand_total');
+//     };
+
+//     frm.fields_dict['fines_and_penalties'].df.onchange = function() {
+//         update_grand_total(frm);
+//     };
+// };
+
+var get_details = function(frm) {
 	frm.clear_table("items");
 	frm.refresh_field("items");
 	frm.set_value('total_amount', 0);
 	frm.set_value('total_tds', 0);
+	frm.set_value('fines_and_penalties', 0); // Set initial value to 0
+  
 	frappe.call({
-		method: "get_details",
-		doc: frm.doc,
-		callback: function (r, rt) {
-			if ( r.message){
-				frm.refresh_field("items");
-				frm.set_value('total_amount',r.message[1]);
-				frm.set_value('total_tds',r.message[0]);
-				frm.refresh_fields();
-			}
-		},
+	  method: "get_details",
+	  doc: frm.doc,
+	  callback: function (r, rt) {
+		if (r.message) {
+		  frm.refresh_field("items");
+		  frm.set_value('total_amount', r.message[1]);
+		  frm.set_value('total_tds', r.message[0]);
+  
+		  // Populate items table with transaction details
+		  for (const tx of r.message[2]) { // Assuming transaction data is in r.message[2]
+			const row = frm.append('items', {});
+			row.bill_amount = tx.bill_amount; // Update with actual field names
+			row.tds_amount = tx.tds_amount; // Update with actual field names
+			// Update other transaction details as needed
+		  }
+  
+		  update_grand_total(frm); // Initial calculation
+		}
+	  },
 	});
-}
+  
+	var update_grand_total = function(frm) {
+	  const fines = frm.doc.fines_and_penalties || 0;
+	  const total_tds = frm.doc.total_tds || 0;
+	  frm.set_value('grand_total', fines + total_tds);
+	  frm.refresh_field('grand_total');
+	};
+  
+	frm.fields_dict['fines_and_penalties'].df.onchange = function() {
+	  update_grand_total(frm);
+	};
+  };
+  
+
+
+
+
+  
+
+// var get_details = function(frm){
+// 	frm.clear_table("items");
+// 	frm.refresh_field("items");
+// 	frm.set_value('total_amount', 0);
+// 	frm.set_value('total_tds', 0);
+// 	frm.set_value('fines_and_penalties', 0); // Set initial value to 0
+// 	frappe.call({
+// 		method: "get_details",
+// 		doc: frm.doc,
+// 		callback: function (r, rt) {
+// 			if ( r.message){
+// 				frm.refresh_field("items");
+// 				frm.set_value('total_amount',r.message[1]);
+// 				frm.set_value('total_tds',r.message[0]);
+// 				// Calculate and set grand total
+// 				const fines = frm.doc.fines_and_penalties || 0; // Handle potential missing field
+// 				frm.set_value('grand_total', fines + r.message[0]);
+
+// 				frm.refresh_fields();
+// 			}
+// 		},
+// 	});
+// }

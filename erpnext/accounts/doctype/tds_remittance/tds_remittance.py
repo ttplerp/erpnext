@@ -49,11 +49,17 @@ class TDSRemittance(AccountsController):
 		for d in self.items:
 			self.total_tds 		+= flt(d.tds_amount)
 			self.total_amount 	+= flt(d.bill_amount)
+		self.grand_total = self.total_tds + self.fines_and_penalties
 
 	def make_gl_entries(self):
 		gl_entries   = []
 		tds_account  = get_tds_account(self.tax_withholding_category, self.company)
 		default_business_activity = frappe.db.get_value("Business Activity", {"is_default": 1})
+		fines_penalties_account = frappe.db.get_value("Company", self.company, "fines_and_penalties")
+		if not fines_penalties_account:
+			frappe.throw("Set Fines and Penalties account in Company {}".format(
+				frappe.get_desk_link("Company", self.company)
+			))
 
 		if flt(self.total_tds) > 0:
 			for item in self.items:
@@ -72,12 +78,27 @@ class TDSRemittance(AccountsController):
 						"party": item.party
 					},
 					account_currency= "BTN"))
+				
+			if self.fines_and_penalties > 0:
+				gl_entries.append(
+					self.get_gl_dict({
+							"account": fines_penalties_account,
+							"debit": self.fines_and_penalties,
+							"debit_in_account_currency": self.fines_and_penalties,
+							"voucher_type": self.doctype,
+							"voucher_no": self.name,
+							"cost_center": self.cost_center,
+							# "business_activity": item.business_activity,
+							"against_voucher_type":	self.doctype,
+							"against_voucher": self.name
+						},
+						account_currency= "BTN"))
 			
 			gl_entries.append(
 				self.get_gl_dict({
 					"account": str(self.credit_account),
-					"credit": self.total_tds,
-					"credit_in_account_currency": self.total_tds,
+					"credit": flt(self.total_tds + self.fines_and_penalties) if self.fines_and_penalties > 0 else self.total_tds,
+					"credit_in_account_currency": flt(self.total_tds + self.fines_and_penalties) if self.fines_and_penalties > 0 else self.total_tds,
 					"voucher_type": self.doctype,					
 					"voucher_no": self.name,
 					"cost_center": self.cost_center,

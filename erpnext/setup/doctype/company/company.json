@@ -77,6 +77,7 @@
   "company_cost_center",
   "default_finance_book",
   "clearing_account",
+  "fines_and_penalties",
   "tds_accounts_section",
   "tds_account_item",
   "auto_accounting_for_stock_settings",
@@ -971,6 +972,12 @@
    "fieldtype": "Link",
    "label": "Default Imprest Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "fines_and_penalties",
+   "fieldtype": "Link",
+   "label": "Fines and Penalties",
+   "options": "Account"
   }
  ],
  "icon": "fa fa-building",
@@ -978,7 +985,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2022-12-28 19:55:19.955730",
+ "modified": "2024-07-22 14:06:43.386087",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",
