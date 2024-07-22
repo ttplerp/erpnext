@@ -4,11 +4,19 @@
 import frappe
 from frappe import _
 from frappe.model.document import Document
-from frappe.utils import cint, flt, nowdate, add_days, getdate, fmt_money, add_to_date, DATE_FORMAT, date_diff, get_last_day
+from frappe.utils import cint, flt, add_days, getdate, fmt_money, add_to_date, DATE_FORMAT, date_diff, get_last_day
+from datetime import date
 
 class DesuupDeploymentEntry(Document):
 	def validate(self):
 		self.validate_reported_date()
+	
+	def on_submit(self):
+		self.validate_completion_date()
+
+	def validate_completion_date(self):
+		if getdate(self.end_date) > getdate(date.today()):
+			frappe.throw("Can be completed after only after {}".format(frappe.bold(self.end_date)))
 
 	def validate_reported_date(self):
 		if getdate(self.start_date) > getdate(self.end_date):
