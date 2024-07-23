@@ -132,13 +132,13 @@ class HousingApplication(Document):
 			#Civil Servant Deail
 			data1=get_civil_servant_detail(cid=self.cid)
 			if data1:
-				self.grade = data1['positionLevel']
-				self.ministry_agency = data1['OrganogramLevel1']
-				self.department = data1['OrganogramLevel2']
-				self.employee_id = data1['employeeNumber']
-				self.designation = data1['positionTitle']
-				self.email_id = data1['Email']
-				self.mobile_no = data1['MobileNo']
+				self.grade = data1['PositionLevel']
+				self.ministry_agency = data1['OperatingUnit']
+				self.department = data1['DeptName']
+				self.employee_id = data1['EmpID']
+				self.designation = data1['Designation']
+				# self.email_id = data1['Email']
+				# self.mobile_no = data1['MobileNo']
 				self.gross_salary = data1['GrossPay']
 		
 		if self.marital_status == "Married":
