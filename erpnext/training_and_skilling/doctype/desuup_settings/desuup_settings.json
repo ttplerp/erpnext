@@ -20,7 +20,7 @@
   "ojt_expense_account",
   "column_break_14",
   "ojt_payable_account",
-  "deduction_account_deatials_section",
+  "deduction_account_details_section",
   "deduction_account",
   "section_break_23",
   "arrear_account",
@@ -100,11 +100,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "deduction_account_deatials_section",
-   "fieldtype": "Section Break",
-   "label": "Deduction Account Deatials"
-  },
-  {
    "fieldname": "deduction_account",
    "fieldtype": "Link",
    "label": "Deduction Account",
@@ -125,12 +120,17 @@
    "fieldtype": "Link",
    "label": "Refundable Mess Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "deduction_account_details_section",
+   "fieldtype": "Section Break",
+   "label": "Deduction Account Details"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-07-17 09:56:55.603295",
+ "modified": "2024-07-23 09:58:47.896498",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Settings",
