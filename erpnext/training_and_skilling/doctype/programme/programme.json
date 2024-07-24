@@ -48,11 +48,9 @@
    "fieldname": "programme_classification",
    "fieldtype": "Link",
    "label": "Programme Classification",
-   "options": "Programme Classification",
-   "reqd": 1
+   "options": "Programme Classification"
   },
   {
-   "fetch_from": "programme_classification.cost_center",
    "fieldname": "cost_center",
    "fieldtype": "Link",
    "label": "Cost Center",
@@ -62,7 +60,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-05-24 13:15:59.307813",
+ "modified": "2024-07-24 17:55:24.389029",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Programme",
