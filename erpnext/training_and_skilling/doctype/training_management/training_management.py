@@ -20,7 +20,7 @@ class TrainingManagement(Document):
 			self.update_trainees_status()
 		# self.check_date()
 		# self.validate_trainer_course()
-		self.validate_desuup_course()
+		#self.validate_desuup_course()
 		# self.count_duration()
 		# self.check_cohort_batch()
 		self.validate_trainees()
