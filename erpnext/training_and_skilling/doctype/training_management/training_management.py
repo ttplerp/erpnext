@@ -26,6 +26,14 @@ class TrainingManagement(Document):
 		self.validate_trainees()
 		self.validate_deuplicate_record()
 		#self.disallow_adding_trainee()
+		self.validate_exit_date()
+
+	def validate_exit_date(self):
+		for d in self.trainee_details:
+			if d.status=="Passed" and not d.exit_date:
+				d.exit_date = self.training_end_date
+			elif d.status in ("Withdrawn","Terminated","Suspended","Attendance Shortage") and not d.exit_date:
+				frappe.throw("<b>Exit date</b> is Mandatory for Row <b>{}: {}</b>  with Status <b>{}</b>".format(d.idx, d.desuup_id,d.status))
 
 	def disallow_adding_trainee(self):
 		if self.status in ["On Going","Approved"]:

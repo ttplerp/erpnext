@@ -101,14 +101,13 @@
    "depends_on": "eval:(doc.status!='Reported' && doc.status!='')",
    "fieldname": "exit_date",
    "fieldtype": "Date",
-   "label": "Exit Date",
-   "mandatory_depends_on": "eval:(doc.status!='Reported' && doc.status!='')"
+   "label": "Exit Date"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-07-23 09:54:43.889332",
+ "modified": "2024-07-24 09:30:54.321737",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Trainee Details",
