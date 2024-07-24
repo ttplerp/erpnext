@@ -13,11 +13,16 @@
   "material_request_type",
   "transfer_status",
   "customer",
+  "requisition_type",
+  "project",
+  "project_name",
+  "branch",
   "status",
   "column_break_2",
   "transaction_date",
   "schedule_date",
   "company",
+  "abbr",
   "amended_from",
   "warehouse_section",
   "set_from_warehouse",
@@ -47,15 +52,16 @@
    "options": "fa fa-pushpin"
   },
   {
+   "default": "abbr./MR/.YY.-",
    "fieldname": "naming_series",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Series",
    "no_copy": 1,
    "oldfieldname": "naming_series",
    "oldfieldtype": "Select",
-   "options": "MAT-MR-.YYYY.-",
+   "options": "abbr./MR/.YY.-",
    "print_hide": 1,
-   "reqd": 1,
    "set_only_once": 1
   },
   {
@@ -139,6 +145,7 @@
   },
   {
    "allow_bulk_edit": 1,
+   "allow_on_submit": 1,
    "fieldname": "items",
    "fieldtype": "Table",
    "label": "Items",
@@ -317,13 +324,54 @@
    "label": "Work Order",
    "options": "Work Order",
    "read_only": 1
+  },
+  {
+   "fetch_from": "company.abbr",
+   "fieldname": "abbr",
+   "fieldtype": "Data",
+   "label": "Abbr",
+   "read_only": 1
+  },
+  {
+   "fieldname": "requisition_type",
+   "fieldtype": "Select",
+   "label": "Requisition Type",
+   "options": "\nProject\nBranch",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:in_list([\"Project\"], doc.requisition_type)",
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Project",
+   "mandatory_depends_on": "eval:in_list([\"Project\"], doc.requisition_type)",
+   "options": "Project"
+  },
+  {
+   "depends_on": "eval:in_list([\"Branch\"], doc.requisition_type)",
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Branch",
+   "mandatory_depends_on": "eval:in_list([\"Branch\"], doc.requisition_type)",
+   "options": "Branch"
+  },
+  {
+   "depends_on": "eval:in_list([\"Project\"], doc.requisition_type)",
+   "fetch_from": "project.project_name",
+   "fieldname": "project_name",
+   "fieldtype": "Data",
+   "label": "Project Name",
+   "mandatory_depends_on": "eval:in_list([\"Project\"], doc.requisition_type)",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-ticket",
  "idx": 70,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-08-25 11:49:28.155048",
+ "modified": "2024-07-24 17:15:11.880573",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Material Request",
@@ -396,5 +444,8 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "title"
+ "title_field": "title",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
 }

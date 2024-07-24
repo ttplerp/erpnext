@@ -7,6 +7,9 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "order_items",
+  "specification",
+  "remarks",
   "item_code",
   "item_name",
   "col_break1",
@@ -60,18 +63,17 @@
  ],
  "fields": [
   {
+   "allow_on_submit": 1,
    "bold": 1,
-   "columns": 3,
+   "default": "100002",
    "fieldname": "item_code",
    "fieldtype": "Link",
    "in_global_search": 1,
-   "in_list_view": 1,
    "label": "Item Code",
    "oldfieldname": "item_code",
    "oldfieldtype": "Link",
    "options": "Item",
    "print_width": "100px",
-   "reqd": 1,
    "search_index": 1,
    "width": "100px"
   },
@@ -80,6 +82,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "item_name",
    "fieldtype": "Data",
    "in_global_search": 1,
@@ -92,14 +95,16 @@
    "width": "100px"
   },
   {
-   "collapsible": 1,
+   "allow_on_submit": 1,
    "fieldname": "section_break_4",
    "fieldtype": "Section Break",
    "label": "Description"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "description",
    "fieldtype": "Text Editor",
+   "in_list_view": 1,
    "label": "Description",
    "oldfieldname": "description",
    "oldfieldtype": "Text",
@@ -120,6 +125,7 @@
    "label": "Quantity and Warehouse"
   },
   {
+   "allow_on_submit": 1,
    "columns": 1,
    "fieldname": "qty",
    "fieldtype": "Float",
@@ -132,6 +138,7 @@
    "width": "80px"
   },
   {
+   "allow_on_submit": 1,
    "columns": 1,
    "fieldname": "uom",
    "fieldtype": "Link",
@@ -145,6 +152,7 @@
    "width": "70px"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "conversion_factor",
    "fieldtype": "Float",
    "label": "UOM Conversion Factor",
@@ -152,6 +160,7 @@
    "reqd": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "stock_uom",
    "fieldtype": "Link",
    "label": "Stock UOM",
@@ -161,10 +170,9 @@
    "reqd": 1
   },
   {
-   "columns": 3,
+   "allow_on_submit": 1,
    "fieldname": "warehouse",
    "fieldtype": "Link",
-   "in_list_view": 1,
    "label": "Target Warehouse",
    "oldfieldname": "warehouse",
    "oldfieldtype": "Link",
@@ -179,7 +187,7 @@
   {
    "allow_on_submit": 1,
    "bold": 1,
-   "columns": 2,
+   "columns": 1,
    "fieldname": "schedule_date",
    "fieldtype": "Date",
    "in_list_view": 1,
@@ -191,12 +199,14 @@
    "width": "100px"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "rate",
    "fieldtype": "Currency",
    "label": "Rate",
    "print_hide": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "amount",
    "fieldtype": "Currency",
    "label": "Amount",
@@ -204,6 +214,7 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "stock_qty",
    "fieldtype": "Float",
    "label": "Stock Qty",
@@ -218,6 +229,7 @@
    "label": "More Information"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "item_group",
    "fieldtype": "Link",
    "label": "Item Group",
@@ -269,6 +281,7 @@
    "search_index": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "project",
    "fieldtype": "Link",
    "label": "Project",
@@ -330,6 +343,7 @@
    "report_hide": 1
   },
   {
+   "allow_on_submit": 1,
    "depends_on": "eval:doc.docstatus==1",
    "fieldname": "ordered_qty",
    "fieldtype": "Float",
@@ -348,6 +362,7 @@
    "print_hide": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "cost_center",
    "fieldtype": "Link",
    "label": "Cost Center",
@@ -416,6 +431,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "depends_on": "eval:parent.material_request_type == \"Material Transfer\"",
    "fieldname": "from_warehouse",
    "fieldtype": "Link",
@@ -451,16 +467,37 @@
    "fieldname": "job_card_item",
    "fieldtype": "Data",
    "hidden": 1,
+   "label": "Job Card Item",
    "no_copy": 1,
-   "print_hide": 1,
-   "label": "Job Card Item"
+   "print_hide": 1
+  },
+  {
+   "bold": 1,
+   "columns": 2,
+   "fieldname": "order_items",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Order Items",
+   "reqd": 1
+  },
+  {
+   "fieldname": "specification",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Specification "
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "remarks",
+   "fieldtype": "Data",
+   "label": "Remarks"
   }
  ],
  "idx": 1,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-03-10 18:42:42.705190",
+ "modified": "2024-07-22 20:56:52.564587",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Material Request Item",
@@ -469,5 +506,6 @@
  "permissions": [],
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }
