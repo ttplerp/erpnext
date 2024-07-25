@@ -58,14 +58,14 @@ class DesuupPayoutEntry(Document):
 
 					item.refundable_amount = flt(item.mess_advance_amount, 2) - flt(item.mess_advance_used)
 
-					item.net_amount = flt(item.stipend_amount + item.total_arrear_amount)-flt(item.total_deduction_amount)
+					item.net_amount = flt(flt(item.stipend_amount) + flt(item.total_arrear_amount)) - flt(item.total_deduction_amount)
 				else:
 					if item.days_in_month != item.total_days_present:
 						item.stipend_amount = flt(monthly_stipend_amt)/flt(30) * flt(total_days)
-						item.net_amount = flt(item.stipend_amount + item.total_arrear_amount)-flt(item.total_deduction_amount)
+						item.net_amount = flt(flt(item.stipend_amount) + flt(item.total_arrear_amount)) - flt(item.total_deduction_amount)
 					else:
 						item.stipend_amount = flt(monthly_stipend_amt) * flt(total_days)
-						item.net_amount = flt(item.stipend_amount + item.total_arrear_amount)-flt(item.total_deduction_amount)
+						item.net_amount = flt(flt(item.stipend_amount) + flt(item.total_arrear_amount)) - flt(item.total_deduction_amount)
 
 			elif item.reference_doctype == "Desuup Deployment Entry":
 				# if item.monthly_pay_amount <= 0:
@@ -77,10 +77,10 @@ class DesuupPayoutEntry(Document):
 					item.total_amount = item.total_amount * total_days
 					
 				total_amount = flt(item.total_amount, 2) + flt(item.total_arrear_amount)
-				if flt(total_amount) < item.total_deduction_amount:
+				if flt(total_amount) < flt(item.total_deduction_amount):
 					frappe.throw("Row #{} cannot be more deduction {} ".format(item.idx, item.total_deduction_amount))
 				else:
-					item.net_amount = flt(total_amount - item.total_deduction_amount, 2)
+					item.net_amount = flt(flt(total_amount) - flt(item.total_deduction_amount), 2)
 
 	def get_advance_amount(self, desuup, ref_doctype, ref_name):
 		adv_list = frappe.db.sql("""
@@ -312,10 +312,16 @@ class DesuupPayoutEntry(Document):
 					desuup['from_date'] = reported_date
 			
 			# Use exit_date as to_date if it exists and falls within the date range
+			# if desuup.get('exit_date'):
+			# 	exit_date = getdate(desuup['exit_date'])
+			# 	end_date = getdate(desuup['to_date'])
+			# 	if exit_date < end_date:
+			# 		desuup['to_date'] = exit_date
+
 			if desuup.get('exit_date'):
 				exit_date = getdate(desuup['exit_date'])
 				end_date = getdate(desuup['to_date'])
-				if exit_date < end_date:
+				if exit_date.month == end_date.month and exit_date.year == end_date.year:
 					desuup['to_date'] = exit_date
 
 		return desuup_list
@@ -331,6 +337,7 @@ class DesuupPayoutEntry(Document):
 			self.append('items', d)
 
 		self.number_of_desuups = len(desuups)
+		self.calculate_amount()
 		return self.number_of_desuups
 
 	@frappe.whitelist()
