@@ -102,6 +102,7 @@ class DesuupMessAdvance(Document):
 				t1.training_start_date AS from_date, 
 				t1.training_end_date AS to_date,
 				t2.reporting_date,  
+				t2.exit_date,  
 				t1.branch, 
 				t1.course_cost_center AS cost_center, 
 				t2.desuup_id AS desuup, 
@@ -151,6 +152,12 @@ class DesuupMessAdvance(Document):
 				start_date = getdate(desuup['from_date'])
 				if reporting_date.month == start_date.month and reporting_date.year == start_date.year:
 					desuup['from_date'] = reporting_date
+
+			if desuup.get('exit_date'):
+				exit_date = getdate(desuup['exit_date'])
+				end_date = getdate(desuup['to_date'])
+				if exit_date.month == end_date.month and exit_date.year == end_date.year:
+					desuup['to_date'] = exit_date
 
 		return desuup_list
 	
