@@ -17,10 +17,8 @@ class HousingApplication(Document):
 		self.check_salary()
 		if self.application_status == None or self.application_status== 'Pending':
 			self.validate_detail()
-		self.validate_detail()
 		self.validate_duplicate()
 		
-		self.generate_rank()
 		self.check_app_limit()
 		creation_time = frappe.utils.get_datetime(self.get('creation'))
 		if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2:
