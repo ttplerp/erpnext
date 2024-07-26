@@ -60,10 +60,10 @@ class POL(StockController):
 		pv_km = 0
 		if previous_km_reading:
 			pv_km = flt(previous_km_reading[0].current_km_reading)
-		# else:
-		# 	pv_km = frappe.db.get_value("Equipment", self.equipment, "initial_km_reading")
-		# 	if not pv_km:
-		# 		frappe.throw("Please set initial km reading in equimpment {}".format(frappe.get_desk_link("Equipment", self.equipment)))
+		else:
+			pv_km = frappe.db.get_value("Equipment", self.equipment, "initial_km_reading")
+			if not pv_km:
+				frappe.throw("Please set initial km reading in equimpment {}".format(frappe.get_desk_link("Equipment", self.equipment)))
 		
 		if flt(pv_km) >= flt(self.current_km_reading):
 			frappe.throw("Current KM Reading cannot be less than Previous KM Reading<b>({})</b> for Vehicle Number <b>{}</b>".format(pv_km,self.equipment_number))
