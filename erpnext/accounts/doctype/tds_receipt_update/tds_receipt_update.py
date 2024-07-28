@@ -13,6 +13,7 @@ class TDSReceiptUpdate(Document):
 		self.validate_filters()
 		if self.purpose == "Employee Salary":
 			self.validate_duplicate()
+		self.calculate_total_tax()
 
 	def on_update(self):
 		self.check_duplicate_entries()
@@ -22,6 +23,13 @@ class TDSReceiptUpdate(Document):
 
 	def on_cancel(self):
 		frappe.db.sql("delete from `tabTDS Receipt Entry` where tds_receipt_update = '{}'".format(self.name))
+	
+	def calculate_total_tax(self):
+		if self.purpose=="Employee Salary":
+			total_tds_amount=0.00
+			for a in self.get("employees"):
+				total_tds_amount += a.tax_amount
+			self.total_tax_amount = flt(total_tds_amount,2)
 
 	def check_duplicate_entries(self):
 		if self.purpose in ["Employee Salary","PBVA","Bonus"]:
@@ -196,18 +204,31 @@ class TDSReceiptUpdate(Document):
 		if self.employee_branch:
 			conditions = f" and e.branch = '{self.employee_branch}'"
 		employees = frappe.db.sql("""
-				select e.name, e.employee_name
-    			from `tabEmployee` e
-				where not exists(select 1 from `tabTDS Receipt Update` tr, `tabTDS Receipt Update Employees` tre where tr.name = tre.parent
-    			and tre.employee = e.employee and tre.parent != '{}' and tr.docstatus = 1
-				and tr.fiscal_year = '{}' and tr.month = '{}'
-       			) {}
-                """.format(self.name, self.fiscal_year, self.month, conditions), as_dict = 1)
+			select e.name, e.employee, e.employee_name, d.amount from `tabSalary Slip` e left join `tabSalary Detail` d  on  e.name=d.parent
+			where d.salary_component = "Salary Tax"
+			and d.amount > 0
+			and d.docstatus=1
+			and e.fiscal_year='{1}'
+			and e.month='{2}'
+			and not exists(select 1 from `tabTDS Receipt Update` tr, `tabTDS Receipt Update Employees` tre 
+					where tr.name = tre.parent
+					and tre.employee = e.employee
+					and tre.parent != '{0}' 
+					and tr.docstatus = 1
+					and tr.fiscal_year = '{1}' 
+					and tr.month = '{2}'
+				)
+			{3}
+		""".format(self.name, self.fiscal_year, self.month, conditions), as_dict = 1)
 		self.set("employees",[])
+		total_tds_amt = 0.00
 		for a in employees:
 			row = self.append("employees", {})
-			row.employee = a.name
+			row.employee = a.employee
 			row.employee_name = a.employee_name
+			row.tax_amount = a.amount
+			row.salary_slip = a.name
+
 	def get_invoices(self):
 		cond = accounts_cond = "" 
 		total_bill_amount = total_tds_amount = 0
