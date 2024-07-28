@@ -26,7 +26,8 @@ frappe.ui.form.on('Utility Bill', {
 		cur_frm.set_query("utility_services", function() {
 			return {
 				"filters": {
-					"branch": frm.doc.branch
+					"branch": frm.doc.branch,
+					"utility_service_type": frm.doc.utility_service_type
 				}
 			}
 		 });
