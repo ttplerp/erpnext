@@ -4,7 +4,7 @@
 import frappe
 from frappe import _
 from frappe.model.document import Document
-from frappe.utils import cint, cstr, formatdate, get_datetime, get_link_to_form, getdate, nowdate
+from frappe.utils import cint, cstr, formatdate, get_datetime, get_link_to_form, getdate, nowdate, add_days, get_last_day
 
 class DuplicateAttendanceError(frappe.ValidationError):
 	pass
@@ -25,8 +25,27 @@ class DesuupAttendance(Document):
 		pass
 	
 	def validate_attendance_date(self):
-		if (getdate(self.attendance_date) > getdate(nowdate())):
-			frappe.throw(_("Attendance can not be marked for future dates"))
+		# get date for today
+		today = getdate(nowdate())
+
+		# Calculate the last day of the current month
+		last_day_of_month = get_last_day(today)
+
+		# Calculate the date two days before the end of the month
+		end_of_month_allowed = add_days(last_day_of_month, -2)
+
+		# Check if the attendance date is within the allowed range
+		if getdate(self.attendance_date) > end_of_month_allowed:
+			# If today is two days before the end of the month, allow attendance for today, the 30th, and the 31st
+			if today == end_of_month_allowed:
+				if getdate(self.attendance_date) not in [today, add_days(today, 1), add_days(today, 2)]:
+					frappe.throw(
+						_("Attendance can only be marked for today or two days before the end of the current month.")
+					)
+			else:
+				frappe.throw(
+					_("Attendance can only be marked for today or two days before the end of the current month.")
+				)
 
 	def validate_duplicate_record(self):
 		duplicate = get_duplicate_attendance_record(self.desuup, self.attendance_date, self.name)
