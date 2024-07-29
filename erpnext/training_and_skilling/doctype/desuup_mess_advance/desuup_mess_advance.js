@@ -10,6 +10,15 @@ frappe.ui.form.on('Desuup Mess Advance', {
 				}
 			}
 		});
+		frm.set_query('training_management', function(doc) {
+			return {
+				filters: {
+					"company": frm.doc.company,
+					"status": "On Going",
+					"training_center": frm.doc.training_center,
+				}
+			}
+		});
 	},
 	
 	refresh: function(frm) {

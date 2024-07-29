@@ -49,12 +49,15 @@ class DesuupPayoutEntry(Document):
 					if item.days_in_month == item.total_days_present:
 						stipend = flt(monthly_stipend_amt - monthly_mess_amt)
 						adv_amt = flt(monthly_mess_amt)
+
+						item.stipend_amount = flt(stipend, 2)
+						item.mess_advance_used = flt(adv_amt, 2)	
 					else:
 						stipend = flt(monthly_stipend_amt - monthly_mess_amt)/flt(30)
 						adv_amt = flt(monthly_mess_amt)/flt(30)
 
-					item.stipend_amount = flt(stipend * total_days, 2)
-					item.mess_advance_used = flt(adv_amt * total_days, 2)
+						item.stipend_amount = flt(stipend * total_days, 2)
+						item.mess_advance_used = flt(adv_amt * total_days, 2)
 
 					item.refundable_amount = flt(item.mess_advance_amount, 2) - flt(item.mess_advance_used)
 

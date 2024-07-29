@@ -83,6 +83,8 @@ def mark_desuup_attendance(desuup_list, status, date, attendance_for, company=No
 	for desuup in desuup_list:
 
 		company = frappe.db.get_value("Desuup", desuup["desuup"], "Company", cache=True)
+		if not company:
+			frappe.throw("Please set Company for desuup {}".format(frappe.get_desk_link("Desuup", desuup["desuup"])))
 
 		attendance = frappe.get_doc(
 			dict(
