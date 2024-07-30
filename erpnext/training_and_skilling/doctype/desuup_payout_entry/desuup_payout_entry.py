@@ -74,7 +74,7 @@ class DesuupPayoutEntry(Document):
 						item.stipend_amount = flt(monthly_stipend_amt)/flt(30) * flt(total_days)
 						item.net_amount = flt(flt(item.stipend_amount) + flt(item.total_arrear_amount)) - flt(item.total_deduction_amount)
 					else:
-						item.stipend_amount = flt(monthly_stipend_amt) * flt(total_days)
+						item.stipend_amount = flt(monthly_stipend_amt)
 						item.net_amount = flt(flt(item.stipend_amount) + flt(item.total_arrear_amount)) - flt(item.total_deduction_amount)
 
 			elif item.reference_doctype == "Desuup Deployment Entry":
