@@ -13,6 +13,7 @@ class POSOpeningEntry(StatusUpdater):
 	def validate(self):
 		self.validate_pos_profile_and_cashier()
 		self.validate_payment_method_account()
+		self.validate_duplicate_opening_entry()
 		self.set_status()
 
 	def validate_pos_profile_and_cashier(self):
@@ -42,6 +43,12 @@ class POSOpeningEntry(StatusUpdater):
 			else:
 				msg = _("Please set default Cash or Bank account in Mode of Payments {}")
 			frappe.throw(msg.format(", ".join(invalid_modes)), title=_("Missing Account"))
+
+	def validate_duplicate_opening_entry(self):
+		for d in frappe.db.get_all("POS Opening Entry", {"user": self.user, "pos_profile": self.pos_profile, "posting_date": self.posting_date, "status": "Open", "docstatus":1, "name": ("!=", self.name)}):
+			frappe.throw(
+				_("POS Opening Entry already created for {}, cannot create again.").format(self.posting_date)
+			)
 
 	def on_submit(self):
 		self.set_status(update=True)
