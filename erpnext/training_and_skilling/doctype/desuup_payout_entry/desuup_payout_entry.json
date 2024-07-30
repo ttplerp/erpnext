@@ -30,6 +30,7 @@
   "get_desuups",
   "number_of_desuups",
   "items",
+  "total_net_amount",
   "additional_information_section",
   "bank_payment",
   "column_break_26",
@@ -212,12 +213,18 @@
    "label": "Payment Status",
    "no_copy": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "total_net_amount",
+   "fieldtype": "Currency",
+   "label": "Total Net Amount",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-19 15:00:36.618704",
+ "modified": "2024-07-30 11:44:29.631276",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Payout Entry",

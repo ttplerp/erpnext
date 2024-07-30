@@ -14,8 +14,15 @@ class DesuupPayoutEntry(Document):
 	def validate(self):
 		# self.validate_cost_center()
 		# self.set_month_dates()
+		self.calculate_total_net_amount()
 		self.calculate_amount()
 		self.validate_present_days()
+
+	def calculate_total_net_amount(self):
+		net_amount= 0
+		for amt in self.items:
+			net_amount += amt.net_amount
+		self.total_net_amount = net_amount
 
 	def validate_present_days(self):
 		for i in self.get("items"):

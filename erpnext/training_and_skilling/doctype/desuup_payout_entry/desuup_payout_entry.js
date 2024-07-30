@@ -78,18 +78,22 @@ frappe.ui.form.on('Desuup Payout Entry', {
 frappe.ui.form.on('Desuup Payout Item', {
     refresh: function(frm) {
         calculate_row_total(frm);
+		calculate_total_amount(frm);
     },
     // Trigger calculations when the row is added
     items_add: function(frm) {
         calculate_row_total(frm);
+		calculate_total_amount(frm);
     },
     // Recalculate totals when a row is removed from the items table
     items_remove: function(frm) {
         calculate_row_total(frm);
+		calculate_total_amount(frm);
     },
     // Recalculate totals when a row field is changed
     items_on_form_rendered: function(frm) {
         calculate_row_total(frm);
+        calculate_total_amount(frm);
     }
 });
 
@@ -100,6 +104,15 @@ function calculate_row_total(frm) {
     // Update the total_items_count field on the form
     frm.set_value('number_of_desuups', total_items_count);
     frm.refresh_field('number_of_desuups');
+}
+
+function calculate_total_amount(frm) {
+	let total_net_amount = 0
+	$.each(frm.doc['items'] || [], function(i, amt){
+		total_net_amount += amt.net_amount;
+	})
+	frm.set_value('total_net_amount', total_net_amount);
+	refresh_field('total_net_amount');
 }
 
 
