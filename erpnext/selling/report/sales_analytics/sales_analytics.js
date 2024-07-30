@@ -23,7 +23,7 @@ frappe.query_reports["Sales Analytics"] = {
 			label: __("Tree Type"),
 			fieldtype: "Select",
 			options: ["Customer Group", "Customer", "Item Group", "Item", "Territory", "Order Type", "Project"],
-			default: "Customer",
+			default: "Item",
 			reqd: 1,
 			on_change: function(query_report){
 				if  (query_report.get_filter_values("tree_type").tree_type == "Customer"){
@@ -56,7 +56,7 @@ frappe.query_reports["Sales Analytics"] = {
 				{ "value": "Value", "label": __("Value") },
 				{ "value": "Quantity", "label": __("Quantity") },
 			],
-			default: "Value",
+			default: "Quantity",
 			reqd: 1
 		},
 		{
@@ -78,7 +78,7 @@ frappe.query_reports["Sales Analytics"] = {
 			label: __("Company"),
 			fieldtype: "Link",
 			options: "Company",
-			default: frappe.defaults.get_user_default("Company"),
+			default: "De-suung Skilling",
 			reqd: 1
 		},
 		{
@@ -118,6 +118,12 @@ frappe.query_reports["Sales Analytics"] = {
 			fieldtype: "Select",
 			options: ["","International Customer","Company","Domestic Customer"],
 		},
+		{
+			"fieldname":"pos_profile",
+			"label": __("POS Profile"),
+			"fieldtype": "Link",
+			"options": "POS Profile"
+		}
 	],
 	get_datatable_options(options) {
 		return Object.assign(options, {

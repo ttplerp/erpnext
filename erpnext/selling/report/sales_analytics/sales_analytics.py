@@ -187,7 +187,7 @@ class Analytics(object):
 		# 	value_field = "base_net_total as value_field"
 		# else:
 		# 	value_field = "total_qty as value_field"
-		value_field = "base_net_total-total_normal_loss-total_abnormal_loss+total_excess_amount as value"
+		value_field = "base_net_total as value"
 		qty_field = "total_qty as qty"
 
 		if self.filters.tree_type == "Customer":
@@ -228,6 +228,10 @@ class Analytics(object):
 		# frappe.msgprint(str(self.entity_names))
 
 	def get_sales_transactions_based_on_items(self):
+		# frappe.throw(str(self.filters))
+		cond = ''
+		if self.filters.pos_profile:
+			cond = " and s.pos_profile='{}' ".format(self.filters["pos_profile"])
 
 		if self.filters["value_quantity"] == "Value":
 			value_field = "base_amount"
@@ -238,10 +242,10 @@ class Analytics(object):
 			"""
 			select i.item_code as entity, i.item_name as entity_name, i.stock_uom, i.{value_field} as value_field, s.{date_field}
 			from `tab{doctype} Item` i , `tab{doctype}` s
-			where s.name = i.parent and i.docstatus = 1 and s.company = %s
+			where s.name = i.parent and i.docstatus = 1 and s.company = %s {cond}
 			and s.{date_field} between %s and %s
 		""".format(
-				date_field=self.date_field, value_field=value_field, doctype=self.filters.doc_type
+				date_field=self.date_field, value_field=value_field, doctype=self.filters.doc_type, cond=cond
 			),
 			(self.filters.company, self.filters.from_date, self.filters.to_date),
 			as_dict=1,
