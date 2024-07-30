@@ -205,6 +205,10 @@ class DesuupPayoutEntry(Document):
 						OR %(start_date)s BETWEEN t1.training_start_date AND t1.training_end_date
 						OR %(end_date)s BETWEEN t1.training_start_date AND t1.training_end_date
 					)
+					AND (
+						t2.exit_date IS NULL 
+						OR t2.exit_date > %(start_date)s
+					)
 					AND t2.desuup_id NOT IN (
 						SELECT desuup
 						FROM `tabDesuup Payout Item` 
@@ -246,6 +250,10 @@ class DesuupPayoutEntry(Document):
 					OR %(start_date)s BETWEEN t1.start_date AND t1.end_date
 					OR %(end_date)s BETWEEN t1.start_date AND t1.end_date
 				)
+				AND (
+						t2.exit_date IS NULL 
+						OR t2.exit_date > %(start_date)s
+					)
 				AND t2.desuup NOT IN (
 					SELECT desuup
 					FROM `tabDesuup Payout Item` 
@@ -285,6 +293,10 @@ class DesuupPayoutEntry(Document):
 					OR t1.end_date BETWEEN %(start_date)s AND %(end_date)s
 					OR %(start_date)s BETWEEN t1.start_date AND t1.end_date
 					OR %(end_date)s BETWEEN t1.start_date AND t1.end_date
+				)
+				AND (
+					t2.exit_date IS NULL 
+					OR t2.exit_date > %(start_date)s
 				)
 				AND t2.desuup NOT IN (
 					SELECT desuup
