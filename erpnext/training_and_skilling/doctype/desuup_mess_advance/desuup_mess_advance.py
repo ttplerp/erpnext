@@ -122,6 +122,10 @@ class DesuupMessAdvance(Document):
 					OR %(from_date)s BETWEEN t1.training_start_date AND t1.training_end_date
 					OR %(to_date)s BETWEEN t1.training_start_date AND t1.training_end_date
 				)
+				AND (
+					t2.exit_date IS NULL 
+					OR t2.exit_date > %(from_date)s
+				)
 				AND t2.desuup_id NOT IN (
 					SELECT desuup
 					FROM `tabDesuup Mess Advance Item`
