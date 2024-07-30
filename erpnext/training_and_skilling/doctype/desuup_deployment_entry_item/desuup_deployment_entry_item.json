@@ -10,6 +10,7 @@
   "location",
   "column_break_2",
   "desuup_name",
+  "programme",
   "column_break_4",
   "deployment_pay_type",
   "amount",
@@ -111,12 +112,18 @@
    "label": "Location",
    "options": "Location",
    "reqd": 1
+  },
+  {
+   "fieldname": "programme",
+   "fieldtype": "Data",
+   "label": "Programme",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-07-25 19:03:34.411416",
+ "modified": "2024-07-30 12:01:08.380905",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Deployment Entry Item",
