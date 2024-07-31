@@ -224,6 +224,7 @@ def make_repair_and_services_invoice(source_name, target_doc=None):
                 row.maintain_stock = a.maintain_stock
                 row.description = a.description
                 row.issue_to_equipment = source.equipment
+        target.grand_total = source.total_amount
 
     doc = get_mapped_doc(
         "Repair And Services",
