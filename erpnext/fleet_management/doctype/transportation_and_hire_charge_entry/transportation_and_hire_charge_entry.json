@@ -17,6 +17,7 @@
   "items",
   "settle_imprest_advance_account",
   "imprest_party",
+  "narration",
   "section_break_xgioy",
   "deductions",
   "section_break_qwpgy",
@@ -179,12 +180,17 @@
    "options": "Transportation and Hire Charge Entry",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "narration",
+   "fieldtype": "Small Text",
+   "label": "Narration"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-01 15:46:10.173277",
+ "modified": "2024-08-01 16:35:03.638245",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Transportation and Hire Charge Entry",
