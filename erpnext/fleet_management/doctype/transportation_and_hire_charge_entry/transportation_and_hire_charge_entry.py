@@ -53,6 +53,13 @@ class TransportationandHireChargeEntry(Document):
 				
 		if successful > failed:
 			self.db_set("hire_charge_invoice_submitted", 1)
+
+
+	def get_invoice_type(self):
+		if self.entry_type == "Transportation Charge":
+			return "Transportation Charge Invoice"
+		elif self.entry_type == "Hire Charge":
+			return "Hire Charge Invoice"
 		
 	@frappe.whitelist()
 	def create_transportation_hire_charge_invoice(self):
@@ -61,20 +68,21 @@ class TransportationandHireChargeEntry(Document):
 		args = frappe._dict({
 			'posting_date': self.posting_date,
 		})
+		invoice_type = self.get_invoice_type()
 
 		failed = successful = 0
 		for a in self.items:
 			args.update({
 				"doctype": "Transportation and Hire Charge Invoice",
 				"transportation_and_hire_charge_entry": self.name,
-				"invoice_type": "Transportation Charge Invoice" if self.entry_type == "Transportation Charge" else "Hire Charge Invoice",
+				"invoice_type": invoice_type,
 				'branch': self.branch,
 				'cost_center': self.cost_center,
 				'party_type': a.party_type,
 				'party': a.party,
 				'tds_percent': a.tds_percent,
 				'tds_amount': a.tds_amount,
-				'tds_account': a.tds_account,
+				'tds_account': flt(a.tds_account, 2),
 				'grand_total': a.amount,
 				'equipment_type': a.equipment_type,
 				'equipment_no': a.equipment_no,
@@ -104,7 +112,6 @@ class TransportationandHireChargeEntry(Document):
 		if failed != 1:
 			self.hire_charge_invoice_created = 1
 			self.hire_charge_invoice_submitted = 1
-		self.save()
 		self.reload()
 	
 	@frappe.whitelist()
@@ -114,6 +121,7 @@ class TransportationandHireChargeEntry(Document):
 
 	@frappe.whitelist()
 	def post_to_account(self):
+		title = self.get_invoice_title()
 		total_payable_amount = 0
 		total_tds_amount = 0
 		accounts = []
@@ -197,7 +205,7 @@ class TransportationandHireChargeEntry(Document):
 			"doctype": "Journal Entry",
 			"voucher_type": "Journal Entry" if self.settle_imprest_advance_account == 1 else "Bank Entry",
 			"naming_series": "Journal Voucher" if self.settle_imprest_advance_account == 1 else "Bank Payment Voucher",
-			"title": "Hire Charge",
+			"title": title,
 			"user_remark": "Note: Transportation and Hire Charge Invoice Payment",
 			"posting_date": self.posting_date,
 			"company": self.company,
@@ -209,3 +217,10 @@ class TransportationandHireChargeEntry(Document):
 		})
 		je.insert()
 		frappe.msgprint(_('Journal Entry {0} posted to accounts').format(frappe.get_desk_link("Journal Entry", je.name)))
+
+
+	def get_invoice_title(self):
+		if self.entry_type == "Transportation Charge":
+			return "Transportation Charge"
+		elif self.entry_type == "Hire Charge":
+			return "Hire Charge"
