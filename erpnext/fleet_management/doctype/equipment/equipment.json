@@ -98,7 +98,6 @@
    "reqd": 1
   },
   {
-   "fetch_from": "asset_issue_details.equipment_type",
    "fieldname": "equipment_type",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -112,7 +111,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "asset_issue_details.model",
    "fetch_if_empty": 1,
    "fieldname": "equipment_model",
    "fieldtype": "Link",
@@ -363,7 +361,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-04-15 16:56:02.696751",
+ "modified": "2024-08-03 18:54:16.139361",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment",
