@@ -39,6 +39,11 @@ class POLIssue(StockController):
 			self.check_balance()
 		self.validate_data()
 		self.validate_posting_date_time()
+		self.validate_barrel_or_tanker()
+
+	def validate_barrel_or_tanker(self):
+		if not self.tanker or not self.issue_in_barrel:
+			frappe.throw("Please set Tanker or Barrel!")
 
 	def validate_data(self):
 		if not self.cost_center:
@@ -110,6 +115,7 @@ class POLIssue(StockController):
 		self.total_quantity = total_quantity
 
 	def on_submit(self):
+		self.validate_barrel_or_tanker()
 		if self.hired_equipment:
 			if self.receive_in_barrel == 0:
 				self.check_tanker_hsd_balance()
