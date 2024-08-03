@@ -204,9 +204,9 @@ class PaymentEntry(AccountsController):
                 outstanding_amount = frappe.db.get_value("Transportation and Hire Charge Invoice", a.reference_name, "outstanding_amount")
                 total_balance_amount = frappe.db.get_value("Transportation and Hire Charge Invoice", a.reference_name, "payable_amount")
                 if not cancel:
-                    outstanding_amount -= self.paid_amount
+                    outstanding_amount -= a.allocated_amount
                 else:
-                    outstanding_amount += self.paid_amount
+                    outstanding_amount += a.allocated_amount
                 if outstanding_amount == 0:
                     payment_status = "Paid"
                 elif flt(outstanding_amount, 2) < flt(total_balance_amount):

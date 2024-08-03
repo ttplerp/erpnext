@@ -7,6 +7,6 @@ def get_data():
 			"Journal Entry": "referece_doctype"
 		},
 		"transactions": [
-			{"label": _("Related Transaction"), "items": ["Journal Entry"]},
+			{"label": _("Related Transaction"), "items": ["Journal Entry", "Payment Entry"]},
 		],
 	}
