@@ -135,7 +135,7 @@ class Advance(Document):
                 "naming_series": naming_series,
                 "title": "Advance Paid to " + self.party,
                 "user_remark": self.remarks,
-                "posting_date": nowdate(),
+                "posting_date": self.advance_date,
                 "company": self.company,
                 "total_amount_in_words": money_in_words(self.advance_amount),
                 "accounts": accounts,
