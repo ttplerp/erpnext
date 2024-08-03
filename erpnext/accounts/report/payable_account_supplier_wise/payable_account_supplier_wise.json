@@ -1,0 +1,51 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2024-08-03 15:52:18.350759",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Vajra Builders Private Limited",
+ "modified": "2024-08-03 15:52:18.350759",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Payable Account Supplier Wise",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Account",
+ "report_name": "Payable Account Supplier Wise",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "Auditor"
+  },
+  {
+   "role": "Employee"
+  },
+  {
+   "role": "HR User"
+  },
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Purchase User"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Accounts Master"
+  },
+  {
+   "role": "System Manager"
+  }
+ ]
+}
