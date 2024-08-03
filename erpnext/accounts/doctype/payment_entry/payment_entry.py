@@ -764,13 +764,21 @@ class PaymentEntry(AccountsController):
 				)
 			]
 		else:
+			if self.party_type == "Supplier":
+				party_name = frappe.db.get_value(self.party_type, self.party, "supplier_name")
+			elif self.party_type == "Customer":
+				party_name = frappe.db.get_value(self.party_type, self.party, "customer_name")
+			elif self.party_type =="Employee":
+				party_name = frappe.db.get_value(self.party_type, self.party, "employee_name")
+			else:
+				party_name = self.party
 
 			remarks = [
 				_("Amount {0} {1} {2} {3}").format(
 					self.party_account_currency,
 					self.paid_amount if self.payment_type == "Receive" else self.received_amount,
 					_("received from") if self.payment_type == "Receive" else _("to"),
-					self.party,
+					party_name,
 				)
 			]
 
@@ -782,11 +790,20 @@ class PaymentEntry(AccountsController):
 		if self.payment_type in ["Receive", "Pay"]:
 			for d in self.get("references"):
 				if d.allocated_amount:
-					remarks.append(
-						_("Amount {0} {1} against {2} {3}").format(
-							self.party_account_currency, d.allocated_amount, d.reference_doctype, d.reference_name
+					if d.reference_doctype == "Purchase Invoice":
+						#[Supplier invoice date]/ [Supplier Invoice no]/ [Amount]
+						doc = frappe.get_doc(d.reference_doctype, d.reference_name)
+						remarks.append(
+							_(" {0} / {1} / {2} {3}").format(
+								doc.posting_date, d.bill_no, self.paid_from_account_currency, d.allocated_amount
+							)
 						)
-					)
+					else:
+						remarks.append(
+							_("Amount {0} {1} against {2} {3}").format(
+								self.party_account_currency, d.allocated_amount, d.reference_doctype, d.reference_name
+							)
+						)
 
 		for d in self.get("deductions"):
 			if d.amount:
