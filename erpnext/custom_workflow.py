@@ -431,7 +431,7 @@ class CustomWorkflow:
             else:
                 self.advance_supervisor = frappe.db.get_value("Employee", {"user_id": frappe.db.get_value("Employee", self.doc.employee, "expense_approver")}, self.field_list)
 
-                if not self.advance_supervisor:
+                if not self.advance_supervisor or self.advance_supervisor[0] == None:
                     frappe.throw("Please set expense approver for employee <strong>{}</strong>".format(self.doc.employee))
             
             # Approver for Employee Advance
@@ -2516,10 +2516,13 @@ class CustomWorkflow:
                 )
 
     def employee_advance(self):
-        if self.new_state.lower() in ("Waiting Supervisor Approval".lower(),):
+        if self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
             if self.doc.owner != frappe.session.user and self.new_state.lower() != self.old_state.lower():
                 frappe.throw("Only {} can Apply this request".format(self.doc.owner))
             self.set_approver("Supervisor")
+
+        # elif self.old_state.lower() in ("Waiting Supervisor Approval".lower()):
+        #     self.set_approver("Supervisor")
 
         elif self.new_state.lower() == "Waiting Approval".lower():
             if self.old_state.lower() != "Draft".lower():
@@ -2807,6 +2810,10 @@ class CustomWorkflow:
             "Waiting Supervisor Approval".lower(),
         ):
             self.set_approver("Supervisor")
+
+        elif self.old_state.lower() in ("Waiting Supervisor approval".lower()):
+            self.set_approver("Supervisor")
+
         elif self.new_state.lower() == "Approved".lower():
             if self.doc.approver != frappe.session.user and "HR User" not in frappe.get_roles(
                 frappe.session.user
@@ -2876,7 +2883,7 @@ class CustomWorkflow:
                 self.doc.workflow_state = "Waiting HR Approval"
                 self.set_approver("HRGM")
             
-            elif self.doc.item_group in ("Personal Protective Equipment's", "Mess","First Aid Kit"):
+            elif self.doc.item_group in ("Personal Protective Equipment's", "Mess","First Aid Kit", "Mess (Staff Welfare)"):
                 self.doc.workflow_state = "Waiting QHSE Approval"
                 if self.doc.item_group == "Personal Protective Equipment's":
                     self.set_approver("PPE Approver")
@@ -2885,6 +2892,27 @@ class CustomWorkflow:
             else:
                 self.doc.workflow_state = "Waiting Central Store approval"
                 self.set_approver("MR Manager")
+
+        elif self.old_state.lower() in ("Waiting QHSE Approval".lower()):
+            if self.doc.item_group == "Personal Protective Equipment's":
+                self.set_approver("PPE Approver")
+            else:
+                self.set_approver("QHSE")
+
+        elif self.old_state.lower() in ("Waiting Central Store approval".lower()):
+            if self.doc.item_group == "Fixed Assets":
+                self.set_approver("HRGM")
+            
+            elif self.doc.item_group in ("Personal Protective Equipment's", "Mess","First Aid Kit", "Mess (Staff Welfare)"):
+                if self.doc.item_group == "Personal Protective Equipment's":
+                    self.set_approver("PPE Approver")
+                else:
+                    self.set_approver("QHSE")
+            else:
+                self.set_approver("MR Manager")
+
+        elif self.old_state.lower() in ("Waiting Mechanical Central Store Approval".lower()):
+            self.set_approver("Mechanical Manager")
 
         elif self.new_state.lower() in ("Waiting QHSE GM Approval".lower()):
             if self.doc.approver != frappe.session.user:
@@ -2915,6 +2943,7 @@ class CustomWorkflow:
                 frappe.throw(
                     "Only the {} can Reject this material request".format(self.doc.approver)
                 )
+
 
     def festival_advance(self):
         """Leave Encashment Workflow
