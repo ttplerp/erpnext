@@ -126,11 +126,15 @@ class RequestforQuotation(BuyingController):
 		update_password_link, contact = "", ""
 
 		if frappe.db.exists("User", rfq_supplier.email_id):
-			user = frappe.get_doc("User", rfq_supplier.email_id)
-		else:
-			user, update_password_link = self.create_user(rfq_supplier, link)
+			email=supplier.email_id
+			frappe.db.sql("""delete from `tabUser` 
+				where name='{email}'
+				""".format(email=email))
+			# user = frappe.get_doc("User", rfq_supplier.email_id)
+		# else:
+		# 	user, update_password_link = self.create_user(rfq_supplier, link)
 
-		contact = self.link_supplier_contact(rfq_supplier, user)
+		# contact = self.link_supplier_contact(rfq_supplier, user)
 
 		return update_password_link, contact
 
