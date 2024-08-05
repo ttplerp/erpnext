@@ -25,6 +25,19 @@ frappe.ui.form.on('Fleet Engagement', {
 });
 
 frappe.ui.form.on('Fleet Engagement Item', {
+	equipment: function(frm, cdt, cdn){
+		var item = locals[cdt][cdn];
+		frappe.call({
+			method: "get_operator",
+			doc: frm.doc,
+			args: {"equipment": item.equipment},
+			callback: function(r){
+				if(r.message){
+					frappe.model.set_value(cdt, cdn, "operator", r.message);
+				}
+			}
+		})
+	},
 	initial_km:function(frm,cdt,cdn){
 		calculate_total_km(frm,cdt,cdn)
 	},
@@ -78,5 +91,14 @@ var calculate_total_time = function(frm, cdt, cdn){
 	if ( item.end_time &&  item.start_time){
 		item.total_hours = frappe.datetime.get_hour_diff( item.end_time, item.start_time)
 		frm.refresh_field("items")
+	}
+}
+cur_frm.fields_dict['items'].grid.get_field('operator').get_query = function(doc, cdt, cdn) {
+	var item = locals[cdt][cdn];
+	return {
+		query: "erpnext.controllers.queries.filter_operator",
+		filters: {
+			'equipment': item.equipment,
+		}
 	}
 }

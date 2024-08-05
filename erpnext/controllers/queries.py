@@ -858,3 +858,11 @@ def filter_cost_center_warehouse(doctype, txt, searchfield, start, page_len, fil
 		return frappe.db.sql("""
 		select a.name from `tabWarehouse` a, `tabWarehouse Branch` b where a.name = b.parent and b.branch = '{}'
 		""".format(branch))
+
+#filtering operator based on equipment
+@frappe.whitelist()
+def filter_operator(doctype, txt, searchfield, start, page_len, filters):
+		# frappe.throw("here")
+		return frappe.db.sql("""
+		select a.operator from `tabEquipment Operator` a where a.parent = '{}'
+		""".format(filters.get('equipment')))

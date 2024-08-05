@@ -35,6 +35,15 @@ class FleetEngagement(Document):
 				if item.end_time and item.start_time:
 					item.total_hours = time_diff_in_hours( item.end_time, item.start_time)
 					
+	@frappe.whitelist()
+	def get_operator(self, equipment):
+		operator = ""
+		operators = frappe.db.sql("""
+                            select operator from `tabEquipment Operator` where parent = '{}'
+                            """.format(equipment),as_dict = 1)
+		if len(operators) > 0:
+			operator = operators[0].operator
+		return operator
 		
 def get_permission_query_conditions(user):
 	if not user: user = frappe.session.user
