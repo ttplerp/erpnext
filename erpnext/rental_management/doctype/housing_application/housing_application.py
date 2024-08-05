@@ -58,10 +58,10 @@ class HousingApplication(Document):
    
 	def check_app_limit(self):
 		limit = frappe.db.sql('''
-						select name from `tabHousing Application` where work_station="Thimphu" and employment_type="Corporation, Private and etc"
-						and application_status="Pending"
+                        select name from `tabHousing Application` where work_station="Thimphu" and employment_type="Corporation, Private and etc"
+                        and application_status="Pending"
 
-						''')
+                        ''')
 		if self.is_new() and len(limit) > 29:
 			frappe.throw("The number of applications has reached the limit of 30 for now.")
 
@@ -79,7 +79,7 @@ class HousingApplication(Document):
 			frappe.throw("Private applicants of gross houshold income below Nu.16,000 is accepted for now")
 
 	def update_ranks(self):
-	# Fetch the applicant list filtered by application_status, building_classification, and work_station, sorted by application_date_time
+    # Fetch the applicant list filtered by application_status, building_classification, and work_station, sorted by application_date_time
 		applicant_list = frappe.get_all(
 			"Housing Application",
 			filters={
@@ -120,12 +120,12 @@ class HousingApplication(Document):
 		#citizenship Detail
 		data=get_cid_detail(cid=self.cid)
 		if data:
-			if data2['firstName'] and data2['middleName'] and data2['lastName']:
-				self.spouse_name = data2['firstName'] + " " + data2['middleName'] + " " + data2['lastName']
-			elif data2['firstName'] and data2['lastName']:
-				self.spouse_name = data2['firstName'] + " " + data2['lastName']
-			elif data2['firstName']:
-				self.spouse_name = data2['firstName']
+			if data['firstName'] and data['middleName'] and data['lastName']:
+				self.applicant_name = data['firstName'] + " " + data['middleName'] + " " + data['lastName']
+			elif data['firstName'] and data['lastName']:
+				self.applicant_name = data['firstName'] + " " + data['lastName']
+			elif data['firstName']:
+				self.applicant_name = data['firstName']
 			self.gender = "Male" if data['gender'] == "M" else "Female"
 			self.dzongkhag = data['dzongkhagName']
 			self.gewog = data['gewogName']
