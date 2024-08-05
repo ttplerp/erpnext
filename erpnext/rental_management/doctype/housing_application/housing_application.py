@@ -125,6 +125,7 @@ class HousingApplication(Document):
 			elif data2['firstName'] and data2['lastName']:
 				self.spouse_name = data2['firstName'] + " " + data2['lastName']
 			elif data2['firstName']:
+				self.spouse_name = data2['firstName']
 			self.gender = "Male" if data['gender'] == "M" else "Female"
 			self.dzongkhag = data['dzongkhagName']
 			self.gewog = data['gewogName']
