@@ -156,6 +156,7 @@
    "options": "fa fa-table"
   },
   {
+   "allow_bulk_edit": 1,
    "fieldname": "accounts",
    "fieldtype": "Table",
    "label": "Accounting Entries",
@@ -615,7 +616,7 @@
    "link_fieldname": "journal_entry"
   }
  ],
- "modified": "2023-05-24 10:45:05.500235",
+ "modified": "2024-07-17 11:47:10.475536",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",

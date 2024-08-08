@@ -7,6 +7,91 @@ from frappe.utils import cint, flt, get_bench_path, get_datetime
 class BankAPI:
     pass
 
+def generate_payload(doctype=None, doc_name=None):
+    if not doctype and not doc_name:
+        return
+    doc = frappe.get_doc("API Detail","MULTI LEDGER")
+    end_point=doc.api_link
+    serialnumber = 1
+    for a in frappe.db.sql("""
+                        select *from `tabGL Entry`
+                        where voucher_type="{0}"
+                        and voucher_no="{1}"
+                """.format(voucher_type, voucher_no), as_dict=True):
+        payload="""
+                <PartTrnRec>
+                <AcctId>
+                <AcctId>{acctid}</AcctId>
+                </AcctId>
+                <CreditDebitFlg>{creditdebit}</CreditDebitFlg>
+                <TrnAmt>
+                <amountValue>{amount}</amountValue>
+                <currencyCode>BTN</currencyCode>
+                </TrnAmt>
+                <TrnParticulars>{trnparticular}</TrnParticulars>
+                <PartTrnRmks>{trnrmks}</PartTrnRmks>
+                <ValueDt>{valuedate}</ValueDt>
+                <SerialNum>{serialnumber}</SerialNum>
+            """.format(acctid, creditdebit,amount,trnparticular,trnrmks,valuedate,serialnumber)
+        serialnumber += 1
+
+def generate_footer(doctype=None, doc_name=None):
+    return """
+            </XferTrnDetail>
+            </XferTrnAddRq>
+            </XferTrnAddRequest>
+            </Body>
+            </FIXML
+        """
+
+def generate_header(doctype=None, doc_name=None):
+    return """
+            <FIXML xmlns="http://www.finacle.com/fixml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.finacle.com/fixml XferTrnAdd.xsd">
+            <Header>
+            <RequestHeader>
+            <MessageKey>
+            <RequestUUID>{uuid}</RequestUUID>
+            <ServiceRequestId>XferTrnAdd</ServiceRequestId>
+            <ServiceRequestVersion>10.2</ServiceRequestVersion>
+            <ChannelId>COR</ChannelId>
+            <LanguageId/>
+            </MessageKey>
+            <RequestMessageInfo>
+            <BankId>{bankid}</BankId>
+            <TimeZone/>
+            <EntityId/>
+            <EntityType/>
+            <ArmCorrelationId/>
+            <MessageDateTime>{msgdatetime}</MessageDateTime>
+            </RequestMessageInfo>
+            <Security>
+            <Token>
+            <PasswordToken>
+            <UserId/>
+            <Password/>
+            </PasswordToken>
+            </Token>
+            <FICertToken/>
+            <RealUserLoginSessionId/>
+            <RealUser/>
+            <RealUserPwd/>
+            <SSOTransferToken/>
+            </Security>
+            </RequestHeader>
+            </Header>
+            <Body>
+            <XferTrnAddRequest>
+            <XferTrnAddRq>
+            <XferTrnHdr>
+            <TrnType>T</TrnType>
+            <TrnSubType>CI</TrnSubType>
+            </XferTrnHdr>
+            <XferTrnDetail>
+        """.format(uuid="161945234234", bankid="01", msgdatetime="2021-03-13T11:15:08.528")
+
+
+
+
 @frappe.whitelist()
 def encrypt_credential(api):
     doc = frappe.get_doc("API Detail", str(api))

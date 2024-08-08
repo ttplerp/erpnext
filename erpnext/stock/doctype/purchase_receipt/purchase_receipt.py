@@ -321,7 +321,7 @@ class PurchaseReceipt(BuyingController):
 		if erpnext.is_perpetual_inventory_enabled(self.company):
 			stock_rbnb = self.get_company_default("stock_received_but_not_billed")
 			landed_cost_entries = get_item_account_wise_additional_cost(self.name)
-			expenses_included_in_valuation = self.get_company_default("expenses_included_in_valuation")
+			expenses_included_in_valuation = self.get_company_default("expenses_included_in_valuation", True)
 
 		warehouse_with_no_account = []
 		stock_items = self.get_stock_items()
@@ -591,7 +591,7 @@ class PurchaseReceipt(BuyingController):
 	def make_tax_gl_entries(self, gl_entries):
 
 		if erpnext.is_perpetual_inventory_enabled(self.company):
-			expenses_included_in_valuation = self.get_company_default("expenses_included_in_valuation")
+			expenses_included_in_valuation = self.get_company_default("expenses_included_in_valuation", True)
 
 		negative_expense_to_be_booked = sum([flt(d.item_tax_amount) for d in self.get("items")])
 		# Cost center-wise amount breakup for other charges included for valuation

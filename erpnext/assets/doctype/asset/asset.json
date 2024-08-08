@@ -2,7 +2,7 @@
  "actions": [],
  "allow_import": 1,
  "allow_rename": 1,
- "autoname": "SMCL.-.{abbr}.-.YY.-.####",
+ "autoname": "BDBL.-.{abbr}.-.YY.-.####",
  "creation": "2022-01-18 02:26:55.975005",
  "doctype": "DocType",
  "document_type": "Document",
@@ -710,7 +710,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2024-02-29 11:29:38.847841",
+ "modified": "2024-07-02 15:31:01.692404",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",

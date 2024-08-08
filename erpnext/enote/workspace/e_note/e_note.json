@@ -196,7 +196,7 @@
   {
    "dependencies": "",
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "eNote Report",
    "link_count": 0,
    "link_to": "eNote",
@@ -205,8 +205,8 @@
    "type": "Link"
   }
  ],
- "modified": "2024-05-13 16:11:03.711888",
- "modified_by": "Administrator",
+ "modified": "2024-06-25 14:55:05.312236",
+ "modified_by": "pralad.rai@thimphutechpark.bt",
  "module": "eNote",
  "name": "e-Note",
  "number_cards": [],

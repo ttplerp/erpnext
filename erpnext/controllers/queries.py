@@ -44,6 +44,29 @@ def employee_query(doctype, txt, searchfield, start, page_len, filters):
 		),
 		{"txt": "%%%s%%" % txt, "_txt": txt.replace("%", ""), "start": start, "page_len": page_len},
 	)
+#filtering family members based on sws membership
+@frappe.whitelist()
+def filter_sws_member_item(doctype, txt, searchfield, start, page_len, filters):
+	# frappe.throw("here")
+	data = []
+	if not filters.get("employee"):
+		frappe.throw("Please select employee first.")
+	return frappe.db.sql("""
+	select a.name as name, a.full_name as full_name from `tabSWS Membership Item` a, `tabSWS Membership` b where a.parent = b.name
+	and b.employee = '{0}' and a.status != 'Claimed' and b.docstatus = 1
+	""".format(filters.get("employee")))
+
+#filtering nominee list based on the loggged in supervisor
+@frappe.whitelist()
+def filter_nominee(doctype, txt, searchfield, start, page_len, filters):
+		# frappe.throw("here")
+		data = []
+		eid = frappe.db.sql("""
+		select name from `tabEmployee` where user_id = '{0}'
+		""".format(filters.get("reports_to")), as_dict=True)
+		return frappe.db.sql("""
+		select name, employee_name from `tabEmployee` where reports_to = '{0}'
+			""".format(eid[0].name))
 
 
 # searches for leads which are not converted

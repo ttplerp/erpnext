@@ -269,7 +269,8 @@ class SalesInvoice(SellingController):
 			update_serial_nos_after_submit(self, "items")
 
 		# this sequence because outstanding may get -ve
-		self.make_gl_entries()
+		self.nhdcl
+		tries()
 
 		if self.update_stock == 1:
 			self.repost_future_sle_and_gle()

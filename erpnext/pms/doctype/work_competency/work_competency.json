@@ -1,0 +1,179 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2021-03-05 12:06:49.177664",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "competency_details_section",
+  "competency",
+  "group",
+  "column_break_2",
+  "weightage",
+  "naming_series",
+  "is_parent",
+  "column_break_4",
+  "description",
+  "sub_competency_section",
+  "sub_competency",
+  "auto_divide_weightage",
+  "section_break_4",
+  "apply_to_all",
+  "employee_category_item"
+ ],
+ "fields": [
+  {
+   "fieldname": "competency",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Competency",
+   "reqd": 1
+  },
+  {
+   "default": "20",
+   "fieldname": "weightage",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Weightage(%)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "employee_category_item",
+   "fieldtype": "Table",
+   "label": "Employee Category Item",
+   "options": "Work Competency Item"
+  },
+  {
+   "fieldname": "section_break_4",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Applicable Employee Category"
+  },
+  {
+   "default": "0",
+   "fieldname": "apply_to_all",
+   "fieldtype": "Check",
+   "label": "Apply to all"
+  },
+  {
+   "fieldname": "sub_competency_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Sub Competency"
+  },
+  {
+   "fieldname": "sub_competency",
+   "fieldtype": "Table",
+   "label": "Sub Competency",
+   "options": "Sub Competency"
+  },
+  {
+   "default": "0",
+   "fieldname": "auto_divide_weightage",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Auto Divide Weightage"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_parent",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Is Parent"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "competency_details_section",
+   "fieldtype": "Section Break",
+   "label": "Competency Details"
+  },
+  {
+   "fieldname": "group",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Group",
+   "options": "PMS Group"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Form",
+   "options": "\nForm II\nForm III",
+   "reqd": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text",
+   "label": "Description "
+  }
+ ],
+ "links": [],
+ "modified": "2024-07-11 16:09:08.673703",
+ "modified_by": "Administrator",
+ "module": "PMS",
+ "name": "Work Competency",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

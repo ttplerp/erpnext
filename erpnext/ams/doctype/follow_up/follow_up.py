@@ -74,7 +74,8 @@ class FollowUp(Document):
 					else:
 						eaci.db_set("status", 'Open')
 						cl.db_set("status", 'Follow Up')
-				
+	
+	@frappe.whitelist()		
 	def notify_audit_and_auditee(self):
 		now_date = nowdate()
 		query = """
@@ -146,6 +147,7 @@ class FollowUp(Document):
 			if data:
 				sendmail(recipent,subject,msg)
 
+	@frappe.whitelist()		
 	def get_observations(self):
 		data = frappe.db.sql("""
 			SELECT 
@@ -172,7 +174,7 @@ class FollowUp(Document):
 			row = self.append('audit_observations',{})
 			row.update(d)
 
-
+	@frappe.whitelist()		
 	def get_direct_accountability(self):
 		old_doc = frappe.get_doc("Execute Audit", self.execute_audit_no)
 		self.set('direct_accountability', [])

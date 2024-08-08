@@ -17,6 +17,7 @@
   "company",
   "letter_head",
   "holiday_list",
+  "is_hq_branch",
   "sb_accounts_settings",
   "expense_bank_account",
   "column_break_11",
@@ -114,12 +115,18 @@
    "fieldname": "branch_bank_account",
    "fieldtype": "Table",
    "options": "Branch Bank Account"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_hq_branch",
+   "fieldtype": "Check",
+   "label": "Is HQ Branch"
   }
  ],
  "icon": "fa fa-code-fork",
  "idx": 1,
  "links": [],
- "modified": "2024-05-28 10:08:00.782510",
+ "modified": "2024-06-24 15:48:07.306675",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Branch",

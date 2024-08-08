@@ -11,7 +11,7 @@ frappe.ui.form.on('Audit Engagement Letter', {
 	},
 
 	onload_post_render: function(frm) {	
-		if(frm.doc.docstatus == 0 && frm.doc.workflow_state == 'Draft'){
+		if(frm.doc.docstatus == 0){
 			frm.toggle_display("get_audit_team",1);
 		} else {
 			frm.toggle_display("get_audit_team",0);

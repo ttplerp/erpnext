@@ -1,0 +1,68 @@
+{
+ "actions": [],
+ "creation": "2023-11-07 14:12:45.410964",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "case_status",
+  "date",
+  "column_break_3",
+  "case_description",
+  "attachment",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "case_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Case Status",
+   "options": "\nOn-Going,\nTimeline/Judgement\nTimeline\nEnforcement filed\nSeizure\nSeizure executed\nAuction\nArrest\nAppeal\nInjunction order"
+  },
+  {
+   "fieldname": "case_description",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Case Description"
+  },
+  {
+   "default": "Today",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "fieldname": "attachment",
+   "fieldtype": "Attach",
+   "label": "attachment"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Court Status",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2024-07-04 14:33:21.992073",
+ "modified_by": "Administrator",
+ "module": "CCTS",
+ "name": "Court Status",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

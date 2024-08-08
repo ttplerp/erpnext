@@ -393,3 +393,14 @@ def has_record_permission(doc, user):
 	else:
 		return False 
 
+#filtering child doctypes of doctype
+@frappe.whitelist()
+def filter_child_doctypes(doctype, txt, searchfield, start, page_len, filters):
+	# frappe.throw("here")
+	data = []
+	if not filters.get("parent"):
+		frappe.throw("Please select Document Type first.")
+	
+	return frappe.db.sql("""
+	SELECT distinct options FROM `tabDocField` WHERE fieldtype = 'Table' AND parent = '{}';
+	""".format(filters.get("parent")[0]))

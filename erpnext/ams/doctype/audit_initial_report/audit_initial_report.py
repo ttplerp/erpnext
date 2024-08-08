@@ -8,8 +8,9 @@ from erpnext.custom_workflow import validate_workflow_states, notify_workflow_st
 
 class AuditInitialReport(Document):
 	def validate(self):
-		validate_workflow_states(self)
-		notify_workflow_states(self)
+		pass
+		# validate_workflow_states(self)
+		# notify_workflow_states(self)
 
 	def on_submit(self):
 		self.update_audit_status()
@@ -56,6 +57,7 @@ class AuditInitialReport(Document):
 					eaci.db_set("audit_remarks",'')
 					eaci.db_set("auditee_remarks",'')
 
+	@frappe.whitelist()
 	def get_audit_checklist(self):
 		data = frappe.db.sql("""
 			SELECT 

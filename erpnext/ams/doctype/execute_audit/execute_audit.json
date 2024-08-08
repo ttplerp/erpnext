@@ -8,273 +8,273 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-    "plan_details_section",
-    "branch",
-    "prepare_audit_plan_no",
-    "supervisor_id",
-    "supervisor_email",
-    "column_break_23",
-    "type",
-    "reference_date",
-    "supervisor_name",
-    "from_date",
-    "column_break_24",
-    "posting_date",
-    "status",
-    "supervisor_designation",
-    "to_date",
-    "section_break_15",
-    "scope_of_audit",
-    "objective_of_audit",
-    "section_break_14",
-    "get_audit_team",
-    "audit_team",
-    "audit_area_checklist_section",
-    "get_checklist",
-    "audit_checklist",
-    "direct_accountability_details",
-    "get_observation",
-    "direct_accountability",
-    "reference_no_section",
-    "audit_engagement_letter",
-    "column_break_27",
-    "workflow_state",
-    "workflow_status",
-    "amended_from"
-   ],
-   "fields": [
-    {
-     "fetch_from": "reference_no.type",
-     "fieldname": "type",
-     "fieldtype": "Data",
-     "label": "Type",
-     "read_only": 1,
-     "reqd": 1
-    },
-    {
-     "fetch_from": "prepare_audit_plan_no.creation_date",
-     "fieldname": "reference_date",
-     "fieldtype": "Date",
-     "label": "Prepare Audit Plan Date",
-     "read_only": 1
-    },
-    {
-     "default": "Today",
-     "fieldname": "posting_date",
-     "fieldtype": "Date",
-     "label": "Posting Date",
-     "read_only": 1
-    },
-    {
-     "fetch_from": "reference_no.from_date",
-     "fieldname": "from_date",
-     "fieldtype": "Date",
-     "in_list_view": 1,
-     "label": "From Date",
-     "read_only": 1,
-     "reqd": 1
-    },
-    {
-     "fetch_from": "reference_no.scope_of_audit",
-     "fieldname": "scope_of_audit",
-     "fieldtype": "Small Text",
-     "hidden": 1,
-     "label": "Scope of the Audit"
-    },
-    {
-     "fetch_from": "reference_no.to_date",
-     "fieldname": "to_date",
-     "fieldtype": "Date",
-     "in_list_view": 1,
-     "label": "To Date",
-     "read_only": 1,
-     "reqd": 1
-    },
-    {
-     "fieldname": "section_break_15",
-     "fieldtype": "Section Break",
-     "hidden": 1
-    },
-    {
-     "fetch_from": "reference_no.objective_of_audit",
-     "fieldname": "objective_of_audit",
-     "fieldtype": "Small Text",
-     "hidden": 1,
-     "label": "Objective of the Audit",
-     "length": 500,
-     "width": "150"
-    },
-    {
-     "fieldname": "section_break_14",
-     "fieldtype": "Section Break",
-     "label": "Audit Team"
-    },
-    {
-     "fieldname": "get_audit_team",
-     "fieldtype": "Button",
-     "label": "Get Audit Team"
-    },
-    {
-     "fieldname": "audit_team",
-     "fieldtype": "Table",
-     "label": "Audit Team",
-     "options": "Execute Audit Team Item",
-     "read_only": 1,
-     "reqd": 1
-    },
-    {
-     "fieldname": "amended_from",
-     "fieldtype": "Link",
-     "label": "Amended From",
-     "no_copy": 1,
-     "options": "Execute Audit",
-     "print_hide": 1,
-     "read_only": 1
-    },
-    {
-     "fieldname": "audit_area_checklist_section",
-     "fieldtype": "Section Break",
-     "label": "Audit Area (Checklist)"
-    },
-    {
-     "fieldname": "audit_checklist",
-     "fieldtype": "Table",
-     "label": "Audit Checklist",
-     "options": "Execute Audit Checklist Item",
-     "reqd": 1
-    },
-    {
-     "fieldname": "get_checklist",
-     "fieldtype": "Button",
-     "label": "Get Checklist"
-    },
-    {
-     "collapsible": 1,
-     "fieldname": "reference_no_section",
-     "fieldtype": "Section Break",
-     "label": "Reference Details"
-    },
-    {
-     "fetch_from": "reference_no.audit_engagement_letter",
-     "fieldname": "audit_engagement_letter",
-     "fieldtype": "Link",
-     "label": "Audit Engagement Letter",
-     "options": "Audit Engagement Letter",
-     "read_only": 1
-    },
-    {
-     "fieldname": "column_break_24",
-     "fieldtype": "Column Break"
-    },
-    {
-     "fieldname": "column_break_23",
-     "fieldtype": "Column Break"
-    },
-    {
-     "fieldname": "branch",
-     "fieldtype": "Link",
-     "in_list_view": 1,
-     "label": "Auditee Branch",
-     "options": "Branch",
-     "read_only": 1,
-     "reqd": 1
-    },
-    {
-     "fetch_from": "reference_no.supervisor_id",
-     "fieldname": "supervisor_id",
-     "fieldtype": "Link",
-     "label": "Supervisor ID",
-     "options": "Employee",
-     "read_only": 1,
-     "reqd": 1
-    },
-    {
-     "fetch_from": "supervisor_id.employee_name",
-     "fieldname": "supervisor_name",
-     "fieldtype": "Data",
-     "label": "Supervisor Name",
-     "read_only": 1
-    },
-    {
-     "fetch_from": "supervisor_id.designation",
-     "fieldname": "supervisor_designation",
-     "fieldtype": "Data",
-     "label": "Supervisor Designation",
-     "read_only": 1
-    },
-    {
-     "fieldname": "plan_details_section",
-     "fieldtype": "Section Break",
-     "label": "Audit Plan Details"
-    },
-    {
-     "fieldname": "column_break_27",
-     "fieldtype": "Column Break"
-    },
-    {
-     "fieldname": "direct_accountability_details",
-     "fieldtype": "Section Break",
-     "label": "Direct Accountability (If Any)"
-    },
-    {
-     "fieldname": "direct_accountability",
-     "fieldtype": "Table",
-     "options": "Direct Accountability Item"
-    },
-    {
-     "fieldname": "prepare_audit_plan_no",
-     "fieldtype": "Link",
-     "label": "Prepare Audit Plan No.",
-     "options": "Prepare Audit Plan",
-     "read_only": 1,
-     "reqd": 1
-    },
-    {
-     "fetch_from": "supervisor_id.user_id",
-     "fieldname": "supervisor_email",
-     "fieldtype": "Data",
-     "label": "Supervisor Email",
-     "read_only": 1
-    },
-    {
-     "allow_on_submit": 1,
-     "default": "Pending",
-     "fieldname": "status",
-     "fieldtype": "Select",
-     "in_list_view": 1,
-     "label": "Execute Audit Status",
-     "options": "\nPending\nExit Meeting\nInitial Report\nFollow Up\nClosed",
-     "read_only": 1,
-     "reqd": 1
-    },
-    {
-     "allow_on_submit": 1,
-     "fieldname": "workflow_state",
-     "fieldtype": "Link",
-     "hidden": 1,
-     "label": "Workflow State",
-     "options": "Workflow State"
-    },
-    {
-     "fieldname": "get_observation",
-     "fieldtype": "Button",
-     "label": "Get Observation"
-    },
-    {
-     "default": "Open",
-     "fieldname": "workflow_status",
-     "fieldtype": "Select",
-     "hidden": 1,
-     "label": "Workflow Status",
-     "no_copy": 1,
-     "options": "Open\nAssigned\nRejected\nCancelled",
-     "read_only": 1
-    }
-   ],
+  "plan_details_section",
+  "branch",
+  "prepare_audit_plan_no",
+  "supervisor_id",
+  "supervisor_email",
+  "column_break_23",
+  "type",
+  "reference_date",
+  "supervisor_name",
+  "from_date",
+  "column_break_24",
+  "posting_date",
+  "status",
+  "supervisor_designation",
+  "to_date",
+  "section_break_15",
+  "scope_of_audit",
+  "objective_of_audit",
+  "section_break_14",
+  "get_audit_team",
+  "audit_team",
+  "audit_area_checklist_section",
+  "get_checklist",
+  "audit_checklist",
+  "direct_accountability_details",
+  "get_observation",
+  "direct_accountability",
+  "reference_no_section",
+  "audit_engagement_letter",
+  "column_break_27",
+  "workflow_state",
+  "workflow_status",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fetch_from": "reference_no.type",
+   "fieldname": "type",
+   "fieldtype": "Data",
+   "label": "Type",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fetch_from": "prepare_audit_plan_no.creation_date",
+   "fieldname": "reference_date",
+   "fieldtype": "Date",
+   "label": "Prepare Audit Plan Date",
+   "read_only": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "reference_no.from_date",
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "From Date",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fetch_from": "reference_no.scope_of_audit",
+   "fieldname": "scope_of_audit",
+   "fieldtype": "Small Text",
+   "hidden": 1,
+   "label": "Scope of the Audit"
+  },
+  {
+   "fetch_from": "reference_no.to_date",
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "To Date",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_15",
+   "fieldtype": "Section Break",
+   "hidden": 1
+  },
+  {
+   "fetch_from": "reference_no.objective_of_audit",
+   "fieldname": "objective_of_audit",
+   "fieldtype": "Small Text",
+   "hidden": 1,
+   "label": "Objective of the Audit",
+   "length": 500,
+   "width": "150"
+  },
+  {
+   "fieldname": "section_break_14",
+   "fieldtype": "Section Break",
+   "label": "Audit Team"
+  },
+  {
+   "fieldname": "get_audit_team",
+   "fieldtype": "Button",
+   "label": "Get Audit Team"
+  },
+  {
+   "fieldname": "audit_team",
+   "fieldtype": "Table",
+   "label": "Audit Team",
+   "options": "Execute Audit Team Item",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Execute Audit",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "audit_area_checklist_section",
+   "fieldtype": "Section Break",
+   "label": "Audit Area (Checklist)"
+  },
+  {
+   "fieldname": "audit_checklist",
+   "fieldtype": "Table",
+   "label": "Audit Checklist",
+   "options": "Execute Audit Checklist Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "get_checklist",
+   "fieldtype": "Button",
+   "label": "Get Checklist"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "reference_no_section",
+   "fieldtype": "Section Break",
+   "label": "Reference Details"
+  },
+  {
+   "fetch_from": "reference_no.audit_engagement_letter",
+   "fieldname": "audit_engagement_letter",
+   "fieldtype": "Link",
+   "label": "Audit Engagement Letter",
+   "options": "Audit Engagement Letter",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_24",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_23",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Auditee Branch",
+   "options": "Branch",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fetch_from": "reference_no.supervisor_id",
+   "fieldname": "supervisor_id",
+   "fieldtype": "Link",
+   "label": "Supervisor ID",
+   "options": "Employee",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fetch_from": "supervisor_id.employee_name",
+   "fieldname": "supervisor_name",
+   "fieldtype": "Data",
+   "label": "Supervisor Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "supervisor_id.designation",
+   "fieldname": "supervisor_designation",
+   "fieldtype": "Data",
+   "label": "Supervisor Designation",
+   "read_only": 1
+  },
+  {
+   "fieldname": "plan_details_section",
+   "fieldtype": "Section Break",
+   "label": "Audit Plan Details"
+  },
+  {
+   "fieldname": "column_break_27",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "direct_accountability_details",
+   "fieldtype": "Section Break",
+   "label": "Direct Accountability (If Any)"
+  },
+  {
+   "fieldname": "direct_accountability",
+   "fieldtype": "Table",
+   "options": "Direct Accountability Item"
+  },
+  {
+   "fieldname": "prepare_audit_plan_no",
+   "fieldtype": "Link",
+   "label": "Prepare Audit Plan No.",
+   "options": "Prepare Audit Plan",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fetch_from": "supervisor_id.user_id",
+   "fieldname": "supervisor_email",
+   "fieldtype": "Data",
+   "label": "Supervisor Email",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "Pending",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Execute Audit Status",
+   "options": "\nPending\nExit Meeting\nInitial Report\nFollow Up\nClosed",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Workflow State",
+   "options": "Workflow State"
+  },
+  {
+   "fieldname": "get_observation",
+   "fieldtype": "Button",
+   "label": "Get Observation"
+  },
+  {
+   "default": "Open",
+   "fieldname": "workflow_status",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Workflow Status",
+   "no_copy": 1,
+   "options": "Open\nAssigned\nRejected\nCancelled",
+   "read_only": 1
+  }
+ ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-05-27 16:37:55.968694",
+ "modified": "2024-07-30 15:01:09.713315",
  "modified_by": "Administrator",
  "module": "AMS",
  "name": "Execute Audit",
@@ -290,6 +290,17 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Auditor",
    "share": 1,
    "write": 1
   }

@@ -22,6 +22,7 @@ class TDSRemittance(AccountsController):
 		check_clearance_date(self.doctype, self.name)
 		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
 		self.make_gl_entries()
+		
 	def get_condition(self):
 		if self.branch:
 			return ' AND t.branch ="{}" '.format(self.branch)

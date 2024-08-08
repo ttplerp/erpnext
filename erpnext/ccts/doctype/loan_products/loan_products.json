@@ -1,0 +1,137 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:loan_product",
+ "creation": "2023-12-04 11:19:01.538982",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "loan_product",
+  "parent_product",
+  "is_group",
+  "is_sub_group",
+  "lft",
+  "rgt",
+  "old_parent",
+  "parent_loan_products"
+ ],
+ "fields": [
+  {
+   "fieldname": "loan_product",
+   "fieldtype": "Data",
+   "label": "Loan Product",
+   "unique": 1
+  },
+  {
+   "fieldname": "parent_product",
+   "fieldtype": "Link",
+   "label": "Parent Product",
+   "options": "Loan Products"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_group",
+   "fieldtype": "Check",
+   "label": "Is Group"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_sub_group",
+   "fieldtype": "Check",
+   "label": "Is Sub Group"
+  },
+  {
+   "fieldname": "lft",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Left",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "rgt",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Right",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_group",
+   "fieldtype": "Check",
+   "label": "Is Group"
+  },
+  {
+   "fieldname": "old_parent",
+   "fieldtype": "Link",
+   "label": "Old Parent",
+   "options": "Loan Products"
+  },
+  {
+   "fieldname": "parent_loan_products",
+   "fieldtype": "Link",
+   "label": "Parent Loan Products",
+   "options": "Loan Products"
+  }
+ ],
+ "is_tree": 1,
+ "links": [],
+ "modified": "2024-07-23 15:14:14.831735",
+ "modified_by": "Administrator",
+ "module": "CCTS",
+ "name": "Loan Products",
+ "naming_rule": "By fieldname",
+ "nsm_parent_field": "parent_loan_products",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Legal",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "CEO",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Director",
+   "share": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

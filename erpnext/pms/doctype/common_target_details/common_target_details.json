@@ -1,0 +1,136 @@
+{
+ "allow_rename": 1,
+ "autoname": "COMT.YY.##",
+ "creation": "2021-11-23 14:57:42.290839",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "target_accomplishment_section",
+  "performance_target",
+  "weightage",
+  "reverse_formula",
+  "column_break_9",
+  "qty_quality",
+  "quantity",
+  "quality",
+  "column_break_4",
+  "timeline_base_on",
+  "timeline",
+  "section_break_9",
+  "description"
+ ],
+ "fields": [
+  {
+   "fieldname": "target_accomplishment_section",
+   "fieldtype": "Section Break",
+   "label": "Target & Accomplishment"
+  },
+  {
+   "columns": 4,
+   "fieldname": "performance_target",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Performance Target",
+   "reqd": 1
+  },
+  {
+   "columns": 1,
+   "description": "<b>Weightage should not exceed 10</b>",
+   "fieldname": "weightage",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Weightage(%)",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "description": "<b>Please tick this if your target is to be evaluated on saving(e.g Network Failure, OPEX, Resolving Customer Issues)</b>",
+   "fieldname": "reverse_formula",
+   "fieldtype": "Check",
+   "label": "Apply (&lt;=) Operator"
+  },
+  {
+   "fieldname": "column_break_9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 1,
+   "description": "Select either Quality or Quantity",
+   "fieldname": "qty_quality",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Quantity/Quality",
+   "options": "\nQuantity\nQuality",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "columns": 1,
+   "depends_on": "eval:doc.qty_quality == 'Quantity';",
+   "description": "In Number",
+   "fieldname": "quantity",
+   "fieldtype": "Float",
+   "ignore_user_permissions": 1,
+   "in_list_view": 1,
+   "label": "Quantity"
+  },
+  {
+   "allow_on_submit": 1,
+   "columns": 1,
+   "depends_on": "eval:doc.qty_quality == 'Quality';",
+   "description": "In Number",
+   "fieldname": "quality",
+   "fieldtype": "Percent",
+   "ignore_user_permissions": 1,
+   "in_list_view": 1,
+   "label": "Quality(%)"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 1,
+   "fieldname": "timeline_base_on",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Timeline Base On(Minutes/Hours/Days/Months)",
+   "options": "\nMinute\nHour\nDay\nMonth",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "columns": 1,
+   "depends_on": "eval:doc.timeline_base_on",
+   "fieldname": "timeline",
+   "fieldtype": "Float",
+   "ignore_user_permissions": 1,
+   "in_list_view": 1,
+   "label": "Timeline",
+   "reqd": 1
+  },
+  {
+   "description": "Provide more details of your target ",
+   "fieldname": "section_break_9",
+   "fieldtype": "Section Break",
+   "label": "Description"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description(Optional)"
+  }
+ ],
+ "istable": 1,
+ "modified": "2021-11-24 10:20:10.077737",
+ "modified_by": "Administrator",
+ "module": "PMS",
+ "name": "Common Target Details",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

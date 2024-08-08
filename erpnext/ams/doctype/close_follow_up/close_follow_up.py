@@ -82,6 +82,7 @@ class CloseFollowUp(Document):
 							pap_doc.db_set("status", 'Pending')
 						eu_doc.db_set("status", 'Pending')
 
+	@frappe.whitelist()		
 	def get_checklist(self):
 		data = frappe.db.sql("""
 			SELECT 

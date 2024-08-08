@@ -1,0 +1,324 @@
+{
+ "actions": [],
+ "creation": "2023-11-06 12:44:27.888023",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "case_type",
+  "issue_details",
+  "court_venue",
+  "investigation",
+  "court_case",
+  "column_break_2",
+  "date",
+  "branch",
+  "current_status",
+  "npl_clients_section",
+  "borrower_filed_by",
+  "loan_account_no",
+  "column_break_25",
+  "cid_license_number",
+  "guarantor",
+  "section_break_15",
+  "case_status",
+  "loan_details_section",
+  "sanction_date",
+  "loan_category",
+  "loan_product",
+  "overdue_amount",
+  "collateral_type",
+  "exposure",
+  "column_break_16",
+  "sanction_amount",
+  "loan_sub_category",
+  "loan_tenure",
+  "loan_outstanding",
+  "collateral_description",
+  "section_break_19",
+  "hearing_details",
+  "section_break_27",
+  "follow_up",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Court Tracking System",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date of Registration/Filing/Complaint",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\" || doc.case_type ==\"Counter Litigation\"",
+   "fieldname": "court_venue",
+   "fieldtype": "Select",
+   "label": "Court Venue",
+   "options": "\nBumthang\nChukha\nDagana\nGasa\nHaa\nLhuentse\nMongar\nParo\nPemagatshel\nPunakha\nSamtse\nSarpang\nThimphu\nTrashigang\nTrashiyangtse\nTrongsa\nTsirang\nWangdue Phodrang\nZhemgang\nSamdrup Jongkhar\nPhuentsholing\nLhamoi Zingkha\nNganglam\nJomotshangkha\nSamdrup Choling\nDorokha\nTashi Choling\nGelephu\nLingzhi\nSakteng\nThrimshing\nWamrong\nPangbang\nWeringla\nSombekha\nSupreme Court\nHigh Court\nTime Bound Bench\nSupreme Court\nOffice of Gyalpoi Zimpoen"
+  },
+  {
+   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
+   "fieldname": "loan_account_no",
+   "fieldtype": "Data",
+   "label": "Loan Account No"
+  },
+  {
+   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
+   "fieldname": "guarantor",
+   "fieldtype": "Data",
+   "label": "Guarantor"
+  },
+  {
+   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\" || doc.case_type ==\"Counter Litigation\"",
+   "fieldname": "cid_license_number",
+   "fieldtype": "Data",
+   "label": "CID/License Number"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
+   "fieldname": "sanction_date",
+   "fieldtype": "Date",
+   "label": "Sanction Date"
+  },
+  {
+   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
+   "fieldname": "sanction_amount",
+   "fieldtype": "Float",
+   "label": "Sanction Amount"
+  },
+  {
+   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
+   "fieldname": "loan_product",
+   "fieldtype": "Link",
+   "label": "Loan Product",
+   "options": "Loan Products"
+  },
+  {
+   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
+   "fieldname": "overdue_amount",
+   "fieldtype": "Float",
+   "label": "Overdue Amount"
+  },
+  {
+   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
+   "fieldname": "loan_outstanding",
+   "fieldtype": "Float",
+   "label": "Loan Outstanding"
+  },
+  {
+   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
+   "fieldname": "exposure",
+   "fieldtype": "Data",
+   "label": "Exposure"
+  },
+  {
+   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
+   "fieldname": "collateral_type",
+   "fieldtype": "Select",
+   "label": "Collateral Type",
+   "options": "\nMovable\nImmovable\nExtension of Charges\nMortgage and Mortgagee"
+  },
+  {
+   "depends_on": "eval:doc.collateral_type !=\"\"",
+   "fieldname": "collateral_description",
+   "fieldtype": "Small Text",
+   "label": "Collateral Description"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "hearing_details",
+   "fieldtype": "Table",
+   "label": "Hearing/Judgement Details",
+   "options": "Hearing Details"
+  },
+  {
+   "fieldname": "follow_up",
+   "fieldtype": "Small Text",
+   "label": "Follow up"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "bold": 1,
+   "fieldname": "section_break_19",
+   "fieldtype": "Section Break",
+   "label": "Hearing/Judgement Details"
+  },
+  {
+   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\" ",
+   "fieldname": "loan_tenure",
+   "fieldtype": "Date",
+   "label": "Loan Tenure (end date)"
+  },
+  {
+   "fieldname": "section_break_27",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.case_type == \"Criminal & ACC Cases\"",
+   "fieldname": "investigation",
+   "fieldtype": "Select",
+   "label": "Investigation ",
+   "options": "\nPolice\nACC\nAudit"
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.case_type == \"Criminal & ACC Cases\"",
+   "fieldname": "current_status",
+   "fieldtype": "Small Text",
+   "label": "Current Status"
+  },
+  {
+   "bold": 1,
+   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\" || doc.case_type == \"Counter Litigation\"",
+   "fieldname": "npl_clients_section",
+   "fieldtype": "Section Break",
+   "label": "Clients Details"
+  },
+  {
+   "fieldname": "column_break_25",
+   "fieldtype": "Column Break"
+  },
+  {
+   "bold": 1,
+   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
+   "fieldname": "loan_details_section",
+   "fieldtype": "Section Break",
+   "label": "Loan Details"
+  },
+  {
+   "fieldname": "column_break_16",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\" || doc.case_type ==\"Counter Litigation\"",
+   "fieldname": "borrower_filed_by",
+   "fieldtype": "Data",
+   "label": "Borrower/Filed By Name"
+  },
+  {
+   "fieldname": "case_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Case Type",
+   "options": "\nNPL Recovery Cases\nCounter Litigation\nCriminal & ACC Cases",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "case_status",
+   "fieldtype": "Table",
+   "label": "Case Status",
+   "options": "Court Status"
+  },
+  {
+   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\" || doc.case_type ==\"Counter Litigation\"\n",
+   "fieldname": "section_break_15",
+   "fieldtype": "Section Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.case_type ==\"Counter Litigation\" || doc.case_type == \"Criminal & ACC Cases\"",
+   "fieldname": "issue_details",
+   "fieldtype": "Small Text",
+   "label": "Issue/Case Details"
+  },
+  {
+   "depends_on": "eval:doc.case_type==\"3)Criminal & ACC Cases\"",
+   "fieldname": "court_case",
+   "fieldtype": "Small Text",
+   "label": "Court Case "
+  },
+  {
+   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
+   "fieldname": "loan_category",
+   "fieldtype": "Link",
+   "label": "Loan Category",
+   "options": "Loan Products"
+  },
+  {
+   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
+   "fieldname": "loan_sub_category",
+   "fieldtype": "Link",
+   "label": "Loan Sub Category",
+   "options": "Loan Products"
+  }
+ ],
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-07-23 15:29:48.788897",
+ "modified_by": "Administrator",
+ "module": "CCTS",
+ "name": "Court Tracking System",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Legal",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Director",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "CEO",
+   "share": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

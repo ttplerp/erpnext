@@ -104,7 +104,7 @@ def get_data(filters):
             SELECT
             a.name, a.asset_name, a.asset_category, a.asset_sub_category,
             a.vehicle_number, a.serial_number, a.old_asset_code,
-            a.cost_center, a.purchase_date, a.posting_date as date_of_issue, a.status, a.asset_status, 
+            a.cost_center, a.available_for_use_date, a.posting_date as date_of_issue, a.status, a.asset_status, 
             a.disposal_date, a.journal_entry_for_scrap,
             a.custodian as issued_to, a.custodian_name as employee_name,
             a.asset_quantity, a.asset_rate, a.additional_value,
@@ -113,7 +113,7 @@ def get_data(filters):
                         a.income_tax_opening_depreciation_amount as iopening,
             a.residual_value, a.remarks,
             (
-                (CASE WHEN a.purchase_date < '{from_date}' THEN IFNULL(a.asset_rate,0)*IFNULL(a.asset_quantity,1)
+                (CASE WHEN a.available_for_use_date < '{from_date}' THEN IFNULL(a.asset_rate,0)*IFNULL(a.asset_quantity,1)
                     ELSE 0 END)
                 +
                 (
@@ -126,7 +126,7 @@ def get_data(filters):
                 ) 
             ) gross_opening,
             (
-                (CASE WHEN a.purchase_date BETWEEN '{from_date}' AND '{to_date}' THEN IFNULL(a.asset_rate,0)*IFNULL(a.asset_quantity,1)
+                (CASE WHEN a.available_for_use_date BETWEEN '{from_date}' AND '{to_date}' THEN IFNULL(a.asset_rate,0)*IFNULL(a.asset_quantity,1)
                     ELSE 0 END)
                 +
                 (
@@ -169,7 +169,7 @@ def get_data(filters):
             `tabAsset` AS a
             INNER JOIN `tabAsset Finance Book` AS f ON f.parent = a.name       
         WHERE a.docstatus = 1 
-        AND a.purchase_date <= '{to_date}'
+        AND a.available_for_use_date <= '{to_date}'
         AND (
             a.status not in ('Scrapped', 'Sold')
             OR
@@ -210,7 +210,7 @@ def get_data(filters):
             if depreciation_entry_two:
                 a.update(depreciation_entry_two)
 
-            dep_opening 	= flt(a.opening_accumulated_depreciation,2) + flt(a.dep_opening,2)
+            dep_opening 	= flt(a.iopening) + flt(a.opening_income)
             dep_addition	= flt(a.dep_addition,2)
             dep_adjustment 	= flt(a.dep_adjustment,2) if (dep_opening+dep_addition) else 0
             dep_total_next_year = flt(a.dep_total_next_year) if dep_total_next_year else 0
@@ -230,7 +230,7 @@ def get_data(filters):
                 "employee_name": a.employee_name,
                 "designation": a.designation,
                 "cost_center": a.cost_center,
-                "date_of_issue": a.purchase_date,
+                "date_of_issue": a.available_for_use_date,
                 "qty": a.asset_quantity,
                 "gross_opening": gross_opening,
                 "gross_addition": gross_addition,
@@ -241,7 +241,7 @@ def get_data(filters):
                 "dep_adjustment": dep_adjustment,
                 "dep_total": dep_total,
                 "dep_income_tax": a.depreciation_income_tax,
-                "iopening": flt(a.iopening) + flt(a.opening_income),
+                "iopening": flt(a.opening_accumulated_depreciation,2) + flt(a.dep_opening,2),
                 "net_useful_life": net_useful_life,
                 "net_income_tax": net_income_tax,
                 "total_number_of_depreciations": a.total_number_of_depreciations,
@@ -263,19 +263,19 @@ def get_depreciation_details(filters):
         SELECT
             ds.parent AS asset,
             SUM(CASE
-                WHEN ds.schedule_date < '{from_date}' THEN ds.depreciation_amount
+                WHEN ds.schedule_date < '{from_date}' THEN ds.income_depreciation_amount
                 ELSE 0
             END) AS dep_opening,
             SUM(CASE
-                WHEN ds.schedule_date BETWEEN '{from_date}' AND '{to_date}' THEN ds.depreciation_amount
+                WHEN ds.schedule_date BETWEEN '{from_date}' AND '{to_date}' THEN ds.income_depreciation_amount
                 ELSE 0
             END) AS dep_addition,
             SUM(CASE
-                WHEN ds.schedule_date < '{from_date}' THEN ds.income_depreciation_amount
+                WHEN ds.schedule_date < '{from_date}' THEN ds.depreciation_amount
                 ELSE 0
             END) AS opening_income,
             SUM(CASE
-                WHEN ds.schedule_date BETWEEN '{from_date}' AND '{to_date}' THEN ds.income_depreciation_amount
+                WHEN ds.schedule_date BETWEEN '{from_date}' AND '{to_date}' THEN ds.depreciation_amount
                 ELSE 0
             END) AS depreciation_income_tax
         FROM `tabDepreciation Schedule` as ds
@@ -287,7 +287,7 @@ def get_depreciation_details(filters):
     query_two= """
         SELECT
             ds.parent AS asset,
-            SUM(ds.depreciation_amount) AS dep_total_next_year
+            SUM(ds.income_depreciation_amount) AS dep_total_next_year
         FROM `tabDepreciation Schedule` AS ds
         WHERE YEAR(ds.schedule_date) = '{fiscal_year}' AND (SELECT status FROM `tabAsset` WHERE name = ds.parent) IN ('Submitted','Partially Depreciated')
         GROUP BY ds.parent
@@ -405,14 +405,14 @@ def get_columns():
         },
         {
             "fieldname": "dep_opening",
-            "label": _("Accumulated Dep."),
+            "label": _("Income Open. Dep."),
             "fieldtype": "Currency",
             "width": 120
         },
      
         {
             "fieldname": "dep_addition",
-            "label": _("Dep. During the Year"),
+            "label": _("Income Tax"),
             "fieldtype": "Currency",
             "width": 120
         },
@@ -430,25 +430,25 @@ def get_columns():
         },
         {
             "fieldname": "net_useful_life",
-            "label": _("Net Book Value"),
+            "label": _("Net Income Tax"),
             "fieldtype": "Currency",
             "width": 120
         },
         {
             "fieldname": "iopening",
-            "label": _("Income Open. Dep."),
+            "label": _("Accumulated Dep."),
             "fieldtype": "Currency",
             "width": 120
         },
         {
             "fieldname": "dep_income_tax",
-            "label": _("Income Tax"),
+            "label": _("Dep. During the Year"),
             "fieldtype": "Currency",
             "width": 120
         },
         {
             "fieldname": "net_income_tax",
-            "label": _("Net Income Tax"),
+            "label": _("Net Book Value"),
             "fieldtype": "Currency",
             "width": 120
         },

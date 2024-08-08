@@ -22,13 +22,13 @@ frappe.ui.form.on('Follow Up', {
 		}
 	},
 	onload: function(frm) {		
-		frm.set_query('follow_up_by', ()=> {
-			return {
-				'filters': {
-					branch:'Internal Audit',
-				}
-			};
-		});
+		// frm.set_query('follow_up_by', ()=> {
+		// 	return {
+		// 		'filters': {
+		// 			branch:'Internal Audit',
+		// 		}
+		// 	};
+		// });
 	
 		frm.set_query('execute_audit_no', ()=> {
 			return {

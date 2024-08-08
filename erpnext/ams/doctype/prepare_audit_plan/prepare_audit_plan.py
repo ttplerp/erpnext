@@ -15,6 +15,7 @@ class PrepareAuditPlan(Document):
 		self.validate_type_frequency()
 
 	#To check duplicate audit team
+	@frappe.whitelist()
 	def validate_audit_team(self):
 		audit_team = {}
 		for i in self.get("audit_team"):
@@ -23,6 +24,7 @@ class PrepareAuditPlan(Document):
 			audit_team[i.employee] = i
    
 	#To check duplicate audit role
+	@frappe.whitelist()
 	def validate_audit_role(self):
 		audit_team = {}
 		for i in self.get("audit_team"):
@@ -46,6 +48,7 @@ class PrepareAuditPlan(Document):
 			frappe.throw(_('Select <b>Ad-hoc</b> as Frequecy for <b>Ad-hoc Audit</b>!!!'))
     
 	# get Audit Checklist based on branch/HO
+	@frappe.whitelist()
 	def get_audit_checklist(self):
 		query = """
 				SELECT ac.name as audit_area_checklist, ac.audit_criteria, ac.type_of_audit

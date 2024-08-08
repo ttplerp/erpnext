@@ -18,13 +18,13 @@ frappe.ui.form.on('Prepare Audit Plan', {
 	onload: function(frm) {		
 		apply_filter(frm)
 
-		frm.set_query("employee", "audit_team", function(doc, cdt, cdn) {
-			return {
-				filters: {
-					branch:'Internal Audit',
-				}
-			};
-		});
+		// frm.set_query("employee", "audit_team", function(doc, cdt, cdn) {
+		// 	return {
+		// 		filters: {
+		// 			branch:'Internal Audit',
+		// 		}
+		// 	};
+		// });
 	},
 
 	branch: (frm)=>{

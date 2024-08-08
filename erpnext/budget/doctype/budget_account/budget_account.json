@@ -11,6 +11,7 @@
   "budget_type",
   "column_break_4",
   "initial_budget",
+  "budget_consumed_opening",
   "budget_amount",
   "reappropiation_budget_details",
   "supplementary_budget",
@@ -105,11 +106,18 @@
    "in_list_view": 1,
    "label": "Account Number",
    "read_only": 1
+  },
+  {
+   "depends_on": "eval:parent.fiscal_year == '2024';",
+   "fieldname": "budget_consumed_opening",
+   "fieldtype": "Currency",
+   "label": "Budget Consumed(Opening Data)",
+   "precision": "2"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2023-01-05 11:26:55.837330",
+ "modified": "2024-07-23 17:14:46.158141",
  "modified_by": "Administrator",
  "module": "Budget",
  "name": "Budget Account",

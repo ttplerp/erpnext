@@ -40,7 +40,7 @@ def get_accounts(filters):
 		dep_add = flt(acc_dep.credit)
 		d_total = d_open + dep_add  - flt(dep_adjust)
 		
-		income_tax = frappe.db.sql("""select  sum(b.income_depreciation_amount) as total_income_tax
+		income_tax = frappe.db.sql("""select  sum(b.depreciation_amount) as total_income_tax
 										from `tabAsset` a, `tabDepreciation Schedule` b
 										where a.name = b.parent
 											and a.asset_category = '{0}'
@@ -54,8 +54,8 @@ def get_accounts(filters):
 									""".format(a.name, filters.from_date), as_dict=True)
 
 		opening_it_dep = frappe.db.sql("""select 
-												sum(b.income_accumulated_depreciation) as acc_income_tax,
-												sum(b.income_depreciation_amount) as depreciation_income_tax
+												sum(b.accumulated_depreciation_amount) as acc_income_tax,
+												sum(b.depreciation_amount) as depreciation_income_tax
 							   			from `tabAsset` a, `tabDepreciation Schedule` b
 						 	 			where a.name = b.parent
 						  					and a.asset_category = '{0}'
@@ -75,7 +75,7 @@ def get_accounts(filters):
 											)
 									""".format(a.name, filters.from_date), as_dict=True)
 
-		opening_dep = frappe.db.sql("""select  sum(a.income_tax_opening_depreciation_amount) as it_opening
+		opening_dep = frappe.db.sql("""select  sum(a.opening_accumulated_depreciation) as it_opening
 										from `tabAsset` a
 						 	 			where a.asset_category = '{0}'
 						  					and a.docstatus = 1
@@ -172,12 +172,12 @@ def get_cwip(filters):
 def get_values(account, to_date, from_date, cost_center=None, opening=False, cwip=False, adjustment=False):
 #	query = "select sum(debit) as debit, sum(credit) as credit from `tabGL Entry` where account = \'" + str(account) + "\' and docstatus = 1"
 	if cwip:
-		query = "select sum(debit) as debit, sum(credit) as credit from `tabGL Entry` where account in " + str(account) + " and docstatus = 1 "
+		query = "select sum(debit) as debit, sum(credit) as credit from `tabGL Entry` where account in " + str(account) + " and docstatus = 1 and is_cancelled = 0"
 	elif adjustment:
 		return [frappe._dict({"debit": 0.0, "credit": 0.0})]
 		#query = "select sum(debit) as debit, sum(credit) as credit from `tabGL Entry` where account = \'" + str(account) + "\' and docstatus = 1 and is_depreciation_adjustment = 'Yes'"
 	else:
-		query = "select sum(debit) as debit, sum(credit) as credit from `tabGL Entry` where account = \'" + str(account) + "\' and docstatus = 1"
+		query = "select sum(debit) as debit, sum(credit) as credit from `tabGL Entry` where account = \'" + str(account) + "\' and docstatus = 1 and is_cancelled = 0"
 	if not opening:
 		query += " and posting_date between \'" + str(from_date) + "\' and \'" + str(to_date) + "\'"
 	else:
@@ -228,13 +228,13 @@ def get_columns():
 		},
 		{
 			"fieldname": "dep_opening",
-			"label": _("Accumulated Dep."),
+			"label": _("Open IT Dep."),
 			"fieldtype": "Currency",
 			"width": 150
 		},
 		{
 			"fieldname": "dep_addition",
-			"label": _("Dep. During the Year"),
+			"label": _("IT Dep. During the Year"),
 			"fieldtype": "Currency",
 			"width": 150
 		},
@@ -264,13 +264,13 @@ def get_columns():
 		},
 		{
 			"fieldname": "opening_income_tax",
-			"label": _("Open IT Dep."),
+			"label": _("Accumulated Dep."),
 			"fieldtype": "Currency",
 			"width": 150
 		},
 		{
 			"fieldname": "it_dep_addition",
-			"label": _("IT Dep. During the Year"),
+			"label": _("Dep. During the Year"),
 			"fieldtype": "Currency",
 			"width": 150
 		},

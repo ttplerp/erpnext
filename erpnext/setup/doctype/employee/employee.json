@@ -29,6 +29,7 @@
   "employment_details_section",
   "employment_type",
   "employee_group",
+  "pms_group",
   "designation",
   "region",
   "reports_to",
@@ -114,6 +115,8 @@
   "column_break_73",
   "date_of_issue",
   "place_of_issue",
+  "employee_family_details_section",
+  "employee_family_details",
   "profile_tab",
   "bio",
   "educational_qualification",
@@ -139,7 +142,8 @@
   "feedback",
   "lft",
   "rgt",
-  "old_parent"
+  "old_parent",
+  "old_employee_id"
  ],
  "fields": [
   {
@@ -203,7 +207,7 @@
    "label": "Status",
    "oldfieldname": "status",
    "oldfieldtype": "Select",
-   "options": "Active\nInactive\nSuspended\nLeft",
+   "options": "Active\nInactive\nLeft",
    "search_index": 1
   },
   {
@@ -828,7 +832,7 @@
    "fieldname": "employment_status",
    "fieldtype": "Select",
    "label": "Employment Status",
-   "options": "\nIn Service\nEOL\nProbation\nLeft"
+   "options": "\nIn Service\nLeft\nProbation\nEOL\nStudy Leave\nTerminated\nSuspended"
   },
   {
    "fieldname": "increment_cycle",
@@ -963,13 +967,35 @@
    "fieldtype": "Check",
    "label": "Causal Leave Allocated",
    "read_only": 1
+  },
+  {
+   "fieldname": "pms_group",
+   "fieldtype": "Link",
+   "label": "PMS Category",
+   "options": "PMS Group"
+  },
+  {
+   "fieldname": "employee_family_details_section",
+   "fieldtype": "Section Break",
+   "label": "Employee Family Details"
+  },
+  {
+   "fieldname": "employee_family_details",
+   "fieldtype": "Table",
+   "options": "Employee Family Details"
+  },
+  {
+   "fieldname": "old_employee_id",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Old Employee ID"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-07-06 10:03:51.136607",
+ "modified": "2024-08-07 14:55:42.040387",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",

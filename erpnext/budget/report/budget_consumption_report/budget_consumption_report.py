@@ -21,7 +21,8 @@ def get_data(query, filters):
 		if filters.group_by_account and filters.budget_against != "Project":
 			cost_center = ""
 			committed = frappe.db.sql("select SUM(amount) from `tabCommitted Budget` where account = %s and reference_date BETWEEN %s and %s", (d.account, filters.from_date, filters.to_date))[0][0]
-			consumed = frappe.db.sql("select SUM(amount) from `tabConsumed Budget` where account = %s and reference_date BETWEEN %s and %s", (d.account, filters.from_date, filters.to_date))[0][0]
+			consumed = frappe.db.sql("select ifnull(SUM(amount),0) from `tabConsumed Budget` where account = %s and reference_date BETWEEN %s and %s", (d.account, filters.from_date, filters.to_date))[0][0]
+			consumed += frappe.db.sql("select ifnull(SUM(ba.budget_consumed_opening),0) from `tabBudget Account` ba, `tabBudget` b where b.name = ba.parent and ba.account = %s and b.fiscal_year = year(%s) and b.fiscal_year = year(%s)", (d.account, filters.from_date, filters.to_date))[0][0]
 		elif filters.budget_against == "Project":
 			project = filters.project
 			committed = frappe.db.sql("select SUM(amount) from `tabCommitted Budget` where cost_center = %s and project = %s and reference_date BETWEEN %s and %s", (d.cost_center, d.project, filters.from_date, filters.to_date))[0][0]
@@ -29,7 +30,9 @@ def get_data(query, filters):
 		else:
 			cost_center = d.cost_center
 			committed = frappe.db.sql("select SUM(amount) from `tabCommitted Budget` where cost_center = %s and account = %s and reference_date BETWEEN %s and %s", (d.cost_center, d.account, filters.from_date, filters.to_date))[0][0]
-			consumed = frappe.db.sql("select SUM(amount) from `tabConsumed Budget` where cost_center = %s and account = %s and reference_date BETWEEN %s and %s", (d.cost_center, d.account, filters.from_date, filters.to_date))[0][0]
+			consumed = frappe.db.sql("select ifnull(SUM(amount),0) from `tabConsumed Budget` where cost_center = %s and account = %s and reference_date BETWEEN %s and %s", (d.cost_center, d.account, filters.from_date, filters.to_date))[0][0]
+			consumed += frappe.db.sql("select ifnull(SUM(ba.budget_consumed_opening),0) from `tabBudget Account` ba, `tabBudget` b where b.name = ba.parent and b.cost_center = %s and ba.account = %s and b.fiscal_year = year(%s) and b.fiscal_year = year(%s)", (d.cost_center, d.account, filters.from_date, filters.to_date))[0][0]
+
 		
 		if not committed:
 			committed = 0

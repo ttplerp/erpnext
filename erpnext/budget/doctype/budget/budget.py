@@ -293,24 +293,40 @@ def validate_budget_records(args, budget_records):
 def compare_expense_with_budget(args, budget_amount, action_for, action, budget_against, amount=0):
 	actual_expense = amount or args.amount
 	if args.project:
-		condition = " and cb.project = '{}'".format(budget_against)
+		condition = " AND cb.project = %s"
+		budget_against = args.project
 	else:
-		condition = " and cb.cost_center = '{}'".format(budget_against)
+		condition = " AND cb.cost_center = %s"
+		budget_against = args.cost_center
+
 	args.fiscal_year = args.fiscal_year if args.fiscal_year else str(args.posting_date)[0:4]
-	committed = frappe.db.sql("""select SUM(cb.amount) as total 
-								from `tabCommitted Budget` cb 
-								where cb.account='{account}' 
-								{condition} 
-								and cb.reference_date between '{start_date}' and '{end_date}'""".format(condition=condition, 
-							account=args.account, cost_center=args.cost_center, start_date=str(args.fiscal_year) + "-01-01", 
-							end_date=str(args.fiscal_year)[0:4] + "-12-31"), as_dict=True)
-	consumed = frappe.db.sql("""select SUM(cb.amount) as total 
-								from `tabConsumed Budget` cb 
-								where cb.account='{account}'
-								{condition} 
-								and cb.reference_date between '{start_date}' and '{end_date}'""".format(condition=condition, 
-							account=args.account, cost_center=args.cost_center, start_date=str(args.fiscal_year) + "-01-01", 
-							end_date=str(args.fiscal_year)[0:4] + "-12-31"), as_dict=True)
+	start_date = str(args.fiscal_year) + "-01-01"
+	end_date = str(args.fiscal_year) + "-12-31"
+
+	# Committed query
+	committed_query = """
+		SELECT SUM(cb.amount) AS total
+		FROM `tabCommitted Budget` cb
+		WHERE cb.account = %s
+		{condition}
+		AND cb.reference_date BETWEEN %s AND %s
+	""".format(condition=condition)
+
+	committed_params = (args.account, budget_against, start_date, end_date)
+	committed = frappe.db.sql(committed_query, committed_params, as_dict=True)
+
+	# Consumed query
+	consumed_query = """
+		SELECT SUM(cb.amount) AS total
+		FROM `tabConsumed Budget` cb
+		WHERE cb.account = %s
+		{condition}
+		AND cb.reference_date BETWEEN %s AND %s
+	""".format(condition=condition)
+
+	consumed_params = (args.account, budget_against, start_date, end_date)
+	consumed = frappe.db.sql(consumed_query, consumed_params, as_dict=True)
+
 	if consumed and committed:
 		if flt(consumed[0].total) > flt(committed[0].total):
 			committed = consumed

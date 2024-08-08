@@ -9,8 +9,9 @@ from frappe import _
 
 class AuditEngagementLetter(Document):
 	def validate(self):
-		validate_workflow_states(self)
-		notify_workflow_states(self)
+		pass
+		# validate_workflow_states(self)
+		# notify_workflow_states(self)
    
 	def on_submit(self):
 		self.update_engagement_letter_no()
@@ -28,6 +29,7 @@ class AuditEngagementLetter(Document):
 			pap_doc.db_set("status", 'Pending')
   
 	# Get audit tean from Prepare Audit Plan
+	@frappe.whitelist()
 	def get_audit_team(self):
 		data = frappe.db.sql("""
 			SELECT 

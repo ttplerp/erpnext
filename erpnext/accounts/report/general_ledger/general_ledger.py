@@ -190,7 +190,7 @@ def get_gl_entries(filters, accounting_dimensions):
 			against_voucher_type, against_voucher, account_currency,
 			remarks, against, is_opening, creation {select_fields}
 		from `tabGL Entry` gl
-		where company=%(company)s {conditions}
+		where gl.company=%(company)s {conditions}
 		{order_by_statement}
 	""".format(
 			dimension_fields=dimension_fields,

@@ -7,257 +7,257 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-    "type",
-    "column_break_2",
-    "posting_date",
-    "section_break_11",
-    "from",
-    "column_break_6",
-    "from_date",
-    "column_break_12",
-    "to_date",
-    "to_branch_details_section",
-    "supervisor_id",
-    "supervisor_email",
-    "column_break_13",
-    "supervisor_name",
-    "branch",
-    "column_break_16",
-    "supervisor_designation",
-    "section_break_15",
-    "subject",
-    "message",
-    "section_break_7",
-    "section_break_14",
-    "get_audit_team",
-    "audit_team",
-    "section_break_8",
-    "remarks",
-    "reference_details",
-    "prepare_audit_plan_no",
-    "column_break_19",
-    "reference_date",
-    "column_break_21",
-    "workflow_state",
-    "status",
-    "amended_from"
-   ],
-   "fields": [
-    {
-     "fetch_from": "prepare_audit_plan_no.creation_date",
-     "fieldname": "reference_date",
-     "fieldtype": "Date",
-     "label": "Prepare Audit Plan Date",
-     "read_only": 1,
-     "reqd": 1
-    },
-    {
-     "fieldname": "column_break_2",
-     "fieldtype": "Column Break"
-    },
-    {
-     "fieldname": "subject",
-     "fieldtype": "Data",
-     "label": "Subject",
-     "length": 500,
-     "reqd": 1,
-     "width": "150"
-    },
-    {
-     "fieldname": "message",
-     "fieldtype": "Text Editor",
-     "label": "Message",
-     "reqd": 1
-    },
-    {
-     "fieldname": "section_break_7",
-     "fieldtype": "Section Break"
-    },
-    {
-     "default": "Head of Internal Audit Division",
-     "fieldname": "from",
-     "fieldtype": "Data",
-     "label": "From",
-     "read_only": 1,
-     "reqd": 1
-    },
-    {
-     "fieldname": "from_date",
-     "fieldtype": "Date",
-     "in_list_view": 1,
-     "label": "From Date",
-     "read_only": 1,
-     "reqd": 1
-    },
-    {
-     "fieldname": "column_break_12",
-     "fieldtype": "Column Break"
-    },
-    {
-     "fieldname": "to_date",
-     "fieldtype": "Date",
-     "in_list_view": 1,
-     "label": "To Date",
-     "read_only": 1,
-     "reqd": 1
-    },
-    {
-     "fieldname": "section_break_14",
-     "fieldtype": "Section Break",
-     "label": "Audit Team"
-    },
-    {
-     "fieldname": "audit_team",
-     "fieldtype": "Table",
-     "label": "Audit Team",
-     "options": "Audit Engagement Letter Item",
-     "read_only": 1,
-     "reqd": 1
-    },
-    {
-     "fieldname": "section_break_11",
-     "fieldtype": "Section Break"
-    },
-    {
-     "fieldname": "section_break_15",
-     "fieldtype": "Section Break"
-    },
-    {
-     "default": "Today",
-     "fieldname": "posting_date",
-     "fieldtype": "Date",
-     "label": "Posting Date",
-     "read_only": 1
-    },
-    {
-     "fieldname": "get_audit_team",
-     "fieldtype": "Button",
-     "label": "Get Audit Team"
-    },
-    {
-     "fieldname": "amended_from",
-     "fieldtype": "Link",
-     "label": "Amended From",
-     "no_copy": 1,
-     "options": "Audit Engagement Letter",
-     "print_hide": 1,
-     "read_only": 1
-    },
-    {
-     "fieldname": "type",
-     "fieldtype": "Data",
-     "label": "Type",
-     "read_only": 1,
-     "reqd": 1
-    },
-    {
-     "collapsible": 1,
-     "fieldname": "reference_details",
-     "fieldtype": "Section Break",
-     "label": "Reference Details"
-    },
-    {
-     "fieldname": "column_break_19",
-     "fieldtype": "Column Break"
-    },
-    {
-     "fieldname": "column_break_21",
-     "fieldtype": "Column Break"
-    },
-    {
-     "fieldname": "column_break_6",
-     "fieldtype": "Column Break"
-    },
-    {
-     "fieldname": "to_branch_details_section",
-     "fieldtype": "Section Break",
-     "label": "To Branch Details"
-    },
-    {
-     "fieldname": "branch",
-     "fieldtype": "Link",
-     "label": "Branch",
-     "options": "Branch",
-     "read_only": 1
-    },
-    {
-     "fieldname": "supervisor_id",
-     "fieldtype": "Link",
-     "label": "Supervisor ID",
-     "options": "Employee",
-     "read_only": 1
-    },
-    {
-     "fetch_from": "supervisor_id.employee_name",
-     "fieldname": "supervisor_name",
-     "fieldtype": "Data",
-     "label": "Supervisor Name",
-     "read_only": 1
-    },
-    {
-     "fetch_from": "supervisor_id.designation",
-     "fieldname": "supervisor_designation",
-     "fieldtype": "Data",
-     "label": "Supervisor Designation",
-     "read_only": 1
-    },
-    {
-     "fieldname": "column_break_13",
-     "fieldtype": "Column Break"
-    },
-    {
-     "fieldname": "column_break_16",
-     "fieldtype": "Column Break"
-    },
-    {
-     "fieldname": "prepare_audit_plan_no",
-     "fieldtype": "Link",
-     "label": "Prepar Audit Plan No.",
-     "options": "Prepare Audit Plan",
-     "read_only": 1,
-     "reqd": 1
-    },
-    {
-     "allow_on_submit": 1,
-     "fieldname": "workflow_state",
-     "fieldtype": "Link",
-     "hidden": 1,
-     "label": "Workflow State",
-     "options": "Workflow State"
-    },
-    {
-     "fetch_from": "supervisor_id.user_id",
-     "fieldname": "supervisor_email",
-     "fieldtype": "Data",
-     "label": "Supervisor Email",
-     "read_only": 1
-    },
-    {
-     "default": "Open",
-     "fieldname": "status",
-     "fieldtype": "Select",
-     "hidden": 1,
-     "in_standard_filter": 1,
-     "label": "Status",
-     "no_copy": 1,
-     "options": "Open\nConfirmed\nRejected\nCancelled",
-     "read_only": 1
-    },
-    {
-     "fieldname": "section_break_8",
-     "fieldtype": "Section Break"
-    },
-    {
-     "depends_on": "eval:doc.workflow_state == 'Waiting for Confirmation' || doc.status=='Rejected' || doc.status=='Confirmed'",
-     "fieldname": "remarks",
-     "fieldtype": "Small Text",
-     "label": "Remarks"
-    }
-   ],
+  "type",
+  "column_break_2",
+  "posting_date",
+  "section_break_11",
+  "from",
+  "column_break_6",
+  "from_date",
+  "column_break_12",
+  "to_date",
+  "to_branch_details_section",
+  "supervisor_id",
+  "supervisor_email",
+  "column_break_13",
+  "supervisor_name",
+  "branch",
+  "column_break_16",
+  "supervisor_designation",
+  "section_break_15",
+  "subject",
+  "message",
+  "section_break_7",
+  "section_break_14",
+  "get_audit_team",
+  "audit_team",
+  "section_break_8",
+  "remarks",
+  "reference_details",
+  "prepare_audit_plan_no",
+  "column_break_19",
+  "reference_date",
+  "column_break_21",
+  "workflow_state",
+  "status",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fetch_from": "prepare_audit_plan_no.creation_date",
+   "fieldname": "reference_date",
+   "fieldtype": "Date",
+   "label": "Prepare Audit Plan Date",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "subject",
+   "fieldtype": "Data",
+   "label": "Subject",
+   "length": 500,
+   "reqd": 1,
+   "width": "150"
+  },
+  {
+   "fieldname": "message",
+   "fieldtype": "Text Editor",
+   "label": "Message",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_7",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "Head of Internal Audit Division",
+   "fieldname": "from",
+   "fieldtype": "Data",
+   "label": "From",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "From Date",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_12",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "To Date",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_14",
+   "fieldtype": "Section Break",
+   "label": "Audit Team"
+  },
+  {
+   "fieldname": "audit_team",
+   "fieldtype": "Table",
+   "label": "Audit Team",
+   "options": "Audit Engagement Letter Item",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_11",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_15",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "get_audit_team",
+   "fieldtype": "Button",
+   "label": "Get Audit Team"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Audit Engagement Letter",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Data",
+   "label": "Type",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "reference_details",
+   "fieldtype": "Section Break",
+   "label": "Reference Details"
+  },
+  {
+   "fieldname": "column_break_19",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_21",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "to_branch_details_section",
+   "fieldtype": "Section Break",
+   "label": "To Branch Details"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "read_only": 1
+  },
+  {
+   "fieldname": "supervisor_id",
+   "fieldtype": "Link",
+   "label": "Supervisor ID",
+   "options": "Employee",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "supervisor_id.employee_name",
+   "fieldname": "supervisor_name",
+   "fieldtype": "Data",
+   "label": "Supervisor Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "supervisor_id.designation",
+   "fieldname": "supervisor_designation",
+   "fieldtype": "Data",
+   "label": "Supervisor Designation",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_13",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_16",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "prepare_audit_plan_no",
+   "fieldtype": "Link",
+   "label": "Prepar Audit Plan No.",
+   "options": "Prepare Audit Plan",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Workflow State",
+   "options": "Workflow State"
+  },
+  {
+   "fetch_from": "supervisor_id.user_id",
+   "fieldname": "supervisor_email",
+   "fieldtype": "Data",
+   "label": "Supervisor Email",
+   "read_only": 1
+  },
+  {
+   "default": "Open",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "no_copy": 1,
+   "options": "Open\nConfirmed\nRejected\nCancelled",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_8",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.workflow_state == 'Waiting for Confirmation' || doc.status=='Rejected' || doc.status=='Confirmed'",
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  }
+ ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-05-27 16:16:16.982274",
+ "modified": "2024-07-30 14:59:26.778037",
  "modified_by": "Administrator",
  "module": "AMS",
  "name": "Audit Engagement Letter",
@@ -277,14 +277,23 @@
    "write": 1
   },
   {
-   "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
    "role": "Employee",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Auditor",
    "share": 1,
    "write": 1
   }

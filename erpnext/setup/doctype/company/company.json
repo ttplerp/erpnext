@@ -106,7 +106,7 @@
   "overtime_allowance_account",
   "employer_contribution_to_pf",
   "leave_encashment_account",
-  "pbva_account",
+  "pbvi_account",
   "bonus_account",
   "column_break_98",
   "ltc_account",
@@ -778,12 +778,6 @@
    "options": "Account"
   },
   {
-   "fieldname": "pbva_account",
-   "fieldtype": "Link",
-   "label": "PBVA Account",
-   "options": "Account"
-  },
-  {
    "fieldname": "bonus_account",
    "fieldtype": "Link",
    "label": "Bonus Account",
@@ -945,6 +939,12 @@
    "label": "POL Expense Account",
    "options": "Account",
    "reqd": 1
+  },
+  {
+   "fieldname": "pbvi_account",
+   "fieldtype": "Link",
+   "label": "PBVI Account",
+   "options": "Account"
   }
  ],
  "icon": "fa fa-building",
@@ -952,7 +952,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2024-05-27 10:34:42.582090",
+ "modified": "2024-08-07 16:22:29.823683",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",

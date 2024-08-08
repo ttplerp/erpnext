@@ -125,6 +125,7 @@ class JournalEntry(AccountsController):
 		self.update_inter_company_jv()
 		self.update_invoice_discounting()
 		self.update_pol_expense_status()
+		self.link_je_to_reference(cancel=self.docstatus == 2)
 
 	def on_cancel(self):
 		from erpnext.accounts.utils import unlink_ref_doc_from_payment_entries
@@ -141,11 +142,25 @@ class JournalEntry(AccountsController):
 		self.unlink_transporter_invoice()
 		self.update_pol_expense_status(cancel=True)
 		check_clearance_date(self.doctype, self.name)
+		self.link_je_to_reference(cancel=self.docstatus == 2)
+
 	def on_trash(self):
 		self.unlink_transporter_invoice()
 
 	def get_title(self):
 		return self.pay_to_recd_from or self.accounts[0].account
+	
+	def link_je_to_reference(self, cancel=False):
+		ref_list = ['Treasury', 'Interest Accrual', 'Maturity', 'POL Advance']
+		for d in self.accounts:
+			if d.reference_type in ref_list and d.reference_name:
+				doc = frappe.get_doc(d.reference_type, d.reference_name)
+				if cancel:
+					doc.journal_entry = ""
+				else:
+					doc.journal_entry = self.name
+
+				doc.save(ignore_permissions=True)
 
 	def update_transporter_invoice(self):
 		frappe.db.sql("""update `tabTransporter Invoice` ti
@@ -1564,7 +1579,7 @@ def get_permission_query_conditions(user):
 	if not user: user = frappe.session.user
 	user_roles = frappe.get_roles(user)
 
-	if user == "Administrator" or "System Manager" in user_roles: 
+	if user == "Administrator" or "System Manager" or "Accounts User" in user_roles: 
 		return
 
 	return """(

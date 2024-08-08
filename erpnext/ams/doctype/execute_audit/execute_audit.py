@@ -12,10 +12,11 @@ from erpnext.custom_workflow import validate_workflow_states, notify_workflow_st
 
 class ExecuteAudit(Document):
 	def validate(self):
-		if self.workflow_state == 'Assigned':
-			self.validate_accountability_assigner()
-		validate_workflow_states(self)
-		notify_workflow_states(self)
+		pass
+		# if self.workflow_state == 'Assigned':
+		# 	self.validate_accountability_assigner()
+		# validate_workflow_states(self)
+		# notify_workflow_states(self)
 
 	def on_submit(self):
 		self.update_status()
@@ -23,6 +24,7 @@ class ExecuteAudit(Document):
 	def on_cancel(self):
 		self.update_status(1)
 
+	@frappe.whitelist()
 	def validate_accountability_assigner(self):
 		if frappe.session.user != self.supervisor_email:
 			frappe.throw("Only <b>{}</b> can Assign Direct Accountability for this request".format(self.supervisor_name))
@@ -42,7 +44,8 @@ class ExecuteAudit(Document):
 			for cl in execute_audit.get("audit_checklist"):
 				if cl.nature_of_irregularity in ('Observation','Unresolved','Un-Reconciled'):
 					cl.db_set("status", 'Open')
-   
+
+	@frappe.whitelist()
 	def get_audit_team(self):
 		data = frappe.db.sql("""
 			SELECT 
@@ -65,7 +68,8 @@ class ExecuteAudit(Document):
 		for d in data:
 			row = self.append('audit_team',{})
 			row.update(d)
-
+	
+	@frappe.whitelist()
 	def get_checklist(self):
 		data = frappe.db.sql("""
 			SELECT 
@@ -89,6 +93,7 @@ class ExecuteAudit(Document):
 			row = self.append('audit_checklist',{})
 			row.update(d)
 
+	@frappe.whitelist()
 	def get_observation(self):
 		data = frappe.db.sql("""
 			select 

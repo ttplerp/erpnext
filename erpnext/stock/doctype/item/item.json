@@ -303,11 +303,13 @@
   {
    "fieldname": "sb_barcodes",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Barcodes"
   },
   {
    "fieldname": "barcodes",
    "fieldtype": "Table",
+   "hidden": 1,
    "label": "Barcodes",
    "options": "Item Barcode"
   },
@@ -415,6 +417,7 @@
    "depends_on": "eval:doc.is_stock_item",
    "fieldname": "serial_nos_and_batches",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Serial Nos and Batches"
   },
   {
@@ -422,6 +425,7 @@
    "depends_on": "eval:doc.is_stock_item",
    "fieldname": "has_batch_no",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Has Batch No",
    "oldfieldname": "has_batch_no",
    "oldfieldtype": "Select"
@@ -431,6 +435,7 @@
    "depends_on": "has_batch_no",
    "fieldname": "create_new_batch",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Automatically Create New Batch"
   },
   {
@@ -438,6 +443,7 @@
    "description": "Example: ABCD.#####. If series is set and Batch No is not mentioned in transactions, then automatic batch number will be created based on this series. If you always want to explicitly mention Batch No for this item, leave this blank. Note: this setting will take priority over the Naming Series Prefix in Stock Settings.",
    "fieldname": "batch_number_series",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Batch Number Series",
    "translatable": 1
   },
@@ -453,6 +459,7 @@
    "depends_on": "has_batch_no",
    "fieldname": "retain_sample",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Retain Sample"
   },
   {
@@ -464,7 +471,8 @@
   },
   {
    "fieldname": "column_break_37",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "hidden": 1
   },
   {
    "default": "0",
@@ -480,6 +488,7 @@
    "description": "Example: ABCD.#####\nIf series is set and Serial No is not mentioned in transactions, then automatic serial number will be created based on this series. If you always want to explicitly mention Serial Nos for this item. leave this blank.",
    "fieldname": "serial_no_series",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Serial Number Series"
   },
   {
@@ -488,6 +497,7 @@
    "depends_on": "eval:!doc.is_fixed_asset",
    "fieldname": "variants_section",
    "fieldtype": "Tab Break",
+   "hidden": 1,
    "label": "Variants"
   },
   {
@@ -504,6 +514,7 @@
    "depends_on": "has_variants",
    "fieldname": "variant_based_on",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Variant Based On",
    "options": "Item Attribute\nManufacturer"
   },
@@ -773,6 +784,7 @@
    "depends_on": "is_stock_item",
    "fieldname": "manufacturing",
    "fieldtype": "Tab Break",
+   "hidden": 1,
    "label": "Manufacturing",
    "oldfieldtype": "Section Break",
    "options": "fa fa-cogs"
@@ -780,6 +792,7 @@
   {
    "fieldname": "default_bom",
    "fieldtype": "Link",
+   "hidden": 1,
    "ignore_user_permissions": 1,
    "label": "Default BOM",
    "no_copy": 1,
@@ -793,13 +806,15 @@
    "description": "If subcontracted to a vendor",
    "fieldname": "is_sub_contracted_item",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Supply Raw Materials for Purchase",
    "oldfieldname": "is_sub_contracted_item",
    "oldfieldtype": "Select"
   },
   {
    "fieldname": "column_break_74",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "hidden": 1
   },
   {
    "fieldname": "customer_code",
@@ -841,6 +856,7 @@
   {
    "fieldname": "default_item_manufacturer",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Default Item Manufacturer",
    "options": "Manufacturer",
    "read_only": 1
@@ -956,7 +972,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-12 16:41:28.318103",
+ "modified": "2024-07-09 17:40:45.656273",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",

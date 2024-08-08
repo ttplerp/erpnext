@@ -263,8 +263,8 @@ class Asset(AccountsController):
 			
 		for finance_book in self.get("finance_books"):
 			finance_book.expected_value_after_useful_life = 1
-			if self.number_of_depreciations_booked > 0:
-				self.opening_accumulated_depreciation = (flt(self.gross_purchase_amount)/flt(finance_book.total_number_of_depreciations))*flt(self.number_of_depreciations_booked)
+			# if self.number_of_depreciations_booked > 0:
+			# 	self.opening_accumulated_depreciation = (flt(self.gross_purchase_amount)/flt(finance_book.total_number_of_depreciations))*flt(self.number_of_depreciations_booked)
 			self._make_depreciation_schedule(finance_book, start, date_of_sale)
 
 
@@ -996,7 +996,7 @@ class Asset(AccountsController):
 			#credit account update
 			je.append("accounts", {
 				"account": self.accumulated_depreciation_account,
-				"credit_in_account_currency": self.opening_accumulated_depreciation,
+				"credit_in_account_currency": self.income_tax_opening_depreciation_amount,
 				"reference_type": "Asset",
 				"reference_name": self.name,
 				"cost_center": self.cost_center
@@ -1005,7 +1005,7 @@ class Asset(AccountsController):
 			#debit account update
 			je.append("accounts", {
 				"account": self.credit_account,
-				"debit_in_account_currency": self.opening_accumulated_depreciation,
+				"debit_in_account_currency": self.income_tax_opening_depreciation_amount,
 				"reference_type": "Asset",
 				"reference_name": self.name,
 				"cost_center": self.cost_center
@@ -1385,9 +1385,10 @@ def update_existing_asset(asset, remaining_qty):
 	remaining_gross_purchase_amount = flt(
 		(asset.gross_purchase_amount * remaining_qty) / asset.asset_quantity
 	)
-	opening_accumulated_depreciation = flt(
-		(asset.opening_accumulated_depreciation * remaining_qty) / asset.asset_quantity
-	)
+	# opening_accumulated_depreciation = flt(
+	# 	(asset.opening_accumulated_depreciation * remaining_qty) / asset.asset_quantity
+	# )
+	opening_accumulated_depreciation = asset.opening_accumulated_depreciation
 
 	frappe.db.set_value(
 		"Asset",

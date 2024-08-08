@@ -47,8 +47,7 @@
    "fieldname": "hiring_rate_revision",
    "fieldtype": "Percent",
    "label": "Hiring Rate Revision(%)",
-   "precision": "2",
-   "reqd": 1
+   "precision": "2"
   },
   {
    "fieldname": "pol_advance_account",
@@ -60,7 +59,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-07 16:07:54.419849",
+ "modified": "2024-07-02 15:01:01.711192",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment Category",

@@ -424,10 +424,10 @@ def get_overtime_rate(employee, posting_date ):
 		if not cint(basic[0].eligible_for_overtime_and_payment):
 			if not frappe.db.get_value("Employee Grade", frappe.db.get_value("Employee", employee, "grade"), "eligible_for_overtime"):
 				frappe.throw(_("Employee is not eligible for Overtime"))
-		if is_holiday(employee=employee, date= posting_date):
-			return ((flt(basic[0].basic_pay) * 1.5) / (30 * 8))
-		else:
-			return (flt(basic[0].basic_pay) / (30 * 8))
+		# if is_holiday(employee=employee, date= posting_date):
+		# 	return ((flt(basic[0].basic_pay) * 1.5) / (30 * 8))
+		# else:
+		return (flt(flt(basic[0].basic_pay) / (30 * 8),0))
 	else:
 		frappe.throw("No Salary Structure found for the employee")
 

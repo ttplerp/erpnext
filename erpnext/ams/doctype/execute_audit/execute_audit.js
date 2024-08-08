@@ -13,14 +13,14 @@ frappe.ui.form.on('Execute Audit', {
 	},
 
 	refresh: function(frm) {
-		if( (frm.doc.workflow_state == 'Waiting for Assignment' && frm.doc.supervisor_email == frappe.session.user) || frm.doc.docstatus == 1){
-			frm.set_df_property('get_observation','hidden',0)
-			frm.set_df_property('direct_accountability','hidden',0)
+		// if( (frm.doc.workflow_state == 'Waiting for Assignment' && frm.doc.supervisor_email == frappe.session.user)){
+		// 	frm.set_df_property('get_observation','hidden',0)
+		// 	frm.set_df_property('direct_accountability','hidden',0)
 			
-		} else{
-			frm.set_df_property('get_observation','hidden',1)
-			frm.set_df_property('direct_accountability','hidden',1)
-		}
+		// } else{
+		// 	frm.set_df_property('get_observation','hidden',1)
+		// 	frm.set_df_property('direct_accountability','hidden',1)
+		// }
 
 	if (frm.doc.docstatus == 1 && frm.doc.status == 'Exit Meeting' && frappe.session.user == frm.doc.owner){
 			frm.add_custom_button(__('Create Initial Report'), ()=>{

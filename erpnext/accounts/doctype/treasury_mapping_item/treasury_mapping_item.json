@@ -1,0 +1,78 @@
+{
+ "actions": [],
+ "creation": "2024-07-01 16:02:34.034803",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "financial_schedule",
+  "section_break_mmbr5",
+  "debit_account",
+  "tds_account",
+  "column_break_ypcyu",
+  "credit_account",
+  "interest_account"
+ ],
+ "fields": [
+  {
+   "fieldname": "financial_schedule",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Financial Schedule",
+   "options": "\nOpening\nMaturity\nMonthly Interest Accruals",
+   "reqd": 1
+  },
+  {
+   "fieldname": "debit_account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Debit Account",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.financial_schedule==\"Maturity\";",
+   "fieldname": "tds_account",
+   "fieldtype": "Link",
+   "label": "TDS Account",
+   "mandatory_depends_on": "eval:doc.financial_schedule == \"Maturity\";",
+   "options": "Account"
+  },
+  {
+   "fieldname": "column_break_ypcyu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "credit_account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Credit Account",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.financial_schedule == \"Maturity\";",
+   "fieldname": "interest_account",
+   "fieldtype": "Link",
+   "label": "Interest Account",
+   "mandatory_depends_on": "eval:doc.financial_schedule == \"Maturity\";",
+   "options": "Account"
+  },
+  {
+   "fieldname": "section_break_mmbr5",
+   "fieldtype": "Section Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-07-01 16:25:49.134799",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Treasury Mapping Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

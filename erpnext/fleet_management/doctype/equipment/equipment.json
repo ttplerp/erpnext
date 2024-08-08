@@ -222,6 +222,7 @@
   {
    "fieldname": "equipment_name",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Equipment/Vehicle Name"
   },
   {
@@ -363,7 +364,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-07 16:07:57.906559",
+ "modified": "2024-07-02 14:55:20.804062",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment",

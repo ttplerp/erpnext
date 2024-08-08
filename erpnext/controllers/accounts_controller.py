@@ -742,7 +742,7 @@ class AccountsController(TransactionBase):
 		return gl_dict
 
 	def validate_qty_is_not_zero(self):
-		if self.doctype != "Purchase Receipt":
+		if self.doctype not in ("Purchase Receipt", "Treasury"):
 			for item in self.items:
 				if not item.qty:
 					frappe.throw(_("Item quantity can not be zero"))

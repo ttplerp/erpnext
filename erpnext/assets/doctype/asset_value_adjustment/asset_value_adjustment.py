@@ -52,7 +52,8 @@ class AssetValueAdjustment(Document):
 
 	def validate_date(self):
 		asset_purchase_date = frappe.db.get_value("Asset", self.asset, "purchase_date")
-		if getdate(self.date) < getdate(asset_purchase_date):
+		without_purchase = frappe.db.get_value("Asset", self.asset, "asset_creation_without_pd")
+		if getdate(self.date) < getdate(asset_purchase_date) and without_purchase == 0:
 			frappe.throw(
 				_("Asset Value Adjustment cannot be posted before Asset's purchase date <b>{0}</b>.").format(
 					formatdate(asset_purchase_date)
