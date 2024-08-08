@@ -42,7 +42,7 @@ class POLIssue(StockController):
 		self.validate_barrel_or_tanker()
 
 	def validate_barrel_or_tanker(self):
-		if not self.tanker or not self.issue_in_barrel:
+		if not self.tanker and not self.receive_in_barrel:
 			frappe.throw("Please set Tanker or Barrel!")
 
 	def validate_data(self):
