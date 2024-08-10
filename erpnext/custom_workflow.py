@@ -2249,7 +2249,6 @@ class CustomWorkflow:
                         1. All other types of leaves
                                         * Employee -> Supervisor - HR Manager.
         """
-        # frappe.throw(str(self.new_state))
         if self.new_state.lower() == "Draft".lower():
             if self.doc.owner != frappe.session.user:
                 frappe.throw("Only the document owner can Apply this material request.")
@@ -2258,30 +2257,27 @@ class CustomWorkflow:
             if self.doc.owner != frappe.session.user:
                 frappe.throw("Only the document owner can Apply this leave application.")
 
-            if self.doc.leave_type == "Leave Without Pay" or self.doc.designation in ["Dy. CEO", "Chief Executive Officer"]:
+            if self.doc.designation in ["Dy. CEO", "Chief Executive Officer"]:
                 self.doc.workflow_state = "Waiting Approval"
                 self.set_approver("HRGM")
             else:
                 self.doc.workflow_state = "Waiting Supervisor Approval"
                 self.set_approver("Supervisor")
-        
-        elif self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
-            if self.doc.leave_approver != frappe.session.user:
-                frappe.throw(
-                    "Only {} can recommend this Leave Application".format(
-                        self.doc.leave_approver_name
-                    )
-                )
-            self.set_approver("Leave Approver")
 
         elif self.new_state.lower() in ("Recommended By Supervisor".lower()):
+            if not self.doc.supervisor_remarks:
+                frappe.throw("Supervisor remarks required.")
+
             if self.doc.leave_approver != frappe.session.user:
                 frappe.throw(
                     "Only {} can recommend this Leave Application".format(
                         self.doc.leave_approver_name
                     )
                 )
-            self.set_approver("Leave Approver")
+            if self.doc.leave_type == "Leave Without Pay":
+                self.set_approver("HRGM")
+            else:
+                self.set_approver("Leave Approver")
 
         elif self.new_state.lower() in ("Waiting Approval".lower()):
             if self.doc.leave_approver != frappe.session.user:
@@ -2293,6 +2289,9 @@ class CustomWorkflow:
             self.set_approver("HRGM")
 
         elif self.new_state.lower() == "Approved".lower():
+            if not self.doc.approver_remarks:
+                frappe.throw("Approver remarks required.")
+
             if self.doc.leave_approver != frappe.session.user:
                 frappe.throw(
                     "Only {} can Approve this Leave Application".format(
@@ -2320,6 +2319,7 @@ class CustomWorkflow:
                         self.doc.leave_approver_name
                     )
                 )
+
         # else:
         # 	frappe.throw(_("Invalid Workflow State {}").format(self.doc.workflow_state))
 
