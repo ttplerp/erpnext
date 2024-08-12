@@ -39,9 +39,9 @@ class CustomWorkflow:
 			if not self.dept_approver:
 				frappe.throw('Please set department approver in {}'.format(frappe.get_desk_link("Department", self.doc.department)))
 
-			self.hrgm	= frappe.db.get_value("Employee", frappe.db.get_single_value("HR Settings", "hrgm"), self.field_list)
-			if not self.hrgm:
-				frappe.throw('Please set department approver in {}'.format(frappe.get_desk_link("Department", self.doc.department)))
+			# self.hrgm	= frappe.db.get_value("Employee", frappe.db.get_single_value("HR Settings", "hrgm"), self.field_list)
+			# if not self.hrgm:
+			# 	frappe.throw('Please set department approver in {}'.format(frappe.get_desk_link("Department", self.doc.department)))
 			# self.dir_approver	= frappe.db.get_value("Employee", frappe.db.get_value("Department", frappe.db.get_value("Department", frappe.db.get_value("Employee", self.doc.employee, "department"), "parent_department"),"approver"), self.field_list)
 		self.login_user		= frappe.db.get_value("Employee", {"user_id": frappe.session.user}, self.field_list)
 		#self.final_approver= frappe.db.get_value("Employee", {"user_id": get_final_approver(doc.branch)}, self.field_list)

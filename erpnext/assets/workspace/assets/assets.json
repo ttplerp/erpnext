@@ -164,7 +164,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Reports",
-   "link_count": 5,
+   "link_count": 7,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -220,10 +220,30 @@
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Asset Register",
+   "link_count": 0,
+   "link_to": "Asset Register",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Property Plant and Equipment",
+   "link_count": 0,
+   "link_to": "Property Plant and Equipment",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2024-05-01 14:28:44.471994",
- "modified_by": "Administrator",
+ "modified": "2024-06-30 20:38:53.830982",
+ "modified_by": "pema.dhendup@thimphutechpark.bt",
  "module": "Assets",
  "name": "Assets",
  "owner": "Administrator",

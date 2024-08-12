@@ -177,29 +177,49 @@ class BankPayment(Document):
         if not self.get("items"):
             frappe.throw(_("No transactions found for payment processing"), title="No Data Found")
 
-        # duplicate transaction checks
+        # Duplicate transaction checks
         for i in self.get("items"):
+            cond = ''
+            if i.desuup:
+                cond += " AND bpi.desuup = '{0}'".format(i.desuup)
+            if i.employee:
+                cond += " AND bpi.employee = '{0}'".format(i.employee)
+            if i.supplier:
+                cond += " AND bpi.supplier = '{0}'".format(i.supplier)
+            
+            # Fetch financial_system_code if bank_branch is provided and financial_system_code is not set
             if i.bank_branch and not i.financial_system_code:
                 i.financial_system_code = frappe.db.get_value("Financial Institution Branch", i.bank_branch, "financial_system_code")
+            
+            # Ensure bank_account_type and bank_account_no are provided
             if not i.bank_account_type or not i.bank_account_no:
                 frappe.throw("Row#{}: <b>Bank Account Type</b> or <b>Account No</b> are missing ".format(i.idx))
-            for j in frappe.db.sql("""
-                    select name, docstatus from `tabBank Payment` bp
-                    where bp.name != "{name}"
-                    and bp.transaction_type = "{transaction_type}"
-                    and bp.docstatus < 2
-                    and exists(select 1
-                        from `tabBank Payment Item` bpi
-                        where bpi.parent = bp.name
-                        and bpi.transaction_type = bp.transaction_type
-                        and bpi.transaction_id = "{transaction_id}"
-                        and bpi.transaction_reference = "{transaction_reference}"
-                        and bpi.status != 'Failed')
-                """.format(name=self.name, transaction_type=i.transaction_type, transaction_id=i.transaction_id, transaction_reference=i.transaction_reference),as_dict=True):
+            
+            # Check for duplicate transactions
+            duplicate_check_query = """
+                SELECT bp.name, bp.docstatus 
+                FROM `tabBank Payment` bp
+                WHERE bp.name != %s
+                AND bp.transaction_type = %s
+                AND bp.docstatus < 2
+                AND EXISTS (
+                    SELECT 1 
+                    FROM `tabBank Payment Item` bpi 
+                    WHERE bpi.parent = bp.name
+                    AND bpi.transaction_type = bp.transaction_type
+                    AND bpi.transaction_id = %s
+                    AND bpi.transaction_reference = %s
+                    AND bpi.status != 'Failed'
+                    {0}
+                )
+            """.format(cond)
+            
+            for j in frappe.db.sql(duplicate_check_query, (self.name, i.transaction_type, i.transaction_id, i.transaction_reference), as_dict=True):
                 frappe.throw(_("Row#{}: {} is already processed via {}").format(
-                        i.idx, frappe.get_desk_link(i.transaction_type,i.transaction_id),
-                        frappe.get_desk_link(self.doctype, j.name)
-                    ), title="Transaction Details")
+                    i.idx, frappe.get_desk_link(i.transaction_type, i.transaction_id),
+                    frappe.get_desk_link(self.doctype, j.name)
+                ), title="Transaction Details")
+
 
     def append_bank_response_in_bpi(self):
         if self.payment_type == 'Bulk Payment':

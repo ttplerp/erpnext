@@ -65,6 +65,7 @@
    "fieldname": "posting_date",
    "fieldtype": "Date",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Posting Date",
    "reqd": 1
   },
@@ -117,6 +118,7 @@
    "label": "Modes of Payment"
   },
   {
+   "allow_bulk_edit": 1,
    "fieldname": "payment_reconciliation",
    "fieldtype": "Table",
    "label": "Payment Reconciliation",
@@ -179,6 +181,7 @@
    "read_only": 1
   },
   {
+   "allow_bulk_edit": 1,
    "fieldname": "pos_transactions",
    "fieldtype": "Table",
    "label": "POS Transactions",
@@ -251,7 +254,7 @@
    "link_fieldname": "pos_closing_entry"
   }
  ],
- "modified": "2023-08-14 17:41:57.449982",
+ "modified": "2024-07-15 11:56:38.453419",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "POS Closing Entry",

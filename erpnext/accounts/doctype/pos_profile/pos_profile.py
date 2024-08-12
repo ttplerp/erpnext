@@ -156,7 +156,8 @@ def get_child_nodes(group_type, root):
 @frappe.validate_and_sanitize_search_inputs
 def pos_profile_query(doctype, txt, searchfield, start, page_len, filters):
 	user = frappe.session["user"]
-	company = filters.get("company") or frappe.defaults.get_user_default("company")
+	#company = filters.get("company") or frappe.defaults.get_user_default("company")
+	company="De-suung Skilling"
 
 	args = {
 		"user": user,

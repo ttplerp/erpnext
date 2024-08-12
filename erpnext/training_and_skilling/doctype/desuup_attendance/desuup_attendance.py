@@ -25,26 +25,29 @@ class DesuupAttendance(Document):
 		pass
 	
 	def validate_attendance_date(self):
-		today = getdate(nowdate())
+		if getdate(self.attendance_date) > getdate(nowdate()):
+			frappe.throw(_("Attendance can not be marked for future dates"))
 
-		# Calculate the first and last days of the current month
-		first_day_of_month = get_first_day(today)
-		last_day_of_month = get_last_day(today)
+		# today = getdate(nowdate())
 
-		# Calculate the date two days before the end of the month
-		two_days_before_end_of_month = add_days(last_day_of_month, -2)
+		# # Calculate the first and last days of the current month
+		# first_day_of_month = get_first_day(today)
+		# last_day_of_month = get_last_day(today)
 
-		# Check if the attendance date is within the allowed range
-		attendance_date = getdate(self.attendance_date)
+		# # Calculate the date two days before the end of the month
+		# two_days_before_end_of_month = add_days(last_day_of_month, -2)
 
-		# Allow attendance if the date is within the month
-		if first_day_of_month <= attendance_date <= today:
-			pass  # Allow marking attendance
-		# Allow attendance if today is within the last two days of the month and the attendance date is until the end of the month
-		elif today >= two_days_before_end_of_month and attendance_date <= last_day_of_month:
-			pass  # Allow marking attendance
-		else:
-			frappe.throw(_("Attendance can only be marked for today or any past date within the current month."))
+		# # Check if the attendance date is within the allowed range
+		# attendance_date = getdate(self.attendance_date)
+
+		# # Allow attendance if the date is within the month
+		# if first_day_of_month <= attendance_date <= today:
+		# 	pass  # Allow marking attendance
+		# # Allow attendance if today is within the last two days of the month and the attendance date is until the end of the month
+		# elif today >= two_days_before_end_of_month and attendance_date <= last_day_of_month:
+		# 	pass  # Allow marking attendance
+		# else:
+		# 	frappe.throw(_("Attendance can only be marked for today or any past date within the current month."))
 
 	def validate_duplicate_record(self):
 		duplicate = get_duplicate_attendance_record(self.desuup, self.attendance_date, self.name)

@@ -388,7 +388,8 @@
    "fieldname": "bank_account",
    "fieldtype": "Link",
    "label": "Bank Account",
-   "options": "Account"
+   "options": "Account",
+   "reqd": 1
   }
  ],
  "icon": "icon-cog",
@@ -416,7 +417,7 @@
    "link_fieldname": "pos_profile"
   }
  ],
- "modified": "2024-05-10 16:12:44.304664",
+ "modified": "2024-05-20 10:26:58.121391",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "POS Profile",

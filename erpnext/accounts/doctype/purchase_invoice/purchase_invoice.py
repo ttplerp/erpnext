@@ -95,6 +95,8 @@ class PurchaseInvoice(BuyingController):
 		super(PurchaseInvoice, self).validate()
 
 		if not self.is_return:
+			if frappe.session.user == "Administrator":
+				return
 			self.po_required()
 			self.pr_required()
 			self.validate_supplier_invoice()

@@ -83,6 +83,7 @@ class Company(NestedSet):
 
 	@frappe.whitelist()
 	def create_default_tax_template(self):
+		return
 		setup_taxes_and_charges(self.name, self.country)
 
 	def validate_default_accounts(self):

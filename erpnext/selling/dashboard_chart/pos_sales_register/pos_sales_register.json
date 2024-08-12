@@ -1,0 +1,33 @@
+{
+ "chart_name": "POS Sales Register",
+ "chart_type": "Report",
+ "creation": "2024-07-19 17:26:12.561555",
+ "custom_options": "{\"x_field\": \"pos_profile\", \"chart_type\": \"Bar\", \"y_axis_fields\": [{\"idx\": 1, \"__islocal\": true, \"name\": \"row 1\", \"y_field\": \"grand_total\", \"color\": \"#29CD42\"}], \"y_fields\": [\"grand_total\"], \"colors\": [\"#29CD42\"]}",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "filters_json": "{\"company\":\"De-suung Skilling\",\"from_date\":\"2024-06-19\",\"to_date\":\"2024-07-19\",\"group_by\":\"POS Profile\"}",
+ "group_by_type": "Count",
+ "idx": 0,
+ "is_public": 0,
+ "is_standard": 1,
+ "modified": "2024-07-19 17:26:12.633587",
+ "modified_by": "pema.dhendup@thimphutechpark.bt",
+ "module": "Selling",
+ "name": "POS Sales Register",
+ "number_of_groups": 0,
+ "owner": "pema.dhendup@thimphutechpark.bt",
+ "report_name": "POS Sales Register",
+ "roles": [],
+ "time_interval": "Yearly",
+ "timeseries": 0,
+ "timespan": "Last Year",
+ "type": "Bar",
+ "use_report_chart": 0,
+ "x_field": "pos_profile",
+ "y_axis": [
+  {
+   "color": "#29CD42",
+   "y_field": "grand_total"
+  }
+ ]
+}

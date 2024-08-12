@@ -91,7 +91,16 @@
   "purchase_receipt_amount",
   "default_finance_book",
   "amended_from",
-  "aid_reference"
+  "aid_reference",
+  "data_86",
+  "vehicle_number",
+  "serial_number",
+  "asset_status",
+  "custodian",
+  "custodian_name",
+  "additional_value",
+  "residual_value",
+  "remarks"
  ],
  "fields": [
   {
@@ -658,6 +667,50 @@
    "fieldtype": "Link",
    "label": "Business Activity",
    "options": "Business Activity"
+  },
+  {
+   "fieldname": "data_86",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "vehicle_number",
+   "fieldtype": "Data",
+   "label": "vehicle_number"
+  },
+  {
+   "fieldname": "serial_number",
+   "fieldtype": "Data",
+   "label": "serial_number"
+  },
+  {
+   "fieldname": "asset_status",
+   "fieldtype": "Data",
+   "label": "asset_status"
+  },
+  {
+   "fieldname": "custodian",
+   "fieldtype": "Data",
+   "label": "custodian"
+  },
+  {
+   "fieldname": "custodian_name",
+   "fieldtype": "Data",
+   "label": "custodian_name"
+  },
+  {
+   "fieldname": "additional_value",
+   "fieldtype": "Data",
+   "label": "additional_value"
+  },
+  {
+   "fieldname": "residual_value",
+   "fieldtype": "Data",
+   "label": "residual_value"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Data",
+   "label": "remarks"
   }
  ],
  "idx": 72,
@@ -680,7 +733,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2024-01-25 14:35:55.487681",
+ "modified": "2024-06-28 08:52:20.596154",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",

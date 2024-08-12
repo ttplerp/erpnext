@@ -45,7 +45,7 @@ def get_columns(filters, trans):
 
 
 def validate_filters(filters):
-	for f in ["Fiscal Year", "Based On", "Period", "Company"]:
+	for f in ["Fiscal Year", "Based On", "Period"]:
 		if not filters.get(f.lower().replace(" ", "_")):
 			frappe.throw(_("{0} is mandatory").format(f))
 

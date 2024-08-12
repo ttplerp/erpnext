@@ -116,7 +116,7 @@ class PolAdvance(AccountsController):
 		if not credit_account:
 			frappe.throw("Expense Account is mandatory")
 		if not advance_account:
-			frappe.throw("Setup POL Advance Account in Maintenance Accounts Settings")
+			frappe.throw("Setup POL Advance Accounts in company {}".format(frappe.get_desk_link(self.company)))
 
 		account_type = frappe.db.get_value("Account", credit_account, "account_type")
 		voucher_type = "Journal Entry"

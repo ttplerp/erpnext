@@ -167,6 +167,9 @@ class DesuupPayoutEntry(Document):
 		# OJT addtional condition
 		if self.desuup_deployment and self.payment_for == "OJT":
 			cond += " AND t1.name = '{}'".format(self.desuup_deployment)
+
+		if self.desuup_deployment and self.payment_for == "Production":
+			cond += " AND t1.name = '{}'".format(self.desuup_deployment)
 		
 		return cond
 
@@ -587,6 +590,8 @@ def make_bank_payment(source_name, target_doc=None):
 		target.posting_date = get_datetime()
 		target.from_date = None
 		target.to_date = None
+		target.month = ""
+		target.remarks = 'Desuup payment'
 		target.paid_from = frappe.db.get_value("Branch", target.branch,"expense_bank_account")
 		target.get_entries()
 

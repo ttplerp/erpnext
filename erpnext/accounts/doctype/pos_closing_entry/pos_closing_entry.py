@@ -54,10 +54,12 @@ class POSClosingEntry(StatusUpdater):
 				invalid_row.setdefault("msg", []).append(
 					_("POS Invoice is not {}").format(frappe.bold("submitted"))
 				)
+			'''
 			if pos_invoice.owner != self.user:
 				invalid_row.setdefault("msg", []).append(
 					_("POS Invoice isn't created by user {}").format(frappe.bold(self.owner))
 				)
+			'''
 
 			if invalid_row.get("msg"):
 				invalid_rows.append(invalid_row)

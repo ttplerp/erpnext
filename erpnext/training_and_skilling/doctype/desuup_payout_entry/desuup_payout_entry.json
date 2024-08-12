@@ -77,6 +77,7 @@
    "options": "\n01\n02\n03\n04\n05\n06\n07\n08\n09\n10\n11\n12"
   },
   {
+   "columns": 1,
    "fieldname": "payment_for",
    "fieldtype": "Select",
    "in_list_view": 1,
@@ -128,7 +129,7 @@
    "options": "Training Management"
   },
   {
-   "depends_on": "eval:doc.payment_for == 'OJT'",
+   "depends_on": "eval:doc.payment_for != 'Trainee'",
    "fieldname": "desuup_deployment",
    "fieldtype": "Link",
    "label": "Desuup Deployment",
@@ -196,6 +197,7 @@
    "label": "Additional Information"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "bank_payment",
    "fieldtype": "Link",
    "label": "Bank Payment",
@@ -208,8 +210,11 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
+   "columns": 1,
    "fieldname": "payment_status",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Payment Status",
    "no_copy": 1,
    "read_only": 1
@@ -224,7 +229,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-30 11:44:29.631276",
+ "modified": "2024-08-05 13:39:17.208779",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Payout Entry",

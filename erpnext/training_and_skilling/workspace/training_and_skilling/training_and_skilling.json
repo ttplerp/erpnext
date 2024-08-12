@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"type\":\"paragraph\",\"data\":{\"text\":\"<span class=\\\"h3\\\">Shortcuts</span>\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":3}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h3\\\">Masters &amp; Reports</span><br>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Training\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Master Record\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Deployment Record\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Training Selection\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Desuup Deployment &amp; Payment\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Attendance\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Report\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Desuup Settings\",\"col\":4}}]",
+ "content": "[{\"type\":\"paragraph\",\"data\":{\"text\":\"<span class=\\\"h3\\\">Shortcuts</span>\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":3}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h3\\\">Masters &amp; Reports</span><br>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Training\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Master Record\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Deployment Record\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Training Selection\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"DSP Stipend Disbursement\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"OJT/Apprenticeship &amp; Payout Entry\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Report\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Desuup Settings\",\"col\":4}}]",
  "creation": "2022-11-23 17:23:56.647037",
  "docstatus": 0,
  "doctype": "Workspace",
@@ -167,17 +167,17 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Attendance",
-   "link_count": 2,
+   "label": "Desuup Settings",
+   "link_count": 1,
    "onboard": 0,
    "type": "Card Break"
   },
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Desuup Attendance",
+   "label": "Desuup Settings",
    "link_count": 0,
-   "link_to": "Desuup Attendance",
+   "link_to": "Desuup Settings",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -185,7 +185,35 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Desuup Attendance Tool",
+   "label": "DSP Stipend Disbursement",
+   "link_count": 3,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Trainee Payout Entry",
+   "link_count": 0,
+   "link_to": "Desuup Payout Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Desuup Mess Advance",
+   "link_count": 0,
+   "link_to": "Desuup Mess Advance",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Trainee Attendance Tool",
    "link_count": 0,
    "link_to": "Desuup Attendance Tool",
    "link_type": "DocType",
@@ -195,8 +223,114 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "OJT/Apprenticeship &amp; Payout Entry",
+   "link_count": 4,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "OJT/Apprenticeship Entry",
+   "link_count": 0,
+   "link_to": "Desuup Deployment Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "OJT/Apprenticeship Payout Entry",
+   "link_count": 0,
+   "link_to": "Desuup Payout Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "OJT/Apprenticeship Attendance",
+   "link_count": 0,
+   "link_to": "Desuup Attendance Tool",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Payment Type",
+   "link_count": 0,
+   "link_to": "Deployment Pay Type",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Training",
+   "link_count": 5,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Training Management",
+   "link_count": 0,
+   "link_to": "Training Management",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Barred Desuups For DSP",
+   "link_count": 0,
+   "link_to": "Barred Desuup",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Desuup List",
+   "link_count": 0,
+   "link_to": "Desuup",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Add Trainee ",
+   "link_count": 0,
+   "link_to": "Trainee Addition",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Make Training Management Draft",
+   "link_count": 0,
+   "link_to": "Draft Training Management",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "Report",
-   "link_count": 7,
+   "link_count": 8,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -272,110 +406,16 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
-   "label": "Desuup Settings",
-   "link_count": 1,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Desuup Settings",
+   "is_query_report": 1,
+   "label": "Skilling Programme",
    "link_count": 0,
-   "link_to": "Desuup Settings",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Training",
-   "link_count": 4,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Training Management",
-   "link_count": 0,
-   "link_to": "Training Management",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Barred Desuups For DSP",
-   "link_count": 0,
-   "link_to": "Barred Desuup",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Desuup List",
-   "link_count": 0,
-   "link_to": "Desuup",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Add Trainee ",
-   "link_count": 0,
-   "link_to": "Trainee Addition",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Desuup Deployment &amp; Payment",
-   "link_count": 3,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Desuup Payout Entry",
-   "link_count": 0,
-   "link_to": "Desuup Payout Entry",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Desuup Deployment Entry",
-   "link_count": 0,
-   "link_to": "Desuup Deployment Entry",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Desuup Mess Advance",
-   "link_count": 0,
-   "link_to": "Desuup Mess Advance",
-   "link_type": "DocType",
+   "link_to": "Skilling Programme Report",
+   "link_type": "Report",
    "onboard": 0,
    "type": "Link"
   }
  ],
- "modified": "2024-07-08 12:14:20.763813",
+ "modified": "2024-08-11 08:36:52.864294",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training And Skilling",

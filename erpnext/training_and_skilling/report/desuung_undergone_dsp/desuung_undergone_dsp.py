@@ -42,7 +42,7 @@ def get_data(filters=None):
 				on tm.name=td.parent
 				where tm.docstatus!=2
 				{}
-				group by td.desuup_id
+				group by td.desuup_cid
 				order by count desc
 			""".format(condition)
 	return frappe.db.sql(query)

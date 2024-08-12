@@ -265,8 +265,8 @@ def validate_expense_against_budget(args):
 			if budget_records:
 				validate_budget_records(args, budget_records)
 			else:
-				frappe.throw(_("Budget allocation not available for <b>%s </b> in %s <b>%s</b>" % (
-								args.account, budget_against, frappe.db.escape(args.get(budget_against))
+				frappe.throw(_("Budget allocation not available for <b>%s </b> in %s Consumption Cost Center: <b> %s</b> and Budget Cost Center <b>%s</b>" % (
+								args.account, budget_against, args.committed_cost_center, frappe.db.escape(args.get(budget_against))
 							))
 						)
 	commit_budget(args)

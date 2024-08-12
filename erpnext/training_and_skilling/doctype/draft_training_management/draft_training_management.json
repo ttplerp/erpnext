@@ -1,0 +1,117 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:DTM-{YY}-{MM}-{####}",
+ "creation": "2024-06-26 14:24:51.211911",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "make_training_management_in_draft_section",
+  "training_management",
+  "start_date",
+  "end_date",
+  "column_break_4",
+  "training_center",
+  "programme_classification",
+  "amended_from",
+  "change_status",
+  "status"
+ ],
+ "fields": [
+  {
+   "fieldname": "training_management",
+   "fieldtype": "Link",
+   "label": "Training Management",
+   "options": "Training Management"
+  },
+  {
+   "fetch_from": "training_management.training_start_date",
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Training Start Date",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "training_management.training_end_date",
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "Training End Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "training_management.training_center",
+   "fieldname": "training_center",
+   "fieldtype": "Link",
+   "label": "Training Center",
+   "options": "Training Center",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "training_management.programme_classification",
+   "fieldname": "programme_classification",
+   "fieldtype": "Link",
+   "label": "Program Classification",
+   "options": "Programme Classification",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Draft Training Management",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "make_training_management_in_draft_section",
+   "fieldtype": "Section Break",
+   "label": "Make Training Management in Draft"
+  },
+  {
+   "depends_on": "eval:doc.change_status",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Change Status To",
+   "options": "Draft\nCreated\nApproved\nOn Going\nCompleted\nCancelled"
+  },
+  {
+   "default": "0",
+   "fieldname": "change_status",
+   "fieldtype": "Check",
+   "label": "Change Status"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-08-09 11:45:07.767477",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Draft Training Management",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

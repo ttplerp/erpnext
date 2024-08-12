@@ -17,6 +17,343 @@ from erpnext.assets.doctype.asset_category.asset_category import get_asset_categ
 from erpnext.budget.doctype.budget.budget import validate_expense_against_budget
 import csv
 
+def submit_ta():
+    for a in frappe.db.sql("select name, docstatus from `tabTrainee Addition`", as_dict=True):
+        print(a.name, a.docstatus)
+
+def change_warehouse():
+	for a in frappe.db.sql("""select name, voucher_type, voucher_no 
+								from `tabGL Entry` 
+							where account='Warehouse - Paro - DS'
+							and is_cancelled!=1
+						""", as_dict=True):
+		doc = frappe.get_doc(a.voucher_type, a.voucher_no)
+		if doc.company == "De-suung Skilling":
+			if a.voucher_type in ("Purchase Receipt","Stock Entry"):
+				warehouse = doc.set_warehouse if a.voucher_type=="Purchase Receipt" else doc.from_warehouse
+				if warehouse=="Warehouse - Phuentsholing - DS":
+					print(doc.branch, a.name, a.voucher_type, a.voucher_no, warehouse)
+					frappe.db.sql("""
+						update `tabGL Entry` set account="Warehouse - Phuentsholing - DS" 
+						where name='{}'
+						""".format(a.name))
+	frappe.db.commit()
+
+def correct_asset():
+	i=1
+	for a in frappe.db.sql("select name, posting_date from `tabAsset` where name in ('ASSET23008501','ASSET23008502','ASSET23008503')", as_dict=True):
+		print(i, a.name)
+		i+=1
+		frappe.db.sql("Update `tabAsset` set docstatus=0 where name='{}'".format(a.name))
+		frappe.db.sql("delete from `tabDepreciation Schedule` where parent='{}'".format(a.name))
+		frappe.db.commit()
+		doc = frappe.get_doc("Asset",a.name)
+		doc.available_for_use_date = doc.posting_date
+		doc.save()
+		#print(get_last_day(doc.available_for_use_date))
+		doc1 = frappe.get_doc("Asset Finance Book",{"parent":a.name})
+		#print(doc1.depreciation_start_date)
+		frappe.db.sql("update `tabAsset Finance Book` set depreciation_start_date='{}' where name='{}'".format(get_last_day(doc.available_for_use_date), doc1.name))
+		frappe.db.commit()
+
+		doc2 = frappe.get_doc("Asset",a.name)
+		doc2.save()
+		frappe.db.sql("Update `tabAsset` set docstatus=1, status='submitted' where name='{}'".format(a.name))
+		frappe.db.sql("update `tabDepreciation Schedule` set docstatus=1 where parent='{}'".format(a.name))
+		frappe.db.commit()
+		make_depreciation_entry(a.name, "2024-06-30")
+		
+def check_cid_did():
+	for a in frappe.db.sql("select desuup_id, desuup_cid, desuup_name, parent from `tabTrainee Details`", as_dict=True):
+		if frappe.db.exists("Desuup", {"desuup_cid":a.desuup_cid}):
+			doc = frappe.get_doc("Desuup", {"desuup_cid":a.desuup_cid})
+			if a.desuup_did != doc.name:
+				print(a.desuup_id, ",", a.desuup_cid, ",", a.desuup_name, ",", doc.cid_number, ",", doc.desuup_name, ",", a.parent)
+		#else:
+		#	print("Does Not Exists, ", a.desuup_id, ",", a.desuup_cid, ",",a.desuup_name,",",a.parent)
+
+def update_pmt():
+	with open("/home/frappe/erp/pmt.csv") as f:
+		reader = csv.reader(f)
+		mylist = list(reader)
+		c = 1
+		for i in mylist:
+			c+=1
+			if frappe.db.exists("Programme Classification", {"code":str(i[0])}):
+				'''
+				doc = frappe.get_doc("Programme Classification", {"code":str(i[0])})
+				doc1= frappe.get_doc("User", str(i[3]))
+				print(c, str(i[0]), str(i[1]),str(i[2]),str(i[3]), doc.name, doc1.name)
+				doc.append("item",{
+					"user":doc1.name,
+					"pmt_name":doc1.full_name,
+					"mobile_no":doc1.mobile_no,
+					"email":doc1.name
+				})
+				doc.save()
+				'''
+			else:
+				pass
+				print(str(i[0]), str(i[1]), " Doest not exist")
+
+def dep_asset():
+	with open("/home/frappe/erp/DSP_ASSET1.csv") as f:
+		reader = csv.reader(f)
+		mylist = list(reader)
+		c = 1
+		for i in mylist:
+			asset = str(i[1])
+			if frappe.db.exists("Asset", asset):
+				schedule_date="2024-05-31"
+				print(c, asset)
+				make_depreciation_entry(asset,schedule_date)
+				frappe.db.commit()
+				c += 1
+
+def check_acc():
+	for a in frappe.db.sql("""
+				select a.name from `tabAccount` a
+				where a.parent_account="114000 - Inventories - DS" 
+				and a.company="De-suung Skilling" 
+				and not exists(select 1 from `tabWarehouse` w
+								where a.name=w.account 
+								and company="De-suung Skilling")
+			""", as_dict=True):
+		for b in frappe.db.sql("""
+					select creation, owner, name, voucher_no, voucher_type, is_cancelled
+					from `tabGL Entry`
+					where account="{}" 
+					and docstatus=1
+				group by voucher_no
+				""".format(a.name), as_dict=True):
+			if b.voucher_type == "Purchase Receipt":
+				if frappe.db.exists(b.voucher_type, b.voucher_no):
+					doc = frappe.get_doc(b.voucher_type, b.voucher_no)
+					if frappe.db.exists("Warehouse",{"name":doc.set_warehouse,"company":"De-suung Skilling"}):
+						w_account = frappe.db.get_value("Warehouse",doc.set_warehouse, "account")
+						print("PR",a.name, b.voucher_no, doc.set_warehouse, w_account)
+					frappe.db.sql("update `tabGL Entry` set account='{}' where name='{}'".format(w_account, b.name))
+			elif b.voucher_type == "Stock Entry":
+				if frappe.db.exists(b.voucher_type, b.voucher_no):
+					doc = frappe.get_doc(b.voucher_type, b.voucher_no)
+					if doc.from_warehouse:
+						if frappe.db.exists("Warehouse",{"name":doc.from_warehouse,"company":"De-suung Skilling"}):
+							w_account = frappe.db.get_value("Warehouse",doc.from_warehouse, "account")
+							print("SE", a.name, b.voucher_no, doc.to_warehouse, doc.from_warehouse,w_account)
+					elif doc.to_warehouse:
+						if frappe.db.exists("Warehouse",{"name":doc.to_warehouse,"company":"De-suung Skilling"}):
+							w_account = frappe.db.get_value("Warehouse",doc.to_warehouse, "account")
+							print("SE", a.name, b.voucher_no, doc.to_warehouse, doc.to_warehouse,w_account)
+					frappe.db.sql("update `tabGL Entry` set account='{}' where name='{}'".format(w_account, b.name))
+				else:
+					print("Does Not exist", a.voucher_no, b.name, b.is_cancelled)
+			if b.is_cancelled:
+				frappe.db.sql("delete from `tabGL Entry` where name='{}'".format(b.name))
+	frappe.db.commit()
+
+def update_pe_pi():
+	for a in frappe.db.sql("""select * from `tabPayment Entry`
+							where company="De-suung HQ"
+							and branch in ("Gyelpozhing - Desuung Training centre","Coordination Hubs","Construction of 50 Classroom & 20 Bedded Barrack at Chimepang Royal Project","De-suung Headquarter")
+							and docstatus !=2 """, as_dict=True):
+		pa_account = a.paid_to
+		new_pa_account = pa_account.replace("- DS","- DH")
+		if not frappe.db.exists("Account", new_pa_account):
+				print("Paid TO Acc :", a.name, new_pa_account) 
+
+		account = a.paid_from
+		new_account = account.replace("- DS","- DH")
+		if not frappe.db.exists("Account", new_account):
+			print("Paid From Acc :", a.name, new_account)
+		frappe.db.sql("""
+			update `tabPayment Entry` set paid_to="{}", paid_from="{}" 
+			where name="{}"
+		""".format(new_pa_account, new_account, a.name))
+	frappe.db.commit()
+
+def check_budget():
+	i = 1
+	for a in frappe.db.sql("""select e.* from `tabBudget` e,
+							`tabCost Center` c
+							where e.cost_center = c.name and c.cost_center_for = "DHQ"
+							and (e.cost_center!="" or e.cost_center is NOT NULL) and e.company!='De-suung HQ'
+							and e.docstatus !=2 """, as_dict=True):
+		v_cc = a.cost_center
+		new_v_cc = v_cc.replace("- DS","- DH")
+		if not frappe.db.exists("Cost Center", new_v_cc):
+			print("CC :", a.name, new_v_cc)
+		frappe.db.sql("""
+					update `tabBudget` set cost_center="{}", company="De-suung HQ"
+					where name="{}"
+				""".format(new_v_cc, a.name))
+
+		print(i, a.name, a.cost_center, a.fiscal_year)
+		for b in frappe.db.sql("""
+								select *from `tabBudget Account` where parent="{}"
+							""".format(a.name), as_dict=True):
+			pa_account = b.parent_account
+			new_pa_account = pa_account.replace("- DS","- DH")
+			if not frappe.db.exists("Account", new_pa_account):
+				print("Pa Acc :", a.name,new_pa_account) 
+
+			account = b.account
+			new_account = account.replace("- DS","- DH")
+			if not frappe.db.exists("Account", new_account):
+				print("Acc :", a.name,new_account)
+			frappe.db.sql("""
+						update `tabBudget Account` set parent_account="{}",
+						account="{}" where name="{}"
+					""".format(new_pa_account, new_account, b.name))
+	frappe.db.commit()
+
+def rename_account():
+	i=1
+	for a in frappe.db.sql("""select * from `tabAccount`
+				 where company='De-suung HQ'
+				and account_number is NOT NULL
+				limit 200, 100
+				 """, as_dict=True):
+		if str(a.account_number) in str(a.name):
+			print(i, "Yes", a.name, a.account_name, a.account_number)
+		else:
+			
+			new_name= str(a.account_number) + " - " + str(a.name)
+			rd.rename_doc("Account", a.name, new_name, force=False, merge=False, ignore_permissions=True)
+			print(i, "Renamed", a.name, a.account_number, new_name )
+		i+=1
+			
+
+def check_asset():
+	i = 1
+	for a in frappe.db.sql("""select e.* from `tabAsset` e,
+							`tabCost Center` c
+							where e.cost_center = c.name and c.cost_center_for = "DHQ"
+							and asset_owner="Company" and asset_owner_company="De-suung Skilling"
+							and (e.cost_center!="" or e.cost_center is NOT NULL) and e.company='De-suung HQ' 
+							and e.docstatus !=2 """, as_dict=True):
+		v_cc = a.cost_center
+		new_v_cc = v_cc.replace("- DS","- DH")
+		if not frappe.db.exists("Cost Center", new_v_cc):
+			print("CC :", new_v_cc)
+		asset_account = a.asset_account
+		new_ass_account = asset_account.replace("- DS","- DH")
+		if not frappe.db.exists("Account", new_ass_account):
+			print("Acc :", new_ass_account)
+
+		credit_account = a.credit_account
+		new_cre_account = credit_account.replace("- DS","- DH")
+		if not frappe.db.exists("Account", new_cre_account):
+			print("Acc :", new_cre_account)
+		
+		frappe.db.sql("""update `tabAsset` set company="De-suung HQ",
+   					asset_owner_company="De-suung HQ"
+					where name="{}"
+   				""".format(a.name))
+		
+		print(i, a.asset_owner_company, a.name, a.cost_center, a.branch, a.company)
+		i+=1
+	frappe.db.commit()
+	
+def update_dhq_wh():
+	for a in frappe.db.sql("""select *from `tabWarehouse` where company='De-suung HQ' 
+						and is_group=0 
+						and name not in ('Bumthang DC Officer - DH','Bumthang Desuung Tshongkhang warehouse - DH') 
+						""", as_dict=True):
+		print(a.name, a.account)
+		account = a.account
+		new_account = account.replace("- DS", "- DH")
+		warehouse_name = a.name
+		new_name = warehouse_name.replace("- DS", "- DH")
+		rd.rename_doc("Warehouse", a.name, new_name, force=False, merge=False, ignore_permissions=True)
+		frappe.db.sql("update `tabWarehouse` set account='{}' where name='{}'".format(new_account, new_name))
+		print(a.name, "Done for ", new_name)
+	frappe.db.commit()
+
+def update_gl_com():
+	i=1
+	for a in frappe.db.sql("""select e.* from `tabGL Entry` e,
+								`tabCost Center` c
+								where e.cost_center = c.name and c.cost_center_for = "DHQ"
+								and (e.cost_center!="" or e.cost_center is NOT NULL) and e.company!='De-suung HQ' 
+								and e.voucher_type="Stock Reconciliation" 
+								and e.is_cancelled !=1 """, as_dict=True):
+		account = a.account
+		cost_center= a.cost_center
+		against = a.against if a.against else None
+		new_account = account.replace("- DS", "- DH")
+		new_cc = cost_center.replace("- DS", "- DH")
+		new_against = against.replace("- DS", "- DH") if a.against else None
+		if not frappe.db.exists("Account", new_account):
+			print(a.account, ":", new_account, " : ", a.voucher_no)
+		
+		if not frappe.db.exists("Cost Center", new_cc):
+			print("CC Not exist : ", new_cc)
+		
+		frappe.db.sql("""update `tabGL Entry` set company="De-suung HQ",
+		   			account="{}",
+		   			against="{}",
+		   			cost_center="{}" where name="{}"
+		   		""".format(new_account, new_against, new_cc, a.name))
+		
+		doc = frappe.get_doc("Stock Reconciliation", a.voucher_no)
+		v_cc = doc.cost_center
+		new_v_cc = v_cc.replace("- DS","- DH")
+		
+		branch = frappe.db.get_value("Branch",{"cost_center":new_v_cc}, "name")
+		if not frappe.db.exists("Branch", branch):
+			print("Branch Not exisit , ", branch, doc.cost_center)
+		
+		frappe.db.sql("""Update `tabStock Reconciliation` set 
+					company='De-suung HQ', 
+					cost_center="{}"
+					where name='{}'
+				""".format(new_v_cc, a.voucher_no))
+		
+		frappe.db.sql(""" Update `tabStock Ledger Entry` set
+					company='De-suung HQ'
+					where voucher_no="{}"
+				""".format(a.voucher_no))
+		print(i, "Done for :", a.voucher_no)
+		i+=1
+	#frappe.db.commit()
+
+def update_wh_td():
+	for a in frappe.db.sql("""select *from `tabWarehouse` 
+								where parent_warehouse='All Warehouses - DH' 
+								and company='De-suung HQ'""", as_dict=True):
+		company = "De-suung HQ"
+		account = a.account
+		new_account = account.replace("- DS","- DH")
+		for b in frappe.db.sql(""" select *from `tabStock Ledger Entry`
+								where warehouse = "{}"
+								and voucher_type="Stock Entry"
+							""".format(a.name), as_dict=True):
+			doc = frappe.get_doc("Stock Entry", b.voucher_no)
+			cc = frappe.db.get_value("Branch", doc.branch, "cost_center")
+			frappe.db.sql("""
+				Update `tabStock Entry` set cost_center="{}", company="{}"
+				where name="{}"
+				""".format(cc, company, b.voucher_no))
+			frappe.db.sql("""
+				Update `tabStock Entry Detail` set cost_center="{}"
+				where parent="{}"
+				""".format(cc, b.voucher_no))
+			frappe.db.sql("""
+				Update `tabStock Ledger Entry` set company="{}"
+				where name="{}"
+				""".format(company, b.name))
+			for c in frappe.db.sql("select *from `tabGL Entry` where voucher_no='{}'".format(b.voucher_no), as_dict=True):
+				c_account = c.account
+				new_c_account = c_account.replace("- DS","- DH")
+				if not frappe.db.exists("Account", new_c_account):
+					frappe.throw("Accoount {} doesnot exists".format(new_c_account))
+				frappe.db.sql("""
+					update `tabGL Entry` set account="{}", company="{}"
+					where name="{}"
+					""".format(new_c_account, company, c.name))
+			print("Done", b.name, a.name)
+	frappe.db.commit()
+
 def update_pp():
 	for a in frappe.db.sql("""
 					select name, programme, domain from `tabTraining Management`
@@ -134,19 +471,29 @@ def delete_sister_brother():
 # and a.cost_center = 'Tailoring & Productions of Apparels - Jangsheri - DSP'
 def depreciate_asset():
 	count=0
+	'''
 	for a in frappe.db.sql("""
-						   select a.name,d.schedule_date
+						   select a.name,d.schedule_date, a.company
 						   from `tabAsset` a inner join
 						   `tabDepreciation Schedule` d
 						   on a.name = d.parent
-						   where d.schedule_date <= '2021-07-01'
-						   and (d.journal_entry is null or d.journal_entry ='') and a.name='ASSET22003240'
-						   and a.status = 'Submitted' group by d.parent
+						   where d.schedule_date <= '2024-05-01'
+						   and (d.journal_entry is null or d.journal_entry ='')
+						   and a.docstatus = 1 group by a.name
 						   """,as_dict=1):
-		make_depreciation_entry(a.name, a.schedule_date)
-		print(a.name)
+	'''
+	for a in frappe.db.sql(""" select d.parent, d.schedule_date from  `tabDepreciation Schedule` d 	
+								where d.docstatus=1
+								and (d.journal_entry='' or journal_entry is NULL)
+								and d.parent not in ("ASSET23006457","ASSET23010207", "ASSET23004837","ASSET23002907","ASSET23004380","ASSET24000030","ASSET23003772","ASSET24000030","ASSET23004569","ASSET23000089")
+								and d.schedule_date = '2024-04-30'
+						""", as_dict=True):
+		print(count, a.parent, a.schedule_date)
+		make_depreciation_entry(a.parent, a.schedule_date)
 		count += 1
+		frappe.db.commit()
 	print(count)
+
 # print(a)
 # def show_latest_promotion():
 	# employees = frappe.db.sql("""
@@ -459,6 +806,19 @@ def update_user_pwd():
 		ds.save(ignore_permissions=1)
 		c += 1
 	print("DONE")
+
+def check_dsp():
+	with open("/home/frappe/erp/ERP_upload_details.csv") as f:
+		reader = csv.reader(f)
+		mylist = list(reader)
+		c = 1
+		for i in mylist:
+			desuup_cid = str(i[1])
+			dtl = frappe.db.sql("select * from `tabTrainee Details` where desuup_cid='{0}' or desuup_id='{0}' ".format(desuup_cid), as_dict=True)
+			if not dtl:
+				#if not frappe.db.exists("Trainee Details", {"desuup_cid":desuup_cid}):
+				print(c,",",i[1],",",str(i[2]),",",i[3],",",i[4],",",i[5],",",i[6],",",i[7],",",i[8],",",i[9],",",i[10],",",i[11],",",i[12],",",i[13])
+				c += 1
 
 def rename_merge_child_cost_center():
 	with open("/home/frappe/erp/apps/erpnext/erpnext/Renaming of Cost_Center_Final.csv") as f:
@@ -984,3 +1344,70 @@ def update_cid_did_training():
 	for a in frappe.db.sql("select name, desuup_id, desuup_cid from `tabTrainee Details` where desuup_cid like 'DS%'", as_dict=True):
 		frappe.db.sql("update `tabTrainee Details` set desuup_id='{}', desuup_cid='{}' where name='{}'".format(a.desuup_cid, a.desuup_id, a.name))
 		print(str(a.name)+' '+str(a.desuup_id)+' '+str(a.desuup_cid))
+
+def update_cc_company():
+	i=1
+	for a in frappe.get_all("Job Card", filters={"docstatus": 1}, fields=["name","branch", "cost_center", "company"]):
+		# if i == 2:
+		# 	break
+		
+		print(i, str(a.name), str(a.branch))
+		b_doc = frappe.get_doc("Branch", str(a.branch))
+		frappe.db.sql("update `tabJob Card` set company=%s, cost_center=%s where name=%s",(b_doc.company, b_doc.cost_center, str(a.name)))
+		frappe.db.sql("update `tabGL Entry` set company=%s, cost_center=%s where voucher_no=%s",(b_doc.company, b_doc.cost_center, str(a.name)))
+		frappe.db.sql("update `tabPayment Ledger Entry` set company=%s, cost_center=%s where voucher_no=%s",(b_doc.company, b_doc.cost_center, str(a.name)))
+		frappe.db.sql("update `tabCommitted Budget` set company=%s, cost_center=%s where reference_no=%s",(b_doc.company, b_doc.cost_center, str(a.name)))
+		frappe.db.sql("update `tabConsumed Budget` set company=%s, cost_center=%s where reference_no=%s",(b_doc.company, b_doc.cost_center, str(a.name)))
+		i+=1
+
+import random
+import string
+
+def insert_pol_to_pol_item():
+    def generate_random_name(length):
+        letters_and_digits = string.ascii_letters + string.digits
+        return ''.join(random.choice(letters_and_digits) for _ in range(length))
+
+    # Fetch records from tabPOL
+    pol_records = frappe.db.sql("SELECT * FROM `tabPOL` WHERE docstatus = 1 AND amount > 0", as_dict=True)
+
+    for pol in pol_records:
+        random_name = generate_random_name(10)
+        
+        # Check if random_name already exists in tabPOL Item
+        while frappe.db.exists("tabPOL Item", {"name": random_name}):
+            random_name = generate_random_name(10)  # Generate new random name if it exists
+
+        print(pol.name, pol.qty, pol.amount, pol.stock_uom, pol.posting_date, pol.memo_number)
+
+        # Insert into tabPOL Item
+        frappe.db.sql("""
+            INSERT INTO `tabPOL Item` (
+                name, creation, modified, modified_by, owner, docstatus, idx,
+                parent, parentfield, parenttype, bill_no, uom, bill_date, rate, amount, qty
+            ) VALUES (
+                %s, %s, %s, %s, %s, 1, 1,
+                %s, 'items', 'POL', %s, %s, %s, %s, %s, %s
+            )""", (random_name, pol.creation, pol.modified, pol.modified_by, pol.owner, pol.name, pol.memo_number, pol.stock_uom,
+                   pol.posting_date, pol.rate, pol.amount, pol.qty))
+
+        print("DONE")
+
+def post_je():
+	doc = frappe.get_doc("Trainee Addition", "AT-24-07-131161")
+	doc.on_submit()
+
+def pos_bank_gl_correction():
+	count=0
+	profiles = frappe.db.sql("select name from `tabPOS Profile` where bank_account is not null or bank_account != '' limit 40", as_dict=1)
+	for p in profiles:
+		print(p.name)
+		for d in frappe.db.sql("select gl.account account,sum(gl.debit) d,gl.voucher_no v_no from `tabGL Entry` gl, `tabSales Invoice` i \
+			where i.name=gl.voucher_no and gl.voucher_type='Sales Invoice' and gl.debit>0 and gl.account='113003 - Bank - CD (203632677) - DS' \
+			and i.pos_profile='{}' group by voucher_no".format(str(p.name)), as_dict=1):
+			bank_account = frappe.db.get_value("POS Profile", str(p.name), "bank_account")
+			count += 1
+
+			if len(d) > 0:
+				print(count, d.v_no, str(bank_account), str(d.account))
+				frappe.db.sql("update `tabGL Entry` set account='{0}' where account='{1}' and debit>0 and voucher_no='{2}'".format(str(bank_account),str(d.account),str(d.v_no)))

@@ -68,6 +68,7 @@
   {
    "fieldname": "party",
    "fieldtype": "Link",
+   "ignore_user_permissions": 1,
    "label": "Party",
    "options": "Employee"
   },
@@ -85,7 +86,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-05-27 10:37:55.943292",
+ "modified": "2024-08-06 09:52:32.952641",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Center",

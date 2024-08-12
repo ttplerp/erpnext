@@ -156,14 +156,14 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Deployment Status",
-   "options": "\nDraft\nCreated\nOn Going\nCompleted\nCancelled",
+   "options": "\nDraft\nCreated\nVerified\nApproved\nOn Going\nCompleted\nCancelled",
    "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-19 15:06:29.484134",
+ "modified": "2024-08-09 11:18:09.648624",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Deployment Entry",

@@ -313,7 +313,6 @@ def make_entry(args, adv_adj, update_outstanding, from_repost=False):
 				#Commit Budget
 				cc_doc = frappe.get_doc("Cost Center", args.cost_center)
 				budget_cost_center = cc_doc.budget_cost_center if cc_doc.use_budget_from_parent else args.cost_center
-				
 				bud_obj = frappe.get_doc({
 					"doctype": "Committed Budget",
 					"account": args.account,
