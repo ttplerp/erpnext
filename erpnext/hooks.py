@@ -464,8 +464,8 @@ email_brand_image = "assets/erpnext/images/erpnext-logo.jpg"
 default_mail_footer = """
 	<span>
 		Sent via
-		<a class="text-muted" href="https://erp.nhdcl.bt" target="_blank">
-			NHDCL ERP
+		<a class="text-muted" href="#" target="_blank">
+			ERP
 		</a>
 	</span>
 """
