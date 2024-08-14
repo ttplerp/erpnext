@@ -14,6 +14,7 @@
   "warehouse",
   "campaign",
   "company_address",
+  "pos_code",
   "section_break_15",
   "applicable_for_users",
   "section_break_11",
@@ -388,8 +389,13 @@
    "fieldname": "bank_account",
    "fieldtype": "Link",
    "label": "Bank Account",
-   "options": "Account",
-   "reqd": 1
+   "options": "Account"
+  },
+  {
+   "fieldname": "pos_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "POS Profile Code"
   }
  ],
  "icon": "icon-cog",
@@ -417,7 +423,7 @@
    "link_fieldname": "pos_profile"
   }
  ],
- "modified": "2024-05-20 10:26:58.121391",
+ "modified": "2024-08-14 11:42:47.405693",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "POS Profile",
