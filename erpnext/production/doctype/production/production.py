@@ -26,9 +26,8 @@ class Production(StockController):
 		self.assign_default_dummy()
 
 	def on_submit(self):
-		frappe.enqueue(make_stock_account_ledger, queue="long")
-		# self.update_stock_ledger()
-		# self.make_gl_entries()
+		self.update_stock_ledger()
+		self.make_gl_entries()
 		# make_auto_production(self)
 		self.make_production_entry()
 		frappe.enqueue(make_auto_production(self), queue="long")
@@ -571,10 +570,6 @@ class Production(StockController):
 		else:
 			frappe.msgprint("No records in production settings")
 
-@frappe.whitelist()
-def make_stock_account_ledger(self):
-    self.update_stock_ledger()
-    self.make_gl_entries()
 
 @frappe.whitelist()
 def make_auto_production(self):
