@@ -26,8 +26,9 @@ class Production(StockController):
 		self.assign_default_dummy()
 
 	def on_submit(self):
-		self.update_stock_ledger()
-		self.make_gl_entries()
+		frappe.enqueue(make_stock_account_ledger, queue="long")
+		# self.update_stock_ledger()
+		# self.make_gl_entries()
 		# make_auto_production(self)
 		self.make_production_entry()
 		frappe.enqueue(make_auto_production(self), queue="long")
@@ -112,7 +113,6 @@ class Production(StockController):
 			if self.docstatus == 2:
 				sl_entries.reverse()
 			self.make_sl_entries(sl_entries, self.amended_from and 'Yes' or 'No')
-
 
 	def assign_default_dummy(self):
 		self.pol_type = None
@@ -445,6 +445,7 @@ class Production(StockController):
 
 		if not self.raw_materials:
 			frappe.throw("Please enter a raw material to get the Product")
+		# frappe.throw(str(self.raw_materials))
 		else:
 			condition = ""
 			for a in self.raw_materials:
@@ -460,7 +461,6 @@ class Production(StockController):
 					condition += " and item_type = '" + str(a.item_type) + "'"
 				if a.warehouse:
 					condition += " and warehouse = '" + str(a.warehouse) + "'"
-		
 		if raw_material_item:
 			count = 0
 			production_seting_code = ""
@@ -476,7 +476,7 @@ class Production(StockController):
 			
 			if count > 1:
 				frappe.throw("There are more than 1 production setting for this production parameters")
-
+			
 			if production_seting_code:
 				for a in frappe.db.sql("""
 						select parameter_type, ratio, item_code, item_name, item_type
@@ -571,6 +571,10 @@ class Production(StockController):
 		else:
 			frappe.msgprint("No records in production settings")
 
+@frappe.whitelist()
+def make_stock_account_ledger(self):
+    self.update_stock_ledger()
+    self.make_gl_entries()
 
 @frappe.whitelist()
 def make_auto_production(self):
