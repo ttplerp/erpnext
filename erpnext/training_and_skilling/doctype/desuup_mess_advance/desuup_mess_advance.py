@@ -136,13 +136,15 @@ class DesuupMessAdvance(Document):
 						OR %(to_date)s BETWEEN from_date AND to_date
 					)
 					AND docstatus IN (1)
+					AND reference_name = %(ref)s
 				)
 				{}
 			ORDER BY 
 				t2.desuup_name
 		""".format(cond), {
 			'from_date': getdate(self.from_date),
-			'to_date': getdate(self.to_date)
+			'to_date': getdate(self.to_date),
+			'ref': self.training_management,
 		}, as_dict=True)
 
 		for desuup in desuup_list:

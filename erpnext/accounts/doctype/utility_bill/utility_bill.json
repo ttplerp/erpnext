@@ -192,6 +192,7 @@
    "fieldname": "journal_entry",
    "fieldtype": "Link",
    "label": "Journal Entry",
+   "no_copy": 1,
    "options": "Journal Entry",
    "read_only": 1
   },
@@ -205,7 +206,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-05-22 12:26:51.822715",
+ "modified": "2024-08-15 11:29:20.200110",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Utility Bill",
