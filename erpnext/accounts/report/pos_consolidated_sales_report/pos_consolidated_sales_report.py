@@ -27,27 +27,18 @@ def get_pos_entries(filters, from_date, to_date):
 	# data = frappe.db.sql(""" SELECT ce.pos_profile, ce.grand_total, ced.mode_of_payment, ced.closing_amount FROM `tabPOS Closing Entry` ce, `tabPOS Closing Entry Detail` ced 
 	# 		WHERE ce.name=ced.parent and ce.company='{}' AND ce.posting_date BETWEEN '{}' AND '{}' cd.docstatus=1
 	# 		ORDER BY ce.pos_profile""".format(filters.get("company"), getdate(from_date), getdate(to_date)), as_dict=1)
-	frappe.throw("""
-			SELECT
-				p.pos_profile, p.base_grand_total as grand_total, sip.mode_of_payment, sip.base_amount
-			FROM
-				`tabPOS Invoice` p, `tabSales Invoice Payment` sip
-			WHERE
-				p.docstatus = 1 and
-				sip.parent = p.name AND ifnull(sip.base_amount, 0) != 0 AND
-				p.posting_date BETWEEN '{}' AND '{}' AND p.company = '{}'
-			ORDER BY
-				p.pos_profile
-			""".format(from_date, to_date, filters.get("company")))
+	
 	data = frappe.db.sql("""
 			SELECT
-				p.pos_profile, p.base_grand_total as grand_total, sip.mode_of_payment, sip.base_amount
+				p.pos_profile, sip.mode_of_payment, sum(sip.base_amount) base_amount
 			FROM
 				`tabPOS Invoice` p, `tabSales Invoice Payment` sip
 			WHERE
 				p.docstatus = 1 and
 				sip.parent = p.name AND ifnull(sip.base_amount, 0) != 0 AND
 				p.posting_date BETWEEN '{}' AND '{}' AND p.company = '{}'
+			GROUP BY
+				sip.mode_of_payment, p.pos_profile
 			ORDER BY
 				p.pos_profile
 			""".format(from_date, to_date, filters.get("company")),
