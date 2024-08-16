@@ -54,6 +54,7 @@ def prepare_pos_entries(pos_entries):
 
 	for key, value in data.items():
 		new_data = frappe._dict({
+					"pos_profile_code": frappe.db.get_value("POS Profile", str(key), "pos_code"),
 					"pos_profile": key,
 					"cash": 0.0,
 					"online": 0.0,
@@ -72,6 +73,12 @@ def prepare_pos_entries(pos_entries):
 
 def get_column():
 	return [
+		{
+			"label": _("POS Profile Code"),
+			"fieldname": "pos_profile_code",
+			"fieldtype": "Link",
+			"width": 60,
+		},
 		{
 			"label": _("POS Profile"),
 			"fieldname": "pos_profile",
