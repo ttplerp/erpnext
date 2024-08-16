@@ -14,6 +14,7 @@ class POSProfile(Document):
 		self.validate_all_link_fields()
 		self.validate_duplicate_groups()
 		self.validate_payment_methods()
+		self.validate_pos_profile_code()
 
 	def validate_default_profile(self):
 		for row in self.applicable_for_users:
@@ -99,8 +100,14 @@ class POSProfile(Document):
 				msg = _("Please set default Cash or Bank account in Mode of Payments {}")
 			frappe.throw(msg.format(", ".join(invalid_modes)), title=_("Missing Account"))
 
+	def validate_pos_profile_code(self):
+		if self.pos_code:
+			for d in frappe.db.get_all("POS Profile", {"pos_code": self.pos_code, "name": ("!=", self.name)}):
+				frappe.throw("The POS Profile Code is already in used.")
+
 	def on_update(self):
 		self.set_defaults()
+		self.validate_pos_profile_code()
 
 	def on_trash(self):
 		self.set_defaults(include_current_pos=False)

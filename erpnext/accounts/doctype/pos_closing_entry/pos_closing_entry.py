@@ -22,6 +22,7 @@ class POSClosingEntry(StatusUpdater):
 			frappe.throw(_("Selected POS Opening Entry should be open."), title=_("Invalid Opening Entry"))
 
 		self.validate_pos_invoices()
+		self.validate_closing_amount()
 		self.update_branch_cost_center()
 
 	def update_branch_cost_center(self):
@@ -30,6 +31,11 @@ class POSClosingEntry(StatusUpdater):
 		if not self.cost_center:
 			self.cost_center = frappe.db.get_value("POS Profile", self.pos_profile, "cost_center")
 
+	def validate_closing_amount(self):
+		for d in self.get("payment_reconciliation"):
+			if flt(d.expected_amount) > 0 and flt(d.closing_amount) == 0:
+				frappe.throw("Closing Amount is missing at #Row:{}".format(d.idx))
+				
 	def validate_pos_invoices(self):
 		invalid_rows = []
 		for d in self.pos_transactions:
