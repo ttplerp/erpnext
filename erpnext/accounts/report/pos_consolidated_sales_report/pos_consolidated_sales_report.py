@@ -76,8 +76,9 @@ def get_column():
 		{
 			"label": _("POS Profile Code"),
 			"fieldname": "pos_profile_code",
-			"fieldtype": "Link",
-			"width": 60,
+			"fieldtype": "Data",
+			"options": "",
+			"width": 100,
 		},
 		{
 			"label": _("POS Profile"),
