@@ -17,10 +17,67 @@ def get_data(filters):
 	if getdate(from_date) > getdate(to_date):
 		frappe.throw("From Date cannot be greater than To Date.")
 		
-	data = frappe.db.sql(""" SELECT pos_profile, sum(grand_total) as total_amount FROM `tabPOS Closing Entry` WHERE company='{}' AND posting_date BETWEEN 
-			'{}' AND '{}' GROUP BY pos_profile""".format(filters.get("company"), getdate(from_date), getdate(to_date)), as_dict=1)
+	data = get_pos_entries(filters, getdate(from_date), getdate(to_date))
+	if len(data):
+		data = prepare_pos_entries(data)
 
 	return [] if len(data) == 0 else data
+
+def get_pos_entries(filters, from_date, to_date):
+	# data = frappe.db.sql(""" SELECT ce.pos_profile, ce.grand_total, ced.mode_of_payment, ced.closing_amount FROM `tabPOS Closing Entry` ce, `tabPOS Closing Entry Detail` ced 
+	# 		WHERE ce.name=ced.parent and ce.company='{}' AND ce.posting_date BETWEEN '{}' AND '{}' cd.docstatus=1
+	# 		ORDER BY ce.pos_profile""".format(filters.get("company"), getdate(from_date), getdate(to_date)), as_dict=1)
+	frappe.throw("""
+			SELECT
+				p.pos_profile, p.base_grand_total as grand_total, sip.mode_of_payment, sip.base_amount
+			FROM
+				`tabPOS Invoice` p, `tabSales Invoice Payment` sip
+			WHERE
+				p.docstatus = 1 and
+				sip.parent = p.name AND ifnull(sip.base_amount, 0) != 0 AND
+				p.posting_date BETWEEN '{}' AND '{}' AND p.company = '{}'
+			ORDER BY
+				p.pos_profile
+			""".format(from_date, to_date, filters.get("company")))
+	data = frappe.db.sql("""
+			SELECT
+				p.pos_profile, p.base_grand_total as grand_total, sip.mode_of_payment, sip.base_amount
+			FROM
+				`tabPOS Invoice` p, `tabSales Invoice Payment` sip
+			WHERE
+				p.docstatus = 1 and
+				sip.parent = p.name AND ifnull(sip.base_amount, 0) != 0 AND
+				p.posting_date BETWEEN '{}' AND '{}' AND p.company = '{}'
+			ORDER BY
+				p.pos_profile
+			""".format(from_date, to_date, filters.get("company")),
+			as_dict=1,
+		)
+
+	return [] if len(data) == 0 else data
+
+def prepare_pos_entries(pos_entries):
+	data, row = {}, []
+	for d in pos_entries:
+		data.setdefault(d.get("pos_profile"), []).append(d)
+
+	for key, value in data.items():
+		new_data = frappe._dict({
+					"pos_profile": key,
+					"cash": 0.0,
+					"online": 0.0,
+					"grand_total": 0.0,
+				})
+		for d in value:
+			if cstr(d.mode_of_payment) == 'Cash':
+				new_data['cash'] = new_data['cash'] + d.base_amount
+				new_data['grand_total'] = new_data['grand_total'] + new_data['cash']
+			if cstr(d.mode_of_payment) == 'Online':
+				new_data['online'] = new_data['online'] + d.base_amount
+				new_data['grand_total'] = new_data['grand_total'] + new_data['online']
+		
+		row.append(new_data)
+	return row
 
 def get_column():
 	return [
@@ -32,8 +89,22 @@ def get_column():
 			"width": 250,
 		},
 		{
+			"label": _("Cash"),
+			"fieldname": "cash",
+			"fieldtype": "Currency",
+			"options": "company:currency",
+			"width": 120,
+		},
+		{
+			"label": _("Online"),
+			"fieldname": "online",
+			"fieldtype": "Currency",
+			"options": "company:currency",
+			"width": 120,
+		},
+		{
 			"label": _("Total Amount"),
-			"fieldname": "total_amount",
+			"fieldname": "grand_total",
 			"fieldtype": "Currency",
 			"options": "company:currency",
 			"width": 120
