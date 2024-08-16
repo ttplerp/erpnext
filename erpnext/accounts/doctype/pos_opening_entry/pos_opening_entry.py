@@ -45,9 +45,10 @@ class POSOpeningEntry(StatusUpdater):
 			frappe.throw(msg.format(", ".join(invalid_modes)), title=_("Missing Account"))
 
 	def validate_duplicate_opening_entry(self):
-		for d in frappe.db.get_all("POS Opening Entry", {"user": self.user, "pos_profile": self.pos_profile, "posting_date": self.posting_date, "status": "Open", "docstatus":1, "name": ("!=", self.name)}):
+		# for d in frappe.db.get_all("POS Opening Entry", {"user": self.user, "pos_profile": self.pos_profile, "posting_date": self.posting_date, "status": "Open", "docstatus":1, "name": ("!=", self.name)}):
+		for d in frappe.db.get_all("POS Opening Entry", {"pos_profile": self.pos_profile, "posting_date": self.posting_date, "docstatus": ("<", 2), "name": ("!=", self.name)}):
 			frappe.throw(
-				_("POS Opening Entry already created for {}, cannot create again.").format(self.posting_date)
+				_("POS Opening Entry already created for <b>{}</b>, cannot create again. Reference <b>{}</b>").format(self.posting_date, d.name)
 			)
 
 	def on_submit(self):
