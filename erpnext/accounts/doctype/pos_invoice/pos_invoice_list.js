@@ -38,5 +38,18 @@ frappe.listview_settings['POS Invoice'] = {
 				}
 			});
 		});
+		
+		// console.log(frappe.session.user);
+		// console.log([frappe.user_roles]);
+		// console.log([...frappe.user_roles]); // ... is a spread operator
+		// console.log(roles);
+
+		if (!in_list([...frappe.user_roles], 'Sales Manager')) {
+			$('.btn-primary').hide();
+		}
+		
 	},
+	// refresh: function(listview) {
+    //     $('li[data-view="Report"]').hide();
+    // },
 };
