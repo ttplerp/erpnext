@@ -367,7 +367,7 @@ def commit_budget(args):
 				"item_code": args.item_code,
 				"company": args.company,
 				"business_activity": args.business_activity,
-				"committed_cost_center": args.committed_consumed_budget,
+				"committed_cost_center": args.committed_cost_center,
 			}
 		)
 		doc.submit()
