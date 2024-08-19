@@ -808,6 +808,8 @@ class Asset(AccountsController):
 		if not status:
 			status = self.get_status()
 		self.db_set("status", status)
+		if self.status == "Cancelled":
+			self.db_set("workflow_state", status)
 
 	def get_status(self):
 		"""Returns status based on whether it is draft, submitted, scrapped or depreciated"""
