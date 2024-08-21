@@ -456,8 +456,8 @@ class POL(StockController):
 				AND fuelbook = '{}'
 				AND fuelbook_branch = '{}'
 				AND balance_amount > 0
-				AND equipment_number = '{}' 
-				ORDER BY entry_date""".format(self.fuelbook,self.equipment_branch,self.equipment_number),as_dict=True)
+				AND equipment_number = '{}' AND company = '{}'
+				ORDER BY entry_date""".format(self.fuelbook,self.equipment_branch,self.equipment_number, self.company),as_dict=True)
 		self.set('advances',[])
 
 		if not data:
@@ -469,8 +469,8 @@ class POL(StockController):
 						AND fuelbook = '{}'
 						AND fuelbook_branch = '{}'
 						AND balance_amount = 0
-						AND equipment_number = '{}' 
-						ORDER BY entry_date desc limit 1""".format(self.fuelbook,self.equipment_branch,self.equipment_number),as_dict=True)
+						AND equipment_number = '{}' AND company = '{}'
+						ORDER BY entry_date desc limit 1""".format(self.fuelbook,self.equipment_branch,self.equipment_number, self.company),as_dict=True)
 		allocated_amount = self.total_amount
 		total_amount_adjusted = 0
 
