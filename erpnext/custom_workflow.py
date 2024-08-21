@@ -545,6 +545,10 @@ class CustomWorkflow:
 			if frappe.session.user != self.doc.owner:
 				frappe.throw("Only {} can apply this leave".format(self.doc.owner))
 
+		elif self.new_state.lower() == ("Waiting CEO Approval".lower()) and self.old_state.lower() == ("Draft".lower()):
+			if frappe.session.user != self.doc.owner:
+				frappe.throw("Only {} can apply this leave".format(self.doc.owner))
+				
 		elif self.new_state.lower() == ("Waiting Supervisor Approval".lower()):
 			self.set_approver("Supervisor")	
 
