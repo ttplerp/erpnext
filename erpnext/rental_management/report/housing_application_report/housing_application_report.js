@@ -24,29 +24,30 @@ frappe.query_reports["Housing Application Report"] = {
         {
             'fieldname': 'work_station',
             'label': 'Work Station',
-            'fieldtype': 'Select',
-            options : [
-                "Bumthang",
-                "Chhukha",
-                "Dagana",
-                "Gasa",
-                "Haa",
-                "Lhuentse",
-                "Mongar",
-                "Paro",
-                "Pema Gatshel",
-                "Punakha",
-                "Samdrup Jongkhar",
-                "Samtse",
-                "Sarpang",
-                "Thimphu",
-                "Trashi Yangtse",
-                "Trashigang",
-                "Trongsa",
-                "Tsirang",
-                "Wangdue Phodrang",
-                "Zhemgang"
-            ]
+            'fieldtype': 'Link',
+            'options':"Dzongkhag"
+            // options : [
+            //     "Bumthang",
+            //     "Chhukha",
+            //     "Dagana",
+            //     "Gasa",
+            //     "Haa",
+            //     "Lhuentse",
+            //     "Mongar",
+            //     "Paro",
+            //     "Pema Gatshel",
+            //     "Punakha",
+            //     "Samdrup Jongkhar",
+            //     "Samtse",
+            //     "Sarpang",
+            //     "Thimphu",
+            //     "Trashi Yangtse",
+            //     "Trashigang",
+            //     "Trongsa",
+            //     "Tsirang",
+            //     "Wangdue Phodrang",
+            //     "Zhemgang"
+            // ]
             
             
         },  
