@@ -136,7 +136,8 @@ class HousingApplication(Document):
 			data1=get_civil_servant_detail(cid=self.cid)
 			if data1:
 				self.grade = data1['positionLevel']
-				self.ministry_agency = data1['OperatingUnit']
+				if data1['OperatingUnit']:
+					self.ministry_agency = data1['OperatingUnit']
 				self.department = data1['DeptName']
 				self.employee_id = data1['EmpID']
 				self.designation = data1['Designation']
