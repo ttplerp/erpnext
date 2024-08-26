@@ -51,6 +51,13 @@ def get_columns():
             'options': 'Applicant Rank'
         }
    ,
+   {
+            'fieldname': 'remarks',
+            'label': 'remarks',
+            'fieldtype': 'Data',
+            'options': ''
+        }
+   ,
      
          {
             'fieldname': 'department',
