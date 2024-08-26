@@ -5,8 +5,7 @@ import frappe
 from frappe.model.document import Document
 from frappe import _
 from frappe.model.naming import make_autoname
-from frappe.utils import nowdate, cint
-from erpnext.custom_workflow import notify_workflow_states
+from frappe.utils import nowdate
 
 class eNote(Document):
 	
@@ -16,7 +15,17 @@ class eNote(Document):
 		self.send_notification()
 		# notify_workflow_states(self)
   
-	def validate(self):		
+	def validate(self):	
+		action = frappe.request.form.get('action')
+		if action and action not in ("Save","Apply") and self.reviewer_required:
+			status = 1
+			for i in self.reviewers: 
+				if i.status != "Reviewed": 
+					status = 0
+					break
+			if status == 0:
+				frappe.throw(str('Review Not Completed'))
+			
 		self.save_forward_to()
 		self.workflow_action()
 		# if we allow on action approve, it going double email to doc owner. 
@@ -45,8 +54,10 @@ class eNote(Document):
 		action = frappe.request.form.get('action')   
 		#Allow only the permitted user to make changes
 		self.permitted_user = frappe.session.user if not self.permitted_user else self.permitted_user
-		if self.permitted_user != frappe.session.user:
-			frappe.throw(" Only <b>{}</b> is allowed to make changes and perform actions to this Note".format(self.permitted_user))
+
+		if self.get_db_value("workflow_state") != "Waiting For Reviewer":
+			if self.permitted_user != frappe.session.user:
+				frappe.throw(" Only <b>{}</b> is allowed to make changes and perform actions to this Note".format(self.permitted_user))
 		
 		message = None
 		if action in ("Forward","Apply"):
@@ -86,10 +97,11 @@ class eNote(Document):
 			self.upsert_remark(action)
 
 			message = "eNote Document {}".format("Approved" if action == "Approve" else "Rejected")
+		
 		#Send email notification and print message 
 		if message:
 			frappe.msgprint("{}".format(message))	
-   	
+			
 	def get_args(self):
 		parent_doc = frappe.get_doc(self.doctype, self.name)
 		args = parent_doc.as_dict()
@@ -105,6 +117,26 @@ class eNote(Document):
 		elif self.workflow_state == "Pending" and frappe.session.user != self.forward_to:
 			self.notify_approval()
 
+		elif self.workflow_state == "Waiting For Reviewer":
+			self.notify_reviewer()
+
+	def notify_reviewer(self):
+		self.doc = self
+		parent_doc = frappe.get_doc(self.doc.doctype, self.doc.name)
+		args = parent_doc.as_dict()
+		args.update({
+			"workflow_state": self.doc.workflow_state
+		})
+		template = frappe.db.get_single_value('HR Settings', 'enote_reviewer_notification')
+		if not template:
+			frappe.msgprint(_("Please set default template for eNote Reviewer Notification in HR Settings."))
+			return
+
+		email_template = frappe.get_doc("Email Template", template)
+		message = frappe.render_template(email_template.response, args)
+		recipients = self.doc.owner
+		subject = email_template.subject
+		self.send_mail(recipients,message, subject)
 
 	def notify_employee(self):
 		self.doc = self
@@ -210,7 +242,17 @@ class eNote(Document):
 		doc.save()
 
 	@frappe.whitelist()
-	def save_remark(self, remark):
+	def update_status(self):
+		doc = frappe.get_doc("eNote", self.name)
+		query = "SELECT name from `tabeNote Reviewer` Where user_id == '{}'".format(frappe.session.user)
+		sql = frappe.db.sql(query)
+
+		doc = frappe.db.get_doc("eNote Reviewer", sql[0].name)
+		doc.status = "Reviewed"
+		doc.save()
+
+	@frappe.whitelist()
+	def save_remark(self, remark, reviewers=None):
 		if frappe.db.exists("Employee", {"user_id":frappe.session.user}):
 			doc = frappe.get_doc("Employee", {"user_id":frappe.session.user})
 			employee = doc.name
@@ -220,7 +262,6 @@ class eNote(Document):
 			employee = None
 			employee_name = frappe.session.full_name
 			designation=None
-		
 		db_check = frappe.db.sql("""
 			select name 
 			from `tabNote Remark`
@@ -244,6 +285,25 @@ class eNote(Document):
 			doc_name.remark = remark,
 			doc_name.remark_date = nowdate()
 			doc_name.save()
+
+		if reviewers:
+			frappe.db.set_value("Note Remark", {'user': frappe.session.user}, "action", "Review")
+			frappe.db.set_value("eNote Reviewer", {'user_id': frappe.session.user}, "status", "Reviewed")
+			query = """SELECT * FROM `tabeNote Reviewer` WHERE parent = '{0}'""".format(self.name)
+			data = frappe.db.sql(query, as_dict=1)
+			status = 1
+			if data:
+				for i in data:
+					if i.status != "Reviewed":
+						status = 0
+						break
+			if status == 1:
+				# doc = frappe.get_doc('eNote', self.name) 
+				# doc.workflow_state = "Pending"
+				# doc.save()
+				# frappe.db.commit()
+				frappe.db.set_value("eNote", {'name': self.name}, "workflow_state", "Pending")
+
    
 	def send_mail(self, recipients, message, subject):
 		attachments = self.get_attachment()
@@ -259,16 +319,34 @@ class eNote(Document):
 
 def get_permission_query_conditions(user):
     if not user: user = frappe.session.user
-    # user_roles = frappe.get_roles(user)
+    user_roles = frappe.get_roles(user)
+
+	# reviewers  = frappe.db.sql("SELECT user_id FROM `tabeNote Reviewer")
+
     if user == "Administrator":
+        return
+    if "HR User" in user_roles or "HR Manager" in user_roles:
         return
     return """(
         `tabeNote`.owner = '{user}' or
-        `tabeNote`.permitted_user = '{user}' or
+		IF (
+				(`tabeNote`.reviewer_required = '1' and `tabeNote`.workflow_state != 'Waiting For Reviewer') or `tabeNote`.reviewer_required = '0',  
+				`tabeNote`.permitted_user = '{user}',
+				exists(select 1
+					from `tabEmployee` e, `tabeNote Reviewer` nr
+					where e.user_id = '{user}' and '{user}' = nr.user_id and nr.parent = `tabeNote`.name)
+			)
+		or
         exists(select 1
 			from `tabEmployee` e, `tabNote Copy` nc
 			where e.user_id = '{user}' and '{user}' = nc.user_id and nc.parent = `tabeNote`.name)
-   		)""".format(user=user)
+   		)
+		""".format(user=user)
+# `tabeNote`.permitted_user = '{user}' or
+# or
+# 		exists(select 1
+# 			from `tabEmployee` e, `tabeNote Reviewer` nr
+# 			where e.user_id = '{user}' and '{user}' = nr.user_id and nr.parent = `tabeNote`.name)
    
    
    

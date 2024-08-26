@@ -1,6 +1,7 @@
 // Copyright (c) 2023, Frappe Technologies Pvt. Ltd. and contributors
 // For license information, please see license.txt
 frappe.ui.form.on('eNote', {
+
 	refresh: function (frm) {
 		frm.set_df_property("permitted_user", "hidden", 1);
 		
@@ -82,8 +83,6 @@ frappe.ui.form.on('eNote', {
 		// set flag for toggle
 		frm.is_note_editable = editable;
 	},
-
-	
 });
 
 frappe.ui.form.on("Note Remark", {
@@ -108,12 +107,42 @@ frappe.ui.form.on("Note Remark", {
 	},
 });
 
-var save_remark = function(frm, remark){
+frappe.ui.form.on("eNote Reviewer", {
+	review: function (frm, cdt, cdn) {
+		var doc = frappe.get_doc(cdt, cdn);
+		if (doc.user_id == frappe.session.user) {
+			let remark = ""
+			let d = new frappe.ui.Dialog({
+				title: 'Write Your Remarks',
+				fields: [
+					{
+						label: __(""),
+						fieldtype: "Text Editor",
+						fieldname: "content",
+						default: remark,
+					}
+				],
+				size: 'medium', // small, large, extra-large 
+				primary_action_label: 'Review',
+				primary_action(values) {
+					save_remark(frm, values['content'], 1);
+					d.hide();
+				},
+			});
+			d.show();
+		} else { 
+			frappe.throw("You cannot review instead of others.")
+		}
+	},
+});
+
+var save_remark = function(frm, remark, reviewers){
 	frappe.call({
 		method: "save_remark",
 		doc: frm.doc,
 		args: {
-			remark: remark
+			remark: remark,
+			reviewers: reviewers
 		},
 		callback: function(r){
 			cur_frm.reload_doc();
