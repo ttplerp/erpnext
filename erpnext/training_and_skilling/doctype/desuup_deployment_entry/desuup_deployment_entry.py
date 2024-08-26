@@ -10,13 +10,38 @@ from datetime import date
 class DesuupDeploymentEntry(Document):
 	def validate(self):
 		self.validate_reported_date()
+		self.validate_duplicate_entry()
+		self.validate_desuup()
 	
 	def on_submit(self):
 		self.validate_completion_date()
 
 	def validate_completion_date(self):
 		if getdate(self.end_date) > getdate(date.today()):
-			frappe.throw("Can be completed after only after {}".format(frappe.bold(self.end_date)))
+			frappe.throw("Can be completed only after {}".format(frappe.bold(self.end_date)))
+
+	def validate_duplicate_entry(self):
+		data = []
+		for d in self.items:
+			if d.desuup not in data:
+				data.append(d.desuup)
+			else:
+				frappe.throw("Duplicate Desuup Entry at #Row. {}".format(d.idx))
+
+	def validate_desuup(self):
+		desuup = frappe.db.sql("""
+				SELECT
+					t2.desuup, t1.name, t1.end_date
+				FROM `tabDesuup Deployment Entry` t1 inner join `tabDesuup Deployment Entry Item` t2 
+				ON t1.name=t2.parent 
+				WHERE t1.status in ('On Going', 'Created')
+			""", as_dict=True)
+				
+		for td in self.items:
+			for t in desuup:
+				if self.name != t.name: 
+					if(t.desuup == td.desuup):
+						frappe.throw(_("At Row {0} Desuup  <b>{1}</b> is under going OJT <b>{2}</b> till {3}.").format(td.idx, t.desuup, t.name, t.end_date))
 
 	def validate_reported_date(self):
 		if getdate(self.start_date) > getdate(self.end_date):
