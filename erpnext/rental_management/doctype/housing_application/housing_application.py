@@ -135,7 +135,7 @@ class HousingApplication(Document):
 			#Civil Servant Deail
 			data1=get_civil_servant_detail(cid=self.cid)
 			if data1:
-				self.grade = data1['PositionLevel']
+				self.grade = data1['positionLevel']
 				self.ministry_agency = data1['OperatingUnit']
 				self.department = data1['DeptName']
 				self.employee_id = data1['EmpID']
@@ -241,8 +241,8 @@ def make_tenant_information(source_name, target_doc=None):
 					"name": "housing_application",
 					"applicant_name":"tenant_name",
 					"cid":"tenant_cid",
-					"mobile_no":"phone_no",
-					"email_id":"email",
+					"phone_no":"mobile_no",
+					"email":"email_id",
 				},
 				"postprocess": set_missing_values,
 			},
