@@ -139,7 +139,10 @@
   "feedback",
   "lft",
   "rgt",
-  "old_parent"
+  "old_parent",
+  "signature_url",
+  "applicant_id",
+  "selected_doc"
  ],
  "fields": [
   {
@@ -963,13 +966,30 @@
    "fieldtype": "Check",
    "label": "Causal Leave Allocated",
    "read_only": 1
+  },
+  {
+   "fieldname": "signature_url",
+   "fieldtype": "Attach",
+   "label": "Signature"
+  },
+  {
+   "fieldname": "applicant_id",
+   "fieldtype": "Data",
+   "label": "Applicant Id",
+   "read_only": 1
+  },
+  {
+   "fieldname": "selected_doc",
+   "fieldtype": "Data",
+   "label": "Selected Doc",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-07-06 10:03:51.136607",
+ "modified": "2024-08-27 09:14:43.381757",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
