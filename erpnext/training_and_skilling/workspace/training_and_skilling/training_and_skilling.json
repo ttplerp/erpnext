@@ -223,54 +223,6 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "OJT/Apprenticeship &amp; Payout Entry",
-   "link_count": 4,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "OJT/Apprenticeship Entry",
-   "link_count": 0,
-   "link_to": "Desuup Deployment Entry",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "OJT/Apprenticeship Payout Entry",
-   "link_count": 0,
-   "link_to": "Desuup Payout Entry",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "OJT/Apprenticeship Attendance",
-   "link_count": 0,
-   "link_to": "Desuup Attendance Tool",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Payment Type",
-   "link_count": 0,
-   "link_to": "Deployment Pay Type",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Training",
    "link_count": 5,
    "onboard": 0,
@@ -413,9 +365,67 @@
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "OJT/Apprenticeship &amp; Payout Entry",
+   "link_count": 5,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "OJT/Apprenticeship Entry",
+   "link_count": 0,
+   "link_to": "Desuup Deployment Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "OJT/Apprenticeship Payout Entry",
+   "link_count": 0,
+   "link_to": "Desuup Payout Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "OJT/Apprenticeship Attendance",
+   "link_count": 0,
+   "link_to": "Desuup Attendance Tool",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Payment Type",
+   "link_count": 0,
+   "link_to": "Deployment Pay Type",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Add Apprentice",
+   "link_count": 0,
+   "link_to": "Apprentice Addition",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2024-08-11 08:36:52.864294",
+ "modified": "2024-08-28 11:13:40.648572",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training And Skilling",

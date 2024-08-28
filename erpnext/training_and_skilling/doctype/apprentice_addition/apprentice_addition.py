@@ -12,6 +12,9 @@ class ApprenticeAddition(Document):
 	def on_submit(self):
 		self.add_desuups()
 
+	def on_cancel(self):
+		frappe.throw("For now No Cancelation Allowed")
+
 	def validate_deployment_entry(self):
 		if not self.items:
 			frappe.throw("No Desuup to Add")
