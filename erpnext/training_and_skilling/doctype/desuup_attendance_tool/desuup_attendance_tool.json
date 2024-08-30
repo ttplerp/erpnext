@@ -7,10 +7,10 @@
  "field_order": [
   "date",
   "training_center",
+  "training_management",
   "desuup_deployment",
   "column_break_2",
   "attendance_for",
-  "training_management",
   "column_break_3",
   "company",
   "unmarked_attendance_section",
@@ -65,6 +65,7 @@
    "depends_on": "eval:doc.attendance_for == \"Trainee\"",
    "fieldname": "training_center",
    "fieldtype": "Link",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Training Center",
    "options": "Training Center"
@@ -98,7 +99,7 @@
  "hide_toolbar": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-07-19 14:55:33.636799",
+ "modified": "2024-08-30 11:12:29.421309",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Attendance Tool",

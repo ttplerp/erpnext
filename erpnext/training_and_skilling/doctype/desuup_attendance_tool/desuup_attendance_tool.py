@@ -17,12 +17,18 @@ def get_desuups(date, attendance_for, cost_center=None, training_management=None
 
 	def get_conditions():
 		cond = ''
-		if desuup_deployment:
-			cond += " and t1.name = '{}'".format(desuup_deployment)
-		if training_center:
-			cond += " and t1.training_center = '{}'".format(training_center)
-		if training_management:
-			cond += " and t1.name = '{}'".format(training_management)
+		if attendance_for == "Trainee":
+			# if training_center:
+			# 	cond += " and t1.training_center = '{}'".format(training_center)
+			if training_management:
+				cond += " and t1.name = '{}'".format(training_management)
+			if not training_management:
+				frappe.throw("Please select Training Management")
+		else:
+			if desuup_deployment:
+				cond += " and t1.name = '{}'".format(desuup_deployment)
+			if not desuup_deployment:
+				frappe.throw("Please select Desuup Deployment")
 		return cond
 	
 	def get_deployment_list(new_cond):
@@ -53,6 +59,7 @@ def get_desuups(date, attendance_for, cost_center=None, training_management=None
 		new_cond = ''
 		new_cond += " and t1.deployment_type = 'OJT'"
 		desuup_list = get_deployment_list(new_cond)
+		
 	elif attendance_for == "Production":
 		new_cond = ''
 		new_cond += " and t1.deployment_type = 'Production'"
@@ -77,7 +84,7 @@ def get_desuups(date, attendance_for, cost_center=None, training_management=None
 	return {"marked": attendance_marked, "unmarked": attendance_not_marked}
 
 @frappe.whitelist()
-def mark_desuup_attendance(desuup_list, status, date, attendance_for, company=None):
+def mark_desuup_attendance(desuup_list, status, date, attendance_for, reference_doctype, reference_name, company=None):
 
 	desuup_list = json.loads(desuup_list)
 	for desuup in desuup_list:
@@ -93,6 +100,8 @@ def mark_desuup_attendance(desuup_list, status, date, attendance_for, company=No
 				desuup_name=desuup.get("desuup_name"),
 				attendance_date=getdate(date),
 				attendance_for=attendance_for,
+				reference_doctype=reference_doctype,
+				reference_name=reference_name,
 				status=status,
 				company=company,
 			)

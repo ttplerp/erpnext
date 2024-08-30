@@ -14,7 +14,7 @@ frappe.ui.form.on('Desuup Attendance Tool', {
 			return {
 				filters: {
 					"status": "On Going",
-					"training_center": doc.training_center,
+					// "training_center": doc.training_center,
 
 				}
 			};
@@ -36,9 +36,9 @@ frappe.ui.form.on('Desuup Attendance Tool', {
 	training_management: function(frm) {
 		erpnext.desuup_attendance_tool.load_desuups(frm);
 	},
-	attendance_for: function(frm) {
-		erpnext.desuup_attendance_tool.load_desuups(frm);
-	},
+	// attendance_for: function(frm) {
+	// 	erpnext.desuup_attendance_tool.load_desuups(frm);
+	// },
 
 	desuup_deployment: function(frm) {
 		erpnext.desuup_attendance_tool.load_desuups(frm);
@@ -183,6 +183,10 @@ erpnext.DesuupSelector = class DesuupSelector {
 						desuup_present.push(desuup[i]);
 					}
 				});
+
+				var reference_doctype = frm.doc.attendance_for === "Trainee" ? "Training Management" : "Desuup Deployment Entry";
+				var reference_name = frm.doc.attendance_for === "Trainee" ? frm.doc.training_management : frm.doc.desuup_deployment;
+
 				frappe.call({
 					method: "erpnext.training_and_skilling.doctype.desuup_attendance_tool.desuup_attendance_tool.mark_desuup_attendance",
 					args:{
@@ -190,6 +194,8 @@ erpnext.DesuupSelector = class DesuupSelector {
 						"status":"Present",
 						"date":frm.doc.date,
 						"attendance_for":frm.doc.attendance_for,
+						"reference_doctype": reference_doctype,
+						"reference_name": reference_name,
 						"company":frm.doc.company
 					},
 
@@ -200,7 +206,7 @@ erpnext.DesuupSelector = class DesuupSelector {
 				});
 			});
 
-		mark_desuup_toolbar.find(".btn-mark-absent")
+			mark_desuup_toolbar.find(".btn-mark-absent")
 			.html(__('Mark Absent'))
 			.on("click", function() {
 				var desuup_absent = [];
@@ -209,22 +215,26 @@ erpnext.DesuupSelector = class DesuupSelector {
 						desuup_absent.push(desuup[i]);
 					}
 				});
+		
+				var reference_doctype = frm.doc.attendance_for === "Trainee" ? "Training Management" : "Desuup Deployment Entry";
+				var reference_name = frm.doc.attendance_for === "Trainee" ? frm.doc.training_management : frm.doc.desuup_deployment;
+		
 				frappe.call({
 					method: "erpnext.training_and_skilling.doctype.desuup_attendance_tool.desuup_attendance_tool.mark_desuup_attendance",
-					args:{
-						"desuup_list":desuup_absent,
-						"status":"Absent",
-						"date":frm.doc.date,
-						"attendance_for":frm.doc.attendance_for,
-						"company":frm.doc.company
+					args: {
+						"desuup_list": desuup_absent,
+						"status": "Absent",
+						"date": frm.doc.date,
+						"attendance_for": frm.doc.attendance_for,
+						"reference_doctype": reference_doctype,
+						"reference_name": reference_name,
+						"company": frm.doc.company,
 					},
-
 					callback: function(r) {
 						erpnext.desuup_attendance_tool.load_desuups(frm);
-
 					}
 				});
-			});
+			});		
 
 		mark_desuup_toolbar.find(".btn-mark-half-day")
 			.html(__('Mark Half Day'))
@@ -235,6 +245,10 @@ erpnext.DesuupSelector = class DesuupSelector {
 						desuup_half_day.push(desuup[i]);
 					}
 				});
+
+				var reference_doctype = frm.doc.attendance_for === "Trainee" ? "Training Management" : "Desuup Deployment Entry";
+				var reference_name = frm.doc.attendance_for === "Trainee" ? frm.doc.training_management : frm.doc.desuup_deployment;
+
 				frappe.call({
 					method: "erpnext.training_and_skilling.doctype.desuup_attendance_tool.desuup_attendance_tool.mark_desuup_attendance",
 					args:{
@@ -242,6 +256,8 @@ erpnext.DesuupSelector = class DesuupSelector {
 						"status":"Half Day",
 						"date":frm.doc.date,
 						"attendance_for":frm.doc.attendance_for,
+						"reference_doctype": reference_doctype,
+						"reference_name": reference_name,
 						"company":frm.doc.company
 					},
 
