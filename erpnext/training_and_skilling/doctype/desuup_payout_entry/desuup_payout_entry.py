@@ -132,9 +132,11 @@ class DesuupPayoutEntry(Document):
 			AND a.desuup = %s
 			AND a.attendance_date BETWEEN %s AND %s
 			AND a.status IN ('Present', 'Half Day')
+			AND a.reference_doctype = %s
+			AND a.reference_name = %s
 		"""
 		# Execute the query with parameters
-		attendance_records = frappe.db.sql(query, (desuup, self.start_date, self.end_date), as_dict=True)
+		attendance_records = frappe.db.sql(query, (desuup, self.start_date, self.end_date, ref_doctype, ref_name), as_dict=True)
 		for record in attendance_records:
 			if record.status == "Present":
 				total_days += 1
@@ -178,7 +180,8 @@ class DesuupPayoutEntry(Document):
 		cond = self.get_conditions()
 		params = {
 			'start_date': getdate(self.start_date),
-			'end_date': getdate(self.end_date)
+			'end_date': getdate(self.end_date),
+			"ref_name": self.training_management,
 		}
 
 		if self.payment_for == "Trainee":
@@ -201,7 +204,7 @@ class DesuupPayoutEntry(Document):
 					`tabTrainee Details` t2 ON t1.name = t2.parent
 				WHERE 
 					t1.status = 'On Going'
-					AND t2.reporting_date IS NOT NULL 
+					AND t2.reporting_date IS NOT NULL
 					AND (
 						t1.training_start_date BETWEEN %(start_date)s AND %(end_date)s 
 						OR t1.training_end_date BETWEEN %(start_date)s AND %(end_date)s
@@ -221,6 +224,7 @@ class DesuupPayoutEntry(Document):
 							OR %(start_date)s BETWEEN from_date AND to_date
 							OR %(end_date)s BETWEEN from_date AND to_date
 						)
+						AND reference_name = %(ref_name)s
 						AND docstatus IN (1)
 					)
 					{}
