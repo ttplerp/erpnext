@@ -6,6 +6,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "html_1",
   "section_break_2",
   "employee",
   "pms_group",
@@ -36,19 +37,30 @@
   "column_break_17",
   "start_date",
   "negative_target",
+  "form_i",
   "column_break_16",
   "end_date",
+  "form_ii",
   "column_break_34",
   "evaluation_date",
+  "form_iii",
   "part_a_section",
+  "get_target",
   "evaluate_target_item",
   "form_i_total_rating",
+  "get_achievements",
+  "achievements_items",
   "part_b_section",
+  "get_competency",
   "evaluate_competency_item",
   "form_ii_total_rating",
   "section_break_18",
+  "get_leadership_competency",
+  "evaluate_leadership_competency",
   "business_target",
   "negative_rating",
+  "pms_appeal_details_section",
+  "employee_appeal_record",
   "final_score_calculation_section",
   "form_i_score",
   "target_total_weightage",
@@ -62,21 +74,45 @@
   "final_score_percent",
   "column_break_46",
   "form_iii_score",
+  "no_of_months_served",
   "overall_rating",
   "comment_section_section",
   "employee_comment",
   "column_break_48",
   "supervisor_comment",
+  "column_break_56",
+  "supervisor_manager_comment",
+  "review_by_supervisors_manager_section",
+  "supervisor_declaration",
+  "perc_community_intervention_section",
+  "perc_required",
+  "perc_approver",
+  "column_break_62",
+  "agreed_by_perc",
+  "perc_name",
+  "section_break_57",
+  "perc_community",
   "approver_detail_section",
   "approver",
+  "set_manual_approver",
+  "approver_in_first_level",
+  "supervisor_manager",
   "column_break_40",
   "approver_name",
+  "approver_fl_name",
+  "supervisor_manager_name",
   "column_break_70",
   "approver_designation",
+  "approver_fl_designation",
+  "supervisors_manager_designation",
   "eval_workflow_state",
+  "other_details_section",
+  "upload_old_data",
   "other_information_section",
+  "reason",
   "column_break_73",
   "reference",
+  "reference_name",
   "amended_from"
  ],
  "fields": [
@@ -151,45 +187,24 @@
    "label": "Form I: (Work Performance: Targets & Accomplishment)"
   },
   {
-   "depends_on": "eval:doc.pms_calendar",
+   "depends_on": "form_ii",
    "fieldname": "part_b_section",
    "fieldtype": "Section Break",
    "label": "Form II:(Work-Related Competencies and Values)"
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "PMS Appeal",
-   "print_hide": 1,
-   "read_only": 1
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "PMS Appeal",
-   "print_hide": 1,
-   "read_only": 1
   },
   {
    "allow_on_submit": 1,
    "fieldname": "evaluate_target_item",
    "fieldtype": "Table",
    "label": "Evaluate Target Item",
-   "options": "Evaluate Appeal Target Item"
+   "options": "Evaluate Target Item"
   },
   {
    "allow_on_submit": 1,
    "fieldname": "evaluate_competency_item",
    "fieldtype": "Table",
    "label": "Evaluate Competency ",
-   "options": "Evaluate Appeal Competency Item",
-   "read_only": 1
+   "options": "Evaluate Competency"
   },
   {
    "fieldname": "final_score_calculation_section",
@@ -220,9 +235,10 @@
    "read_only": 1
   },
   {
+   "depends_on": "form_iii",
    "fieldname": "section_break_18",
    "fieldtype": "Section Break",
-   "label": "Form lll(Business Activity Target For Negative Points)"
+   "label": "Form lll (Leadership Competency )"
   },
   {
    "fetch_from": "pms_group.required_to_set_target",
@@ -239,6 +255,27 @@
    "label": "PMS Calendar",
    "options": "PMS Calendar",
    "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.pms_calendar || doc.docstatus != 1",
+   "fieldname": "get_target",
+   "fieldtype": "Button",
+   "hidden": 1,
+   "label": "Get Target"
+  },
+  {
+   "depends_on": "eval:doc.docstatus != 1",
+   "fieldname": "get_competency",
+   "fieldtype": "Button",
+   "label": "Get Competency"
+  },
+  {
+   "fieldname": "achievements_items",
+   "fieldtype": "Table",
+   "hidden": 1,
+   "label": "Achievements Items",
+   "options": "Evaluate Additional Achievements",
+   "read_only": 1
   },
   {
    "allow_on_submit": 1,
@@ -308,6 +345,12 @@
    "fieldtype": "Column Break"
   },
   {
+   "fieldname": "upload_old_data",
+   "fieldtype": "Data",
+   "label": "Upload Old Data",
+   "read_only": 1
+  },
+  {
    "description": "<b>Give comments if necessary specially when you reject the PMS</b>",
    "fieldname": "comment_section_section",
    "fieldtype": "Section Break",
@@ -319,6 +362,12 @@
    "hidden": 1,
    "label": "Workflow State",
    "read_only": 1
+  },
+  {
+   "fieldname": "get_achievements",
+   "fieldtype": "Button",
+   "hidden": 1,
+   "label": "Get Achievements"
   },
   {
    "default": "Today",
@@ -406,22 +455,100 @@
    "fieldtype": "Column Break"
   },
   {
+   "fieldname": "review_by_supervisors_manager_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Review By Supervisor's Manager"
+  },
+  {
+   "bold": 1,
+   "fieldname": "supervisor_declaration",
+   "fieldtype": "Table",
+   "label": "Supervisor's Manager Declaration",
+   "options": "Supervisor Declaration",
+   "read_only": 1
+  },
+  {
+   "fieldname": "supervisor_manager",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Supervisor's Manager",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "supervisor_manager.full_name",
+   "fieldname": "supervisor_manager_name",
+   "fieldtype": "Data",
+   "label": "Supervisor's Manager Name",
+   "read_only": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "supervisor_manager_comment",
+   "fieldtype": "Small Text",
+   "label": "Supervisor Manager's Comments"
+  },
+  {
+   "fieldname": "perc_community_intervention_section",
+   "fieldtype": "Section Break",
+   "label": "PERC Intervention"
+  },
+  {
+   "fieldname": "perc_required",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Recommend To PERC?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.perc_required == 'Yes'",
+   "fieldname": "perc_community",
+   "fieldtype": "Data",
+   "label": "PERC Members",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.perc_required == 'Yes'",
+   "fieldname": "agreed_by_perc",
+   "fieldtype": "Select",
+   "label": "Agreed By PERC?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "section_break_57",
+   "fieldtype": "Section Break",
+   "hidden": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "other_details_section",
+   "fieldtype": "Section Break",
+   "label": "Other Details"
+  },
+  {
    "collapsible": 1,
    "fieldname": "other_information_section",
    "fieldtype": "Section Break",
-   "label": "Reference Section"
+   "label": "Reason for Unfreeze of PMS"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "reason",
+   "fieldtype": "Small Text",
+   "ignore_user_permissions": 1,
+   "label": "Reason",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_73",
    "fieldtype": "Column Break"
   },
   {
-   "allow_on_submit": 1,
    "fieldname": "reference",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "ignore_user_permissions": 1,
    "label": "Reference",
-   "options": "Performance Evaluation",
    "read_only": 1
   },
   {
@@ -446,8 +573,7 @@
    "fieldname": "unit",
    "fieldtype": "Link",
    "label": "Unit",
-   "options": "Department",
-   "read_only": 1
+   "options": "Department"
   },
   {
    "fetch_from": "employee.section",
@@ -457,6 +583,23 @@
    "label": "Section",
    "options": "Department",
    "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "1",
+   "fieldname": "no_of_months_served",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "No of Months Served In Same Department",
+   "options": "\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12"
+  },
+  {
+   "fieldname": "column_break_56",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_62",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "column_break_46",
@@ -480,6 +623,19 @@
    "ignore_user_permissions": 1,
    "label": "Approver Designation",
    "read_only": 1
+  },
+  {
+   "fieldname": "supervisors_manager_designation",
+   "fieldtype": "Data",
+   "ignore_user_permissions": 1,
+   "label": "Supervisor's Manager Designation",
+   "read_only": 1
+  },
+  {
+   "fieldname": "html_1",
+   "fieldtype": "HTML",
+   "hidden": 1,
+   "options": "<h3 style=\"color: #5fbb49;\"> Employee Details<i class=\"fa fa-users\"></i></h3> "
   },
   {
    "fieldname": "section_break_2",
@@ -509,11 +665,11 @@
    "fieldtype": "Column Break"
   },
   {
+   "fetch_from": "employee.company",
    "fieldname": "company",
    "fieldtype": "Link",
    "label": "Company",
-   "options": "Company",
-   "read_only": 1
+   "options": "Company"
   },
   {
    "fetch_from": "employee.date_of_joining",
@@ -524,6 +680,7 @@
   },
   {
    "allow_on_submit": 1,
+   "fetch_from": "overall_rating.star",
    "fieldname": "star_obtained",
    "fieldtype": "Rating",
    "label": "Star Obtained",
@@ -542,10 +699,54 @@
    "fieldtype": "Column Break"
   },
   {
+   "bold": 1,
+   "default": "0",
+   "fieldname": "set_manual_approver",
+   "fieldtype": "Check",
+   "label": "Set Manual Approver",
+   "read_only": 1
+  },
+  {
+   "fieldname": "approver_in_first_level",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Approver In First Level",
+   "read_only": 1
+  },
+  {
+   "fieldname": "approver_fl_name",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Approver FL Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "approver_fl_designation",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Approver FL Designation",
+   "read_only": 1
+  },
+  {
+   "fieldname": "perc_approver",
+   "fieldtype": "Link",
+   "label": "PERC Approver",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "perc_approver.full_name",
+   "fieldname": "perc_name",
+   "fieldtype": "Data",
+   "label": "PERC Name",
+   "read_only": 1
+  },
+  {
    "default": "0",
    "fetch_from": "pms_group.negative_target",
    "fieldname": "negative_target",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Eligible For Negative Target"
   },
   {
@@ -558,18 +759,80 @@
    "fieldname": "business_target",
    "fieldtype": "Table",
    "label": "Business Target",
-   "options": "Performance Appeal Evaluation Negative Target"
+   "options": "Performance Evaluation Negative Target"
   },
   {
    "fieldname": "form_iii_score",
    "fieldtype": "Float",
    "label": "Form lll Score",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fetch_from": "pms_group.required_to_set_target",
+   "fieldname": "form_i",
+   "fieldtype": "Check",
+   "label": "Eligible For Form I",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fetch_from": "pms_group.form_ii",
+   "fieldname": "form_ii",
+   "fieldtype": "Check",
+   "label": "Eligible For Form II",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fetch_from": "pms_group.form_three",
+   "fieldname": "form_iii",
+   "fieldtype": "Check",
+   "label": "Eligible For Form III",
+   "read_only": 1
+  },
+  {
+   "fieldname": "evaluate_leadership_competency",
+   "fieldtype": "Table",
+   "label": "Leadership Competency",
+   "options": "Leadership Competency"
+  },
+  {
+   "depends_on": "eval:doc.docstatus != 1",
+   "fieldname": "get_leadership_competency",
+   "fieldtype": "Button",
+   "label": "Get Leadership Competency"
+  },
+  {
+   "fieldname": "reference_name",
+   "fieldtype": "Link",
+   "label": "Reference Name",
+   "options": "Performance Evaluation"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "PMS Appeal",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "pms_appeal_details_section",
+   "fieldtype": "Section Break",
+   "label": "PMS Appeal Details"
+  },
+  {
+   "fieldname": "employee_appeal_record",
+   "fieldtype": "Table",
+   "options": "Appeal Details"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-10-31 14:40:45.465033",
+ "modified": "2024-08-16 14:39:43.099993",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "PMS Appeal",

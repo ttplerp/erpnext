@@ -341,11 +341,13 @@
   {
    "fieldname": "emission_standard",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Emission Standard"
   },
   {
    "fieldname": "wheeler",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Wheeler",
    "options": "\n26\n10\n6\n4\n2"
   },
@@ -364,7 +366,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-07-02 14:55:20.804062",
+ "modified": "2024-08-13 16:24:22.278189",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment",

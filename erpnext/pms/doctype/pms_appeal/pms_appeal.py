@@ -14,12 +14,16 @@ class PMSAppeal(Document):
 	def validate(self):
 		self.set_reference()
 		self.calculate_target_score()
-		self.calculate_competency_score()
-		self.calculate_negative_score()
+		if self.form_ii:
+			self.calculate_competency_score()
+		if self.form_iii:
+			self.calculate_leadership_competency_score()
+		self.set_perc_approver()
+		# self.calculate_negative_score()
 		self.calculate_final_score()
-		validate_workflow_states(self)
-		if self.workflow_state != "Approved":
-			notify_workflow_states(self)
+		# validate_workflow_states(self)
+		# if self.workflow_state != "Approved":
+		# 	notify_workflow_states(self)
 	def on_submit(self):
 		self.employee_pms_record()
 	def on_cancel(self):
@@ -27,8 +31,8 @@ class PMSAppeal(Document):
 		self.update_employee_master()
 
 	def set_perc_approver(self):
-		approver = frappe.db.get_single_value("HR Settings","appeal")
-		approver_name = frappe.db.get_single_value("HR Settings","approver_name")
+		approver = frappe.db.get_single_value("HR Settings","hr_approver")
+		approver_name = frappe.db.get_single_value("HR Settings","hr_approver_name")
 		self.db_set("approver", approver)
 		self.db_set("approver_name", approver_name)
 	def set_reference(self, cancel=False):
@@ -95,35 +99,37 @@ class PMSAppeal(Document):
 		#     return
 		if not self.evaluate_competency_item:
 			frappe.throw('Competency cannot be empty please use <b>Get Competency Button</b>')
-		indx, total, count, total_score = 0,0,0,0
-		for i, item in enumerate(self.evaluate_competency_item):
-			if not item.is_parent and not item.achievement:
-				frappe.throw('You need to rate competency at row <b>{}</b>'.format(i+1))
-			# frappe.throw(str(self.evaluate_competency_item[indx].competency))
-			if not item.is_parent and item.top_level == self.evaluate_competency_item[indx].competency:
-				# frappe.throw(str(item.rating))
-				tot_rating = flt(item.weightage_percent)/100 * flt(self.evaluate_competency_item[indx].weightage)
-				total += tot_rating
-				count += 1
-				if i == len(self.evaluate_competency_item):
-					indx = i
-					
-			elif i != indx and item.is_parent and item.top_level != self.evaluate_competency_item[indx].competency :
-				self.evaluate_competency_item[indx].average = total / count
-				self.evaluate_competency_item[indx].db_set('average',self.evaluate_competency_item[indx].average)
-				self.evaluate_competency_item[indx].score = flt(self.evaluate_competency_item[indx].average)/ flt(self.evaluate_competency_item[indx].weightage) * 100
-				self.evaluate_competency_item[indx].db_set('score',self.evaluate_competency_item[indx].score)
-				total_score += flt(self.evaluate_competency_item[indx].average)
-				indx, total, count = i,0,0
+		total = 0
+		for item in self.evaluate_competency_item:
+			if not item.achievement:
+				frappe.throw('You need to rate competency at row <b>{}</b>'.format(item.idx))
 
-		self.evaluate_competency_item[indx].average = total / count
-		self.evaluate_competency_item[indx].db_set('average',self.evaluate_competency_item[indx].average)
-		self.evaluate_competency_item[indx].score = flt(self.evaluate_competency_item[indx].average)/ flt(self.evaluate_competency_item[indx].weightage) * 100
-		self.evaluate_competency_item[indx].db_set('score',self.evaluate_competency_item[indx].score)
+			tot_rating = flt(item.weightage_percent)/100 * flt(item.weightage)
+			item.average = tot_rating
+
 		competency_rating = frappe.db.get_value("PMS Group",self.pms_group,"weightage_for_competency")
-		rating_ii = total_score + flt(self.evaluate_competency_item[indx].average)
-		self.form_ii_total_rating = flt(competency_rating)/100 * flt(rating_ii)
+		for item in self.evaluate_competency_item:
+			total = item.average + total
+		self.form_ii_total_rating = flt(competency_rating)/100 * flt(total)
 		self.db_set('form_ii_total_rating', self.form_ii_total_rating)
+
+	def calculate_leadership_competency_score(self):
+		if not self.evaluate_leadership_competency:
+			frappe.throw('Competency cannot be empty please use <b>Get Leadership Competency button</b>')
+		total = 0
+		for item in self.evaluate_leadership_competency:
+			if not item.achievement:
+				frappe.throw('You need to rate leadership competency at row <b>{}</b>'.format(item.idx))
+
+			tot_rating = flt(item.weightage_percent)/100 * flt(item.weightage)
+			item.average = tot_rating
+
+		leadership_competency_rating = frappe.db.get_value("PMS Group",self.pms_group,"weightage_for_form_three")
+		for item in self.evaluate_leadership_competency:
+			total = item.average + total
+		self.negative_rating = flt(leadership_competency_rating)/100 * flt(total)
+		self.db_set('negative_rating', self.negative_rating)
+
 	def calculate_negative_score(self):
 		if not self.negative_target:
 			pass
@@ -181,6 +187,15 @@ class PMSAppeal(Document):
 		row.performance_evaluation = self.name
 		emp.save(ignore_permissions=True)
 		frappe.msgprint("""PMS Appeal record Updated in Employee Master Data of employee <a href= "#Form/Employee/{0}">{0}</a>""".format(self.employee))
+
+	@frappe.whitelist()
+	def check_employee_or_supervisor(self):
+		employee = supervisor = 0
+		if frappe.session.user == frappe.db.get_value("Employee",self.employee,"user_id"):
+			employee = 1
+		if frappe.session.user == frappe.db.get_value("Employee",self.approver,"user_id"):
+			supervisor = 1
+		return employee, supervisor
 
 def get_permission_query_conditions(user):
 	# restrict user from accessing this doctype if not the owner

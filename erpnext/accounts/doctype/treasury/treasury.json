@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "autoname": "field:identification_number",
  "creation": "2024-05-29 12:20:33.080709",
  "default_view": "List",
@@ -12,6 +13,7 @@
   "party",
   "identification_number",
   "type_of_instrument",
+  "investment_type",
   "status",
   "currency",
   "column_break_kjphm",
@@ -21,13 +23,14 @@
   "term",
   "day",
   "posting_date",
+  "is_existing",
+  "opening_accrued_interest",
   "section_break_gb8qi",
   "interest_item",
   "amount_details_section",
   "principal_amount",
   "interest_rate",
   "column_break_lb1uk",
-  "total_interest",
   "total_outstanding",
   "section_break_wkang",
   "remarks",
@@ -126,12 +129,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "total_interest",
-   "fieldtype": "Currency",
-   "label": "Total Interest",
-   "read_only": 1
-  },
-  {
    "fieldname": "total_outstanding",
    "fieldtype": "Currency",
    "label": "Total Outstanding",
@@ -216,12 +213,31 @@
   {
    "fieldname": "section_break_gb8qi",
    "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_existing",
+   "fieldtype": "Check",
+   "label": "Is Existing"
+  },
+  {
+   "depends_on": "eval:doc.is_existing == 1;",
+   "fieldname": "opening_accrued_interest",
+   "fieldtype": "Currency",
+   "label": "Opening Accrued Interest"
+  },
+  {
+   "fieldname": "investment_type",
+   "fieldtype": "Select",
+   "label": "Investment Type",
+   "options": "\nShort Term\nLong Term",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-23 11:12:15.254329",
+ "modified": "2024-08-20 16:23:14.814237",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Treasury",

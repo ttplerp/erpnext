@@ -32,7 +32,7 @@ class FollowUp(Document):
 			pap_doc.db_set("status",'Follow Up')
 			eu_doc.db_set("status", 'Follow Up')
 		else:
-			initial_doc = frappe.get_doc("Audit Initial Report", {"execute_audit_no": self.execute_audit_no})
+			initial_doc = frappe.get_doc("Audit Report", {"execute_audit_no": self.execute_audit_no})
 			if initial_doc.docstatus == 1:
 				pap_doc.db_set("status", 'Initial Report')
 				eu_doc.db_set("status", 'Initial Report')
@@ -174,10 +174,29 @@ class FollowUp(Document):
 			row = self.append('audit_observations',{})
 			row.update(d)
 
+	@frappe.whitelist()
+	def get_auditor_and_auditee(self):
+		auditor_display = auditee_display = 0
+		auditors = auditees = []
+		for auditor in self.audit_team:
+			auditors.append(frappe.db.get_value("Employee", auditor.employee, "user_id"))
+		for auditee_emp in self.direct_accountability:
+			auditees.append(frappe.db.get_vlue("Employee", auditee_emp.employee, "user_id"))
+		for auditee_sup in self.supervisor_accountability:
+				auditees.append(frappe.db.get_vlue("Employee", auditee_sup.employee, "user_id"))
+		if frappe.session.user == "Administrator":
+			auditor_display = auditee_display = 1
+		if frappe.session.user in auditors:
+			auditor_display = 1
+		if frappe.session.user in auditees:
+			auditee_display = 1
+		return auditor_display, auditee_display
+
 	@frappe.whitelist()		
 	def get_direct_accountability(self):
 		old_doc = frappe.get_doc("Execute Audit", self.execute_audit_no)
 		self.set('direct_accountability', [])
+		self.set('supervisor_accountability', [])
 		for a in old_doc.get("audit_checklist"):
 			for b in old_doc.get("direct_accountability"):
 				if a.audit_area_checklist == b.checklist and a.observation_title == b.observation_title:
@@ -189,6 +208,19 @@ class FollowUp(Document):
 						row.employee  = b.employee
 						row.employee_name  = b.employee_name
 						row.designation  = b.designation
+						row.child_ref = b.name
+			for c in old_doc.get("supervisor_accountability"):
+				if a.audit_area_checklist == c.checklist and a.observation_title == c.observation_title:
+					if a.status != "Closed":
+						row = self.append('direct_accountability',{})
+						row.checklist  = c.checklist
+						row.observation_title  = c.observation_title
+						row.observation  = c.observation
+						row.employee  = c.supervisor
+						row.employee_name  = c.supervisor_name
+						row.designation  = c.designation
+						row.child_ref = c.name
+
 
 @frappe.whitelist()
 def create_close_follow_up(source_name, target_doc=None):
@@ -198,7 +230,20 @@ def create_close_follow_up(source_name, target_doc=None):
 			"field_map": {
 				"follow_up_no": "name",
 			}
+
 		},
+		"Follow Up DA Item": {
+					"doctype": "Direct Accountability Item",
+					"field_map": [
+						["child_ref", "child_ref"],
+					]
+				},
+		"Direct Accountability Supervisor Item": {
+					"doctype": "Direct Accountability Supervisor Item",
+					"field_map": [
+						["child_ref", "child_ref"],
+					]
+				},
 	}, target_doc)
 
 	return doclist

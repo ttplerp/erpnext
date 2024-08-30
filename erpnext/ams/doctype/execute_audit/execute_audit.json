@@ -10,6 +10,7 @@
  "field_order": [
   "plan_details_section",
   "branch",
+  "iain_number",
   "prepare_audit_plan_no",
   "supervisor_id",
   "supervisor_email",
@@ -35,6 +36,8 @@
   "direct_accountability_details",
   "get_observation",
   "direct_accountability",
+  "sb_supervisor_accountability",
+  "supervisor_accountability",
   "reference_no_section",
   "audit_engagement_letter",
   "column_break_27",
@@ -269,12 +272,28 @@
    "no_copy": 1,
    "options": "Open\nAssigned\nRejected\nCancelled",
    "read_only": 1
+  },
+  {
+   "fieldname": "sb_supervisor_accountability",
+   "fieldtype": "Section Break",
+   "label": "Supervisor Accountability"
+  },
+  {
+   "fieldname": "supervisor_accountability",
+   "fieldtype": "Table",
+   "options": "Direct Accountability Supervisor Item"
+  },
+  {
+   "fieldname": "iain_number",
+   "fieldtype": "Data",
+   "label": "IAIN Number",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-30 15:01:09.713315",
+ "modified": "2024-08-26 16:37:54.840989",
  "modified_by": "Administrator",
  "module": "AMS",
  "name": "Execute Audit",
@@ -300,12 +319,26 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "Auditor",
+   "role": "Auditor Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Audit User",
    "share": 1,
    "write": 1
   }
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "iain_number",
+ "track_changes": 1
 }

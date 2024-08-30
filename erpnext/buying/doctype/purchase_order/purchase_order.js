@@ -91,11 +91,21 @@ frappe.ui.form.on("Purchase Order", {
 		}
 	},
 	item_group: function(frm){
-		frm.fields_dict["items"].grid.get_field("item_code").get_query = function (doc) {
-			return {
-				filters: { 'item_group': frm.doc.item_group}
+		if(frm.doc.item_group != "All Item Groups"){
+			frm.fields_dict["items"].grid.get_field("item_code").get_query = function (doc) {
+				return {
+					filters: { 'item_group': frm.doc.item_group}
+				};
 			};
-		};
+		}
+		else{
+			frm.fields_dict["items"].grid.get_field("item_code").get_query = function (doc) {
+				return {
+					filters: { 'item_group': ["!=", frm.doc.item_group]}
+				};
+			};
+		}
+
 	},
 	onload: function(frm) {
 		set_schedule_date(frm);

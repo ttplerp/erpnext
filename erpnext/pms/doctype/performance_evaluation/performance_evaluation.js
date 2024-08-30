@@ -1,19 +1,8 @@
 // Copyright (c) 2021, Frappe Technologies Pvt. Ltd. and contributors
 // For license information, please see license.txt
-// developed by Birendra on 01/03/2021
-
 frappe.ui.form.on('Performance Evaluation', {
 	setup:(frm)=>{
 		apply_filter(frm)
-		// set_default_value(frm)
-
-		// if (frm.doc.docstatus == 1 && frappe.user.has_role(['HR Manager', 'HR User'])){
-		// 	frm.get_docfield("evaluate_target_item").allow_bulk_edit = 1;
-		// 	frm.get_docfield("evaluate_target_item").read_only = 0;
-		// }else{
-		// 	frm.get_docfield("evaluate_target_item").allow_bulk_edit = 0;
-		// 	frm.get_docfield("evaluate_target_item").read_only = 1;
-		// }
 	},
 	onload:(frm)=> {
 		apply_filter(frm)
@@ -25,12 +14,7 @@ frappe.ui.form.on('Performance Evaluation', {
 		}else{
 			frm.set_df_property('set_manual_approver', 'read_only', 1);
 		}
-		// if (frm.doc.docstatus == 1 && frappe.user.has_role(['HR Manager', 'HR User'])){
-		// 	frm.get_docfield("evaluate_target_item").allow_bulk_edit = 1;
-		// 	frm.get_docfield("evaluate_target_item").read_only = 0;
-		// }else{
-		// 	frm.get_docfield("evaluate_target_item").allow_bulk_edit = 0;
-		// 	frm.get_docfield("evaluate_target_item").read_only = 1;
+		
 		// }
 		if (frm.doc.docstatus === 1) {
 			cur_frm.add_custom_button('Appeal', function() {
@@ -66,16 +50,19 @@ frappe.ui.form.on('Performance Evaluation', {
 	set_manual_approver:function(frm){
 		if (flt(frm.doc.set_manual_approver) == 1){
 			frm.set_df_property('approver', 'read_only', 0);
-			// frm.set_df_property('approver_designation', 'read_only', 0);
 		}
 		else{
 			frm.set_df_property('approver', 'read_only', 1);
-			// frm.set_df_property('approver_designation', 'read_only', 1);
 		}
 	},
 	get_competency: function(frm) {
 		if(frm.doc.docstatus != 1){
 			get_competency(frm)
+		}
+	},
+	get_leadership_competency: function(frm) {
+		if(frm.doc.docstatus != 1){
+			get_leadership_competency(frm)
 		}
 	},
 });
@@ -104,14 +91,44 @@ frappe.ui.form.on('Evaluate Target Item',{
 		toggle_reqd_qty_quality(frm,cdt,cdn)
 	},
 	form_render:(frm,cdt,cdn)=>{
-		// var row = locals[cdt][cdn]
+		var row = locals[cdt][cdn]
 		if ( frm.doc.docstatus == 1){
 			if (frappe.user.has_role(['HR Manager', 'HR User'])){
-				frappe.meta.get_docfield("Evaluate Target Item","reverse_formula",cur_frm.doc.name).read_only = 0
+				frm.fields_dict['evaluate_target_item'].grid.grid_rows_by_docname[cdn].toggle_editable('reverse_formula', true);
+				// frappe.meta.get_docfield("Evaluate Target Item","reverse_formula",cur_frm.doc.name).read_only = 0
 			}else{
-				frappe.meta.get_docfield("Evaluate Target Item","reverse_formula",cur_frm.doc.name).read_only = 1
+				// frappe.meta.get_docfield("Evaluate Target Item","reverse_formula",cur_frm.doc.name).read_only = 1
+				frm.fields_dict['evaluate_target_item'].grid.grid_rows_by_docname[cdn].toggle_editable('reverse_formula', false);
 			}
 		}
+		frappe.call({
+			method: "check_employee_or_supervisor",
+			doc: frm.doc,
+			args: {"auditor": row.employee},
+			callback: function(r){
+				// if(user_id == frm.doc.owner && row.status != 'Closed'){
+				// 	status.read_only = 1;
+				// 	audit_r.read_only = 0;
+				// 	auditee_r.read_only = 1;
+				// }else if(user_id == supervisor_email && row.status != 'Closed'){
+				// 	status.read_only = 1;
+				// 	audit_r.read_only = 1;
+				// 	auditee_r.read_only = 0;
+				// }else{
+				// 	status.read_only = 1;
+				// 	audit_r.read_only = 1;
+				// 	auditee_r.read_only = 1;
+				// }
+				if(r.message[0] == 1){
+					frm.fields_dict['evaluate_target_item'].grid.grid_rows_by_docname[cdn].toggle_editable('employee_remarks', true);
+					frm.fields_dict['evaluate_target_item'].grid.grid_rows_by_docname[cdn].toggle_editable('supervisor_remarks', false);
+				}else if(r.message[1]==1){
+					frm.fields_dict['evaluate_target_item'].grid.grid_rows_by_docname[cdn].toggle_editable('supervisor_remarks', true);
+					frm.fields_dict['evaluate_target_item'].grid.grid_rows_by_docname[cdn].toggle_editable('employee_remarks', false);
+				}
+				frm.refresh_field("evaluate_target_item");
+			}
+		})
 		frappe.meta.get_docfield("Evaluate Target Item","qty_quality",cur_frm.doc.name).read_only = frm.doc.docstatus
 		frappe.meta.get_docfield("Evaluate Target Item","timeline_base_on",cur_frm.doc.name).read_only = frm.doc.docstatus
 	},
@@ -197,12 +214,26 @@ var calculate_qty_quality_rating = (frm,cdt,cdn)=>{
 		rating = weightage
 	}
 	else{
-		rating = flt(achieved) / flt(targeted) * flt(weightage)
+		// rating = flt(achieved) / flt(targeted) * flt(weightage)
+		if (cint(row.reverse_formula) == 1){
+			if (cint(row.accept_zero_qtyquality) == 1){
+				rating 		= 0
+				row.quantity_achieved 	= 0
+				row.quality_achieved	= 0
+			}
+			else
+				rating = targeted / achieved
+		}
+		else{
+			rating = achieved / targeted * flt(weightage)
+		}
 	}
+
 	if (row.qty_quality == 'Quality') 
 		row.quality_rating = rating
 	else if (row.qty_quality == 'Quantity') 
 		row.quantity_rating = rating
+
 	frm.refresh_field('evaluate_target_item')
 }
 var toggle_reqd_qty_quality = (frm,cdt,cdn)=>{
@@ -240,6 +271,15 @@ var apply_filter=(frm)=> {
 function get_competency(frm) {
 	frappe.call({
 		method: "get_competency",
+		doc: frm.doc,
+		callback:  (r) =>{
+			frm.refresh_fields()
+		}
+	})
+}
+function get_leadership_competency(frm) {
+	frappe.call({
+		method: "get_leadership_competency",
 		doc: frm.doc,
 		callback:  (r) =>{
 			frm.refresh_fields()

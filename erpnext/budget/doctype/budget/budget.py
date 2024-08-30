@@ -62,8 +62,11 @@ class Budget(Document):
 
 	def validate_accounts(self):
 		account_list = []
+		row = 1
 		for d in self.get("accounts"):
 			if d.account:
+				if not frappe.db.exists("Account", d.account):
+					frappe.throw("Account {} does not exist. Please check spelling or check if it matches with Account Master Data. Row No: {}".format(d.account, row))
 				account_details = frappe.db.get_value(
 					"Account", d.account, ["is_group", "company", "report_type"], as_dict=1
 				)
@@ -85,6 +88,7 @@ class Budget(Document):
 					frappe.msgprint(_("Account {0} has been entered multiple times").format(d.account), raise_exception=True)
 				else:
 					account_list.append(d.account)
+			row += 1
 
 	def set_null_value(self):
 		if self.budget_against == "Cost Center":

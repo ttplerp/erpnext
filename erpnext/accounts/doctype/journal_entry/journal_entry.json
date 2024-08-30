@@ -24,6 +24,7 @@
   "from_template",
   "company",
   "posting_date",
+  "cbs_enabled",
   "apply_tds",
   "tax_withholding_category",
   "2_add_edit_gl_entries",
@@ -605,6 +606,14 @@
    "fieldtype": "Dynamic Link",
    "label": "Reference Doctype",
    "options": "reference_type"
+  },
+  {
+   "default": "0",
+   "fetch_from": "company.cbs_enabled",
+   "fieldname": "cbs_enabled",
+   "fieldtype": "Check",
+   "label": "CBS Enabled",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-file-text",
@@ -616,7 +625,7 @@
    "link_fieldname": "journal_entry"
   }
  ],
- "modified": "2024-07-17 11:47:10.475536",
+ "modified": "2024-08-18 23:23:13.946237",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",

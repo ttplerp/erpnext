@@ -6,7 +6,7 @@ import frappe
 from frappe.model.document import Document
 from erpnext.custom_workflow import validate_workflow_states, notify_workflow_states
 
-class AuditInitialReport(Document):
+class AuditReport(Document):
 	def validate(self):
 		pass
 		# validate_workflow_states(self)
@@ -56,6 +56,24 @@ class AuditInitialReport(Document):
 					eaci.db_set("status",'Open')
 					eaci.db_set("audit_remarks",'')
 					eaci.db_set("auditee_remarks",'')
+
+	@frappe.whitelist()
+	def get_auditor_and_auditee(self):
+		auditor_display = auditee_display = 0
+		auditors = auditees = []
+		for auditor in self.audit_team:
+			auditors.append(frappe.db.get_value("Employee", auditor.employee, "user_id"))
+		for auditee_emp in self.direct_accountability:
+			auditees.append(frappe.db.get_value("Employee", auditee_emp.employee, "user_id"))
+		for auditee_sup in self.supervisor_accountability:
+				auditees.append(frappe.db.get_value("Employee", auditee_sup.supervisor, "user_id"))
+		if frappe.session.user == "Administrator":
+			auditor_display = auditee_display = 1
+		if frappe.session.user in auditors:
+			auditor_display = 1
+		if frappe.session.user in auditees:
+			auditee_display = 1
+		return auditor_display, auditee_display
 
 	@frappe.whitelist()
 	def get_audit_checklist(self):

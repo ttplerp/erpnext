@@ -222,7 +222,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-30 15:29:12.000062",
+ "modified": "2024-08-19 12:10:45.620434",
  "modified_by": "Administrator",
  "module": "AMS",
  "name": "Annual Audit Plan",
@@ -239,17 +239,29 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
    "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "Auditor",
+   "role": "Auditor Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Audit User",
    "share": 1,
    "write": 1
   }

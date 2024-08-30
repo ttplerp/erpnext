@@ -33,6 +33,10 @@
   "dhi_company",
   "dhi_company_name",
   "warehouse",
+  "cbs_integration_section",
+  "gl_type",
+  "column_break_fzjfz",
+  "initiating_branch",
   "bank_account_details_section",
   "bank_name",
   "bank_branch",
@@ -200,7 +204,7 @@
   },
   {
    "fieldname": "tab_break_22",
-   "fieldtype": "Tab Break",
+   "fieldtype": "Section Break",
    "label": "Budget Detail"
   },
   {
@@ -253,6 +257,7 @@
    "options": "Warehouse"
   },
   {
+   "depends_on": "eval:doc.gl_type==\"CASA\"",
    "fieldname": "bank_account_details_section",
    "fieldtype": "Section Break",
    "label": "BANK ACCOUNT DETAILS"
@@ -288,12 +293,14 @@
    "fetch_from": "dhi_company.company",
    "fieldname": "dhi_company_name",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "DHI Company Name",
    "read_only": 1
   },
   {
    "fieldname": "dhi_company",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "DHI Company",
    "options": "DHI Company"
   },
@@ -302,13 +309,35 @@
    "fieldname": "is_tax_expense",
    "fieldtype": "Check",
    "label": "Is Tax Expense"
+  },
+  {
+   "fieldname": "gl_type",
+   "fieldtype": "Select",
+   "label": "GL Type",
+   "options": "\nCASA\nGL"
+  },
+  {
+   "description": "Note: This is used for identifying the initiating transaction's branch code to be pushed to CBS.. If <b>Self Branch</b> is selected, branch_code from the transaction's branch shall be used otherwise company's default_branch_code shall be used.",
+   "fieldname": "initiating_branch",
+   "fieldtype": "Select",
+   "label": "Initiating Branch",
+   "options": "\nSelf Branch\nCompany Branch"
+  },
+  {
+   "fieldname": "cbs_integration_section",
+   "fieldtype": "Section Break",
+   "label": "CBS Integration"
+  },
+  {
+   "fieldname": "column_break_fzjfz",
+   "fieldtype": "Column Break"
   }
  ],
  "icon": "fa fa-money",
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2023-03-22 09:50:54.794145",
+ "modified": "2024-08-13 16:16:20.258213",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Account",

@@ -8,6 +8,17 @@ frappe.ui.form.on('Audit Engagement Letter', {
 		} else {
 			frm.set_df_property('remarks','read_only',0)
 		}
+		if(frm.doc.docstatus == 1){
+			frm.add_custom_button(__('Send Mail to Supervisor'), () => {
+				frappe.call({
+					method: "notify_supervisor",
+					doc: frm.doc,
+					callback: function(r){
+						// console.log(r.message)
+					}
+			})
+			}, __('Action'));
+		}
 	},
 
 	onload_post_render: function(frm) {	

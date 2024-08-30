@@ -32,7 +32,7 @@ class InterestAccrual(Document):
 	def validate_existing(self):
 		if not self.posting_date:
 			frappe.throw("Please Enter Posting Date.")
-		if self.get_month(frappe.db.get_value("Treasury", self.treasury_id, "maturity_date")) == self.month:
+		if self.get_month(frappe.db.get_value("Treasury", self.treasury_id, "maturity_date")) == self.month and str(frappe.db.get_value("Treasury", self.treasury_id, "maturity_date")).split("-")[0] == str(self.posting_date).split("-")[0]:
 			frappe.throw("Cannot create Interest for Treasury {} on maturity month".format(self.name))
 		exists = frappe.db.sql("""
                          select name from `tabInterest Accrual` where
@@ -93,7 +93,8 @@ class InterestAccrual(Document):
 			"posting_date": self.posting_date,
 			"company": self.company,
 			"total_amount_in_words": money_in_words(self.interest_amount),
-			"branch": self.branch
+			"branch": self.branch,
+			"business_activity": "Common"
 		})
 		
 		je.append("accounts", {
@@ -102,6 +103,7 @@ class InterestAccrual(Document):
 			"cost_center": self.cost_center,
 			"reference_type": "Interest Accrual",
 			"reference_name": self.name,
+			"business_activity": "Common"
 		})
 		
 		je.append("accounts", {
@@ -112,6 +114,7 @@ class InterestAccrual(Document):
 			"reference_name": self.name,
 			"party_type": party_type,
 			"party": party,
+			"business_activity": "Common"
 		})
 
 		je.insert()
@@ -142,8 +145,8 @@ class InterestAccrual(Document):
 		self.days = days
 		d2 = datetime.strptime(str(self.posting_date).split("-")[0]+"-12-31","%Y-%m-%d").date()
 		d3 = datetime.strptime(str(self.posting_date).split("-")[0]+"-01-01","%Y-%m-%d").date()
-		days_in_year = (d2-d3).days
-		self.interest_amount = flt(treasury.principal_amount) * (flt(self.interest_rate)*0.01) *(flt(days)/flt(days_in_year))
+		days_in_year = ((d2-d3).days)+1
+		self.interest_amount = flt(flt(treasury.principal_amount) * (flt(self.interest_rate)*0.01) *(flt(days)/flt(days_in_year)),2)
 
 	@frappe.whitelist()
 	def get_month(self, posting_date):

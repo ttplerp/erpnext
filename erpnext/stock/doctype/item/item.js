@@ -255,7 +255,8 @@ frappe.ui.form.on("Item", {
 		frm.set_query('item_group',(doc)=>{
 			return {
 				filters: {
-						   'is_sub_group':0
+						   'is_sub_group':0,
+						   'name': ["!=", "All Item Groups"]
 						}
 			}
 			

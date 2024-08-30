@@ -18,6 +18,7 @@
   "party_balance",
   "accounting_dimensions_section",
   "cost_center",
+  "business_activity",
   "dimension_col_break",
   "project",
   "currency_section",
@@ -49,10 +50,7 @@
   "is_advance",
   "user_remark",
   "against_account",
-  "epayment_beneficiary_details_section",
-  "beneficiary_type",
-  "column_break_44",
-  "beneficiary"
+  "salary_component"
  ],
  "fields": [
   {
@@ -366,44 +364,30 @@
    "label": "Apply TDS"
   },
   {
-   "depends_on": "eval:doc.account_type != \"Bank\"",
-   "fieldname": "epayment_beneficiary_details_section",
-   "fieldtype": "Section Break",
-   "label": "ePayment Beneficiary Details"
-  },
-  {
-   "allow_on_submit": 1,
-   "description": "<b>Select the following to make payment to: </b><br>\n<i>Employee - Individual employee<br>\nSupplier - Vendor <br>\nBranch - Branch Imprest Bank Account <br>\nAccount - Bank Accounts maintain in COA</i>",
-   "fieldname": "beneficiary_type",
-   "fieldtype": "Link",
-   "ignore_user_permissions": 1,
-   "label": "Beneficiary Type",
-   "options": "DocType"
-  },
-  {
-   "fieldname": "column_break_44",
-   "fieldtype": "Column Break"
-  },
-  {
-   "allow_on_submit": 1,
-   "description": "<b>Bank Account Details will be picked from above master data</b>",
-   "fieldname": "beneficiary",
-   "fieldtype": "Dynamic Link",
-   "ignore_user_permissions": 1,
-   "label": "Beneficiary",
-   "options": "beneficiary_type"
-  },
-  {
    "fieldname": "party_name",
    "fieldtype": "Data",
    "label": "Party Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "salary_component",
+   "fieldtype": "Data",
+   "label": "Salary Component",
+   "read_only": 1
+  },
+  {
+   "fieldname": "business_activity",
+   "fieldtype": "Link",
+   "label": "Business Activity",
+   "options": "Business Activity",
+   "read_only": 1,
+   "reqd": 1
   }
  ],
  "idx": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-08-07 16:17:49.023201",
+ "modified": "2024-08-19 11:19:51.885293",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry Account",

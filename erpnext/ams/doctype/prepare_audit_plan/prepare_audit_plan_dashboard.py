@@ -9,11 +9,11 @@ def get_data():
 		'non_standard_fieldnames': {
 			'Audit Engagement Letter': 'prepare_audit_plan_no',
 			'Execute Audit': 'prepare_audit_plan_no',
-			'Audit Initial Report': 'prepare_audit_plan_no',
+			'Audit Report': 'prepare_audit_plan_no',
 			'Follow Up': 'prepare_audit_plan_no',
 			'Close Follow Up': 'prepare_audit_plan_no',
 		},
 		"transactions": [
-			{"label": _("Related Transaction"), "items": ["Audit Engagement Letter", "Execute Audit", "Audit Initial Report", "Follow Up", "Close Follow Up"]},
+			{"label": _("Related Transaction"), "items": ["Audit Engagement Letter", "Execute Audit", "Audit Report", "Follow Up", "Close Follow Up"]},
 		],
 	}

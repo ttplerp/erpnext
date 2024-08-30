@@ -28,6 +28,8 @@ class CustomWorkflow:
 		self.field_list		= ["user_id","employee_name","designation","name"]
 		if self.doc.doctype != "Material Request" and self.doc.doctype not in ("Asset Issue Details", "Compile Budget","POL Expense","Vehicle Request", "Repair And Services", "Asset Movement", "Budget Reappropiation"):
 			self.employee		= frappe.db.get_value("Employee", self.doc.employee, self.field_list)
+			if not frappe.db.exists("Employee", self.doc.employee, "reports_to"):
+				frappe.throw("Reports to for Employee {} is not set.".format(self.doc.employee), title="Missing Data")
 			self.reports_to = frappe.db.get_value("Employee", {"name":frappe.db.get_value("Employee", self.doc.employee, "reports_to")}, self.field_list)
 			
 			if self.doc.doctype in ("Travel Request","Employee Separation","Overtime Application"):
@@ -101,13 +103,21 @@ class CustomWorkflow:
 				)))
 
 		if self.doc.doctype == "Material Request":
+			if not frappe.db.exists("Employee", {"user_id":self.doc.owner}):
+				frappe.throw("Only an Employee can create/edit Material Request")
+			self.reports_to = frappe.db.get_value("Employee", {"name":frappe.db.get_value("Employee", {"user_id": self.doc.owner}, "reports_to")}, self.field_list)
+			if not self.reports_to:
+				frappe.throw("Reports To is not set for employee {}".format(frappe.db.get_value("Employee", {"user_id":self.doc.owner})))
 			self.expense_approver = frappe.db.get_value("Employee", {"user_id":frappe.db.get_value("Employee", {"user_id":self.doc.owner}, "expense_approver")}, self.field_list)
+			self.division_head = frappe.db.get_value("Employee", frappe.db.get_value("Department", frappe.db.get_value("Employee", {"user_id":self.doc.owner}, "division"),"approver"),self.field_list)
 			self.employee = frappe.db.get_value("Employee", {"user_id":self.doc.owner}, self.field_list)
 			if self.doc.material_request_type == "Material Issue":
 				self.warehouse_manager = frappe.db.get_value("Employee",{'user_id':frappe.db.get_value("Warehouse",self.doc.set_warehouse,"email_id")},self.field_list)
 			elif self.doc.material_request_type == "Material Transfer":
 				self.warehouse_manager = frappe.db.get_value("Employee",{'user_id':frappe.db.get_value("Warehouse",self.doc.set_from_warehouse,"email_id")},self.field_list)
-			
+			self.adm_section_manager = frappe.db.get_value("Employee", frappe.db.get_value("Department", "Logistics & Inventory - BDBL", "approver"),self.field_list)
+			if not self.adm_section_manager:
+				frappe.throw("Approver is not set for Section Logistics & Inventory - BDBL")
 			self.reports_to	= frappe.db.get_value("Employee", frappe.db.get_value("Employee", {'user_id':self.doc.owner}, "reports_to"), self.field_list)
 			self.general_manager = frappe.db.get_value("Employee", frappe.db.get_value("Department",{"department_name":str(frappe.db.get_value("Employee",{"user_id":self.doc.owner},"division")).split(" - ")[0]},"approver"),self.field_list)
 		
@@ -176,11 +186,11 @@ class CustomWorkflow:
 	def set_approver(self, approver_type):
 		if approver_type == "Supervisor":
 			if self.doc.doctype in ("Travel Request","Employee Separation","Vehicle Request", "Material Request", "Repair And Services","Overtime Application"):
-				officiating = get_officiating_employee(self.expense_approver[3])
+				officiating = get_officiating_employee(self.reports_to[3])
 				if officiating:
 					officiating = frappe.db.get_value("Employee", officiating[0].officiate, self.field_list)
-				vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.expense_approver[0]
-				vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.expense_approver[1]
+				vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.reports_to[0]
+				vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.reports_to[1]
 				if self.doc.doctype != "Vehicle Request":
 					vars(self.doc)[self.doc_approver[2]] = officiating[2] if officiating else self.expense_approver[2]
 			else:
@@ -200,6 +210,14 @@ class CustomWorkflow:
 			vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.pol_approver[0]
 			vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.pol_approver[1]
 			vars(self.doc)[self.doc_approver[2]] = officiating[2] if officiating else self.pol_approver[2]
+
+		elif approver_type =="Division Head":
+			officiating = get_officiating_employee(self.division_head[3])
+			if officiating:
+				officiating = frappe.db.get_value("Employee", officiating[0].officiate, self.field_list)
+			vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.division_head[0]
+			vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.division_head[1]
+			vars(self.doc)[self.doc_approver[2]] = officiating[2] if officiating else self.division_head[2]
 
 		elif approver_type =="Asset Verifier":
 			officiating = get_officiating_employee(self.asset_verifier[3])
@@ -393,6 +411,12 @@ class CustomWorkflow:
 			self.material_request()		
 		elif self.doc.doctype == "Employee Advance":
 			self.employee_advance()
+		elif self.doc.doctype == "Target Set Up":
+			self.target_set_up_and_review()
+		elif self.doc.doctype == "Review":
+			self.target_set_up_and_review()
+		elif self.doc.doctype == "Performance Evaluation":
+			self.performance_evaluation()
 		elif self.doc.doctype == "Employee Transfer":
 			self.employee_transfer()
 		elif self.doc.doctype == "Employee Benefit Claim":
@@ -618,6 +642,44 @@ class CustomWorkflow:
 		elif self.new_state.lower() in ('Rejected'):
 			if self.doc.approver != frappe.session.user:
 				frappe.throw("Only {} can Reject this Encashment".format(self.doc.approver_name))
+	def target_set_up_and_review(self):
+		if self.new_state.lower() in ("Draft".lower()):
+			if frappe.session.user != self.doc.owner:
+				frappe.throw("Only {} can apply this leave".format(self.doc.owner))
+
+		elif self.new_state.lower() == ("Waiting Supervisor Approval".lower()):
+			self.set_approver("Supervisor")
+
+		elif self.new_state.lower() == ("Approved".lower()):
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Approve this Application".format(self.doc.approver_name))
+
+		elif self.new_state.lower() == ("Rejected".lower()):
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Reject this Application".format(self.doc.approver_name))
+		else:
+			frappe.throw(_("Invalid Workflow State {}").format(self.doc.workflow_state))
+	def performance_evaluation(self):
+		if self.new_state.lower() in ("Draft".lower()):
+			if frappe.session.user != self.doc.owner:
+				frappe.throw("Only {} can apply this leave".format(self.doc.owner))
+
+		elif self.new_state.lower() == ("Waiting Supervisor Approval".lower()):
+			self.set_approver("Supervisor")
+
+		elif self.new_state.lower() == ("Waiting Approval".lower()):
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Forward this Application".format(self.doc.approver_name))
+			self.set_approver("Supervisors Supervisor")
+		elif self.new_state.lower() == ("Approved".lower()):
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Approve this Application".format(self.doc.approver_name))
+
+		elif self.new_state.lower() == ("Rejected".lower()):
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Reject this Application".format(self.doc.approver_name))
+		else:
+			frappe.throw(_("Invalid Workflow State {}").format(self.doc.workflow_state))
 
 	def salary_advance(self):
 		''' Salary Advance Workflow
@@ -677,7 +739,7 @@ class CustomWorkflow:
 	def employee_advance(self):
 
 		if self.new_state.lower() in ("Waiting Hr Approval".lower()):
-			self.set_approver("HR")
+			self.set_approver("HRGM")
 
 		elif self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
 			self.set_approver("Supervisor")
@@ -798,23 +860,32 @@ class CustomWorkflow:
 			if self.doc.owner != frappe.session.user:
 				frappe.throw("Only the document owner can Apply this material request")
 
-		elif self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
+		elif self.new_state.lower() in ("Waiting Immediate Supervisor Verification".lower()):
 			if self.doc.owner != frappe.session.user and self.new_state.lower()!= self.old_state.lower():
 				frappe.throw("Only the document owner can Apply this material request")
 			self.set_approver("Supervisor")
-			
+		elif self.new_state.lower() in ("Waiting Supervisor Verification".lower()):
+			if frappe.session.user != self.doc.approver:
+				frappe.throw("Only {} can verify/edit this document".format(self.doc.approver))
+			self.set_approver("Division Head")			
 		elif self.new_state.lower() in ("Waiting Approval".lower()):
-			self.set_approver("Warehouse Manager")
+			if frappe.session.user != self.doc.approver:
+				frappe.throw("Only {} can verify/edit this document".format(self.doc.approver))
+			self.set_approver("ADM")
 
-		elif self.new_state.lower() in ("Waiting GM Approval".lower()):
-			if self.doc.approver != frappe.session.user:
-				frappe.throw("Only the {} can Approve this material request".format(self.doc.approver))
-			self.set_approver("General Manager")
+		elif self.new_state.lower() in ("Approved".lower()):
+			if frappe.session.user != self.doc.approver:
+				frappe.throw("Only {} can approve/edit this document".format(self.doc.approver))
 
-		elif self.new_state.lower() in ("Waiting CEO Approval".lower()):
-			if self.doc.approver != frappe.session.user:
-				frappe.throw("Only the {} can Approve this material request".format(self.doc.approver))
-			self.set_approver("MR CEO") 
+		# elif self.new_state.lower() in ("Waiting GM Approval".lower()):
+		# 	if self.doc.approver != frappe.session.user:
+		# 		frappe.throw("Only the {} can Approve this material request".format(self.doc.approver))
+		# 	self.set_approver("General Manager")
+
+		# elif self.new_state.lower() in ("Waiting CEO Approval".lower()):
+		# 	if self.doc.approver != frappe.session.user:
+		# 		frappe.throw("Only the {} can Approve this material request".format(self.doc.approver))
+		# 	self.set_approver("MR CEO") 
 
 		elif self.new_state.lower() in ("Rejected".lower()):
 			if self.doc.approver != frappe.session.user:
@@ -897,25 +968,25 @@ class CustomWorkflow:
 				frappe.throw("Please input a rejection reason")
 
 		elif self.new_state.lower() == "Waiting GM Approval".lower():
-			if self.doc.approver:
-				if self.doc.approver != frappe.session.user:
-					frappe.throw("Only {} can approve or edit this document.".format(self.doc.approver))
+			if self.doc.supervisor:
+				if self.doc.supervisor != frappe.session.user:
+					frappe.throw("Only {} can approve or edit this document.".format(self.doc.supervisor))
 			self.set_approver("GM")
 	
 		elif self.new_state.lower() == "Waiting RD Approval".lower():
 			self.set_approver("Regional Director")
 
 		elif self.new_state.lower() == "Waiting HR Approval".lower():
-			if self.doc.approver != frappe.session.user:
-				frappe.throw("Only {} can approve or edit this document.".format(self.doc.approver))
+			if self.doc.supervisor != frappe.session.user:
+				frappe.throw("Only {} can approve or edit this document.".format(self.doc.supervisor))
    
 		elif self.new_state.lower() =="Rejected".lower():
-			if self.doc.approver != frappe.session.user:
-				frappe.throw("Only {} can reject this document.".format(self.doc.approver))
+			if self.doc.supervisor != frappe.session.user:
+				frappe.throw("Only {} can reject this document.".format(self.doc.supervisor))
    
 		elif self.new_state.lower() =="Approved".lower():
-			if self.doc.approver != frappe.session.user:
-				frappe.throw("Only {} can approve or edit this document.".format(self.doc.approver))
+			if self.doc.supervisor != frappe.session.user:
+				frappe.throw("Only {} can approve or edit this document.".format(self.doc.supervisor))
 
 	def notify(self, args):
 		args = frappe._dict(args)
@@ -1355,6 +1426,9 @@ def get_field_map():
 		"Employee Transfer": ["supervisor", "supervisor_name", "supervisor_designation"],
 		"Employee Benefits": ["benefit_approver","benefit_approver_name","benefit_approver_designation"],
 		"Compile Budget": ["approver","approver_name"],
+		"Target Set Up": ["approver","approver_name","approver_designation"],
+		"Review": ["approver","approver_name","approver_designation"],
+		"Performance Evaluation": ["approver","approver_name","approver_designation"],
 		"Employee Separation": ["approver","approver_name","approver_designation"],
 		"POL": ["approver","approver_name","approver_designation"],
 		"Asset Issue Details": [],

@@ -9,7 +9,8 @@
  "engine": "InnoDB",
  "field_order": [
   "type_of_audit",
-  "audit_criteria"
+  "audit_criteria",
+  "amended_from"
  ],
  "fields": [
   {
@@ -26,11 +27,22 @@
    "label": "Audit Criteria",
    "reqd": 1,
    "unique": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Audit Criteria",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2024-07-30 15:27:51.385973",
+ "modified": "2024-08-19 12:08:24.618577",
  "modified_by": "Administrator",
  "module": "AMS",
  "name": "Audit Criteria",
@@ -47,17 +59,29 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
    "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "Auditor",
+   "role": "Auditor Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Audit User",
    "share": 1,
    "write": 1
   }

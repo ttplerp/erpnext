@@ -5,7 +5,7 @@
    "label": "Profit and Loss"
   }
  ],
- "content": "[{\"id\":\"7z5oE0dZfK\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Profit and Loss\",\"col\":12}},{\"id\":\"1aw8cPGbRB\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"yr77GIeOGi\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"id\":\"wV4PL-xQu3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Chart of Accounts\",\"col\":3}},{\"id\":\"6RQf_Q9dTf\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Journal Entry\",\"col\":3}},{\"id\":\"RbzFXDT_qc\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":3}},{\"id\":\"AHjjpfOj0Q\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"OxjjD0qGNO\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"id\":\"6EEwd4L1zY\",\"type\":\"card\",\"data\":{\"card_name\":\"Accounting Masters\",\"col\":4}},{\"id\":\"Zf3SdmRXCm\",\"type\":\"card\",\"data\":{\"card_name\":\"General Ledger\",\"col\":4}},{\"id\":\"BAuniBH8K4\",\"type\":\"card\",\"data\":{\"card_name\":\"Financial Statements\",\"col\":4}},{\"id\":\"0xyeeCob4i\",\"type\":\"card\",\"data\":{\"card_name\":\"Accounts Payable\",\"col\":4}},{\"id\":\"7rKLBQczsM\",\"type\":\"card\",\"data\":{\"card_name\":\"Multi Currency\",\"col\":4}},{\"id\":\"QLR43ciI3x\",\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}},{\"id\":\"FSN5MV05uU\",\"type\":\"card\",\"data\":{\"card_name\":\"Bank Statement\",\"col\":4}},{\"id\":\"fLEgSDvueg\",\"type\":\"card\",\"data\":{\"card_name\":\"Opening and Closing\",\"col\":4}},{\"id\":\"xA7gWUSya-\",\"type\":\"card\",\"data\":{\"card_name\":\"Taxes\",\"col\":4}}]",
+ "content": "[{\"id\":\"7z5oE0dZfK\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Profit and Loss\",\"col\":12}},{\"id\":\"1aw8cPGbRB\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"yr77GIeOGi\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"id\":\"wV4PL-xQu3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Chart of Accounts\",\"col\":3}},{\"id\":\"rbmX0bcSuu\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"invoices\",\"col\":4}},{\"id\":\"6RQf_Q9dTf\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Journal Entry\",\"col\":3}},{\"id\":\"RbzFXDT_qc\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":3}},{\"id\":\"AHjjpfOj0Q\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"OxjjD0qGNO\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"id\":\"6EEwd4L1zY\",\"type\":\"card\",\"data\":{\"card_name\":\"Accounting Masters\",\"col\":4}},{\"id\":\"Zf3SdmRXCm\",\"type\":\"card\",\"data\":{\"card_name\":\"General Ledger\",\"col\":4}},{\"id\":\"BAuniBH8K4\",\"type\":\"card\",\"data\":{\"card_name\":\"Financial Statements\",\"col\":4}},{\"id\":\"0xyeeCob4i\",\"type\":\"card\",\"data\":{\"card_name\":\"Accounts Payable\",\"col\":4}},{\"id\":\"FSN5MV05uU\",\"type\":\"card\",\"data\":{\"card_name\":\"Bank Statement\",\"col\":4}},{\"id\":\"NjjSGmyniL\",\"type\":\"card\",\"data\":{\"card_name\":\"CBS Integration\",\"col\":4}},{\"id\":\"7rKLBQczsM\",\"type\":\"card\",\"data\":{\"card_name\":\"Multi Currency\",\"col\":4}},{\"id\":\"QLR43ciI3x\",\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}},{\"id\":\"fLEgSDvueg\",\"type\":\"card\",\"data\":{\"card_name\":\"Opening and Closing\",\"col\":4}},{\"id\":\"xA7gWUSya-\",\"type\":\"card\",\"data\":{\"card_name\":\"Taxes\",\"col\":4}}]",
  "creation": "2020-03-02 15:41:59.515192",
  "custom_blocks": [],
  "docstatus": 0,
@@ -455,17 +455,52 @@
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "CBS Integration",
+   "link_count": 2,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "CBS Upload and Download",
+   "link_count": 0,
+   "link_to": "CBS Entry Upload",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "CBS Upload Report",
+   "link_count": 0,
+   "link_to": "Upload Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2024-07-03 17:57:35.446623",
- "modified_by": "pralad.rai@thimphutechpark.bt",
+ "modified": "2024-08-29 11:09:48.317577",
+ "modified_by": "lhendrup.dorji@thimphutechpark.bt",
  "module": "Accounts",
  "name": "Accounting",
  "number_cards": [],
  "owner": "Administrator",
  "parent_page": "",
  "public": 1,
- "quick_lists": [],
+ "quick_lists": [
+  {
+   "document_type": "Purchase Invoice",
+   "label": "invoices",
+   "quick_list_filter": "[]"
+  }
+ ],
  "restrict_to_domain": "",
  "roles": [],
  "sequence_id": 2.0,

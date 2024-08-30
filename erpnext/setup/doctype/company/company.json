@@ -132,7 +132,8 @@
   "pol_advance_account",
   "repair_and_service_expense_account",
   "column_break_127",
-  "pol_expense_account"
+  "pol_expense_account",
+  "cbs_enabled"
  ],
  "fields": [
   {
@@ -945,6 +946,12 @@
    "fieldtype": "Link",
    "label": "PBVI Account",
    "options": "Account"
+  },
+  {
+   "default": "0",
+   "fieldname": "cbs_enabled",
+   "fieldtype": "Check",
+   "label": "CBS enabled"
   }
  ],
  "icon": "fa fa-building",
@@ -952,7 +959,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2024-08-07 16:22:29.823683",
+ "modified": "2024-08-18 17:47:03.973853",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",

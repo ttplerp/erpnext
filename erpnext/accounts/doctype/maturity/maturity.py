@@ -14,6 +14,7 @@ import calendar
 class Maturity(Document):
 	def validate(self):
 		self.validate_existing()
+		self.get_days()
 		self.calculate_interest_amount()
 
 	def on_submit(self):
@@ -152,7 +153,7 @@ class Maturity(Document):
 			"reference_type": "Maturity",
 			"reference_name": self.name
 		})
-
+		frappe.throw("Credit:\nPrinciple Amount: {} Total Interest: {}\nDebit:\n Maturity Amount - TDS Amount: {} TDS Amount: {}".format(str(flt(frappe.db.get_value("Treasury", self.treasury_id, "principal_amount"),2)), str(flt(self.total_interest_amount,2)), str(flt(self.maturity_amount-self.tds_amount,2)), str(flt(self.tds_amount,2))))
 
 		je.insert()
 
@@ -161,30 +162,54 @@ class Maturity(Document):
 		frappe.msgprint("Journal Entry created. {}".format(frappe.get_desk_link("Journal Entry", je.name)))
 
 	def calculate_interest_amount(self):
+		self.total_interest_amount = self.maturity_amount = 0
 		if not self.treasury_id:
 			frappe.throw('Please select Treasury ID to calculate interest')
-		treasury = frappe.get_doc("Treasury", self.treasury_id)
-		days = treasury.day
-		days_paid = frappe.db.sql("""
-                            select sum(days) as days from `tabInterest Accrual` where treasury_id = '{}'
-                            and name != '{}' and docstatus = 1
-                            """.format(self.treasury_id, self.name),as_dict=1)
-		if days_paid:
-			days_paid = flt(days_paid[0].days)
+		# d2 = datetime.strptime(str(self.posting_date).split("-")[0]+"-12-31","%Y-%m-%d").date()
+		# d3 = datetime.strptime(str(frappe.db.get_value("Treasury", self.treasury_id, "issue_date")).split("-")[0]+"-01-01","%Y-%m-%d").date()
+		# days = ((d2-d3).days)+1
+		# self.days = days
+		# treasury = frappe.get_doc("Treasury", self.treasury_id)
+		# days = treasury.day
+		# days_paid = frappe.db.sql("""
+        #                     select sum(days) as days from `tabInterest Accrual` where treasury_id = '{}'
+        #                     and name != '{}' and docstatus = 1
+        #                     """.format(self.treasury_id, self.name),as_dict=1)
+		# if days_paid:
+		# 	days_paid = flt(days_paid[0].days)
+		# else:
+		# 	days_paid = 0
+		# days -= days_paid
+		# month = flt(str(self.posting_date).split("-")[1])
+		# # days_in_month = flt(calendar.monthrange(int(2024), month)[1])
+		# days_in_month = no_of_days_in_month = get_date_diff(get_first_day(getdate(self.posting_date)), get_last_day(getdate(self.posting_date)))
+		# if days > days_in_month:
+		# 	days = days_in_month
+		# self.days = days
+		# d2 = datetime.strptime(str(self.posting_date).split("-")[0]+"-12-31","%Y-%m-%d").date()
+		# d3 = datetime.strptime(str(self.posting_date).split("-")[0]+"-01-01","%Y-%m-%d").date()
+		# days_in_year = (d2-d3).days
+		# self.interest_amount = (flt(self.interest_rate)*0.01) *(flt(days)/flt(days_in_year))
+		total_interest = frappe.db.sql("""
+										select sum(interest_amount) as total_interest from `tabInterest Accrual` where docstatus = 1 and treasury_id = '{}'
+										""".format(self.name),as_dict=1)
+		if total_interest:
+			total_interest = flt(total_interest[0].total_interest,2)
 		else:
-			days_paid = 0
-		days -= days_paid
-		month = flt(str(self.posting_date).split("-")[1])
-		# days_in_month = flt(calendar.monthrange(int(2024), month)[1])
-		days_in_month = no_of_days_in_month = get_date_diff(get_first_day(getdate(self.posting_date)), get_last_day(getdate(self.posting_date)))
-		if days > days_in_month:
-			days = days_in_month
-		self.days = days
+			total_interest = 0
+		if frappe.db.get_value("Treasury", self.treasury_id, "is_existing") == 1:
+			total_interest += flt(frappe.db.get_value("Treasury", self.treasury_id, "opening_accrued_interest"),2)
+		self.total_interest_amount = total_interest
+		self.total_interest_amount += self.interest_amount
+		self.maturity_amount = flt(flt(frappe.db.get_value("Treasury", self.treasury_id, "principal_amount"),2) + self.total_interest_amount,2)
+	@frappe.whitelist()
+	def get_days(self):
+		if not self.treasury_id:
+			frappe.throw('Please select Treasury ID to calculate interest')
 		d2 = datetime.strptime(str(self.posting_date).split("-")[0]+"-12-31","%Y-%m-%d").date()
-		d3 = datetime.strptime(str(self.posting_date).split("-")[0]+"-01-01","%Y-%m-%d").date()
-		days_in_year = (d2-d3).days
-		self.interest_amount = flt(treasury.principal_amount) * (flt(self.interest_rate)*0.01) *(flt(days)/flt(days_in_year))
-
+		d3 = datetime.strptime(str(frappe.db.get_value("Treasury", self.treasury_id, "issue_date")).split("-")[0]+"-01-01","%Y-%m-%d").date()
+		days = ((d2-d3).days)+1
+		self.days = days
 	@frappe.whitelist()
 	def get_month(self, posting_date):
 		month = flt(str(self.posting_date).split("-")[1])

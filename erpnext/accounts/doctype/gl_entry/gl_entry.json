@@ -34,7 +34,11 @@
   "finance_book",
   "to_rename",
   "due_date",
-  "is_cancelled"
+  "is_cancelled",
+  "cbs_integration",
+  "cbs_enabled",
+  "cbs_entry",
+  "partylist_json"
  ],
  "fields": [
   {
@@ -269,13 +273,39 @@
    "fieldtype": "Data",
    "label": "Business Activity",
    "read_only": 1
+  },
+  {
+   "fieldname": "cbs_integration",
+   "fieldtype": "Section Break",
+   "label": "CBS Integration"
+  },
+  {
+   "default": "1",
+   "fetch_from": "company.cbs_enabled",
+   "fieldname": "cbs_enabled",
+   "fieldtype": "Check",
+   "label": "CBS Enabled",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cbs_entry",
+   "fieldtype": "Link",
+   "label": "CBS Entry",
+   "options": "CBS Entry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "partylist_json",
+   "fieldtype": "Code",
+   "label": "PartyList JSON",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-list",
  "idx": 1,
  "in_create": 1,
  "links": [],
- "modified": "2024-07-17 11:41:38.097188",
+ "modified": "2024-08-19 14:34:12.908482",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "GL Entry",
@@ -302,7 +332,7 @@
    "export": 1,
    "read": 1,
    "report": 1,
-   "role": "Auditor"
+   "role": "Auditor Manager"
   },
   {
    "email": 1,

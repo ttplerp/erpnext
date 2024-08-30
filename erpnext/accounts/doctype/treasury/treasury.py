@@ -18,7 +18,8 @@ class Treasury(Document):
 		self.calculate_number_of_days()
 
 	def on_submit(self):
-		self.post_journal_entry()
+		if self.is_existing == 0:
+			self.post_journal_entry()
 	
 	def before_cancel(self):
 		if self.journal_entry:
@@ -234,12 +235,12 @@ def make_treasury_maturity(source_name, target_doc=None):
 		d2 = datetime.strptime(str(source.maturity_date).split("-")[0]+"-12-31","%Y-%m-%d").date()
 		d3 = datetime.strptime(str(source.maturity_date).split("-")[0]+"-01-01","%Y-%m-%d").date()
 		days_in_year = (d2-d3).days
-		interest_amount = flt(source.principal_amount) * (flt(source.interest_rate)*0.01) *(flt(days)/flt(days_in_year))
+		interest_amount = flt(flt(source.principal_amount) * (flt(source.interest_rate)*0.01) *(flt(days)/flt(days_in_year)),2)
 		total_interest = flt(total_interest+interest_amount,2)
-		target.total_interest_amount = total_interest
+		target.interest_amount = flt(interest_amount,2)
+		# target.total_interest_amount = total_interest
 		target.maturity_amount = flt(source.principal_amount+total_interest,2)
 		target.tds_amount = flt(total_interest*0.05,2)
-
 	def update_item(obj, target, source_parent):
 		pass
 

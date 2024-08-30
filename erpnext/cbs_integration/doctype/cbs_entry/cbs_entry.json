@@ -1,0 +1,170 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "OB.YYYY.MM.DD.######",
+ "creation": "2024-08-13 11:39:42.858498",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "entry_type",
+  "process_type",
+  "entry_title",
+  "company",
+  "status",
+  "column_break_rddmy",
+  "from_date",
+  "to_date",
+  "total_debit",
+  "total_credit",
+  "section_break_xnwal",
+  "entry_time",
+  "column_break_sl8xy",
+  "reference_list",
+  "soap_api_detail_section",
+  "header",
+  "footer",
+  "column_break_4jnyo",
+  "body",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "entry_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Entry Type",
+   "options": "\nUpload\nDownload"
+  },
+  {
+   "fieldname": "process_type",
+   "fieldtype": "Select",
+   "label": "Process Type",
+   "options": "\nAuto\nManual"
+  },
+  {
+   "fieldname": "entry_title",
+   "fieldtype": "Data",
+   "label": "Title"
+  },
+  {
+   "fieldname": "column_break_rddmy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "\nSuccessful\nPartial\nFailed\nCancelled"
+  },
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Data",
+   "label": "From Date"
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Data",
+   "label": "To Date"
+  },
+  {
+   "fieldname": "section_break_xnwal",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "total_debit",
+   "fieldtype": "Data",
+   "label": "Total Debit"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "column_break_sl8xy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_credit",
+   "fieldtype": "Data",
+   "label": "Total Credit"
+  },
+  {
+   "fieldname": "entry_time",
+   "fieldtype": "Datetime",
+   "label": "Entry Time"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "CBS Entry",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "reference_list",
+   "fieldtype": "Code",
+   "label": "Reference List"
+  },
+  {
+   "fieldname": "soap_api_detail_section",
+   "fieldtype": "Section Break",
+   "label": "SOAP API Detail"
+  },
+  {
+   "fieldname": "header",
+   "fieldtype": "Code",
+   "label": "Header"
+  },
+  {
+   "fieldname": "footer",
+   "fieldtype": "Code",
+   "label": "Footer"
+  },
+  {
+   "fieldname": "column_break_4jnyo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "body",
+   "fieldtype": "Code",
+   "label": "Body"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-08-28 06:00:04.666547",
+ "modified_by": "Administrator",
+ "module": "CBS Integration",
+ "name": "CBS Entry",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

@@ -1,0 +1,53 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-08-16 14:37:52.585860",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_lxyhz",
+  "appeal_for",
+  "column_break_hk60m",
+  "appeal_target"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_lxyhz",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "appeal_for",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": " Appeal For",
+   "options": "Form I\nForm II\nForm III",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_hk60m",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "appeal_target",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Appeal Target",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-08-16 14:41:04.212220",
+ "modified_by": "Administrator",
+ "module": "PMS",
+ "name": "Appeal Details",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

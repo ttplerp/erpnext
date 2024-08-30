@@ -16,12 +16,12 @@ class TargetSetUp(Document):
 		self.load_pre_requirement()
 		self.check_target()
 		self.check_duplicate_entry() 
-		# validate_workflow_states(self) 
-		# if self.workflow_state != "Approved":
-		# 	notify_workflow_states(self)
+		validate_workflow_states(self) 
+		if self.workflow_state != "Approved":
+			notify_workflow_states(self)
 		if self.reference and self.reason:
 			return
-		else:
+		else:  
 			self.validate_calendar()
 			
 	def on_submit(self):
@@ -175,7 +175,7 @@ class TargetSetUp(Document):
 def create_review(source_name, target_doc=None):
 	if frappe.db.exists('Review',
 		{'target':source_name,
-		'docstatus':('!=',2)
+		'docstatus':('=',1)
 		}):
 		frappe.throw(
 			title='Error',

@@ -26,7 +26,7 @@ def get_data(filters):
 	# 	"""%conditions, filters)
 
 	data = frappe.db.sql("""
-		SELECT e.name, e.employee_name, e.passport_number, e.company_email, e.date_of_birth, e.cell_number, e.reports_to, e.reports_to_name,
+		SELECT e.name, e.employee_name, e.passport_number, e.company_email, e.date_of_birth, e.cell_number, e.ip_number, e.reports_to, e.reports_to_name,
 		e.department, e.division, e.section, e.employment_type, e.employee_group, e.grade, e.designation, e.employment_status, e.date_of_joining, e.status, e.increment_cycle, e.promotion_cycle, e.promotion_due_date, e.date_of_retirement, e.blood_group
 		FROM `tabEmployee` e
 		WHERE e.department is not null %s			
@@ -52,6 +52,7 @@ def get_columns(data):
 		_("Email ID") + ":Data:200",
 		_("Date of Birth") + ":Data:100",
 		_("Mobile No.") + ":Data:100",
+		_("IP Phone No.") + ":Data:100",
 		_("Supervisor ID") + ":Link/Employee:120",
 		_("Supervisor") + ":Data:120",
 		_("Department") + ":Link/Department:120",

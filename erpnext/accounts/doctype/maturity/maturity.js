@@ -4,5 +4,14 @@
 frappe.ui.form.on('Maturity', {
 	// refresh: function(frm) {
 
-	// }
+	// },
+	posting_date: function(frm){
+		frappe.call({
+			method: "get_days",
+			doc: frm.doc,
+			callback: function(r){
+				frm.refresh_field("days");
+			}
+		})
+	}
 });

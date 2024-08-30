@@ -56,6 +56,8 @@
   "evaluate_competency_item",
   "form_ii_total_rating",
   "section_break_18",
+  "get_leadership_competency",
+  "evaluate_leadership_competency",
   "business_target",
   "negative_rating",
   "final_score_calculation_section",
@@ -67,12 +69,12 @@
   "competency_total_weightage",
   "star_obtained",
   "column_break_35",
+  "no_of_months_served",
+  "form_iii_score",
+  "overall_rating",
+  "column_break_46",
   "final_score",
   "final_score_percent",
-  "column_break_46",
-  "form_iii_score",
-  "no_of_months_served",
-  "overall_rating",
   "comment_section_section",
   "employee_comment",
   "column_break_48",
@@ -151,6 +153,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "fetch_from": "employee.old_employee_id",
    "fieldname": "old_employee_id",
    "fieldtype": "Data",
    "hidden": 1,
@@ -182,7 +185,7 @@
    "label": "Form I: (Work Performance: Targets & Accomplishment)"
   },
   {
-   "depends_on": "eval:doc.pms_calendar",
+   "depends_on": "form_ii",
    "fieldname": "part_b_section",
    "fieldtype": "Section Break",
    "label": "Form II:(Work-Related Competencies and Values)"
@@ -219,8 +222,7 @@
    "fieldname": "evaluate_competency_item",
    "fieldtype": "Table",
    "label": "Evaluate Competency ",
-   "options": "Evaluate Competency Item",
-   "read_only": 1
+   "options": "Evaluate Competency"
   },
   {
    "fieldname": "final_score_calculation_section",
@@ -251,6 +253,7 @@
    "read_only": 1
   },
   {
+   "depends_on": "form_iii",
    "fieldname": "section_break_18",
    "fieldtype": "Section Break",
    "label": "Form lll (Leadership Competency )"
@@ -696,6 +699,7 @@
   },
   {
    "allow_on_submit": 1,
+   "fetch_from": "overall_rating.star",
    "fieldname": "star_obtained",
    "fieldtype": "Rating",
    "label": "Star Obtained",
@@ -805,11 +809,23 @@
    "fieldtype": "Check",
    "label": "Eligible For Form III",
    "read_only": 1
+  },
+  {
+   "fieldname": "evaluate_leadership_competency",
+   "fieldtype": "Table",
+   "label": "Leadership Competency",
+   "options": "Leadership Competency"
+  },
+  {
+   "depends_on": "eval:doc.docstatus != 1",
+   "fieldname": "get_leadership_competency",
+   "fieldtype": "Button",
+   "label": "Get Leadership Competency"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-05 16:22:54.092464",
+ "modified": "2024-08-16 11:12:52.428088",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Performance Evaluation",

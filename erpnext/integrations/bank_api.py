@@ -7,18 +7,30 @@ from frappe.utils import cint, flt, get_bench_path, get_datetime
 class BankAPI:
     pass
 
+def post_transaction(doctype=None, doc_name=None):
+    header = generate_header(doctype, doc_name)
+    footer = generate_footer()
+    payload   = generate_payload(doctype, doc_name)
+    api_body = str(header) + str(payload) + str(footer)
+
+    print(str(api_body))
+
 def generate_payload(doctype=None, doc_name=None):
     if not doctype and not doc_name:
         return
     doc = frappe.get_doc("API Detail","MULTI LEDGER")
     end_point=doc.api_link
     serialnumber = 1
+    payload = ""
     for a in frappe.db.sql("""
                         select *from `tabGL Entry`
                         where voucher_type="{0}"
                         and voucher_no="{1}"
-                """.format(voucher_type, voucher_no), as_dict=True):
-        payload="""
+                """.format(doctype, doc_name), as_dict=True):
+        creditdebit = "D" if a.debit > 0 else "C"
+        amount = flt(a.debit,2) if a.debit >0 else flt(a.credit,2)
+        acc_doc = frappe.get_doc("Account", a.account)
+        payload += """
                 <PartTrnRec>
                 <AcctId>
                 <AcctId>{acctid}</AcctId>
@@ -32,8 +44,12 @@ def generate_payload(doctype=None, doc_name=None):
                 <PartTrnRmks>{trnrmks}</PartTrnRmks>
                 <ValueDt>{valuedate}</ValueDt>
                 <SerialNum>{serialnumber}</SerialNum>
-            """.format(acctid, creditdebit,amount,trnparticular,trnrmks,valuedate,serialnumber)
+                </PartTrnRec>
+            """.format(acctid=acc_doc.account_number,creditdebit=creditdebit,\
+            amount=amount,trnparticular=a.account_number,trnrmks=a.account_number,\
+            valuedate=a.creation,serialnumber=serialnumber)
         serialnumber += 1
+    return str(payload)  
 
 def generate_footer(doctype=None, doc_name=None):
     return """

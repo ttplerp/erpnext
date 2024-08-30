@@ -12,9 +12,11 @@
   "branch",
   "cost_center",
   "posting_date",
+  "days",
   "treasury_id",
   "fiscal_year",
   "interest_rate",
+  "interest_amount",
   "total_interest_amount",
   "maturity_amount",
   "tds_amount",
@@ -89,12 +91,14 @@
    "fieldname": "total_interest_amount",
    "fieldtype": "Currency",
    "label": "Total Interest Amount",
+   "precision": "2",
    "read_only": 1
   },
   {
    "fieldname": "maturity_amount",
    "fieldtype": "Currency",
    "label": "Maturity Amount",
+   "precision": "2",
    "read_only": 1
   },
   {
@@ -120,12 +124,25 @@
    "fieldtype": "Currency",
    "label": "TDS Amount",
    "read_only": 1
+  },
+  {
+   "description": "Interest calculated for maturity month",
+   "fieldname": "interest_amount",
+   "fieldtype": "Currency",
+   "label": "Interest Amount",
+   "precision": "2"
+  },
+  {
+   "fieldname": "days",
+   "fieldtype": "Data",
+   "label": "Days",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-22 12:28:56.696577",
+ "modified": "2024-08-26 11:06:36.190781",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Maturity",

@@ -23,7 +23,9 @@
   "column_break_11",
   "revenue_bank_account",
   "epayment_bank_accounts_section",
-  "branch_bank_account"
+  "branch_bank_account",
+  "cbs_settings_section",
+  "branch_code"
  ],
  "fields": [
   {
@@ -120,13 +122,23 @@
    "default": "0",
    "fieldname": "is_hq_branch",
    "fieldtype": "Check",
-   "label": "Is HQ Branch"
+   "label": "Is Corporate Office"
+  },
+  {
+   "fieldname": "cbs_settings_section",
+   "fieldtype": "Section Break",
+   "label": "CBS SETTINGS"
+  },
+  {
+   "fieldname": "branch_code",
+   "fieldtype": "Data",
+   "label": "Branch Code"
   }
  ],
  "icon": "fa fa-code-fork",
  "idx": 1,
  "links": [],
- "modified": "2024-06-24 15:48:07.306675",
+ "modified": "2024-08-16 15:05:24.539535",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Branch",

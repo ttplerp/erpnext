@@ -68,6 +68,7 @@
   "company_email",
   "column_break4",
   "prefered_contact_email",
+  "ip_number",
   "cell_number",
   "prefered_email",
   "unsubscribed",
@@ -118,6 +119,8 @@
   "employee_family_details_section",
   "employee_family_details",
   "profile_tab",
+  "pms_records_section",
+  "employee_pms",
   "bio",
   "educational_qualification",
   "education",
@@ -125,6 +128,8 @@
   "external_work_history",
   "history_in_company",
   "internal_work_history",
+  "adverse_record",
+  "employee_disciplinary",
   "exit",
   "resignation_letter_date",
   "relieving_date",
@@ -400,7 +405,7 @@
    "depends_on": "eval:doc.salary_mode == 'Bank'",
    "fieldname": "bank_name",
    "fieldtype": "Link",
-   "label": "Financial Institution",
+   "label": "Bank Name",
    "oldfieldname": "bank_name",
    "oldfieldtype": "Link",
    "options": "Financial Institution"
@@ -861,7 +866,7 @@
   {
    "fieldname": "bank_branch",
    "fieldtype": "Link",
-   "label": "Financial Institution Branch",
+   "label": "Bank Branch",
    "options": "Financial Institution Branch"
   },
   {
@@ -989,13 +994,39 @@
    "fieldtype": "Data",
    "hidden": 1,
    "label": "Old Employee ID"
+  },
+  {
+   "fieldname": "pms_records_section",
+   "fieldtype": "Section Break",
+   "label": "PMS Records"
+  },
+  {
+   "fieldname": "employee_pms",
+   "fieldtype": "Table",
+   "options": "Employee PMS Rating"
+  },
+  {
+   "fieldname": "adverse_record",
+   "fieldtype": "Section Break",
+   "label": "Adverse Record"
+  },
+  {
+   "fieldname": "employee_disciplinary",
+   "fieldtype": "Table",
+   "options": "Employee Disciplinary Summary",
+   "read_only": 1
+  },
+  {
+   "fieldname": "ip_number",
+   "fieldtype": "Data",
+   "label": "IP Phone Number"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2024-08-07 14:55:42.040387",
+ "modified": "2024-08-22 11:37:09.941868",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",

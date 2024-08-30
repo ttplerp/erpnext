@@ -1,7 +1,6 @@
 # Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and Contributors
 # License: GNU General Public License v3. See license.txt
 
-
 import json
 
 import frappe
@@ -26,6 +25,7 @@ from erpnext.accounts.utils import (
 )
 from erpnext.controllers.accounts_controller import AccountsController
 from frappe.model.naming import make_autoname
+from hrms.payroll.doctype.payroll_entry.payroll_entry import get_emp_component_amount
 from frappe.model.mapper import get_mapped_doc
 
 
@@ -602,6 +602,118 @@ class JournalEntry(AccountsController):
 
 		self.validate_orders()
 		self.validate_invoices()
+	
+	''' CBS Integration Begins '''
+	def get_partylist_json(self):
+		partylist_json = frappe._dict()
+		if self.cbs_enabled:
+			if self.voucher_type == "Bank Entry":
+				return partylist_json
+		else:
+			return partylist_json
+	
+		casa_cr_list, party_dr_list = [], []
+		casa_cr_amount, party_dr_amount = 0, 0
+		casa_cr_count, party_dr_count = 0, 0
+		reference_type, reference_name = None, None
+		ignore_party_cr = 0
+		for a in self.get("accounts"):
+			if flt(a.debit) and a.party_type and a.party:
+				# get Party Debit list
+				party_dr_list.append(frappe._dict(
+					{'name': a.name, 'party_type': a.party_type, 'party': a.party, 'amount': flt(a.debit)}))
+				party_dr_amount += flt(a.debit)
+				party_dr_count += 1
+			elif flt(a.credit):
+				# get CASA Credit list
+				account = frappe.db.get('Account', a.account)
+				if account.gl_type == 'CASA':
+					if self.voucher_type == "Bank Entry" and account.cheque_required and not (self.cheque_no and self.cheque_date):
+						frappe.throw(_("Cheque details are mandatory for {}").format(
+							frappe.get_desk_link('Account', a.account)))
+					elif account.cheque_required:
+						ignore_party_cr = 1
+					casa_cr_list.append(frappe._dict({'name': a.name, 'account': a.account, 'amount': flt(a.credit), 'reference_type': a.reference_type,
+										'reference_name': a.reference_name, 'salary_component': a.salary_component, 'cost_center': a.cost_center, 'business_activity': a.business_activity}))
+					casa_cr_amount += flt(a.credit)
+					casa_cr_count += 1
+			if a.reference_type and not reference_type:
+				reference_type = a.reference_type
+			if a.reference_name and not reference_name:
+				reference_name = a.reference_name
+	
+		# if a GL of Cheque payment/cheque_required used, ignore credit to party instead do CASA credit to GL's bank A/C
+		if ignore_party_cr:
+			return partylist_json
+	
+		if reference_type in ('Payroll Entry', 'PBVA', 'Bonus', 'Leave Travel Concession'):
+			''' ignore party based gl debit entries and get the party details from respective transaction for bulk payments '''
+			if reference_type in ('Payroll Entry', 'PBVA', 'Bonus', 'Leave Travel Concession'):
+				if not reference_name:
+					frappe.throw(
+						_("Reference Name not found for Payroll Entry"))
+				if casa_cr_list:
+					for c in casa_cr_list:
+						party_dr_list = []
+						party_dr_amount, party_dr_count = 0, 0
+						if c.salary_component in ("Net Pay", "Financial Institution Loan", "Security Deposit", 
+													"PBVA", "Leave Travel Concession", "Bonus"):
+							''' get employee wise net pay details '''
+							details = None
+							if c.salary_component == "PBVA":
+								details = get_pbva_emp_details(c.reference_name)
+							elif c.salary_component == "Bonus":
+								details = get_bonus_emp_details(c.reference_name)
+							elif c.salary_component == "Leave Travel Concession":
+								details = get_ltc_emp_details(c.reference_name)
+							else:
+								details = get_emp_component_amount(
+									payroll_entry=reference_name, salary_component=c.salary_component)
+	
+							if not details and c.amount:
+								frappe.throw(_("Could not find Net Pay details for {}").format(
+									frappe.get_desk_link(reference_type, reference_name)))
+							for d in details:
+								if not d.account_number:
+									frappe.throw(_("{} A/C# missing for {}").format("Bank" if c.salary_component ==
+													"Net Pay" else c.salary_component, frappe.get_desk_link("Employee", d.employee)))
+								
+								if flt(d.amount):
+									party_dr_list.append(frappe._dict({'party_type': 'Employee', 'party': d.employee, 'amount': flt(d.amount),
+																		'remarks': d.remarks, 'bank_name': d.bank_name, 'account_number': d.account_number, 'recovery_account': d.recovery_account}))
+									
+									party_dr_amount += flt(d.amount)
+									party_dr_count += 1
+	
+							if flt(party_dr_amount, 2) != flt(c.amount):
+								frappe.throw(_("Total <b>{}({})</b> does not match with Total Credit Amount({}) {}").format(
+									c.salary_component, party_dr_amount, c.amount, frappe.get_desk_link(reference_type, reference_name)))
+							else:
+								for p in party_dr_list:
+									partylist_json.setdefault(c.name, {}).setdefault(p.party_type, []).append({'party_type': p.party_type,
+																												'party': p.party, 'amount': p.amount, 'remarks': p.remarks, 'bank_name': p.bank_name, 'account_number': p.account_number, 'recovery_account': p.recovery_account})
+			else:
+				frappe.throw(
+					_("CBS Integration for <b>{}</b> payment is underway").format(reference_type))
+		elif party_dr_list and casa_cr_list:
+			'''party details required only in case of a CASA gl involvement'''
+			if casa_cr_count > 1:
+				frappe.throw(
+					_("Multiple CASA credits not permitted in single transaction"))
+			elif len(list(set([(i.party_type, i.party) for i in party_dr_list]))) > 1 and party_dr_amount and casa_cr_amount \
+					and party_dr_amount != casa_cr_amount:
+				frappe.throw(
+					_("Total Debit for parties doesn't match with CASA Credit"))
+	
+			if len(list(set([(i.party_type, i.party) for i in party_dr_list]))) == 1:
+				partylist_json.setdefault(casa_cr_list[0].name, {}).setdefault(party_dr_list[0].party_type, []).append(
+					{'party_type': party_dr_list[0].party_type, 'party': party_dr_list[0].party, 'amount': casa_cr_list[0].amount})
+			else:
+				for p in party_dr_list:
+					partylist_json.setdefault(casa_cr_list[0].name, {}).setdefault(p.party_type, []).append(
+						{'party_type': p.party_type, 'party': p.party, 'amount': p.amount})
+		return partylist_json
+	''' CBS Integration Ends '''
 
 	def validate_orders(self):
 		"""Validate totals, closed and docstatus for orders"""
@@ -890,8 +1002,9 @@ class JournalEntry(AccountsController):
 
 		self.total_amount_in_words = money_in_words(amt, currency)
 
-	def build_gl_map(self):
+	def build_gl_map(self, cancel=0):
 		gl_map = []
+		partylist_json = self.get_partylist_json() if not cancel else frappe._dict()
 		for d in self.get("accounts"):
 			if d.debit or d.credit:
 				r = [d.user_remark, self.remark]
@@ -928,6 +1041,7 @@ class JournalEntry(AccountsController):
 					if  get_account_type( acc, self.company) in ["Receivable","Payable","Expense Account","Income Account"]:
 						party_type = d.party_type
 						party = d.party
+					
 					gl_map.append(
 						self.get_gl_dict(
 							{
@@ -947,6 +1061,7 @@ class JournalEntry(AccountsController):
 									if tax_account else flt(d.credit_in_account_currency, d.precision("credit_in_account_currency")),
 								"against_voucher_type": d.reference_type,
 								"against_voucher": d.reference_name,
+								"partylist_json": json.dumps(partylist_json.get(d.name)) if partylist_json.get(d.name) else None,
 								"remarks": remarks,
 								"voucher_detail_no": d.reference_detail_no,
 								"cost_center": d.cost_center,
@@ -968,7 +1083,8 @@ class JournalEntry(AccountsController):
 			update_outstanding = "Yes"
 
 		if gl_map:
-			make_gl_entries(gl_map, cancel=cancel, adv_adj=adv_adj, update_outstanding=update_outstanding)
+			make_gl_entries(gl_map, cancel=cancel, adv_adj=adv_adj, 
+			merge_entries=False if self.cbs_enabled else True, update_outstanding=update_outstanding)
 
 	@frappe.whitelist()
 	def get_balance(self):

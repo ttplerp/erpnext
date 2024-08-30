@@ -10,6 +10,7 @@
  "field_order": [
   "branch",
   "execute_audit_no",
+  "iain_number",
   "from_date",
   "supervisor_id",
   "supervisor_email",
@@ -26,6 +27,8 @@
   "supervisor_designation",
   "section_break_15",
   "scope_of_audit",
+  "sb_audit_team",
+  "audit_team",
   "objective_of_audit",
   "observations_section",
   "get_observations",
@@ -33,6 +36,8 @@
   "follow_up_to_section",
   "get_direct_accountability",
   "direct_accountability",
+  "sb_supervisor_accountability",
+  "supervisor_accountability",
   "reference_no_section",
   "audit_engagement_letter",
   "cflg_follow_up",
@@ -262,12 +267,39 @@
    "fieldtype": "Data",
    "label": "Supervisor Email",
    "read_only": 1
+  },
+  {
+   "fieldname": "sb_supervisor_accountability",
+   "fieldtype": "Section Break",
+   "label": "Supervisor Accountability"
+  },
+  {
+   "fieldname": "supervisor_accountability",
+   "fieldtype": "Table",
+   "options": "Direct Accountability Supervisor Item",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_audit_team",
+   "fieldtype": "Section Break",
+   "label": "Audit Team"
+  },
+  {
+   "fieldname": "audit_team",
+   "fieldtype": "Table",
+   "options": "Follow Up Audit Team Item"
+  },
+  {
+   "fieldname": "iain_number",
+   "fieldtype": "Data",
+   "label": "IAIN Number",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-30 15:02:35.069943",
+ "modified": "2024-08-26 16:39:40.262455",
  "modified_by": "Administrator",
  "module": "AMS",
  "name": "Follow Up",
@@ -284,6 +316,7 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
@@ -293,12 +326,25 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "Auditor",
+   "role": "Auditor Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Audit User",
    "share": 1,
    "write": 1
   }
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "iain_number"
 }

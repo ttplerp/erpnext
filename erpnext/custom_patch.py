@@ -9,6 +9,23 @@ from erpnext.integrations.bps import process_files
 from erpnext.assets.doctype.asset.depreciation import make_depreciation_entry
 import pandas as pd
 
+def update_salary_slips():
+    for ss in frappe.db.sql("""
+                            select name from `tabSalary Slip` where docstatus = 1
+                            """,as_dict=1):
+        doc = frappe.get_doc("Salary Slip", ss.name)
+        doc.set_net_total_in_words()
+        print(ss.name)
+    frappe.db.commit()
+
+def save_salary_structure():
+    for ss in frappe.db.sql("""
+                            select name from `tabSalary Structure`
+                            where is_active = 'Yes'
+                            """,as_dict=1):
+        doc = frappe.get_doc("Salary Structure", ss.name)
+        doc.save()
+
 
 def update_asset_journal_entry():
     journal_entries = frappe.db.sql("""
@@ -58,13 +75,13 @@ def update_asset_journal_entry():
         print(je.name)
 def save_asset():
     count = 1
-	assets = frappe.db.sql("""
+    assets = frappe.db.sql("""
                         select name from `tabAsset` where docstatus = 0
                         """,as_dict=1)
-	for a in assets:
-		print(a.name)
-		asset = frappe.get_doc("Asset", a.name)
-		asset.save(ignore_permissions=1)
+    for a in assets:
+        print(a.name)
+        asset = frappe.get_doc("Asset", a.name)
+        asset.save(ignore_permissions=1)
         if count % 100 == 0:
             frappe.db.commit()
         count += 1
@@ -333,9 +350,9 @@ def delete_asset_gl():
             je_doc = frappe.get_doc("Journal Entry",je.name)
             print(je_doc.name)
             je_doc.delete()
-    # 	asset = frappe.get_doc("Asset",d.name)
-    # 	print(asset.name, ' ',asset.asset_category,' ', asset.docstatus)
-    # 	asset.cancel()
+    #     asset = frappe.get_doc("Asset",d.name)
+    #     print(asset.name, ' ',asset.asset_category,' ', asset.docstatus)
+    #     asset.cancel()
     print("Done")
     frappe.db.commit()
 def detete_pol_receive_gl():
@@ -595,7 +612,7 @@ def update_overtime_application_in_ss():
         mylist = list(reader)
         c = 0
         for i in mylist:
-            ss = frappe.db.sql("select name, employee, employee_name, branch, is_active from `tabSalary Structure` where employee='{}'and name='{}'".format(i[1], i[0]), as_dict=1)		
+            ss = frappe.db.sql("select name, employee, employee_name, branch, is_active from `tabSalary Structure` where employee='{}'and name='{}'".format(i[1], i[0]), as_dict=1)        
             for d in ss:
                 ss_doc = frappe.get_doc("Salary Structure", {"name": d.name})
                 if ss_doc.employee == i[1]:
@@ -608,8 +625,8 @@ def update_overtime_application_in_ss():
                 
                 # rem_list = []
                 # for a in ss_doc.get("earnings"):
-                # 	if ss_doc.employee == i[1] and a.salary_component == "Overtime Allowance":
-                # 		rem_list.append(a)
+                #     if ss_doc.employee == i[1] and a.salary_component == "Overtime Allowance":
+                #         rem_list.append(a)
 
                 # [ss_doc.remove(a) for a in rem_list]
                 # ss_doc.save(ignore_permissions=True)
@@ -621,8 +638,8 @@ def update_overtime_application_in_ss():
 def earned_leave_deletion_manual():
     count=0
     for d in frappe.db.sql("select name, employee, from_date, leaves, transaction_name from `tabLeave Ledger Entry` where from_date='2023-06-21'", as_dict=1):
-        # print(str(d.transaction_name))	
-        # print(str(d.from_date))	
+        # print(str(d.transaction_name))    
+        # print(str(d.from_date))    
         leave_all = frappe.get_doc("Leave Allocation", d.transaction_name)
         leave_all.total_leaves_allocated = flt(leave_all.total_leaves_allocated) - flt(2.5)
         leave_all.save(ignore_permissions=True)
@@ -631,7 +648,7 @@ def earned_leave_deletion_manual():
     print(str(count))
 
 # def update_sales_target():
-# 	name= frappe.db.sql(""" 
-# 			select name from `tabSales Target Item` where parent="Dolomite-2022-2036"
-# 		""")
-# 	frappe.print(str(name))
+#     name= frappe.db.sql(""" 
+#             select name from `tabSales Target Item` where parent="Dolomite-2022-2036"
+#         """)
+#     frappe.print(str(name))

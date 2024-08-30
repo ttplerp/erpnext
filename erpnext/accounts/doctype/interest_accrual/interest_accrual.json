@@ -81,7 +81,8 @@
   {
    "fieldname": "interest_amount",
    "fieldtype": "Currency",
-   "label": "Interest Amount"
+   "label": "Interest Amount",
+   "precision": "2"
   },
   {
    "fetch_from": "treasury_id.interest_rate",
@@ -117,7 +118,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-19 15:29:34.662759",
+ "modified": "2024-08-22 16:29:48.158361",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Interest Accrual",

@@ -5,5 +5,5 @@
 from frappe.tests.utils import FrappeTestCase
 
 
-class TestAuditInitialReport(FrappeTestCase):
+class TestCBSEntry(FrappeTestCase):
 	pass

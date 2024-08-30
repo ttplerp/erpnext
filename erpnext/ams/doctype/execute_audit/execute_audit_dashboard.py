@@ -7,7 +7,7 @@ def get_data():
 		'transactions': [
 			{
 				'label': _('Related'),
-				'items': ['Audit Initial Report','Follow Up', 'Close Follow Up']
+				'items': ['Audit Report','Follow Up', 'Close Follow Up']
 			},
 		]
 	}

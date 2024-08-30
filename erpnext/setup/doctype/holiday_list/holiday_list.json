@@ -17,6 +17,7 @@
   "add_weekly_holidays",
   "weekly_off",
   "get_weekly_off_dates",
+  "half_working_day",
   "holidays_section",
   "holidays",
   "clear_table",
@@ -115,12 +116,18 @@
    "fieldname": "saturday_half",
    "fieldtype": "Check",
    "label": "Saturday Half Working Day"
+  },
+  {
+   "fieldname": "half_working_day",
+   "fieldtype": "Table",
+   "label": "Half Working Days",
+   "options": "Holiday List Days"
   }
  ],
  "icon": "fa fa-calendar",
  "idx": 1,
  "links": [],
- "modified": "2024-06-21 11:15:39.685597",
+ "modified": "2024-08-28 11:22:07.045893",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Holiday List",

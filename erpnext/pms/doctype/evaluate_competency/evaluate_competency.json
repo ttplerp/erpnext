@@ -1,35 +1,35 @@
 {
  "actions": [],
- "autoname": "ECI.#####",
- "creation": "2021-03-11 09:57:42.701212",
+ "allow_rename": 1,
+ "creation": "2024-08-12 14:59:57.475025",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "competency_details_section",
+  "work_competency_id",
   "competency",
   "sub_competency",
   "column_break_4",
   "weightage",
   "column_break_10",
+  "description",
   "is_parent",
   "rating_section",
-  "supervisor_rating",
   "achievement",
   "average",
   "column_break_9",
-  "appraisers_remark",
   "rating",
   "score",
   "review_details_section",
+  "appraisers_remark",
   "column_break_12",
   "appraisees_remark",
   "give_comment_if_necessary_section",
   "comment",
-  "section_break_10",
-  "description",
   "top_level",
   "self_rating",
+  "supervisor_rating",
   "weightage_percent"
  ],
  "fields": [
@@ -37,9 +37,10 @@
    "bold": 1,
    "columns": 2,
    "fieldname": "competency",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Work Competency",
+   "options": "Work Competency",
    "read_only": 1
   },
   {
@@ -53,7 +54,8 @@
   {
    "fieldname": "appraisers_remark",
    "fieldtype": "Small Text",
-   "label": "Appraiser's Remark"
+   "label": "Appraiser's Remark",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_4",
@@ -73,6 +75,7 @@
    "default": "0",
    "fieldname": "supervisor_rating",
    "fieldtype": "Float",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Supervisor Rating"
   },
@@ -88,6 +91,7 @@
    "label": "Comment"
   },
   {
+   "fetch_from": "competency.description",
    "fieldname": "description",
    "fieldtype": "Small Text",
    "label": "Description",
@@ -98,16 +102,9 @@
    "fieldtype": "Column Break"
   },
   {
-   "collapsible": 1,
-   "fieldname": "section_break_10",
-   "fieldtype": "Section Break",
-   "label": "Descriptions"
-  },
-  {
    "columns": 4,
    "fieldname": "sub_competency",
    "fieldtype": "Data",
-   "hidden": 1,
    "label": "Sub Competency",
    "read_only": 1
   },
@@ -159,11 +156,11 @@
   {
    "allow_on_submit": 1,
    "depends_on": "eval:!doc.is_parent",
+   "fetch_from": "competency.description",
    "fieldname": "achievement",
    "fieldtype": "Link",
-   "hidden": 1,
    "ignore_user_permissions": 1,
-   "label": "Achievement",
+   "label": "Self Rating",
    "options": "Overall Rating"
   },
   {
@@ -171,18 +168,24 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
+   "depends_on": "eval:!doc.is_parent",
+   "fetch_from": "achievement.star",
    "fieldname": "rating",
-   "fieldtype": "Float",
+   "fieldtype": "Rating",
    "in_list_view": 1,
-   "label": "Rating"
+   "label": "Rating",
+   "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "columns": 1,
-   "depends_on": "eval:doc.is_parent",
+   "fetch_from": "achievement.upper_range_percent",
+   "fetch_if_empty": 1,
    "fieldname": "average",
    "fieldtype": "Float",
-   "hidden": 1,
-   "label": "Average",
+   "in_list_view": 1,
+   "label": "Total Score of Competency",
    "precision": "5",
    "read_only": 1
   },
@@ -198,20 +201,26 @@
    "label": "Weightage Percent",
    "options": "10\n20\n30\n40\n50\n60\n70\n80\n90\n100",
    "read_only": 1
+  },
+  {
+   "fieldname": "work_competency_id",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Work Competency ID",
+   "options": "Work Competency",
+   "read_only": 1
   }
  ],
+ "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-08-05 16:37:36.846431",
+ "modified": "2024-08-16 12:06:55.228748",
  "modified_by": "Administrator",
  "module": "PMS",
- "name": "Evaluate Competency Item",
- "naming_rule": "Expression (old style)",
+ "name": "Evaluate Competency",
  "owner": "Administrator",
  "permissions": [],
- "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
- "track_changes": 1
+ "states": []
 }
