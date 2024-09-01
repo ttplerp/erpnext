@@ -1000,6 +1000,7 @@
    "label": "GIS Amount"
   },
   {
+   "depends_on": "eval:doc.nationality==\"Bhutanese\"",
    "fieldname": "location_details_section",
    "fieldtype": "Section Break",
    "label": "Location Details"
@@ -1058,7 +1059,7 @@
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2024-06-17 10:51:31.983150",
+ "modified": "2024-09-01 07:24:22.277531",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
