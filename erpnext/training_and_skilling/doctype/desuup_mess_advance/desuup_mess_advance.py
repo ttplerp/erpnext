@@ -16,24 +16,24 @@ class DesuupMessAdvance(Document):
 		# self.validate_duplicate_desuup_entry()
 		# self.validate_is_exists_in_training_management()
 		# self.validate_duplicate_monthly_advance()
-		self.calcualte_mess_amount()
+		self.calculate_mess_amount()
 
 	def on_submit(self):
 		self.db_set("payment_status", "Unpaid")
 		self.post_journal_entry()
 
-	def calcualte_mess_amount(self):
+	def calculate_mess_amount(self):
 		month_start_date, month_end_date = self.get_start_end_month_date()
 
 		mess_amt = frappe.db.get_single_value("Desuup Settings", "mess_advance")
-		mess_adv_amt = 0
 		total_adv = 0
 
 		days_in_month = calendar.monthrange(month_end_date.year, month_end_date.month)[1]
+	
 		for adv in self.items:
 			days = (getdate(adv.to_date) - getdate(adv.from_date)).days + 1
 			if days != days_in_month:
-				mess_adv_amt = flt(mess_amt)/flt(30)
+				mess_adv_amt = flt(mess_amt) / flt(30)
 				adv.amount = flt(mess_adv_amt * days, 2)
 			else:
 				adv.amount = flt(mess_amt, 2)
@@ -231,7 +231,7 @@ class DesuupMessAdvance(Document):
 			self.append('items', d)
 
 		self.number_of_desuups = len(desuups)
-		self.calcualte_mess_amount()
+		self.calculate_mess_amount()
 		return self.number_of_desuups
 
 	def post_journal_entry(self):
