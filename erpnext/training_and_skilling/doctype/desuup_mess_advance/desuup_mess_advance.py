@@ -32,7 +32,7 @@ class DesuupMessAdvance(Document):
 
 		for adv in self.items:
 			days = (getdate(adv.to_date) - getdate(adv.from_date)).days + 1
-			mess_adv_amt = flt(mess_amt) / flt(days_in_month)
+			mess_adv_amt = flt(mess_amt)/30
 
 			# Fetch previous advances for the desuup
 			prev_adv = frappe.db.sql("""
