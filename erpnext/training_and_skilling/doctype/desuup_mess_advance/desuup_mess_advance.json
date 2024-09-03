@@ -9,12 +9,14 @@
   "company",
   "branch",
   "month",
+  "advance_for",
   "training_center",
   "column_break_1",
   "fiscal_year",
   "cost_center",
   "from_date",
   "training_management",
+  "desuup_deployment_entry",
   "column_break_6",
   "posting_date",
   "payment_status",
@@ -143,14 +145,16 @@
    "in_standard_filter": 1,
    "label": "Payment Status",
    "options": "Draft\nPaid\nUnpaid",
+   "read_only": 1,
    "reqd": 1
   },
   {
+   "depends_on": "eval:doc.advance_for == \"Trainee\"",
    "fieldname": "training_center",
    "fieldtype": "Link",
    "label": "Training Center",
-   "options": "Training Center",
-   "reqd": 1
+   "mandatory_depends_on": "eval:doc.advance_for == \"Trainee\"",
+   "options": "Training Center"
   },
   {
    "fieldname": "get_desuups",
@@ -158,6 +162,7 @@
    "label": "Get Desuups"
   },
   {
+   "depends_on": "eval:doc.advance_for == \"Trainee\"",
    "fieldname": "training_management",
    "fieldtype": "Link",
    "label": "Training Management",
@@ -168,12 +173,27 @@
    "fieldtype": "Int",
    "label": "Number of Desuups",
    "read_only": 1
+  },
+  {
+   "fieldname": "advance_for",
+   "fieldtype": "Select",
+   "label": "Advance For",
+   "options": "\nTrainee\nOJT\nProduction",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:['OJT', 'Production'].includes(doc.advance_for)",
+   "fieldname": "desuup_deployment_entry",
+   "fieldtype": "Link",
+   "label": "Desuup Deployment Entry",
+   "mandatory_depends_on": "eval:['OJT', 'Production'].includes(doc.advance_for)",
+   "options": "Desuup Deployment Entry"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-17 10:42:06.417995",
+ "modified": "2024-08-28 11:30:09.116308",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Mess Advance",

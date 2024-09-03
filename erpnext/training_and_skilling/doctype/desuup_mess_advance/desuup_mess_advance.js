@@ -19,6 +19,15 @@ frappe.ui.form.on('Desuup Mess Advance', {
 				}
 			}
 		});
+
+		frm.set_query('desuup_deployment_entry', function(doc) {
+			return {
+				filters: {
+					"company": frm.doc.company,
+					"status": "On Going",
+				}
+			}
+		});
 	},
 	
 	refresh: function(frm) {
