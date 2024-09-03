@@ -29,16 +29,32 @@ class DesuupMessAdvance(Document):
 		total_adv = 0
 
 		days_in_month = calendar.monthrange(month_end_date.year, month_end_date.month)[1]
-	
+
 		for adv in self.items:
 			days = (getdate(adv.to_date) - getdate(adv.from_date)).days + 1
-			if days != days_in_month:
-				mess_adv_amt = flt(mess_amt) / flt(30)
-				adv.amount = flt(mess_adv_amt * days, 2)
-			else:
-				adv.amount = flt(mess_amt, 2)
+			mess_adv_amt = flt(mess_amt) / flt(days_in_month)
+
+			# Fetch previous advances for the desuup
+			prev_adv = frappe.db.sql("""
+				SELECT SUM(amount) 
+				FROM `tabDesuup Mess Advance Item` 
+				WHERE desuup = %s 
+				AND parent != %s
+				AND from_date >= %s 
+				AND to_date <= %s
+			""", (adv.desuup, self.name, month_start_date, month_end_date))
+
+			prev_adv_amt = flt(prev_adv[0][0]) if prev_adv else 0
+
+			# Calculate the allowable advance for the current entry
+			allowable_amt = max(flt(mess_amt) - prev_adv_amt, 0)
+			current_adv_amt = min(flt(mess_adv_amt * days, 2), allowable_amt)
+
+			adv.amount = current_adv_amt
 			total_adv += adv.amount
+
 		self.total_advance = total_adv
+
 
 	def validate_duplicate_desuup_entry(self):
 		# validating duplicates entry in a table
