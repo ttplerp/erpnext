@@ -4,7 +4,7 @@
 import frappe
 import calendar
 import frappe.translate
-from datetime import date
+from datetime import date, timedelta
 from frappe import _
 from frappe.utils import cint, flt, nowdate, add_days, getdate, fmt_money, add_to_date, DATE_FORMAT, date_diff, get_last_day
 from frappe.model.document import Document
@@ -91,11 +91,16 @@ class DesuupMessAdvance(Document):
 		return cond
 	
 	def get_desuup_list(self):
-		desuup_list = []
-		
-		cond = self.get_conditions()
+		# Validate necessary fields
+		if self.advance_for == "Trainee":
+			if not self.training_center:
+				frappe.throw("Please set Training Center")
+		else:
+			if not self.desuup_deployment_entry:
+				frappe.throw("Please set Desuup Deployment Entry")
 
-		desuup_list = frappe.db.sql("""
+		# Define the base query for desuup_list
+		base_query = """
 			SELECT 
 				t1.name AS reference_name, 
 				'Training Management' AS reference_doctype, 
@@ -126,46 +131,70 @@ class DesuupMessAdvance(Document):
 					t2.exit_date IS NULL 
 					OR t2.exit_date > %(from_date)s
 				)
-				AND t2.desuup_id NOT IN (
-					SELECT desuup
-					FROM `tabDesuup Mess Advance Item`
-					WHERE (
-						from_date BETWEEN %(from_date)s AND %(to_date)s 
-						OR to_date BETWEEN %(from_date)s AND %(to_date)s
-						OR %(from_date)s BETWEEN from_date AND to_date
-						OR %(to_date)s BETWEEN from_date AND to_date
-					)
-					AND docstatus IN (1)
-					AND reference_name = %(ref)s
-				)
 				{}
 			ORDER BY 
 				t2.desuup_name
-		""".format(cond), {
+		""".format(self.get_conditions())  # Ensure self.get_conditions() returns a valid SQL fragment
+
+		# Fetch desuup_list
+		desuup_list = frappe.db.sql(base_query, {
 			'from_date': getdate(self.from_date),
 			'to_date': getdate(self.to_date),
-			'ref': self.training_management,
 		}, as_dict=True)
 
+		# Determine reference name for the next query
+		reference_name = self.training_management if self.advance_for == "Trainee" else self.desuup_deployment
+
+		# Define the query for previous advances
+		query = """
+			SELECT t2.desuup, t2.from_date, t2.to_date 
+			FROM `tabDesuup Mess Advance` t1
+			JOIN `tabDesuup Mess Advance Item` t2 ON t1.name = t2.parent
+			WHERE t1.training_center = %s
+			AND t1.from_date = %s
+			AND t1.to_date = %s
+			AND t2.reference_name = %s
+		"""
+
+		# Fetch previous advances
+		previous_adv = frappe.db.sql(query, (self.training_center, self.from_date, self.to_date, reference_name), as_dict=True)
+
+		# Process and adjust desuup_list based on previous advances
 		for desuup in desuup_list:
-			if getdate(desuup['from_date']) < getdate(self.from_date):
-				desuup['from_date'] = self.from_date
-			if getdate(desuup['to_date']) > getdate(self.to_date):
-				desuup['to_date'] = self.to_date
+			if not previous_adv:
+				if getdate(desuup['from_date']) < getdate(self.from_date):
+					desuup['from_date'] = self.from_date
+				if getdate(desuup['to_date']) > getdate(self.to_date):
+					desuup['to_date'] = self.to_date
 
-			if desuup.get('reporting_date'):
-				reporting_date = getdate(desuup['reporting_date'])
-				start_date = getdate(desuup['from_date'])
-				if reporting_date.month == start_date.month and reporting_date.year == start_date.year:
-					desuup['from_date'] = reporting_date
+				if desuup.get('reporting_date'):
+					reporting_date = getdate(desuup['reporting_date'])
+					start_date = getdate(desuup['from_date'])
+					if reporting_date.month == start_date.month and reporting_date.year == start_date.year:
+						desuup['from_date'] = reporting_date
 
-			if desuup.get('exit_date'):
-				exit_date = getdate(desuup['exit_date'])
-				end_date = getdate(desuup['to_date'])
-				if exit_date.month == end_date.month and exit_date.year == end_date.year:
-					desuup['to_date'] = exit_date
+				if desuup.get('exit_date'):
+					exit_date = getdate(desuup['exit_date'])
+					end_date = getdate(desuup['to_date'])
+					if exit_date.month == end_date.month and exit_date.year == end_date.year:
+						desuup['to_date'] = exit_date
+			else:
+				if getdate(desuup['to_date']) > getdate(self.to_date):
+					desuup['to_date'] = self.to_date
+					
+				# Adjust based on previous_adv, logic might need more detail
+				for prev in previous_adv:
+					if desuup['desuup'] == prev['desuup']:
+						if getdate(desuup['from_date']) < getdate(prev['to_date']) + timedelta(days=1):
+							desuup['from_date'] = getdate(prev['to_date']) + timedelta(days=1)
+						if desuup.get('exit_date'):
+							exit_date = getdate(desuup['exit_date'])
+							end_date = getdate(desuup['to_date'])
+							if exit_date.month == end_date.month and exit_date.year == end_date.year:
+								desuup['to_date'] = exit_date
 
 		return desuup_list
+
 	
 	@frappe.whitelist()
 	def get_desuup_details(self):

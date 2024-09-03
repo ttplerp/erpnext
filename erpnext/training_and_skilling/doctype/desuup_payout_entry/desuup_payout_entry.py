@@ -94,7 +94,7 @@ class DesuupPayoutEntry(Document):
 
 	def get_advance_amount(self, desuup, ref_doctype, ref_name):
 		adv_list = frappe.db.sql("""
-				SELECT t1.name, t2.amount, t1.paid_to 
+				SELECT t1.name, sum(t2.amount) as amount, t1.paid_to 
 				FROM `tabDesuup Mess Advance` t1, `tabDesuup Mess Advance Item` t2 
 				WHERE t1.name = t2.parent
 				AND t2.reference_doctype = %s
