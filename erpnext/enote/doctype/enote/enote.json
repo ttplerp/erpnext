@@ -8,11 +8,11 @@
  "engine": "InnoDB",
  "field_order": [
   "enote_format",
+  "note_date",
   "title",
   "enote_type",
   "reviewer_required",
   "column_break_2",
-  "note_date",
   "forward_to",
   "enote_series",
   "permitted_user",
@@ -150,7 +150,7 @@
  "icon": "fa fa-file-text",
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-04 17:58:20.058399",
+ "modified": "2024-09-04 18:00:25.263533",
  "modified_by": "Administrator",
  "module": "eNote",
  "name": "eNote",
@@ -174,6 +174,5 @@
  "sort_order": "ASC",
  "states": [],
  "title_field": "title",
- "track_changes": 1,
- "track_seen": 1
+ "track_changes": 1
 }
