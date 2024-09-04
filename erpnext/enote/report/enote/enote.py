@@ -8,10 +8,11 @@ from frappe.model.naming import make_autoname
 from frappe.utils import nowdate
 
 class eNote(Document):
-	
 	def on_submit(self):
+		'''
 		self.enote_format = make_autoname(str(self.enote_series)+".YYYY./.#####")
 		frappe.db.set_value("eNote", self.name, "enote_format", self.enote_format)
+		'''
 		self.send_notification()
 		# notify_workflow_states(self)
   
@@ -325,8 +326,7 @@ def get_permission_query_conditions(user):
 
     if user == "Administrator":
         return
-    if "HR User" in user_roles or "HR Manager" in user_roles:
-        return
+   
     return """(
         `tabeNote`.owner = '{user}' or
 		IF (

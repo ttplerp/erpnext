@@ -9,15 +9,12 @@
  "field_order": [
   "enote_format",
   "title",
-  "category",
   "enote_type",
-  "class",
   "reviewer_required",
   "column_break_2",
   "note_date",
   "forward_to",
   "enote_series",
-  "type",
   "permitted_user",
   "copied",
   "reviewers",
@@ -47,13 +44,6 @@
    "reqd": 1
   },
   {
-   "fieldname": "category",
-   "fieldtype": "Link",
-   "label": "Category",
-   "options": "eNote Category",
-   "reqd": 1
-  },
-  {
    "fieldname": "column_break_2",
    "fieldtype": "Column Break"
   },
@@ -66,7 +56,7 @@
   {
    "fieldname": "forward_to",
    "fieldtype": "Link",
-   "label": "Approver",
+   "label": "Approver/Forward To",
    "no_copy": 1,
    "options": "User"
   },
@@ -132,17 +122,9 @@
    "read_only": 1
   },
   {
-   "fieldname": "enote_type",
-   "fieldtype": "Link",
-   "label": "eNote Type",
-   "options": "Department",
-   "reqd": 1
-  },
-  {
-   "description": "- Dispatch Series should end with /. Disptach number will be generated upon approval of eNote.",
    "fieldname": "enote_series",
    "fieldtype": "Link",
-   "label": "Dispatch/Reference Series",
+   "label": "Dispatch Format",
    "options": "eNote Series",
    "reqd": 1
   },
@@ -160,24 +142,17 @@
    "options": "eNote Reviewer"
   },
   {
-   "depends_on": "eval:doc.category == \"Note Sheet\"",
-   "fieldname": "class",
-   "fieldtype": "Select",
-   "label": "Detail",
-   "options": "\nAdministration\nProcurement\nBudget\nEmployee\nGeneral\nMiscellaneous"
-  },
-  {
-   "depends_on": "eval:doc.category ==\"Note Sheet\"",
-   "fieldname": "type",
-   "fieldtype": "Select",
-   "label": "Type",
-   "options": "\nProcess\nPayment"
+   "fieldname": "enote_type",
+   "fieldtype": "Link",
+   "label": "eNote Type",
+   "options": "eNote Type",
+   "reqd": 1
   }
  ],
  "icon": "fa fa-file-text",
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-27 10:51:48.380690",
+ "modified": "2024-09-04 17:39:32.478032",
  "modified_by": "Administrator",
  "module": "eNote",
  "name": "eNote",
@@ -201,6 +176,5 @@
  "sort_order": "ASC",
  "states": [],
  "title_field": "title",
- "track_changes": 1,
- "track_seen": 1
+ "track_changes": 1
 }
