@@ -123,10 +123,8 @@
   },
   {
    "fieldname": "enote_series",
-   "fieldtype": "Link",
-   "label": "Dispatch Format",
-   "options": "eNote Series",
-   "reqd": 1
+   "fieldtype": "Data",
+   "label": "Dispatch Format"
   },
   {
    "default": "0",
@@ -152,7 +150,7 @@
  "icon": "fa fa-file-text",
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-04 17:39:32.478032",
+ "modified": "2024-09-04 17:58:20.058399",
  "modified_by": "Administrator",
  "module": "eNote",
  "name": "eNote",
@@ -176,5 +174,6 @@
  "sort_order": "ASC",
  "states": [],
  "title_field": "title",
- "track_changes": 1
+ "track_changes": 1,
+ "track_seen": 1
 }
