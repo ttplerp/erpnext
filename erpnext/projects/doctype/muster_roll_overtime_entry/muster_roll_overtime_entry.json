@@ -12,8 +12,8 @@
   "mr_employee_name",
   "date",
   "number_of_hours",
-  "cost_center",
   "branch",
+  "cost_center",
   "purpose",
   "amended_from",
   "reference"
@@ -35,10 +35,12 @@
    "reqd": 1
   },
   {
+   "fetch_from": "branch.cost_center",
    "fieldname": "cost_center",
    "fieldtype": "Link",
    "label": "Cost Center",
    "options": "Cost Center",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -48,7 +50,6 @@
    "in_standard_filter": 1,
    "label": "Branch",
    "options": "Branch",
-   "read_only": 1,
    "reqd": 1
   },
   {
@@ -89,11 +90,10 @@
    "read_only": 1
   }
  ],
- "in_create": 1,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-24 12:27:24.274645",
+ "modified": "2024-09-04 09:50:54.439484",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Muster Roll Overtime Entry",
@@ -159,5 +159,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "mr_employee"
+ "title_field": "mr_employee",
+ "track_changes": 1
 }
