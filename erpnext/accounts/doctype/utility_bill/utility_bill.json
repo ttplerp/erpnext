@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_import": 1,
- "autoname": "format:{utility_bill_type}-{YY}-{month}}-",
+ "autoname": "format:{utility_bill_type}-{YY}-{month}",
  "creation": "2021-05-27 09:22:49.958588",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -229,7 +229,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-28 09:50:53.147897",
+ "modified": "2024-09-05 22:35:53.949668",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Utility Bill",
