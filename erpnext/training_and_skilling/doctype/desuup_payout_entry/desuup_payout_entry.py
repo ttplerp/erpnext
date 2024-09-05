@@ -188,7 +188,7 @@ class DesuupPayoutEntry(Document):
 		params = {
 			'start_date': getdate(self.start_date),
 			'end_date': getdate(self.end_date),
-			"ref_name": self.training_management,
+			"ref_name": self.training_management if self.payment_for == "Trainee" else self.desuup_deployment,
 		}
 
 		if self.payment_for == "Trainee":
@@ -232,7 +232,7 @@ class DesuupPayoutEntry(Document):
 							OR %(end_date)s BETWEEN from_date AND to_date
 						)
 						AND reference_name = %(ref_name)s
-						AND docstatus IN (1)
+						AND docstatus IN (0, 1)
 					)
 					{}
 				ORDER BY 
@@ -277,7 +277,8 @@ class DesuupPayoutEntry(Document):
 						OR %(start_date)s BETWEEN from_date AND to_date
 						OR %(end_date)s BETWEEN from_date AND to_date
 					)
-					AND docstatus IN (1)
+					AND docstatus IN (0, 1)
+					AND reference_name = %(ref_name)s
 				)
 				{}
 				ORDER BY t2.desuup_name
@@ -321,7 +322,8 @@ class DesuupPayoutEntry(Document):
 						OR %(start_date)s BETWEEN from_date AND to_date
 						OR %(end_date)s BETWEEN from_date AND to_date
 					)
-					AND docstatus IN (1)
+					AND docstatus IN (0, 1)
+					AND reference_name = %(ref_name)s
 				)
 				{}
 				ORDER BY t2.desuup_name
