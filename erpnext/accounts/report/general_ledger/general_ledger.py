@@ -204,9 +204,21 @@ def get_gl_entries(filters, accounting_dimensions):
 
 	if filters.get("presentation_currency"):
 		return convert_to_presentation_currency(gl_entries, currency_map, filters.get("company"))
+	elif filters.get("hide_payment_failed"):
+		return get_gl_entries_without_payment_failed(gl_entries)
 	else:
 		return gl_entries
-
+	
+def get_gl_entries_without_payment_failed(gl_entries):
+    new_gl_entries = []
+    for entry in gl_entries:
+        if entry.voucher_type in ('Journal Entry', 'Payment Entry'):
+            doc = frappe.get_doc(entry.voucher_type, entry.voucher_no)
+            if not (doc.payment_status and doc.payment_status == "Payment Failed"):
+                new_gl_entries.append(entry)
+        else:
+            new_gl_entries.append(entry)
+    return new_gl_entries
 
 def get_conditions(filters):
 	conditions = []

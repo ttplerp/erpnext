@@ -188,7 +188,12 @@ frappe.query_reports["General Ledger"] = {
 			"fieldname": "show_net_values_in_party_account",
 			"label": __("Show Net Values in Party Account"),
 			"fieldtype": "Check"
-		}
+		},
+		{
+			"fieldname": "hide_payment_failed",
+			"label": __("Hide Payment Failed"),
+			"fieldtype": "Check"
+		},
 	]
 }
 
