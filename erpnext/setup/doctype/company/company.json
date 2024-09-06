@@ -120,6 +120,8 @@
   "travel_advance_account",
   "salary_advance_account",
   "imprest_advance_account",
+  "sws_credit_account",
+  "sws_debit_account",
   "other_settings_tab",
   "budget_detail",
   "exception_budget_approver_role",
@@ -952,6 +954,20 @@
    "fieldname": "cbs_enabled",
    "fieldtype": "Check",
    "label": "CBS enabled"
+  },
+  {
+   "fieldname": "sws_credit_account",
+   "fieldtype": "Link",
+   "label": "SWS Credit Account",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sws_debit_account",
+   "fieldtype": "Link",
+   "label": "SWS Debit Account",
+   "options": "Account",
+   "reqd": 1
   }
  ],
  "icon": "fa fa-building",
@@ -959,7 +975,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2024-08-18 17:47:03.973853",
+ "modified": "2024-09-06 16:41:28.793397",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",
