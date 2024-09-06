@@ -135,7 +135,7 @@ class HousingApplication(Document):
 			#Civil Servant Deail
 			data1=get_civil_servant_detail(cid=self.cid)
 			if data1:
-				self.grade = data1['positionLevel']
+				self.grade = data1['PositionLevel']
 				if 'OperatingUnit' in data1:
 					self.ministry_agency = data1['OperatingUnit']
 				if 'DeptName' in data1:
@@ -167,7 +167,7 @@ class HousingApplication(Document):
 				data3=get_civil_servant_detail(cid=self.spouse_cid)
 				if data3:
 					self.spouse_designation = data3['positionTitle']
-					self.spouse_grade = data3['positionLevel']
+					self.spouse_grade = data3['PositionLevel']
 					self.spouse_ministry = data3['OrganogramLevel1']
 					self.spouse_department = data3['OrganogramLevel2']
 					self.spouse_gross_salary = data3['GrossPay']
@@ -255,4 +255,18 @@ def make_tenant_information(source_name, target_doc=None):
 	return doc
 
 
-	
+def get_permission_query_conditions(user):
+	if not user: user = frappe.session.user
+	user_roles = frappe.get_roles(user)
+
+	if user == "Administrator" or "System Manager" in user_roles or "Stock Master" in user_roles: 
+		return
+
+	return """(
+		exists(select 1
+			from `tabEmployee` e, `tabAssign Branch` ab, `tabBranch Item` bi
+			where e.user_id = '{user}'
+			and ab.employee = e.name
+			and bi.parent = ab.name
+			and bi.branch = `tabHousing Application`.work_station)
+	)""".format(user=user)
