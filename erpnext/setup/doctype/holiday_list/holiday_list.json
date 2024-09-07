@@ -113,6 +113,7 @@
   },
   {
    "default": "0",
+   "description": "Note: Please check if Saturday is Half Working Day to consider during Office IN and OUT attendance",
    "fieldname": "saturday_half",
    "fieldtype": "Check",
    "label": "Saturday Half Working Day"
@@ -127,7 +128,7 @@
  "icon": "fa fa-calendar",
  "idx": 1,
  "links": [],
- "modified": "2024-08-28 11:22:07.045893",
+ "modified": "2024-09-07 15:00:23.811237",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Holiday List",
