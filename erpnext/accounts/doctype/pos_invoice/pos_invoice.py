@@ -561,6 +561,9 @@ class POSInvoice(SalesInvoice):
 
 	def set_account_for_mode_of_payment(self):
 		for pay in self.payments:
+			#jai
+			if pay.mode_of_payment == 'Online':
+				pay.account = frappe.db.get_value("POS Profile", self.pos_profile, "bank_account")
 			if not pay.account:
 				pay.account = get_bank_cash_account(pay.mode_of_payment, self.company, self.cost_center).get("account")
 
