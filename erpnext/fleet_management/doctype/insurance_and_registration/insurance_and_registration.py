@@ -77,12 +77,14 @@ class InsuranceandRegistration(Document):
 			"party_check": 0,
 			"party_type": "Supplier",
 			"party": args.party,
+			"business_activity":"Common",
 			"reference_type": self.doctype,
 			"reference_name": self.name
 			})
 		je.append("accounts",{
 			"account": default_bank_account,
 			"credit_in_account_currency": args.total_amount,
+			"business_activity":"Common",
 			"cost_center": frappe.db.get_value('Branch',self.branch,'cost_center')
 		})
 		je.insert()
