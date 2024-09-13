@@ -472,6 +472,7 @@
    "fetch_from": "pms_group.negative_target",
    "fieldname": "negative_target",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Eligible For Negative Target",
    "read_only": 1
   },
@@ -479,18 +480,20 @@
    "depends_on": "negative_target",
    "fieldname": "business_activity_target_for_negative_points_section",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Business Activity Target For Negative Points"
   },
   {
    "fieldname": "business_target",
    "fieldtype": "Table",
+   "hidden": 1,
    "label": "Business Target",
    "options": "Negative Target"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-11-02 15:25:14.267642",
+ "modified": "2024-07-18 11:19:51.669035",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Target Set Up",

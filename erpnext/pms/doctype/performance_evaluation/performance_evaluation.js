@@ -20,6 +20,7 @@ frappe.ui.form.on('Performance Evaluation', {
 	},
 	
 	refresh: (frm)=>{
+		hide_child_table_field(frm)
 		if (frm.doc.docstatus == 0 && frappe.user.has_role(['HR Manager', 'HR User'])){
 			frm.set_df_property('set_manual_approver', 'read_only', 0);
 		}else{
@@ -79,6 +80,11 @@ frappe.ui.form.on('Performance Evaluation', {
 			get_competency(frm)
 		}
 	},
+	get_achievements: function(frm) {
+		if(frm.doc.docstatus != 1){
+			get_achievement(frm);
+		}
+	}
 });
 
 cur_frm.cscript.approver = function(doc){
@@ -146,6 +152,17 @@ frappe.ui.form.on('Evaluate Target Item',{
 	}
 })
 
+// Jai
+frappe.ui.form.on('Evaluate Additional Achievements',{
+	form_render:(frm,cdt,cdn)=>{
+		var row = locals[cdt][cdn]
+		if (frappe.session.user == frm.doc.approver){
+			frm.fields_dict['achievements_items'].grid.grid_rows_by_docname[row.name].toggle_editable('supervisor_rating', true);
+		}else{
+			frm.fields_dict['achievements_items'].grid.grid_rows_by_docname[row.name].toggle_editable('supervisor_rating', false);
+		}
+	}
+})
 
 // calculate timeline rating
 var calculate_timeline_rating = (frm,cdt,cdn)=>{
@@ -260,7 +277,23 @@ var get_achievement = (frm)=>{
 		frappe.throw("Select PMS Calendar to get <b>Achievements</b>")
 	}
 }
+var hide_child_table_field = (frm)=>{
+	// frm.fields_dict.evaluate_target_item.grid.toggle_display("supervisor_rating", frappe.session.user == frm.doc.sup_user_id );
+	// cur_frm.fields_dict.evaluate_target_item.grid.set_column_disp("supervisor_rating",frappe.session.user == frm.doc.approver || frappe.session.user == frm.doc.approver2);
+	// cur_frm.fields_dict.evaluate_competency_item.grid.set_column_disp("supervisor_rating",frappe.session.user == frm.doc.approver || frappe.session.user == frm.doc.approver2);
+	// cur_frm.fields_dict.achievements_items.grid.set_column_disp("supervisor_rating",frappe.session.user == frm.doc.approver || frappe.session.user == frm.doc.approver2);
+	// frappe.meta.get_docfield("Evaluate Target Item","supervisor_rating",cur_frm.doc.name).read_only = frappe.session.user != frm.doc.approver
+	// frappe.meta.get_docfield("Evaluate Competency Item","supervisor_rating",cur_frm.doc.name).read_only = frappe.session.user != frm.doc.approver
+	frappe.meta.get_docfield("Evaluate Additional Achievements","supervisor_rating",cur_frm.doc.name).read_only = (frappe.session.user == frm.doc.approver ? 0:1)
 
+	// frappe.meta.get_docfield("Evaluate Target Item","self_rating",cur_frm.doc.name).read_only = frappe.session.user == frm.doc.approver
+	// frappe.meta.get_docfield("Evaluate Competency Item","self_rating",cur_frm.doc.name).read_only = frappe.session.user == frm.doc.approver
+	frappe.meta.get_docfield("Evaluate Additional Achievements","comment",cur_frm.doc.name).read_only = (frappe.session.user == frm.doc.approver ? 0:1)
+	// frappe.meta.get_docfield("Evaluate Additional Achievements","self_rating",cur_frm.doc.name).read_only = frappe.session.user == frm.doc.approver
+	// frm.set_df_property('a_sup_rating_total', 'hidden', frappe.session.user != frm.doc.approver)
+	// frm.set_df_property('b_sup_rating_total', 'hidden', frappe.session.user != frm.doc.approver)
+	// frm.set_df_property('comment', 'read_only', frappe.session.user != frm.doc.approver)
+}
 frappe.form.link_formatters['Employee'] = function(value, doc) {
 	return value
 }

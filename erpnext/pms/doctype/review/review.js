@@ -3,14 +3,77 @@
 //  developed by Birendra on 15/02/2021
 frappe.ui.form.on('Review', {
 	refresh: function(frm){
-		if (frm.doc.docstatus == 1){
-			cur_frm.add_custom_button(__('Create Evaluation'), ()=>{
-				frappe.model.open_mapped_doc({
-					method: "erpnext.pms.doctype.review.review.create_evaluation",	
-					frm: cur_frm
-				});
-			}).addClass("btn-primary custom-create custom-create-css")
+		if (frm.doc.docstatus == 1) {
+			const reviewFlow = {
+				'Review I': 'Review II',
+				'Review II': 'Review III',
+				'Review III': 'Review IV',
+				'Review IV': 'Create Evaluation'
+			};
+			var btn_title = `Create ${reviewFlow[frm.doc.review_type]}`
+			if (frm.doc.review_type === 'Review IV') {
+				cur_frm.add_custom_button(__(btn_title), ()=>{
+					frappe.model.open_mapped_doc({
+						method: "erpnext.pms.doctype.review.review.create_evaluation",	
+						frm: cur_frm
+					});
+				}).addClass("btn-primary custom-create custom-create-css")
+			} else if (reviewFlow[frm.doc.review_type]) {
+				// console.log(`Create ${reviewFlow[frm.doc.review_type]}`);
+				// create_review(reviewFlow[frm.doc.review_type]);
+				
+				let review_level = reviewFlow[frm.doc.review_type]
+
+				cur_frm.add_custom_button(__(btn_title), ()=>{
+					frappe.model.open_mapped_doc({
+						method: "erpnext.pms.doctype.review.review.create_review",	
+						frm: cur_frm,
+						args: {review_level: review_level, target_id: cur_frm.doc.target}
+					});
+				}).addClass("btn-primary custom-create custom-create-css")
+			} else {
+				console.log("Value missing for Review Type");
+			}
+		
 		}
+
+		// if (frm.doc.docstatus == 1 && frm.doc.review_type == 'Review IV'){
+		// 	cur_frm.add_custom_button(__('Create Evaluation'), ()=>{
+		// 		frappe.model.open_mapped_doc({
+		// 			method: "erpnext.pms.doctype.review.review.create_evaluation",	
+		// 			frm: cur_frm
+		// 		});
+		// 	}).addClass("btn-primary custom-create custom-create-css")
+		// }
+		// else if (frm.doc.docstatus == 1 && frm.doc.review_type == 'Review I'){
+		// 	cur_frm.add_custom_button(__('Create Review II'), ()=>{
+		// 		frappe.model.open_mapped_doc({
+		// 			method: "erpnext.pms.doctype.review.review.create_review",	
+		// 			frm: cur_frm,
+		// 			args: {review_level: "Review II", target_id: cur_frm.doc.target}
+		// 		});
+		// 	}).addClass("btn-primary custom-create custom-create-css")
+		// }
+		// else if (frm.doc.docstatus == 1 && frm.doc.review_type == 'Review II'){
+		// 	cur_frm.add_custom_button(__('Create Review III'), ()=>{
+		// 		frappe.model.open_mapped_doc({
+		// 			method: "erpnext.pms.doctype.review.review.create_review",	
+		// 			frm: cur_frm,
+		// 			args: {review_level: "Review III", target_id: cur_frm.doc.target}
+		// 		});
+		// 	}).addClass("btn-primary custom-create custom-create-css")
+		// }
+		// else if (frm.doc.docstatus == 1 && frm.doc.review_type == 'Review III'){
+		// 	cur_frm.add_custom_button(__('Create Review IV'), ()=>{
+		// 		frappe.model.open_mapped_doc({
+		// 			method: "erpnext.pms.doctype.review.review.create_review",	
+		// 			frm: cur_frm,
+		// 			args: {review_level: "Review IV", target_id: cur_frm.doc.target}
+		// 		});
+		// 	}).addClass("btn-primary custom-create custom-create-css")
+		// }
+
+
 		// if (frm.doc.rev_workflow_state == "Waiting Approval" && frappe.user.has_role(['HR Manager', 'HR User'])){
 		// 	cur_frm.add_custom_button(__('Manual Approval'), ()=>{
 		// 		frappe.call({

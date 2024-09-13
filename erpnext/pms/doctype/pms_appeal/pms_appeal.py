@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
 from frappe import _
-from frappe.utils import flt,nowdate, cint
+from frappe.utils import flt,nowdate, cint, getdate
 from frappe.model.mapper import get_mapped_doc
 from erpnext.custom_workflow import validate_workflow_states, notify_workflow_states
 
@@ -20,6 +20,8 @@ class PMSAppeal(Document):
 		validate_workflow_states(self)
 		if self.workflow_state != "Approved":
 			notify_workflow_states(self)
+		# Validate appeal dates
+		self.validate_appeal_period()	
 	def on_submit(self):
 		self.employee_pms_record()
 	def on_cancel(self):
@@ -41,7 +43,7 @@ class PMSAppeal(Document):
 
 	def calculate_target_score(self):
 		total_score = 0
-		for item in self.evaluate_target_item :
+		for item in self.evaluate_target_item:
 			quality_rating, quantity_rating, timeline_rating= 0, 0, 0
 			if cint(item.reverse_formula) == 0:
 				item.accept_zero_qtyquality = 0
@@ -85,6 +87,15 @@ class PMSAppeal(Document):
 			item.score = (flt(item.average_rating ) / flt(item.weightage)) * 100
 
 			total_score += flt(item.average_rating)
+
+		""" Additional Achievement, 07/08/2024 """
+		for k, a in enumerate(self.achievements_items):
+			if a.supervisor_rating > a.weightage:
+				frappe.throw("Rating for <b>Achievement</b> cannot be greater than weightage at Row <b>{}</b>".format(k+1))
+			if  a.supervisor_rating == 0 and not a.comment and frappe.session.user == self.approver:
+				frappe.throw("Give <b>Comment</b> for <b>Achievement</b>'s rating <b>0</b> at Row <b>{}</b>".format(k+1))
+			total_score += a.supervisor_rating
+			
 		score =flt(total_score)/100 * flt(target_rating)
 		total_score = score
 		self.form_i_total_rating = total_score
@@ -181,6 +192,21 @@ class PMSAppeal(Document):
 		row.performance_evaluation = self.name
 		emp.save(ignore_permissions=True)
 		frappe.msgprint("""PMS Appeal record Updated in Employee Master Data of employee <a href= "#Form/Employee/{0}">{0}</a>""".format(self.employee))
+
+	def validate_appeal_period(self):
+		"""Validates if the PMS appeal is submitted within the appeal period."""
+		pms_calendar = frappe.get_value("PMS Calendar", self.pms_calendar, ["appeal_start_date", "appeal_end_date"])
+		if not pms_calendar:
+			frappe.throw(_("PMS Calendar not found for employee {0}".format(self.employee)))
+		appeal_start_date, appeal_end_date = pms_calendar
+		today = nowdate()
+		if not is_date_within_range(getdate(today), getdate(appeal_start_date), getdate(appeal_end_date)):
+			frappe.throw(_("PMS appeal period for employee {0} has ended. Appeals can only be submitted between {1} and {2}.".format(self.employee, appeal_start_date, appeal_end_date)))
+
+def is_date_within_range(date, start_date, end_date):
+	"""Checks if a given date is within a specified range."""
+	return start_date <= date <= end_date
+
 
 def get_permission_query_conditions(user):
 	# restrict user from accessing this doctype if not the owner

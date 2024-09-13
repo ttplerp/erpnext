@@ -42,6 +42,8 @@
   "evaluation_date",
   "part_a_section",
   "evaluate_target_item",
+  "section_break_ada",
+  "achievements_items",
   "form_i_total_rating",
   "part_b_section",
   "evaluate_competency_item",
@@ -222,6 +224,7 @@
   {
    "fieldname": "section_break_18",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Form lll(Business Activity Target For Negative Points)"
   },
   {
@@ -416,7 +419,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "allow_on_submit": 1,
    "fieldname": "reference",
    "fieldtype": "Link",
    "ignore_user_permissions": 1,
@@ -546,6 +548,7 @@
    "fetch_from": "pms_group.negative_target",
    "fieldname": "negative_target",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Eligible For Negative Target"
   },
   {
@@ -557,6 +560,7 @@
    "depends_on": "eval:doc.negative_target==1",
    "fieldname": "business_target",
    "fieldtype": "Table",
+   "hidden": 1,
    "label": "Business Target",
    "options": "Performance Appeal Evaluation Negative Target"
   },
@@ -565,11 +569,23 @@
    "fieldtype": "Float",
    "label": "Form lll Score",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_ada",
+   "fieldtype": "Section Break",
+   "label": "Additional Achievements"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "achievements_items",
+   "fieldtype": "Table",
+   "label": "Achievements Items",
+   "options": "Appeal Additional Achievements"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-10-31 14:40:45.465033",
+ "modified": "2024-08-13 22:29:12.484367",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "PMS Appeal",

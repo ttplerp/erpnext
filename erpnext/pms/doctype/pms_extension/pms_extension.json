@@ -1,4 +1,5 @@
 {
+ "actions": [],
  "autoname": "PMSEXT.#####",
  "creation": "2021-03-01 14:32:07.681045",
  "doctype": "DocType",
@@ -14,12 +15,22 @@
   "target_end_date",
   "review_section",
   "review_start_date",
+  "review_ii_start_date",
+  "review_iii_start_date",
+  "review_iv_start_date",
   "column_break_10",
   "review_end_date",
+  "review_ii_end_date",
+  "review_iii_end_date",
+  "review_iv_end_date",
   "evaluation_section",
   "evaluation_start_date",
   "column_break_16",
   "evaluation_end_date",
+  "section_break_ad",
+  "appeal_start_date",
+  "cb_ad_one",
+  "appeal_end_date",
   "section_break_22",
   "remarks",
   "amended_from"
@@ -52,7 +63,7 @@
   {
    "fieldname": "review_start_date",
    "fieldtype": "Date",
-   "label": "Review Start Date"
+   "label": "Review I Start Date"
   },
   {
    "fieldname": "column_break_10",
@@ -61,7 +72,7 @@
   {
    "fieldname": "review_end_date",
    "fieldtype": "Date",
-   "label": "Review End Date"
+   "label": "Review I End Date"
   },
   {
    "fieldname": "evaluation_section",
@@ -120,13 +131,64 @@
    "label": "Phase",
    "options": "\nTarget Phase\nReview Phase\nEvaluation Phase",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_ad",
+   "fieldtype": "Section Break",
+   "label": "PMS Appeal Duration"
+  },
+  {
+   "fieldname": "appeal_start_date",
+   "fieldtype": "Date",
+   "label": "Appeal Start Date"
+  },
+  {
+   "fieldname": "cb_ad_one",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "appeal_end_date",
+   "fieldtype": "Date",
+   "label": "Appeal End Date"
+  },
+  {
+   "fieldname": "review_ii_start_date",
+   "fieldtype": "Date",
+   "label": "Review II Start Date"
+  },
+  {
+   "fieldname": "review_iii_start_date",
+   "fieldtype": "Date",
+   "label": "Review III Start Date"
+  },
+  {
+   "fieldname": "review_iv_start_date",
+   "fieldtype": "Date",
+   "label": "Review IV Start Date"
+  },
+  {
+   "fieldname": "review_ii_end_date",
+   "fieldtype": "Date",
+   "label": "Review II End Date"
+  },
+  {
+   "fieldname": "review_iii_end_date",
+   "fieldtype": "Date",
+   "label": "Review III End Date"
+  },
+  {
+   "fieldname": "review_iv_end_date",
+   "fieldtype": "Date",
+   "label": "Review IV End Date"
   }
  ],
  "is_submittable": 1,
- "modified": "2021-03-10 17:22:02.040341",
+ "links": [],
+ "modified": "2024-08-26 10:37:34.014436",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "PMS Extension",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
@@ -188,5 +250,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }

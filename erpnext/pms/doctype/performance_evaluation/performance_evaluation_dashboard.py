@@ -3,10 +3,10 @@ from frappe import _
 
 def get_data():
 	return {
-	'fieldname': 'name',
-		'non_standard_fieldnames': {
-			'PMS Appeal': 'appeal_based_on',
-		},
+		'fieldname': 'reference',
+		# 'non_standard_fieldnames': {
+		# 	'PMS Appeal': 'appeal_based_on',
+		# },
 		'transactions': [
 			{
 				'label': _('PMS Appeal'),

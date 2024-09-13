@@ -1,4 +1,5 @@
 {
+ "actions": [],
  "autoname": "field:fiscal_year",
  "creation": "2021-03-01 10:10:52.903323",
  "doctype": "DocType",
@@ -14,14 +15,24 @@
   "target_end_date",
   "review_section",
   "review_start_date",
+  "review_ii_start_date",
+  "review_iii_start_date",
+  "review_iv_start_date",
   "column_break_10",
   "review_end_date",
+  "review_ii_end_date",
+  "review_iii_end_date",
+  "review_iv_end_date",
   "evaluation_section",
   "evaluation_start_date",
   "column_break_16",
   "evaluation_end_date",
   "section_break_22",
   "remarks",
+  "pms_appeal_duration_section",
+  "appeal_start_date",
+  "column_break_wzrqm",
+  "appeal_end_date",
   "amended_from"
  ],
  "fields": [
@@ -68,7 +79,7 @@
    "allow_on_submit": 1,
    "fieldname": "review_start_date",
    "fieldtype": "Date",
-   "label": "Review Start Date",
+   "label": "Review I Start Date",
    "reqd": 1
   },
   {
@@ -79,7 +90,7 @@
    "allow_on_submit": 1,
    "fieldname": "review_end_date",
    "fieldtype": "Date",
-   "label": "Review End Date",
+   "label": "Review I End Date",
    "reqd": 1
   },
   {
@@ -135,13 +146,80 @@
    "label": "Phase",
    "options": "\nTarget Phase\nReview Phase\nEvaluation Phase",
    "read_only": 1
+  },
+  {
+   "fieldname": "pms_appeal_duration_section",
+   "fieldtype": "Section Break",
+   "label": "PMS Appeal Duration"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "appeal_start_date",
+   "fieldtype": "Date",
+   "label": "Appeal Start Date",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "appeal_end_date",
+   "fieldtype": "Date",
+   "label": "Appeal End Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_wzrqm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "review_ii_start_date",
+   "fieldtype": "Date",
+   "label": "Review II Start Date",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "review_iii_start_date",
+   "fieldtype": "Date",
+   "label": "Review III Start Date",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "review_iv_start_date",
+   "fieldtype": "Date",
+   "label": "Review IV Start Date",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "review_ii_end_date",
+   "fieldtype": "Date",
+   "label": "Review II End Date",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "review_iii_end_date",
+   "fieldtype": "Date",
+   "label": "Review III End Date",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "review_iv_end_date",
+   "fieldtype": "Date",
+   "label": "Review IV End Date",
+   "reqd": 1
   }
  ],
  "is_submittable": 1,
- "modified": "2021-03-11 15:27:45.474458",
+ "links": [],
+ "modified": "2024-08-15 10:30:25.994475",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "PMS Calendar",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
@@ -206,5 +284,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }

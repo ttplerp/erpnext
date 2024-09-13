@@ -15,7 +15,7 @@ class PerformanceEvaluation(Document):
 	def validate(self):
 		if self.upload_old_data:
 			return 
-		if self.eval_workflow_state != frappe.db.get_value('Performance Evaluation',self.name,'eval_workflow_state'): 
+		if self.workflow_state != frappe.db.get_value('Performance Evaluation',self.name,'workflow_state'): 
 			validate_workflow_states(self)  
 		self.set_dafault_values() 
 		self.check_duplicate_entry()
@@ -29,7 +29,7 @@ class PerformanceEvaluation(Document):
 			notify_workflow_states(self)
 
 		# to record the approver details when it is manually set to be used if the pms gets Rejected
-		if self.eval_workflow_state == "Waiting Supervisor Approval":
+		if self.workflow_state == "Waiting Supervisor Approval":
 			# sup_user_id, sup_name = frappe.db.get_value(
 			#     "Employee", {"user_id": self.approver}, ["user_id","first_name"]) or None
 			self.approver_in_first_level = self.approver
@@ -94,7 +94,7 @@ class PerformanceEvaluation(Document):
 	# calculate score and average of target
 	def calculate_target_score(self):
 		total_score = 0
-		for item in self.evaluate_target_item :
+		for item in self.evaluate_target_item:
 			quality_rating, quantity_rating, timeline_rating= 0, 0, 0
 			if cint(item.reverse_formula) == 0:
 				item.accept_zero_qtyquality = 0
@@ -138,6 +138,15 @@ class PerformanceEvaluation(Document):
 			item.score = (flt(item.average_rating ) / flt(item.weightage)) * 100
 
 			total_score += flt(item.average_rating)
+
+		""" Additional Achievement, 07/08/2024 """
+		for k, a in enumerate(self.achievements_items):
+			if a.supervisor_rating > a.weightage:
+				frappe.throw("Rating for <b>Achievement</b> cannot be greater than weightage at Row <b>{}</b>".format(k+1))
+			if  a.supervisor_rating == 0 and not a.comment and frappe.session.user == self.approver:
+				frappe.throw("Give <b>Comment</b> for <b>Achievement</b>'s rating <b>0</b> at Row <b>{}</b>".format(k+1))
+			total_score += a.supervisor_rating
+
 		score =flt(total_score)/100 * flt(target_rating)
 		total_score = score
 		self.form_i_total_rating = total_score
@@ -231,13 +240,13 @@ class PerformanceEvaluation(Document):
 
 	def check_duplicate_entry(self):       
 		# check duplicate entry for particular employee
-		if self.reference and len(frappe.db.get_list('Performance Evaluation',filters={'employee': self.employee, 'pms_calendar': self.pms_calendar, 'docstatus': 1,'reference':self.reference})) > 2:
+		if len(frappe.db.get_list('Performance Evaluation',filters={'employee': self.employee, 'pms_calendar': self.pms_calendar, 'docstatus': 1})) > 2:
 			frappe.throw("You cannot set more than <b>2</b> Evaluation for PMS Calendar <b>{}</b>".format(self.pms_calendar))
 		
-		if self.reference and frappe.db.get_list('Performance Evaluation',filters={'employee': self.employee, 'pms_calendar': self.pms_calendar, 'docstatus': 1,'reference':self.reference,'review':self.review}):
+		if frappe.db.get_list('Performance Evaluation',filters={'employee': self.employee, 'pms_calendar': self.pms_calendar, 'docstatus': 1,'review':self.review}):
 			frappe.throw("You cannot set more than <b>1</b> Performance Evaluation for PMS Calendar <b>{}</b> for Review <b>{}</b>".format(self.pms_calendar, self.review))
 
-		if not self.reference and frappe.db.exists("Performance Evaluation", {'employee': self.employee, 'pms_calendar': self.pms_calendar, 'docstatus': 1}):
+		if frappe.db.exists("Performance Evaluation", {'employee': self.employee, 'pms_calendar': self.pms_calendar, 'docstatus': 1}):
 			frappe.throw(_('Evaluation for employee <b>{}</b> has been already approved for PMS Calendar <b>{}</b>'.format(self.employee_name, self.pms_calendar)), title="Duplicate Entry")
 
 	def get_current_user(self):
@@ -280,6 +289,34 @@ class PerformanceEvaluation(Document):
 				item['top_level'] = d.competency
 				row = self.append('evaluate_competency_item', {})
 				row.update(item)
+	@frappe.whitelist()
+	def get_additional_achievements(self):
+		data = frappe.db.sql("""
+			SELECT 
+				aa.additional_achievements,
+				aa.weightage,
+				aa.appraisees_remarks,
+				aa.own_initiativedirected,
+				aa.appraisers_remarks
+			FROM 
+				`tabReview` r 
+			INNER JOIN
+				`tabAdditional Achievements` aa
+			ON 
+				r.name = aa.parent 
+			WHERE
+				r.employee = '{}' 
+			AND
+				r.docstatus = 1
+			AND
+				r.pms_calendar = '{}' AND r.review_type = 'Review IV'
+			ORDER BY aa.idx
+			""".format(self.employee, self.pms_calendar), as_dict=True)
+		if data:
+			self.set('achievements_items', [])
+			for d in data:
+				row = self.append('achievements_items', {})
+				row.update(d)   
 @frappe.whitelist()
 def pms_appeal(source_name, target_doc=None):
 	if frappe.db.exists('PMS Appeal',
@@ -304,6 +341,9 @@ def pms_appeal(source_name, target_doc=None):
 		},
 		"Performance Evaluation Negative Target":{
 			"doctype":"Performance Appeal Evaluation Negative Target"
+		},
+		"Evaluate Additional Achievements":{
+			"doctype":"Appeal Additional Achievements"
 		}
 	}, target_doc)
 
@@ -332,6 +372,6 @@ def get_permission_query_conditions(user):
 				where `tabEmployee`.name = `tabPerformance Evaluation`.employee
 				and `tabEmployee`.user_id = '{user}')
 		or
-		(`tabPerformance Evaluation`.approver = '{user}' and `tabPerformance Evaluation`.eval_workflow_state not in ('Draft', 'Rejected', 'Cancelled'))
+		(`tabPerformance Evaluation`.approver = '{user}' and `tabPerformance Evaluation`.workflow_state not in ('Draft', 'Rejected', 'Cancelled'))
 		)""".format(user=user)
 

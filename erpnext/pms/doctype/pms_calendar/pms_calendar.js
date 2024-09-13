@@ -23,6 +23,8 @@ function disable_fields(frm){
 		cur_frm.set_df_property("review_end_date", "read_only", 1);
 		cur_frm.set_df_property("evaluation_start_date", "read_only", 1);
 		cur_frm.set_df_property("evaluation_end_date", "read_only", 1);
+		cur_frm.set_df_property("appeal_start_date", "read_only", 1);
+		cur_frm.set_df_property("appeal_end_date", "read_only", 1);
 	}
 }
 

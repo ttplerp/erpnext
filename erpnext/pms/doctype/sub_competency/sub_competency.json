@@ -1,4 +1,5 @@
 {
+ "actions": [],
  "creation": "2021-08-16 09:41:19.042857",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -11,7 +12,7 @@
  "fields": [
   {
    "fieldname": "sub_competency",
-   "fieldtype": "Data",
+   "fieldtype": "Text",
    "in_list_view": 1,
    "label": "Sub Competency",
    "reqd": 1
@@ -29,7 +30,8 @@
   }
  ],
  "istable": 1,
- "modified": "2021-08-17 17:58:59.332044",
+ "links": [],
+ "modified": "2024-08-05 11:24:50.692539",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Sub Competency",
@@ -38,5 +40,6 @@
  "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }

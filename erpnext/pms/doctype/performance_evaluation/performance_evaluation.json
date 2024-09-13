@@ -45,9 +45,10 @@
   "part_a_section",
   "get_target",
   "evaluate_target_item",
-  "form_i_total_rating",
+  "section_break_add_achiev",
   "get_achievements",
   "achievements_items",
+  "form_i_total_rating",
   "part_b_section",
   "get_competency",
   "evaluate_competency_item",
@@ -99,13 +100,12 @@
   "approver_designation",
   "approver_fl_designation",
   "supervisors_manager_designation",
-  "eval_workflow_state",
+  "workflow_state",
   "other_details_section",
   "upload_old_data",
   "other_information_section",
   "reason",
   "column_break_73",
-  "reference",
   "amended_from"
  ],
  "fields": [
@@ -251,6 +251,7 @@
   {
    "fieldname": "section_break_18",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Form lll(Business Activity Target For Negative Points)"
   },
   {
@@ -285,10 +286,8 @@
   {
    "fieldname": "achievements_items",
    "fieldtype": "Table",
-   "hidden": 1,
    "label": "Achievements Items",
-   "options": "Evaluate Additional Achievements",
-   "read_only": 1
+   "options": "Evaluate Additional Achievements"
   },
   {
    "allow_on_submit": 1,
@@ -370,16 +369,8 @@
    "label": "Comment Section"
   },
   {
-   "fieldname": "eval_workflow_state",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "Workflow State",
-   "read_only": 1
-  },
-  {
    "fieldname": "get_achievements",
    "fieldtype": "Button",
-   "hidden": 1,
    "label": "Get Achievements"
   },
   {
@@ -557,14 +548,6 @@
   {
    "fieldname": "column_break_73",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "reference",
-   "fieldtype": "Link",
-   "ignore_user_permissions": 1,
-   "label": "ReviewReference",
-   "options": "Review",
-   "read_only": 1
   },
   {
    "fetch_from": "employee.division",
@@ -760,6 +743,7 @@
    "fetch_from": "pms_group.negative_target",
    "fieldname": "negative_target",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Eligible For Negative Target"
   },
   {
@@ -771,19 +755,34 @@
    "depends_on": "eval:doc.negative_target==1",
    "fieldname": "business_target",
    "fieldtype": "Table",
+   "hidden": 1,
    "label": "Business Target",
    "options": "Performance Evaluation Negative Target"
   },
   {
    "fieldname": "form_iii_score",
    "fieldtype": "Float",
+   "hidden": 1,
    "label": "Form lll Score",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_add_achiev",
+   "fieldtype": "Section Break",
+   "label": "Additional Achievements"
+  },
+  {
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Workflow State",
+   "options": "Workflow State",
    "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-11-09 16:41:47.102434",
+ "modified": "2024-09-13 13:46:34.559211",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Performance Evaluation",

@@ -27,19 +27,27 @@ class Review(Document):
 	
 	def validate_calendar(self): 
 		# check whether pms is active for review
-		if not frappe.db.exists("PMS Calendar",{"name": self.pms_calendar,"docstatus": 1,
-					"review_start_date":("<=",nowdate()),"review_end_date":(">=",nowdate())}):
-			frappe.throw(_('Review for PMS Calendar <b>{}</b> is not open please check your posting date').format(self.pms_calendar))
+		# map, review type and quarterly review start date and end date fields
+		review_date = [
+			{"review_type":"Review I", "start_date":"review_start_date", "end_date":"review_end_date"},
+			{"review_type":"Review II", "start_date":"review_ii_start_date", "end_date":"review_ii_end_date"},
+			{"review_type":"Review III", "start_date":"review_iii_start_date", "end_date":"review_iii_end_date"},
+			{"review_type":"Review IV", "start_date":"review_iV_start_date", "end_date":"review_iV_end_date"}
+		]
+		for d in review_date:
+			if d.get('review_type') == self.review_type and not frappe.db.exists("PMS Calendar",{"name": self.pms_calendar,"docstatus": 1,
+						d.get("start_date"):("<=",nowdate()),d.get("end_date"):(">=",nowdate())}):
+				frappe.throw(_('Review for PMS Calendar <b>{}</b> and {} is not open please check your posting date').format(self.pms_calendar, self.review_type))
 
 	def check_duplicate_entry(self):       
 		# check duplicate entry for particular employee
-		if self.reference and len(frappe.db.get_list('Review',filters={'employee': self.employee, 'pms_calendar': self.pms_calendar, 'docstatus': 1,'reference':self.reference})) > 2:
-			frappe.throw("You cannot set more than <b>2</b> Review for PMS Calendar <b>{}</b>".format(self.pms_calendar))
+		if self.reference and len(frappe.db.get_list('Review',filters={'employee': self.employee, 'pms_calendar': self.pms_calendar, 'docstatus': 1,'reference':self.reference})) > 4:
+			frappe.throw("You cannot set more than <b>4</b> Review for PMS Calendar <b>{}</b>".format(self.pms_calendar))
 		
-		if self.reference and frappe.db.get_list('Review',filters={'employee': self.employee, 'pms_calendar': self.pms_calendar, 'docstatus': 1,'reference':self.reference,'target':self.target}):
-			frappe.throw("You cannot set more than <b>1</b> Review for PMS Calendar <b>{}</b> for Target <b>{}</b>".format(self.pms_calendar, self.target))
+		if self.reference and frappe.db.get_list('Review',filters={'employee': self.employee, 'pms_calendar': self.pms_calendar, 'docstatus': 1,'reference':self.reference,'target':self.target, 'review_type': self.review_type}):
+			frappe.throw("You cannot set more than <b>1</b> Review for PMS Calendar <b>{}</b> and Review Type <b>{}</b> for Target <b>{}</b>".format(self.pms_calendar, self.review_type, self.target))
 
-		if not self.reference and frappe.db.exists("Review", {'employee': self.employee, 'pms_calendar': self.pms_calendar, 'docstatus': 1}):
+		if not self.reference and frappe.db.exists("Review", {'employee': self.employee, 'pms_calendar': self.pms_calendar, 'docstatus': 1, 'review_type': self.review_type}):
 				frappe.throw(_('You have already set the Review for PMS Calendar <b>{}</b>'.format(self.pms_calendar)))
 
 	def check_target(self):
@@ -122,6 +130,39 @@ def create_evaluation(source_name, target_doc=None):
 		"Negative Target Review":{
 			"doctype":"Performance Evaluation Negative Target"
 		}
+	}, target_doc)
+
+	return doclist
+
+@frappe.whitelist()
+def create_review(source_name, target_doc=None):
+	review_level = frappe.flags.args.review_level
+	if frappe.db.exists('Review',
+		{'target':frappe.flags.args.target_id,
+		'review_type':review_level,
+		'docstatus':('!=',2)
+		}):
+		frappe.throw(
+			title='Error',
+			msg="You have already created Review for "+ str(review_level) )
+
+	def update_item(obj, target, source_parent):
+		target.review_type = review_level
+
+	doclist = get_mapped_doc("Review", source_name, {
+		"Review": {
+			"doctype": "Review",
+			"postprocess": update_item
+			},
+		"Review Target Item":{
+				"doctype":"Review Target Item"
+			},
+		"Additional Achievements":{
+				"doctype":"Additional Achievements"
+			},
+		"Negative Target Review":{
+			"doctype":"Negative Target Review"
+			},
 	}, target_doc)
 
 	return doclist
