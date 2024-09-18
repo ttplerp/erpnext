@@ -737,7 +737,7 @@ class PaymentEntry(AccountsController):
 		if self.deductions and self.mode_of_payment!="Adjustment":
 			ded_amt = sum(flt(d.amount) for d in self.get("deductions"))
 			# frappe.throw(str(self.difference_amount))
-			self.difference_amount = flt(ded_amt)+flt(self.difference_amount)
+			self.difference_amount = round(ded_amt)+round(self.difference_amount)
 
 	def get_included_taxes(self):
 		included_taxes = 0
