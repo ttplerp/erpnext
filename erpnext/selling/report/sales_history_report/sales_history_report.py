@@ -45,7 +45,7 @@ def get_columns(data):
 		{ "label": _("Bill Amount"), "fieldtype": "Currency", "fieldname": "si_amount", "width": 180, },
 		{ "label": _("Other Charges"), "fieldtype": "Currency", "fieldname": "other_charges", "width": 180, },
 		{ "label": _("NL Qty"), "fieldtype": "Data", "fieldname": "nl_qty", "width": 80, },
-		{ "label": _("NL Amoubt"), "fieldtype": "Currency", "fieldname": "nl_amt", "width": 120, },
+		{ "label": _("NL Amount"), "fieldtype": "Currency", "fieldname": "nl_amt", "width": 120, },
 		{ "label": _("ANL Qty"), "fieldtype": "Data", "fieldname": "anl_qty", "width": 80, },
 		{ "label": _("ANL Amount"), "fieldtype": "Currency", "fieldname": "anl_amt", "width": 120, },
 		{ "label": _("Excess Qty"), "fieldtype": "Data", "fieldname": "excess_qty", "width": 80, },
@@ -57,6 +57,7 @@ def get_columns(data):
 		{ "label": _("Location"), "fieldtype": "Data", "fieldname": "location", "width": 120, },
 		{ "label": _("Penalties"), "fieldtype": "Data", "fieldname": "penalties", "width": 120, },
 		{ "label": _("Penalties Remarks"), "fieldtype": "Data", "fieldname": "penalties_remarks", "width": 120, },
+		{ "label": _("Other Charges Remarks"), "fieldtype": "Data", "fieldname": "remarks", "width": 120, },
 	]
 	return columns
 
@@ -69,6 +70,7 @@ def get_data(filters):
 	si = frappe.qb.DocType('Sales Invoice')
 	si_item = frappe.qb.DocType('Sales Invoice Item')
 	equip = frappe.qb.DocType('Equipment')
+	ote = frappe.qb.DocType('Other Charge Entry')
 
 	query = (
 		frappe.qb.from_(so)
@@ -82,12 +84,14 @@ def get_data(filters):
 		.on(si_item.delivery_note == dn.name)
 		.left_join(si)
 		.on(si_item.parent == si.name)
+		.left_join(ote)
+		.on(ote.parent == si.name)
 		.left_join(equip)
 		.on(equip.name == dn_item.equipment)
 		.left_join(cu)
 		.on(si.customer == cu.name)
 		.select(
-			so.name, so.transaction_date, so.customer, cu.territory, cu.country, so.dispatch, so_item.qty, (so_item.rate.as_("so_rate")), (so_item.base_net_amount).as_("so_amount"), so_item.item_code, so_item.item_name, dn_item.item_type, so_item.uom, so_item.warehouse, (dn.name).as_("dn_name"), (dn.posting_date.as_("dn_date")), (dn_item.qty).as_("delivered_qty"), dn_item.others_equipment, dn_item.vehicle_number, dn_item.equipment, equip.supplier, dn_item.location, (si.name).as_("si_no"), (si.posting_date).as_("si_date"), (si.reference_date_for_payment).as_("ref_date"), si.due_date, si.total_advance, (si_item.accepted_qty).as_("accepted_qty"), (si_item.base_net_amount).as_("si_amount"), si_item.normal_loss, si_item.normal_loss_amt, si_item.abnormal_loss, si_item.abnormal_loss_amt, si_item.excess_qty, si_item.excess_amt, si.total_charges, si.grand_total
+			so.name, so.transaction_date, so.customer, cu.territory, cu.country, so.dispatch, so_item.qty, (so_item.rate.as_("so_rate")), (so_item.base_net_amount).as_("so_amount"), so_item.item_code, so_item.item_name, dn_item.item_type, so_item.uom, so_item.warehouse, (dn.name).as_("dn_name"), (dn.posting_date.as_("dn_date")), (dn_item.qty).as_("delivered_qty"), dn_item.others_equipment, dn_item.vehicle_number, dn_item.equipment, equip.supplier, dn_item.location, (si.name).as_("si_no"), (si.posting_date).as_("si_date"), (si.reference_date_for_payment).as_("ref_date"), si.due_date, si.total_advance, (si_item.accepted_qty).as_("accepted_qty"), (si_item.base_net_amount).as_("si_amount"), si_item.normal_loss, si_item.normal_loss_amt, si_item.abnormal_loss, si_item.abnormal_loss_amt, si_item.excess_qty, si_item.excess_amt, si.total_charges, si.grand_total, ote.remarks
 		)
 		.where((so.docstatus == 1) & (dn.docstatus == 1) & (si.docstatus == 1))
 	)
@@ -144,6 +148,7 @@ def get_data(filters):
 				"bill_amount": a.si_amount,
 				"total_biiled_amt": total_biiled_amt,
 				"location": a.location,
+				"remarks": a.remarks,
 			}
 			data.append(row)
 	return data

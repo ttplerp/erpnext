@@ -656,6 +656,8 @@ def make_delivery_note(source_name, target_doc=None, skip_item_mapping=False):
 		target.base_amount = (flt(source.qty) - flt(source.delivered_qty)) * flt(source.base_rate)
 		target.amount = (flt(source.qty) - flt(source.delivered_qty)) * flt(source.rate)
 		target.qty = flt(source.qty) - flt(source.delivered_qty)
+		if source_parent.location_required:
+			target.from_warehouse = source_parent.set_warehouse
 
 		item = get_item_defaults(target.item_code, source_parent.company)
 		item_group = get_item_group_defaults(target.item_code, source_parent.company)
