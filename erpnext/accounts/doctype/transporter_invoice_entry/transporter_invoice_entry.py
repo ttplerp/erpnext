@@ -144,8 +144,8 @@ def crate_invoice_entries( invoice_entry, args, publish_progress=True):
 			"supplier":e.supplier
 		})
 		error = None
+		transporter_invoice = frappe.get_doc(args)
 		try:
-			transporter_invoice = frappe.get_doc(args)
 			transporter_invoice.get_payment_details()
 			# assign deductions
 			transporter_invoice.set("deductions",[])
