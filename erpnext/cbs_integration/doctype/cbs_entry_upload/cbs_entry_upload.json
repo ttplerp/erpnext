@@ -22,6 +22,7 @@
   "processing_branch",
   "posting_date",
   "error",
+  "gl_type",
   "amount",
   "amended_from"
  ],
@@ -102,7 +103,7 @@
   },
   {
    "fieldname": "remarks",
-   "fieldtype": "Data",
+   "fieldtype": "Text",
    "label": "Remarks",
    "read_only": 1
   },
@@ -120,12 +121,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "error",
-   "fieldtype": "Data",
-   "label": "Error",
-   "read_only": 1
-  },
-  {
    "fieldname": "amount",
    "fieldtype": "Currency",
    "label": "Amount",
@@ -140,12 +135,24 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "gl_type",
+   "fieldtype": "Data",
+   "label": "GL Type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "error",
+   "fieldtype": "Text",
+   "label": "Error",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-13 12:20:17.384738",
+ "modified": "2024-09-20 13:08:51.306744",
  "modified_by": "Administrator",
  "module": "CBS Integration",
  "name": "CBS Entry Upload",

@@ -217,7 +217,7 @@
    "fieldname": "reference_type",
    "fieldtype": "Select",
    "label": "Reference Type",
-   "options": "\nSales Invoice\nPurchase Invoice\nJournal Entry\nSales Order\nPurchase Order\nExpense Claim\nAsset\nLoan\nPayroll Entry\nEmployee Advance\nExchange Rate Revaluation\nInvoice Discounting\nFees\nPBVI\nBonus\nLeave Travel Concession\nFull and Final Statement\nPOL Expense\nEmployee Benefit Claim\nInsurance and Registration\nEmployee Benefits\nRepair And Service Invoice\nTDS Remittance\nSalary Arrear Payment\nBulk Leave Encashment\nPOL Advance\nTreasury\nInterest Accrual\nMaturity\nSWS Application"
+   "options": "\nSales Invoice\nPurchase Invoice\nJournal Entry\nSales Order\nPurchase Order\nExpense Claim\nAsset\nLoan\nPayroll Entry\nEmployee Advance\nExchange Rate Revaluation\nInvoice Discounting\nFees\nPBVI\nBonus\nLeave Travel Concession\nFull and Final Statement\nPOL Expense\nEmployee Benefit Claim\nInsurance and Registration\nEmployee Benefits\nRepair And Service Invoice\nTDS Remittance\nSalary Arrear Payment\nBulk Leave Encashment\nPOL Advance\nTreasury\nInterest Accrual\nMaturity\nSWS Application\nTravel Authorization\nTravel Claim"
   },
   {
    "fieldname": "reference_name",
@@ -380,14 +380,13 @@
    "fieldtype": "Link",
    "label": "Business Activity",
    "options": "Business Activity",
-   "read_only": 1,
    "reqd": 1
   }
  ],
  "idx": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-08-19 11:19:51.885293",
+ "modified": "2024-09-20 15:43:47.702652",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry Account",

@@ -18,10 +18,15 @@
   "to_date",
   "total_debit",
   "total_credit",
+  "sb_response",
+  "error",
+  "logs",
   "section_break_xnwal",
   "entry_time",
   "column_break_sl8xy",
   "reference_list",
+  "reference_type",
+  "reference_name",
   "soap_api_detail_section",
   "header",
   "footer",
@@ -138,12 +143,47 @@
    "fieldname": "body",
    "fieldtype": "Code",
    "label": "Body"
+  },
+  {
+   "depends_on": "eval:doc.entry_type === \"Upload\"",
+   "fieldname": "reference_type",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Reference Type",
+   "options": "DocType"
+  },
+  {
+   "depends_on": "eval:doc.entry_type === \"Upload\"",
+   "fieldname": "reference_name",
+   "fieldtype": "Dynamic Link",
+   "label": "Reference Name",
+   "options": "reference_type"
+  },
+  {
+   "fieldname": "error",
+   "fieldtype": "Text",
+   "hidden": 1,
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_response",
+   "fieldtype": "Section Break",
+   "label": "LOGS"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "logs",
+   "fieldtype": "Table",
+   "no_copy": 1,
+   "options": "CBS Entry Log",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-28 06:00:04.666547",
+ "modified": "2024-09-20 12:56:07.010226",
  "modified_by": "Administrator",
  "module": "CBS Integration",
  "name": "CBS Entry",

@@ -5,13 +5,16 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 import json
+from frappe.model.naming import make_autoname
 from frappe.utils import getdate, get_datetime, now, cint, flt
+from erpnext.integrations.bank_api import post_transaction
+from erpnext.cbs_integration.doctype.cbs import get_data, upload, show_progress
 
 class CBSEntry(Document):
 	def validate(self):
 		self.validate_dates()
-		self.validate_workflow()
 		self.load_data_file()
+		self.validate_workflow()
 
 	def before_submit(self):
 		self.title_final = (str(self.entry_title) if self.entry_type == "Upload" else " ") + " " + self.entry_time
@@ -67,7 +70,8 @@ class CBSEntry(Document):
 		#if self.get_db_value("workflow_state") == "Draft" and self.workflow_state == "Waiting Approval" \
 		#		and not self.total_debit and not self.total_credit:
 		if self.docstatus == 0 and not self.total_debit and not self.total_credit:
-			frappe.throw(_("No data found. Please click on <b>Get Transactions</b> to fetch the details"))
+			pass
+			# frappe.throw(_("No data found. Please click on <b>Get Transactions</b> to fetch the details"))
 
 	def validate_dates(self):
 		self.entry_time = get_datetime().strftime("%Y-%m-%d %H:%M:%S")
@@ -126,6 +130,7 @@ class CBSEntry(Document):
 			upload(cbs_entry=self, publish_progress=True)
 
 	def get_data_for_upload(self):
+		# frappe.throw('here')
 		data = []
 		error = []
 		upload_list = []
@@ -137,10 +142,18 @@ class CBSEntry(Document):
 						doclist=json.loads(self.reference_list) if self.reference_list else None, from_date=self.from_date, to_date=self.to_date)
 			for i in data:
 				reference_number = make_autoname('ER.YY.MM.DD.#######')
+				# upload_list.append((
+				# 	frappe.generate_hash(txt="", length=10), reference_number, self.name, 
+				# 	i.gl_entry, i.voucher_type, i.voucher_no, i.account, i.debit, i.credit, 
+				# 	i.gl_type_cd, i.branch_code, i.currency_code, i.account_number, i.segment_code,
+				# 	i.amount, i.remarks, i.processing_branch, i.posting_date, i.error, i.gl_type,
+				# 	0, 0, frappe.session.user, str(get_datetime()), 
+				# 	frappe.session.user, str(get_datetime())
+				# ))
 				upload_list.append((
 					frappe.generate_hash(txt="", length=10), reference_number, self.name, 
 					i.gl_entry, i.voucher_type, i.voucher_no, i.account, i.debit, i.credit, 
-					i.gl_type_cd, i.branch_code, i.currency_code, i.account_number, i.segment_code,
+					i.branch_code, i.currency_code, i.account_number,
 					i.amount, i.remarks, i.processing_branch, i.posting_date, i.error, i.gl_type,
 					0, 0, frappe.session.user, str(get_datetime()), 
 					frappe.session.user, str(get_datetime())
@@ -154,14 +167,22 @@ class CBSEntry(Document):
 			self.error = "<ul><li>" + "</li><li>".join(list(set(error))) + "</li></ul>"
 		else:
 			self.error = None
+		# frappe.throw(str(upload_list))
 		self.create_upload_entries(upload_list)
 
 	def create_upload_entries(self, upload_list):
+		# frappe.throw(str(upload_list))
 		if upload_list:
 			values = ', '.join(map(str, upload_list))
+			# frappe.db.sql("""INSERT INTO `tabCBS Entry Upload`(name, reference_number, cbs_entry, 
+			# 			gl_entry, voucher_type, voucher_no, account, debit, credit,
+			# 			gl_type_cd, branch_code, currency_code, account_number, segment_code,
+			# 			amount, remarks, processing_branch, posting_date, error, gl_type,
+			# 			idx, docstatus, owner, creation, modified_by, modified)
+			# 		VALUES {}""".format(values))
 			frappe.db.sql("""INSERT INTO `tabCBS Entry Upload`(name, reference_number, cbs_entry, 
 						gl_entry, voucher_type, voucher_no, account, debit, credit,
-						gl_type_cd, branch_code, currency_code, account_number, segment_code,
+						branch_code, currency_code, account_number,
 						amount, remarks, processing_branch, posting_date, error, gl_type,
 						idx, docstatus, owner, creation, modified_by, modified)
 					VALUES {}""".format(values))
@@ -425,13 +446,13 @@ class CBSEntry(Document):
 
 @frappe.whitelist()
 def make_cbs_entry(entry_title, from_date, to_date, transaction_list):
+	# post_transaction()
 	transaction_list = json.loads(transaction_list)
 	final_list = frappe._dict()
 	
 	for i in set(transaction_list):
 		voucher_type, voucher_no = i.split("||")
 		final_list.setdefault(voucher_type, []).append(voucher_no)
-
 	if final_list:
 		doc = frappe.new_doc("CBS Entry")
 		doc.entry_type = "Upload"
@@ -440,9 +461,10 @@ def make_cbs_entry(entry_title, from_date, to_date, transaction_list):
 		doc.to_date = to_date
 		doc.via_upload_report = 1
 		doc.reference_list = json.dumps(final_list)
+		# doc.get_data_for_upload() #added this method here
 		doc.save(ignore_permissions=True)
 		doc.reload()
-		doc.get_data_for_upload()
+		doc.get_data_for_upload() #commented here
 		doc.save(ignore_permissions=True)
 		doc.reload()
 		return doc.name
