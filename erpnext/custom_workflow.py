@@ -32,7 +32,7 @@ class CustomWorkflow:
 				frappe.throw("Reports to for Employee {} is not set.".format(self.doc.employee), title="Missing Data")
 			self.reports_to = frappe.db.get_value("Employee", {"name":frappe.db.get_value("Employee", self.doc.employee, "reports_to")}, self.field_list)
 			
-			if self.doc.doctype in ("Travel Request","Employee Separation","Overtime Application"):
+			if self.doc.doctype in ("Travel Request","Employee Separation","Overtime Application", "Travel Authorization", "Travel Claim"):
 				if frappe.db.get_value("Employee", self.doc.employee, "expense_approver"):
 					self.expense_approver		= frappe.db.get_value("Employee", {"user_id":frappe.db.get_value("Employee", self.doc.employee, "expense_approver")}, self.field_list)
 				else:
@@ -140,7 +140,7 @@ class CustomWorkflow:
 
 		self.login_user		= frappe.db.get_value("Employee", {"user_id": frappe.session.user}, self.field_list)
 
-		if not self.login_user and frappe.session.user != "Administrator" and self.doc.doctype not in  ("Travel Request", "Expense Claim"):
+		if not self.login_user and frappe.session.user != "Administrator" and self.doc.doctype not in  ("Travel Request", "Expense Claim", "Travel Authorization", "Travel Claim"):
 			if "PERC Member" in frappe.get_roles(frappe.session.user):
 				return
 			frappe.throw("{0} is not added as the employee".format(frappe.session.user))
@@ -185,7 +185,7 @@ class CustomWorkflow:
 
 	def set_approver(self, approver_type):
 		if approver_type == "Supervisor":
-			if self.doc.doctype in ("Travel Request","Employee Separation","Vehicle Request", "Material Request", "Repair And Services","Overtime Application"):
+			if self.doc.doctype in ("Travel Request", "Travel Authorization", "Travel Claim", "Employee Separation","Vehicle Request", "Material Request", "Repair And Services","Overtime Application"):
 				officiating = get_officiating_employee(self.reports_to[3])
 				if officiating:
 					officiating = frappe.db.get_value("Employee", officiating[0].officiate, self.field_list)
@@ -397,6 +397,10 @@ class CustomWorkflow:
 			self.salary_advance()
 		elif self.doc.doctype == "Travel Request":
 			self.travel_request()
+		elif self.doc.doctype == "Travel Authorization":
+			self.travel_authorization()
+		elif self.doc.doctype == "Travel Claim":
+			self.travel_claim()
 		elif self.doc.doctype == "SWS Application":
 			self.sws_application()
 		elif self.doc.doctype == "SWS Membership":
@@ -736,6 +740,58 @@ class CustomWorkflow:
 				frappe.throw(_("Only {} can Cancel this Travel Request").format(self.doc.supervisor_name))
 			self.doc.document_status = "Cancelled"
 
+	def travel_authorization(self):
+		''' Travel Authorization Workflow
+			1. Employee -> Supervisor -> Approved
+		'''
+		if self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
+			# self.doc.check_advance_and_report()
+			self.set_approver("Supervisor")
+			self.doc.document_status = "Draft"
+		elif self.new_state == "Waiting Hr Approval":
+			if self.doc.supervisor != frappe.session.user:
+				frappe.throw("Only {} can Forware this request".format(self.doc.supervisor_name))
+			self.set_approver("HR")	
+		elif self.new_state.lower() == "Approved".lower():
+			# self.doc.check_date()
+			if self.doc.supervisor != frappe.session.user:
+				frappe.throw("Only {} can Approve this request".format(self.doc.supervisor_name))
+			self.doc.document_status = "Approved"
+		elif self.new_state.lower() == 'Rejected'.lower():
+			if self.doc.supervisor != frappe.session.user and self.new_state.lower() != self.old_state.lower():
+				frappe.throw("Only {} can Reject this request".format(self.doc.supervisor_name))
+			self.doc.document_status = "Rejected"
+		elif self.new_state.lower() == "Cancelled".lower():
+			if "HR User" not in frappe.get_roles(frappe.session.user):
+				frappe.throw(_("Only {} can Cancel this Travel Authorization").format(self.doc.supervisor_name))
+			self.doc.document_status = "Cancelled"
+
+	def travel_claim(self):
+		''' Travel Claim Workflow
+			1. Employee -> Supervisor -> Approved
+		'''
+		if self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
+			# self.doc.check_advance_and_report()
+			self.set_approver("Supervisor")
+			self.doc.document_status = "Draft"
+		elif self.new_state == "Waiting Hr Approval":
+			if self.doc.supervisor != frappe.session.user:
+				frappe.throw("Only {} can Forware this request".format(self.doc.supervisor_name))
+			self.set_approver("HR")	
+		elif self.new_state.lower() == "Approved".lower():
+			# self.doc.check_date()
+			if self.doc.supervisor != frappe.session.user:
+				frappe.throw("Only {} can Approve this request".format(self.doc.supervisor_name))
+			self.doc.document_status = "Approved"
+		elif self.new_state.lower() == 'Rejected'.lower():
+			if self.doc.supervisor != frappe.session.user and self.new_state.lower() != self.old_state.lower():
+				frappe.throw("Only {} can Reject this request".format(self.doc.supervisor_name))
+			self.doc.document_status = "Rejected"
+		elif self.new_state.lower() == "Cancelled".lower():
+			if "HR User" not in frappe.get_roles(frappe.session.user):
+				frappe.throw(_("Only {} can Cancel this Travel Claim").format(self.doc.supervisor_name))
+			self.doc.document_status = "Cancelled"
+
 	def employee_advance(self):
 
 		if self.new_state.lower() in ("Waiting Hr Approval".lower()):
@@ -1056,6 +1112,16 @@ class NotifyCustomWorkflow:
 			if not template:
 				frappe.msgprint(_("Please set default template for Authorization Status Notification in HR Settings."))
 				return
+		elif self.doc.doctype == "Travel Authorization":
+			template = frappe.db.get_single_value('HR Settings', 'travel_authorization_approval_notification_template')
+			if not template:
+				frappe.msgprint(_("Please set default template for Authorization Status Notification in HR Settings."))
+				return
+		elif self.doc.doctype == "Travel Claim":
+			template = frappe.db.get_single_value('HR Settings', 'travel_claim_approval_notification_template')
+			if not template:
+				frappe.msgprint(_("Please set default template for Claim Status Notification in HR Settings."))
+				return
 		elif self.doc.doctype == "Overtime Application":
 			template = frappe.db.get_single_value('HR Settings', 'overtime_status_notification_template')
 			if not template:
@@ -1139,6 +1205,16 @@ class NotifyCustomWorkflow:
 				template = frappe.db.get_single_value('HR Settings', 'travel_request_supervisor_notification_template')
 				if not template:
 					frappe.msgprint(_("Please set default template for Authorization Approval Notification in HR Settings."))
+					return
+			elif self.doc.doctype == "Travel Authorization":
+				template = frappe.db.get_single_value('HR Settings', 'travel_authorization_supervisor_notification_template')
+				if not template:
+					frappe.msgprint(_("Please set default template for Authorization Approval Notification in HR Settings."))
+					return
+			elif self.doc.doctype == "Travel Claim":
+				template = frappe.db.get_single_value('HR Settings', 'travel_claim_supervisor_notification_template')
+				if not template:
+					frappe.msgprint(_("Please set default template for Claim Approval Notification in HR Settings."))
 					return
 			elif self.doc.doctype == "Overtime Application":
 				template = frappe.db.get_single_value('HR Settings', 'overtime_approval_notification_template')
@@ -1413,6 +1489,8 @@ def get_field_map():
 		"Leave Encashment": ["approver","approver_name","approver_designation"],
 		"Leave Application": ["leave_approver", "leave_approver_name", "leave_approver_designation"],
 		"Travel Request": ["supervisor", "supervisor_name", "supervisor_designation"],
+		"Travel Authorization": ["supervisor", "supervisor_name", "supervisor_designation"],
+		"Travel Claim": ["supervisor", "supervisor_name", "supervisor_designation"],
 		"SWS Application": ["supervisor", "supervisor_name", "supervisor_designation"],
 		"SWS Membership": ["supervisor", "supervisor_name", "supervisor_designation"],
 		"Employee Advance": ["advance_approver", "advance_approver_name", "advance_approver_designation"],
