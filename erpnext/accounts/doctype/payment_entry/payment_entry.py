@@ -445,7 +445,7 @@ class PaymentEntry(AccountsController):
 				je_accounts = frappe.db.sql(
 					"""select debit, credit from `tabJournal Entry Account`
 					where account = %s and party=%s and docstatus = 1 and parent = %s
-					and (reference_type is null or reference_type in ("", "Sales Order", "Purchase Order", "Expense Claim"))
+					and (reference_type is null or reference_type in ("", "Sales Order", "Purchase Order"))
 					""",
 					(self.party_account, self.party, d.reference_name),
 					as_dict=True,

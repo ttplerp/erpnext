@@ -173,6 +173,7 @@
    "label": "Party Type",
    "options": "DocType",
    "print_hide": 1,
+   "reqd": 1,
    "search_index": 1
   },
   {
@@ -617,7 +618,6 @@
    "label": "Apply Tax Withholding Amount"
   },
   {
-   "collapsible": 1,
    "fieldname": "taxes_and_charges_section",
    "fieldtype": "Section Break",
    "label": "Taxes and Charges"
@@ -791,7 +791,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-26 11:24:33.582494",
+ "modified": "2024-09-19 17:27:56.153549",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Payment Entry",
