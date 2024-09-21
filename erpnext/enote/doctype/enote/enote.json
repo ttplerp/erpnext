@@ -130,7 +130,7 @@
    "default": "0",
    "fieldname": "reviewer_required",
    "fieldtype": "Check",
-   "label": "Reviewer Required"
+   "label": "Check if Reviewer Required"
   },
   {
    "depends_on": "eval:doc.reviewer_required == \"1\"",
@@ -150,7 +150,7 @@
  "icon": "fa fa-file-text",
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-04 18:00:25.263533",
+ "modified": "2024-09-21 14:03:10.347961",
  "modified_by": "Administrator",
  "module": "eNote",
  "name": "eNote",
