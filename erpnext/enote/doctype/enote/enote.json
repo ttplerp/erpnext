@@ -1,27 +1,29 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "ENOTE.YY.MM.####",
+ "autoname": "BDB./.YYYY./.MM./.####",
  "creation": "2023-09-18 13:28:42.381307",
  "doctype": "DocType",
  "document_type": "Document",
  "engine": "InnoDB",
  "field_order": [
   "enote_format",
-  "note_date",
   "title",
   "enote_type",
   "reviewer_required",
+  "review_complete",
+  "disptach_no",
   "column_break_2",
+  "note_date",
   "forward_to",
-  "enote_series",
   "permitted_user",
-  "copied",
   "reviewers",
   "section_break_21",
   "content",
   "seen_by_section",
   "remark",
+  "copy_to_section",
+  "copied",
   "workflow_state",
   "amended_from"
  ],
@@ -44,6 +46,12 @@
    "reqd": 1
   },
   {
+   "default": "0",
+   "fieldname": "reviewer_required",
+   "fieldtype": "Check",
+   "label": "Reviewer Required"
+  },
+  {
    "fieldname": "column_break_2",
    "fieldtype": "Column Break"
   },
@@ -56,7 +64,7 @@
   {
    "fieldname": "forward_to",
    "fieldtype": "Link",
-   "label": "Approver/Forward To",
+   "label": "Approver / Forward To",
    "no_copy": 1,
    "options": "User"
   },
@@ -70,11 +78,18 @@
   {
    "allow_on_submit": 1,
    "fieldname": "copied",
-   "fieldtype": "Table MultiSelect",
+   "fieldtype": "Table",
    "ignore_user_permissions": 1,
-   "label": "eNote Copy To",
    "no_copy": 1,
    "options": "Note Copy"
+  },
+  {
+   "depends_on": "eval:doc.reviewer_required == \"1\"",
+   "fieldname": "reviewers",
+   "fieldtype": "Table",
+   "label": "Reviewers",
+   "options": "eNote Reviewer",
+   "read_only_depends_on": "eval:doc.workflow_state == \"Pending\""
   },
   {
    "fieldname": "section_break_21",
@@ -82,14 +97,14 @@
   },
   {
    "bold": 1,
-   "description": "Help: To link to another record in the system, use \"/app/note/[Note Name]\" as the Link URL. (don't use \"http://\")",
    "fetch_from": "category.template",
    "fetch_if_empty": 1,
    "fieldname": "content",
    "fieldtype": "Text Editor",
    "in_global_search": 1,
    "label": "Content",
-   "no_copy": 1
+   "no_copy": 1,
+   "reqd": 1
   },
   {
    "fieldname": "seen_by_section",
@@ -122,22 +137,9 @@
    "read_only": 1
   },
   {
-   "fieldname": "enote_series",
+   "fieldname": "disptach_no",
    "fieldtype": "Data",
-   "label": "Dispatch Format"
-  },
-  {
-   "default": "0",
-   "fieldname": "reviewer_required",
-   "fieldtype": "Check",
-   "label": "Check if Reviewer Required"
-  },
-  {
-   "depends_on": "eval:doc.reviewer_required == \"1\"",
-   "fieldname": "reviewers",
-   "fieldtype": "Table",
-   "label": "Reviewers",
-   "options": "eNote Reviewer"
+   "label": "Dispatch No. / Reference No."
   },
   {
    "fieldname": "enote_type",
@@ -145,12 +147,25 @@
    "label": "eNote Type",
    "options": "eNote Type",
    "reqd": 1
+  },
+  {
+   "fieldname": "copy_to_section",
+   "fieldtype": "Section Break",
+   "label": "Copy To"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.reviewer_required",
+   "fieldname": "review_complete",
+   "fieldtype": "Check",
+   "label": "Review Completed",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-file-text",
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-21 14:03:10.347961",
+ "modified": "2024-09-23 22:34:41.107860",
  "modified_by": "Administrator",
  "module": "eNote",
  "name": "eNote",
@@ -174,5 +189,6 @@
  "sort_order": "ASC",
  "states": [],
  "title_field": "title",
- "track_changes": 1
+ "track_changes": 1,
+ "track_seen": 1
 }
