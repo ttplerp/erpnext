@@ -26,7 +26,7 @@ def get_report_data(filters):
 			res = frappe.db.get_all('CBS Entry Upload', {'voucher_type': filters.get('voucher_type'), 'voucher_no': filters.get('voucher_no')}, ['*'])
 		else:
 			res = get_data(doctype=filters.get("voucher_type"), docname=filters.get("voucher_no"), from_date=filters.get("from_date"), to_date=filters.get("to_date"))
-
+	#here
 	if filters.get('show_errors') and res:
 		for i in res:
 			row = frappe._dict(i)

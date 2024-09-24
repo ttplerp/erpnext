@@ -8,7 +8,7 @@ from frappe import _
 from frappe.utils import cint, flt, now, get_bench_path, get_site_path, touch_file, getdate, get_datetime, add_days
 from frappe.model.document import Document
 from erpnext.integrations.bps import SftpClient
-from erpnext.integrations.bank_api import intra_payment, inter_payment, inr_remittance, fetch_balance
+# from erpnext.integrations.bank_api import intra_payment, inter_payment, inr_remittance, fetch_balance
 import datetime
 import os
 from frappe.model.naming import make_autoname
@@ -18,10 +18,11 @@ import traceback
 import oracledb
 import logging
 import json
+import traceback
 from time import sleep
 
-# logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-# logger = logging.getLogger(__name__)
+logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # def ResultIter(cursor, arraysize=100):
 #     while True:
@@ -82,6 +83,28 @@ def test_connectivity():
     finally:
         if db:
             db.close_connection()
+
+def upload(cbs_entry, publish_progress=False):
+	from erpnext.integrations.bank_api import post_transaction
+	posting_date = get_datetime(cbs_entry.entry_time)
+	# try:
+	# generate_file(cbs_entry, posting_date, publish_progress)
+	post_transaction(cbs_entry, posting_date = posting_date, publish_progress=True)
+	show_progress(publish_progress, 100, 'CBS posting progress...')
+	# show_progress(publish_progress, 100, 'File uploaded successfully...', 'Generate & Upload progress...')
+	# show_progress(publish_progress, 99, 'File uploaded successfully...', 'Upload Successful')
+	frappe.msgprint(_("Data posted to CBS successfully..."), alert=True)
+	# except Exception as e:
+	# 	traceback.print_exc()
+	# 	frappe.throw("Here "+str(e))
+	# 	show_progress(publish_progress, 100, 'Upload failed...', 'Generate & Upload progress...')
+	# 	frappe.db.sql("update `tabCBS Entry Upload` set docstatus=2 where cbs_entry='{}'".format(cbs_entry.name))
+	# 	cbs_entry.db_set('status', 'Failed')
+	# 	# cbs_entry.db_set('workflow_state', 'Failed')
+	# 	cbs_entry.db_set('error', traceback.format_exc())
+	# 	show_progress(publish_progress, 99, str(e), 'Upload Failed')
+	frappe.throw("here")
+	cbs_entry.reload()
 
 def get_gl_type_map():
 	return {
@@ -273,3 +296,11 @@ def get_formatted_record(gl, gl_type_cd, dr_cr_list, dr_cr, party=None):
 			"remarks": remarks or '', "processing_branch": processing_branch or '', "posting_date": str(gl.posting_date),
 			"error": ", ".join(error) or '', "gl_type": gl_type or ''})
 	return res
+
+def show_progress(publish_progress, progress, description, title=None):
+	logger.info(description)
+	if publish_progress:
+		frappe.publish_progress(progress, 
+						title = title if title else _("Downloading data from CBS..."),
+						description = description)
+		sleep(1)

@@ -4,106 +4,214 @@ import requests, base64
 from xml.etree import ElementTree
 from frappe import _
 from frappe.utils import cint, flt, get_bench_path, get_datetime
+from erpnext.cbs_integration.doctype.cbs import show_progress
+from datetime import datetime
+
 class BankAPI:
     pass
 
-def post_transaction(doctype=None, doc_name=None):
-    header = generate_header(doctype, doc_name)
+def post_transaction(cbs_entry=None, posting_date = None, doctype=None, doc_name=None, publish_progress=False):
+    doc = frappe.get_doc("API Detail","MULTI LEDGER")
+    show_progress(publish_progress, 55, 'Posting Entry {}...'.format(cbs_entry), 'CBS posting progress...')
+    header = generate_header(cbs_entry, doctype, doc_name, posting_date=str(posting_date))
     footer = generate_footer()
-    payload   = generate_payload(doctype, doc_name)
+    payload   = generate_payload(cbs_entry, doctype, doc_name)
     api_body = str(header) + str(payload) + str(footer)
+    url = str(doc.api_link)
+    headers = {
+    'Content-Type': 'application/xml'
+    }
+    response = requests.request("POST", url, headers=headers, data=api_body)
+    # frappe.throw('here')
+    frappe.throw(str(response.text))
+    show_progress(publish_progress, 99, 'Posting complete...', 'CBS posting progress...')
 
-    print(str(api_body))
-
-def generate_payload(doctype=None, doc_name=None):
-    if not doctype and not doc_name:
-        return
+def generate_payload(cbs_entry=None, doctype=None, doc_name=None):
     doc = frappe.get_doc("API Detail","MULTI LEDGER")
     end_point=doc.api_link
     serialnumber = 1
     payload = ""
-    for a in frappe.db.sql("""
-                        select *from `tabGL Entry`
-                        where voucher_type="{0}"
-                        and voucher_no="{1}"
-                """.format(doctype, doc_name), as_dict=True):
-        creditdebit = "D" if a.debit > 0 else "C"
-        amount = flt(a.debit,2) if a.debit >0 else flt(a.credit,2)
-        acc_doc = frappe.get_doc("Account", a.account)
-        payload += """
-                <PartTrnRec>
-                <AcctId>
-                <AcctId>{acctid}</AcctId>
-                </AcctId>
-                <CreditDebitFlg>{creditdebit}</CreditDebitFlg>
-                <TrnAmt>
-                <amountValue>{amount}</amountValue>
-                <currencyCode>BTN</currencyCode>
-                </TrnAmt>
-                <TrnParticulars>{trnparticular}</TrnParticulars>
-                <PartTrnRmks>{trnrmks}</PartTrnRmks>
-                <ValueDt>{valuedate}</ValueDt>
-                <SerialNum>{serialnumber}</SerialNum>
-                </PartTrnRec>
-            """.format(acctid=acc_doc.account_number,creditdebit=creditdebit,\
+    if not doctype and not doc_name:
+        if cbs_entry:
+            for a in frappe.db.sql("""
+                                    select * from `tabCBS Entry Upload` where cbs_entry = '{}' 
+                            """.format(cbs_entry.name), as_dict=True):
+                    creditdebit = "D" if flt(a.debit) > 0 else "C"
+                    amount = flt(a.debit,2) if flt(a.debit) > 0 else flt(a.credit,2)
+                    acc_doc = frappe.get_doc("Account", a.account)
+                    # payload += """
+                    #         <PartTrnRec>
+                    #         <AcctId>
+                    #         <AcctId>{acctid}</AcctId>
+                    #         </AcctId>
+                    #         <CreditDebitFlg>{creditdebit}</CreditDebitFlg>
+                    #         <TrnAmt>
+                    #         <amountValue>{amount}</amountValue>
+                    #         <currencyCode>BTN</currencyCode>
+                    #         </TrnAmt>
+                    #         <TrnParticulars>{trnparticular}</TrnParticulars>
+                    #         <PartTrnRmks>{trnrmks}</PartTrnRmks>
+                    #         <ValueDt>{valuedate}</ValueDt>
+                    #         <SerialNum>{serialnumber}</SerialNum>
+                    #         </PartTrnRec>
+                    #     """.format(acctid=acc_doc.account_number,creditdebit=creditdebit,\
+                    #     amount=amount,trnparticular=a.account_number,trnrmks=a.account_number,\
+                    #     valuedate=a.creation,serialnumber=serialnumber)
+                    # frappe.throw(str(doc))
+                    pd = str(a.creation)[:-3].split(" ")[0]+"T"+str(a.creation)[:-3].split(" ")[1]
+                    payload += doc.body.format(acctid=acc_doc.account_number,creditdebit=creditdebit,\
+                        amount=amount,trnparticular=a.account_number,trnrmks=a.account_number,\
+                        valuedate=pd,serialnumber=serialnumber)
+                    serialnumber += 1
+        else:
+            for a in frappe.db.sql("""
+                                    select * from `tabCBS Entry Upload`
+                            """.format(), as_dict=True):
+                    creditdebit = "D" if flt(a.debit) > 0 else "C"
+                    amount = flt(a.debit,2) if flt(a.debit) > 0 else flt(a.credit,2)
+                    acc_doc = frappe.get_doc("Account", a.account)
+                    # payload += """
+                    #         <PartTrnRec>
+                    #         <AcctId>
+                    #         <AcctId>{acctid}</AcctId>
+                    #         </AcctId>
+                    #         <CreditDebitFlg>{creditdebit}</CreditDebitFlg>
+                    #         <TrnAmt>
+                    #         <amountValue>{amount}</amountValue>
+                    #         <currencyCode>BTN</currencyCode>
+                    #         </TrnAmt>
+                    #         <TrnParticulars>{trnparticular}</TrnParticulars>
+                    #         <PartTrnRmks>{trnrmks}</PartTrnRmks>
+                    #         <ValueDt>{valuedate}</ValueDt>
+                    #         <SerialNum>{serialnumber}</SerialNum>
+                    #         </PartTrnRec>
+                    #     """.format(acctid=acc_doc.account_number,creditdebit=creditdebit,\
+                    #     amount=amount,trnparticular=a.account_number,trnrmks=a.account_number,\
+                    #     valuedate=a.creation,serialnumber=serialnumber)
+                    pd = str(a.creation)[:-3].split(" ")[0]+"T"+str(a.creation)[:-3].split(" ")[1]
+                    payload += doc.body.format(acctid=acc_doc.account_number,creditdebit=creditdebit,\
+                        amount=amount,trnparticular=a.account_number,trnrmks=a.account_number,\
+                        valuedate=pd,serialnumber=serialnumber)
+                    serialnumber += 1
+    else:
+        for a in frappe.db.sql("""
+                            select * from `tabCBS Entry Upload`
+                            where voucher_type="{0}"
+                            and voucher_no="{1}"
+                    """.format(doctype, doc_name), as_dict=True):
+            creditdebit = "D" if flt(a.debit) > 0 else "C"
+            amount = flt(a.debit,2) if flt(a.debit) > 0 else flt(a.credit,2)
+            acc_doc = frappe.get_doc("Account", a.account)
+            # payload += """
+            #         <PartTrnRec>
+            #         <AcctId>
+            #         <AcctId>{acctid}</AcctId>
+            #         </AcctId>
+            #         <CreditDebitFlg>{creditdebit}</CreditDebitFlg>
+            #         <TrnAmt>
+            #         <amountValue>{amount}</amountValue>
+            #         <currencyCode>BTN</currencyCode>
+            #         </TrnAmt>
+            #         <TrnParticulars>{trnparticular}</TrnParticulars>
+            #         <PartTrnRmks>{trnrmks}</PartTrnRmks>
+            #         <ValueDt>{valuedate}</ValueDt>
+            #         <SerialNum>{serialnumber}</SerialNum>
+            #         </PartTrnRec>
+            #     """.format(acctid=acc_doc.account_number,creditdebit=creditdebit,\
+            #     amount=amount,trnparticular=a.account_number,trnrmks=a.account_number,\
+            #     valuedate=a.creation,serialnumber=serialnumber)
+            pd = str(a.creation)[:-3].split(" ")[0]+"T"+str(a.creation)[:-3].split(" ")[1]
+            payload += doc.body.format(acctid=acc_doc.account_number,creditdebit=creditdebit,\
             amount=amount,trnparticular=a.account_number,trnrmks=a.account_number,\
-            valuedate=a.creation,serialnumber=serialnumber)
-        serialnumber += 1
+            valuedate=pd,serialnumber=serialnumber)
+            serialnumber += 1
+    # for a in frappe.db.sql("""
+    #                     select * from `tabGL Entry`
+    #                     where voucher_type="{0}"
+    #                     and voucher_no="{1}"
+    #             """.format(doctype, doc_name), as_dict=True):
+    #     creditdebit = "D" if a.debit > 0 else "C"
+    #     amount = flt(a.debit,2) if a.debit >0 else flt(a.credit,2)
+    #     acc_doc = frappe.get_doc("Account", a.account)
+    #     payload += """
+    #             <PartTrnRec>
+    #             <AcctId>
+    #             <AcctId>{acctid}</AcctId>
+    #             </AcctId>
+    #             <CreditDebitFlg>{creditdebit}</CreditDebitFlg>
+    #             <TrnAmt>
+    #             <amountValue>{amount}</amountValue>
+    #             <currencyCode>BTN</currencyCode>
+    #             </TrnAmt>
+    #             <TrnParticulars>{trnparticular}</TrnParticulars>
+    #             <PartTrnRmks>{trnrmks}</PartTrnRmks>
+    #             <ValueDt>{valuedate}</ValueDt>
+    #             <SerialNum>{serialnumber}</SerialNum>
+    #             </PartTrnRec>
+    #         """.format(acctid=acc_doc.account_number,creditdebit=creditdebit,\
+    #         amount=amount,trnparticular=a.account_number,trnrmks=a.account_number,\
+    #         valuedate=a.creation,serialnumber=serialnumber)
+    #     serialnumber += 1
     return str(payload)  
 
 def generate_footer(doctype=None, doc_name=None):
-    return """
-            </XferTrnDetail>
-            </XferTrnAddRq>
-            </XferTrnAddRequest>
-            </Body>
-            </FIXML
-        """
+    doc = frappe.get_doc("API Detail","MULTI LEDGER")
+    # return """
+    #         </XferTrnDetail>
+    #         </XferTrnAddRq>
+    #         </XferTrnAddRequest>
+    #         </Body>
+    #         </FIXML
+    #     """
+    return str(doc.footer)
 
-def generate_header(doctype=None, doc_name=None):
-    return """
-            <FIXML xmlns="http://www.finacle.com/fixml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.finacle.com/fixml XferTrnAdd.xsd">
-            <Header>
-            <RequestHeader>
-            <MessageKey>
-            <RequestUUID>{uuid}</RequestUUID>
-            <ServiceRequestId>XferTrnAdd</ServiceRequestId>
-            <ServiceRequestVersion>10.2</ServiceRequestVersion>
-            <ChannelId>COR</ChannelId>
-            <LanguageId/>
-            </MessageKey>
-            <RequestMessageInfo>
-            <BankId>{bankid}</BankId>
-            <TimeZone/>
-            <EntityId/>
-            <EntityType/>
-            <ArmCorrelationId/>
-            <MessageDateTime>{msgdatetime}</MessageDateTime>
-            </RequestMessageInfo>
-            <Security>
-            <Token>
-            <PasswordToken>
-            <UserId/>
-            <Password/>
-            </PasswordToken>
-            </Token>
-            <FICertToken/>
-            <RealUserLoginSessionId/>
-            <RealUser/>
-            <RealUserPwd/>
-            <SSOTransferToken/>
-            </Security>
-            </RequestHeader>
-            </Header>
-            <Body>
-            <XferTrnAddRequest>
-            <XferTrnAddRq>
-            <XferTrnHdr>
-            <TrnType>T</TrnType>
-            <TrnSubType>CI</TrnSubType>
-            </XferTrnHdr>
-            <XferTrnDetail>
-        """.format(uuid="161945234234", bankid="01", msgdatetime="2021-03-13T11:15:08.528")
+def generate_header(cbs_entry=None, doctype=None, doc_name=None, posting_date=None):
+    doc = frappe.get_doc("API Detail","MULTI LEDGER")
+    # return """
+    #         <FIXML xmlns="http://www.finacle.com/fixml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.finacle.com/fixml XferTrnAdd.xsd">
+    #         <Header>
+    #         <RequestHeader>
+    #         <MessageKey>
+    #         <RequestUUID>{uuid}</RequestUUID>
+    #         <ServiceRequestId>XferTrnAdd</ServiceRequestId>
+    #         <ServiceRequestVersion>10.2</ServiceRequestVersion>
+    #         <ChannelId>COR</ChannelId>
+    #         <LanguageId/>
+    #         </MessageKey>
+    #         <RequestMessageInfo>
+    #         <BankId>{bankid}</BankId>
+    #         <TimeZone/>
+    #         <EntityId/>
+    #         <EntityType/>
+    #         <ArmCorrelationId/>
+    #         <MessageDateTime>{msgdatetime}</MessageDateTime>
+    #         </RequestMessageInfo>
+    #         <Security>
+    #         <Token>
+    #         <PasswordToken>
+    #         <UserId/>
+    #         <Password/>
+    #         </PasswordToken>
+    #         </Token>
+    #         <FICertToken/>
+    #         <RealUserLoginSessionId/>
+    #         <RealUser/>
+    #         <RealUserPwd/>
+    #         <SSOTransferToken/>
+    #         </Security>
+    #         </RequestHeader>
+    #         </Header>
+    #         <Body>
+    #         <XferTrnAddRequest>
+    #         <XferTrnAddRq>
+    #         <XferTrnHdr>
+    #         <TrnType>T</TrnType>
+    #         <TrnSubType>CI</TrnSubType>
+    #         </XferTrnHdr>
+    #         <XferTrnDetail>
+    #     """.format(uuid="161945234234", bankid="01", msgdatetime="2021-03-13T11:15:08.528")
+    pd = str(posting_date).split(" ")[0]+"T"+str(posting_date).split(" ")[1]+".000"
+    return(str(doc.header).format(uuid=cbs_entry.name, bankid="01", msgdatetime=pd))
 
 
 
