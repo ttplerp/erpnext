@@ -141,6 +141,7 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "disptach_no",
    "fieldtype": "Data",
    "label": "Dispatch No. / Reference No."
@@ -169,8 +170,7 @@
    "fieldname": "branch",
    "fieldtype": "Link",
    "label": "Branch",
-   "options": "Branch",
-   "reqd": 1
+   "options": "Branch"
   },
   {
    "fieldname": "column_break_iui3f",
@@ -192,7 +192,7 @@
  "icon": "fa fa-file-text",
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-24 14:23:36.536794",
+ "modified": "2024-09-24 16:24:15.327035",
  "modified_by": "Administrator",
  "module": "eNote",
  "name": "eNote",

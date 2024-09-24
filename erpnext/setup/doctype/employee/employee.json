@@ -26,6 +26,7 @@
   "date_of_joining",
   "image",
   "old_id",
+  "scan_sign",
   "employment_details_section",
   "employment_type",
   "employee_group",
@@ -1020,13 +1021,19 @@
    "fieldname": "ip_number",
    "fieldtype": "Data",
    "label": "IP Phone Number"
+  },
+  {
+   "fieldname": "scan_sign",
+   "fieldtype": "Attach Image",
+   "ignore_user_permissions": 1,
+   "label": "Scanned Signature"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2024-08-22 11:37:09.941868",
+ "modified": "2024-09-24 15:37:07.067863",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
