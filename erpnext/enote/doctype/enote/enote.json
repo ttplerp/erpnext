@@ -7,6 +7,10 @@
  "document_type": "Document",
  "engine": "InnoDB",
  "field_order": [
+  "branch",
+  "column_break_iui3f",
+  "cost_center",
+  "section_break_s8phb",
   "enote_format",
   "title",
   "enote_type",
@@ -160,12 +164,35 @@
    "fieldtype": "Check",
    "label": "Review Completed",
    "read_only": 1
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_iui3f",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "branch.cost_center",
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_s8phb",
+   "fieldtype": "Section Break"
   }
  ],
  "icon": "fa fa-file-text",
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-23 22:34:41.107860",
+ "modified": "2024-09-24 14:23:36.536794",
  "modified_by": "Administrator",
  "module": "eNote",
  "name": "eNote",
