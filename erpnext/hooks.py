@@ -452,8 +452,8 @@ email_brand_image = "assets/erpnext/images/erpnext-logo.jpg"
 default_mail_footer = """
 	<span>
 		Sent via
-		<a class="text-muted" href="https://emines.smcl.bt" target="_blank">
-			Emines
+		<a class="text-muted" href="https://erp.bdb.bt" target="_blank">
+			BDBL ERP System
 		</a>
 	</span>
 """
@@ -592,6 +592,7 @@ permission_query_conditions = {
 	"EME Invoice": "erpnext.accounts.doctype.eme_invoice.eme_invoice.get_permission_query_conditions",
 	"Fleet Engagement": "erpnext.fleet_management.doctype.fleet_engagement.fleet_engagement.get_permission_query_conditions",
 	"Budget Reappropiation":"erpnext.budget.doctype.budget_reappropiation.budget_reappropiation.get_permission_query_conditions",
+	"eNote": "erpnext.enote.doctype.enote.enote.get_permission_query_conditions",
 }
 
 user_privacy_documents = [
