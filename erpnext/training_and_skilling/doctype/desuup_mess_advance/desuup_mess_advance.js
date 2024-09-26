@@ -25,6 +25,7 @@ frappe.ui.form.on('Desuup Mess Advance', {
 				filters: {
 					"company": frm.doc.company,
 					"status": "On Going",
+					"deployment_type": frm.doc.advance_for
 				}
 			}
 		});

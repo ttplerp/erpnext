@@ -1,0 +1,76 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2024-09-24 17:48:45.362739",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "desuup",
+  "desuup_name",
+  "column_break_3",
+  "bus_fare",
+  "taxi_fare",
+  "da",
+  "total_amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "desuup",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Desuup",
+   "options": "Desuup",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "desuup.desuup_name",
+   "fieldname": "desuup_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Desuup Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total Amount"
+  },
+  {
+   "fieldname": "bus_fare",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Bus Fare"
+  },
+  {
+   "fieldname": "taxi_fare",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Taxi Fare"
+  },
+  {
+   "fieldname": "da",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "DA"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-09-24 18:16:22.830114",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Desuup Travel Payment Item",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

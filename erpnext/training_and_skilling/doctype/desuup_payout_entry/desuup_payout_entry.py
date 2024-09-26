@@ -16,17 +16,27 @@ class DesuupPayoutEntry(Document):
 		# self.set_month_dates()
 		self.calculate_total_net_amount()
 		self.calculate_amount()
-		self.validate_present_days()
+		self.validate_data()
 
 	def calculate_total_net_amount(self):
-		net_amount= 0
+		net_amount = 0
+		refund_amount = 0
 		for amt in self.items:
 			net_amount += amt.net_amount
+			refund_amount += amt.refundable_amount
 		self.total_net_amount = net_amount
+		self.total_refundable_amount = refund_amount
 
-	def validate_present_days(self):
+	def validate_data(self):
 		for i in self.get("items"):
-			if i.total_days_present <= 0:
+			if flt(i.mess_advance_amount) < flt(i.mess_advance_used):
+				frappe.throw("In Row #{}: The used advance amount ({}) exceeds the total claimed advance ({}). Please adjust the values.".format(
+					frappe.bold(i.idx), 
+					frappe.bold(i.mess_advance_used), 
+					frappe.bold(i.mess_advance_amount)
+				))
+
+			if i.total_days_present <= 0 and not i.refundable_amount:
 				frappe.throw("Remove Row #{} or mark attendance for desuup {}".format(
 					frappe.bold(i.idx), 
 					frappe.bold(i.desuup)
@@ -42,62 +52,125 @@ class DesuupPayoutEntry(Document):
 			item.days_in_month = days_in_month
 			item.total_days_present = total_days
 			
-			if item.reference_doctype == "Training Management":
-				monthly_stipend_amt, monthly_mess_amt = self.get_stipend_amount()
+			# if item.reference_doctype == "Training Management":
+			# 	monthly_stipend_amt, monthly_mess_amt = self.get_stipend_amount()
 
+			# 	item.monthly_stipend_amount = monthly_stipend_amt
+			# 	mess_adv_amt, adv_party = self.get_advance_amount(item.desuup, item.reference_doctype, item.reference_name)
+			# 	if item.is_mess_member and mess_adv_amt > 0:
+			# 		item.monthly_mess_amount = monthly_mess_amt
+
+			# 		item.mess_advance_party = adv_party
+			# 		item.mess_advance_amount = mess_adv_amt
+
+			# 		if item.days_in_month == item.total_days_present:
+			# 			stipend = flt(monthly_stipend_amt - monthly_mess_amt)
+			# 			adv_amt = flt(monthly_mess_amt)
+
+			# 			item.stipend_amount = flt(stipend, 2)
+			# 			item.mess_advance_used = flt(adv_amt, 2)	
+			# 		else:
+			# 			if flt(item.total_days_present) > 30:
+			# 				stipend = flt(monthly_stipend_amt - monthly_mess_amt)
+			# 				adv_amt = flt(monthly_mess_amt)
+
+			# 				item.stipend_amount = flt(stipend, 2)
+			# 				item.mess_advance_used = flt(adv_amt, 2)	
+			# 			else:
+			# 				stipend = flt(monthly_stipend_amt - monthly_mess_amt)/flt(30)
+			# 				adv_amt = flt(monthly_mess_amt)/flt(30)
+
+			# 				item.stipend_amount = flt(stipend * total_days, 2)
+			# 				item.mess_advance_used = flt(adv_amt * total_days, 2)
+
+			# 		item.refundable_amount = flt(item.mess_advance_amount, 2) - flt(item.mess_advance_used)
+
+			# 		item.net_amount = flt(flt(item.stipend_amount) + flt(item.total_arrear_amount)) - flt(item.total_deduction_amount)
+			# 	else:
+			# 		if item.days_in_month != item.total_days_present:
+			# 			item.stipend_amount = flt(monthly_stipend_amt)/flt(30) * flt(total_days)
+			# 			item.net_amount = flt(flt(item.stipend_amount) + flt(item.total_arrear_amount)) - flt(item.total_deduction_amount)
+			# 		else:
+			# 			item.stipend_amount = flt(monthly_stipend_amt)
+			# 			item.net_amount = flt(flt(item.stipend_amount) + flt(item.total_arrear_amount)) - flt(item.total_deduction_amount)
+
+			# elif item.reference_doctype == "Desuup Deployment Entry":
+			# 	# if item.monthly_pay_amount <= 0:
+			# 	# 	frappe.throw("Monthly Pay amount cannot be 0 or less")
+			# 	if item.days_in_month == item.total_days_present:
+			# 		item.total_amount = flt(item.monthly_pay_amount)
+			# 	else:
+			# 		item.total_amount = flt(item.monthly_pay_amount)/30
+			# 		item.total_amount = item.total_amount * total_days
+					
+			# 	total_amount = flt(item.total_amount, 2) + flt(item.total_arrear_amount)
+			# 	if flt(total_amount) < flt(item.total_deduction_amount):
+			# 		frappe.throw("Row #{} cannot be more deduction {} ".format(item.idx, item.total_deduction_amount))
+			# 	else:
+			# 		item.net_amount = flt(flt(total_amount) - flt(item.total_deduction_amount), 2)
+
+			monthly_stipend_amt, monthly_mess_amt = self.get_stipend_amount()
+			if self.payment_for == "Trainee":
 				item.monthly_stipend_amount = monthly_stipend_amt
-				mess_adv_amt, adv_party = self.get_advance_amount(item.desuup, item.reference_doctype, item.reference_name)
-				if item.is_mess_member and mess_adv_amt > 0:
-					item.monthly_mess_amount = monthly_mess_amt
+			mess_adv_amt, adv_party = self.get_advance_amount(item.desuup, item.reference_doctype, item.reference_name)
+			if item.is_mess_member and mess_adv_amt > 0:
+				item.monthly_mess_amount = monthly_mess_amt
 
-					item.mess_advance_party = adv_party
-					item.mess_advance_amount = mess_adv_amt
+				item.mess_advance_party = adv_party
+				item.mess_advance_amount = mess_adv_amt
 
-					if item.days_in_month == item.total_days_present:
-						stipend = flt(monthly_stipend_amt - monthly_mess_amt)
+				if item.days_in_month == item.total_days_present:
+					stipend = flt(item.monthly_stipend_amount - monthly_mess_amt)
+					adv_amt = flt(monthly_mess_amt)
+
+					item.stipend_amount = flt(stipend, 2)
+					item.mess_advance_used = flt(adv_amt, 2)	
+				else:
+					if flt(item.total_days_present) > 30:
+						stipend = flt(item.monthly_stipend_amount - monthly_mess_amt)
 						adv_amt = flt(monthly_mess_amt)
 
 						item.stipend_amount = flt(stipend, 2)
 						item.mess_advance_used = flt(adv_amt, 2)	
 					else:
-						if flt(item.total_days_present) > 30:
-							stipend = flt(monthly_stipend_amt - monthly_mess_amt)
-							adv_amt = flt(monthly_mess_amt)
+						stipend = flt(item.monthly_stipend_amount - monthly_mess_amt)/flt(30)
+						adv_amt = flt(monthly_mess_amt)/flt(30)
 
-							item.stipend_amount = flt(stipend, 2)
-							item.mess_advance_used = flt(adv_amt, 2)	
-						else:
-							stipend = flt(monthly_stipend_amt - monthly_mess_amt)/flt(30)
-							adv_amt = flt(monthly_mess_amt)/flt(30)
-
-							item.stipend_amount = flt(stipend * total_days, 2)
-							item.mess_advance_used = flt(adv_amt * total_days, 2)
-
-					item.refundable_amount = flt(item.mess_advance_amount, 2) - flt(item.mess_advance_used)
-
-					item.net_amount = flt(flt(item.stipend_amount) + flt(item.total_arrear_amount)) - flt(item.total_deduction_amount)
-				else:
-					if item.days_in_month != item.total_days_present:
-						item.stipend_amount = flt(monthly_stipend_amt)/flt(30) * flt(total_days)
-						item.net_amount = flt(flt(item.stipend_amount) + flt(item.total_arrear_amount)) - flt(item.total_deduction_amount)
-					else:
-						item.stipend_amount = flt(monthly_stipend_amt)
-						item.net_amount = flt(flt(item.stipend_amount) + flt(item.total_arrear_amount)) - flt(item.total_deduction_amount)
-
-			elif item.reference_doctype == "Desuup Deployment Entry":
-				# if item.monthly_pay_amount <= 0:
-				# 	frappe.throw("Monthly Pay amount cannot be 0 or less")
+						item.stipend_amount = flt(stipend * total_days, 2)
+						item.mess_advance_used = flt(adv_amt * total_days, 2)
+			else:
 				if item.days_in_month == item.total_days_present:
-					item.total_amount = flt(item.monthly_pay_amount)
+					stipend = flt(item.monthly_stipend_amount)
+
+					item.stipend_amount = flt(stipend, 2)
 				else:
-					item.total_amount = flt(item.monthly_pay_amount)/30
-					item.total_amount = item.total_amount * total_days
+					if flt(item.total_days_present) > 30:
+						stipend = flt(item.monthly_stipend_amount)
+
+						item.stipend_amount = flt(stipend, 2)
+					else:
+						stipend = flt(item.monthly_stipend_amount)/flt(30)
+
+						item.stipend_amount = flt(stipend * total_days, 2)
+
+			item.refundable_amount = flt(item.mess_advance_amount, 2) - flt(item.mess_advance_used)
+
+			item.net_amount = flt(flt(item.stipend_amount) + flt(item.total_arrear_amount)) - flt(item.total_deduction_amount)
+
+			# elif item.reference_doctype == "Desuup Deployment Entry":
+			# 	# if item.monthly_pay_amount <= 0:
+			# 	# 	frappe.throw("Monthly Pay amount cannot be 0 or less")
+			# 	if item.days_in_month == item.total_days_present:
+			# 		item.total_amount = flt(item.monthly_pay_amount)
+			# 	else:
+			# 		item.total_amount = flt(item.monthly_pay_amount)/30
+			# 		item.total_amount = item.total_amount * total_days
 					
-				total_amount = flt(item.total_amount, 2) + flt(item.total_arrear_amount)
-				if flt(total_amount) < flt(item.total_deduction_amount):
-					frappe.throw("Row #{} cannot be more deduction {} ".format(item.idx, item.total_deduction_amount))
-				else:
-					item.net_amount = flt(flt(total_amount) - flt(item.total_deduction_amount), 2)
+			# 	total_amount = flt(item.total_amount, 2) + flt(item.total_arrear_amount)
+			# 	if flt(total_amount) < flt(item.total_deduction_amount):
+			# 		frappe.throw("Row #{} cannot be more deduction {} ".format(item.idx, item.total_deduction_amount))
+			# 	else:
+			# 		item.net_amount = flt(flt(total_amount) - flt(item.total_deduction_amount), 2)
 
 	def get_advance_amount(self, desuup, ref_doctype, ref_name):
 		adv_list = frappe.db.sql("""
@@ -204,7 +277,7 @@ class DesuupPayoutEntry(Document):
 					t1.course_cost_center AS cost_center, 
 					t2.desuup_id AS desuup, 
 					t2.desuup_name, 
-					t2.is_mess_member 
+					t2.is_mess_member
 				FROM 
 					`tabTraining Management` t1
 				INNER JOIN 
@@ -232,7 +305,7 @@ class DesuupPayoutEntry(Document):
 							OR %(end_date)s BETWEEN from_date AND to_date
 						)
 						AND reference_name = %(ref_name)s
-						AND docstatus IN (0, 1)
+						AND docstatus IN (1)
 					)
 					{}
 				ORDER BY 
@@ -252,7 +325,9 @@ class DesuupPayoutEntry(Document):
 				t1.start_date from_date,
 				t1.end_date to_date,
 				t2.reported_date,
-				t2.exit_date
+				t2.exit_date,
+				t2.is_mess_member,
+				t2.amount as monthly_stipend_amount  
 				FROM `tabDesuup Deployment Entry` t1, `tabDesuup Deployment Entry Item` t2
 				WHERE t1.name = t2.parent
 				AND t1.deployment_type = 'OJT'
@@ -277,7 +352,7 @@ class DesuupPayoutEntry(Document):
 						OR %(start_date)s BETWEEN from_date AND to_date
 						OR %(end_date)s BETWEEN from_date AND to_date
 					)
-					AND docstatus IN (0, 1)
+					AND docstatus IN (1)
 					AND reference_name = %(ref_name)s
 				)
 				{}
@@ -297,7 +372,9 @@ class DesuupPayoutEntry(Document):
 				t1.start_date from_date,
 				t1.end_date to_date,
 				t2.reported_date,
-				t2.exit_date
+				t2.exit_date,
+				t2.is_mess_member,
+				t2.amount as monthly_stipend_amount  
 				FROM `tabDesuup Deployment Entry` t1, `tabDesuup Deployment Entry Item` t2
 				WHERE t1.name = t2.parent
 				AND t1.deployment_type = 'Production' 
@@ -322,7 +399,7 @@ class DesuupPayoutEntry(Document):
 						OR %(start_date)s BETWEEN from_date AND to_date
 						OR %(end_date)s BETWEEN from_date AND to_date
 					)
-					AND docstatus IN (0, 1)
+					AND docstatus IN (1)
 					AND reference_name = %(ref_name)s
 				)
 				{}
@@ -399,11 +476,15 @@ class DesuupPayoutEntry(Document):
 
 		# get training center party
 		if self.payment_for == "Trainee":
-			tc_party = frappe.db.get_value("Training Center", self.training_center, "party")
-			tc_party_name = frappe.db.get_value("Employee", tc_party, "employee_name")
-			if not tc_party:
+			party = frappe.db.get_value("Training Center", self.training_center, "party")
+			party_name = frappe.db.get_value("Employee", party, "employee_name")
+			if not party:
 				frappe.throw("Please set part in Training Center {}".format(frappe.bold(self.training_center)))
-
+		else:
+			party = frappe.db.get_value("Desuup Deploument Entry", self.desuup_deployment, "party")
+			party_name = frappe.db.get_value("Desuup Deploument Entry", self.desuup_deployment, "party_name")
+			if not party:
+				frappe.throw("Please set part in {}".format(frappe.get_desk_link("Desuup Deployment Entry", self.desuup_deployment)))
 
 		# Initialize dictionaries for grouping
 		aggregated_values = {}
@@ -439,8 +520,8 @@ class DesuupPayoutEntry(Document):
 			aggregated_values[cost_center]['net_amount'] += item.get('net_amount', 0)
 
 			# FOR OJT
-			aggregated_values[cost_center]['ojt_expense'] += item.get('total_amount', 0)
-			aggregated_values[cost_center]['ojt_payable'] += item.get('net_amount', 0)
+			# aggregated_values[cost_center]['ojt_expense'] += item.get('total_amount', 0)
+			# aggregated_values[cost_center]['ojt_payable'] += item.get('net_amount', 0)
 
 		# Journal entry templates
 		journal_templates = [
@@ -488,10 +569,10 @@ class DesuupPayoutEntry(Document):
 
 			if journal["type"] == "payable":
 				for cost_center, values in aggregated_values.items():
-					if values['stipend_expense'] > 0 or values['ojt_expense'] > 0:
+					if values['stipend_expense'] > 0:
 						accounts.append({
 							'account': expense_account,
-							'debit_in_account_currency': values['stipend_expense'] if self.payment_for=='Trainee' else values['ojt_expense'],
+							'debit_in_account_currency': values['stipend_expense'],
 							'cost_center': cost_center,
 							"reference_type": self.doctype,
 							"reference_name": self.name,
@@ -502,8 +583,8 @@ class DesuupPayoutEntry(Document):
 							'debit_in_account_currency': values['mess_advance_refundable'],
 							'cost_center': cost_center,
 							'party_type': 'Employee',
-							'party': tc_party,
-							'party_name': tc_party_name,
+							'party': party,
+							'party_name': party_name,
 							"reference_type": self.doctype,
 							"reference_name": self.name,
 						})
@@ -531,10 +612,10 @@ class DesuupPayoutEntry(Document):
 							"reference_type": self.doctype,
 							"reference_name": self.name,
 						})
-					if values['stipend_payable'] > 0 or values['ojt_payable'] > 0:
+					if values['stipend_payable'] > 0:
 						accounts.append({
 							'account': payable_account,
-							'credit_in_account_currency': values['stipend_payable'] if self.payment_for=='Trainee' else values['ojt_payable'],
+							'credit_in_account_currency': values['stipend_payable'],
 							'cost_center': cost_center,
 							"reference_type": self.doctype,
 							"reference_name": self.name,
@@ -573,8 +654,8 @@ class DesuupPayoutEntry(Document):
 							'credit_in_account_currency': values['total_refundable'],
 							'cost_center': cost_center,
 							'party_type': 'Employee',
-							'party': tc_party,
-							'party_name': tc_party_name,
+							'party': party,
+							'party_name': party_name,
 							'reference_type': self.doctype,
 							'reference_name': self.name,
 						})

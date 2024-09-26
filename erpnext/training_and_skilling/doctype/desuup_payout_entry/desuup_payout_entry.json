@@ -30,10 +30,13 @@
   "get_desuups",
   "number_of_desuups",
   "items",
+  "section_break_24",
   "total_net_amount",
+  "column_break_26",
+  "total_refundable_amount",
   "additional_information_section",
   "bank_payment",
-  "column_break_26",
+  "column_break_25",
   "payment_status",
   "amended_from"
  ],
@@ -211,7 +214,6 @@
   },
   {
    "allow_on_submit": 1,
-   "columns": 1,
    "fieldname": "payment_status",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -224,12 +226,26 @@
    "fieldtype": "Currency",
    "label": "Total Net Amount",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_24",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "total_refundable_amount",
+   "fieldtype": "Currency",
+   "label": "Total Refundable Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_25",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-05 13:39:17.208779",
+ "modified": "2024-09-26 12:01:16.599002",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Payout Entry",

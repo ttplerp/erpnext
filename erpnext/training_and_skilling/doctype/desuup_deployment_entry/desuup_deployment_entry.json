@@ -28,6 +28,10 @@
   "status",
   "desuup_details_section",
   "items",
+  "section_break_22",
+  "party",
+  "column_break_24",
+  "party_name",
   "amended_from"
  ],
  "fields": [
@@ -158,12 +162,33 @@
    "label": "Deployment Status",
    "options": "\nDraft\nCreated\nVerified\nApproved\nOn Going\nCompleted\nCancelled",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_22",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "party",
+   "fieldtype": "Link",
+   "label": "Party",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "party.employee_name",
+   "fieldname": "party_name",
+   "fieldtype": "Data",
+   "label": "Party Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_24",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-09 11:18:09.648624",
+ "modified": "2024-09-24 20:29:18.548496",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Deployment Entry",

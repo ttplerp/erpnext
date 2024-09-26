@@ -1,0 +1,100 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-09-24 17:32:21.057324",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "travel_from",
+  "travel_days",
+  "column_break_3",
+  "travel_to",
+  "disabled",
+  "section_break_6",
+  "bus_fare",
+  "taxi_fare",
+  "column_break_9",
+  "da"
+ ],
+ "fields": [
+  {
+   "fieldname": "travel_from",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Travel From",
+   "reqd": 1
+  },
+  {
+   "fieldname": "travel_to",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Travel To",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "disabled",
+   "fieldtype": "Check",
+   "label": "Disabled"
+  },
+  {
+   "fieldname": "bus_fare",
+   "fieldtype": "Currency",
+   "label": "Bus Fare"
+  },
+  {
+   "fieldname": "taxi_fare",
+   "fieldtype": "Currency",
+   "label": "Taxi Fare"
+  },
+  {
+   "fieldname": "da",
+   "fieldtype": "Currency",
+   "label": "DA"
+  },
+  {
+   "fieldname": "travel_days",
+   "fieldtype": "Float",
+   "label": "Travel Days",
+   "precision": "1"
+  },
+  {
+   "fieldname": "section_break_6",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_9",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-09-24 17:54:12.658759",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Travel Route",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

@@ -88,12 +88,12 @@
   {
    "fieldname": "monthly_stipend",
    "fieldtype": "Currency",
-   "label": "Monthly Stipend"
+   "label": "Monthly Stipend (Trainee)"
   },
   {
    "fieldname": "mess_advance",
    "fieldtype": "Currency",
-   "label": "Mess Advance"
+   "label": "Mess Advance (Trainee, OJT & Production)"
   },
   {
    "fieldname": "column_break_10",
@@ -130,7 +130,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-07-23 09:58:47.896498",
+ "modified": "2024-09-24 10:39:38.785660",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Settings",

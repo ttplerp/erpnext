@@ -17,6 +17,7 @@ frappe.ui.form.on('Desuup Payout Entry', {
 			return {
 				filters: {
 					"status": "On Going",
+					"deployment_type": frm.doc.payment_for
 				}
 			};
 		});

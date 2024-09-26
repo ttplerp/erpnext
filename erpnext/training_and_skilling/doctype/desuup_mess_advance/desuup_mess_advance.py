@@ -117,41 +117,116 @@ class DesuupMessAdvance(Document):
 
 		# Define the base query for desuup_list
 		conditions = self.get_conditions()
-		base_query = """
-			SELECT 
-				t1.name AS reference_name, 
-				'Training Management' AS reference_doctype, 
-				t1.training_start_date AS from_date, 
-				t1.training_end_date AS to_date,
-				t2.reporting_date,  
-				t2.exit_date,  
-				t1.branch, 
-				t1.course_cost_center AS cost_center, 
-				t2.desuup_id AS desuup, 
-				t2.desuup_name, 
-				t2.is_mess_member 
-			FROM 
-				`tabTraining Management` t1
-			INNER JOIN 
-				`tabTrainee Details` t2 ON t1.name = t2.parent
-			WHERE 
-				t1.status = 'On Going'
-				AND t2.reporting_date IS NOT NULL
-				AND t2.is_mess_member = 1 
-				AND (
-					t1.training_start_date BETWEEN %(from_date)s AND %(to_date)s 
-					OR t1.training_end_date BETWEEN %(from_date)s AND %(to_date)s
-					OR %(from_date)s BETWEEN t1.training_start_date AND t1.training_end_date
-					OR %(to_date)s BETWEEN t1.training_start_date AND t1.training_end_date
-				)
-				AND (
-					t2.exit_date IS NULL 
-					OR t2.exit_date > %(from_date)s
-				)
-				{}
-			ORDER BY 
-				t2.desuup_name
-		""".format(conditions)
+		if self.advance_for == "Trainee":
+			base_query = """
+				SELECT 
+					t1.name AS reference_name, 
+					'Training Management' AS reference_doctype, 
+					t1.training_start_date AS from_date, 
+					t1.training_end_date AS to_date,
+					t2.reporting_date,  
+					t2.exit_date,  
+					t1.branch, 
+					t1.course_cost_center AS cost_center, 
+					t2.desuup_id AS desuup, 
+					t2.desuup_name, 
+					t2.is_mess_member 
+				FROM 
+					`tabTraining Management` t1
+				INNER JOIN 
+					`tabTrainee Details` t2 ON t1.name = t2.parent
+				WHERE 
+					t1.status = 'On Going'
+					AND t2.reporting_date IS NOT NULL
+					AND t2.is_mess_member = 1 
+					AND (
+						t1.training_start_date BETWEEN %(from_date)s AND %(to_date)s 
+						OR t1.training_end_date BETWEEN %(from_date)s AND %(to_date)s
+						OR %(from_date)s BETWEEN t1.training_start_date AND t1.training_end_date
+						OR %(to_date)s BETWEEN t1.training_start_date AND t1.training_end_date
+					)
+					AND (
+						t2.exit_date IS NULL 
+						OR t2.exit_date > %(from_date)s
+					)
+					{}
+				ORDER BY 
+					t2.desuup_name
+			""".format(conditions)
+		elif self.advance_for == "OJT":
+			base_query = """
+				SELECT 
+					t1.name AS reference_name, 
+					'Desuup Deployment Entry' AS reference_doctype, 
+					t1.start_date AS from_date, 
+					t1.end_date AS to_date,
+					t2.reported_date as reporting_date,  
+					t2.exit_date,  
+					t1.branch, 
+					t1.cost_center, 
+					t2.desuup, 
+					t2.desuup_name, 
+					t2.is_mess_member 
+				FROM 
+					`tabDesuup Deployment Entry` t1
+				INNER JOIN 
+					`tabDesuup Deployment Entry Item` t2 ON t1.name = t2.parent
+				WHERE 
+					t1.deployment_type = 'OJT'
+					AND t1.status = 'On Going'
+					AND t2.reported_date IS NOT NULL
+					AND t2.is_mess_member = 1 
+					AND (
+						t1.start_date BETWEEN %(from_date)s AND %(to_date)s 
+						OR t1.end_date BETWEEN %(from_date)s AND %(to_date)s
+						OR %(from_date)s BETWEEN t1.start_date AND t1.end_date
+						OR %(to_date)s BETWEEN t1.start_date AND t1.end_date
+					)
+					AND (
+						t2.exit_date IS NULL 
+						OR t2.exit_date > %(from_date)s
+					)
+					{}
+				ORDER BY 
+					t2.desuup_name
+			""".format(conditions)
+		elif self.advance_for == "Production":
+			base_query = """
+				SELECT 
+					t1.name AS reference_name, 
+					'Desuup Deployment Entry' AS reference_doctype, 
+					t1.start_date AS from_date, 
+					t1.end_date AS to_date,
+					t2.reported_date as reporting_date,  
+					t2.exit_date,  
+					t1.branch, 
+					t1.cost_center, 
+					t2.desuup, 
+					t2.desuup_name, 
+					t2.is_mess_member 
+				FROM 
+					`tabDesuup Deployment Entry` t1
+				INNER JOIN 
+					`tabDesuup Deployment Entry Item` t2 ON t1.name = t2.parent
+				WHERE 
+					t1.deployment_type = 'Production'
+					AND t1.status = 'On Going'
+					AND t2.reported_date IS NOT NULL
+					AND t2.is_mess_member = 1 
+					AND (
+						t1.start_date BETWEEN %(from_date)s AND %(to_date)s 
+						OR t1.end_date BETWEEN %(from_date)s AND %(to_date)s
+						OR %(from_date)s BETWEEN t1.start_date AND t1.end_date
+						OR %(to_date)s BETWEEN t1.start_date AND t1.end_date
+					)
+					AND (
+						t2.exit_date IS NULL 
+						OR t2.exit_date > %(from_date)s
+					)
+					{}
+				ORDER BY 
+					t2.desuup_name
+			""".format(conditions)
 
 		# Parameters for the base query
 		params = {
@@ -169,7 +244,7 @@ class DesuupMessAdvance(Document):
 		desuup_list = frappe.db.sql(base_query, params, as_dict=True)
 
 		# Determine reference name for the next query
-		reference_name = self.training_management if self.advance_for == "Trainee" else self.desuup_deployment
+		reference_name = self.training_management if self.advance_for == "Trainee" else self.desuup_deployment_entry
 
 		# Define the query for previous advances
 		query = """
