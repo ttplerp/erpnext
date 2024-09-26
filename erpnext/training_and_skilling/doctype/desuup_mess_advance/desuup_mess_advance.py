@@ -252,13 +252,13 @@ class DesuupMessAdvance(Document):
 			FROM `tabDesuup Mess Advance` t1
 			JOIN `tabDesuup Mess Advance Item` t2 ON t1.name = t2.parent
 			WHERE t1.training_center = %s
-			AND t1.from_date = %s
-			AND t1.to_date = %s
+			AND t1.month = %s
 			AND t2.reference_name = %s
+			AND t1.docstatus = 1
 		"""
 
 		# Fetch previous advances
-		previous_adv = frappe.db.sql(query, (self.training_center, self.from_date, self.to_date, reference_name), as_dict=True)
+		previous_adv = frappe.db.sql(query, (self.training_center, self.month, reference_name), as_dict=True)
 
 		# Convert previous_adv to a dictionary for faster lookup
 		prev_adv_dict = {p['desuup']: p for p in previous_adv}
