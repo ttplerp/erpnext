@@ -331,6 +331,9 @@ def get_holiday_list_for_employee(employee, raise_exception=True):
 	else:
 		holiday_list = ""
 		company = frappe.db.get_single_value("Global Defaults", "default_company")
+	
+	if not holiday_list:
+		holiday_list = frappe.db.get_value("Branch", frappe.db.get_value("Employee", employee, "branch", "holiday_list"))
 
 	if not holiday_list:
 		holiday_list = frappe.get_cached_value("Company", company, "default_holiday_list")
@@ -453,7 +456,7 @@ def get_employee_emails(employee_list):
 	"""Returns list of employee emails either based on user_id or company_email"""
 	employee_emails = []
 	for employee in employee_list:
-		if not employee:
+		if not employee or not frappe.db.exists("Employee", employee) or frappe.db.get_value("Employee", employee, "status") != "Active":
 			continue
 		user, company_email, personal_email = frappe.db.get_value(
 			"Employee", employee, ["user_id", "company_email", "personal_email"]

@@ -1,13 +1,38 @@
 import frappe
 from erpnext.setup.doctype.employee.employee import create_user
-import pandas as pd
 import csv
 from frappe.utils import flt, cint, nowdate, getdate, formatdate
 import math
 
 from erpnext.integrations.bps import process_files
 from erpnext.assets.doctype.asset.depreciation import make_depreciation_entry
-import pandas as pd
+
+def insert_ess_role():
+    count = 1
+    for a in frappe.db.sql("""
+                           select u.name from `tabUser` u, `tabHas Role` hr where hr.parent = u.name and u.name not like '%thimphu%' and u.name not in ('Administrator', 'Guest', 'thinley.wangmo1137@bd.bt', 'nima.wangmo@bdbl.bt', 'deki.tshomo@bdbl.bt') group by u.name
+                           """,as_dict=1):
+        if not frappe.db.exists("Has Role", {"parent": a.name, "role": "Employee"}):
+            has_role = frappe.new_doc("Has Role")
+            has_role.parent = a.name
+            has_role.parenttype = "User"
+            has_role.parentfield = 'roles'
+            has_role.role = 'Employee'
+            has_role.flags.ignore_permissions = 1
+            has_role.insert()
+            print(str(count)+" "+a.name)
+            count += 1
+
+def update_leave_approver():
+    for a in frappe.db.sql("""
+                           select name, reports_to from `tabEmployee`
+                           """, as_dict=1):
+        if a.reports_to:
+            email = frappe.db.get_value("Employee", a.reports_to, "user_id")
+            frappe.db.sql("""
+                          update `tabEmployee` set expense_approver = '{}' where name = '{}'
+                          """.format(email, a.name))
+            print(a.name)
 
 def update_salary_slips():
     for ss in frappe.db.sql("""
