@@ -1341,7 +1341,7 @@ class PaymentEntry(AccountsController):
     def update_supplier_advance(self, cancel=False):
         cond = ""
         if self.project:
-            cond += " AND project='{}'".format(self.project)
+            cond = " AND project=%s"
 
         supplier_advances = frappe.db.sql(
             """
@@ -1356,61 +1356,37 @@ class PaymentEntry(AccountsController):
             FROM 
                 `tabAdvance Item` 
             WHERE 
-                advance_type = '{0}' and 
-                parent = '{1}' {cond}
-        """.format(
-                self.advance_type, self.party, cond=cond
-            ),
+                advance_type = %s AND 
+                parent = %s {cond}
+            """.format(cond=cond),
+            (self.advance_type, self.party) + ((self.project,) if self.project else ()),
             as_dict=1,
         )
         if supplier_advances:
             if cancel:
                 balance_amount = flt(supplier_advances[0].balance_amount + self.total_advance_amount, 2)
-                adjusted_amount =flt(supplier_advances[0].adjusted_amount - self.total_advance_amount, 2)
-                # frappe.throw(str(adjusted_amount) + " : can : " + str(balance_amount))
-
+                adjusted_amount = flt(supplier_advances[0].adjusted_amount - self.total_advance_amount, 2)
                 if balance_amount < 0.00 or adjusted_amount < 0.00:
                     frappe.throw(
-                        str("The advance amount is less than the paid amount.")
-                        + str(balance_amount)
-                        + " : "
-                        + str(adjusted_amount)
+                        "The advance amount is less than the paid amount. Balance: {} : Adjusted: {}".format(
+                            balance_amount, adjusted_amount
+                        )
                     )
             else:
                 adjusted_amount = flt(supplier_advances[0].adjusted_amount + self.total_advance_amount, 2)
                 balance_amount = flt(supplier_advances[0].advance_amount - adjusted_amount)
-                # frappe.throw(str(adjusted_amount) + " : sub : " + str(balance_amount))
-                # doc = frappe.new_doc("Advance Settlement")
-                # doc.title = "Advance Settlement Against " + str(self.party)
-                # doc.posting_date = nowdate()
-                # doc.advance_type = supplier_advances[0].advance_type
-                # doc.advance_account = supplier_advances[0].advance_account
-                # doc.advance_amount = supplier_advances[0].advance_amount
-                # doc.balance_amount = balance_amount
-                # doc.adjusted_amount = adjusted_amount
-                # doc.reference_type = self.doctype
-                # doc.reference_name = self.name
-                # doc.docstatus = "1"
-                # doc.insert(ignore_permissions=True)
-                # frappe.msgprint(str("created advance settlement {}".format(doc.name)))
-                # frappe.db.set_value("Payment Entry", self.name, "advance_settlement", doc.name)
-                # self.set("advance_settlement", doc.name)
+
             frappe.db.sql(
                 """
                 UPDATE
                     `tabAdvance Item` 
                 SET
-                    balance_amount = '{0}',
-                    adjusted_amount = '{1}'
+                    balance_amount = %s,
+                    adjusted_amount = %s
                 WHERE 
-                    name = '{2}'
-                """.format(
-                    balance_amount,
-                    adjusted_amount,
-                    supplier_advances[0].name,
-                    self.name,
-                ),
-                as_dict=1,
+                    name = %s
+                """,
+                (balance_amount, adjusted_amount, supplier_advances[0].name),
             )
 
     def add_tax_gl_entries(self, gl_entries):
