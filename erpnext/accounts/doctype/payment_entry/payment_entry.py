@@ -1745,13 +1745,12 @@ class PaymentEntry(AccountsController):
             FROM
                 `tabAdvance Item`
             WHERE
-                parent = '{0}'  and 
-                advance_type = '{1}' {cond}
-        """.format(
-            self.party, self.advance_type, cond=cond
-        )
+                parent = %(party)s 
+                AND advance_type = %(advance_type)s
+                {cond}
+        """.format(cond=cond)
 
-        return frappe.db.sql(query, as_dict=1)
+        return frappe.db.sql(query, {"party": self.party, "advance_type": self.advance_type}, as_dict=1)
        
     def cal_allocated_advance_amt_after_tax(self):
         if not self.taxes or not self.advances:
