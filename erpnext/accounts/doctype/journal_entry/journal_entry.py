@@ -164,6 +164,10 @@ class JournalEntry(AccountsController):
 				if a.reference_type == "Desuup Mess Advance" and a.reference_name:
 					doc = frappe.get_doc("Desuup Mess Advance", a.reference_name)
 					doc.db_set("payment_status", "Paid")
+
+				if a.reference_type == "Desuup Travel Payment" and a.reference_name:
+					doc = frappe.get_doc("Desuup Travel Payment", a.reference_name)
+					doc.db_set("payment_status", "Paid")
 		else:
 			for a in self.get("accounts"):
 				if a.reference_type == "POL" and a.reference_name:
@@ -173,6 +177,10 @@ class JournalEntry(AccountsController):
 
 				if a.reference_type == "Desuup Mess Advance" and a.reference_name:
 					doc = frappe.get_doc("Desuup Mess Advance", a.reference_name)
+					doc.db_set("payment_status", "Unpaid")
+
+				if a.reference_type == "Desuup Travel Payment" and a.reference_name:
+					doc = frappe.get_doc("Desuup Travel Payment", a.reference_name)
 					doc.db_set("payment_status", "Unpaid")
 
 	def link_je_to_doc(self, cancel=False):
