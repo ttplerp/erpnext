@@ -8,6 +8,7 @@ from frappe.model.document import Document
 
 class DesuupTravelPayment(Document):
 	def validate(self):
+		self.validate_data()
 		self.calculate_total_amount()
 
 	def on_submit(self):
@@ -25,6 +26,24 @@ class DesuupTravelPayment(Document):
 
 	def on_cancel(self):
 		pass
+
+	def validate_data(self):
+		query = """
+			SELECT payment_type, training_management
+			FROM `tabDesuup Travel Payment`
+			WHERE docstatus = 1
+			AND payment_type = %(payment_type)s
+			AND training_management = %(training_management)s
+		"""
+		data = frappe.db.sql(query, {
+			'payment_type': self.payment_type,
+			'training_management': self.training_management
+		}, as_dict=True)
+		
+		if data:
+			payment_link = frappe.get_desk_link("Training Management", self.training_management)
+			message = f"Already made payment to {payment_link} for {frappe.bold(self.payment_type)} desuups."
+			frappe.throw(message)
 
 	def update_payment_status(self):
 		self.payment_status = "Unpaid"

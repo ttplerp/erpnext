@@ -13,6 +13,7 @@
   "column_break_3",
   "posting_date",
   "cost_center",
+  "payment_type",
   "column_break_7",
   "payment_status",
   "training_management",
@@ -123,12 +124,19 @@
    "label": "Payment Status",
    "options": "\nUnpaid\nPaid",
    "read_only": 1
+  },
+  {
+   "fieldname": "payment_type",
+   "fieldtype": "Select",
+   "label": "Payment Type",
+   "options": "\nIncoming\nOutgoing",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-24 19:10:07.289642",
+ "modified": "2024-09-27 13:05:29.681727",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Travel Payment",
