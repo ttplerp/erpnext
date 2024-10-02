@@ -101,6 +101,8 @@
   {
    "fieldname": "training_management",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Training Management",
    "options": "Training Management"
   },
@@ -136,7 +138,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-27 13:05:29.681727",
+ "modified": "2024-10-02 23:33:15.182626",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Travel Payment",

@@ -113,6 +113,7 @@ class DesuupTravelPayment(Document):
 				WHERE 
 					t1.status = 'On Going'
 					AND t2.reporting_date IS NOT NULL
+					AND t2.status IN ('Passed', 'Reported')
 					AND t1.name = %(training_management)s
 				"""
 		params = {}
