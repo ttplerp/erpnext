@@ -49,10 +49,12 @@ class DesuupTravelPayment(Document):
 		self.payment_status = "Unpaid"
 
 	def post_journal_entry(self):
-		payable_account = frappe.db.get_single_value("Desuup Settings", "arrear_account")
+		payable_account = frappe.db.get_single_value("Desuup Settings", "travel_account")
 		bank_account = frappe.db.get_value("Company", self.company, "default_bank_account")
 		if not bank_account:
 			frappe.throw("Set default bank account in company {}".format(frappe.bold(self.company)))
+		if not payable_account:
+			frappe.throw("Please set Travel Account in Desuup Settings")
 		accounts = []
 		for d in self.get('items'):
 			accounts.append({
