@@ -14,11 +14,10 @@
   "stipend_account_details_section",
   "stipend_expense_account",
   "mess_advance_account",
+  "travel_account",
   "column_break_10",
   "stipend_payable_account",
-  "ojt_account_details_section",
   "ojt_expense_account",
-  "column_break_14",
   "ojt_payable_account",
   "deduction_account_details_section",
   "deduction_account",
@@ -59,19 +58,10 @@
    "label": "Stipend Account Details"
   },
   {
-   "fieldname": "ojt_account_details_section",
-   "fieldtype": "Section Break",
-   "label": "OJT Account Details"
-  },
-  {
    "fieldname": "ojt_expense_account",
    "fieldtype": "Link",
    "label": "OJT Expense Account",
    "options": "Account"
-  },
-  {
-   "fieldname": "column_break_14",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "ojt_payable_account",
@@ -125,12 +115,18 @@
    "fieldname": "deduction_account_details_section",
    "fieldtype": "Section Break",
    "label": "Deduction Account Details"
+  },
+  {
+   "fieldname": "travel_account",
+   "fieldtype": "Link",
+   "label": "Travel Account",
+   "options": "Account"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-09-24 10:39:38.785660",
+ "modified": "2024-10-02 23:49:11.835526",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Settings",
