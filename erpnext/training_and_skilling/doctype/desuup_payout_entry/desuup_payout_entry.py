@@ -42,6 +42,32 @@ class DesuupPayoutEntry(Document):
 					frappe.bold(i.desuup)
 				))
 
+	def check_desuup_status(self, desuup, ref_type, ref_name):
+		ref_name_child = ""
+		if ref_type == "Training Management":
+			ref_name_child = "Trainee Details"
+			desuup_id = "desuup_id"
+		elif ref_type == "Desuup Deployment Entry":
+			ref_name_child = "Desuup Deployment Entry Item"
+			desuup_id = "desuup"
+
+		# Parameterized query to avoid SQL injection
+		query = """
+				SELECT t2.status 
+				FROM `tab{ref_type}` t1 
+				JOIN `tab{ref_name_child}` t2 ON t1.name = t2.parent
+				WHERE t1.name = %s
+				AND t2.{desuup_id} = %s
+		""".format(ref_type=ref_type, ref_name_child=ref_name_child, desuup_id=desuup_id)
+
+		data = frappe.db.sql(query, (ref_name, desuup), as_dict=True)
+
+		# Return True if status is "Terminated"
+		if data and data[0].get('status') == "Terminated":
+			return True
+		return False
+
+
 	def calculate_amount(self):
 		month_start_date = "-".join([str(date.today().year), self.month, "01"])
 		month_end_date   = get_last_day(month_start_date)
@@ -95,6 +121,11 @@ class DesuupPayoutEntry(Document):
 						stipend = flt(item.monthly_stipend_amount)/flt(30)
 
 						item.stipend_amount = flt(stipend * total_days, 2)
+			
+			# check is desuup terminated or not
+			is_terminated = self.check_desuup_status(item.desuup, item.reference_doctype, item.reference_name)
+			if is_terminated:
+				item.stipend_amount = 0
 
 			item.refundable_amount = flt(item.mess_advance_amount, 2) - flt(item.mess_advance_used)
 
