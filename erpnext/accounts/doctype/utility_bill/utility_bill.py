@@ -115,7 +115,7 @@ class UtilityBill(Document):
                 headers = {
                 'Content-Type': 'application/json'
                 }               
-                response = requests.request("POST", url, headers=headers, data=payload)
+                response = requests.request("POST", url, headers=headers, data=payload, verify=False)
                 details = response.json()
                 d.response = str(details)
                 res_status = details['statusCode']
@@ -209,7 +209,7 @@ class UtilityBill(Document):
                 'Content-Type': 'application/json'
             }
 
-            response = requests.request("POST", url, headers=headers, data=payload)
+            response = requests.request("POST", url, headers=headers, data=payloadi, verify=False)
             details = response.json()
             res_status = details['statusCode']
             d.payment_status = "In Progress"
