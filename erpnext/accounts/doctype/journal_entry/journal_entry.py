@@ -1092,6 +1092,10 @@ def get_default_bank_cash_account(company, account_type=None, mode_of_payment=No
 	else:
 		return frappe._dict()
 
+@frappe.whitelist()
+def get_default_bank_account(category, branch_company):
+	return category, branch_company
+
 
 @frappe.whitelist()
 def get_payment_entry_against_order(

@@ -531,7 +531,27 @@ frappe.ui.form.on("Journal Entry Account", {
 
 	tax_amount: function(frm, cdt, cdn){
 		cur_frm.cscript.update_totals(frm.doc);
-	}
+	},
+	branch: function(frm, cdt, cdn) {
+		var d = frappe.get_doc(cdt, cdn);
+		type="Branch"
+		frappe.call({
+			method: "erpnext.accounts.doctype.journal_entry.journal_entry.get_default_bank_account",
+			args: {
+				type: type,
+				branch: d.branch
+			},
+			callback: function(r){
+				console.log(r.message);
+				if(r.message){
+					/*
+					frappe.model.set_value(cdt, cdn, "tax_account", r.message.tax_withholding_account);
+					frappe.model.set_value(cdt, cdn, "rate", r.message.tax_withholding_rate);
+					*/
+				}
+			}
+		})
+	},
 })
 
 frappe.ui.form.on("Journal Entry Account", "accounts_remove", function(frm) {

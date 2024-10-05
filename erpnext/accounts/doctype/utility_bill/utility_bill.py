@@ -186,7 +186,6 @@ class UtilityBill(Document):
     @frappe.whitelist()
     def get_utility_outstandings(self):
         for d in self.item:
-            frappe.msgprint("d:{}".format(str(d)))
             if not d.utility_service_type:
                 frappe.throw("Utility Service Type is mandatory")
             api_name, service_id, service_type, consumer_field, expense_account = frappe.db.get_value("Utility Service Type", d.utility_service_type, ["fetch_outstanding_api", "service_id", "service_type", "unique_key_field","expense_account"])
