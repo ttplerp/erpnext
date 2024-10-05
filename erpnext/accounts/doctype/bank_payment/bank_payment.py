@@ -651,7 +651,7 @@ class BankPayment(Document):
     def get_payment_entry(self):
         cond = ""
         doc = frappe.get_doc("Payment Entry", self.transaction_no)
-        if doc.payment_type=="Internal Transfer" and doc.mode_of_payment=="e-payment":
+        if doc.payment_type=="Internal Transfer" and doc.mode_of_payment in ["E-Payment","e-payment"]:
             data=[]
             source_doc = frappe.get_doc("Account", doc.paid_from)
             receive_doc = frappe.get_doc("Account", doc.paid_to)
