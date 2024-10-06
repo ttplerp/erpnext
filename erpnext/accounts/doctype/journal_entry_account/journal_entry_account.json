@@ -364,7 +364,7 @@
   },
   {
    "allow_on_submit": 1,
-   "depends_on": "eval:doc.credit > 0",
+   "depends_on": "eval:doc.debit > 0",
    "fieldname": "section_break_42",
    "fieldtype": "Section Break",
    "label": "ePayment Beneficiary Details"
@@ -433,7 +433,7 @@
  "idx": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-10-06 10:28:56.963212",
+ "modified": "2024-10-06 11:16:17.698985",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry Account",
