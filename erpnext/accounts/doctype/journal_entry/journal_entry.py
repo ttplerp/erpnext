@@ -1093,8 +1093,16 @@ def get_default_bank_cash_account(company, account_type=None, mode_of_payment=No
 		return frappe._dict()
 
 @frappe.whitelist()
-def get_default_bank_account(category, branch_company):
-	return category, branch_company
+def get_default_bank_accounts(transfer_type, branch_company):
+	if transfer_type == "Within Branch":
+		default_bank_acc = frappe.db.get_value("Branch", branch_company, "expense_bank_account")
+	else:
+		default_bank_acc = frappe.db.get_value("Company", branch_company, "default_bank_account")
+	if not default_bank_acc:
+		frappe.throw("Default Bank account not set for {}".format(branch_company))
+	else:
+		doc = frappe.get_doc("Account", default_bank_acc)
+		return doc
 
 
 @frappe.whitelist()

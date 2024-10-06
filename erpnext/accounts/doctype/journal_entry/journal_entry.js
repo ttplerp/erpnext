@@ -533,27 +533,37 @@ frappe.ui.form.on("Journal Entry Account", {
 		cur_frm.cscript.update_totals(frm.doc);
 	},
 	branch: function(frm, cdt, cdn) {
-		var d = frappe.get_doc(cdt, cdn);
-		type="Branch"
-		frappe.call({
-			method: "erpnext.accounts.doctype.journal_entry.journal_entry.get_default_bank_account",
-			args: {
-				type: type,
-				branch: d.branch
-			},
-			callback: function(r){
-				console.log(r.message);
-				if(r.message){
-					/*
-					frappe.model.set_value(cdt, cdn, "tax_account", r.message.tax_withholding_account);
-					frappe.model.set_value(cdt, cdn, "rate", r.message.tax_withholding_rate);
-					*/
-				}
-			}
-		})
+		get_default_bank_accounts(frm, cdt, cdn);
+	},
+	company: function(frm, cdt, cdn) {
+		get_default_bank_accounts(frm, cdt, cdn);
 	},
 })
 
+function get_default_bank_accounts(frm, cdt, cdn) {
+	var d = frappe.get_doc(cdt, cdn);
+	if(d.transfer_type=="Within Branch")
+		var acc_holder=d.branch;
+	else 
+		var acc_holder=d.company;
+	
+	frappe.call({
+		method: "erpnext.accounts.doctype.journal_entry.journal_entry.get_default_bank_accounts",
+		args: {
+			transfer_type: d.transfer_type,
+			branch_company: acc_holder,
+			},
+		callback: function(r){
+			frappe.model.set_value(cdt, cdn, "bank_account_no",r.message.bank_account_no);
+			frappe.model.set_value(cdt, cdn, "bank_account_type", r.message.bank_account_type);
+			frappe.model.set_value(cdt, cdn, "bank_account_holder", acc_holder);
+			frappe.model.set_value(cdt, cdn, "bank_name",  r.message.bank_name);
+			frappe.model.set_value(cdt, cdn, "bank_branch",  r.message.bank_branch);
+			frm.refresh_fields();
+
+		}
+	});
+}
 frappe.ui.form.on("Journal Entry Account", "accounts_remove", function(frm) {
 	cur_frm.cscript.update_totals(frm.doc);
 });
