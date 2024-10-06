@@ -515,6 +515,30 @@ class BankPayment(Document):
             party_type = party = reference_type = reference_name = contra_account = ""
             party_count = 0
             contra_entry = 0
+
+            for x in frappe.db.sql("""select *
+                                from `tabJournal Entry Account` 
+                                where parent = '{journal_entry}'
+                                AND debit > 0
+                                AND (transfer_type is NOT NULL or transfer_type !="")
+                                AND (bank_account_no is NOT NULL or bank_account_no !="")
+                                """.format(journal_entry = a.transaction_id), as_dict=True):
+                data.append(frappe._dict({
+                        'transaction_type': 'Journal Entry',
+                        'transaction_id': a.transaction_id,
+                        'transaction_date': a.transaction_date,
+                        'employee': "",
+                        'supplier': "",
+                        'beneficiary_name': x.bank_account_holder,
+                        'bank_name': x.bank_name,
+                        'bank_branch': x.bank_branch,
+                        'bank_account_type': x.bank_account_type,
+                        'bank_account_no': x.bank_account_no,
+                        'amount': flt(x.debit,2),
+                        'status': "Draft",
+                        'vehicle_no': x.user_remark
+                }))
+                return data
             
             for p in frappe.db.sql("""select party_type, party, count(distinct party) as party_count, user_remark
                                 from `tabJournal Entry Account` 
