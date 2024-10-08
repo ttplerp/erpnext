@@ -18,6 +18,14 @@ frappe.ui.form.on('Desuup Travel Payment', {
 				}
 			}
 		});
+
+		frm.set_query("desuup_deployment_entry", function(){
+			return {
+				filters: {
+					'status': 'On Going',
+				}
+			}
+		});
 	},
 
 	get_desuups: function (frm) {

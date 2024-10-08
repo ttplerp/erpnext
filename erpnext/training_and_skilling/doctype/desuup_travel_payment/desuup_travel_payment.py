@@ -28,22 +28,40 @@ class DesuupTravelPayment(Document):
 		pass
 
 	def validate_data(self):
-		query = """
-			SELECT payment_type, training_management
-			FROM `tabDesuup Travel Payment`
-			WHERE docstatus = 1
-			AND payment_type = %(payment_type)s
-			AND training_management = %(training_management)s
-		"""
-		data = frappe.db.sql(query, {
-			'payment_type': self.payment_type,
-			'training_management': self.training_management
-		}, as_dict=True)
-		
-		if data:
-			payment_link = frappe.get_desk_link("Training Management", self.training_management)
-			message = f"Already made payment to {payment_link} for {frappe.bold(self.payment_type)} desuups."
-			frappe.throw(message)
+		if self.payment_to == "Trainee":
+			query = """
+				SELECT payment_type, training_management
+				FROM `tabDesuup Travel Payment`
+				WHERE docstatus = 1
+				AND payment_type = %(payment_type)s
+				AND training_management = %(training_management)s
+			"""
+			data = frappe.db.sql(query, {
+				'payment_type': self.payment_type,
+				'training_management': self.training_management
+			}, as_dict=True)
+			
+			if data:
+				payment_link = frappe.get_desk_link("Training Management", self.training_management)
+				message = f"Already made payment to {payment_link} for {frappe.bold(self.payment_type)} desuups."
+				frappe.throw(message)
+		else:
+			query = """
+				SELECT payment_type, desuup_deployment_entry
+				FROM `tabDesuup Travel Payment`
+				WHERE docstatus = 1
+				AND payment_type = %(payment_type)s
+				AND desuup_deployment_entry = %(desuup_deployment_entry)s
+			"""
+			data = frappe.db.sql(query, {
+				'payment_type': self.payment_type,
+				'desuup_deployment_entry': self.desuup_deployment_entry
+			}, as_dict=True)
+			
+			if data:
+				payment_link = frappe.get_desk_link("Desuup Deployment Entry", self.desuup_deployment_entry)
+				message = f"Already made payment to {payment_link} for {frappe.bold(self.payment_type)} desuups."
+				frappe.throw(message)
 
 	def update_payment_status(self):
 		self.payment_status = "Unpaid"
@@ -100,27 +118,49 @@ class DesuupTravelPayment(Document):
 		self.total_amount = total_amt
 
 	def get_desuup_list(self):
-		base_query = """
-				SELECT 
-					t1.name AS reference_name, 
-					'Training Management' AS reference_doctype,  
-					t1.branch, 
-					t1.course_cost_center AS cost_center, 
-					t2.desuup_id AS desuup, 
-					t2.desuup_name
-				FROM 
-					`tabTraining Management` t1
-				INNER JOIN 
-					`tabTrainee Details` t2 ON t1.name = t2.parent
-				WHERE 
-					t1.status = 'On Going'
-					AND t2.reporting_date IS NOT NULL
-					AND t2.status IN ('Passed', 'Reported')
-					AND t1.name = %(training_management)s
-				"""
+		if self.payment_to == "Trainee":
+			base_query = """
+					SELECT 
+						t1.name AS reference_name, 
+						'Training Management' AS reference_doctype,  
+						t1.branch, 
+						t1.course_cost_center AS cost_center, 
+						t2.desuup_id AS desuup, 
+						t2.desuup_name
+					FROM 
+						`tabTraining Management` t1
+					INNER JOIN 
+						`tabTrainee Details` t2 ON t1.name = t2.parent
+					WHERE 
+						t1.status = 'On Going'
+						AND t2.reporting_date IS NOT NULL
+						AND t2.status IN ('Passed', 'Reported')
+						AND t1.name = %(training_management)s
+					"""
+		else:
+			base_query = """
+					SELECT 
+						t1.name AS reference_name, 
+						'Desuup Deployment Entry' AS reference_doctype,  
+						t1.branch, 
+						t1.cost_center, 
+						t2.desuup, 
+						t2.desuup_name
+					FROM 
+						`tabDesuup Deployment Entry` t1
+					INNER JOIN 
+						`tabDesuup Deployment Entry Item` t2 ON t1.name = t2.parent
+					WHERE 
+						t1.status = 'On Going'
+						AND t2.reported_date IS NOT NULL
+						AND t2.status IN ('Passed', 'Reported')
+						AND t1.name = %(desuup_deployment_entry)s
+					"""
 		params = {}
-		if self.training_management:
+		if self.payment_to == "Trainee":
 			params['training_management'] = self.training_management
+		else:
+			params['desuup_deployment_entry'] = self.desuup_deployment_entry
 		desuup_list = frappe.db.sql(base_query, params, as_dict=True)
 
 		if self.travel_route:
