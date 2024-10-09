@@ -9,7 +9,14 @@
  "field_order": [
   "sb_auditors",
   "audit_engagement_auditor_notification_template",
-  "audit_engagement_supervisor_notification_template"
+  "audit_engagement_supervisor_notification_template",
+  "internal_clearance_setting_tab",
+  "verifier_list_section",
+  "verifier",
+  "approver_lsit_section",
+  "approver",
+  "section_break_eczqj",
+  "auditlist"
  ],
  "fields": [
   {
@@ -32,12 +39,47 @@
    "label": "Audit Engagement Supervisor Notification Template",
    "options": "Email Template",
    "reqd": 1
+  },
+  {
+   "fieldname": "internal_clearance_setting_tab",
+   "fieldtype": "Tab Break",
+   "label": "Internal Clearance Setting"
+  },
+  {
+   "fieldname": "verifier_list_section",
+   "fieldtype": "Section Break",
+   "label": "Verifier List"
+  },
+  {
+   "fieldname": "verifier",
+   "fieldtype": "Table",
+   "options": "Internal Audit Clearance Verifier List"
+  },
+  {
+   "fieldname": "approver_lsit_section",
+   "fieldtype": "Section Break",
+   "label": "Approver List"
+  },
+  {
+   "fieldname": "approver",
+   "fieldtype": "Table",
+   "options": "Internal Audit Clearance Verifier List"
+  },
+  {
+   "fieldname": "section_break_eczqj",
+   "fieldtype": "Section Break",
+   "label": "Audit List"
+  },
+  {
+   "fieldname": "auditlist",
+   "fieldtype": "Table",
+   "options": "Internal Audit Clearance Verifier List"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-08-16 16:37:35.788298",
+ "modified": "2024-10-04 14:26:45.172213",
  "modified_by": "Administrator",
  "module": "AMS",
  "name": "Audit Settings",
