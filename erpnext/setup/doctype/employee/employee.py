@@ -333,7 +333,8 @@ def get_holiday_list_for_employee(employee, raise_exception=True):
 		company = frappe.db.get_single_value("Global Defaults", "default_company")
 	
 	if not holiday_list:
-		holiday_list = frappe.db.get_value("Branch", frappe.db.get_value("Employee", employee, "branch", "holiday_list"))
+		holiday_list = frappe.db.get_value("Branch", frappe.db.get_value("Employee", employee, "branch"), "holiday_list")
+		
 
 	if not holiday_list:
 		holiday_list = frappe.get_cached_value("Company", company, "default_holiday_list")
