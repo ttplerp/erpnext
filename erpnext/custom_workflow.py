@@ -753,7 +753,7 @@ class CustomWorkflow:
 		'''
 		if self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
 			# self.doc.check_advance_and_report()
-			if self.doc.travel_type=="Training":
+			if self.doc.travel_type=="Training" or self.doc.travel_type == "Meeting and Seminars":
 				self.set_approver("HR")
 			else:
 				self.set_approver("Supervisor")
@@ -764,7 +764,7 @@ class CustomWorkflow:
 			self.set_approver("HR")	
 		elif self.new_state.lower() == "Approved".lower():
 			# self.doc.check_date()
-			if self.doc.travel_type=="Training":
+			if self.doc.travel_type=="Training" or self.doc.travel_type == "Meeting and Seminars":
 				if frappe.session.user!=self.hr_approver[0]:
 					frappe.throw("Only {} can Approve this request".format(self.hr_approver))
 			elif self.doc.supervisor != frappe.session.user:
@@ -785,7 +785,7 @@ class CustomWorkflow:
 		'''
 		if self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
 			# self.doc.check_advance_and_report()
-			if self.doc.travel_type=="Training":
+			if self.doc.travel_type=="Training" or self.doc.travel_type == "Meeting and Seminars":
 				self.set_approver("HR")
 			else:
 				self.set_approver("Supervisor")
@@ -797,7 +797,7 @@ class CustomWorkflow:
 			self.set_approver("HR")	
 		elif self.new_state.lower() == "Approved".lower():
 			# self.doc.check_date()
-			if self.doc.travel_type=="Training":
+			if self.doc.travel_type=="Training" or self.doc.travel_type == "Meeting and Seminars":
 				if frappe.session.user!=self.hr_approver[0 ]:
 					frappe.throw("Only {} can Approve this request".format(self.hr_approver))
 			elif self.doc.supervisor != frappe.session.user:
