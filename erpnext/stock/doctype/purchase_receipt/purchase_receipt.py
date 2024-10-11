@@ -148,7 +148,9 @@ class PurchaseReceipt(BuyingController):
         self.reset_default_field_value("set_from_warehouse", "items", "from_warehouse")
     
     def validate_posting_date_time(self):
-        
+        if getdate(self.posting_date) > getdate(nowdate()):
+            frappe.throw("Posting Date cannot be a future date. Please select a valid date.")
+            
         for a in self.items:
             data_list = frappe.db.sql("""
                     select *, timestamp(posting_date, posting_time) as "timestamp"

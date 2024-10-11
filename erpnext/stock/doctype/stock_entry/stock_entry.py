@@ -207,6 +207,9 @@ class StockEntry(StockController):
             self.set_material_request_transfer_status("Completed")
 
     def validate_posting_date_time(self):
+        if getdate(self.posting_date) > getdate(nowdate()):
+            frappe.throw("Posting Date cannot be a future date. Please select a valid date.")
+
         for a in self.items:
             data_list = frappe.db.sql("""
                     select *, timestamp(posting_date, posting_time) as "timestamp"
