@@ -175,10 +175,12 @@ class PaymentReconciliation(Document):
 
 	def add_payment_entries(self, non_reconciled_payments):
 		self.set("payments", [])
-
+		total_payment_amt = 0.00
 		for payment in non_reconciled_payments:
 			row = self.append("payments", {})
 			row.update(payment)
+			total_payment_amt += payment.get("amount")
+		self.total_payment_amt = flt(total_payment_amt,2)
 
 	def get_invoice_entries(self):
 		# Fetch JVs, Sales and Purchase Invoices for 'invoices' to reconcile against
@@ -203,7 +205,7 @@ class PaymentReconciliation(Document):
 	def add_invoice_entries(self, non_reconciled_invoices):
 		# Populate 'invoices' with JVs and Invoices to reconcile against
 		self.set("invoices", [])
-
+		total_amt = 0.00
 		for entry in non_reconciled_invoices:
 			inv = self.append("invoices", {})
 			inv.invoice_type = entry.get("voucher_type")
@@ -212,6 +214,8 @@ class PaymentReconciliation(Document):
 			inv.amount = flt(entry.get("invoice_amount"))
 			inv.currency = entry.get("currency")
 			inv.outstanding_amount = flt(entry.get("outstanding_amount"))
+			total_amt += entry.get("outstanding_amount")	
+		self.total_invoice_amt= flt(total_amt,2)
 
 	@frappe.whitelist()
 	def allocate_entries(self, args):
