@@ -44,8 +44,8 @@
   "over_billing_allowance",
   "image",
   "section_break_11",
-  "description",
   "brand",
+  "description",
   "dashboard_tab",
   "inventory_section",
   "inventory_settings_section",
@@ -168,6 +168,7 @@
    "fieldtype": "Data",
    "in_global_search": 1,
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Item Name",
    "oldfieldname": "item_name",
    "oldfieldtype": "Data",
@@ -283,7 +284,6 @@
    "print_hide": 1
   },
   {
-   "collapsible": 1,
    "fieldname": "section_break_11",
    "fieldtype": "Section Break",
    "label": "Description"
@@ -990,7 +990,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-04-09 11:54:22.370669",
+ "modified": "2024-10-15 16:43:01.451715",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",

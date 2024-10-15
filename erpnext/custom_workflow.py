@@ -508,29 +508,45 @@ class CustomWorkflow:
                 "Employee", {"user_id": self.doc.owner}, self.field_list
             )
 
-            self.qhse = frappe.db.get_value(
-                "Employee",
-                frappe.db.get_single_value("Stock Settings", "qhse"),
-                self.field_list,
-            )
+            
+            # self.qhse = frappe.db.get_value(
+            #     "Employee",
+            #     frappe.db.get_single_value("Stock Settings", "qhse"),
+            #     self.field_list,
+            # )
+            # if not self.qhse:
+            #     frappe.throw("QHSE Approver not set in stock setting")
+            self.qhse = frappe.db.get_value("Employee", frappe.db.get_value("Item Group", self.doc.item_group, "mr_manager"), self.field_list)
             if not self.qhse:
-                frappe.throw("QHSE Approver not set in stock setting")
+                frappe.throw("Set MR Manager in {}".format(
+                    frappe.get_desk_link("Item Group", self.doc.item_group)
+                ))
 
             self.qhse_gm = frappe.db.get_value(
                 "Employee",
-                frappe.db.get_single_value("Stock Settings", "qhse_gm"),
+                frappe.db.get_value("Item Group", self.doc.item_group, "mr_gm"),
                 self.field_list,
             )
-            if not self.qhse_gm:
-                frappe.throw("QHSE GM Approver not set in stock setting")
+            if not self.qhse:
+                frappe.throw("Set MR GM in {}".format(
+                    frappe.get_desk_link("Item Group", self.doc.item_group)
+                ))
 
-            self.ppe_approver = frappe.db.get_value(
-                "Employee",
-                frappe.db.get_single_value("Stock Settings", "ppe_approver"),
-                self.field_list,
-            )
-            if not self.qhse_gm:
-                frappe.throw("PPE Approver not set in stock setting")
+            # self.qhse_gm = frappe.db.get_value(
+            #     "Employee",
+            #     frappe.db.get_single_value("Stock Settings", "qhse_gm"),
+            #     self.field_list,
+            # )
+            # if not self.qhse_gm:
+            #     frappe.throw("QHSE GM Approver not set in stock setting")
+
+            # self.ppe_approver = frappe.db.get_value(
+            #     "Employee",
+            #     frappe.db.get_single_value("Stock Settings", "ppe_approver"),
+            #     self.field_list,
+            # )
+            # if not self.qhse_gm:
+            #     frappe.throw("PPE Approver not set in stock setting")
 
             self.hrgm = frappe.db.get_value(
                 "Employee",
@@ -2712,7 +2728,11 @@ class CustomWorkflow:
         elif self.new_state.lower() == "Waiting Approval".lower():
             if self.doc.approver != frappe.session.user:
                 frappe.throw("Only {} can Forward this request".format(self.doc.approver_name))
-            self.set_approver("Advance Approver")
+            if self.doc.party_type == "Supplier":
+               self.set_approver("Advance Approver")
+               pass
+            else:
+                self.set_approver("Advance Approver")
             
         elif self.new_state.lower() == "Approved".lower():
             if self.doc.approver != frappe.session.user:
@@ -2836,18 +2856,17 @@ class CustomWorkflow:
         # General workflow
         1. Employee -> supervisor -> Center Store -[approve/forward] -> approval
 
-        # item group : Mess, First Aid Kit
-        2. Employee -> supervisor -> QHSE -> QHSE Head
+        # item group : Mess (Staff Welfare), First Aid Kit, Personal Protective Equipment
+        2. a. Employee -> supervisor -> QHSE -> QHSE Head
+           b. QHSE -> QHSE Head
 
         # Item group : Fixed Assets
         3. Employee -> Supervisor -> HR
 
         # Item group : Property, Plant and Equipment
         4. Employee -> Mechnical GM -> Mechincal Central Store
-
-        # item group : Personal Protective Equipment
-        5.  Employee -> supervisor -> QHSE -> QHSE Head
         """
+
         if self.new_state.lower() == "Draft".lower():
             if self.doc.owner != frappe.session.user:
                 frappe.throw("Only the document owner can Apply this material request.")
@@ -2855,7 +2874,15 @@ class CustomWorkflow:
         elif (self.old_state.lower() == "Draft".lower() and self.new_state.lower() != "Draft".lower()):
             if self.doc.owner != frappe.session.user:
                 frappe.throw("Only the document owner can Apply this material request.")
-            if self.doc.item_group == "POL":
+
+            # Requesting employee == QHSE/MR Manager
+            self.qhse = frappe.db.get_value("Item Group", self.doc.item_group, "mr_manager")
+            self.employee = frappe.get_value("Employee", {'user_id': frappe.session.user}, "name")
+            if self.qhse == self.employee:
+                self.doc.workflow_state = "Waiting QHSE GM Approval"
+                self.set_approver("QHSE GM")
+
+            elif self.doc.item_group == "POL":
                 if self.doc.item_sub_group == "Fuel":
                     self.doc.workflow_state = "Waiting Supervisor Approval"
                     self.set_approver("Supervisor")
@@ -2883,31 +2910,22 @@ class CustomWorkflow:
                 self.doc.workflow_state = "Waiting HR Approval"
                 self.set_approver("HRGM")
             
-            elif self.doc.item_group in ("Personal Protective Equipment's", "Mess","First Aid Kit", "Mess (Staff Welfare)"):
+            elif self.doc.item_group in ("Personal Protective Equipment's", "Mess", "First Aid Kits", "Mess (Staff Welfare)"):
                 self.doc.workflow_state = "Waiting QHSE Approval"
-                if self.doc.item_group == "Personal Protective Equipment's":
-                    self.set_approver("PPE Approver")
-                else:
-                    self.set_approver("QHSE")
+                self.set_approver("QHSE")
             else:
                 self.doc.workflow_state = "Waiting Central Store approval"
                 self.set_approver("MR Manager")
 
         elif self.old_state.lower() in ("Waiting QHSE Approval".lower()):
-            if self.doc.item_group == "Personal Protective Equipment's":
-                self.set_approver("PPE Approver")
-            else:
-                self.set_approver("QHSE")
+            self.set_approver("QHSE")
 
         elif self.old_state.lower() in ("Waiting Central Store approval".lower()):
             if self.doc.item_group == "Fixed Assets":
                 self.set_approver("HRGM")
             
             elif self.doc.item_group in ("Personal Protective Equipment's", "Mess","First Aid Kit", "Mess (Staff Welfare)"):
-                if self.doc.item_group == "Personal Protective Equipment's":
-                    self.set_approver("PPE Approver")
-                else:
-                    self.set_approver("QHSE")
+                self.set_approver("QHSE")
             else:
                 self.set_approver("MR Manager")
 
@@ -2943,7 +2961,6 @@ class CustomWorkflow:
                 frappe.throw(
                     "Only the {} can Reject this material request".format(self.doc.approver)
                 )
-
 
     def festival_advance(self):
         """Leave Encashment Workflow

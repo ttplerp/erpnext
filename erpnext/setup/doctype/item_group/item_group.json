@@ -37,7 +37,13 @@
   "filter_attributes",
   "lft",
   "rgt",
-  "old_parent"
+  "old_parent",
+  "section_break_igrek",
+  "mr_manager",
+  "mr_gm",
+  "column_break_9zb9q",
+  "mr_manager_name",
+  "mr_gm_name"
  ],
  "fields": [
   {
@@ -252,6 +258,39 @@
    "fieldtype": "Data",
    "label": "Item Group Abbreviation",
    "mandatory_depends_on": "eval:doc.is_group == 1;"
+  },
+  {
+   "depends_on": "eval: doc.is_group",
+   "fieldname": "section_break_igrek",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "mr_manager",
+   "fieldtype": "Link",
+   "label": "MR Manager",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "mr_gm",
+   "fieldtype": "Link",
+   "label": "MR GM",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "column_break_9zb9q",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "mr_manager.employee_name",
+   "fieldname": "mr_manager_name",
+   "fieldtype": "Data",
+   "label": "MR Manager Name"
+  },
+  {
+   "fetch_from": "mr_gm.employee_name",
+   "fieldname": "mr_gm_name",
+   "fieldtype": "Data",
+   "label": "MR GM Name "
   }
  ],
  "icon": "fa fa-sitemap",
@@ -260,7 +299,7 @@
  "is_tree": 1,
  "links": [],
  "max_attachments": 3,
- "modified": "2024-04-09 15:52:40.073783",
+ "modified": "2024-10-15 16:00:51.041971",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Item Group",
