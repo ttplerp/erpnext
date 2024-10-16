@@ -421,15 +421,49 @@ class CustomWorkflow:
                 )
 
         if self.doc.doctype == "Advance":
-            if self.doc.party_type == "Supplier":
-                supplier_type = frappe.db.get_value("Supplier", self.doc.party, "supplier_type")
-                self.advance_approver = frappe.db.get_value("Employee", frappe.db.get_value("Supplier Type", supplier_type, "approver"), self.field_list)
-                if not self.advance_approver:
-                    frappe.throw("Set approver in {}".format(frappe.get_desk_link("Supplier Type", supplier_type)))
-            else:
-                self.advance_approver = frappe.db.get_value("Employee", frappe.db.get_value("Employee", employee, "advance_approver"), self.field_list)
+            if self.doc.advance_type not in ("Domestic Supplier", "International Advance"):
+                employee = frappe.db.get_value("Employee", {"user_id": self.doc.owner}, "name")
+                user_id = frappe.db.get_value("Employee", {"user_id": self.doc.owner}, "user_id")
+                if user_id != self.doc.owner:
+                    frappe.throw('Only Employee can apply this document.')
+                
+                # Set supervisor
+                self.supervisor_data = frappe.db.sql("""
+                                        select si.supervisor from `tabSupervisor And Approver Mapper` sam,
+                                        `tabSupervisor Item` si where si.parent = sam.name and si.branch = '{}' and sam.employee = '{}'
+                                    """.format(self.doc.branch, employee))
+                if self.supervisor_data:
+                    self.supervisor = self.supervisor_data[0][0]
+                    self.advance_supervisor = frappe.db.get_value("Employee", self.supervisor, self.field_list) 
+                else:
+                    self.advance_supervisor = frappe.db.get_value("Employee", {"user_id": frappe.db.get_value("Employee", employee, "expense_approver")}, self.field_list)
+                if not self.advance_supervisor:
+                    frappe.throw("Please set expense approver for employee <strong>{}</strong>".format(employee))
+
+                # Set Approver
+                self.approver_data = frappe.db.sql("""
+                                        select ai.approver from `tabSupervisor And Approver Mapper` sam,
+                                        `tabApprover Item` ai where ai.parent = sam.name and ai.branch = '{}' and sam.employee = '{}'
+                                    """.format(self.doc.branch, employee))
+                if self.approver_data:
+                    self.approver = self.approver_data[0][0]
+                    self.advance_approver = frappe.db.get_value("Employee", self.approver, self.field_list) 
+                else:
+                    # frappe.throw(str(employee))
+                    self.advance_approver = frappe.db.get_value("Employee", frappe.db.get_value("Employee", employee, "advance_approver"), self.field_list)
                 if not self.advance_approver:
                     frappe.throw("Please set advance approver for employee <strong>{}</strong>".format(employee))
+            else:
+                if self.doc.party_type == "Supplier":
+                    supplier_type = frappe.db.get_value("Supplier", self.doc.party, "supplier_type")
+                    self.advance_approver = frappe.db.get_value("Employee", frappe.db.get_value("Supplier Type", supplier_type, "approver"), self.field_list)
+                    if not self.advance_approver:
+                        frappe.throw("Set approver in {}".format(frappe.get_desk_link("Supplier Type", supplier_type)))
+                else:
+                    self.advance_approver = frappe.db.get_value("Employee", frappe.db.get_value("Employee", employee, "advance_approver"), self.field_list)
+                    if not self.advance_approver:
+                        frappe.throw("Please set advance approver for employee <strong>{}</strong>".format(employee))
+
 
         if self.doc.doctype == "Employee Advance":
             self.data = frappe.db.sql("""
@@ -2729,12 +2763,23 @@ class CustomWorkflow:
                 frappe.throw("Only {} can Cancel this request".format(self.doc.approver_name))
     
     def supplier_advance(self):
-        if not self.old_state:
-            return
+        if self.new_state.lower() == "Draft".lower():
+            if self.doc.owner != frappe.session.user:
+                frappe.throw("Only the document owner can Apply this material request.")
+
+        elif (self.old_state.lower() == "Draft".lower() and self.new_state.lower() != "Draft".lower()):
+            if self.doc.owner != frappe.session.user:
+                frappe.throw("Only the document owner can Apply this material request.")
+            if self.doc.advance_type in ("International Advance", "Domestic Supplier"):
+                self.doc.workflow_state = "Waiting Approval"
+                self.set_approver("Advance Approver")
+            else:
+                self.doc.workflow_state = "Waiting Supervisor Approval"
+                self.set_approver("Supervisor")
 
         elif self.new_state.lower() == "Waiting Approval".lower():
-            if self.doc.owner != frappe.session.user and self.new_state.lower() != self.old_state.lower():
-                frappe.throw("Only {} can Apply this request".format(self.doc.owner))
+            if self.doc.approver != frappe.session.user:
+                frappe.throw("Only {} can Apply/Forward this request".format(self.doc.approver_name))
             self.set_approver("Advance Approver")
             
         elif self.new_state.lower() == "Approved".lower():
