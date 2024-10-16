@@ -215,9 +215,9 @@
   },
   {
    "fieldname": "supplier_type",
-   "fieldtype": "Select",
+   "fieldtype": "Link",
    "label": "Supplier Type",
-   "options": "\nDomestic Vendor\nInternational Vendor\nIndividual",
+   "options": "Supplier Type",
    "reqd": 1
   },
   {
@@ -727,7 +727,7 @@
    "link_fieldname": "party"
   }
  ],
- "modified": "2024-08-10 11:31:55.226876",
+ "modified": "2024-10-15 15:13:23.437454",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Supplier",
