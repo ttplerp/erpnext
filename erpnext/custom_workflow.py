@@ -420,6 +420,17 @@ class CustomWorkflow:
                     )
                 )
 
+        if self.doc.doctype == "Advance":
+            if self.doc.party_type == "Supplier":
+                supplier_type = frappe.db.get_value("Supplier", self.doc.party, "supplier_type")
+                self.advance_approver = frappe.db.get_value("Employee", frappe.db.get_value("Supplier Type", supplier_type, "approver"), self.field_list)
+                if not self.advance_approver:
+                    frappe.throw("Set approver in {}".format(frappe.get_desk_link("Supplier Type", supplier_type)))
+            else:
+                self.advance_approver = frappe.db.get_value("Employee", frappe.db.get_value("Employee", employee, "advance_approver"), self.field_list)
+                if not self.advance_approver:
+                    frappe.throw("Please set advance approver for employee <strong>{}</strong>".format(employee))
+
         if self.doc.doctype == "Employee Advance":
             self.data = frappe.db.sql("""
                                     select supervisor from `tabSupervisor And Approver Mapper` sam,
@@ -704,7 +715,7 @@ class CustomWorkflow:
             # if not self.imprest_approver:
             #     frappe.throw("Imprest Approver not set for the branch {}.".format(self.doc.expense_branch))
 
-        if self.doc.doctype in ("Hire Charge Advance", "Muster Roll Advance", "Advance", "Transportation and Hire Charge Entry", "POL Receive"):
+        if self.doc.doctype in ("Hire Charge Advance", "Muster Roll Advance", "Transportation and Hire Charge Entry", "POL Receive"):
             employee = frappe.db.get_value("Employee", {"user_id": self.doc.owner}, "name")
             user_id = frappe.db.get_value("Employee", {"user_id": self.doc.owner}, "user_id")
             if user_id != self.doc.owner:
@@ -2720,19 +2731,11 @@ class CustomWorkflow:
     def supplier_advance(self):
         if not self.old_state:
             return
-        elif self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
-            if self.doc.owner != frappe.session.user and self.new_state.lower() != self.old_state.lower():
-                frappe.throw("Only {} can Apply this request".format(self.doc.owner))
-            self.set_approver("Supervisor")
 
         elif self.new_state.lower() == "Waiting Approval".lower():
-            if self.doc.approver != frappe.session.user:
-                frappe.throw("Only {} can Forward this request".format(self.doc.approver_name))
-            if self.doc.party_type == "Supplier":
-               self.set_approver("Advance Approver")
-               pass
-            else:
-                self.set_approver("Advance Approver")
+            if self.doc.owner != frappe.session.user and self.new_state.lower() != self.old_state.lower():
+                frappe.throw("Only {} can Apply this request".format(self.doc.owner))
+            self.set_approver("Advance Approver")
             
         elif self.new_state.lower() == "Approved".lower():
             if self.doc.approver != frappe.session.user:
