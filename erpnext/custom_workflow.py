@@ -45,7 +45,6 @@ class CustomWorkflow:
                     frappe.throw('Expense Approver not set for employee {}'.format(self.doc.employee))
             self.supervisors_supervisor = frappe.db.get_value("Employee", frappe.db.get_value("Employee", frappe.db.get_value("Employee", self.doc.employee, "reports_to"), "reports_to"), self.field_list)
             self.hr_approver	= frappe.db.get_value("Employee", frappe.db.get_single_value("HR Settings", "hr_approver"), self.field_list)
-            
             self.hrgm = frappe.db.get_value("Employee",frappe.db.get_single_value("HR Settings","hrgm"), self.field_list)
             self.ceo			= frappe.db.get_value("Employee", frappe.db.get_value("Employee", {"designation": "Chief Executive Officer", "status": "Active"},"name"), self.field_list)
             self.dept_approver	= frappe.db.get_value("Employee", frappe.db.get_value("Department", str(frappe.db.get_value("Employee", self.doc.employee, "department")), "approver"), self.field_list)
@@ -283,7 +282,7 @@ class CustomWorkflow:
             vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.project_manager[0]
             vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.project_manager[1]
             vars(self.doc)[self.doc_approver[2]] = officiating[2] if officiating else self.project_manager[2]
-        
+    
         elif approver_type == "HR":
             officiating = get_officiating_employee(self.hr_approver[3])
             if officiating:
@@ -752,23 +751,21 @@ class CustomWorkflow:
             1. Employee -> Supervisor -> Approved
         '''
         if self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
-            # self.doc.check_advance_and_report()
-            if self.doc.travel_type=="Training" or self.doc.travel_type == "Meeting and Seminars" or self.doc.travel_type == "Workshop":
-                self.set_approver("HR")
-            else:
-                self.set_approver("Supervisor")
+            self.set_approver("Supervisor")
             self.doc.document_status = "Draft"
+    
         elif self.new_state == "Waiting Hr Approval":
-            if self.doc.supervisor != frappe.session.user:
-                frappe.throw("Only {} can Forward this request".format(self.doc.supervisor_name))
-            self.set_approver("HR")	
+            verifier_auth=frappe.db.get_value("Employee", frappe.db.get_single_value("HR Settings", "hr_verifier"), "user_id")
+            if verifier_auth != frappe.session.user:
+                frappe.throw("Only {} can Forward this request".format(verifier_auth))
+            self.set_approver("HR")
+            
         elif self.new_state.lower() == "Approved".lower():
             # self.doc.check_date()
-            if self.doc.travel_type=="Training" or self.doc.travel_type == "Meeting and Seminars" or self.doc.travel_type == "Workshop":
-                if frappe.session.user!=self.hr_approver[0]:
-                    frappe.throw("Only {} can Approve this request".format(self.hr_approver))
-            elif self.doc.supervisor != frappe.session.user:
+
+            if self.doc.supervisor != frappe.session.user:
                 frappe.throw("Only {} can Approve this request".format(self.doc.supervisor_name))
+            
             self.doc.document_status = "Approved"
         elif self.new_state.lower() == 'Rejected'.lower():
             if self.doc.supervisor != frappe.session.user and self.new_state.lower() != self.old_state.lower():
@@ -778,23 +775,24 @@ class CustomWorkflow:
             if "HR User" not in frappe.get_roles(frappe.session.user):
                 frappe.throw(_("Only {} can Cancel this Travel Authorization").format(self.doc.supervisor_name))
             self.doc.document_status = "Cancelled"
-
+    
+        
     def travel_claim(self):
         ''' Travel Claim Workflow
             1. Employee -> Supervisor -> Approved
         '''
         if self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
             # self.doc.check_advance_and_report()
-            if self.doc.travel_type=="Training" or self.doc.travel_type == "Meeting and Seminars":
-                self.set_approver("HR")
-            else:
-                self.set_approver("Supervisor")
+            self.set_approver("Supervisor")
             
             self.doc.document_status = "Draft"
+        
         elif self.new_state == "Waiting Hr Approval":
-            if self.doc.supervisor != frappe.session.user:
-                frappe.throw("Only {} can Forware this request".format(self.doc.supervisor_name))
-            self.set_approver("HR")	
+            verifier_auth=frappe.db.get_value("Employee", frappe.db.get_single_value("HR Settings", "hr_verifier"), "user_id")
+            if verifier_auth != frappe.session.user:
+                frappe.throw("Only {} can Forward this request".format(verifier_auth))
+            self.set_approver("HR")
+            
         elif self.new_state.lower() == "Approved".lower():
             # self.doc.check_date()
             if self.doc.travel_type=="Training" or self.doc.travel_type == "Meeting and Seminars":
@@ -803,6 +801,7 @@ class CustomWorkflow:
             elif self.doc.supervisor != frappe.session.user:
                 frappe.throw("Only {} can Approve this request".format(self.doc.supervisor_name))
             self.doc.document_status = "Approved"
+            
         elif self.new_state.lower() == 'Rejected'.lower():
             if self.doc.supervisor != frappe.session.user and self.new_state.lower() != self.old_state.lower():
                 frappe.throw("Only {} can Reject this request".format(self.doc.supervisor_name))
@@ -1040,6 +1039,7 @@ class CustomWorkflow:
             self.doc.supervisor = frappe.db.get_value("User", frappe.db.get_value("Employee", supervisor_id, "user_id"), "name")
 
         if self.doc.workflow_state == "Rejected":
+            #frappe.throw(str(frappe.get_roles(frappe.session.user)))
             if not self.doc.rejection_reason:
                 frappe.throw("Please input a rejection reason")
 
