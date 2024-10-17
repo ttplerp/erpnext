@@ -821,6 +821,15 @@ class ReceivablePayableReport(object):
 				)
 			)
 
+		if self.filters.get("supplier_type"):
+			self.qb_selection_filter.append(
+				self.ple.party.isin(
+					qb.from_(supplier)
+					.select(supplier.name)
+					.where(supplier.supplier_type == self.filters.get("supplier_type"))
+				)
+			)
+
 		if self.filters.get("payment_terms_template"):
 			self.qb_selection_filter.append(
 				self.ple.party.isin(
@@ -873,7 +882,7 @@ class ReceivablePayableReport(object):
 				)
 			else:
 				self.party_details[party] = frappe.db.get_value(
-					"Supplier", party, ["supplier_name", "supplier_group"], as_dict=True
+					"Supplier", party, ["supplier_name", "supplier_group", "supplier_type"], as_dict=True
 				)
 
 		return self.party_details[party]
@@ -975,6 +984,12 @@ class ReceivablePayableReport(object):
 				fieldname="supplier_group",
 				fieldtype="Link",
 				options="Supplier Group",
+			)
+			self.add_column(
+				label=_("Supplier Type"),
+				fieldname="supplier_type",
+				fieldtype="Link",
+				options="Supplier Type",
 			)
 
 		if self.filters.show_remarks:
