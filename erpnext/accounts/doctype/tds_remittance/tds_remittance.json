@@ -41,7 +41,11 @@
   "reference_date",
   "cheque_no",
   "cheque_date",
-  "amended_from"
+  "amended_from",
+  "section_break_h6gdg",
+  "utility_bill",
+  "column_break_vqbch",
+  "payment_status"
  ],
  "fields": [
   {
@@ -263,12 +267,36 @@
    "fieldtype": "Currency",
    "label": "Grand Total",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_h6gdg",
+   "fieldtype": "Section Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "utility_bill",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Utility Bill",
+   "options": "Utility Bill"
+  },
+  {
+   "fieldname": "column_break_vqbch",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "payment_status",
+   "fieldtype": "Data",
+   "ignore_user_permissions": 1,
+   "label": "Payment Status",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-12-14 10:45:30.375530",
+ "modified": "2024-10-11 15:49:32.414603",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "TDS Remittance",
