@@ -77,6 +77,8 @@ class TDSRemittance(AccountsController):
 						"voucher_type": self.doctype,
 						"voucher_no": self.name,
 						"cost_center": item.cost_center,
+						"party_type": item.party_type,
+						"party": item.party,
 						# "business_activity": item.business_activity,
 						"against_voucher_type":	item.invoice_type,
 						"against_voucher": item.invoice_no
@@ -102,7 +104,7 @@ class TDSRemittance(AccountsController):
 				self.get_gl_dict({
 					"account": str(self.credit_account),
 					"credit": flt(self.total_tds + self.fines_and_penalties) if self.fines_and_penalties > 0 else self.total_tds,
-					"credit_in_account_currency": self.total_tds,
+					"credit_in_account_currency": flt(self.total_tds + self.fines_and_penalties) if self.fines_and_penalties > 0 else self.total_tds,
 					"voucher_type": self.doctype,					
 					"voucher_no": self.name,
 					"cost_center": self.cost_center,
