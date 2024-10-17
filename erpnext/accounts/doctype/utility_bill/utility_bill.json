@@ -30,6 +30,9 @@
   "net_payable_amount",
   "workflow_state",
   "amended_from",
+  "references_section",
+  "tds_remittance",
+  "column_break_rix6y",
   "journal_entry"
  ],
  "fields": [
@@ -191,13 +194,27 @@
    "fieldname": "journal_entry",
    "fieldtype": "Link",
    "label": "Journal Entry",
-   "options": "Journal Entry",
-   "read_only": 1
+   "options": "Journal Entry"
+  },
+  {
+   "fieldname": "tds_remittance",
+   "fieldtype": "Link",
+   "label": "TDS Remittance",
+   "options": "TDS Remittance"
+  },
+  {
+   "fieldname": "references_section",
+   "fieldtype": "Section Break",
+   "label": "References"
+  },
+  {
+   "fieldname": "column_break_rix6y",
+   "fieldtype": "Column Break"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-10-03 16:19:35.923741",
+ "modified": "2024-10-11 15:47:07.823749",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Utility Bill",

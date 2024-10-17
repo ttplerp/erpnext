@@ -20,6 +20,7 @@ class UtilityBill(Document):
         self.update_pi_number()
         if self.workflow_state == "Waiting For Verification":
             self.payment_status="Pending"
+        self.validate_rrco_payment()
             
     def before_submit(self):
         self.utility_payment()
@@ -27,6 +28,12 @@ class UtilityBill(Document):
         # if self.payment_status=="Payment Successful":
         #     self.make_direct_payment()
         
+    def validate_rrco_payment(self):
+        for a in self.get("item"):
+            if a.party == "RRCO":
+                if not self.tds_remittance or not self.journal_entry:
+                    frappe.throw("Please link with TDS Remittance and Journal Entry")
+
     def update_pi_number(self):
         for a in self.get("item"):
             if not a.pi_number:
@@ -46,6 +53,20 @@ class UtilityBill(Document):
 
     def on_submit(self):
         self.db_set("workflow_state", self.payment_status)
+        self.update_reference_document()
+
+    def update_reference_document(self):
+        if self.tds_remittance:
+            doc = frappe.get_doc("TDS Remittance", self.tds_remittance)
+            doc.payment_status = self.payment_status
+            doc.utility_bill = self.name
+            doc.save(ignore_permissions=True)
+        
+        if self.journal_entry:
+            doc = frappe.get_doc("Journal Entry", self.journal_entry)
+            doc.payment_status = self.payment_status
+            doc.utility_bill = self.name
+            doc.save(ignore_permissions=True)
     
     def on_cancel(self):
         if self.workflow_state=="Partial Payment" or self.workflow_state=="Payment Successful":
