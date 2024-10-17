@@ -89,6 +89,7 @@ class PMSAppeal(Document):
 			item.score = (flt(item.average_rating ) / flt(item.weightage)) * 100
 
 			total_score += flt(item.average_rating)
+		target_rating = frappe.db.get_value("PMS Group",self.pms_group,"weightage_for_target")
 		score =flt(total_score)/100 * flt(target_rating)
 		total_score = score
 		self.form_i_total_rating = total_score
