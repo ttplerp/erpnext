@@ -28,6 +28,7 @@
   "tds_table",
   "section_break99",
   "use_cheque_lot",
+  "bank_account",
   "cheque_lot",
   "cheque_no",
   "cheque_date",
@@ -563,7 +564,7 @@
    "label": "Use Cheque Lot"
   },
   {
-   "depends_on": "use_cheque_lot",
+   "depends_on": "eval:doc.use_cheque_lot",
    "fieldname": "cheque_lot",
    "fieldtype": "Link",
    "label": "Cheque Lot",
@@ -632,6 +633,7 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "bank_payment",
    "fieldtype": "Link",
    "label": "Bank Payment",
@@ -644,6 +646,14 @@
    "hidden": 1,
    "label": "Party Name",
    "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.use_cheque_lot",
+   "fieldname": "bank_account",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Bank Account",
+   "options": "Account"
   }
  ],
  "icon": "fa fa-file-text",
@@ -655,7 +665,7 @@
    "link_fieldname": "journal_entry"
   }
  ],
- "modified": "2024-06-23 19:17:35.366508",
+ "modified": "2024-10-19 12:31:00.606282",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",
