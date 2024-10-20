@@ -54,7 +54,10 @@
   "amended_from",
   "job_rating_section",
   "actual_job_duration",
-  "duration_difference"
+  "duration_difference",
+  "on_hold_time",
+  "resume_time",
+  "idle_duration"
  ],
  "fields": [
   {
@@ -323,6 +326,21 @@
    "fieldname": "duration_difference",
    "fieldtype": "Data",
    "label": "Duration Difference  "
+  },
+  {
+   "fieldname": "on_hold_time",
+   "fieldtype": "Datetime",
+   "label": "Work On Hold Time"
+  },
+  {
+   "fieldname": "resume_time",
+   "fieldtype": "Datetime",
+   "label": "Work Resume Time"
+  },
+  {
+   "fieldname": "idle_duration",
+   "fieldtype": "Data",
+   "label": "Total Idle Time"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -349,7 +367,7 @@
    "link_fieldname": "license_plate"
   }
  ],
- "modified": "2024-10-20 08:08:25.453928",
+ "modified": "2024-10-20 21:57:23.753445",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "WS_Job Card",
