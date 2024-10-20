@@ -1,0 +1,95 @@
+{
+ "_comments": "[{\"comment\": \"Action Failed<br><br><pre><code>Traceback (most recent call last):\\n  File \\\"apps/frappe/frappe/mod...\", \"by\": \"jampelrigsar@gmail.com\", \"name\": \"c44526b9f0\"}]",
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2024-09-19 15:39:34.970459",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "job_code",
+  "description",
+  "quantity",
+  "job_value",
+  "job_duration",
+  "special_instruction",
+  "total_value",
+  "total_duration",
+  "job_category"
+ ],
+ "fields": [
+  {
+   "fieldname": "job_code",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Job Code",
+   "options": "WS_Jobs"
+  },
+  {
+   "fetch_from": "job_code.description",
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Description"
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Quantity"
+  },
+  {
+   "fetch_from": "job_code.job_value",
+   "fieldname": "job_value",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Job Value"
+  },
+  {
+   "fetch_from": "job_code.job_duration",
+   "fieldname": "job_duration",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Job Duration (mins)"
+  },
+  {
+   "fieldname": "special_instruction",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Special Instruction"
+  },
+  {
+   "fieldname": "total_value",
+   "fieldtype": "Currency",
+   "label": "Total Value"
+  },
+  {
+   "fieldname": "total_duration",
+   "fieldtype": "Data",
+   "label": "Total Duration (mins)"
+  },
+  {
+   "fetch_from": "job_code.master_category",
+   "fieldname": "job_category",
+   "fieldtype": "Data",
+   "label": "Job category",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-10-20 08:11:33.254433",
+ "modified_by": "Administrator",
+ "module": "Maintenance",
+ "name": "WS_item",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

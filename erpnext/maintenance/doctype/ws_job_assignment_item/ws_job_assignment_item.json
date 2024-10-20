@@ -1,0 +1,71 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2024-09-21 17:04:15.847083",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "assigned_to",
+  "employee_name",
+  "designation",
+  "deployment_ratio",
+  "job_value",
+  "job_duration"
+ ],
+ "fields": [
+  {
+   "fieldname": "assigned_to",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Assigned To",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "assigned_to.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Employee Name"
+  },
+  {
+   "fetch_from": "assigned_to.designation",
+   "fieldname": "designation",
+   "fieldtype": "Data",
+   "label": "Designation"
+  },
+  {
+   "fieldname": "deployment_ratio",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Deployment Ratio"
+  },
+  {
+   "fieldname": "job_value",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Job Value",
+   "read_only": 1
+  },
+  {
+   "fieldname": "job_duration",
+   "fieldtype": "Float",
+   "label": "Job Duration ",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-10-20 08:12:16.737271",
+ "modified_by": "Administrator",
+ "module": "Maintenance",
+ "name": "WS Job Assignment Item",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
