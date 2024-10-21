@@ -46,6 +46,7 @@
   "work_flow",
   "workshop_check_in_time",
   "workshop_check_out_time",
+  "idle_duration",
   "total_job__duration",
   "column_break_32",
   "remarks",
@@ -55,9 +56,8 @@
   "job_rating_section",
   "actual_job_duration",
   "duration_difference",
-  "on_hold_time",
-  "resume_time",
-  "idle_duration"
+  "section_break_44",
+  "job_card_state"
  ],
  "fields": [
   {
@@ -328,19 +328,20 @@
    "label": "Duration Difference  "
   },
   {
-   "fieldname": "on_hold_time",
-   "fieldtype": "Datetime",
-   "label": "Work On Hold Time"
-  },
-  {
-   "fieldname": "resume_time",
-   "fieldtype": "Datetime",
-   "label": "Work Resume Time"
-  },
-  {
    "fieldname": "idle_duration",
    "fieldtype": "Data",
    "label": "Total Idle Time"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_44",
+   "fieldtype": "Section Break",
+   "label": "Workflow State"
+  },
+  {
+   "fieldname": "job_card_state",
+   "fieldtype": "Table",
+   "options": "WS_Job Card State"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -367,7 +368,7 @@
    "link_fieldname": "license_plate"
   }
  ],
- "modified": "2024-10-20 21:57:23.753445",
+ "modified": "2024-10-21 09:22:31.629820",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "WS_Job Card",
