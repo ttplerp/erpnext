@@ -1,0 +1,58 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2024-10-21 08:58:48.095499",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "workflow_state",
+  "from_datetime",
+  "to_datetime",
+  "time_taken"
+ ],
+ "fields": [
+  {
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Workflow State",
+   "options": "Workflow State",
+   "read_only": 1
+  },
+  {
+   "fieldname": "from_datetime",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "From Datetime",
+   "read_only": 1
+  },
+  {
+   "fieldname": "to_datetime",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "To Datetime",
+   "read_only": 1
+  },
+  {
+   "fieldname": "time_taken",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Time Taken(Hrs)",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-10-21 09:00:35.569532",
+ "modified_by": "Administrator",
+ "module": "Maintenance",
+ "name": "WS_Job Card State",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
