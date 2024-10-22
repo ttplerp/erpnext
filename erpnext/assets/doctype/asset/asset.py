@@ -666,8 +666,14 @@ class Asset(AccountsController):
 					)
 				)
 
-			if self.opening_accumulated_depreciation:
+			# if self.opening_accumulated_depreciation:
+			# 	if not self.number_of_depreciations_booked:
+			# 		self.number_of_depreciations_booked = opening_accumulated_depreciation
+			# 		frappe.throw(_("Please set Number of Depreciations Booked"))
+			finance_books = get_item_details(self.item_code, self.asset_category, self.asset_sub_category, self.available_for_use_date)
+			if self.income_tax_opening_depreciation_amount:
 				if not self.number_of_depreciations_booked:
+					self.number_of_depreciations_booked = flt((self.income_tax_opening_depreciation_amount/self.gross_purchase_amount)*finance_books[0]['total_number_of_depreciations'],0)
 					frappe.throw(_("Please set Number of Depreciations Booked"))
 			else:
 				self.number_of_depreciations_booked = 0
@@ -950,6 +956,7 @@ class Asset(AccountsController):
 				raise
 
 		return cwip_account
+
 	def make_asset_je_entry(self):
 		if self.gross_purchase_amount:
 			je = frappe.new_doc("Journal Entry")
@@ -967,18 +974,22 @@ class Asset(AccountsController):
 			je.append("accounts", {
 				"account": self.credit_account,
 				"credit_in_account_currency": self.gross_purchase_amount,
+				"credit": self.gross_purchase_amount,
 				"reference_type": "Asset",
 				"reference_name": self.name,
-				"cost_center": self.cost_center
+				"cost_center": self.cost_center,
+				"business_activity": "Common"
 				})
 
 			#debit account update
 			je.append("accounts", {
 				"account": self.asset_account,
 				"debit_in_account_currency": self.gross_purchase_amount,
+				"debit": self.gross_purchase_amount,
 				"reference_type": "Asset",
 				"reference_name": self.name,
-				"cost_center": self.cost_center
+				"cost_center": self.cost_center,
+				"business_activity": "Common"
 				})
 			je.submit()
 		if self.is_existing_asset:
@@ -997,21 +1008,25 @@ class Asset(AccountsController):
 			je.append("accounts", {
 				"account": self.accumulated_depreciation_account,
 				"credit_in_account_currency": self.income_tax_opening_depreciation_amount,
+				"credit": self.income_tax_opening_depreciation_amount,
 				"reference_type": "Asset",
 				"reference_name": self.name,
-				"cost_center": self.cost_center
+				"cost_center": self.cost_center,
+				"business_activity": "Common"
 				})
 
 			#debit account update
 			je.append("accounts", {
 				"account": self.credit_account,
 				"debit_in_account_currency": self.income_tax_opening_depreciation_amount,
+				"debit": self.income_tax_opening_depreciation_amount,
 				"reference_type": "Asset",
 				"reference_name": self.name,
-				"cost_center": self.cost_center
+				"cost_center": self.cost_center,
+				"business_activity": "Common"
 				})
 			je.submit()
-	
+	#
 	def make_gl_entries(self):
 		gl_entries = []
 
