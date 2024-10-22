@@ -5,7 +5,7 @@ from frappe.utils import flt
 import frappe
 from datetime import datetime
 from calendar import monthrange
-from frappe.utils import cint
+from frappe.utils import cint, get_last_day, getdate
 def execute(filters=None):
 	columns, data = [], []
 	columns = get_columns(data)
@@ -109,7 +109,8 @@ def get_data(query, filters):
 
 		if str(date.month)== str(filters.get("month")):
 			increment_start_date =start_date.replace(year=cint(filters.get("fiscal_year")))
-			increment_end_date =end_date.replace(year=cint(filters.get("fiscal_year")))
+			increment_end_date = get_last_day(getdate(str(filters.get("fiscal_year")) +'-'+ str(date.month) + '-01'))
+			# increment_end_date =end_date.replace(year=cint(filters.get("fiscal_year")))
 			item = frappe.db.sql("""
 				select
 					ti.from_date as from_date, ti.to_date as to_date, ti.increment as increment, ti.rental_amount as rental_amount
