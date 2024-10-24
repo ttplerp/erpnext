@@ -86,6 +86,7 @@
   "stock_received_but_not_billed",
   "default_provisional_account",
   "expenses_included_in_valuation",
+  "opening_difference_account",
   "fixed_asset_defaults",
   "accumulated_depreciation_account",
   "depreciation_expense_account",
@@ -968,6 +969,13 @@
    "label": "SWS Debit Account",
    "options": "Account",
    "reqd": 1
+  },
+  {
+   "fieldname": "opening_difference_account",
+   "fieldtype": "Link",
+   "label": "Stock Opening Difference Account",
+   "options": "Account",
+   "reqd": 1
   }
  ],
  "icon": "fa fa-building",
@@ -975,7 +983,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2024-09-06 16:41:28.793397",
+ "modified": "2024-10-24 16:04:27.053759",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",

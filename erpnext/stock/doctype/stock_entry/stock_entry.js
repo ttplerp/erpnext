@@ -14,6 +14,17 @@ frappe.ui.form.on('Stock Entry', {
 				return (doc.qty <= doc.actual_qty) ? 'green' : 'orange';
 			}
 		});
+		
+		frm.set_query('issue_to_employee','items', function () {
+			return {
+				filters: {
+					'branch': frm.doc.branch
+				}
+			}
+		});
+
+
+
 
 		frm.set_query('work_order', function () {
 			return {
@@ -120,6 +131,8 @@ frappe.ui.form.on('Stock Entry', {
 		attach_bom_items(frm.doc.bom_no);
 	},
 
+
+
 	item_group: function(frm){
 		frm.fields_dict["items"].grid.get_field("item_code").get_query = function (doc) {
 			return {
@@ -180,6 +193,12 @@ frappe.ui.form.on('Stock Entry', {
 
 	refresh: function (frm) {
 		frm.events.create_custom_buttons(frm)
+		frm.add_custom_button(__("Get Item Details"), () => {
+			frappe.call({
+				method: "validate_item",
+				doc: frm.doc
+			})
+		}, __("Validate"));
 		if (!frm.doc.docstatus) {
 			frm.trigger('validate_purpose_consumption');
 			frm.add_custom_button(__('Material Request'), function () {
@@ -350,7 +369,6 @@ frappe.ui.form.on('Stock Entry', {
 			frm.set_value("status", "Draft");
 			return;
 		}
-
 		if (frm.doc.purpose == "Material Transfer" && frm.doc.from_warehouse && frm.doc.to_warehouse && frm.doc.docstatus === 0) {
 			frm.page.clear_primary_action();
 			frappe.call({
@@ -524,6 +542,10 @@ frappe.ui.form.on('Stock Entry', {
 				}
 			});
 		}
+	},
+
+	get_branch: function(frm, cdt, cdn){
+		
 	},
 
 	get_warehouse_details: function (frm, cdt, cdn) {
@@ -736,6 +758,13 @@ cur_frm.fields_dict['items'].grid.get_field('equipment').get_query = function(fr
     };
 }
 frappe.ui.form.on('Stock Entry Detail', {
+
+	
+
+	issue_to_employee: function(frm, cdt, cdn){
+		console.log(cdn)
+	},
+	
 	qty: function (frm, cdt, cdn) {
 		frm.events.set_serial_no(frm, cdt, cdn, () => {
 			frm.events.set_basic_rate(frm, cdt, cdn);
@@ -746,6 +775,8 @@ frappe.ui.form.on('Stock Entry Detail', {
 			frm.refresh_field("items")
 		}
 	},
+
+	
 
 	conversion_factor: function (frm, cdt, cdn) {
 		frm.events.set_basic_rate(frm, cdt, cdn);
@@ -762,6 +793,7 @@ frappe.ui.form.on('Stock Entry Detail', {
 			frappe.model.set_value(cdt, cdn, "allow_zero_valuation_rate", 0);
 		}
 	},
+
 	received_qty: function (frm, cdt, cdn) {
 		var d = locals[cdt][cdn];
 		let diff_qty = flt(d.received_qty) - flt(d.qty);
@@ -1163,6 +1195,7 @@ erpnext.stock.StockEntry = class StockEntry extends erpnext.stock.StockControlle
 		erpnext.utils.get_party_details(this.frm, null, null, null);
 	}
 };
+
 
 erpnext.stock.select_batch_and_serial_no = (frm, item) => {
 	let get_warehouse_type_and_name = (item) => {
