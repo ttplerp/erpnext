@@ -24,9 +24,10 @@ def execute(filters=None):
 	items = get_items(filters)
 	sl_entries = get_stock_ledger_entries(filters, items)
 	item_details = get_item_details(items, sl_entries, include_uom)
+	#frappe.throw(str(sl_entries))
 	opening_row = get_opening_balance(filters, columns, sl_entries)
 	precision = cint(frappe.db.get_single_value("System Settings", "float_precision"))
-
+	
 	data = []
 	conversion_factors = []
 	if opening_row:
@@ -39,7 +40,13 @@ def execute(filters=None):
 	inventory_dimension_filters_applied = check_inventory_dimension_filters_applied(filters)
 
 	for sle in sl_entries:
+		#This was done since the transaction had old ones which has item code in 6 digits while the current one has item code in 7 digits
+		if len(sle.item_code)<7:
+			continue
+
+
 		item_detail = item_details[sle.item_code]
+		
 
 		sle.update(item_detail)
 

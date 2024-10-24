@@ -322,7 +322,7 @@ class StockEntry(StockController):
 
 			amount += additional_cost_amt
 			frappe.db.set_value("Project", self.project, "total_consumed_material_cost", amount)
-
+	@frappe.whitelist()
 	def validate_item(self):
 		stock_items = self.get_stock_items()
 		serialized_items = self.get_serialized_items()
@@ -432,13 +432,14 @@ class StockEntry(StockController):
 			return
 
 		for d in self.get("items"):
+			if self.is_opening == "Yes":
+				d.expense_account = frappe.db.get_value("Company", self.company, "opening_difference_account")
 			if not d.expense_account:
 				frappe.throw(
 					_(
 						"Please enter <b>Difference Account</b> or set default <b>Stock Adjustment Account</b> for company {0}"
 					).format(frappe.bold(self.company))
 				)
-
 			elif (
 				self.is_opening == "Yes"
 				and frappe.db.get_value("Account", d.expense_account, "report_type") == "Profit and Loss"
