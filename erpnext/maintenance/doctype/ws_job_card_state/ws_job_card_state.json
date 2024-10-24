@@ -38,14 +38,14 @@
    "fieldname": "time_taken",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Time Taken(Hrs)",
+   "label": "Time Taken",
    "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-10-21 09:00:35.569532",
+ "modified": "2024-10-24 22:39:42.357080",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "WS_Job Card State",
