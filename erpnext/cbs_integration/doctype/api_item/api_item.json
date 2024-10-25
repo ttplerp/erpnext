@@ -1,0 +1,59 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-10-21 14:39:29.939730",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "api_detail",
+  "cb_01",
+  "description",
+  "cb_02",
+  "deffault"
+ ],
+ "fields": [
+  {
+   "fieldname": "api_detail",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "API Detail",
+   "options": "API Detail",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_01",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Description",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_02",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "deffault",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Default Posting API"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-10-21 14:44:35.318396",
+ "modified_by": "Administrator",
+ "module": "CBS Integration",
+ "name": "API Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

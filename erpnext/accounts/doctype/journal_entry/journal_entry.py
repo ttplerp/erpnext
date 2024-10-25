@@ -617,15 +617,20 @@ class JournalEntry(AccountsController):
 		casa_cr_count, party_dr_count = 0, 0
 		reference_type, reference_name = None, None
 		ignore_party_cr = 0
+		gis = sws = pf = sss = semso = loan = st = swl = hc = 0
 		for a in self.get("accounts"):
-			if flt(a.debit) and a.party_type and a.party:
+			if flt(a.debit,2) and a.party_type and a.party:
 				# get Party Debit list
 				party_dr_list.append(frappe._dict(
-					{'name': a.name, 'party_type': a.party_type, 'party': a.party, 'amount': flt(a.debit)}))
-				party_dr_amount += flt(a.debit)
+					{'name': a.name, 'party_type': a.party_type, 'party': a.party, 'amount': flt(a.debit,2)}))
+				party_dr_amount += flt(a.debit,2)
 				party_dr_count += 1
-			elif flt(a.credit):
+			elif flt(a.credit,2):
 				# get CASA Credit list
+				payroll = frappe.db.sql("""
+								select 1 from `tabJournal Entry Account` where parent = '{}'
+								and reference_type = 'Payroll Entry' group by parent
+								""".format(self.name))
 				account = frappe.db.get('Account', a.account)
 				if account.gl_type == 'CASA':
 					if self.voucher_type == "Bank Entry" and account.cheque_required and not (self.cheque_no and self.cheque_date):
@@ -633,9 +638,14 @@ class JournalEntry(AccountsController):
 							frappe.get_desk_link('Account', a.account)))
 					elif account.cheque_required:
 						ignore_party_cr = 1
-					casa_cr_list.append(frappe._dict({'name': a.name, 'account': a.account, 'amount': flt(a.credit), 'reference_type': a.reference_type,
+					casa_cr_list.append(frappe._dict({'name': a.name, 'account': a.account, 'amount': flt(a.credit,2), 'reference_type': a.reference_type, "party_type": a.party_type, "party": a.party,
 										'reference_name': a.reference_name, 'salary_component': a.salary_component, 'cost_center': a.cost_center, 'business_activity': a.business_activity}))
-					casa_cr_amount += flt(a.credit)
+					casa_cr_amount += flt(a.credit,2)
+					casa_cr_count += 1
+				elif len(payroll) > 0 and (account.gl_type == "GL" or account.gl_type == None or account.gl_type == "") and self.voucher_type == "Journal Entry":
+					casa_cr_list.append(frappe._dict({'name': a.name, 'account': a.account, 'amount': flt(a.credit,2), 'reference_type': a.reference_type, "party_type": a.party_type, "party": a.party,
+										'reference_name': a.reference_name, 'salary_component': a.salary_component, 'cost_center': a.cost_center, 'business_activity': a.business_activity}))
+					casa_cr_amount += flt(a.credit,2)
 					casa_cr_count += 1
 			if a.reference_type and not reference_type:
 				reference_type = a.reference_type
@@ -657,7 +667,7 @@ class JournalEntry(AccountsController):
 						party_dr_list = []
 						party_dr_amount, party_dr_count = 0, 0
 						if c.salary_component in ("Net Pay", "Financial Institution Loan", "Security Deposit", 
-													"PBVA", "Leave Travel Concession", "Bonus"):
+													"PBVI", "Leave Travel Concession", "Bonus", "Salary Advance Deductions", "FI Loan Own", "Financial Institution Loan(Others)", "Salary Saving Scheme", "SWS", "GIS", "Salary Tax", "Semso", "PF", "SWL", "Health Contribution") and self.voucher_type == "Journal Entry":
 							''' get employee wise net pay details '''
 							details = None
 							if c.salary_component == "PBVA":
@@ -666,37 +676,94 @@ class JournalEntry(AccountsController):
 								details = get_bonus_emp_details(c.reference_name)
 							elif c.salary_component == "Leave Travel Concession":
 								details = get_ltc_emp_details(c.reference_name)
+							elif c.salary_component == "GIS":
+								if gis == 0:
+									details = get_gis_emp_details(payroll_entry=reference_name, salary_component=c.salary_component)
+									gis = 1
+							elif c.salary_component == "SWS":
+								if sws == 0:
+									details = get_sws_emp_details(payroll_entry=reference_name, salary_component=c.salary_component)
+									sws = 1
+							elif c.salary_component == "SWL":
+								if swl == 0:
+									details = get_swl_emp_details(payroll_entry=reference_name, salary_component=c.salary_component)
+									swl = 1
+							elif c.salary_component == "PF":
+								if pf == 0:
+									details = get_pf_emp_details(payroll_entry=reference_name, salary_component=c.salary_component)
+									pf = 1
+							elif c.salary_component == "Salary Saving Scheme":
+								if sss == 0:
+									details = get_sss_emp_details(payroll_entry=reference_name, salary_component=c.salary_component)
+									sss = 1
+							elif c.salary_component == "Health Contribution":
+								if hc == 0:
+									details = get_hc_emp_details(payroll_entry=reference_name, salary_component=c.salary_component)
+									hc = 1
+							elif c.salary_component == "Semso":
+								if semso == 0:
+									details = get_semso_emp_details(payroll_entry=reference_name, salary_component=c.salary_component)
+									semso = 1
+							elif c.salary_component == "Salary Tax":
+								if st == 0:
+									details = get_tax_emp_details(payroll_entry=reference_name, salary_component=c.salary_component)
+									st = 1
+							elif c.salary_component == "Financial Institution Loan(Others)":
+								if loan == 0:
+									details = get_loan_emp_details(payroll_entry=reference_name, salary_component=c.salary_component)
+									loan = 1
 							else:
 								details = get_emp_component_amount(
-									payroll_entry=reference_name, salary_component=c.salary_component)
+									payroll_entry=reference_name, salary_component=c.salary_component, party=c.party)
 	
-							if not details and c.amount:
+							if not details and c.amount and c.salary_component not in ("GIS", "PF", "SWS", "Salary Saving Scheme", "Salary Advance Deductions", "Net Pay", "Financial Institution Loan(Others)", "FI Loan Own", "Salary Tax", "Semso", "Health Contribution", "SWL"):
 								frappe.throw(_("Could not find Net Pay details for {}").format(
 									frappe.get_desk_link(reference_type, reference_name)))
-							for d in details:
-								if not d.account_number:
-									frappe.throw(_("{} A/C# missing for {}").format("Bank" if c.salary_component ==
-													"Net Pay" else c.salary_component, frappe.get_desk_link("Employee", d.employee)))
-								
-								if flt(d.amount):
-									party_dr_list.append(frappe._dict({'party_type': 'Employee', 'party': d.employee, 'amount': flt(d.amount),
-																		'remarks': d.remarks, 'bank_name': d.bank_name, 'account_number': d.account_number, 'recovery_account': d.recovery_account}))
+							if details:
+								for d in details:
+									if not d.account_number and c.salary_component not in ("GIS", "PF", "SWS", "Salary Saving Scheme", "Salary Tax", "Salary Advance Deductions", "Semso", "Financial Institution Loan(Others)", "FI Loan Own", "Semso", "SWL", "Health Contribution"):
+										frappe.throw(_("{} A/C# missing for {}").format("Bank" if c.salary_component ==
+														"Net Pay" else c.salary_component, frappe.get_desk_link("Employee", d.employee)))
 									
-									party_dr_amount += flt(d.amount)
-									party_dr_count += 1
-	
-							if flt(party_dr_amount, 2) != flt(c.amount):
-								frappe.throw(_("Total <b>{}({})</b> does not match with Total Credit Amount({}) {}").format(
-									c.salary_component, party_dr_amount, c.amount, frappe.get_desk_link(reference_type, reference_name)))
-							else:
-								for p in party_dr_list:
-									partylist_json.setdefault(c.name, {}).setdefault(p.party_type, []).append({'party_type': p.party_type,
-																												'party': p.party, 'amount': p.amount, 'remarks': p.remarks, 'bank_name': p.bank_name, 'account_number': p.account_number, 'recovery_account': p.recovery_account})
+									if flt(d.amount):
+										if flt(str(d.amount).split(".")[1]) == 0:
+											d.amount = str(d.amount).split(".")[0]+".00"
+										else:
+											d.amount = flt(d.amount,2)
+										party_dr_list.append(frappe._dict({'party_type': 'Employee', 'party': d.employee, 'amount': d.amount,
+																			'remarks': d.remarks, 'bank_name': d.bank_name, 'account_number': d.account_number, 'branch': d.branch, 'salary_component': d.salary_component, 'recovery_account': d.recovery_account}))
+										
+										party_dr_amount += flt(d.amount,2)
+										party_dr_count += 1
+								if c.salary_component not in ("GIS", "SWS", "PF", "Salary Saving Scheme", "Financial Institution Loan(Others)", "Salary Advance Deductions", "Salary Tax", "SWL", "Semso", "Health Contribution"):
+									if flt(party_dr_amount, 2) != flt(c.amount,2):
+										frappe.throw(_("Total <b>{}({})</b> does not match with Total Credit Amount({}) {}").format(
+											c.salary_component, party_dr_amount, flt(c.amount,2), frappe.get_desk_link(reference_type, reference_name)))
+									else:
+										for p in party_dr_list:
+											if flt(str(p.amount).split(".")[1]) == 0:
+												p.amount = str(p.amount).split(".")[0]+".00"
+											else:
+												p.amount = flt(p.amount,2)
+											partylist_json.setdefault(c.name, {}).setdefault(p.party_type, []).append({'party_type': p.party_type,
+                                                                                      'party': p.party, 'amount': flt(p.amount,2), 'remarks': p.remarks, 'bank_name': p.bank_name, 'branch': p.branch, 'salary_component': p.salary_component, 'account_number': p.account_number, 'recovery_account': p.recovery_account})
+								else:
+									for p in party_dr_list:
+										if flt(str(p.amount).split(".")[1]) == 0:
+											p.amount = str(p.amount).split(".")[0]+".00"
+										else:
+											p.amount = flt(p.amount,2)
+										partylist_json.setdefault(c.name, {}).setdefault(p.party_type, []).append({'party_type': p.party_type,
+																					'party': p.party, 'amount': flt(p.amount,2), 'remarks': p.remarks, 'bank_name': p.bank_name, 'branch': p.branch, 'salary_component': p.salary_component, 'account_number': p.account_number, 'recovery_account': p.recovery_account})
 			else:
 				frappe.throw(
 					_("CBS Integration for <b>{}</b> payment is underway").format(reference_type))
 		elif party_dr_list and casa_cr_list:
 			'''party details required only in case of a CASA gl involvement'''
+			if flt(str(casa_cr_list[0].amount).split(".")[1]) == 0:
+				casa_cr_list[0].amount = str(casa_cr_list[0].amount).split(".")[0]+".00"
+			else:
+				casa_cr_list[0].amount = flt(casa_cr_list[0].amount,2)
 			if casa_cr_count > 1:
 				frappe.throw(
 					_("Multiple CASA credits not permitted in single transaction"))

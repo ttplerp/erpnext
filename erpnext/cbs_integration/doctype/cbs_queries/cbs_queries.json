@@ -1,0 +1,52 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:query_id",
+ "creation": "2024-10-21 14:32:38.127716",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "query_id",
+  "description",
+  "query"
+ ],
+ "fields": [
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "query_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Query ID",
+   "set_only_once": 1,
+   "unique": 1
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Description"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "query",
+   "fieldtype": "Code",
+   "in_list_view": 1,
+   "label": "Query"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-10-21 14:32:57.712556",
+ "modified_by": "Administrator",
+ "module": "CBS Integration",
+ "name": "CBS Queries",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
