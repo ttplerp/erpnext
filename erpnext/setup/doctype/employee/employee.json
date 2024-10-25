@@ -98,6 +98,7 @@
   "bank_branch",
   "bank_account_type",
   "bank_ac_no",
+  "salary_advance_account",
   "cb_50",
   "tpn_number",
   "pf_number",
@@ -1028,13 +1029,18 @@
    "ignore_user_permissions": 1,
    "label": "Scanned Signature",
    "permlevel": 1
+  },
+  {
+   "fieldname": "salary_advance_account",
+   "fieldtype": "Data",
+   "label": "Salary Advance Account"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2024-09-25 12:42:37.503654",
+ "modified": "2024-10-21 12:55:35.345496",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",

@@ -89,11 +89,15 @@ def upload(cbs_entry, publish_progress=False):
 	posting_date = get_datetime(cbs_entry.entry_time)
 	# try:
 	# generate_file(cbs_entry, posting_date, publish_progress)
-	post_transaction(cbs_entry, posting_date = posting_date, publish_progress=True)
+	message = post_transaction(cbs_entry, posting_date = posting_date, publish_progress=True)
 	show_progress(publish_progress, 100, 'CBS posting progress...')
 	# show_progress(publish_progress, 100, 'File uploaded successfully...', 'Generate & Upload progress...')
 	# show_progress(publish_progress, 99, 'File uploaded successfully...', 'Upload Successful')
-	frappe.msgprint(_("Data posted to CBS successfully..."), alert=True)
+	if message == "Success":
+		message_display = "Data posted to CBS successfully..."
+	else:
+		message_display = "Data posting to CBS failed"
+	frappe.msgprint(_(message_display), alert=True)
 	# except Exception as e:
 	# 	traceback.print_exc()
 	# 	frappe.throw("Here "+str(e))
@@ -103,7 +107,8 @@ def upload(cbs_entry, publish_progress=False):
 	# 	# cbs_entry.db_set('workflow_state', 'Failed')
 	# 	cbs_entry.db_set('error', traceback.format_exc())
 	# 	show_progress(publish_progress, 99, str(e), 'Upload Failed')
-	frappe.throw("here")
+	# frappe.throw("here")
+	cbs_entry.save()
 	cbs_entry.reload()
 
 def get_gl_type_map():
@@ -112,7 +117,7 @@ def get_gl_type_map():
 		'GL': {'DR' : '54', 'CR' : '04'}
 	}
 
-def get_data(doctype=None, docname=None, doclist=None, from_date=None, to_date=None):
+def get_data(doctype=None, docname=None, doclist=None, from_date=None, to_date=None, transaction_list=None):
 	if doctype and docname:
 		status = {0 : 'Draft', 1 : 'Submitted', 2 : 'Cancelled'}
 		docstatus = frappe.db.get_value(doctype, docname, "docstatus")
@@ -149,8 +154,8 @@ def get_data(doctype=None, docname=None, doclist=None, from_date=None, to_date=N
 def get_gl_entries(doctype, docname, doclist, from_date, to_date):
 	company_branch_code = '09990'
 	cond = get_conditions(doctype, docname, doclist, from_date, to_date)
-	res = frappe.db.sql("""select t1.name gl_name, t1.voucher_type, t1.voucher_no,
-				t1.account, a.account_number, t1.account_currency,
+	res = frappe.db.sql("""select t1.name gl_name, t1.voucher_detail_no, t1.voucher_type, t1.voucher_no,
+				t1.account, a.account_number,t1.account_currency,
 				t1.cost_center,
 				t1.party_type, t1.party,
 				t1.debit, t1.debit_in_account_currency, 
@@ -228,9 +233,10 @@ def get_branch_code(gl_entry):
 def get_formatted_record(gl, gl_type_cd, dr_cr_list, dr_cr, party=None):
 	res = frappe._dict()
 	error = []
-	processing_branch = '9990'
+	processing_branch = '0000'
 	account_number = None
 	amount = 0
+	# frappe.throw(str(gl))/
 	gl_type = str(gl.gl_type)
 	remarks = ""
 	if gl.gl_type == 'CASA':
@@ -270,12 +276,15 @@ def get_formatted_record(gl, gl_type_cd, dr_cr_list, dr_cr, party=None):
 				if bank_details[0] == 'BDBL':
 					account_number = bank_details[1]
 			amount = round(flt(gl.debit if dr_cr == 'DR' else gl.credit),2)			
-		res.update({"gl_entry": gl.gl_name, "voucher_type": gl.voucher_type, "voucher_no": gl.voucher_no, 
+		res.update({"gl_entry": gl.gl_name, "voucher_type": gl.voucher_type, "voucher_no": gl.voucher_no, "voucher_detail_no": gl.voucher_detail_no, "party_type": gl.party_type, "party": gl.party,
 					"account": gl.account, "debit": amount if dr_cr == 'DR' else 0, "credit": amount if dr_cr == 'CR' else 0})
 	else:
 		# validate initiating branch
 		if not gl.branch_code:
 			error.append("Initiating Branch Code is missing")
+		if not str(gl.branch_code).split()[0].isdigit():
+			error.append("Initiating Branch Code should be numeric")
+
 
 		# extract account number
 		account_number = None
@@ -283,24 +292,24 @@ def get_formatted_record(gl, gl_type_cd, dr_cr_list, dr_cr, party=None):
 			error.append("Account Number not found for {}".format(frappe.get_desk_link('Account',gl.account)))
 		else:
 			if str(gl.account_number).split()[0].isdigit():
-				account_number = str(gl.account_number).split()[0]
+				account_number = str(gl.account_number)
 			else:
 				error.append("Account Number should be numeric for {}".format(frappe.get_desk_link('Account',gl.account)))
 		amount = round(flt(dr_cr_list[dr_cr]),2)
-		res.update({"gl_entry": gl.gl_name, "voucher_type": gl.voucher_type, "voucher_no": gl.voucher_no, 
+		res.update({"gl_entry": gl.gl_name, "voucher_type": gl.voucher_type, "voucher_no": gl.voucher_no,  "voucher_detail_no": gl.voucher_detail_no,
 					"account": gl.account, "debit": gl.debit, "credit": gl.credit})
     
 	remarks = str(gl.remarks if gl.remarks else '').strip().strip('\n') + " "+remarks
 	res.update({"gl_type_cd": gl_type_cd or '', "branch_code": gl.branch_code or '', "currency_code": gl.currency_code or '',
 			"account_number": account_number or '', "segment_code": gl.segment_code or '', "amount": amount,
 			"remarks": remarks or '', "processing_branch": processing_branch or '', "posting_date": str(gl.posting_date),
-			"error": ", ".join(error) or '', "gl_type": gl_type or ''})
+			"error": ", ".join(error) or '', "gl_type": gl_type or '', 'party_type': gl.party_type, 'party': gl.party})
 	return res
 
 def show_progress(publish_progress, progress, description, title=None):
 	logger.info(description)
 	if publish_progress:
 		frappe.publish_progress(progress, 
-						title = title if title else _("Downloading data from CBS..."),
+						title = title if title else _("Downloading/Posting data from/to CBS..."),
 						description = description)
 		sleep(1)

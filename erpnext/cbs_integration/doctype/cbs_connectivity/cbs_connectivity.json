@@ -13,7 +13,11 @@
   "username",
   "password",
   "database",
-  "test_connectivity"
+  "test_connectivity",
+  "sb_queries",
+  "queries",
+  "sb_api_settings",
+  "api_item"
  ],
  "fields": [
   {
@@ -49,12 +53,32 @@
    "fieldname": "test_connectivity",
    "fieldtype": "Button",
    "label": "Test Connectivity"
+  },
+  {
+   "fieldname": "sb_queries",
+   "fieldtype": "Section Break",
+   "label": "QUERIES"
+  },
+  {
+   "fieldname": "queries",
+   "fieldtype": "Table",
+   "options": "CBS Queries"
+  },
+  {
+   "fieldname": "sb_api_settings",
+   "fieldtype": "Section Break",
+   "label": "API Settings"
+  },
+  {
+   "fieldname": "api_item",
+   "fieldtype": "Table",
+   "options": "API Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-07-02 14:29:37.327023",
+ "modified": "2024-10-21 14:44:01.211280",
  "modified_by": "Administrator",
  "module": "CBS Integration",
  "name": "CBS Connectivity",

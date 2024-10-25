@@ -376,6 +376,7 @@
    "read_only": 1
   },
   {
+   "default": "Common",
    "fieldname": "business_activity",
    "fieldtype": "Link",
    "label": "Business Activity",
@@ -386,7 +387,7 @@
  "idx": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-09-20 15:43:47.702652",
+ "modified": "2024-10-17 18:13:10.832703",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry Account",
