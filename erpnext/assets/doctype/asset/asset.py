@@ -672,9 +672,9 @@ class Asset(AccountsController):
 			# 		frappe.throw(_("Please set Number of Depreciations Booked"))
 			finance_books = get_item_details(self.item_code, self.asset_category, self.asset_sub_category, self.available_for_use_date)
 			if self.income_tax_opening_depreciation_amount:
-				if not self.number_of_depreciations_booked:
+				if not self.number_of_depreciations_booked or self.number_of_depreciations_booked == 0:
 					self.number_of_depreciations_booked = flt((self.income_tax_opening_depreciation_amount/self.gross_purchase_amount)*finance_books[0]['total_number_of_depreciations'],0)
-					frappe.throw(_("Please set Number of Depreciations Booked"))
+					# frappe.throw(_("Please set Number of Depreciations Booked"))
 			else:
 				self.number_of_depreciations_booked = 0
 
