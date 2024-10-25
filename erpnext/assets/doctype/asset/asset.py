@@ -672,9 +672,9 @@ class Asset(AccountsController):
 			# 		frappe.throw(_("Please set Number of Depreciations Booked"))
 			finance_books = get_item_details(self.item_code, self.asset_category, self.asset_sub_category, self.available_for_use_date)
 			if self.income_tax_opening_depreciation_amount:
-				if not self.number_of_depreciations_booked:
+				if not self.number_of_depreciations_booked or self.number_of_depreciations_booked == 0:
 					self.number_of_depreciations_booked = flt((self.income_tax_opening_depreciation_amount/self.gross_purchase_amount)*finance_books[0]['total_number_of_depreciations'],0)
-					frappe.throw(_("Please set Number of Depreciations Booked"))
+					# frappe.throw(_("Please set Number of Depreciations Booked"))
 			else:
 				self.number_of_depreciations_booked = 0
 
@@ -749,6 +749,8 @@ class Asset(AccountsController):
 				value_after_depreciation = flt(self.get_value_after_depreciation(d.finance_book_id))
 				#accumulated_depreciation = flt(self.opening_accumulated_depreciation)
 				#Change made by Thukten for Asset Value Adjustment
+				if not self.additional_value:
+					self.additional_value = 0
 				accumulated_depreciation = flt(self.gross_purchase_amount + self.additional_value - value_after_depreciation,2)
 				finance_books.append(int(d.finance_book_id))
 			depreciation_amount = flt(d.depreciation_amount, d.precision("depreciation_amount"))
@@ -1145,6 +1147,10 @@ def make_sales_invoice(asset, item_code, company, serial_no=None,cost_center=Non
 	si.company = company
 	si.currency = frappe.get_cached_value("Company", company, "default_currency")
 	loss_disposal_account, gain_disposal_account, depreciation_cost_center = get_disposal_account_and_cost_center(company)
+	if not cost_center:
+		frappe.throw("Please select Cost Center.")
+	asset_doc = frappe.get_doc("Asset", asset)
+	value_after_depreciation = frappe.db.get_value("Asset Finance Book", {"parent": asset}, "value_after_depreciation")
 	si.append(
 		"items",
 		{
@@ -1153,8 +1159,9 @@ def make_sales_invoice(asset, item_code, company, serial_no=None,cost_center=Non
 			"asset": asset,
 			"income_account": gain_disposal_account,
 			"serial_no": serial_no,
-			"cost_center": cost_center if cost_center else depreciation_cost_center,
+			"cost_center": cost_center,
 			"qty": 1,
+			"rate": flt(value_after_depreciation,2)
 		},
 	)
 	si.set_missing_values()
@@ -1189,6 +1196,16 @@ def create_asset_value_adjustment(asset, asset_category, company):
 	asset_value_adjustment.update(
 		{"asset": asset, "company": company, "asset_category": asset_category}
 	)
+	fixed_asset_account = frappe.db.get_value("Asset Category Account", {"parent":frappe.db.get_value("Asset", asset, "asset_category"), "company_name": company}, "fixed_asset_account")
+	credit_account = frappe.db.get_value("Asset Category Account", {"parent":frappe.db.get_value("Asset", asset, "asset_category"), "company_name": company}, "credit_account")
+	if not fixed_asset_account:
+		frappe.throw("Please set Fixed Asset Account in Asset Category {}".format(frappe.get_desk_link("Asset Category", frappe.db.get_value("Asset", asset, "asset_category"))))
+	if not credit_account:
+		frappe.throw("Please set Credit Account in Asset Category {}".format(frappe.get_desk_link("Asset Category", frappe.db.get_value("Asset", asset, "asset_category"))))
+	asset_value_adjustment.fixed_asset_account = fixed_asset_account
+	asset_value_adjustment.credit_account = credit_account
+	asset_value_adjustment.branch = frappe.db.get_value("Asset", asset, "branch")
+	asset_value_adjustment.cost_center = frappe.db.get_value("Asset", asset, "cost_center")
 	return asset_value_adjustment
 
 
