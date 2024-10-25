@@ -196,7 +196,7 @@
   {
    "fieldname": "location",
    "fieldtype": "Link",
-   "hidden": 1,
+   "in_filter": 1,
    "in_list_view": 1,
    "label": "Location",
    "options": "Location"
@@ -272,6 +272,7 @@
    "label": "Is Existing Asset"
   },
   {
+   "allow_on_submit": 1,
    "depends_on": "is_existing_asset",
    "fieldname": "opening_accumulated_depreciation",
    "fieldtype": "Currency",
@@ -710,7 +711,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2024-07-02 15:31:01.692404",
+ "modified": "2024-10-02 16:22:38.115263",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",
