@@ -218,7 +218,6 @@
    "read_only": 1
   },
   {
-   "fetch_from": "employee.cell_number",
    "fieldname": "driver_contact_number",
    "fieldtype": "Link",
    "label": "Driver Contact Number",
@@ -368,7 +367,7 @@
    "link_fieldname": "license_plate"
   }
  ],
- "modified": "2024-10-21 09:22:31.629820",
+ "modified": "2024-10-26 15:51:53.403307",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "WS_Job Card",
