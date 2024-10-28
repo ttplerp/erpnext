@@ -282,7 +282,7 @@
    "options": "Company:company:default_currency"
   },
   {
-   "depends_on": "eval:(doc.is_existing_asset && income_tax_opening_depreciation_amount)",
+   "depends_on": "eval:(doc.is_existing_asset && doc.income_tax_opening_depreciation_amount)",
    "fieldname": "number_of_depreciations_booked",
    "fieldtype": "Int",
    "label": "Number of Depreciations Booked",
@@ -711,7 +711,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2024-10-25 12:40:46.531786",
+ "modified": "2024-10-25 12:51:01.248719",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",
