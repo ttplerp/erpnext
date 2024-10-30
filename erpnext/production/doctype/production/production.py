@@ -12,7 +12,7 @@ class Production(StockController):
 	def __init__(self, *args, **kwargs):
 		super(Production, self).__init__(*args, **kwargs)
 	def validate(self):
-		check_future_date(self.posting_date)
+		# check_future_date(self.posting_date)
 		self.posting_time = self.posting_time
 		self.check_cop()
 		self.validate_data()
@@ -28,6 +28,7 @@ class Production(StockController):
 	def on_submit(self):
 		self.update_stock_ledger()
 		self.make_gl_entries()
+		# self.repost_future_sle_and_gle()
 		# make_auto_production(self)
 		self.make_production_entry()
 		frappe.enqueue(make_auto_production(self), queue="long")
@@ -38,6 +39,7 @@ class Production(StockController):
 		self.delete_production_entry()
 		self.update_stock_ledger()
 		self.make_gl_entries_on_cancel()
+		# self.repost_future_sle_and_gle()
 	
 	def update_stock_ledger(self):
 		sl_entries = []
@@ -47,7 +49,7 @@ class Production(StockController):
 				sl_entries.append(self.get_sl_entries(d, {
 				"warehouse": cstr(d.warehouse),
 					"actual_qty": -1 * flt(d.qty),
-					"incoming_rate": 0
+					"outgoing_rate": flt(d.cop, 2)
 				}))
 
 		for d in self.get('items'):
@@ -85,6 +87,7 @@ class Production(StockController):
 			allow_negative_stock = True
 		else:
 			allow_negative_stock=False
+		# frappe.throw("<pre>{}</pre>".format(frappe.as_json(sl_entries)))
 		self.make_sl_entries(sl_entries,allow_negative_stock)
 	def get_gl_entries(self, warehouse_account):
 		gl_entries = super(Production, self).get_gl_entries(
@@ -122,6 +125,12 @@ class Production(StockController):
 				a.cop = get_cop_rate(a.item_code, self.posting_date, self.cop_list, a.uom)[0].rate		
 			if flt(a.cop) <= 0:
 				frappe.throw("COP Cannot be zero or less")
+		for b in self.raw_materials:
+			if flt(b.cop) <= 0:
+				b.cop = get_cop_rate(b.item_code, self.posting_date, self.cop_list, b.uom)[0].rate		
+			if flt(b.cop) <= 0:
+				frappe.throw("COP Cannot be zero or less for Raw Materials")
+			
 	def validate_data(self):
 		if self.production_type == "Adhoc" and not self.adhoc_production:
 			frappe.throw("Select Adhoc Production to Proceed")

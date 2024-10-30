@@ -83,6 +83,7 @@ frappe.ui.form.on("Production Product Item", {
 frappe.ui.form.on("Production Material Item", {
 	item_code: function(frm, cdt, cdn){
 		update_expense_account(frm, cdt, cdn);
+		get_cop_rate(frm,cdt,cdn)
 	},
     items_add: function(frm, cdt, cdn){
 		frappe.model.set_value(cdt, cdn, "warehouse", frm.doc.warehouse);
@@ -120,6 +121,7 @@ var get_cop_rate = function(frm, cdt, cdn){
 				if (r.message.length > 0){
 					frappe.model.set_value(cdt, cdn, "cop", r.message[0].rate);
 					cur_frm.refresh_field("items");
+					cur_frm.refresh_field("raw_materials");
 				}
 			}
 		})
