@@ -28,7 +28,6 @@ class Production(StockController):
 	def on_submit(self):
 		self.update_stock_ledger()
 		self.make_gl_entries()
-		# self.repost_future_sle_and_gle()
 		# make_auto_production(self)
 		self.make_production_entry()
 		frappe.enqueue(make_auto_production(self), queue="long")
@@ -39,7 +38,6 @@ class Production(StockController):
 		self.delete_production_entry()
 		self.update_stock_ledger()
 		self.make_gl_entries_on_cancel()
-		# self.repost_future_sle_and_gle()
 	
 	def update_stock_ledger(self):
 		sl_entries = []
@@ -49,7 +47,7 @@ class Production(StockController):
 				sl_entries.append(self.get_sl_entries(d, {
 				"warehouse": cstr(d.warehouse),
 					"actual_qty": -1 * flt(d.qty),
-					"outgoing_rate": flt(d.cop, 2)
+					"incoming_rate": 0
 				}))
 
 		for d in self.get('items'):
@@ -87,7 +85,7 @@ class Production(StockController):
 			allow_negative_stock = True
 		else:
 			allow_negative_stock=False
-		# frappe.throw("<pre>{}</pre>".format(frappe.as_json(sl_entries)))
+		
 		self.make_sl_entries(sl_entries,allow_negative_stock)
 	def get_gl_entries(self, warehouse_account):
 		gl_entries = super(Production, self).get_gl_entries(
