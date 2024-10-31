@@ -123,11 +123,6 @@ class Production(StockController):
 				a.cop = get_cop_rate(a.item_code, self.posting_date, self.cop_list, a.uom)[0].rate		
 			if flt(a.cop) <= 0:
 				frappe.throw("COP Cannot be zero or less")
-		for b in self.raw_materials:
-			if flt(b.cop) <= 0:
-				b.cop = get_cop_rate(b.item_code, self.posting_date, self.cop_list, b.uom)[0].rate		
-			if flt(b.cop) <= 0:
-				frappe.throw("COP Cannot be zero or less for Raw Materials")
 			
 	def validate_data(self):
 		if self.production_type == "Adhoc" and not self.adhoc_production:
