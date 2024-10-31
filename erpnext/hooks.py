@@ -591,6 +591,7 @@ permission_query_conditions = {
 	"Fleet Engagement": "erpnext.fleet_management.doctype.fleet_engagement.fleet_engagement.get_permission_query_conditions",
 	"Budget Reappropiation":"erpnext.budget.doctype.budget_reappropiation.budget_reappropiation.get_permission_query_conditions",
 	"eNote": "erpnext.enote.doctype.enote.enote.get_permission_query_conditions",
+	"Target Set Up": "erpnext.pms.doctype.target_set_up.target_set_up.get_permission_query_conditions"
 }
 
 user_privacy_documents = [
