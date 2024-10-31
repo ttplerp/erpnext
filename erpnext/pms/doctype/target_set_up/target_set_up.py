@@ -224,7 +224,7 @@ def get_permission_query_conditions(user):
 
 	if user == "Administrator":      
 		return
-	if "HR User" in user_roles or "HR Manager" in user_roles:       
+	if "HR Master" in user_roles or "HR Manager" in user_roles:       
 		return
 	return """(
 		`tabTarget Set Up`.owner = '{user}'
