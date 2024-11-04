@@ -665,8 +665,9 @@ class CustomWorkflow:
                 frappe.throw("Only {} can Approve this Application".format(self.doc.approver_name))
 
         elif self.new_state.lower() == ("Rejected".lower()):
-            if self.doc.approver != frappe.session.user:
-                frappe.throw("Only {} can Reject this Application".format(self.doc.approver_name))
+            employee_user = frappe.db.get_value("Employee", self.employee, "user_id")
+            if frappe.session.user not in (self.doc_approver, self.doc_owner, employee_user):
+                frappe.throw("Only {}, {}, {} can Reject this Application".format(self.doc_approver, self.doc_owner, employee_user))
         else:
             frappe.throw(_("Invalid Workflow State {}").format(self.doc.workflow_state))
     def performance_evaluation(self):
