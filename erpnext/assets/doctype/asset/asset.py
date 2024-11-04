@@ -222,7 +222,7 @@ class Asset(AccountsController):
 			return
 		if self.is_single_asset:
 			return
-		if self.gross_purchase_amount and self.gross_purchase_amount != self.purchase_receipt_amount and self.purchase_receipt:
+		if self.gross_purchase_amount and self.gross_purchase_amount != self.purchase_receipt_amount and self.purchase_receipt and self.is_existing_asset == 0:
 			error_message = _(
 				"Gross Purchase Amount should be <b>equal</b> to purchase amount of one single Asset."
 			)
@@ -656,7 +656,7 @@ class Asset(AccountsController):
 		)
 
 	def validate_asset_finance_books(self, row):
-		if flt(row.expected_value_after_useful_life) >= flt(self.gross_purchase_amount):
+		if flt(row.expected_value_after_useful_life) > flt(self.gross_purchase_amount):
 			frappe.throw(
 				_("Row {0}: Expected Value After Useful Life must be less than Gross Purchase Amount").format(
 					row.idx
@@ -695,7 +695,7 @@ class Asset(AccountsController):
 			else:
 				self.number_of_depreciations_booked = 0
 
-			if flt(row.total_number_of_depreciations) <= cint(self.number_of_depreciations_booked):
+			if flt(row.total_number_of_depreciations) < cint(self.number_of_depreciations_booked):
 				frappe.throw(
 					_(
 						"Row {0}: Total Number of Depreciations cannot be less than or equal to Number of Depreciations Booked"
