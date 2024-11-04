@@ -2,7 +2,7 @@
  "actions": [],
  "allow_import": 1,
  "allow_rename": 1,
- "autoname": "BDBL.-.{abbr}.-.YY.-.####",
+ "autoname": "BDBL/.{c_abbr}.-.{s_abbr}.-.#####",
  "creation": "2022-01-18 02:26:55.975005",
  "doctype": "DocType",
  "document_type": "Document",
@@ -29,6 +29,8 @@
   "asset_category",
   "asset_sub_category",
   "abbr",
+  "c_abbr",
+  "s_abbr",
   "location",
   "split_from",
   "department",
@@ -689,6 +691,20 @@
    "fieldname": "asset_creation_without_pd",
    "fieldtype": "Check",
    "label": "Asset Creation Without Purchase Detail"
+  },
+  {
+   "fetch_from": "asset_category.abbr",
+   "fieldname": "c_abbr",
+   "fieldtype": "Data",
+   "label": "Asset Category Abbreviation",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "asset_sub_category.abbreviation",
+   "fieldname": "s_abbr",
+   "fieldtype": "Data",
+   "label": "Asset Sub Category Abbreviation",
+   "read_only": 1
   }
  ],
  "idx": 72,
@@ -711,7 +727,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2024-10-25 12:51:01.248719",
+ "modified": "2024-10-31 17:03:51.432148",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",

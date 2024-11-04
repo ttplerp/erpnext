@@ -32,8 +32,25 @@ from erpnext.assets.doctype.asset.depreciation import (
 )
 from erpnext.assets.doctype.asset_category.asset_category import get_asset_category_account
 from erpnext.controllers.accounts_controller import AccountsController
+from frappe.model.naming import make_autoname
 
 class Asset(AccountsController):
+	def autoname(self):
+		if self.old_asset_code:
+			self.name = self.old_asset_code
+			series = frappe.db.sql("""
+                    select current from `tabSeries` where name like '{}' and current is not null
+                    """.format("BDBL/-"+str(self.c_abbr)+"-"+str(self.s_abbr)), as_dict=1)
+			if ffrappe.db.exists("Series", {"name": "BDBL/"+str(self.c_abbr)+"-"+str(self.s_abbr)+"-"}):
+				if flt(series[0].current) == 0:
+					frappe.db.sql("""
+					update `tabSeries` set current = {} where name = '{}'
+					""".format(str(self.old_asset_code).split("-")[2], "BDBL/-"+str(self.c_abbr)+"-"+str(self.s_abbr)+"-"))
+			else:
+				frappe.db.sql("""
+                  INSERT into `tabSeries` (name, current) values('{}', {})
+                  """.format("BDBL/"+str(self.c_abbr)+"-"+str(self.s_abbr)+"-", str(self.old_asset_code).split("-")[2]))
+
 	def validate(self):
 		self.validate_asset_values()
 		self.validate_asset_and_reference()
@@ -205,7 +222,7 @@ class Asset(AccountsController):
 			return
 		if self.is_single_asset:
 			return
-		if self.gross_purchase_amount and self.gross_purchase_amount != self.purchase_receipt_amount:
+		if self.gross_purchase_amount and self.gross_purchase_amount != self.purchase_receipt_amount and self.purchase_receipt and self.is_existing_asset == 0:
 			error_message = _(
 				"Gross Purchase Amount should be <b>equal</b> to purchase amount of one single Asset."
 			)
@@ -639,7 +656,7 @@ class Asset(AccountsController):
 		)
 
 	def validate_asset_finance_books(self, row):
-		if flt(row.expected_value_after_useful_life) >= flt(self.gross_purchase_amount):
+		if flt(row.expected_value_after_useful_life) > flt(self.gross_purchase_amount):
 			frappe.throw(
 				_("Row {0}: Expected Value After Useful Life must be less than Gross Purchase Amount").format(
 					row.idx
@@ -678,7 +695,7 @@ class Asset(AccountsController):
 			else:
 				self.number_of_depreciations_booked = 0
 
-			if flt(row.total_number_of_depreciations) <= cint(self.number_of_depreciations_booked):
+			if flt(row.total_number_of_depreciations) < cint(self.number_of_depreciations_booked):
 				frappe.throw(
 					_(
 						"Row {0}: Total Number of Depreciations cannot be less than or equal to Number of Depreciations Booked"
