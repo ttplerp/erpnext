@@ -26,8 +26,19 @@ frappe.query_reports["Upload Report"] = {
 			if(!checked_rows.length){
 				frappe.throw(__("Please select the transactions in order to create CBS Entry"))
 			}
-			
-			console.log("checked : " + checked_rows);
+			frappe.call({
+				method: "erpnext.cbs_integration.report.upload_report.upload_report.check_against_linked_docs",
+				args: {"transaction_list": checked_rows},
+				callback: function(r){
+					if(r.message){
+						r.message.forEach(item => {
+							checked_rows.push(item)
+						});
+					}
+				}
+
+			})
+			// console.log("checked : " + checked_rows);
 
 			frappe.prompt({
 				fieldtype: 'Data',

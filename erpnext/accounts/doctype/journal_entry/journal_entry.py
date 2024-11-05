@@ -25,7 +25,7 @@ from erpnext.accounts.utils import (
 )
 from erpnext.controllers.accounts_controller import AccountsController
 from frappe.model.naming import make_autoname
-from hrms.payroll.doctype.payroll_entry.payroll_entry import get_emp_component_amount
+from hrms.payroll.doctype.payroll_entry.payroll_entry import get_emp_component_amount, get_gis_emp_details, get_sws_emp_details, get_pf_emp_details, get_sss_emp_details, get_loan_emp_details, get_semso_emp_details, get_tax_emp_details, get_swl_emp_details, get_hc_emp_details
 from frappe.model.mapper import get_mapped_doc
 
 
@@ -485,7 +485,7 @@ class JournalEntry(AccountsController):
 				against_entries = frappe.db.sql(
 					"""select * from `tabJournal Entry Account`
 					where account = %s and docstatus = 1 and parent = %s
-					and (reference_type is null or reference_type in ('', 'Sales Order', 'Purchase Order', 'Travel Claim', 'Journal Entry'))
+					and (reference_type is null or reference_type in ('', 'Sales Order', 'Purchase Order', 'Travel Claim', 'Journal Entry', 'Leave Encashment'))
 					""",
 					(d.account, d.reference_name),
 					as_dict=True,
@@ -868,6 +868,7 @@ class JournalEntry(AccountsController):
 	def validate_debit_credit_amount(self):
 		for d in self.get("accounts"):
 			if not flt(d.debit) and not flt(d.credit):
+				frappe.throw("Account: "+str(d.account)+" \n\n Cost Center: "+str(d.cost_center)+" \n\n Party"+str(d.party)+" \n\n Title: "+str(self.title))
 				frappe.throw(_("Row {0}: Both Debit and Credit values cannot be zero").format(d.idx))
 
 	def validate_total_debit_and_credit(self):
@@ -1130,7 +1131,7 @@ class JournalEntry(AccountsController):
 								"against_voucher": d.reference_name,
 								"partylist_json": json.dumps(partylist_json.get(d.name)) if partylist_json.get(d.name) else None,
 								"remarks": remarks,
-								"voucher_detail_no": d.reference_detail_no,
+								"voucher_detail_no": d.reference_detail_no if d.reference_detail_no else d.name,
 								"cost_center": d.cost_center,
 								"project": d.project,
 								"finance_book": self.finance_book,

@@ -53,6 +53,12 @@ def get_columns(filters):
 			"width": 100
 		},
 		{
+			"fieldname": "journal_entry_type",
+			"label": _("Journal Entry Type"),
+			"fieldtype": "Data",
+			"width": 100
+		},
+		{
 			"fieldname": "account",
 			"label": _("Account"),
 			"fieldtype": "Link",
@@ -129,4 +135,30 @@ def get_columns(filters):
 		},
 	]
 	return columns
+
+@frappe.whitelist()
+def check_against_linked_docs(transaction_list):
+	list_transactions = []
+	transaction_list = json.loads(transaction_list)
+	# frappe.throw(str(transaction_list))
+	for trnx in set(transaction_list):
+		trn = trnx.split("||")
+		voucher_type = trn[0]
+		voucher_no = trn[1]
+		cbs_doctypes = []
+		for doc in frappe.db.get_all("Transaction Mapping", filters={"transaction_type": ["not in", ("IGNORE",  "", None)]}, fields=["name"]):
+			cbs_doctypes.append(doc.name)
+		if frappe.db.exists("GL Entry", {"voucher_no": voucher_no, "is_cancelled": 0}):
+			#Checking Forward Linked Transactions-----
+			for f_link in frappe.db.get_all("GL Entry", filters={"voucher_type": voucher_type, "is_cancelled": 0, "against_voucher": voucher_no, "voucher_no": ["!=", voucher_no]}, fields=["voucher_type", "voucher_no"], group_by="voucher_no"):
+				if not frappe.db.exists("CBS Entry Upload", {"voucher_no": f_link.voucher_no}) and f_link.voucher_type in cbs_doctypes:
+					list_transactions.append(f_link.voucher_type+"||"+f_link.voucher_no)
+			#Checking Backward Linked Transactions----
+			for b_link in frappe.db.get_all("GL Entry", filters={"voucher_type": voucher_type, "is_cancelled": 0, "voucher_no": voucher_no, "against_voucher": ["!=", voucher_no]}, fields=["against_voucher_type", "against_voucher"], group_by="against_voucher"):
+				if not frappe.db.exists("CBS Entry Upload", {"voucher_no": b_link.against_voucher}) and (b_link.against_voucher_type in cbs_doctypes) and frappe.db.exists("GL Entry", {"voucher_no": b_link.against_voucher}):
+					list_transactions.append(b_link.against_voucher_type+"||"+b_link.against_voucher)
+				# if frappe.db.exists("GL Entry", {"voucher_no": b_link.against_voucher}):
+					
+	return list_transactions
+
 
