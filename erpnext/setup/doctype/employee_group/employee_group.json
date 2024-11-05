@@ -19,6 +19,7 @@
   "sb_salary_advance",
   "salary_advance_type",
   "salary_advance_max_months",
+  "limit_multiplier",
   "column_break_12",
   "salary_advance_limit",
   "no_of_installment_for_salary",
@@ -214,10 +215,15 @@
    "fieldtype": "Table",
    "label": "Leave Credits",
    "options": "Employee Group Item"
+  },
+  {
+   "fieldname": "limit_multiplier",
+   "fieldtype": "Data",
+   "label": "Limit Multiplier"
   }
  ],
  "links": [],
- "modified": "2022-11-08 12:11:55.638882",
+ "modified": "2024-10-25 17:33:50.945502",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee Group",
