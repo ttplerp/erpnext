@@ -413,13 +413,15 @@
    "label": "Salary Mode",
    "oldfieldname": "salary_mode",
    "oldfieldtype": "Select",
-   "options": "\nBank\nCash\nCheque"
+   "options": "\nBank\nCash\nCheque",
+   "reqd": 1
   },
   {
    "depends_on": "eval:doc.salary_mode == 'Bank'",
    "fieldname": "bank_name",
    "fieldtype": "Link",
-   "label": "Financial Institution",
+   "label": "Bank Name",
+   "mandatory_depends_on": "eval:doc.salary_mode == 'Bank'",
    "oldfieldname": "bank_name",
    "oldfieldtype": "Link",
    "options": "Financial Institution"
@@ -429,6 +431,7 @@
    "fieldname": "bank_ac_no",
    "fieldtype": "Data",
    "label": "Bank A/C No.",
+   "mandatory_depends_on": "eval:doc.salary_mode == 'Bank'",
    "oldfieldname": "bank_ac_no",
    "oldfieldtype": "Data"
   },
@@ -879,15 +882,19 @@
    "read_only": 1
   },
   {
+   "depends_on": "eval:doc.salary_mode == 'Bank'",
    "fieldname": "bank_branch",
    "fieldtype": "Link",
-   "label": "Financial Institution Branch",
+   "label": "Bank Branch",
+   "mandatory_depends_on": "eval:doc.salary_mode == 'Bank'",
    "options": "Financial Institution Branch"
   },
   {
+   "depends_on": "eval:doc.salary_mode == 'Bank'",
    "fieldname": "bank_account_type",
    "fieldtype": "Link",
    "label": "Bank Account Type",
+   "mandatory_depends_on": "eval:doc.salary_mode == 'Bank'",
    "options": "Bank Account Type"
   },
   {
@@ -1099,7 +1106,7 @@
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-11-09 12:37:01.995115",
+ "modified": "2024-11-05 17:05:33.165927",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",

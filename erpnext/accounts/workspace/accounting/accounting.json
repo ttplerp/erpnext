@@ -1,11 +1,11 @@
 {
  "charts": [
   {
-   "chart_name": "Profit and Loss",
+   "chart_name": "Summary of Comprehensive Income Statement",
    "label": "Profit and Loss"
   }
  ],
- "content": "[{\"type\":\"chart\",\"data\":{\"chart_name\":\"Profit and Loss\",\"col\":12}},{\"type\":\"spacer\",\"data\":{\"col\":12}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Chart of Accounts\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Invoice\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Purchase Invoice\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Journal Entry\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Payment Entry\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Accounts Receivable\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"General Ledger\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Trial Balance\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":3}},{\"type\":\"spacer\",\"data\":{\"col\":12}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Accounting Masters\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Transaction &amp; General Ledger\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Taxes\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Trade/Accounts Receivable\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Accounts Payable\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Bank Statement\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Financial Statements\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Multi Currency\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Subscription Management\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Share Management\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Opening and Closing\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Profitability\",\"col\":4}}]",
+ "content": "[{\"id\":\"7UUWfD6Tqk\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Profit and Loss\",\"col\":12}},{\"id\":\"XsXUh2qYmf\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"RwE7vCAvIF\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"id\":\"ga7F8Vfu0i\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Chart of Accounts\",\"col\":3}},{\"id\":\"xor26iNrc-\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Invoice\",\"col\":3}},{\"id\":\"f4n4I-Ut6S\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Purchase Invoice\",\"col\":3}},{\"id\":\"THKN-fwtqz\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Journal Entry\",\"col\":3}},{\"id\":\"8gtKVxJJnc\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Payment Entry\",\"col\":3}},{\"id\":\"C9CIb9lkhi\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Accounts Receivable\",\"col\":3}},{\"id\":\"MB_j_yuaXb\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"General Ledger\",\"col\":3}},{\"id\":\"c5T5j30bo1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Trial Balance\",\"col\":3}},{\"id\":\"ZY3mp45Gzq\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":3}},{\"id\":\"RGQS361oxN\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"22NlT40aEX\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"id\":\"cu6L2QEk1c\",\"type\":\"card\",\"data\":{\"card_name\":\"Accounting Masters\",\"col\":4}},{\"id\":\"NXZg2GnPMW\",\"type\":\"card\",\"data\":{\"card_name\":\"Transaction &amp; General Ledger\",\"col\":4}},{\"id\":\"9DhN-FDhCr\",\"type\":\"card\",\"data\":{\"card_name\":\"Taxes\",\"col\":4}},{\"id\":\"pfNY9-ulew\",\"type\":\"card\",\"data\":{\"card_name\":\"Trade/Accounts Receivable\",\"col\":4}},{\"id\":\"2btMsMIRrQ\",\"type\":\"card\",\"data\":{\"card_name\":\"Accounts Payable\",\"col\":4}},{\"id\":\"hlwvdgD_PK\",\"type\":\"card\",\"data\":{\"card_name\":\"Bank Statement\",\"col\":4}},{\"id\":\"0oVZXjd9HP\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}},{\"id\":\"wzK5JHAJ9w\",\"type\":\"card\",\"data\":{\"card_name\":\"Financial Statements\",\"col\":4}},{\"id\":\"PT4J3HtV3b\",\"type\":\"card\",\"data\":{\"card_name\":\"Multi Currency\",\"col\":4}},{\"id\":\"YqX7Tw80Bp\",\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}},{\"id\":\"M2SH91IEEx\",\"type\":\"card\",\"data\":{\"card_name\":\"Opening and Closing\",\"col\":4}},{\"id\":\"07rh9ru6XK\",\"type\":\"card\",\"data\":{\"card_name\":\"Profitability\",\"col\":4}}]",
  "creation": "2020-03-02 15:41:59.515192",
  "custom_blocks": [],
  "docstatus": 0,
@@ -258,47 +258,6 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Multi Currency",
-   "link_count": 0,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Currency",
-   "link_count": 0,
-   "link_to": "Currency",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Currency Exchange",
-   "link_count": 0,
-   "link_to": "Currency Exchange",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Exchange Rate Revaluation",
-   "link_count": 0,
-   "link_to": "Exchange Rate Revaluation",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Settings",
    "link_count": 0,
    "onboard": 0,
@@ -336,14 +295,6 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Subscription Management",
-   "link_count": 0,
-   "onboard": 0,
-   "type": "Card Break"
   },
   {
    "dependencies": "",
@@ -583,58 +534,6 @@
    "link_to": "TDS Certificate",
    "link_type": "Report",
    "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Share Management",
-   "link_count": 4,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Shareholder",
-   "link_count": 0,
-   "link_to": "Shareholder",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Share Transfer",
-   "link_count": 0,
-   "link_to": "Share Transfer",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "Share Transfer",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Share Ledger",
-   "link_count": 0,
-   "link_to": "Share Ledger",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "Share Transfer",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Share Balance",
-   "link_count": 0,
-   "link_to": "Share Balance",
-   "link_type": "Report",
-   "onboard": 0,
    "type": "Link"
   },
   {
@@ -1016,9 +915,29 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Transaction &amp; General Ledger",
-   "link_count": 8,
+   "link_count": 11,
    "onboard": 0,
    "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Advance",
+   "link_count": 0,
+   "link_to": "Advance",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Employee Advance",
+   "link_count": 0,
+   "link_to": "Employee Advance",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   },
   {
    "dependencies": "",
@@ -1032,13 +951,32 @@
    "type": "Link"
   },
   {
-   "dependencies": "GL Entry",
    "hidden": 0,
-   "is_query_report": 1,
-   "label": "General Ledger",
+   "is_query_report": 0,
+   "label": "Muster Roll Advance",
    "link_count": 0,
-   "link_to": "General Ledger",
-   "link_type": "Report",
+   "link_to": "Muster Roll Advance",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Employee Advance Settlement",
+   "link_count": 0,
+   "link_to": "Employee Advance Settlement",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Project Invoice",
+   "link_count": 0,
+   "link_to": "Project Invoice",
+   "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
   },
@@ -1055,10 +993,21 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Employee Advance",
+   "label": "Transportation and Hire Charge Entry",
    "link_count": 0,
-   "link_to": "Employee Advance",
+   "link_to": "Transportation and Hire Charge Entry",
    "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "GL Entry",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "General Ledger",
+   "link_count": 0,
+   "link_to": "General Ledger",
+   "link_type": "Report",
    "onboard": 0,
    "type": "Link"
   },
@@ -1085,9 +1034,40 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Project Invoice",
+   "label": "Multi Currency",
+   "link_count": 5,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Currency",
    "link_count": 0,
-   "link_to": "Project Invoice",
+   "link_to": "Currency",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Currency Exchange",
+   "link_count": 0,
+   "link_to": "Currency Exchange",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Exchange Rate Revaluation",
+   "link_count": 0,
+   "link_to": "Exchange Rate Revaluation",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -1095,10 +1075,20 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Employee Advance Settlement",
+   "label": "Foreign Exchange",
    "link_count": 0,
-   "link_to": "Employee Advance Settlement",
+   "link_to": "Foreign Exchange",
    "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Foreign Exchange",
+   "link_count": 0,
+   "link_to": "Foreign Exchange",
+   "link_type": "Report",
    "onboard": 0,
    "type": "Link"
   },
@@ -1209,17 +1199,17 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
-   "label": "Employee Advance Settlement Report",
+   "is_query_report": 1,
+   "label": "Project Settlement Report",
    "link_count": 0,
-   "link_to": "Employee Advance Settlement Report",
+   "link_to": "Project Imprest Settlement",
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
   }
  ],
- "modified": "2023-10-01 12:39:19.414916",
- "modified_by": "pema.dhendup@thimphutechpark.bt",
+ "modified": "2024-10-17 17:26:06.806381",
+ "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Accounting",
  "number_cards": [],
