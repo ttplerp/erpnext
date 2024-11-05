@@ -7,7 +7,7 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.model.meta import get_field_precision
 from frappe.model.naming import set_name_from_naming_options
-from frappe.utils import flt, fmt_money
+from frappe.utils import flt, fmt_money, cint
 
 import erpnext
 from erpnext.accounts.doctype.accounting_dimension.accounting_dimension import (
@@ -80,19 +80,20 @@ class GLEntry(Document):
 				frappe.msgprint(_("{0} is required").format(_(self.meta.get_label(k))), raise_exception=True)
 
 		if not (self.party_type and self.party):
-			account_type = frappe.get_cached_value("Account", self.account, "account_type")
-			if account_type == "Receivable":
-				frappe.msgprint(
-					_("{0} {1}: Customer is required against Receivable account {2}").format(
-						self.voucher_type, self.voucher_no, self.account
-					), raise_exception=True
-				)
-			elif account_type == "Payable":
-				frappe.msgprint(
-					_("{0} {1}: Supplier is required against Payable account {2}").format(
-						self.voucher_type, self.voucher_no, self.account
-					), raise_exception=True
-				)
+			if cint(self.party_check):
+				account_type = frappe.get_cached_value("Account", self.account, "account_type")
+				if account_type == "Receivable":
+					frappe.msgprint(
+						_("{0} {1}: Customer is required against Receivable account {2}").format(
+							self.voucher_type, self.voucher_no, self.account
+						), raise_exception=True
+					)
+				elif account_type == "Payable":
+					frappe.msgprint(
+						_("{0} {1}: Supplier is required against Payable account {2}").format(
+							self.voucher_type, self.voucher_no, self.account
+						), raise_exception=True
+					)
 
 		# Zero value transaction is not allowed
 		if not (flt(self.debit, self.precision("debit")) or flt(self.credit, self.precision("credit"))):
