@@ -251,7 +251,7 @@ def get_formatted_record(gl, gl_type_cd, dr_cr_list, dr_cr, party=None):
 					gl_type_cd = "03"
 			else:
 				if party.get('party_type') == 'Supplier':
-					bank_details = frappe.db.get_value('Supplier', party.get('party'), ['bank_name', 'account_number', 'bank_account_type'])
+					d = frappe.db.get_value('Supplier', party.get('party'), ['bank_name', 'account_number', 'bank_account_type'])
 				elif party.get('party_type') == 'Employee':
 					bank_details = frappe.db.get_value('Employee', party.get('party'), ['bank_name', 'bank_ac_no', 'bank_account_type'])
 
@@ -267,6 +267,48 @@ def get_formatted_record(gl, gl_type_cd, dr_cr_list, dr_cr, party=None):
 			if party.get('remarks'):
 				remarks = party.get('remarks')
 			amount = round(flt(party.get('amount')),2)
+		elif gl.voucher_detail_no and gl.voucher_type == "Journal Entry":
+			party_type = frappe.db.get_value("Journal Entry Account", gl.voucher_detail_no, "party_type")
+			party = frappe.db.get_value("Journal Entry Account", gl.voucher_detail_no, "party")
+			if party_type and party and frappe.db.get_value("Account", gl.account, "account_type") == "Bank":
+				gl_type = 'CASA TO PARTY'
+				if party_type == "Employee":
+					bank_details = frappe.db.get_value(party_type, party, ['bank_name', 'bank_ac_no', 'bank_account_type'])
+				elif party_type == "Supplier":
+					bank_details = frappe.db.get_value("Supplier Bank Account", {"parent": party, "default": 1}, ['bank_name', 'account_number', 'bank_account_type'])
+				else:
+					bank_details = frappe.db.get_valiue("Account", i.account, ["bank_name", "bank_account_type", "bank_account_no"])
+				if not bank_details or not bank_details[0] or not bank_details[1]:
+					error.append("Invalid Bank Details for Beneficiary {}".format(frappe.get_desk_link(party_type, party)))
+				else:
+					if bank_details[0] == 'BDBL':
+						account_number = bank_details[1]
+						if bank_details[2] and bank_details[2] == "04":
+							gl_type_cd = "03"
+					else:
+						error.append("Invalid Bank Details for Beneficiary {}".format(frappe.get_desk_link(party_type, party)))
+				amount = round(flt(gl.debit if dr_cr == 'DR' else gl.credit),2)
+		elif gl.voucher_type == "Payment Entry":
+			party_type = frappe.db.get_value(gl.voucher_type, gl.voucher_no, "party_type")
+			party = frappe.db.get_value(gl.voucher_type, gl.voucher_no, "party")
+			if party_type and party and frappe.db.get_value("Account", gl.account, "account_type") == "Bank":
+				gl_type = 'CASA TO PARTY'
+				if party_type == "Employee":
+					bank_details = frappe.db.get_value(party_type, party, ['bank_name', 'bank_ac_no', 'bank_account_type'])
+				elif party_type == "Supplier":
+					bank_details = frappe.db.get_value("Supplier Bank Account", {"parent": party, "default": 1}, ['bank_name', 'account_number', 'bank_account_type'])
+				else:
+					bank_details = frappe.db.get_valiue("Account", i.account, ["bank_name", "bank_account_type", "bank_account_no"])
+				if not bank_details or not bank_details[0] or not bank_details[1]:
+					error.append("Invalid Bank Details for Beneficiary {}".format(frappe.get_desk_link(party_type, party)))
+				else:
+					if bank_details[0] == 'BDBL':
+						account_number = bank_details[1]
+						if bank_details[2] and bank_details[2] == "04":
+							gl_type_cd = "03"
+					else:
+						error.append("Invalid Bank Details for Beneficiary {}".format(frappe.get_desk_link(party_type, party)))
+				amount = round(flt(gl.debit if dr_cr == 'DR' else gl.credit),2)	
 		else:
 			gl_type = 'CASA TO BANK'
 			bank_details = frappe.db.get_value('Account', gl.account, ['bank_name', 'bank_account_no'])
@@ -276,7 +318,7 @@ def get_formatted_record(gl, gl_type_cd, dr_cr_list, dr_cr, party=None):
 				if bank_details[0] == 'BDBL':
 					account_number = bank_details[1]
 			amount = round(flt(gl.debit if dr_cr == 'DR' else gl.credit),2)			
-		res.update({"gl_entry": gl.gl_name, "voucher_type": gl.voucher_type, "voucher_no": gl.voucher_no, "voucher_detail_no": gl.voucher_detail_no, "party_type": gl.party_type, "party": gl.party,
+		res.update({"gl_entry": gl.gl_name, "voucher_type": gl.voucher_type, "voucher_no": gl.voucher_no, "journal_entry_type": gl.journal_entry_type, "voucher_detail_no": gl.voucher_detail_no, "party_type": gl.party_type, "party": gl.party,
 					"account": gl.account, "debit": amount if dr_cr == 'DR' else 0, "credit": amount if dr_cr == 'CR' else 0})
 	else:
 		# validate initiating branch
@@ -296,7 +338,7 @@ def get_formatted_record(gl, gl_type_cd, dr_cr_list, dr_cr, party=None):
 			else:
 				error.append("Account Number should be numeric for {}".format(frappe.get_desk_link('Account',gl.account)))
 		amount = round(flt(dr_cr_list[dr_cr]),2)
-		res.update({"gl_entry": gl.gl_name, "voucher_type": gl.voucher_type, "voucher_no": gl.voucher_no,  "voucher_detail_no": gl.voucher_detail_no,
+		res.update({"gl_entry": gl.gl_name, "voucher_type": gl.voucher_type, "voucher_no": gl.voucher_no, "journal_entry_type": gl.journal_entry_type,  "voucher_detail_no": gl.voucher_detail_no,
 					"account": gl.account, "debit": gl.debit, "credit": gl.credit})
     
 	remarks = str(gl.remarks if gl.remarks else '').strip().strip('\n') + " "+remarks
