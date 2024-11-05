@@ -112,6 +112,10 @@
   "column_break_98",
   "ltc_account",
   "employee_payable_account",
+  "travel_mileage_account",
+  "training_in_country_mileage_account",
+  "training_out_country_mileage_account",
+  "mileage_account",
   "travel_in_country_account",
   "travel_out_country_account",
   "training_in_country_account",
@@ -976,6 +980,33 @@
    "label": "Stock Opening Difference Account",
    "options": "Account",
    "reqd": 1
+  },
+  {
+   "fieldname": "mileage_account",
+   "fieldtype": "Link",
+   "label": "Mileage Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "travel_mileage_account",
+   "fieldtype": "Link",
+   "label": "Travel Mileage Account",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "training_in_country_mileage_account",
+   "fieldtype": "Link",
+   "label": "Training In Country Mileage Account",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "training_out_country_mileage_account",
+   "fieldtype": "Link",
+   "label": "Training Out Country Mileage Account",
+   "options": "Account",
+   "reqd": 1
   }
  ],
  "icon": "fa fa-building",
@@ -983,7 +1014,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2024-10-24 16:04:27.053759",
+ "modified": "2024-10-31 14:49:50.115663",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",
