@@ -27,6 +27,7 @@ class TrainingManagement(Document):
 		self.validate_deuplicate_record()
 		#self.disallow_adding_trainee()
 		self.validate_exit_date()
+		self.calcualte_total_report_desuups()
 
 	def validate_exit_date(self):
 		for d in self.trainee_details:
@@ -53,6 +54,13 @@ class TrainingManagement(Document):
 						""".format(self.training_start_date,self.training_end_date, self.training_center, self.programme, self.name))
 		if check_duplicate:
 			frappe.throw("Training with same details is recorded in <b>{}</b>".format(check_duplicate[0][0]))
+
+	def calcualte_total_report_desuups(self):
+		total_count = 0
+		for i in self.get("trainee_details"):
+			if i.status == "Reported":
+				total_count += 1
+		self.reported_desuups = total_count
 
 	def update_trainees_status(self):
 		for d in self.get("trainee_details"):
