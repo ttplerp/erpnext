@@ -125,6 +125,8 @@
   "travel_advance_account",
   "salary_advance_account",
   "imprest_advance_account",
+  "medical_advance_account",
+  "other_advance_account",
   "sws_credit_account",
   "sws_debit_account",
   "other_settings_tab",
@@ -1007,6 +1009,18 @@
    "label": "Training Out Country Mileage Account",
    "options": "Account",
    "reqd": 1
+  },
+  {
+   "fieldname": "medical_advance_account",
+   "fieldtype": "Link",
+   "label": "Medical Advance Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "other_advance_account",
+   "fieldtype": "Link",
+   "label": "Other Advance Account",
+   "options": "Account"
   }
  ],
  "icon": "fa fa-building",
@@ -1014,7 +1028,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2024-10-31 14:49:50.115663",
+ "modified": "2024-11-07 16:28:51.650015",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",
