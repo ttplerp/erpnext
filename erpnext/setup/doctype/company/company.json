@@ -115,6 +115,8 @@
   "travel_mileage_account",
   "training_in_country_mileage_account",
   "training_out_country_mileage_account",
+  "wms_in_country_mileage_account",
+  "wms_out_country_mileage_account",
   "mileage_account",
   "travel_in_country_account",
   "travel_out_country_account",
@@ -1021,6 +1023,20 @@
    "fieldtype": "Link",
    "label": "Other Advance Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "wms_in_country_mileage_account",
+   "fieldtype": "Link",
+   "label": "Workshop, Meeting & Seminar In Country Mileage Account",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "wms_out_country_mileage_account",
+   "fieldtype": "Link",
+   "label": "Workshop, Meeting & Seminar Out Country Mileage Account",
+   "options": "Account",
+   "reqd": 1
   }
  ],
  "icon": "fa fa-building",
@@ -1028,7 +1044,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2024-11-07 16:28:51.650015",
+ "modified": "2024-11-08 13:12:25.421819",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",
