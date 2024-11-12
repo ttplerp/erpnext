@@ -67,7 +67,7 @@ def execute(filters=None):
 				sle.update({"equipment":frappe.db.get_value("Delivery Note Item",{"parent":sle.voucher_no,"item_code":sle.item_code},"vehicle_number")})
 		if sle.serial_no:
 			update_available_serial_nos(available_serial_nos, sle)
-
+		sle.update({"branch": frappe.db.get_value(sle.voucher_type, sle.voucher_no, "branch")})
 		data.append(sle)
 
 		if include_uom:
@@ -133,6 +133,13 @@ def get_columns(filters):
 			"fieldname": "warehouse",
 			"fieldtype": "Link",
 			"options": "Warehouse",
+			"width": 150,
+		},
+		{
+			"label": _("Branch"),
+			"fieldname": "branch",
+			"fieldtype": "Link",
+			"options": "Branch",
 			"width": 150,
 		},
 		{
