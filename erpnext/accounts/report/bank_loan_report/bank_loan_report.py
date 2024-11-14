@@ -23,8 +23,20 @@ def get_columns():
             "width": 160
         },
         {
-            "fieldname": "total_draft",
-            "label": "Total Draft",
+            "fieldname": "total_receive",
+            "label": "Total Receive",
+            "fieldtype": "Data",
+            "width": 200
+        },
+         {
+            "fieldname": "total_paid",
+            "label": "Total Paid",
+            "fieldtype": "Data",
+            "width": 200
+        },
+        {
+            "fieldname": "to_be_paid",
+            "label": "Total to Pay",
             "fieldtype": "Data",
             "width": 200
         }
@@ -39,14 +51,19 @@ def get_data(filters):
         SELECT
             a.parent_account AS parent_account,
             a.name AS account,
-            SUM(gl.credit - gl.debit) AS total_draft
+            SUM(gl.credit) AS total_receive,
+            SUM(gl.credit- (gl.credit - gl.debit)) as total_paid,
+            SUM(gl.credit - gl.debit) AS to_be_paid
+            
         FROM
             `tabGL Entry` AS gl
         INNER JOIN
             `tabAccount` AS a ON gl.account = a.name
         WHERE
             gl.company = "VAJRA BUILDERS PRIVATE LIMITED"
-            AND a.parent_account IN ("21.200 - Bank Overdraft", "22.100 - Unsecured Loans", "22.200 - Secured Loans (Bank)")
+            AND a.parent_account IN ("21.200 - Bank Overdraft",
+            "22.100 - Unsecured Loans", "22.200 - Secured Loans (Bank)")
+            and gl.is_cancelled=0
             {conditions}
         GROUP BY
             {group}
