@@ -37,6 +37,13 @@ frappe.query_reports["Bank Loan Report"] = {
 			options:""
 			
 		},
+		{
+			fieldname:"cost_center",
+			label: __("Cost Center"),
+			fieldtype: "Link",
+			options:"Cost Center"
+			
+		},
 
 	]
 };

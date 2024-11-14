@@ -81,5 +81,7 @@ def get_conditions(filters):
         conditions.append("fiscal_year = '{}'".format(filters.get("fiscal_year")))
     if filters.get("monthly"):
         conditions.append("MONTH(gl.posting_date) = '{}'".format(filters.get("monthly")))
+    if filters.get("cost_center"):
+        conditions.append("gl.cost_center = '{}'".format(filters.get("cost_center")))
 
     return "AND {}".format(" AND ".join(conditions)) if conditions else ""
