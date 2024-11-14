@@ -4,14 +4,6 @@
 frappe.query_reports["Stock Ledger"] = {
 	"filters": [
 		{
-			"fieldname":"company",
-			"label": __("Company"),
-			"fieldtype": "Link",
-			"options": "Company",
-			"default": frappe.defaults.get_user_default("Company"),
-			"reqd": 1
-		},
-		{
 			"fieldname":"from_date",
 			"label": __("From Date"),
 			"fieldtype": "Date",
@@ -38,21 +30,24 @@ frappe.query_reports["Stock Ledger"] = {
 			}
 		},
 		{
+			"fieldname":"item_group",
+			"label": __("Item Group"),
+			"fieldtype": "Link",
+			"options": "Item Group"
+		},
+		{
 			"fieldname":"item_code",
 			"label": __("Item"),
 			"fieldtype": "Link",
 			"options": "Item",
 			"get_query": function() {
-				return {
-					query: "erpnext.controllers.queries.item_query"
-				}
+				var item_group = frappe.query_report.get_filter_value('item_group');
+                return {
+                    filters: {
+                        "item_group": item_group
+                    }
+                };
 			}
-		},
-		{
-			"fieldname":"item_group",
-			"label": __("Item Group"),
-			"fieldtype": "Link",
-			"options": "Item Group"
 		},
 		{
 			"fieldname":"batch_no",
@@ -82,7 +77,15 @@ frappe.query_reports["Stock Ledger"] = {
 			"label": __("Include UOM"),
 			"fieldtype": "Link",
 			"options": "UOM"
-		}
+		},
+		{
+			"fieldname":"company",
+			"label": __("Company"),
+			"fieldtype": "Link",
+			"options": "Company",
+			"default": frappe.defaults.get_user_default("Company"),
+			"reqd": 1
+		},
 	],
 	"formatter": function (value, row, column, data, default_formatter) {
 		value = default_formatter(value, row, column, data);
