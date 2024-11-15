@@ -14,9 +14,9 @@ frappe.query_reports["Payable Account Supplier Wise"] = {
 		},
 		{
 			fieldname:"supplier",
-			label: __("Supplier Type"),
+			label: __("Supplier Category"),
 			fieldtype: "Select",
-			options:"\nDomestic Vendor\nInternational Vendor\nIndividual",
+			options:"\nDomestic Supplier\nInternational Supplier\nHire Charge\nForeign Worker\nSub-Contractor\nCarriage Charge",
 		},
 
 	]

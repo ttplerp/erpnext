@@ -9,7 +9,7 @@ def get_columns():
 	return [
 		{
 			"fieldname": "suppliertype",
-			"label": "Supplier Type/Supplier",
+			"label": "Supplier Category",
 			"fieldtype": "Data",
 			"width": 300
 		},
@@ -30,6 +30,12 @@ def get_columns():
 			"label": "Payable",
 			"fieldtype": "Data",
 			"width": 200
+		},
+		{
+			"fieldname": "cost_center",
+			"label": "Cost Center",
+			"fieldtype": "Data",
+			"width": 200
 		}
 	]
 
@@ -37,15 +43,16 @@ def get_data(filters):
 	conditions = get_conditions(filters)
 	if not filters.get("individual"):
 		query = '''
-			SELECT s.supplier_type AS suppliertype,     
+			SELECT s.suppier_category AS suppliertype,     
 			SUM(gl.credit) AS total,     
 			SUM(gl.debit) AS advance,     
-			SUM(gl.credit - gl.debit) AS payable FROM     
+			SUM(gl.credit - gl.debit) AS payable,
+   			gl.cost_center FROM     
 			`tabGL Entry` AS gl
 			left join `tabSupplier` s on s.name=gl.party 
 			WHERE gl.account="21.101 - Sundry Creditors"
 			and gl.is_cancelled=0 
-			group by s.supplier_type ;
+			group by s.suppier_category;
 		'''
 		data = frappe.db.sql(query, as_dict=1)
 		return data
@@ -55,7 +62,8 @@ def get_data(filters):
 			gl.party AS suppliertype,
 			gl.credit AS total,
 			gl.debit AS advance,
-			(gl.credit - gl.debit) AS payable
+			(gl.credit - gl.debit) AS payable,
+			gl.cost_center 
 			FROM
 			`tabGL Entry` AS gl
 			LEFT JOIN
@@ -71,7 +79,7 @@ def get_data(filters):
 def get_conditions(filters):
 	conditions = []
 	if filters and filters.get("supplier"):
-		conditions.append("s.supplier_type = '{}'".format(filters.get("supplier")))
+		conditions.append("s.suppier_category = '{}'".format(filters.get("supplier")))
 	
 
 	return "AND {}".format(" AND ".join(conditions)) if conditions else ""
