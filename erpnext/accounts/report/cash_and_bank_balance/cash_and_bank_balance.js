@@ -4,13 +4,13 @@
 
 frappe.query_reports["Cash and Bank Balance"] = {
 	"filters": [
-		{
-			fieldname:"cash_in_hand",
-			label: __("Cash in hand"),
-			fieldtype: "Check",
-			options:"",
+		// {
+		// 	fieldname:"cash_in_hand",
+		// 	label: __("Cash in hand"),
+		// 	fieldtype: "Check",
+		// 	options:"",
 			
 			
-		},
+		// },
 	]
 };
