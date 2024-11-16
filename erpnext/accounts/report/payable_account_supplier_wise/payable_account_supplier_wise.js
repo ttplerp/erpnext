@@ -24,6 +24,12 @@ frappe.query_reports["Payable Account Supplier Wise"] = {
 			fieldtype: "Link",
 			options:"Cost Center",
 		},
+		{
+			fieldname:"fiscal_year",
+			label: __("Fiscal Year"),
+			fieldtype: "Link",
+			options:"Fiscal Year",
+		},
 
 	]
 };

@@ -149,6 +149,8 @@ def get_conditions(filters):
 		conditions.append("s.suppier_category = '{}'".format(filters.get("supplier")))
 	if filters and filters.get("cost_center"):
 		conditions.append("gl.cost_center = '{}'".format(filters.get("cost_center")))
+	if filters and filters.get("fiscal_year"):
+		conditions.append("gl.fiscal_year = '{}'".format(filters.get("fiscal_year")))
 	
 
 	return "AND {}".format(" AND ".join(conditions)) if conditions else ""
