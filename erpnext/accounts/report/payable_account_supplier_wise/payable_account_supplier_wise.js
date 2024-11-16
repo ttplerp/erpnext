@@ -18,12 +18,12 @@ frappe.query_reports["Payable Account Supplier Wise"] = {
 			fieldtype: "Select",
 			options:"\nDomestic Supplier\nInternational Supplier\nHire Charge\nForeign Worker\nSub-Contractor\nCarriage Charge",
 		},
-		// {
-		// 	fieldname:"cost_center",
-		// 	label: __("Cost Center"),
-		// 	fieldtype: "Link",
-		// 	options:"Cost Center",
-		// },
+		{
+			fieldname:"cost_center",
+			label: __("Cost Center"),
+			fieldtype: "Link",
+			options:"Cost Center",
+		},
 
 	]
 };

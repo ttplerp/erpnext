@@ -16,19 +16,19 @@ def get_columns(filters=None):
 		},
 		{
 			"fieldname": "credit",
-			"label": "Credit",
+			"label": "Total Payable",
 			"fieldtype": "Currency",
 			"width": 300
 		},
 		{
 			"fieldname": "debit",
-			"label": "debit",
+			"label": "Total Paid",
 			"fieldtype": "Currency",
 			"width": 300
 		},
 		{
 			"fieldname": "total",
-				"label": "Total",
+				"label": "Payable Balance",
 			"fieldtype": "Currency",
 			"width": 300
 			},
@@ -73,19 +73,19 @@ def get_columns(filters=None):
 		},
 			{
 				"fieldname": "credit",
-				"label": "Credit",
+				"label": "Total Payable",
 				"fieldtype": "Currency",
 				"width": 150
 		},
 		{
 				"fieldname": "debit",
-				"label": "debit",
+				"label": "Total Paid",
 				"fieldtype": "Currency",
 				"width": 150
 		},
 		{
 				"fieldname": "total",
-				"label": "Total",
+				"label": "Payable Balance",
 				"fieldtype": "Currency",
 				"width": 150
 		},
