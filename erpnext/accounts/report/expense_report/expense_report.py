@@ -149,11 +149,11 @@ def get_data(filters):
 					) AS gross_profit
 				FROM
 					`tabGL Entry` AS gl
-				INNER JOIN
+				LEFT JOIN
 					`tabAccount` AS a ON gl.account = a.name
-				INNER JOIN
+				LEFT JOIN
 					`tabAccount` AS a2 ON a.parent_account = a2.name
-				INNER JOIN
+				LEFT JOIN
 					`tabAccount` AS a3 ON a2.parent_account = a3.name
 				WHERE
 					gl.company = "VAJRA BUILDERS PRIVATE LIMITED" 
