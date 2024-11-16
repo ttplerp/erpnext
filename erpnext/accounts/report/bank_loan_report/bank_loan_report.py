@@ -14,30 +14,30 @@ def get_columns():
             "fieldname": "parent_account",
             "label": "Parent Account",
             "fieldtype": "Data",
-            "width": 160
+            "width": 250
         },
         {
             "fieldname": "account",
             "label": "Account",
             "fieldtype": "Data",
-            "width": 160
+            "width": 250
         },
         {
             "fieldname": "total_receive",
             "label": "Total Receive",
-            "fieldtype": "Data",
+            "fieldtype": "Currency",
             "width": 200
         },
          {
             "fieldname": "total_paid",
             "label": "Total Paid",
-            "fieldtype": "Data",
+            "fieldtype": "Currency",
             "width": 200
         },
         {
             "fieldname": "to_be_paid",
             "label": "Total to Pay",
-            "fieldtype": "Data",
+            "fieldtype": "Currency",
             "width": 200
         }
     ]
