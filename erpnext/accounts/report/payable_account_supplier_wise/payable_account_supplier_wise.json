@@ -1,5 +1,5 @@
 {
- "add_total_row": 0,
+ "add_total_row": 1,
  "columns": [],
  "creation": "2024-08-03 15:52:18.350759",
  "disable_prepared_report": 0,
@@ -10,7 +10,7 @@
  "idx": 0,
  "is_standard": "Yes",
  "letter_head": "Vajra Builders Private Limited",
- "modified": "2024-08-03 15:52:18.350759",
+ "modified": "2024-11-16 14:28:19.792692",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Payable Account Supplier Wise",

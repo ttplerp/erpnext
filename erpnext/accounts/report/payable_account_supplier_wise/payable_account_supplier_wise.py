@@ -15,19 +15,19 @@ def get_columns(filters=None):
 			"width": 300
 		},
 		{
-			"fieldname": "credit",
+			"fieldname": "total_payable",
 			"label": "Total Payable",
 			"fieldtype": "Currency",
 			"width": 300
 		},
 		{
-			"fieldname": "debit",
+			"fieldname": "total_paid",
 			"label": "Total Paid",
 			"fieldtype": "Currency",
 			"width": 300
 		},
 		{
-			"fieldname": "total",
+			"fieldname": "payable_balance",
 				"label": "Payable Balance",
 			"fieldtype": "Currency",
 			"width": 300
@@ -72,7 +72,7 @@ def get_columns(filters=None):
 				"width": 200
 		},
 			{
-				"fieldname": "credit",
+				"fieldname": "total_payable",
 				"label": "Total Payable",
 				"fieldtype": "Currency",
 				"width": 150
@@ -108,7 +108,7 @@ def get_data(filters):
 		# 	group by s.suppier_category;
 		# '''
 		query = '''
-			SELECT gl.account, sum(gl.credit) as credit, sum(gl.debit) as debit, sum(gl.credit-gl.debit) as total  FROM       
+			SELECT gl.account, sum(gl.credit) as total_payable, sum(gl.debit) as total_paid, sum(gl.credit-gl.debit) as payable_balance  FROM       
    			`tabGL Entry` AS gl INNER JOIN `tabAccount` AS a ON gl.account = a.name left join 
       		`tabSupplier` s on s.name=gl.party WHERE   a.parent_account = "21.100 - Account Payable" 
         	and gl.is_cancelled=0 {conditions} group by gl.account;
@@ -133,7 +133,7 @@ def get_data(filters):
    			group by gl.party;
 		'''.format(conditions=conditions)
 		query='''
-			SELECT gl.account as account, gl.party as party, gl.party_type as party_type,sum(gl.credit) as credit, 
+			SELECT gl.account as account, gl.party as party, gl.party_type as party_type,sum(gl.credit) as total_payable, 
    			sum(gl.debit) as debit, sum(gl.credit-gl.debit) as total
  			FROM `tabGL Entry` AS gl INNER JOIN `tabAccount` AS a ON gl.account = a.name left join        
     		`tabSupplier` s on s.name=gl.party WHERE   a.parent_account = "21.100 - Account Payable"          
