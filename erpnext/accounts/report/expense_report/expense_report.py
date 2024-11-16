@@ -9,61 +9,106 @@ def execute(filters=None):
 	return columns, data
 
 def get_columns(filters):
-	return [
-     {
-				"fieldname":"cost_center",
-				"label":"Cost Center",
-				"fieldtype":"data",
-				"options":"",
-				"width":160
-			},
-      {
-				"fieldname":"total_expense",
-				"label":"Total Expense",
-				"fieldtype":"data",
-				"options":"",
-				"width":160
-			},
-     {
-				"fieldname":"total_income",
-				"label":"Income",
-				"fieldtype":"data",
-				"options":"",
-				"width":160
-			},
-     {
-				"fieldname":"total_direct_expense",
-				"label":"Direct Expense",
-				"fieldtype":"data",
-				"options":"",
-				"width":160
-			},
-      {
-				"fieldname":"total_indirect_expense",
-				"label":"Indirect Expense",
-				"fieldtype":"data",
-				"options":"",
-				"width":160
-			},
-			{
-				"fieldname":"gross_profit",
-				"label":"Gross Profit",
-				"fieldtype":"data",
-				"options":"",
-				"width":160
-			},
-  
-   
-	{
-				"fieldname":"profit",
-				"label":"Net Profit",
-				"fieldtype":"data",
-				"options":"",
-				"width":160
-			},
- 
- 
-		]
+    if filters.get("is_gross_profit"):
+        return [
+		{
+					"fieldname":"cost_center",
+					"label":"Cost Center",
+					"fieldtype":"data",
+					"options":"",
+					"width":160
+				},
+		{
+					"fieldname":"total_expense",
+					"label":"Total Expense",
+					"fieldtype":"Currency",
+					"options":"",
+					"width":160
+				},
+		{
+					"fieldname":"total_income",
+					"label":"Income",
+					"fieldtype":"Currency",
+					"options":"",
+					"width":160
+				},
+		{
+					"fieldname":"total_direct_expense",
+					"label":"Direct Expense",
+					"fieldtype":"Currency",
+					"options":"",
+					"width":160
+				},
+	
+				{
+					"fieldname":"gross_profit",
+					"label":"Gross Profit",
+					"fieldtype":"Currency",
+					"options":"",
+					"width":160
+				},
+	
+	
+		
+	
+	
+			]
+    else:
+        return [
+		{
+					"fieldname":"cost_center",
+					"label":"Cost Center",
+					"fieldtype":"data",
+					"options":"",
+					"width":160
+				},
+		{
+					"fieldname":"total_expense",
+					"label":"Total Expense",
+					"fieldtype":"Currency",
+					"options":"",
+					"width":160
+				},
+		{
+					"fieldname":"total_income",
+					"label":"Income",
+					"fieldtype":"Currency",
+					"options":"",
+					"width":160
+				},
+		{
+					"fieldname":"total_direct_expense",
+					"label":"Direct Expense",
+					"fieldtype":"Currency",
+					"options":"",
+					"width":160
+				},
+		{
+					"fieldname":"total_indirect_expense",
+					"label":"Indirect Expense",
+					"fieldtype":"Currency",
+					"options":"",
+					"width":160
+				},
+				{
+					"fieldname":"gross_profit",
+					"label":"Gross Profit",
+					"fieldtype":"Currency",
+					"options":"",
+					"width":160
+				},
+	
+	
+		{
+					"fieldname":"profit",
+					"label":"Net Profit",
+					"fieldtype":"Currency",
+					"options":"",
+					"width":160
+				},
+	
+	
+			]
 
 def get_data(filters):
 	conditions = get_conditions(filters)
@@ -118,6 +163,7 @@ def get_data(filters):
 					`tabAccount` AS a3 ON a2.parent_account = a3.name
 				WHERE
 					gl.company = "VAJRA BUILDERS PRIVATE LIMITED" 
+					and gl.cost_center is not null
 					{conditions}
 				GROUP BY 
 					gl.cost_center;

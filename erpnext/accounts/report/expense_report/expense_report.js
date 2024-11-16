@@ -27,6 +27,13 @@ frappe.query_reports["Expense Report"] = {
             "options": "\n01\n02\n03\n04\n05\n06\n07\n08\n09\n10\n11\n12",
             "default": " "
         },
+		{
+            "fieldname": "is_gross_profit",
+            "label": __("Gross Profit"),
+            "fieldtype": "Check",
+            "options": "",
+           
+        },
 
 	]
 };
