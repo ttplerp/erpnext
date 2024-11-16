@@ -21,28 +21,28 @@ def get_columns(filters):
 		{
 					"fieldname":"cash_in_hand",
 					"label":"Cash in Hand",
-					"fieldtype":"data",
+					"fieldtype":"Currency",
 					"options":"",
 					"width":160
 				},
 		{
 					"fieldname":"bob_cd",
 					"label":"BOB CD",
-					"fieldtype":"data",
+					"fieldtype":"Currency",
 					"options":"",
 					"width":160
 				},
 		{
 					"fieldname":"pnb_cd",
 					"label":"PNB CD",
-					"fieldtype":"data",
+					"fieldtype":"Currency",
 					"options":"",
 					"width":160
 				},
 		{
 					"fieldname":"bnb_cd",
 					"label":"BNB CD",
-					"fieldtype":"data",
+					"fieldtype":"Currency",
 					"options":"",
 					"width":160
 				},
@@ -74,7 +74,7 @@ def get_columns(filters):
 		{
 					"fieldname":"cash",
 					"label":"Amount",
-					"fieldtype":"data",
+					"fieldtype":"Currency",
 					"options":"",
 					"width":160
 				},
@@ -82,7 +82,7 @@ def get_columns(filters):
 		{
 					"fieldname":"matched_name2",
 					"label":"Foriegn Currency Value",
-					"fieldtype":"data",
+					"fieldtype":"Currency",
 					"options":"",
 					"width":160
 				},
