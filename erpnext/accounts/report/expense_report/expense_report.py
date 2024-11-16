@@ -18,13 +18,7 @@ def get_columns(filters):
 					"options":"",
 					"width":160
 				},
-		{
-					"fieldname":"total_expense",
-					"label":"Total Expense",
-					"fieldtype":"Currency",
-					"options":"",
-					"width":160
-				},
+		
 		{
 					"fieldname":"total_income",
 					"label":"Income",
