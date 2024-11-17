@@ -113,7 +113,7 @@ def get_data(filters):
 					'''
 					SELECT  SUM(CASE WHEN a.parent_account = "11.300 - Cash In Hand Account"  THEN gl.debit - gl.credit ELSE 0 END) AS cash_in_hand, 
 		SUM(CASE WHEN (a.name = "11.201 - BOB - 100896320 - CD" or a2.name = "11.201 - BOB - 100896320 - CD" or a3.name = "11.201 - BOB - 100896320 - CD")  THEN gl.debit - gl.credit ELSE 0 END) AS bob_cd,
-		SUM(CASE WHEN (a.name = "11.202 - BNB - 0000057046001 - CD" or a2.name = "11.202 - BNB - 0000057046001 - CD" or a3.name = "11.202 - BNB - 0000057046001 - CD")  THEN gl.debit - gl.credit ELSE 0 END) AS bnb_cd,
+		SUM(CASE WHEN (a.name = "11.202 - BNB - 641964721 - CD" or a2.name = "11.202 - BNB - 641964721 - CD" or a3.name = "11.202 - BNB - 641964721 - CD")  THEN gl.debit - gl.credit ELSE 0 END) AS bnb_cd,
 		SUM(CASE WHEN (a.name = "11.204 - PNB - 110210010626 - CD" or a2.name = "11.204 - PNB - 110210010626 - CD" or a3.name = "11.204 - PNB - 110210010626 - CD")  THEN gl.debit - gl.credit ELSE 0 END) AS pnb_cd
 					FROM `tabGL Entry` AS gl INNER JOIN `tabAccount` AS a ON gl.account = a.name INNER JOIN `tabAccount` AS a2 ON a.parent_account = a2.name INNER JOIN `tabAccount` AS a3 ON a2.parent_account = a3.name and gl.is_cancelled = 0;
 
