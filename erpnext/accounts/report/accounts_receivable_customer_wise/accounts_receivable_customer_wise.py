@@ -81,18 +81,6 @@ def get_columns(filters=None):
 def get_data(filters):
 	conditions = get_conditions(filters)
 	if not filters.get("individual"):
-		# query = '''
-		# 	SELECT s.suppier_category AS suppliertype,     
-		# 	SUM(gl.credit) AS total,     
-		# 	SUM(gl.debit) AS advance,     
-		# 	SUM(gl.credit - gl.debit) AS payable,
-   		# 	gl.cost_center FROM     
-		# 	`tabGL Entry` AS gl
-		# 	left join `tabSupplier` s on s.name=gl.party 
-		# 	WHERE gl.account="21.101 - Sundry Creditors"
-		# 	and gl.is_cancelled=0 
-		# 	group by s.suppier_category;
-		# '''
 		query = '''
 			SELECT gl.account, sum(gl.debit) as total_receivable, sum(gl.credit) as total_received, sum(gl.credit-gl.debit) as receivable_balance  
    			FROM  `tabGL Entry` AS gl INNER JOIN `tabAccount` AS a ON gl.account = a.name left join        
@@ -120,6 +108,8 @@ def get_conditions(filters):
 		conditions.append("gl.cost_center = '{}'".format(filters.get("cost_center")))
 	if filters and filters.get("fiscal_year"):
 		conditions.append("gl.fiscal_year = '{}'".format(filters.get("fiscal_year")))
+	if filters and filters.get("account"):
+		conditions.append("gl.account = '{}'".format(filters.get("account")))
 	
 
 	return "AND {}".format(" AND ".join(conditions)) if conditions else ""

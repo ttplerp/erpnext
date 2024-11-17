@@ -29,6 +29,12 @@ frappe.query_reports["Accounts Receivable Customer Wise"] = {
 			fieldtype: "Link",
 			options:"Fiscal Year",
 		},
+		{
+			fieldname:"account",
+			label: __("Account"),
+			fieldtype: "Link",
+			options:"Account",
+		},
 
 	]
 };
