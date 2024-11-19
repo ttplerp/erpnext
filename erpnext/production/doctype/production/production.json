@@ -32,8 +32,10 @@
   "section_break_10",
   "get_raw_material",
   "raw_materials",
-  "section_break_12",
+  "sb_transporter",
   "get_product",
+  "transporter_items",
+  "section_break_12",
   "items",
   "section_break_28",
   "coal_raising_type",
@@ -186,7 +188,7 @@
   {
    "fieldname": "section_break_12",
    "fieldtype": "Section Break",
-   "label": "Product Details"
+   "label": "Product Summary"
   },
   {
    "depends_on": "eval:doc.docstatus != 1",
@@ -422,11 +424,22 @@
    "fieldname": "auto_submit",
    "fieldtype": "Check",
    "label": "Auto Submit"
+  },
+  {
+   "fieldname": "sb_transporter",
+   "fieldtype": "Section Break",
+   "label": "Product and Transporter Details"
+  },
+  {
+   "allow_bulk_edit": 1,
+   "fieldname": "transporter_items",
+   "fieldtype": "Table",
+   "options": "Production Transporter Item"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-10-28 14:16:10.445812",
+ "modified": "2024-11-18 20:33:51.995437",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Production",

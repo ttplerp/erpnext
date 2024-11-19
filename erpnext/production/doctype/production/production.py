@@ -18,6 +18,7 @@ class Production(StockController):
 		self.validate_data()
 		self.validate_items()
 		self.validate_transportation()
+		self.create_product_items()
 		self.validate_raw_material_product_qty()
 		if self.coal_raising_type:
 			self.validate_coal_raising()
@@ -135,7 +136,7 @@ class Production(StockController):
 	def validate_transportation(self):
 		tr = qb.DocType("Transporter Rate")
 		tdr = qb.DocType("Transporter Distance Rate")
-		for d in self.items:
+		for d in self.transporter_items:
 			if not d.transporter_payment_eligible:
 				d.rate = 0
 				d.transportation_expense_account = ''
@@ -205,6 +206,11 @@ class Production(StockController):
 
 	def validate_items(self):
 		prod_items = self.get_production_items()
+		for prtr in self.get("transporter_items"):
+			if not prtr.warehouse:
+				prtr.warehouse = self.warehouse
+			if not prtr.cost_center:
+				prtr.cost_center = self.cost_center
 		# validate raw material
 		for item in self.get("raw_materials"):
 			if item.item_code not in prod_items:
@@ -219,7 +225,7 @@ class Production(StockController):
 			if not item.expense_account:
 				item.expense_account = get_expense_account(	self.company, item.item_code)
 
-		for item in self.get("items"):
+		for item in self.get("transporter_items"):
 			item.production_type = self.production_type
 			item.item_name, item.item_group = frappe.db.get_value("Item", item.item_code, ["item_name", "item_group"])
 
@@ -263,7 +269,7 @@ class Production(StockController):
 
 	def get_production_items(self):
 		prod_items = []
-		pro_codes = list(set(item.item_code for item in self.get("items")))
+		pro_codes = list(set(item.item_code for item in self.get("transporter_items")))
 		raw_codes = list(set(item.item_code for item in self.get("raw_materials")))
 		item_codes = list(set(pro_codes + raw_codes))
 
@@ -317,6 +323,32 @@ class Production(StockController):
 			throw("Coal Raising Master not found for branch {}".format(bold(self.branch)))
 		if not frappe.db.exists('Coal Raising Master',{'name':coal_raising_master,'from_date':('<=',self.posting_date),'to_date':('>=',self.posting_date)}):
 			frappe.throw('Coal Raising Master is not valid for branch <b>{}</b>'.format(self.branch))
+
+	def create_product_items(self):
+		product_items = {}
+		self.set("items", [])
+		for item in self.transporter_items:
+			if str(item.item_code)+"||"+str(item.warehouse) not in product_items:
+				product_items.update({str(item.item_code)+"||"+str(item.warehouse): {"qty": item.qty, "cop": item.cop, "expense_account": item.expense_account, "cost_center": item.cost_center, "item_group": item.item_group, "item_sub_group": item.item_sub_group, "item_type": item.item_type, "item_name": item.item_name, "ratio": item.ratio if item.ratio else 0, "uom": item.uom}})
+			else:
+				product_items[str(item.item_code)+"||"+str(item.warehouse)]["qty"] += item.qty
+				product_items[str(item.item_code)+"||"+str(item.warehouse)]["ratio"] += item.ratio if item.ratio else 0
+				product_items[str(item.item_code)+"||"+str(item.warehouse)]["qty"] = flt(product_items[str(item.item_code)+"||"+str(item.warehouse)]["qty"],2)
+		for product in product_items:
+			row = self.append("items")
+			row.item_code = product.split("||")[0]
+			row.item_name = product_items[product]["item_name"]
+			row.item_type = product_items[product]["item_type"]
+			row.item_group = product_items[product]["item_group"]
+			row.item_sub_group = product_items[product]["item_sub_group"]
+			row.cop = product_items[product]["cop"]
+			row.qty = product_items[product]["qty"]
+			row.expense_account = product_items[product]["expense_account"]
+			row.cost_center = product_items[product]["cost_center"]
+			row.cost_center = product_items[product]["cost_center"]
+			row.ratio = product_items[product]["ratio"]
+			row.uom = product_items[product]["uom"]
+			row.warehouse = product.split("||")[1]
 
 	def machine_sharing_calculation(self):
 		coal_raising_master = frappe.db.get_value("Coal Raising Branch",{"branch":self.branch},"parent")
@@ -575,7 +607,7 @@ class Production(StockController):
 
 @frappe.whitelist()
 def make_auto_production(self):
-	if self.docstatus == 1 and not frappe.db.exists("Production",{"reference":self.name}) and not self.reference:
+	if self.docstatus == 1 and not frappe.db.exists("Production",{"reference":self.name, "docstatus":["!=", 2]}) and not self.reference:
 		sort_prod_wise = frappe._dict()
 		for item in self.items:
 			if frappe.db.exists("Auto Production Setting Item", {"item_code":item.item_code}):
@@ -614,7 +646,7 @@ def make_auto_production(self):
 					})
 
 				item_name, item_group, uom = frappe.db.get_value("Item",key, ["item_name","item_group","stock_uom"])
-				prod.append("items",{
+				prod.append("transporter_items",{
 					"item_code":key,
 					"item_name":item_name,
 					"item_group":item_group,
@@ -625,7 +657,6 @@ def make_auto_production(self):
 					"expense_account":get_expense_account(self.company, key),
 					"warehouse":self.warehouse if cint(self.transfer) == 0 else self.to_warehouse
 				})
-		
 			prod.insert()
 			prod.submit()
 

@@ -42,7 +42,7 @@ frappe.query_reports["Production Report"] = {
  			"options": "Location",
 			"get_query": function() {
 				var branch = frappe.query_report.get_filter_value('branch');
-				return {"doctype": "Location", "filters": {"branch": branch, "is_disabled": 0}}
+				return {"doctype": "Location", "filters": {"branch": branch, "disabled": 0}}
 			}
 		},
 		{

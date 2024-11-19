@@ -69,7 +69,7 @@ frappe.ui.form.on('Production', {
 	}
 });
 
-frappe.ui.form.on("Production Product Item", {
+frappe.ui.form.on("Production Transporter Item", {
 	items_add: function(frm, cdt, cdn){
 		frappe.model.set_value(cdt, cdn, "warehouse", frm.doc.warehouse);
 		frappe.model.set_value(cdt, cdn, "cost_center", frm.doc.cost_center);
@@ -97,8 +97,8 @@ var assign_warehouse_and_cost_center= function(frm){
 		})
 		frm.refresh_field("raw_materials")
 	}
-	if (frm.doc.items){
-		frm.doc.items.map(v=>{
+	if (frm.doc.transporter_items){
+		frm.doc.transporter_items.map(v=>{
 			v.warehouse=frm.doc.warehouse
 			v.cost_center = frm.doc.cost_center
 		})
@@ -183,7 +183,8 @@ function get_finish_product(frm){
 						r.message.forEach(function(rec) {
 							if(rec['parameter_type'] == "Item")
 							{	
-								var row = frappe.model.add_child(cur_frm.doc, "Production Product Item", "items");
+								// var row = frappe.model.add_child(cur_frm.doc, "Production Product Item", "items");
+								var row = frappe.model.add_child(cur_frm.doc, "Production Transporter Item", "transporter_items");
 								row.item_code = rec['item_code'];
 								row.item_name = rec['item_name'];
 								row.item_type = rec['item_type'];		
@@ -235,7 +236,7 @@ var check_item_applicable_for_coal_raising =(frm,cdt,cdn)=>{
 	})
 }
 function get_raw_materials(frm){
-	if (frm.doc.branch && frm.doc.items){
+	if (frm.doc.branch && frm.doc.transporter_items){
 		return frappe.call({
 				method: "get_raw_material",
 				doc: cur_frm.doc,

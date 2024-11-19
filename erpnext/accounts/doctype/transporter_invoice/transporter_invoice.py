@@ -430,7 +430,7 @@ class TransporterInvoice(AccountsController):
 						b.transporter_rate as transporter_rate_ref,
 						b.transportation_expense_account as expense_account 
 						from
-						`tabProduction` a inner join `tabProduction Product Item` b 
+						`tabProduction` a inner join `tabProduction Transporter Item` b 
 						on a.name = b.parent
 					where a.docstatus = 1 
 						and a.posting_date between "{0}" and "{1}" 
