@@ -3,6 +3,22 @@
 
 frappe.ui.form.on('POL Issue', {
 	refresh: function(frm) {
+		frm.set_query("equipment", "items", function(doc){
+			return {
+				filters: {
+					'branch': doc.branch,
+				}
+			}
+		});
+
+		frm.set_query("project", function(doc){
+			return {
+				filters: {
+					'branch': doc.branch,
+				}
+			}
+		});
+
 		if(frm.doc.docstatus == 1 && cint(frm.doc.out_source) == 0) {
 			cur_frm.add_custom_button(__('POL Ledger'), function() {
 				frappe.route_options = {

@@ -7,9 +7,10 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "company",
   "branch",
   "cost_center",
-  "company",
+  "project",
   "column_break_2",
   "posting_date",
   "posting_time",
@@ -210,12 +211,18 @@
    "label": "Advance",
    "options": "Advance",
    "read_only": 1
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-18 18:16:55.877967",
+ "modified": "2024-11-18 19:35:21.172281",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Issue",
