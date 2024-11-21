@@ -20,12 +20,43 @@ frappe.ui.form.on("Subcontract Adjustment Item",{
 	
 	boq_item_remove: function(frm, cdt, cdn){
 		calculate_total_amount(frm);
+	},
+
+	no: function (frm, cdt, cdn) {
+		let child = locals[cdt][cdn];
+		let quant = child.no * child.coefficient * child.height * child.length * child.breath
+		frappe.model.set_value(cdt, cdn, 'adjustment_quantity', parseFloat(quant));
+		frm.refresh_field("adjustment_quantity", cdt, cdn)
+	},
+	breath: function (frm, cdt, cdn) {
+		let child = locals[cdt][cdn];
+		let quant = child.no * child.coefficient * child.height * child.length * child.breath
+		frappe.model.set_value(cdt, cdn, 'adjustment_quantity', parseFloat(quant));
+		frm.refresh_field("adjustment_quantity", cdt, cdn)
+	},
+	height: function (frm, cdt, cdn) {
+		let child = locals[cdt][cdn];
+		let quant = child.no * child.coefficient * child.height * child.length * child.breath
+		frappe.model.set_value(cdt, cdn, 'adjustment_quantity', parseFloat(quant));
+		frm.refresh_field("adjustment_quantity", cdt, cdn)
+	},
+	length: function (frm, cdt, cdn) {
+		let child = locals[cdt][cdn];
+		let quant = child.no * child.coefficient * child.height * child.length * child.breath
+		frappe.model.set_value(cdt, cdn, 'adjustment_quantity', parseFloat(quant));
+		frm.refresh_field("adjustment_quantity", cdt, cdn)
+	},
+	coefficient: function (frm, cdt, cdn) {
+		let child = locals[cdt][cdn];
+		let quant = child.no * child.coefficient * child.height * child.length * child.breath
+		frappe.model.set_value(cdt, cdn, 'adjustment_quantity', parseFloat(quant));
+		frm.refresh_field("adjustment_quantity", cdt, cdn)
 	}
 });
 
 var calculate_amount = function(frm, cdt, cdn){
-	child = locals[cdt][cdn];
-	amount = 0.0;
+	let child = locals[cdt][cdn];
+	let amount = 0.0;
 	
 	if(child.is_group){
 		if(parseFloat(child.adjustment_quantity) || parseFloat(child.adjustment_amount)) {
@@ -43,13 +74,13 @@ var calculate_amount = function(frm, cdt, cdn){
 			}
 		}
 		
-		if ((parseFloat(child.balance_amount || 0.0)+parseFloat(child.adjustment_amount || 0.0)) < 0) {
+		if ((parseFloat(child.unclaimed_amount || 0.0)+parseFloat(child.adjustment_amount || 0.0)) < 0) {
 			frappe.msgprint("Adjustment beyond available balance is not allowed.");
 		}
 	}
 }
 
-var calculate_total_amount = function(frm){
+var calculate_total_amount = function(frm){	
 	var bi = frm.doc.boq_item || [];
 	var total_amount = 0.0;
 	
@@ -59,5 +90,5 @@ var calculate_total_amount = function(frm){
 		}
 	}
 	
-	cur_frm.set_value("total_amount",parseFloat(total_amount));
+	cur_frm.set_value("total_amount", parseFloat(total_amount));
 }

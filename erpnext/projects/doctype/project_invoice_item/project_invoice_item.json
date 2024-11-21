@@ -23,6 +23,7 @@
   {
    "fieldname": "invoice_name",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Project Invoice",
    "options": "Project Invoice",
    "read_only": 1
@@ -30,6 +31,7 @@
   {
    "fieldname": "invoice_date",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Invoice Date",
    "read_only": 1
   },
@@ -59,21 +61,20 @@
    "fieldname": "gross_invoice_amount",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Gross Amount (A)",
+   "label": "Gross Amount",
    "read_only": 1
   },
   {
    "fieldname": "price_adjustment_amount",
    "fieldtype": "Currency",
-   "in_list_view": 1,
-   "label": "Price Adjustment (B)",
+   "label": "Price Adjustment",
    "read_only": 1
   },
   {
    "fieldname": "net_invoice_amount",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Invoiced Amount (C=A+B)",
+   "label": "Invoiced Amount",
    "read_only": 1
   },
   {
@@ -94,14 +95,14 @@
    "fieldname": "total_balance_amount",
    "fieldtype": "Currency",
    "hidden": 1,
-   "label": "Balance (E=C-D)",
+   "label": "Balance",
    "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-05-16 14:55:09.021200",
+ "modified": "2024-11-17 19:35:23.257684",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project Invoice Item",

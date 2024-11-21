@@ -7,12 +7,12 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "adjustment_date",
   "project",
+  "subcontract",
   "branch",
   "cost_center",
   "column_break_40",
-  "subcontract",
+  "adjustment_date",
   "subcontract_date",
   "boq",
   "boq_date",
@@ -24,6 +24,9 @@
   "boq_item",
   "sb_notes",
   "notes",
+  "section_break_zj7gt",
+  "company",
+  "column_break_vt25j",
   "amended_from"
  ],
  "fields": [
@@ -152,12 +155,26 @@
    "options": "Subcontract Adjustment",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_zj7gt",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "column_break_vt25j",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-26 09:54:52.430993",
+ "modified": "2024-11-13 17:57:28.062491",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Subcontract Adjustment",

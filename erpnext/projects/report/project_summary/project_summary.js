@@ -13,17 +13,29 @@ frappe.query_reports["Project Summary"] = {
 			"reqd": 1
 		},
 		{
-			"fieldname": "is_active",
-			"label": __("Is Active"),
-			"fieldtype": "Select",
-			"options": "\nYes\nNo",
-			"default": "Yes",
+			"fieldname": "cost_center",
+			"label": __("Cost Center"),
+			"fieldtype": "Link",
+			"options": "Cost Center",
 		},
+		{
+			"fieldname": "name",
+			"label": __("Project"),
+			"fieldtype": "Link",
+			"options": "Project",
+		},
+		// {
+		// 	"fieldname": "is_active",
+		// 	"label": __("Is Active"),
+		// 	"fieldtype": "Select",
+		// 	"options": "\nYes\nNo",
+		// 	"default": "Yes",
+		// },
 		{
 			"fieldname": "status",
 			"label": __("Status"),
 			"fieldtype": "Select",
-			"options": "\nOpen\nCompleted\nCancelled",
+			"options": "\nOpen\nCompleted",
 			"default": "Open"
 		},
 		{
@@ -32,11 +44,18 @@ frappe.query_reports["Project Summary"] = {
 			"fieldtype": "Link",
 			"options": "Project Type"
 		},
-		{
-			"fieldname": "priority",
-			"label": __("Priority"),
-			"fieldtype": "Select",
-			"options": "\nLow\nMedium\nHigh"
+	],
+	"formatter": function(value, row, column, data, default_formatter) {
+		value = default_formatter(value, row, column, data);
+		if (column.id == "net_profit") {
+			if (data["net_profit"] > 0) {
+				value = `<p style="color: green; font-weight: bold">${value}</p>`;
+			} else if (data["net_profit"] < 0) {
+				value = `<p style="color: red; font-weight: bold">${value}</p>`;
+			} else {
+				value = `<p style="color: gray; font-weight: normal">${value}</p>`;
+			}
 		}
-	]
+		return value;
+	}
 };

@@ -7,31 +7,33 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "boq_date",
+  "boq",
   "boq_type",
   "party_type",
-  "party",
   "column_break_40",
-  "project",
-  "boq",
-  "company",
   "branch",
   "cost_center",
-  "section_break_10",
-  "total_amount",
-  "price_adjustment",
-  "column_break_10",
-  "claimed_amount",
-  "received_amount",
-  "paid_amount",
-  "balance_amount",
+  "party",
+  "column_break_sj0kw",
+  "boq_date",
+  "project",
   "section_break_20",
   "boq_item",
   "boq_history",
   "boq_history_item",
-  "remarks",
+  "section_break_tpdtp",
+  "total_amount",
+  "total_unclaimed_amount",
+  "price_adjustment",
+  "column_break_v1gdi",
+  "claimed_amount",
+  "received_amount",
+  "paid_amount",
   "sb_notes",
-  "notes",
+  "remarks",
+  "additional_inforamtion_section",
+  "company",
+  "column_break_2phnm",
   "amended_from"
  ],
  "fields": [
@@ -93,7 +95,6 @@
   {
    "fieldname": "company",
    "fieldtype": "Link",
-   "hidden": 1,
    "label": "Company",
    "options": "Company"
   },
@@ -120,10 +121,6 @@
    "label": "Remarks"
   },
   {
-   "fieldname": "section_break_10",
-   "fieldtype": "Section Break"
-  },
-  {
    "allow_on_submit": 1,
    "bold": 1,
    "fieldname": "total_amount",
@@ -134,13 +131,10 @@
    "read_only": 1
   },
   {
-   "fieldname": "column_break_10",
-   "fieldtype": "Column Break"
-  },
-  {
    "allow_on_submit": 1,
    "fieldname": "price_adjustment",
    "fieldtype": "Currency",
+   "hidden": 1,
    "label": "Price Adjustment (B)",
    "precision": "2",
    "read_only": 1
@@ -170,18 +164,7 @@
    "fieldname": "claimed_amount",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Invoiced Amount",
-   "precision": "2",
-   "read_only": 1
-  },
-  {
-   "allow_on_submit": 1,
-   "bold": 1,
-   "fieldname": "balance_amount",
-   "fieldtype": "Currency",
-   "hidden": 1,
-   "in_list_view": 1,
-   "label": "Balance Amount (D=A+B-C)",
+   "label": "Claimed Amount",
    "precision": "2",
    "read_only": 1
   },
@@ -197,12 +180,12 @@
   },
   {
    "fieldname": "boq_history",
-   "fieldtype": "Section Break",
-   "label": "Adjustment History"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "boq_history_item",
    "fieldtype": "Table",
+   "label": "Adjustment History",
    "options": "Subcontract History Item",
    "read_only": 1
   },
@@ -213,11 +196,6 @@
    "label": "NOTES"
   },
   {
-   "fieldname": "notes",
-   "fieldtype": "Small Text",
-   "label": "notes"
-  },
-  {
    "fieldname": "amended_from",
    "fieldtype": "Link",
    "label": "Amended From",
@@ -225,12 +203,42 @@
    "options": "Subcontract",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "additional_inforamtion_section",
+   "fieldtype": "Section Break",
+   "label": "Additional Inforamtion"
+  },
+  {
+   "fieldname": "column_break_2phnm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_tpdtp",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_v1gdi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_sj0kw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "total_unclaimed_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total Unclaimed Amount",
+   "precision": "2",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-08-04 16:31:38.420538",
+ "modified": "2024-11-17 12:28:05.313778",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Subcontract",
@@ -278,5 +286,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }

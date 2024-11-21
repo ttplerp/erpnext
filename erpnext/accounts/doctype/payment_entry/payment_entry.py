@@ -90,7 +90,6 @@ class PaymentEntry(AccountsController):
         self.set_status()
         self.update_expense_claim()
         self.cal_allocated_advance_amt_after_tax()
-        # self.get_advance()
         self.set_outstanding_amt()
 
     def on_submit(self):
@@ -103,9 +102,9 @@ class PaymentEntry(AccountsController):
         self.set_status()
         self.update_employee_advance()
         self.update_expense_claim(submit=1)
-        self.update_outstanding()
-        # self.get_advance()
-        if self.advances:
+        self.update_reference_outstanding()
+        self.update_project_advance()
+        if self.advances and not self.project:
             self.update_supplier_advance()
 
     def on_cancel(self):
@@ -113,14 +112,15 @@ class PaymentEntry(AccountsController):
         self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry", "Advance Settlement")
         self.make_gl_entries(cancel=1)
         self.update_outstanding_amounts()
-        self.update_outstanding(cancel=True)
         self.update_advance_paid()
         self.delink_advance_entry_references()
         self.update_payment_schedule(cancel=1)
         self.set_payment_req_status()
         self.set_status()
         self.update_expense_claim(cancel=1)
-        if self.advances:
+        self.update_reference_outstanding(cancel=True)
+        self.update_project_advance(cancel=True)
+        if self.advances and not self.project:
             self.update_supplier_advance(cancel=True)
 
     def set_payment_req_status(self):
@@ -133,7 +133,7 @@ class PaymentEntry(AccountsController):
     def update_outstanding_amounts(self):
         self.set_missing_ref_details(force=True)
 
-    def update_outstanding(self, cancel=False):
+    def update_reference_outstanding(self, cancel=False):
         for a in self.references:
             if a.reference_doctype == "Project Invoice":
                 payment_status = ""
@@ -225,6 +225,19 @@ class PaymentEntry(AccountsController):
                     )
                 )
                 frappe.msgprint("Updated Transportation and Hire Charge Invoice {}".format(a.reference_name))
+
+    def update_project_advance(self, cancel=False):
+        if not self.project:
+            return
+        for d in self.advances:
+            doc = frappe.get_doc(d.reference_doctype, d.reference_name)
+            if cancel:
+                doc.adjusted_amount -= d.allocated_amount
+                doc.balance_amount += d.allocated_amount
+            else:
+                doc.adjusted_amount += d.allocated_amount
+                doc.balance_amount -= d.allocated_amount
+            doc.save()
 
     def update_employee_advance(self):
         if self.references:
@@ -1087,11 +1100,13 @@ class PaymentEntry(AccountsController):
             self.setup_party_account_field()
 
         gl_entries = []
-        self.add_party_gl_entries(gl_entries)
+        if self.payment_type != "Receive":
+            self.add_party_gl_entries(gl_entries)
+       
         self.add_bank_gl_entries(gl_entries)
         self.add_deductions_gl_entries(gl_entries)
         self.add_tax_gl_entries(gl_entries)
-        # frappe.throw(str(gl_entries))
+        
         return gl_entries
 
     def make_gl_entries(self, cancel=0, adv_adj=0):
@@ -1169,6 +1184,7 @@ class PaymentEntry(AccountsController):
 
     def add_bank_gl_entries(self, gl_entries):
         if cint(self.settle_project_imprest) == 1:
+
             gl_entries.append(
                 self.get_gl_dict(
                     {
@@ -1183,31 +1199,51 @@ class PaymentEntry(AccountsController):
                     item=self,
                 )
             )
+            
         else:
             if self.payment_type in ("Pay", "Internal Transfer"):
                 if self.advances or self.taxes:
                     if self.advances:
-                        balance_amount = flt(self.advances[0].allocated_amount)
-                        advance_account = self.advances[0].advance_account
-
-                        gl_entries.append(
-                            self.get_gl_dict(
-                                {
-                                    "account": advance_account,
-                                    "account_currency": self.paid_from_account_currency,
-                                    "against": self.party
-                                    if self.payment_type == "Pay"
-                                    else self.paid_to,
-                                    "party": self.party,
-                                    "party_type": "Supplier",
-                                    "credit_in_account_currency": balance_amount,
-                                    "credit": balance_amount,
-                                    "cost_center": self.cost_center,
-                                    "post_net_value": True,
-                                },
-                                item=self,
+                        for adv in self.advances:
+                            gl_entries.append(
+                                self.get_gl_dict(
+                                    {
+                                        "account": adv.advance_account,
+                                        "account_currency": self.paid_from_account_currency,
+                                        "against": self.party
+                                        if self.payment_type == "Pay"
+                                        else self.paid_to,
+                                        "party": self.party,
+                                        "party_type": "Supplier",
+                                        "credit_in_account_currency": adv.allocated_amount,
+                                        "credit":  adv.allocated_amount,
+                                        "cost_center": self.cost_center,
+                                        "post_net_value": True,
+                                    },
+                                    item=self,
+                                )
                             )
-                        )
+                        # balance_amount = flt(self.advances[0].allocated_amount)
+                        # advance_account = self.advances[0].advance_account
+
+                        # gl_entries.append(
+                        #     self.get_gl_dict(
+                        #         {
+                        #             "account": advance_account,
+                        #             "account_currency": self.paid_from_account_currency,
+                        #             "against": self.party
+                        #             if self.payment_type == "Pay"
+                        #             else self.paid_to,
+                        #             "party": self.party,
+                        #             "party_type": "Supplier",
+                        #             "credit_in_account_currency": balance_amount,
+                        #             "credit": balance_amount,
+                        #             "cost_center": self.cost_center,
+                        #             "post_net_value": True,
+                        #         },
+                        #         item=self,
+                        #     )
+                        # )
                         
                     if self.total_outstanding_amount > 0.00:
                         gl_entries.append(
@@ -1264,7 +1300,7 @@ class PaymentEntry(AccountsController):
                             item=self,
                         )
                     )
-            if self.payment_type in ("Receive", "Internal Transfer"):
+            if self.payment_type in ("Internal Transfer"):
                 if self.advances:
                     balance_amount = flt(self.advances[0].balance_amount)
                     advance_account = self.advances[0].advance_account
@@ -1285,42 +1321,79 @@ class PaymentEntry(AccountsController):
                                 item=self,
                             )
                         )
-                        gl_entries.append(
-                            self.get_gl_dict(
-                                {
-                                    "account": advance_account,
-                                    "account_currency": self.paid_to_account_currency,
-                                    "against": self.party
-                                    if self.payment_type == "Receive"
-                                    else self.paid_from,
-                                    "debit_in_account_currency": balance_amount,  # self.received_amount,
-                                    "debit": balance_amount,  # base_received_amount
-                                    "cost_center": self.cost_center,
-                                    "party": self.party,
-                                    "party_type": "Customer",
-                                },
-                                item=self,
+                        for adv in self.advances:
+                             gl_entries.append(
+                                self.get_gl_dict(
+                                    {
+                                        "account": adv.advance_account,
+                                        "account_currency": self.paid_to_account_currency,
+                                        "against": self.party
+                                        if self.payment_type == "Receive"
+                                        else self.paid_from,
+                                        "debit_in_account_currency": adv.allocated_amount,
+                                        "debit": adv.allocated_amount,
+                                        "cost_center": self.cost_center,
+                                        "party": self.party,
+                                        "party_type": "Customer",
+                                    },
+                                    item=self,
+                                )
                             )
-                        )
+                        # gl_entries.append(
+                        #     self.get_gl_dict(
+                        #         {
+                        #             "account": advance_account,
+                        #             "account_currency": self.paid_to_account_currency,
+                        #             "against": self.party
+                        #             if self.payment_type == "Receive"
+                        #             else self.paid_from,
+                        #             "debit_in_account_currency": balance_amount,  # self.received_amount,
+                        #             "debit": balance_amount,  # base_received_amount
+                        #             "cost_center": self.cost_center,
+                        #             "party": self.party,
+                        #             "party_type": "Customer",
+                        #         },
+                        #         item=self,
+                        #     )
+                        # )
                     else:
-                        gl_entries.append(
-                            self.get_gl_dict(
-                                {
-                                    "account": advance_account,
-                                    "account_currency": self.paid_from_account_currency,
-                                    "against": self.party
-                                    if self.payment_type == "Receive"
-                                    else self.paid_from,
-                                    "party": self.party,
-                                    "party_type": "Customer",
-                                    "debit_in_account_currency": self.paid_amount,
-                                    "debit": self.base_paid_amount,
-                                    "cost_center": self.cost_center,
-                                    "post_net_value": True,
-                                },
-                                item=self,
+                        for adv in self.advances:
+                            gl_entries.append(
+                                self.get_gl_dict(
+                                    {
+                                        "account": adv.advance_account,
+                                        "account_currency": self.paid_from_account_currency,
+                                        "against": self.party
+                                        if self.payment_type == "Receive"
+                                        else self.paid_from,
+                                        "party": self.party,
+                                        "party_type": "Customer",
+                                        "debit_in_account_currency": adv.allocated_amount,
+                                        "debit": adv.allocated_amount,
+                                        "cost_center": self.cost_center,
+                                        "post_net_value": True,
+                                    },
+                                    item=self,
+                                )
                             )
-                        )
+                        # gl_entries.append(
+                        #     self.get_gl_dict(
+                        #         {
+                        #             "account": advance_account,
+                        #             "account_currency": self.paid_from_account_currency,
+                        #             "against": self.party
+                        #             if self.payment_type == "Receive"
+                        #             else self.paid_from,
+                        #             "party": self.party,
+                        #             "party_type": "Customer",
+                        #             "debit_in_account_currency": self.paid_amount,
+                        #             "debit": self.base_paid_amount,
+                        #             "cost_center": self.cost_center,
+                        #             "post_net_value": True,
+                        #         },
+                        #         item=self,
+                        #     )
+                        # )
                 else:
                     gl_entries.append(
                         self.get_gl_dict(
@@ -1337,7 +1410,88 @@ class PaymentEntry(AccountsController):
                             item=self,
                         )
                     )
-
+            
+            if self.payment_type in ("Receive"):
+                ad_payable = frappe.db.get_single_value("Maintenance Settings", "hire_equipment_accountoutward")
+                receivable_account = frappe.db.get_single_value("Maintenance Settings", "hire_charge_recievable_account")
+                # cash_accc = frappe.db.get_value('Company', {"name": "VAJRA BUILDERS PRIVATE LIMITED"}, 'default_cash_account')
+                net_receivable = self.paid_amount - self.total_advance_amount
+                # if not self.bank_account:
+                #     frappe.throw("set bank account")
+                
+                if self.total_advance_amount > 0:
+                    gl_entries.append(
+                        self.get_gl_dict(
+                                {
+                                    "account": self.paid_to,
+                                    # "account_currency": self.paid_from_account_currency,
+                                    "against": receivable_account,
+                                    "debit_in_account_currency": net_receivable,
+                                    "debit": net_receivable,  # base_received_amount
+                                    "cost_center": self.cost_center,
+                                    },
+                                    item=self,
+                                )
+                            )
+                    gl_entries.append(
+                        self.get_gl_dict(
+                                {
+                                    "account": ad_payable,
+                                    # "account_currency": self.paid_from_account_currency,
+                                    "against": receivable_account,
+                                    "debit_in_account_currency": self.total_advance_amount,
+                                    "debit": self.total_advance_amount,  # base_received_amount
+                                    "cost_center": self.cost_center,
+                                    'party_type': self.party_type,
+				                    'party': self.party,
+                                    },
+                                    item=self,
+                                )
+                            )
+                    gl_entries.append(
+                        self.get_gl_dict(
+                                {
+                                    "account": receivable_account,
+                                    # "account_currency": self.paid_from_account_currency,
+                                    "against": receivable_account,
+                                    "credit_in_account_currency": self.paid_amount,
+                                    "credit": self.paid_amount,  # base_received_amount
+                                    "cost_center": self.cost_center,
+                                    },
+                                    item=self,
+                                )
+                            )
+                elif self.total_advance_amount == 0:
+                    gl_entries.append(
+                        self.get_gl_dict(
+                                {
+                                    "account": self.paid_to,
+                                    # "account_currency": self.paid_from_account_currency,
+                                    "against": receivable_account,
+                                    "debit_in_account_currency": self.paid_amount,
+                                    "debit": self.paid_amount,  # base_received_amount
+                                    "cost_center": self.cost_center,
+                                    },
+                                    item=self,
+                                )
+                            )
+                    gl_entries.append(
+                        self.get_gl_dict(
+                                {
+                                    "account": receivable_account,
+                                    # "account_currency": self.paid_from_account_currency,
+                                    "against": self.bank_account,
+                                    "credit_in_account_currency": self.paid_amount,
+                                    "credit": self.paid_amount,  # base_received_amount
+                                    "cost_center": self.cost_center,
+                                    'party_type': self.party_type,
+				                    'party': self.party,
+                                    },
+                                    item=self,
+                                )
+                            )
+                   
+                
     def update_supplier_advance(self, cancel=False):
         cond = ""
         if self.project:
@@ -1677,28 +1831,26 @@ class PaymentEntry(AccountsController):
 
     @frappe.whitelist()
     def get_advance(self):
-        if not self.advance_type or not self.project and self.party_type == "Customer":
+        if not self.advance_type and not self.project and self.party_type == "Customer" and self.advance_type !='Hired Equipment Outward' :
             frappe.throw("Advance Type is required to pull the advance.")
-        # if self.project:
-        #     cond += " AND project='{}'".format(self.project)
-            # if self.party_type == "Supplier":
-            #     self.advance_type = "National Subcontractor Advance"
 
         row_data = self.get_advance_data()
         self.set("advances", [])
+
         if row_data:
-            total_advance_amount = 0
-            row = {}
+            total_advance_amount = 0  
             for a in row_data:
-                row.update({
+                advance_entry = {
+                    'reference_doctype': a.reference_doctype if a.reference_doctype else '',
+                    'reference_name': a.reference_name if  a.reference_name else '',
                     'advance_type': a.advance_type,
                     'advance_account': a.advance_account,
                     'advance_date': a.advance_date,
                     'total_amount': a.balance_amount,
                     'allocated_amount': a.balance_amount if a.balance_amount <= self.total_allocated_amount else self.total_allocated_amount,
                     'outstanding_amount': 0 if a.balance_amount <= self.total_allocated_amount else a.balance_amount - self.total_allocated_amount
-                })
-            self.append("advances", row)
+                }
+                self.append("advances", advance_entry)
 
             for item in self.advances:
                 total_advance_amount += item.allocated_amount 
@@ -1709,25 +1861,40 @@ class PaymentEntry(AccountsController):
             )
 
     def get_advance_data(self):
-        cond = ""
-        query = """
-            SELECT
-                advance_type,
-                advance_account,
-                advance_amount,
-                balance_amount,
-                adjusted_amount,
-                advance_date
-            FROM
-                `tabAdvance Item`
-            WHERE
-                parent = %(party)s 
-                AND advance_type = %(advance_type)s
-                {cond}
-        """.format(cond=cond)
+        if self.project:
+            query = """
+                select 
+                    name as reference_name, balance_amount, advance_account, advance_type, advance_date, 'Project Advance' as reference_doctype
+                from 
+                    `tabProject Advance`
+                where 
+                    project = %(project)s
+                and party_type = %(party_type)s
+                and party = %(party)s
+                and docstatus = 1
+                and balance_amount > 0
+            """
+            return frappe.db.sql(query, {
+                'project': self.project,
+                'party_type': self.party_type,
+                'party': self.party
+            }, as_dict=True)
+        
+        else:
+            query = """
+                SELECT
+                    advance_type, advance_account, advance_amount, balance_amount, adjusted_amount, advance_date
+                FROM
+                    `tabAdvance Item`
+                WHERE
+                    parent = %(party)s 
+                    AND advance_type = %(advance_type)s
+            """
+            return frappe.db.sql(query, {
+                "party": self.party,
+                "advance_type": self.advance_type
+            }, as_dict=True)
 
-        return frappe.db.sql(query, {"party": self.party, "advance_type": self.advance_type}, as_dict=1)
-       
     def cal_allocated_advance_amt_after_tax(self):
         if not self.taxes or not self.advances:
             return
@@ -2267,13 +2434,21 @@ def get_payment_entry(
         )
     if not party_type:
         party_type = set_party_type(dt)
+    if dt in ["Project Invoice"]:
+        if party_type == "Supplier":
+            party_account = set_party_account(dt, dn, doc, party_type, is_advance)
+        else:
+            party_account = doc.debit_credit_account
+    else:
+        party_account = set_party_account(dt, dn, doc, party_type, is_advance)
 
-    party_account = set_party_account(dt, dn, doc, party_type, is_advance)
     if dt == "Transportation and Hire Charge Invoice":
         if invoice_type == "Transportation Charge Invoice":
             party_account = frappe.db.get_single_value("Maintenance Settings", "transportation_payable_account")
         elif invoice_type == "Hire Charge Invoice":
             party_account = frappe.db.get_single_value("Maintenance Settings", "hire_charge_payable_account")
+        elif invoice_type == "Hire Charge Invoice Outward":
+            party_account = frappe.db.get_single_value("Maintenance Settings", "hire_charge_recievable_account")
 
     if dt == "Purchase Order":
         supplier_type = frappe.db.get_value("Supplier", doc.supplier, "supplier_type")

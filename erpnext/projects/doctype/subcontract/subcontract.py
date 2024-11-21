@@ -9,40 +9,42 @@ from frappe.model.naming import make_autoname
 from frappe.utils import cstr, flt, getdate, today, nowdate, now_datetime
 
 class Subcontract(Document):  
+
 	def validate(self):
-		self.update_defaults()
+		self.set_defaults()
 		self.validate_defaults()
-		self.update_boq_history()
 		self.validate_selected_items()
 
 	def on_submit(self):
 		self.update_boq()
 
 	def on_cancel(self):
-		self.update_boq()
+		self.update_boq(cancel=True)
 
-	def update_boq(self):
-		factor = 1 if self.docstatus < 2 else -1
-		for i in self.boq_item:
-			if i.is_selected and flt(i.amount) and i.boq_item_name:
-				doc = frappe.get_doc("BOQ Item", i.boq_item_name)
-				if not doc.is_group:
-					current_quantity = flt(doc.subcontract_quantity)
-					current_amount   = flt(doc.subcontract_amount)
-					new_quantity     = flt(current_quantity)+(factor*flt(0 if self.boq_type == "Milestone Based" else i.quantity))
-					new_amount       = flt(current_amount)+(factor*flt(i.amount))
-					new_rate         = new_amount / (new_quantity if flt(new_quantity) else 1)
-					doc.subcontract_quantity = new_quantity if flt(new_quantity) > 0 else 0
-					doc.subcontract_rate     = new_rate if flt(new_rate) > 0 else 0
-					doc.subcontract_amount   = new_amount if flt(new_amount) > 0 else 0
-					doc.save(ignore_permissions=True)
+	def update_boq(self, cancel=False):
+		for d in self.boq_item:
+			if d.is_selected and flt(d.amount) and d.bsr_code:
+				doc = frappe.get_doc("BOQ Item", {"bsr_code": d.bsr_code, "parent": self.boq})
+				if cancel:
+					doc.quantity_after_subcontract += flt(d.quantity)
+				else:
+					doc.quantity_after_subcontract -= flt(d.quantity)
+				doc.save(ignore_permissions=True)
 
 	def validate_selected_items(self):
-		for a in self.boq_item:
-			if a.is_selected == 0 or not a.is_selected:
-				frappe.db.sql("""
-				 delete from `tabSubcontract Item` where name = '{}' 
-				""".format(str(a.name)))
+		for d in self.boq_item:
+			doc = frappe.get_doc("BOQ Item", {"bsr_code": d.bsr_code, "parent": self.boq})
+			if d.quantity > doc.quantity_after_subcontract:
+				frappe.throw(_("Quantity for Subcontract in Row #{} exceeds the available BOQ balance quantity. "
+							"Entered Quantity: {} units, Available Balance Quantity: {} units. "
+							"Please verify the quantities and ensure they do not exceed the available balance in the BOQ.").format(
+					frappe.bold(d.idx),
+					frappe.bold(d.quantity),
+					frappe.bold(doc.quantity_after_subcontract)
+				))
+
+			if d.is_selected == 0 or not d.is_selected:
+				frappe.db.sql("""delete from `tabSubcontract Item` where name = '{}'""".format(str(d.name)))
 					
 	def update_boq_history(self):
 			# removing entries which are copied via "Duplicate" option
@@ -79,41 +81,23 @@ class Subcontract(Document):
 		if flt(self.total_amount,0) <= 0:
 			frappe.throw(_("Invalid total amount."), title="Invalid Data")
 			   
-	def update_defaults(self):
-		item_group = ""
+	def set_defaults(self):
 		self.total_amount     = 0.0
 		self.price_adjustment = 0.0
 		self.claimed_amount   = 0.0
-		self.received_amount  = 0.0
-		self.balance_amount   = 0.0
+		self.unclaimed_amount   = 0.0
+		self.total_unclaimed_amount = 0.0
 
 		for item in self.boq_item:
-			if item.is_group:
-				item_group              = item.item
-				item.quantity           = 0.0
-				item.rate               = 0.0
-				item.amount             = 0.0
-				item.claimed_quantity   = 0.0
-				item.claimed_amount     = 0.0
-				item.booked_quantity    = 0.0
-				item.booked_amount      = 0.0
-				item.balance_quantity   = 0.0
-				item.balance_amount     = 0.0
-			else:
-				item.amount           = flt(item.quantity)*flt(item.rate)
-				item.claimed_quantity = 0.0
-				item.claimed_amount   = 0.0
-				item.booked_quantity  = 0.0
-				item.booked_amount    = 0.0
-				item.balance_quantity = flt(item.quantity)
-				item.balance_rate     = flt(item.rate)
-				item.balance_amount   = flt(item.amount)
+			item.amount           = flt(item.quantity)*flt(item.rate)
+			item.claimed_quantity = 0.0
+			item.claimed_amount   = 0.0
+			item.unclaimed_quantity = flt(item.quantity)
+			item.unclaimed_amount   = flt(item.amount)
 
-				if item.is_selected and flt(item.amount):
-					self.total_amount    += flt(item.amount)
-					self.balance_amount  += flt(item.amount)
-
-			item.parent_item = item_group
+			if item.is_selected and flt(item.amount):
+				self.total_amount    += flt(item.amount)
+				self.total_unclaimed_amount  += flt(item.unclaimed_amount)
 
 			if flt(item.quantity) < 0:
 				frappe.throw(_("Row#{0} : Invalid quantity"),title="Invalid Data")
@@ -143,15 +127,6 @@ def make_subcontract_adjustment(source_name, target_doc=None):
 	def update_master(source_doc, target_doc, source_parent):
 		target_doc.total_amount = 0.0
 			
-	def update_item(source_doc, target_doc, source_parent):
-		target_doc.balance_rate         = flt(source_doc.balance_rate) if flt(source_doc.balance_rate) else flt(source_doc.rate)
-		target_doc.balance_quantity_adj = flt(target_doc.balance_quantity)
-		target_doc.balance_rate_adj     = flt(target_doc.balance_rate)
-		target_doc.balance_amount_adj   = flt(target_doc.balance_amount)
-		target_doc.adjustment_quantity  = 0
-		target_doc.adjustment_rate      = 0
-		target_doc.adjustment_amount    = 0
-			
 	doclist = get_mapped_doc("Subcontract", source_name, {
 			"Subcontract": {
 				"doctype": "Subcontract Adjustment",
@@ -165,10 +140,10 @@ def make_subcontract_adjustment(source_name, target_doc=None):
 			"Subcontract Item": {
 				"doctype": "Subcontract Adjustment Item",
 				"field_map": {
-					"name": "boq_item_name",
-					"balance_rate": "balance_rate",
+					"bsr_code": "bsr_code",
+					"quantity": "adjustment_quantity",
+					"amount": "adjustment_amount",
 				},
-				"postprocess": update_item
 			}
 	}, target_doc)
 
@@ -177,14 +152,12 @@ def make_subcontract_adjustment(source_name, target_doc=None):
 @frappe.whitelist()
 def make_direct_invoice(source_name, target_doc=None):
 	def update_master(source_doc, target_doc, source_parent):
-		#target_doc.invoice_title = str(source_doc.project) + "(Project Invoice)"
-		target_doc.invoice_title = "Project Invoice ( {0} )".format(frappe.db.get_value("Project", source_doc.project, "project_name"))
 		target_doc.invoice_type = "Direct Invoice"
 		target_doc.check_all = 1
 			
 	def update_item(source_doc, target_doc, source_parent):
 		target_doc.subcontract  = source_doc.parent
-		target_doc.invoice_rate = flt(source_doc.balance_rate) if flt(source_doc.balance_rate) else flt(source_doc.rate)
+		target_doc.invoice_rate = flt(source_doc.rate)
 		target_doc.act_quantity = flt(target_doc.invoice_quantity)
 		target_doc.act_rate     = flt(target_doc.invoice_rate)
 		target_doc.act_amount   = flt(target_doc.invoice_amount)
@@ -203,7 +176,7 @@ def make_direct_invoice(source_name, target_doc=None):
 			"Subcontract Item": {
 				"doctype": "Project Invoice BOQ",
 				"field_map": {
-					"name": "boq_item_name",
+					"name": "bsr_code",
 					"balance_quantity": "invoice_quantity",
 					"balance_rate": "invoice_rate",
 					"balance_amount": "invoice_amount",
@@ -264,10 +237,14 @@ def make_book_entry(source_name, target_doc=None):
 			"Subcontract Item": {
 				"doctype": "MB Entry BOQ",
 				"field_map": {
-						"name": "boq_item_name",
-						"balance_quantity": "entry_quantity",
-						"balance_rate": "entry_rate",
-						"balance_amount": "entry_amount",
+						"bsr_code": "bsr_code",
+						"no": "no",
+						"length": "length",
+						"breath": "breath",
+						"height": "height",
+						"unclaimed_quantity": "entry_quantity",
+						"rate": "entry_rate",
+						"unclaimed_amount": "entry_amount",
 						"quantity": "original_quantity",
 						"amount": "original_amount"
 				},

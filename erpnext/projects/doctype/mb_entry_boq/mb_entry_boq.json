@@ -6,19 +6,21 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "boq_code",
-  "item_name",
-  "is_group",
   "is_selected",
-  "uom",
+  "bsr_code",
   "column_break_10",
-  "item",
-  "billing_section",
+  "uom",
+  "description",
+  "detailed_measurement_section",
   "no",
+  "column_break_bumhc",
   "length",
   "column_break_11",
   "breath",
+  "column_break_l3kpy",
   "height",
+  "column_break_cow01",
+  "coefficient",
   "section_break_10",
   "entry_quantity",
   "column_break_20",
@@ -28,10 +30,7 @@
   "section_break_20",
   "act_quantity",
   "column_break_40",
-  "act_rate",
-  "column_break_50",
   "act_amount",
-  "boq_item_name",
   "original_quantity",
   "original_rate",
   "original_amount",
@@ -41,39 +40,21 @@
  ],
  "fields": [
   {
-   "fieldname": "boq_code",
-   "fieldtype": "Data",
-   "label": "BOQ Code",
-   "read_only": 1
-  },
-  {
-   "fetch_from": "boq_code.description",
-   "fieldname": "item",
-   "fieldtype": "Small Text",
-   "in_list_view": 1,
-   "label": "Item Description",
-   "read_only": 1
-  },
-  {
-   "default": "0",
-   "fieldname": "is_group",
-   "fieldtype": "Check",
-   "label": "Is group item?",
-   "read_only": 1
-  },
-  {
    "fieldname": "column_break_10",
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "boq_code.stock_uom",
+   "columns": 1,
+   "fetch_from": "bsr_code.uom",
    "fieldname": "uom",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "UOM",
    "options": "UOM",
    "read_only": 1
   },
   {
+   "columns": 1,
    "default": "1",
    "fieldname": "is_selected",
    "fieldtype": "Check",
@@ -82,14 +63,14 @@
   },
   {
    "fieldname": "section_break_10",
-   "fieldtype": "Section Break",
-   "label": "ITEMS"
+   "fieldtype": "Section Break"
   },
   {
+   "columns": 1,
    "fieldname": "entry_quantity",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "Entry Quantity",
+   "label": "Qty",
    "precision": "2"
   },
   {
@@ -97,6 +78,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "columns": 1,
    "fieldname": "entry_rate",
    "fieldtype": "Currency",
    "in_list_view": 1,
@@ -124,7 +106,7 @@
    "fieldname": "act_quantity",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "Balance Qty before claim",
+   "label": "Quantity before Claim",
    "precision": "2",
    "read_only": 1
   },
@@ -133,28 +115,10 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "act_rate",
-   "fieldtype": "Float",
-   "label": "Balance Rate",
-   "precision": "2",
-   "read_only": 1
-  },
-  {
-   "fieldname": "column_break_50",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "act_amount",
    "fieldtype": "Currency",
-   "label": "Balance Amount",
+   "label": "Amount before Claim",
    "precision": "2",
-   "read_only": 1
-  },
-  {
-   "fieldname": "boq_item_name",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "BOQ Item Name",
    "read_only": 1
   },
   {
@@ -179,26 +143,16 @@
    "precision": "2"
   },
   {
-   "fetch_from": "boq_code.item_name",
-   "fieldname": "item_name",
-   "fieldtype": "Data",
-   "label": "Item Name",
-   "read_only": 1
-  },
-  {
-   "fieldname": "billing_section",
-   "fieldtype": "Section Break",
-   "label": "BILLING"
-  },
-  {
    "fieldname": "no",
    "fieldtype": "Float",
-   "label": "No"
+   "label": "No",
+   "precision": "2"
   },
   {
    "fieldname": "length",
    "fieldtype": "Float",
-   "label": "Length"
+   "label": "Length",
+   "precision": "2"
   },
   {
    "fieldname": "column_break_11",
@@ -212,7 +166,8 @@
   {
    "fieldname": "height",
    "fieldtype": "Float",
-   "label": "Height"
+   "label": "Height",
+   "precision": "2"
   },
   {
    "fieldname": "sb_references",
@@ -233,12 +188,52 @@
    "hidden": 1,
    "label": "Detailed MB Entry BOQ ID",
    "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "bsr_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "BSR Code",
+   "options": "Bhutan Schedule of Rates",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "bsr_code.description",
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Description",
+   "read_only": 1
+  },
+  {
+   "fieldname": "detailed_measurement_section",
+   "fieldtype": "Section Break",
+   "label": "Detailed Measurement"
+  },
+  {
+   "fieldname": "column_break_bumhc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_l3kpy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_cow01",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "coefficient",
+   "fieldtype": "Float",
+   "label": "Coefficient",
+   "precision": "2"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-08-30 10:40:25.652379",
+ "modified": "2024-11-15 16:16:08.813698",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "MB Entry BOQ",

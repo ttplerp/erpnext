@@ -2,9 +2,9 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Reord Of Measurement', {
-	// refresh: function(frm) {
+	refresh: function(frm) {
 
-	// },
+	},
 });
 
 frappe.ui.form.on('Record Of Measurement Item', {
@@ -35,6 +35,9 @@ frappe.ui.form.on('Record Of Measurement Item', {
 		calculate_entry_quantity(frm, cdt, cdn)
 	},
 	height: function(frm, cdt, cdn){
+		calculate_entry_quantity(frm, cdt, cdn)
+	},
+	coefficient: function(frm, cdt, cdn){
 		calculate_entry_quantity(frm, cdt, cdn)
 	},
 });

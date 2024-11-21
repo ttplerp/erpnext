@@ -76,16 +76,16 @@ var get_boq_list = function (frm) {
                         r.message.forEach(function (boq) {
                             var row = frappe.model.add_child(frm.doc, "BOQ Substitution Item", "boq_item");
                             console.log(row)
-                            row.boq_item_name = boq['name'];
-                            row.boq_code = boq['boq_code'];
-                            row.item_name = boq['item'];
+                            row.bsr_code = boq['bsr_code'];
+                            row.description = boq['description'];
                             row.uom = boq['uom'];
+                            row.boq_item_name = boq['name'];
                             row.is_group = boq['is_group'];
                             row.balance_quantity = boq['balance_quantity'];
                             row.balance_rate = boq['balance_rate'];
                             row.balance_amount = boq['balance_amount'];
                             row.initial_amount = boq['amount'];
-                                });
+                            });
                             cur_frm.refresh();
                         }
                         else {

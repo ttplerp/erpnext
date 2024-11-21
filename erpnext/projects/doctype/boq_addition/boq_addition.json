@@ -8,27 +8,31 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "addition_date",
   "project",
-  "branch",
-  "cost_center",
+  "boq",
+  "column_break_exve0",
   "party_type",
   "party",
   "column_break_i94kd",
-  "boq",
+  "addition_date",
   "boq_date",
   "boq_type",
   "remarks",
   "section_break_yylvt",
   "boq_item",
   "total_amount",
-  "section_break_nij6z",
   "sb_notes",
   "notes",
+  "more_information_section",
+  "branch",
+  "company",
+  "column_break_uqomc",
+  "cost_center",
   "amended_from"
  ],
  "fields": [
   {
+   "default": "Today",
    "fieldname": "addition_date",
    "fieldtype": "Date",
    "in_list_view": 1,
@@ -86,6 +90,7 @@
   {
    "fieldname": "boq_type",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Types of BOQ",
    "options": "\nItem Based\nMilestone Based\nPiece Rate Work Based(PRW)"
   },
@@ -106,12 +111,9 @@
   },
   {
    "fieldname": "total_amount",
-   "fieldtype": "Float",
-   "label": "Total Amount(nu)"
-  },
-  {
-   "fieldname": "section_break_nij6z",
-   "fieldtype": "Section Break"
+   "fieldtype": "Currency",
+   "label": "Total Amount",
+   "read_only": 1
   },
   {
    "fieldname": "sb_notes",
@@ -131,12 +133,31 @@
    "options": "BOQ Addition",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "column_break_exve0",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "column_break_uqomc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "more_information_section",
+   "fieldtype": "Section Break",
+   "label": "More Information"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-28 10:57:11.308390",
+ "modified": "2024-11-18 09:27:13.911899",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "BOQ Addition",

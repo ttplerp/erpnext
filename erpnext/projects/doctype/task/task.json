@@ -7,34 +7,29 @@
  "document_type": "Setup",
  "engine": "InnoDB",
  "field_order": [
-  "subject",
+  "task_name",
   "project",
+  "project_name",
   "issue",
-  "type",
+  "column_break_zqpdc",
+  "project_period",
+  "task_weight",
   "color",
   "is_group",
   "is_template",
   "column_break0",
   "status",
-  "priority",
-  "task_weight",
   "parent_task",
   "completed_by",
   "completed_on",
   "sb_timeline",
-  "exp_start_date",
-  "expected_time",
-  "start",
+  "expected_start_date",
   "column_break_11",
-  "exp_end_date",
-  "progress",
+  "expected_end_date",
+  "column_break_9h4qd",
   "duration",
+  "progress",
   "is_milestone",
-  "sb_details",
-  "description",
-  "sb_depends_on",
-  "depends_on",
-  "depends_on_tasks",
   "sb_actual",
   "act_start_date",
   "actual_time",
@@ -49,24 +44,17 @@
   "closing_date",
   "branch",
   "cost_center",
+  "company",
   "column_break_22",
   "department",
-  "company",
   "lft",
   "rgt",
   "old_parent",
+  "section_break_sdqnf",
+  "description",
   "amended_from"
  ],
  "fields": [
-  {
-   "fieldname": "subject",
-   "fieldtype": "Data",
-   "in_global_search": 1,
-   "in_standard_filter": 1,
-   "label": "Subject",
-   "reqd": 1,
-   "search_index": 1
-  },
   {
    "bold": 1,
    "fieldname": "project",
@@ -89,19 +77,11 @@
    "options": "Issue"
   },
   {
-   "fieldname": "type",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Type",
-   "options": "Task Type"
-  },
-  {
    "bold": 1,
    "default": "0",
    "fieldname": "is_group",
    "fieldtype": "Check",
    "hidden": 1,
-   "in_list_view": 1,
    "label": "Is Group"
   },
   {
@@ -122,22 +102,12 @@
    "no_copy": 1,
    "oldfieldname": "status",
    "oldfieldtype": "Select",
-   "options": "Open\nWorking\nPending Review\nOverdue\nTemplate\nCompleted\nCancelled"
-  },
-  {
-   "allow_on_submit": 1,
-   "fieldname": "priority",
-   "fieldtype": "Select",
-   "in_standard_filter": 1,
-   "label": "Priority",
-   "oldfieldname": "priority",
-   "oldfieldtype": "Select",
-   "options": "Low\nMedium\nHigh\nUrgent",
-   "search_index": 1
+   "options": "Open\nWorking\nCompleted\nCancelled"
   },
   {
    "fieldname": "color",
    "fieldtype": "Color",
+   "hidden": 1,
    "label": "Color"
   },
   {
@@ -153,23 +123,7 @@
   {
    "collapsible_depends_on": "eval:doc.__islocal",
    "fieldname": "sb_timeline",
-   "fieldtype": "Section Break",
-   "label": "Timeline"
-  },
-  {
-   "fieldname": "exp_start_date",
-   "fieldtype": "Date",
-   "label": "Expected Start Date",
-   "oldfieldname": "exp_start_date",
-   "oldfieldtype": "Date"
-  },
-  {
-   "default": "0",
-   "fieldname": "expected_time",
-   "fieldtype": "Float",
-   "label": "Expected Time (in hours)",
-   "oldfieldname": "exp_total_hrs",
-   "oldfieldtype": "Data"
+   "fieldtype": "Section Break"
   },
   {
    "fetch_from": "type.weight",
@@ -184,18 +138,10 @@
    "fieldtype": "Column Break"
   },
   {
-   "bold": 1,
-   "fieldname": "exp_end_date",
-   "fieldtype": "Date",
-   "label": "Expected End Date",
-   "oldfieldname": "exp_end_date",
-   "oldfieldtype": "Date",
-   "search_index": 1
-  },
-  {
    "allow_on_submit": 1,
    "fieldname": "progress",
    "fieldtype": "Percent",
+   "in_list_view": 1,
    "label": "% Progress",
    "no_copy": 1
   },
@@ -208,12 +154,6 @@
    "label": "Is Milestone"
   },
   {
-   "fieldname": "sb_details",
-   "fieldtype": "Section Break",
-   "label": "Details",
-   "oldfieldtype": "Section Break"
-  },
-  {
    "fieldname": "description",
    "fieldtype": "Text Editor",
    "label": "Task Description",
@@ -221,25 +161,6 @@
    "oldfieldtype": "Text Editor",
    "print_width": "300px",
    "width": "300px"
-  },
-  {
-   "fieldname": "sb_depends_on",
-   "fieldtype": "Section Break",
-   "label": "Dependencies",
-   "oldfieldtype": "Section Break"
-  },
-  {
-   "fieldname": "depends_on",
-   "fieldtype": "Table",
-   "label": "Dependent Tasks",
-   "options": "Task Depends On"
-  },
-  {
-   "fieldname": "depends_on_tasks",
-   "fieldtype": "Code",
-   "hidden": 1,
-   "label": "Depends on Tasks",
-   "read_only": 1
   },
   {
    "fieldname": "sb_actual",
@@ -379,16 +300,10 @@
    "label": "Is Template"
   },
   {
-   "depends_on": "is_template",
-   "fieldname": "start",
-   "fieldtype": "Int",
-   "label": "Begin On (Days)"
-  },
-  {
-   "depends_on": "is_template",
    "fieldname": "duration",
    "fieldtype": "Int",
-   "label": "Duration (Days)"
+   "label": "Duration (Days)",
+   "read_only": 1
   },
   {
    "allow_on_submit": 1,
@@ -420,6 +335,57 @@
    "options": "Task",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fetch_from": "project.project_name",
+   "fieldname": "project_name",
+   "fieldtype": "Data",
+   "label": "Project Name"
+  },
+  {
+   "fetch_from": "project.project_period",
+   "fieldname": "project_period",
+   "fieldtype": "Data",
+   "label": "Project Period (Days)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "expected_start_date",
+   "fieldtype": "Date",
+   "label": "Expected Start Date",
+   "oldfieldname": "exp_start_date",
+   "oldfieldtype": "Date"
+  },
+  {
+   "bold": 1,
+   "fieldname": "expected_end_date",
+   "fieldtype": "Date",
+   "label": "Expected End Date",
+   "oldfieldname": "exp_end_date",
+   "oldfieldtype": "Date",
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_zqpdc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_9h4qd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "task_name",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "in_standard_filter": 1,
+   "label": "Task Name",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_sdqnf",
+   "fieldtype": "Section Break"
   }
  ],
  "icon": "fa fa-check",
@@ -427,7 +393,7 @@
  "is_submittable": 1,
  "links": [],
  "max_attachments": 5,
- "modified": "2023-08-01 14:25:51.979310",
+ "modified": "2024-11-20 18:22:58.804396",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Task",
@@ -476,14 +442,12 @@
    "write": 1
   }
  ],
- "search_fields": "subject",
  "show_name_in_global_search": 1,
  "show_preview_popup": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
  "timeline_field": "project",
- "title_field": "subject",
  "track_changes": 1,
  "track_seen": 1
 }

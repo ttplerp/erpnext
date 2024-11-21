@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-# Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and contributors
-# For license information, please see license.txt
 from __future__ import unicode_literals
 import frappe
 from frappe import _
@@ -13,28 +10,28 @@ from erpnext.accounts.party import get_party_account
 
 class BOQ(Document):	
 	def validate(self):
-		self.update_defaults()
+		self.set_defaults()
 		self.validate_defaults()
-		self.update_boq_history()
 	
 	def on_submit(self):
 		self.update_project_value()
 		self.project_boq_item_entry()
 
 	def on_cancel(self):
-		self.update_project_value()
-		self.project_boq_item_entry()
+		self.update_project_value(cancel=True)
+		self.project_boq_item_entry(cancel=True)
 
 	def on_update_after_submit(self):
 		self.project_boq_item_entry()
 
-	def calculate_quantity(self): 
-		for d in self.boq_item:
-			d.quantity = d.no * d.coefficient * d.breath * d.height * d.length
+	# def calculate_quantity(self): 
+	# 	for d in self.boq_item:
+	# 		d.quantity = d.no * d.length * d.breath * d.height * d.coefficient
 
-	def project_boq_item_entry(self):
-		if self.docstatus == 2:
+	def project_boq_item_entry(self, cancel=False):
+		if cancel:
 			frappe.db.sql("delete from `tabProject BOQ Item` where parent='{project}' and boq_name = '{boq_name}'".format(project=self.project, boq_name=self.name))
+
 		else:
 			if not frappe.db.exists("Project BOQ Item", {"parent": self.project, "boq_name": self.name}):
 				doc = frappe.get_doc("Project", self.project)
@@ -44,9 +41,9 @@ class BOQ(Document):
 				row.amount              = flt(self.total_amount)
 				row.price_adjustment    = flt(self.price_adjustment)
 				row.total_amount        = flt(self.total_amount)+flt(self.price_adjustment)
-				row.received_amount     = flt(self.received_amount)
-				row.paid_amount         = flt(self.paid_amount)
-				row.balance_amount      = flt(self.balance_amount)
+				# row.received_amount     = flt(self.received_amount)
+				# row.paid_amount         = flt(self.paid_amount)
+				# row.balance_amount      = flt(self.balance_amount)
 				row.save(ignore_permissions=True)
 			else:
 				row = frappe.get_doc("Project BOQ Item", {"parent": self.project, "boq_name": self.name})
@@ -54,37 +51,10 @@ class BOQ(Document):
 				row.amount              = flt(self.total_amount)
 				row.price_adjustment    = flt(self.price_adjustment)
 				row.total_amount        = flt(self.total_amount)+flt(self.price_adjustment)
-				row.received_amount     = flt(self.received_amount)
-				row.paid_amount         = flt(self.paid_amount)
-				row.balance_amount      = flt(self.balance_amount)
+				# row.received_amount     = flt(self.received_amount)
+				# row.paid_amount         = flt(self.paid_amount)
+				# row.balance_amount      = flt(self.balance_amount)
 				row.save(ignore_permissions=True)
-							
-	def update_boq_history(self):
-		for i in self.boq_history_item:
-			if i.transaction_type != self.doctype or (i.transaction_name and i.transaction_name != self.name):
-				self.remove(i)
-
-		# make entry in history for the current BOQ if it doesn't already exist, else update the details
-		if not self.boq_history_item:
-			self.append("boq_history_item",{
-						"transaction_type": self.doctype,
-						"transaction_date": self.boq_date,
-						"initial_amount": flt(self.total_amount),
-						"adjustment_amount": 0,
-						"final_amount": flt(self.total_amount),
-						"owner": frappe.session.user,
-						"creation": now_datetime(),
-						"modified_by": frappe.session.user,
-						"modified": now_datetime()
-			})
-		else:
-			for i in self.boq_history_item:
-				if i.transaction_type == self.doctype:
-					i.transaction_name  = self.name
-					i.transaction_date  = self.boq_date
-					i.initial_amount    = flt(self.total_amount)
-					i.adjustment_amount = 0
-					i.final_amount      = flt(self.total_amount)
 
 	def validate_defaults(self):
 		if not all((self.project, self.branch, self.cost_center)):
@@ -93,30 +63,20 @@ class BOQ(Document):
 		if flt(self.total_amount,0) <= 0:
 			frappe.throw(_("Invalid total amount."), title="Invalid Data")
 
-	def update_defaults(self):
-		item_group = ""
-		self.total_amount = self.price_adjustment = self.claimed_amount = self.received_amount = self.balance_amount = 0.0
-		
-		group_items = [item for item in self.boq_item if item.is_group]
-		for item in group_items:
-			item_group = item.item
-			item.quantity = item.rate = item.amount = item.claimed_quantity = item.claimed_amount = item.booked_quantity = item.booked_amount = item.balance_quantity = item.balance_amount = 0.0
-		
-		non_group_items = [item for item in self.boq_item if not item.is_group]
-		for item in non_group_items:
-			item.amount = flt(item.quantity) * flt(item.rate)
-			item.claimed_quantity = item.claimed_amount = item.booked_quantity = item.booked_amount = 0.0
-			item.balance_quantity = flt(item.quantity)
-			item.balance_rate = flt(item.rate)
-			item.balance_amount = flt(item.amount)
-			
-			self.total_amount += flt(item.amount)
-			self.balance_amount += flt(item.amount)
+	def set_defaults(self):
+		self.total_amount = self.price_adjustment = self.claimed_amount = self.total_unclaimed_amount = 0.0
+		for item in self.boq_item:
+			item.claimed_quantity = item.claimed_amount = item.quantity_before_subcontract = item.quantity_after_subcontract = 0.0 
+			item.amount 						= flt(item.quantity) * flt(item.rate)
+			self.total_amount 					+= flt(item.amount)
+			item.unclaimed_quantity 			= flt(item.quantity)
+			item.quantity_before_subcontract 	= flt(item.quantity)
+			item.quantity_after_subcontract 	= flt(item.quantity)
+			item.unclaimed_amount 				= flt(item.amount)
+			self.total_unclaimed_amount 		+= flt(item.unclaimed_amount)
 			
 			if flt(item.amount) < 0:
 				frappe.throw(_("Row#{0} : Invalid amount."), title="Invalid Data")
-			
-			item.parent_item = item_group
 		
 		# Defaults
 		base_project = frappe.get_doc("Project", self.project)
@@ -135,7 +95,7 @@ class BOQ(Document):
 		if not self.boq_date:
 			self.boq_date = date.today()
 
-	def update_project_value(self):
+	def update_project_value(self, cancel=False):
 		if self.total_amount:
 			pro_doc = frappe.get_doc("Project", self.project)
 			pro_doc.flags.dont_sync_tasks = True
@@ -146,15 +106,6 @@ class BOQ(Document):
 def make_boq_adjustment(source_name, target_doc=None):
 	def update_master(source_doc, target_doc, source_parent):
 		target_doc.total_amount = 0.0
-			
-	def update_item(source_doc, target_doc, source_parent):
-		target_doc.balance_rate         = flt(source_doc.balance_rate) if flt(source_doc.balance_rate) else flt(source_doc.rate)
-		target_doc.balance_quantity_adj = flt(target_doc.balance_quantity)
-		target_doc.balance_rate_adj     = flt(target_doc.balance_rate)
-		target_doc.balance_amount_adj   = flt(target_doc.balance_amount)
-		target_doc.adjustment_quantity  = 0
-		target_doc.adjustment_rate      = 0
-		target_doc.adjustment_amount    = 0
 			
 	doclist = get_mapped_doc("BOQ", source_name, {
 		"BOQ": {
@@ -168,10 +119,10 @@ def make_boq_adjustment(source_name, target_doc=None):
 		"BOQ Item": {
 			"doctype": "BOQ Adjustment Item",
 			"field_map": {
-					"name": "boq_item_name",
-					"balance_rate": "balance_rate",
+				"bsr_code": "bsr_code",
+				"quantity": "adjustment_quantity",
+				"amount": "adjustment_amount",
 			},
-			"postprocess": update_item
 		}
 	}, target_doc)
 
@@ -214,12 +165,10 @@ def make_additional_boq(source_name, target_doc=None):
 @frappe.whitelist()
 def make_direct_invoice(source_name, target_doc=None):
 	def update_master(source_doc, target_doc, source_parent):
-		target_doc.invoice_title = str(target_doc.project) + "(Project Invoice)"
 		target_doc.invoice_type = "Direct Invoice"
 		target_doc.check_all = 1
 			
 	def update_item(source_doc, target_doc, source_parent):
-		target_doc.invoice_rate = flt(source_doc.balance_rate) if flt(source_doc.balance_rate) else flt(source_doc.rate)
 		target_doc.act_quantity = flt(target_doc.invoice_quantity)
 		target_doc.act_rate     = flt(target_doc.invoice_rate)
 		target_doc.act_amount   = flt(target_doc.invoice_amount)
@@ -239,7 +188,6 @@ def make_direct_invoice(source_name, target_doc=None):
 			"field_map": {
 					"name": "boq_item_name",
 					"balance_quantity": "invoice_quantity",
-					"balance_rate": "invoice_rate",
 					"balance_amount": "invoice_amount",
 					"quantity": "original_quantity",
 					"amount": "original_amount"
@@ -250,52 +198,53 @@ def make_direct_invoice(source_name, target_doc=None):
 
 	return doclist
 
+# Added by Dawa Tshering on 14/11/2024
 @frappe.whitelist()
 def make_boq_subcontract(source_name, target_doc=None):
-	def update_master(source_doc, target_doc, source_parent):
-		target_doc.boq          = source_doc.name
-		target_doc.party_type   = "Supplier" if source_doc.party_type == "Customer" else None
-		target_doc.party        = None
-		target_doc.total_amount = 0
-		target_doc.price_adjustment = 0
-		target_doc.paid_amount = 0
-		target_doc.received_amount = 0
-		target_doc.claimed_amount = 0
-		target_doc.balance_amount = 0
-			
-	def update_item(source_doc, target_doc, source_parent):
-		target_doc.boq_quantity = target_doc.quantity = source_doc.balance_quantity
-		target_doc.boq_rate     = target_doc.rate     = source_doc.balance_rate
-		target_doc.boq_amount   = target_doc.amount   = source_doc.balance_amount
-		
-		target_doc.claimed_quantity    = target_doc.claimed_amount    = 0
-		target_doc.booked_quantity     = target_doc.booked_amount     = 0
-		target_doc.adjustment_quantity = target_doc.adjustment_amount = 0
-			
+	item_details = get_item_details(source_name)
+	def set_missing_values(source, target):
+		target.party_type = "Supplier" if source.party_type == "Customer" else None
+		target.party = None
+		target.set(
+			"boq_item",
+			[d for d in item_details]
+		)
+
 	doclist = get_mapped_doc("BOQ", source_name, {
 		"BOQ": {
-			"doctype": "Subcontract",
-			"field_map": {
-					"project": "project"
-			},
-			"postprocess": update_master
-		},
-		"BOQ Item": {
-			"doctype": "Subcontract Item",
-			"field_map": {
-					"name": "boq_item_name",
-			},
-			"postprocess": update_item
-		},
-	}, target_doc)
+			"doctype": "Subcontract"
+		}
+	}, target_doc, set_missing_values)
 
 	return doclist
 
+def get_item_details(doc_name):
+	res = frappe.db.sql(
+		"""
+		select 
+			t2.bsr_code, t2.uom, t2.description, t2.rate, t2.quantity_after_subcontract as total_quantity, t2.no, t2.length, t2.breath, t2.height, t2.coefficient
+		from `tabBOQ` t1, `tabBOQ Item` t2
+		where t1.name = t2.parent
+		and t1.docstatus = 1
+		and t1.name = %s
+		and t2.quantity_after_subcontract > 0
+		order by t2.bsr_code asc
+		""", (doc_name), as_dict=True
+	)
+	for a in res:
+		a['boq_quantity'] = a.total_quantity
+		a['quantity'] = a.total_quantity
+		a['unclaimed_quantity'] = a.total_quantity
+		a['boq_rate'] = a.rate
+		a['amount'] = flt(a.rate) * flt(a.total_quantity)
+		a['boq_amount'] = flt(a.rate) * flt(a.total_quantity)
+		a['unclaimed_amount'] = flt(a.rate) * flt(a.total_quantity)
+	return res
+
 @frappe.whitelist()
-def make_mb_invoice(source_name, target_doc=None):
+def make_project_ivoice(source_name, target_doc=None):
 	def update_master(source_doc, target_doc, source_parent):
 		target_doc.invoice_title = str(target_doc.project) + "(Project Invoice)"
-		target_doc.invoice_type = "MB Based Invoice"
 		target_doc.check_all_mb = 1
 		target_doc.debit_credit_account = get_party_account(source_doc.party_type, source_doc.party, source_doc.company)
 			
@@ -316,13 +265,12 @@ def make_mb_invoice(source_name, target_doc=None):
 def make_book_entry(source_name, target_doc=None):
 	def update_master(source_doc, target_doc, source_parent):
 		target_doc.check_all = 1
-			
+
 	def update_item(source_doc, target_doc, source_parent):
-		target_doc.entry_rate   = flt(source_doc.balance_rate) if flt(source_doc.balance_rate) else flt(source_doc.rate)
-		target_doc.act_quantity = flt(target_doc.entry_quantity)
-		target_doc.act_rate     = flt(target_doc.entry_rate)
-		target_doc.act_amount   = flt(target_doc.entry_amount)
-		target_doc.original_rate= flt(target_doc.entry_rate)
+		target_doc.act_quantity  = flt(target_doc.entry_quantity)
+		target_doc.act_rate      = flt(target_doc.entry_rate)
+		target_doc.act_amount    = flt(target_doc.entry_amount)
+		target_doc.original_rate = flt(target_doc.entry_rate)
 			
 	doclist = get_mapped_doc("BOQ", source_name, {
 		"BOQ": {
@@ -336,12 +284,16 @@ def make_book_entry(source_name, target_doc=None):
 		"BOQ Item": {
 			"doctype": "MB Entry BOQ",
 			"field_map": {
-					"name": "boq_item_name",
-					"balance_quantity": "entry_quantity",
-					"balance_rate": "entry_rate",
-					"balance_amount": "entry_amount",
-					"quantity": "original_quantity",
-					"amount": "original_amount"
+					"bsr_code": "bsr_code",
+					"no": "no",
+						"length": "length",
+						"breath": "breath",
+						"height": "height",
+						"unclaimed_quantity": "entry_quantity",
+						"rate": "entry_rate",
+						"unclaimed_amount": "entry_amount",
+						"quantity": "original_quantity",
+						"amount": "original_amount"
 			},
 			"postprocess": update_item
 		}
@@ -358,11 +310,14 @@ def make_rm(source_name, target_doc=None, args=None):
 	# 	args = json.loads(args)
 
 	def post_process(source, target):
+		target.branch = frappe.flags.args.branch
+		target.cost_center = frappe.flags.args.cost_center
 		target.child_ref = frappe.flags.args.child_ref
-		target.item_name = frappe.flags.args.item_name
-		target.boq_code = frappe.flags.args.boq_code
+		target.bsr_code = frappe.flags.args.bsr_code
+		target.description = frappe.flags.args.description
 		target.uom = frappe.flags.args.uom
 		target.rate = frappe.flags.args.rate
+		target.entry_quantity = frappe.flags.args.quantity
 		target.amount = frappe.flags.args.amount
 		# set_missing_values(source, target_doc)
 

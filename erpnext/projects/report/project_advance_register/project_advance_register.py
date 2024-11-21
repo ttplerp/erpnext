@@ -13,26 +13,28 @@ def execute(filters=None):
 
 def get_columns():
         return [
-                ("Project") + ":Link/Project:180",
-                ("Date") + ":Data:80",
+                ("Project") + ":Link/Project:100",
+                ("Project Name") + ":Data:180",
+                ("Date") + ":Data:100",
                 ("Cost Center") + ":Data:120",
                 ("Customer")+ ":Data:100",
                 ("Claimed") + ":Currency:140",
                 ("Received (A)") + ":Currency:140",
                 ("Adjusted (B)") + ":Currency:140",
-                ("Balance (C=A-B)")+ ":Currency:140"
+                ("Balance (C=A-B)")+ ":Currency:180"
         ]
 
 def get_data(filters):
         query =  """
 			select 
+				p.name,
 				p.project_name,
 				ad.advance_date, 
 				ad.cost_center, 
 				ad.customer, 
 				ad.advance_amount, 
 				ad.received_amount, 
-				ad.adjustment_amount, 
+				ad.adjusted_amount, 
 				ad.balance_amount 
 			from `tabProject Advance` as ad, `tabProject` p 
 			where ad.docstatus = 1

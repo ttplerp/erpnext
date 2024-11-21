@@ -11,76 +11,50 @@ from frappe.utils import cstr, flt, getdate, today, now_datetime
 
 class BOQAddition(Document):
 	def validate(self):
-		self.update_defaults()
+		self.set_defaults()
 		self.validate_boq_and_items()
 
 	def on_submit(self):
-		self.update_defaults()
+		self.set_defaults()
 		self.validate_boq_and_items()
-		self.update_boq_item(submit = True)
-		self.update_history()
-		# self.update_boq_and_project()
+		self.update_boq_item()
+		self.update_additional_history()
+		self.update_boq_and_project()
 
 	def on_cancel(self):
-		self.update_boq_item(submit = False)
-		self.update_history()
-		# self.update_boq_and_project()
+		self.update_boq_item(cancel=False)
+		self.update_additional_history(cancel=True)
+		self.update_boq_and_project()
 
-	def update_defaults(self):
-		item_group = ""
-		total_amount     = 0.0
+	def set_defaults(self):
+		total_amount = 0.0
 		for item in self.boq_item:
-			if item.is_group:
-				item_group              = item.item
-				item.quantity           = 0.0
-				item.rate               = 0.0
-				item.amount             = 0.0
-				item.claimed_quantity   = 0.0
-				item.claimed_amount     = 0.0
-				item.booked_quantity    = 0.0
-				item.booked_amount      = 0.0
-				item.balance_quantity   = 0.0
-				item.balance_amount     = 0.0
-			else:
-				item.amount           = flt(item.quantity)*flt(item.rate)
-				item.claimed_quantity = 0.0
-				item.claimed_amount   = 0.0
-				item.booked_quantity  = 0.0
-				item.booked_amount    = 0.0
-				item.balance_quantity = flt(item.quantity)
-				item.balance_rate     = flt(item.rate)
-				item.balance_amount   = flt(item.amount)
-				if item.amount <= 0:
-					frappe.throw("Amount Should be Greater Than Zero at Index '{0}'".format(item.idx))
+			item.amount = flt(item.quantity) * flt(item.rate)
+			if item.amount <= 0:
+				frappe.throw("Amount Should be Greater Than Zero at Index '{0}'".format(item.idx))
+			total_amount  += flt(item.amount)
 
-				total_amount  += flt(item.amount)
-				item.parent_item = item_group
 		self.total_amount = flt(total_amount)
 		if flt(self.total_amount) <= 0:
 			frappe.throw("Total Amount Should be Greater Than Zero")
 
 	def validate_boq_and_items(self):
-		# validate adjustment date
 		if self.addition_date  < self.boq_date:
 			frappe.throw(_("Addition Date cannot be earlier to BOQ Date"),title="Invalid Data")
 		elif self.addition_date > today():
 			frappe.throw(_("Addition Date cannot be a future date"),title="Invalid Data")
 
-		# validate items
-		for i in self.boq_item:
-			if i.is_group:
-				if flt(i.quantity) or flt(i.amount):
-						frappe.throw(_("Row#{0} : Quantity/Amount against group items not permitted.").format(i.idx), title="Not permitted")
-	def update_boq_item(self, submit):
+	def update_boq_item(self, cancel=False):
 		boq = frappe.get_doc("BOQ", self.boq)	
 		for d in self.boq_item:
-			if submit:
+			if cancel:
+				frappe.db.sql(""" delete from `tabBOQ Item` where ref_name = '{0}'""".format(d.name))
+			else:
 				boq.flags.ignore_permissions = 1
 				boq.append('boq_item', {
-						"boq_code": d.boq_code,
-						"item": d.item,
+						"bsr_code": d.bsr_code,
+						"description": d.description,
 						"uom": d.uom,
-						"is_group": d.is_group,
 						"no": d.no,
 						"length": d.length,
 						"height": d.height, 
@@ -88,62 +62,50 @@ class BOQAddition(Document):
 						"coefficient": d.coefficient,
 						"quantity": d.quantity,
 						"rate": d.rate,
-						"rate_analysis": d.rate_analysis,
 						"amount": d.amount,
 						"claimed_quantity": 0.0,
 						"adjustment_amount": 0.0,
 						"claimed_amount": 0.0,
-						"booked_quantity": 0.0,
 						"booked_amount": 0.0,
-						"balance_quantity": flt(d.quantity),
-						"balance_rate":  flt(d.rate),
-						"balance_amount":  flt(d.amount),
+						"unclaimed_quantity": flt(d.quantity),
+						"unclaimed_amount":  flt(d.amount),
+						"quantity_before_subcontract": flt(d.quantity),
+						"quantity_after_subcontract": flt(d.quantity),
 						"remarks": d.remarks,
-						"ref_type": d.parenttype,
-						"ref_name": d.name
 					})
-				#boq.insert(ignore_permissions=True)
 				boq.save(ignore_permissions=True)
 				boq.submit()
-			else:
-				frappe.db.sql(""" delete from `tabBOQ Item` where ref_name = '{0}'""".format(d.name))
+				
 
-
-	def update_history(self):
-		boq = frappe.get_doc("BOQ", self.boq)
-		if self.docstatus == 2:
+	def update_additional_history(self, cancel=False):
+		if cancel:
 			frappe.db.sql(""" 
-			delete from `tabBOQ Addition History` where parent='{boq}' and  transaction_name = '{transaction_name}'
-		""".format(boq = self.boq, transaction_name=self.name))
+				delete from `tabBOQ Addition History` where parent='{boq}' and  transaction_name = '{reference_name}'
+			""".format(boq = self.boq, reference_name=self.name))
 		else:
-			boq.append("boq_addition_item",{
-				"transaction_type": self.doctype,
-				"transaction_date": self.addition_date,
-				"transaction_name": self.name,
-				"initial_amount":  flt(boq.total_amount),
-				"additional_amount": flt(self.total_amount),
-				"final_amount": flt(self.total_amount) + flt(boq.total_amount),
-				"owner": frappe.session.user,
-				"creation": now_datetime(),
-				"modified_by": frappe.session.user,
-				"modified": now_datetime()
-			})
-			#boq.insert(ignore_permissions=True)
-			boq.save(ignore_permissions=True)
-			boq.submit()
+			doc = frappe.get_doc("BOQ", self.boq)
+			row = doc.append("boq_addition_item", {})
+			row.reference_type          = self.doctype
+			row.reference_name          = self.name
+			row.reference_date          = self.addition_date
+			row.initial_amount          = flt(doc.total_amount)
+			row.additional_amount      	= flt(self.total_amount)
+			row.final_amount 			= flt(self.total_amount)+flt(doc.total_amount)
+			row.remarks    				= self.remarks
+			row.save(ignore_permissions=True)
 
 	def update_boq_and_project(self):
-	#update Total Amount for BOQ and Project 
+		#update Total Amount for BOQ and Project 
 		if self.total_amount:
 			mul_factor = -1 if self.docstatus == 2 else 1
 			# Update BOQ
 			boq_doc = frappe.get_doc("BOQ", self.boq)
 			boq_doc.total_amount   = flt(boq_doc.total_amount) + flt(self.total_amount) * flt(mul_factor)
-			boq_doc.balance_amount = flt(boq_doc.balance_amount) + flt(self.total_amount) * flt(mul_factor)
+			boq_doc.total_unclaimed_amount = flt(boq_doc.total_unclaimed_amount) + flt(self.total_amount) * flt(mul_factor)
 			boq_doc.addition_amount = flt(boq_doc.addition_amount) + flt(self.total_amount) * flt(mul_factor)
 			boq_doc.save(ignore_permissions = True)
 
-					# Update Project
+			# Update Project
 			pro_doc = frappe.get_doc("Project", self.project)
 			pro_doc.flags.dont_sync_tasks = True
 			pro_doc.project_value = flt(pro_doc.project_value) + flt(self.total_amount) * flt(mul_factor)

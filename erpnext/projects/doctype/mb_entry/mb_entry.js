@@ -2,9 +2,9 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('MB Entry', {
-	// onload: function(frm){
-	// 	calculate_totals(frm);
-	// },
+	onload: function(frm){
+		calculate_totals(frm);
+	},
 	onload_post_render: function(frm){
 		cur_frm.refresh();
 	},
@@ -61,40 +61,30 @@ frappe.ui.form.on("MB Entry BOQ",{
 		calculate_entry_quantity(frm, cdt, cdn)
 	},
 
-	entry_quantity: function (frm, cdt, cdn) {
-		calculate_amount(frm, cdt, cdn);
+	entry_quantity: function(frm, cdt, cdn){
+		let child = locals[cdt][cdn];
+		
+		if(child.entry_quantity > child.act_quantity){
+			msgprint(__("Invoice Quantity cannot be greater than balance quantity."))
+		}
+		
+		frappe.model.set_value(cdt, cdn, 'entry_amount', (parseFloat(child.entry_quantity) * parseFloat(child.entry_rate)).toFixed(2));
 	},
-
-	entry_amount: function (frm) {
-		calculate_total_amount(frm);
+	entry_amount: function(frm, cdt, cdn){
+		let child = locals[cdt][cdn];
+		let amount = flt(child.entry_quantity || 0.00)*flt(child.entry_rate || 0.00);
+		
+		if(child.entry_amount > child.act_amount){
+			msgprint(__("Invoice Amount cannot be greater than balance amount."))
+		} else {
+			if(frm.doc.boq_type !== "Milestone Based" && flt(child.amount) != flt(amount)) {
+				frappe.model.set_value(cdt, cdn, 'entry_amount', flt(amount));
+			}
+		}
+		calculate_totals(frm);
 	},
-
-	// entry_quantity: function(frm, cdt, cdn){
-	// 	child = locals[cdt][cdn];
-		
-	// 	if(child.entry_quantity > child.act_quantity){
-	// 		msgprint(__("Invoice Quantity cannot be greater than balance quantity.").format(child.entry_quantity))
-	// 	}
-		
-	// 	//if(child.entry_quantity && child.entry_rate){
-	// 	frappe.model.set_value(cdt, cdn, 'entry_amount', (parseFloat(child.entry_quantity)*parseFloat(child.entry_rate)).toFixed(2));
-	// 	//}
-	// },
-	// entry_amount: function(frm, cdt, cdn){
-	// 	var child = locals[cdt][cdn];
-	// 	var amount = flt(child.entry_quantity || 0.00)*flt(child.entry_rate || 0.00);
-		
-	// 	if(child.entry_amount > child.act_amount){
-	// 		msgprint(__("Invoice Amount cannot be greater than balance amount."));
-	// 	} else {
-	// 		if(frm.doc.boq_type !== "Milestone Based" && flt(child.amount) != flt(amount)) {
-	// 			frappe.model.set_value(cdt, cdn, 'entry_amount', flt(amount));
-	// 		}
-	// 	}
-	// 	calculate_totals(frm);
-	// },
 	is_selected: function(frm, cdt, cdn){
-		calculate_total_amount(frm);
+		calculate_totals(frm);
 	},
 });
 
@@ -102,7 +92,6 @@ var cal_entry_qty_for_milestone = function (frm) {
 	frm.doc.mb_entry_boq.forEach(e => {
 		e.entry_quantity = (frm.doc.claim_percent/100) * e.act_quantity 
 		e.entry_amount = (frm.doc.claim_percent/100) * e.act_quantity * e.entry_rate 
-		// console.log(e.entry_quantity);
 	});
 	frm.refresh_field('mb_entry_boq')
 }
@@ -119,7 +108,7 @@ var calculate_amount = function (frm, cdt, cdn) {
 	let amount = 0.0;
 
 	if (child.entry_quantity > child.act_quantity) {
-		msgprint(__("Invoice Quantity cannot be greater than balance quantity.").format(child.entry_quantity))
+		msgprint(__("Invoice Quantity cannot be greater than balance quantity."));
 	}
 
 	amount = parseFloat(child.entry_quantity) * parseFloat(child.entry_rate)
@@ -128,9 +117,9 @@ var calculate_amount = function (frm, cdt, cdn) {
 	frm.refresh_field("entry_amount", cdt, cdn)
 }
 
-var calculate_total_amount = function(frm){
-	var me = frm.doc.mb_entry_boq || [];
-	var total_entry_amount = 0.00, net_entry_amount =0.00;
+var calculate_totals = function(frm){
+	let me = frm.doc.mb_entry_boq || [];
+	let total_entry_amount = 0.00;
 	
 	if(frm.doc.docstatus != 1)
 	{
@@ -140,13 +129,13 @@ var calculate_total_amount = function(frm){
 			}
 		}
 		
-		cur_frm.set_value("total_entry_amount",(total_entry_amount));
-		cur_frm.set_value("total_balance_amount",(parseFloat(total_entry_amount || 0)-parseFloat(frm.doc.total_received_amount || 0)));
+		cur_frm.set_value("total_entry_amount", total_entry_amount);
+		cur_frm.set_value("total_balance_amount", parseFloat(total_entry_amount || 0));
 	}
 }
 
 var make_details =  function (frm, cdt, cdn) { 
-	var item = locals[cdt][cdn];
+	let item = locals[cdt][cdn];
 	console.log(item.name)
 	frappe.model.open_mapped_doc({
 		method: "erpnext.projects.doctype.mb_entry.mb_entry.make_details",
@@ -157,7 +146,7 @@ var make_details =  function (frm, cdt, cdn) {
 }
 
 var check_uncheck_all = function(frm){
-	var meb =frm.doc.mb_entry_boq || [];
+	let meb =frm.doc.mb_entry_boq || [];
 
 	for(var id in meb){
 		frappe.model.set_value("MB Entry BOQ", meb[id].name, "is_selected", frm.doc.check_all);

@@ -7,7 +7,6 @@ frappe.ui.form.on('Project Advance', {
 			set_defaults(frm.doc);
 		}
 
-		// advance_type set_query
 		frm.set_query("advance_type", function () {
 			return {
 				// query: "erpnext.accounts.doctype.project_invoice.project_invoice.get_project_party_type",
@@ -21,16 +20,6 @@ frappe.ui.form.on('Project Advance', {
 	refresh: function(frm) {
 		refresh_html(frm);
 		set_exchange_rate_label(frm);
-		if(!frm.doc.__islocal){
-			// if(frappe.model.can_read("Project")) {
-				if(frm.doc.journal_entry){
-					frm.add_custom_button(__('Bank Entries'), function() {
-							frappe.route_options = {"name": frm.doc.journal_entry};
-							frappe.set_route("List", "Journal Entry");
-					}, __("View"));
-				}
-			// }
-		}
 	},
 	
 	advance_type: function(frm){
@@ -59,11 +48,15 @@ frappe.ui.form.on('Project Advance', {
 	},
 	
 	advance_amount_requested: function(frm){
-		frm.set_value("advance_amount", flt(frm.doc.advance_amount_requested)*flt(frm.doc.exchange_rate));
+		frm.set_value("advance_amount", flt(frm.doc.advance_amount_requested) * flt(frm.doc.exchange_rate));
 	},
 
 	advance_amount_requested: function(frm) {
-		frm.set_value("received_amount", flt(frm.doc.advance_amount_requested));
+		if (frm.doc.payment_type=="Pay") {
+			frm.set_value("paid_amount", flt(frm.doc.advance_amount_requested));
+		} else {
+			frm.set_value("received_amount", flt(frm.doc.advance_amount_requested));
+		}
 		frm.set_value("balance_amount", flt(frm.doc.advance_amount_requested));
 		frm.refresh_field()
 	}
@@ -83,14 +76,14 @@ var refresh_html = function(frm){
 	}
 	
 	if(frm.doc.journal_entry){
-		$(cur_frm.fields_dict.journal_entry_html.wrapper).html('<label class="control-label" style="padding-right: 0px;">Journal Entry</label><br><b>'+'<a href="/desk#Form/Journal Entry/'+frm.doc.journal_entry+'">'+frm.doc.journal_entry+"</a> "+"</b>"+journal_entry_status);
+		$(cur_frm.fields_dict.journal_entry_html.wrapper).html('<label class="control-label" style="padding-right: 0px;">Journal Entry</label><br><b>'+'<a href="/desk/Form/Journal Entry/'+frm.doc.journal_entry+'">'+frm.doc.journal_entry+"</a> "+"</b>"+journal_entry_status);
 	}	
 }
 
 var set_exchange_rate_label = function(frm) {
 	var company_currency = frappe.get_doc(":Company", frm.doc.company).default_currency;
 	
-	cur_frm.toggle_display(["exchange_rate","advance_amount"], frm.doc.currency != company_currency);
+	cur_frm.toggle_display(["exchange_rate", "advance_amount"], frm.doc.currency != company_currency);
 
 	if(frm.doc.currency && company_currency) {
 		var default_label = __(frappe.meta.docfield_map[cur_frm.doctype]["exchange_rate"].label);
@@ -107,13 +100,13 @@ var set_exchange_rate_label = function(frm) {
 		var default_label1 = __(frappe.meta.docfield_map[cur_frm.doctype]["advance_amount"].label);
 		var default_label2 = __(frappe.meta.docfield_map[cur_frm.doctype]["received_amount"].label);
 		var default_label3 = __(frappe.meta.docfield_map[cur_frm.doctype]["paid_amount"].label);
-		var default_label4 = __(frappe.meta.docfield_map[cur_frm.doctype]["adjustment_amount"].label);
+		var default_label4 = __(frappe.meta.docfield_map[cur_frm.doctype]["adjusted_amount"].label);
 		var default_label5 = __(frappe.meta.docfield_map[cur_frm.doctype]["balance_amount"].label);
 		var label = repl(" (%(from_currency)s)", {"from_currency": company_currency});
 		cur_frm.fields_dict.advance_amount.set_label(default_label1 + label);
 		cur_frm.fields_dict.received_amount.set_label(default_label2 + label);
 		cur_frm.fields_dict.paid_amount.set_label(default_label3 + label);
-		cur_frm.fields_dict.adjustment_amount.set_label(default_label4 + label);
+		cur_frm.fields_dict.adjusted_amount.set_label(default_label4 + label);
 		cur_frm.fields_dict.balance_amount.set_label(default_label5 + label);
 	}
 }

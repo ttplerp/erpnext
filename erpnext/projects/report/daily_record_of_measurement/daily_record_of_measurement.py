@@ -3,7 +3,7 @@
 
 import frappe
 from frappe.utils import flt
-
+from frappe import _
 
 def execute(filters=None):
 	columns, data = [], []
@@ -13,20 +13,20 @@ def execute(filters=None):
 
 def get_columns(filters):
 	return [
-		("BOQ Item") + "::120",
-		("Item Description") + "::250",
-		("Posting Date") + ":Date:100",
-		("Location") + "::120",
-		("No") + "::120",
-		("Length (m)") + "::120",
-		("Breadth (m)") + "::120",
-		("Height (m)")+ "::150",
-		("Quantity") + ":Float:150",
-		("UOM") + ":Link/UOM:150",
-		("Rate (Nu.)") + ":Float:120",
-		("Amount (Nu.)") + ":Float:120",
-		("Remarks") + "::120",
-
+		{"fieldtype": "Link",	"fieldname": "boq", "label": _("BOQ"), "options": "BOQ", "width": 120},
+		{"fieldtype": "Link",	"fieldname": "location", "label": _("Location"), "options": "Location", "width": 150},
+		{"fieldtype": "Date",	"fieldname": "posting_date", "label": _("Posting Date"), "width": 120},
+		{"fieldtype": "Link",	"fieldname": "bsr_code", "label": _("BSR Code"), "options": "Bhutan Schedule of Rates", "width": 120},
+		{"fieldtype": "Data",	"fieldname": "description", "label": _("Description"), "width": 250},
+		{"fieldtype": "Float",	"fieldname": "no", "label": _("No"), "width": 80},
+		{"fieldtype": "Float",	"fieldname": "length", "label": _("Length"), "width": 80},
+		{"fieldtype": "Float",	"fieldname": "breath", "label": _("Breath"), "width": 80},
+		{"fieldtype": "Float",	"fieldname": "height", "label": _("Height"), "width": 80},
+		{"fieldtype": "Float",	"fieldname": "coefficeient", "label": _("Coefficient"), "width": 100},
+		{"fieldtype": "Float",	"fieldname": "rate", "label": _("Rate (Nu.)"), "width": 100},
+		{"fieldtype": "Float",	"fieldname": "quantity", "label": _("Quantity"), "width": 80},
+		{"fieldtype": "Float",	"fieldname": "amount", "label": _("Amount (Nu.)"), "width": 150},
+		{"fieldtype": "Link",	"fieldname": "uom", "label": _("UOM"), "options": "UOM", "width": 80},
 	]
 
 def get_data(filters):
@@ -34,92 +34,30 @@ def get_data(filters):
 	data = []
 	rom_data = {}
 	if filters.from_date:
-		cond += " and rom.posting_date >= '{}'".format(filters.get("from_date"))
+		cond += " and t1.posting_date >= '{}'".format(filters.get("from_date"))
 	if filters.to_date:
-		cond += " and rom.posting_date <= '{}'".format(filters.get("to_date"))
+		cond += " and t1.posting_date <= '{}'".format(filters.get("to_date"))
 	if filters.project:
-		cond += " and rom.project = '{}'".format(filters.get("project"))
-	rom = frappe.db.sql("""
-		select rom.posting_date,
-		rom.boq_code,
-		rom.item_name,
-		romi.location,
-		romi.no,
-		romi.length,
-		romi.breadth,
-		romi.height,
-		romi.quantity,
-		rom.uom,
-		rom.rate,
-		romi.amount,
-		rom.remarks
-		from `tabRecord Of Measurement` rom,
-		`tabRecord Of Measurement Item` romi
-		where romi.parent = rom.name
-		and rom.docstatus = 1
+		cond += " and t1.project = '{}'".format(filters.get("project"))
+	data = frappe.db.sql("""
+		select 
+			t1.boq, t2.location,
+			t1.posting_date, t1.bsr_code, t1.description,
+			t2.no,
+			t2.length,
+			t2.breadth,
+			t2.height,
+			t2.coefficient,
+			t2.quantity,
+			t1.uom,
+			t1.rate,
+			t1.amount
+		from `tabRecord Of Measurement` t1, `tabRecord Of Measurement Item` t2
+		where t2.parent = t1.name
+		and t1.docstatus = 1
 		{}
-		order by rom.boq_code, rom.posting_date
+		order by t1.bsr_code, t1.posting_date
 	""".format(cond),as_dict=1)
-	if rom:
-		for a in rom:
-			if a.boq_code not in rom_data:
-				rom_data.update({
-					a.boq_code:[{
-						"description": a.item_name,
-						"location": a.location,
-						"posting_date": a.posting_date,
-						"no": a.no,
-						"length": a.length,
-						"breadth": a.breadth,
-						"height": a.height,
-						"quantity":a.quantity,
-						"uom": a.uom,
-						"rate": a.rate,
-						"amount": a.amount,
-						"remarks": a.remarks
-					}]})
-			else:
-				rom_data[a.boq_code].append({
-						"description": a.item_name,
-						"location": a.location,
-						"posting_date": a.posting_date,
-						"no": a.no,
-						"length": a.length,
-						"breadth": a.breadth,
-						"height": a.height,
-						"quantity":a.quantity,
-						"uom": a.uom,
-						"rate": a.rate,
-						"amount": a.amount,
-						"remarks": a.remarks
-				})
-	total_amount = total_quantity = 0
-	for b in rom_data:
-		data.append([b,rom_data[b][0]['description'],None,None,None,None,None,None,None,rom_data[b][0]['uom'],None,None,None])
-		sub_total_qty = sub_total_amount = rate = 0
-		for c in rom_data[b]:
-			data.append([
-				None,
-				None,
-				c['posting_date'],
-				c['location'],
-				c['no'],
-				c['length'],
-				c['breadth'],
-				c['height'],
-				c['quantity'],
-				None,
-				c['rate'],
-				c['amount'],
-				c['remarks']
-			])
-			sub_total_qty += flt(c['quantity'],2)
-			total_quantity += flt(c['quantity'],2)
-			sub_total_amount += flt(c['amount'],2)
-			total_amount += flt(c['amount'],2)
-			rate = c['rate']
-		data.append([None,"Cumulative Total for P/L PCC 1:3:6 in foundation",None,None,None,None,None,None,sub_total_qty,None,rate,sub_total_amount,None])
-	data.append([None,"Total work done Amount of the day (Income) -(Nu):",None,None,None,None,None,None,total_quantity,None,None,total_amount,None])
 
 	return data
 

@@ -11,24 +11,26 @@
   "naming_series",
   "project_name",
   "branch",
-  "status",
   "project_type",
-  "is_active",
   "percent_complete_method",
   "percent_complete",
   "column_break_5",
   "cost_center",
+  "location",
   "project_template",
-  "expected_start_date",
-  "expected_end_date",
-  "priority",
   "department",
   "department_abbr",
+  "is_active",
+  "project_value",
+  "column_break_ldeue",
+  "status",
+  "expected_start_date",
+  "expected_end_date",
+  "project_period",
   "file_no",
   "customer_details",
   "party_type",
   "customer",
-  "project_value",
   "column_break_14",
   "party",
   "sales_order",
@@ -51,7 +53,6 @@
   "estimated_costing",
   "total_costing_amount",
   "total_purchase_cost",
-  "company",
   "column_break_28",
   "total_sales_amount",
   "total_billable_amount",
@@ -74,7 +75,9 @@
   "day_to_send",
   "weekly_time_to_send",
   "column_break_45",
-  "message"
+  "message",
+  "section_break_swgx7",
+  "company"
  ],
  "fields": [
   {
@@ -121,7 +124,7 @@
    "fieldname": "percent_complete_method",
    "fieldtype": "Select",
    "label": "% Complete Method",
-   "options": "Task Weight\nTash Completion"
+   "options": "Task Weight\nManual"
   },
   {
    "bold": 1,
@@ -129,6 +132,7 @@
    "fieldtype": "Percent",
    "label": "% Completed",
    "no_copy": 1,
+   "precision": "2",
    "read_only": 1
   },
   {
@@ -139,6 +143,7 @@
    "allow_in_quick_entry": 1,
    "fieldname": "project_template",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "From Template",
    "options": "Project Template",
    "set_only_once": 1
@@ -158,15 +163,6 @@
    "label": "Expected End Date",
    "oldfieldname": "completion_date",
    "oldfieldtype": "Date"
-  },
-  {
-   "fieldname": "priority",
-   "fieldtype": "Select",
-   "in_standard_filter": 1,
-   "label": "Priority",
-   "oldfieldname": "priority",
-   "oldfieldtype": "Select",
-   "options": "Medium\nLow\nHigh"
   },
   {
    "fieldname": "department",
@@ -209,6 +205,7 @@
    "collapsible": 1,
    "fieldname": "users_section",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Users"
   },
   {
@@ -310,8 +307,7 @@
    "fieldname": "company",
    "fieldtype": "Link",
    "label": "Company",
-   "options": "Company",
-   "remember_last_selected_value": 1
+   "options": "Company"
   },
   {
    "fieldname": "column_break_28",
@@ -481,9 +477,9 @@
   },
   {
    "fieldname": "party_type",
-   "fieldtype": "Link",
+   "fieldtype": "Select",
    "label": "Party Type",
-   "options": "DocType",
+   "options": "\nSupplier\nCustomer",
    "reqd": 1
   },
   {
@@ -501,8 +497,7 @@
   },
   {
    "fieldname": "boq_section",
-   "fieldtype": "Section Break",
-   "label": "BOQ"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "project_boq_item",
@@ -520,8 +515,7 @@
   },
   {
    "fieldname": "project_invoice_section",
-   "fieldtype": "Section Break",
-   "label": "Project Invoice"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "project_invoice_item",
@@ -541,14 +535,35 @@
    "fetch_from": "department.abbr",
    "fieldname": "department_abbr",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Department Abbr",
+   "read_only": 1
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Link",
+   "label": "Location",
+   "options": "Location",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_ldeue",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_swgx7",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "project_period",
+   "fieldtype": "Data",
+   "label": "Project Period (Days)",
    "read_only": 1
   },
   {
    "fieldname": "project_value",
    "fieldtype": "Currency",
-   "hidden": 1,
-   "label": "Project value"
+   "label": "Project Value"
   }
  ],
  "icon": "fa fa-puzzle-piece",
@@ -556,7 +571,7 @@
  "index_web_pages_for_search": 1,
  "links": [],
  "max_attachments": 4,
- "modified": "2023-08-04 15:10:26.073965",
+ "modified": "2024-11-20 13:21:09.962672",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project",
@@ -601,12 +616,13 @@
    "write": 1
   }
  ],
- "search_fields": "project_name,customer, status, priority, is_active",
+ "search_fields": "project_name,customer, status, is_active",
  "show_name_in_global_search": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
  "timeline_field": "customer",
  "title_field": "project_name",
+ "track_changes": 1,
  "track_seen": 1
 }

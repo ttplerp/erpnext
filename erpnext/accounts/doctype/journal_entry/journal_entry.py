@@ -164,6 +164,7 @@ class JournalEntry(AccountsController):
     def update_supplier_advance(self, cancel=None):
         ad_doc = frappe.get_doc("Advance", self.reference_doctype)
         supplier_doc = frappe.get_doc(ad_doc.party_type, ad_doc.party)
+        # frappe.throw(str(ad_doc.party_type))
 
         cond = ""
         if ad_doc.advance_type == "National Subcontractor Advance":
@@ -243,7 +244,7 @@ class JournalEntry(AccountsController):
         self.update_invoice_discounting()
         self.unlink_transporter_invoice()
         check_clearance_date(self.doctype, self.name)
-        self.update_reference_document(cancel=1)
+        self.update_reference_document(cancel=True)
         self.update_hire_charge_advance(cancel=self.docstatus == 2)
         self.update_mr_employee_advance(cancel=self.docstatus == 2)
         if self.reference_type == "Repair And Service Invoice":
@@ -354,14 +355,19 @@ class JournalEntry(AccountsController):
                 ):
                     frappe.throw("Mode of Payment not applicable for settlement transaction")
 
-    def update_reference_document(self, cancel=0):
-        if cint(cancel) == 0:
+    def update_reference_document(self, cancel=False):
+        if cancel:
             # Updating status for MR Invoice Entry
             if self.reference_type == "MR Invoice Entry" and self.reference_doctype:
                 doc = frappe.get_doc("MR Invoice Entry", self.reference_doctype)
                 doc.db_set("status", "Paid")
 
             for a in self.get("accounts"):
+                 # update project advance 
+                if a.reference_type == "Project Advance" and a.reference_name:
+                    doc = frappe.get_doc("Project Advance", a.reference_name)
+                    doc.db_set('journal_entry_status', "Cancelled on {0}".format(now_datetime().strftime("%Y-%m-%d %H:%M:%S")))
+
                 if a.reference_type == "Purchase Receipt" and a.reference_name:
                     taxes_doc = frappe.get_doc(
                         "Purchase Taxes and Charges",
@@ -393,6 +399,12 @@ class JournalEntry(AccountsController):
                 doc.db_set("status", "Unpaid")
 
             for a in self.get("accounts"):
+                # update project advance 
+                if a.reference_type == "Project Advance" and a.reference_name:
+                    doc = frappe.get_doc("Project Advance", a.reference_name)
+                    doc.db_set('journal_entry_status', "Paid on {0}".format(now_datetime().strftime("%Y-%m-%d %H:%M:%S")))
+
+                # Update MR Employee Invoice
                 if a.reference_type == "MR Employee Invoice" and a.reference_name:
                     doc = frappe.get_doc("MR Employee Invoice", a.reference_name)
                     doc.db_set("payment_status", "Unpaid")

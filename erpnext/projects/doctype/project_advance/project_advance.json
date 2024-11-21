@@ -7,21 +7,19 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "advance_date",
   "project",
   "company",
   "branch",
   "cost_center",
   "column_break_3",
+  "advance_date",
   "party_type",
   "party",
   "advance_type",
   "advance_account",
-  "party_address",
   "customer",
   "customer_details",
   "supplier",
-  "supplier_details",
   "section_break_10",
   "payment_type",
   "currency",
@@ -32,7 +30,7 @@
   "column_break_10",
   "received_amount",
   "paid_amount",
-  "adjustment_amount",
+  "adjusted_amount",
   "balance_amount",
   "references",
   "reference_no",
@@ -123,12 +121,6 @@
    "options": "Account"
   },
   {
-   "fieldname": "party_address",
-   "fieldtype": "Text",
-   "label": "Address",
-   "read_only": 1
-  },
-  {
    "fieldname": "customer",
    "fieldtype": "Link",
    "hidden": 1,
@@ -151,14 +143,6 @@
    "hidden": 1,
    "label": "Supplier",
    "options": "Supplier",
-   "read_only": 1
-  },
-  {
-   "fieldname": "supplier_details",
-   "fieldtype": "Text",
-   "hidden": 1,
-   "label": "Address",
-   "options": "supplier.supplier_details",
    "read_only": 1
   },
   {
@@ -232,16 +216,6 @@
    "fieldtype": "Currency",
    "label": "Paid Amount (A)",
    "options": "Company:company:default_currency",
-   "read_only": 1
-  },
-  {
-   "allow_on_submit": 1,
-   "default": "0.0",
-   "fieldname": "adjustment_amount",
-   "fieldtype": "Currency",
-   "label": "Advance Adjusted (B)",
-   "options": "Company:company:default_currency",
-   "precision": "2",
    "read_only": 1
   },
   {
@@ -339,12 +313,22 @@
    "label": "Advance Type",
    "options": "Advance Type",
    "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0.0",
+   "fieldname": "adjusted_amount",
+   "fieldtype": "Currency",
+   "label": "Adjusted Amount (B)",
+   "options": "Company:company:default_currency",
+   "precision": "2",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-10-17 16:14:30.013421",
+ "modified": "2024-11-17 16:46:41.069252",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project Advance",
@@ -390,5 +374,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }

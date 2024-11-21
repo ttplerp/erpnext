@@ -244,6 +244,6 @@ def get_boq_list(boq):
 			from `tabBOQ Item` bi
 			where parent = '{boq}' and
 			(bi.ref_type IS NULL OR bi.ref_type = '' OR bi.ref_type LIKE '%BOQ Substitution%')
-			and bi.docstatus = 1 and bi.quantity = bi.balance_quantity  order by bi.idx asc
+			and bi.docstatus = 1 and bi.quantity = bi.balance_quantity order by bi.idx asc
 		""".format(boq=boq) , as_dict=True)
 	return result

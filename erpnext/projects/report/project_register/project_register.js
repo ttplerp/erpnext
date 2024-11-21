@@ -1,6 +1,10 @@
-// Copyright (c) 2023, Frappe Technologies Pvt. Ltd. and contributors
-// For license information, please see license.txt
-/* eslint-disable */
+/* 
+--------------------------------------------------------------------------------------------------------------------------
+Version		 	Author		  				CreatedOn		 	ModifiedOn		  	Remarks
+------------ --------------- ------------------ -------------------  -----------------------------------------------------
+1.0		      	Dawa Nyuehtyue Tshering		2024/11/20			2024/11/21			Original Version
+--------------------------------------------------------------------------------------------------------------------------
+*/
 
 frappe.query_reports["Project Register"] = {
 	"filters": [
@@ -34,11 +38,11 @@ frappe.query_reports["Project Register"] = {
 			"fieldtype":	"Date",
 			"reqd":0
 		},
-		{
-			"fieldname":	"additional_info",
-			"label":		("Additional Information"),
-			"fieldtype":	"Check",
-			"reqd":			0
-		},	
+		// {
+		// 	"fieldname":	"additional_info",
+		// 	"label":		("Additional Information"),
+		// 	"fieldtype":	"Check",
+		// 	"reqd":			0
+		// },	
 	]
 };

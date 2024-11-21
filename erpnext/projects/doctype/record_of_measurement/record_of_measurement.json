@@ -7,13 +7,17 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "project",
+  "boq",
+  "column_break_a1ecr",
   "posting_date",
+  "branch",
+  "cost_center",
   "sb_item",
-  "item_name",
-  "description",
   "rate",
+  "description",
   "cb_01",
-  "boq_code",
+  "bsr_code",
   "amount",
   "cb_02",
   "entry_quantity",
@@ -22,8 +26,6 @@
   "items",
   "sb_reference",
   "child_ref",
-  "project",
-  "boq",
   "remarks",
   "amended_from"
  ],
@@ -34,21 +36,8 @@
    "label": "Item Details"
   },
   {
-   "fieldname": "item_name",
-   "fieldtype": "Data",
-   "label": "Item Name",
-   "read_only": 1,
-   "reqd": 1
-  },
-  {
    "fieldname": "cb_01",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "boq_code",
-   "fieldtype": "Data",
-   "label": "BOQ Code",
-   "read_only": 1
   },
   {
    "fieldname": "cb_02",
@@ -141,15 +130,41 @@
   },
   {
    "fieldname": "description",
-   "fieldtype": "Data",
+   "fieldtype": "Small Text",
    "label": "Description",
    "read_only": 1
+  },
+  {
+   "fieldname": "bsr_code",
+   "fieldtype": "Link",
+   "label": "BSR Code",
+   "options": "Bhutan Schedule of Rates",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_a1ecr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "branch.cost_center",
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-31 16:55:41.726755",
+ "modified": "2024-11-20 19:18:12.581179",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Record Of Measurement",

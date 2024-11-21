@@ -4,7 +4,7 @@ frappe.ui.form.on('BOQ', {
 	setup: function (frm) {},
 
 	refresh: function (frm) {
-		// cur_frm.set_df_property("boq_item", "read_only",  frm.doc.docstatus == 1);
+		cur_frm.set_df_property("boq_item", "read_only",  frm.doc.docstatus == 1);
 
 		if (!frm.doc.__islocal && frm.doc.docstatus == 1) {
 			if (frappe.model.can_read("BOQ Adjustment")) {
@@ -49,9 +49,9 @@ frappe.ui.form.on('BOQ', {
 			frm.add_custom_button(__("BOQ Adjustment"), function () { frm.trigger("make_boq_adjustment") },
 				__("Make"), "icon-file-alt"
 			);			
-			frm.add_custom_button(__("BOQ Substitution"), function () { frm.trigger("make_boq_substitution") },
-				__("Make"), "icon-file-alt"
-			);
+			// frm.add_custom_button(__("BOQ Substitution"), function () { frm.trigger("make_boq_substitution") },
+			// 	__("Make"), "icon-file-alt"
+			// );
 			frm.add_custom_button(__("BOQ Addition"), function () { frm.trigger("make_additional_boq") },
 								__("Make"), "icon-file-alt"
 						);
@@ -65,7 +65,7 @@ frappe.ui.form.on('BOQ', {
 			frm.add_custom_button(__("Measurement Book Entry"), function () { frm.trigger("make_book_entry") },
 				__("Make"), "icon-file-alt"
 			);
-			frm.add_custom_button(__("Project Invoice"), function () { frm.trigger("make_mb_invoice") },
+			frm.add_custom_button(__("Project Invoice"), function () { frm.trigger("make_project_ivoice") },
 				__("Make"), "icon-file-alt"
 			);
 		}
@@ -113,9 +113,9 @@ frappe.ui.form.on('BOQ', {
 		});
 	},
 
-	make_mb_invoice: function (frm) {
+	make_project_ivoice: function (frm) {
 		frappe.model.open_mapped_doc({
-			method: "erpnext.projects.doctype.boq.boq.make_mb_invoice",
+			method: "erpnext.projects.doctype.boq.boq.make_project_ivoice",
 			frm: frm
 		});
 	},
@@ -193,34 +193,39 @@ var calculate_amount = function (frm, cdt, cdn) {
 	amount = parseFloat(child.quantity) * parseFloat(child.rate)
 
 	frappe.model.set_value(cdt, cdn, 'amount', parseFloat(amount));
-	frappe.model.set_value(cdt, cdn, 'balance_quantity', parseFloat(child.quantity));
-	frappe.model.set_value(cdt, cdn, 'balance_amount', parseFloat(amount));
+	frappe.model.set_value(cdt, cdn, 'unclaimed_quantity', parseFloat(child.quantity));
+	frappe.model.set_value(cdt, cdn, 'unclaimed_amount', parseFloat(amount));
+
+	frappe.model.set_value(cdt, cdn, 'quantity_before_subcontract', parseFloat(child.quantity));
+	frappe.model.set_value(cdt, cdn, 'quantity_after_subcontract', parseFloat(child.quantity));
 }
 
 var calculate_total_amount = function (frm) {
 	let bi = frm.doc.boq_item || [];
-	let total_amount = 0.0, balance_amount = 0.0;
+	let total_amount = 0.0, total_unclaimed_amount = 0.0;
 
 	for (let i = 0; i < bi.length; i++) {
 		if (bi[i].amount) {
 			total_amount += parseFloat(bi[i].amount);
 		}
 	}
-	balance_amount = parseFloat(total_amount) - parseFloat(frm.doc.received_amount)
+	total_unclaimed_amount = parseFloat(total_amount) - parseFloat(frm.doc.received_amount)
 	cur_frm.set_value("total_amount", total_amount);
-	cur_frm.set_value("balance_amount", balance_amount);
+	cur_frm.set_value("total_unclaimed_amount", total_unclaimed_amount);
 }
 var make_rm =  function (frm, cdt, cdn) { 
 	var item = locals[cdt][cdn];
-	console.log(item.name)
 	frappe.model.open_mapped_doc({
 		method: "erpnext.projects.doctype.boq.boq.make_rm",
 		args: {
-			"boq_code": item.boq_code,
-			"item_name": item.item,
+			"branch": frm.doc.branch,
+			"cost_center": frm.doc.cost_center,
+			"bsr_code": item.bsr_code,
+			"description": item.description,
 			"uom": item.uom,
 			"child_ref": item.name,
 			"rate": item.rate,
+			"entry_quantity": item.quantity,
 			"amount": item.amount
 		},
 		frm: frm,

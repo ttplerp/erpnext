@@ -8,7 +8,6 @@ from frappe.desk.reportview import get_match_cond
 from frappe.model.document import Document
 from frappe.utils import add_days, flt, get_datetime, get_time, get_url, nowtime, today, getdate, nowdate
 
-
 from erpnext import get_default_company
 from erpnext.controllers.employee_boarding_controller import update_employee_boarding_status
 from erpnext.controllers.queries import get_filters_cond
@@ -45,12 +44,24 @@ class Project(Document):
 		self.onload()
 
 	def validate(self):
+		self.get_project_period()
 		if not self.is_new():
 			self.copy_from_template()
 		self.send_welcome_email()
 		self.update_costing()
 		self.update_percent_complete()
-		update_employee_boarding_status(self)
+		# update_employee_boarding_status(self)
+
+	@frappe.whitelist()
+	def get_project_period(self):
+		project_period = 0
+		if self.expected_start_date and self.expected_end_date:
+			if getdate(self.expected_start_date) > getdate(self.expected_end_date):
+				frappe.throw("Expected start date cannot be after expected end date")
+			else:
+				project_period = flt((getdate(self.expected_end_date) - getdate(self.expected_start_date)).days) + 1
+		self.project_period = project_period
+		return project_period
 
 	def copy_from_template(self):
 		"""
@@ -152,7 +163,7 @@ class Project(Document):
 	def update_project(self):
 		"""Called externally by Task"""
 		self.update_percent_complete()
-		update_employee_boarding_status(self)
+		# update_employee_boarding_status(self)
 		self.update_costing()
 		self.db_update()
 
@@ -175,40 +186,54 @@ class Project(Document):
 		if not total:
 			self.percent_complete = 0
 		else:
-			if (self.percent_complete_method == "Task Completion" and total > 0) or (
-				not self.percent_complete_method and total > 0
-			):
-				completed = frappe.db.sql(
-					"""select count(name) from tabTask where
-					project=%s and status in ('Cancelled', 'Completed')""",
-					self.name,
-				)[0][0]
-				self.percent_complete = flt(flt(completed) / total * 100, 2)
+			# if (self.percent_complete_method == "Task Completion" and total > 0) or (
+			# 	not self.percent_complete_method and total > 0
+			# ):
+			# 	completed = frappe.db.sql(
+			# 		"""select count(name) from tabTask where
+			# 		project=%s and status in ('Cancelled', 'Completed')""",
+			# 		self.name,
+			# 	)[0][0]
+			# 	self.percent_complete = flt(flt(completed) / total * 100, 2)
 
-			if self.percent_complete_method == "Task Progress" and total > 0:
-				progress = frappe.db.sql(
-					"""select sum(progress) from tabTask where
-					project=%s""",
-					self.name,
-				)[0][0]
-				self.percent_complete = flt(flt(progress) / total, 2)
+			# if self.percent_complete_method == "Task Progress" and total > 0:
+			# 	progress = frappe.db.sql(
+			# 		"""select sum(progress) from tabTask where
+			# 		project=%s""",
+			# 		self.name,
+			# 	)[0][0]
+			# 	self.percent_complete = flt(flt(progress) / total, 2)
 
 			if self.percent_complete_method == "Task Weight" and total > 0:
-				weight_sum = frappe.db.sql(
-					"""select sum(task_weight) from tabTask where
-					project=%s""",
-					self.name,
-				)[0][0]
+				# weight_sum = frappe.db.sql(
+				# 	"""	select 
+				# 			sum(task_weight) 
+				# 		from tabTask 
+				# 		where project=%s 
+				# 	""",
+				# 	self.name,
+				# )[0][0]
+				# self.percent_complete = flt(weight_sum)
+
+				
 				weighted_progress = frappe.db.sql(
-					"""select progress, task_weight from tabTask where
-					project=%s""",
-					self.name,
-					as_dict=1,
-				)
+					"""
+						select 
+							name, task_weight, progress, task_weight 
+						from `tabTask` 
+						where project=%s
+					""",(self.name), as_dict=1)
 				pct_complete = 0
 				for row in weighted_progress:
-					pct_complete += row["progress"] * frappe.utils.safe_div(row["task_weight"], weight_sum)
-				self.percent_complete = flt(flt(pct_complete), 2)
+					temp_percent = 0.0
+					if row['progress'] != 100:
+						# pass
+						temp_percent = flt(row['task_weight'], 2)/100 * flt(row['progress'], 2)
+						pct_complete += flt(temp_percent, 2)
+					else:
+						pct_complete += flt(row['task_weight'], 2)
+					# pct_complete += row["progress"] * frappe.utils.safe_div(row["task_weight"], weight_sum)
+				self.percent_complete = flt(pct_complete, 2)
 
 		# don't update status if it is cancelled
 		if self.status == "Cancelled":

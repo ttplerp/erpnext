@@ -6,13 +6,22 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "boq_code",
-  "uom",
   "is_selected",
+  "bsr_code",
+  "uom",
   "currency",
   "column_break_10",
-  "item",
-  "is_group",
+  "description",
+  "detailed_measurement_section",
+  "no",
+  "column_break_gosp8",
+  "length",
+  "column_break_bxwp2",
+  "breath",
+  "column_break_ymaax",
+  "height",
+  "column_break_zzxte",
+  "coefficient",
   "section_break_5",
   "boq_quantity",
   "column_break_12",
@@ -21,40 +30,27 @@
   "boq_amount",
   "section_break_10",
   "quantity",
-  "claimed_quantity",
-  "booked_quantity",
-  "received_quantity",
   "adjustment_quantity",
   "column_break_40",
   "rate",
   "column_break_50",
   "amount",
-  "claimed_amount",
-  "booked_amount",
-  "received_amount",
   "adjustment_amount",
-  "section_break_21",
-  "balance_quantity",
-  "column_break_55",
-  "balance_rate",
-  "column_break_60",
-  "balance_amount",
+  "claim_detail_section",
+  "unclaimed_quantity",
+  "booked_quantity",
+  "claimed_quantity",
+  "column_break_kooix",
+  "unclaimed_amount",
+  "booked_amount",
+  "claimed_amount",
   "section_break_20",
-  "remarks",
-  "project",
-  "parent_item",
-  "boq_item_name"
+  "remarks"
  ],
  "fields": [
   {
    "columns": 1,
-   "fieldname": "boq_code",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "BOQ Code"
-  },
-  {
-   "columns": 1,
+   "fetch_from": "bsr_code.uom",
    "fieldname": "uom",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -81,30 +77,14 @@
    "fieldtype": "Column Break"
   },
   {
-   "columns": 2,
-   "fieldname": "item",
-   "fieldtype": "Small Text",
-   "in_list_view": 1,
-   "label": "Item"
-  },
-  {
-   "default": "0",
-   "description": "Group items are not meant to have any values, basically used for printing purposes.",
-   "fieldname": "is_group",
-   "fieldtype": "Check",
-   "label": "Is Group Item?"
-  },
-  {
    "fieldname": "section_break_5",
    "fieldtype": "Section Break",
    "label": "BOQ BALANCE BEFORE SUBCONTRACTING"
   },
   {
-   "columns": 2,
    "fieldname": "boq_quantity",
    "fieldtype": "Float",
-   "in_list_view": 1,
-   "label": "Quantity",
+   "label": "BOQ Quantity",
    "precision": "2",
    "read_only": 1
   },
@@ -113,11 +93,9 @@
    "fieldtype": "Column Break"
   },
   {
-   "columns": 1,
    "fieldname": "boq_rate",
    "fieldtype": "Float",
-   "in_list_view": 1,
-   "label": "Rate",
+   "label": "BOQ Rate",
    "precision": "2",
    "read_only": 1
   },
@@ -126,11 +104,9 @@
    "fieldtype": "Column Break"
   },
   {
-   "columns": 2,
    "fieldname": "boq_amount",
    "fieldtype": "Currency",
-   "in_list_view": 1,
-   "label": "Amount",
+   "label": "BOQ Amount",
    "read_only": 1
   },
   {
@@ -140,34 +116,15 @@
    "label": "SUBCONTRACT DETAILS"
   },
   {
+   "columns": 1,
    "fieldname": "quantity",
    "fieldtype": "Float",
+   "in_list_view": 1,
    "label": "Quantity",
    "precision": "2"
   },
   {
-   "fieldname": "claimed_quantity",
-   "fieldtype": "Float",
-   "label": "Claimed Quantity",
-   "precision": "2",
-   "read_only": 1
-  },
-  {
-   "fieldname": "booked_quantity",
-   "fieldtype": "Float",
-   "label": "Booked Quantity",
-   "precision": "2",
-   "read_only": 1
-  },
-  {
-   "fieldname": "received_quantity",
-   "fieldtype": "Float",
-   "hidden": 1,
-   "label": "Received Quantity",
-   "precision": "2",
-   "read_only": 1
-  },
-  {
+   "allow_on_submit": 1,
    "fieldname": "adjustment_quantity",
    "fieldtype": "Float",
    "label": "Adjustment Quantity",
@@ -179,8 +136,10 @@
    "fieldtype": "Column Break"
   },
   {
+   "columns": 1,
    "fieldname": "rate",
    "fieldtype": "Float",
+   "in_list_view": 1,
    "label": "Rate",
    "precision": "2"
   },
@@ -190,74 +149,19 @@
   },
   {
    "allow_on_submit": 1,
+   "columns": 2,
    "fieldname": "amount",
    "fieldtype": "Currency",
+   "in_list_view": 1,
    "label": "Amount",
    "precision": "2",
    "read_only": 1
   },
   {
-   "fieldname": "claimed_amount",
-   "fieldtype": "Currency",
-   "label": "Claimed Amount",
-   "precision": "2",
-   "read_only": 1
-  },
-  {
-   "fieldname": "booked_amount",
-   "fieldtype": "Currency",
-   "label": "Booked Amount",
-   "precision": "2",
-   "read_only": 1
-  },
-  {
-   "fieldname": "received_amount",
-   "fieldtype": "Currency",
-   "hidden": 1,
-   "label": "Received Amount",
-   "precision": "2",
-   "read_only": 1
-  },
-  {
+   "allow_on_submit": 1,
    "fieldname": "adjustment_amount",
    "fieldtype": "Currency",
    "label": "Adjustment Amount",
-   "precision": "2",
-   "read_only": 1
-  },
-  {
-   "depends_on": "eval:(doc.is_selected)",
-   "fieldname": "section_break_21",
-   "fieldtype": "Section Break"
-  },
-  {
-   "allow_on_submit": 1,
-   "fieldname": "balance_quantity",
-   "fieldtype": "Float",
-   "label": "Balance Quantity",
-   "precision": "2",
-   "read_only": 1
-  },
-  {
-   "fieldname": "column_break_55",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "balance_rate",
-   "fieldtype": "Float",
-   "label": "Balance Rate",
-   "precision": "2",
-   "read_only": 1
-  },
-  {
-   "fieldname": "column_break_60",
-   "fieldtype": "Column Break"
-  },
-  {
-   "allow_on_submit": 1,
-   "fieldname": "balance_amount",
-   "fieldtype": "Currency",
-   "label": "Balance Amount",
    "precision": "2",
    "read_only": 1
   },
@@ -267,33 +171,135 @@
   },
   {
    "fieldname": "remarks",
-   "fieldtype": "Text Editor",
+   "fieldtype": "Small Text",
    "label": "Remarks"
   },
   {
-   "fieldname": "project",
+   "columns": 1,
+   "fieldname": "bsr_code",
    "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Project",
-   "options": "Project"
+   "in_list_view": 1,
+   "label": "BSR Code",
+   "options": "Bhutan Schedule of Rates"
   },
   {
-   "fieldname": "parent_item",
-   "fieldtype": "Text",
-   "hidden": 1,
-   "label": "Parent Item"
+   "columns": 2,
+   "fetch_from": "bsr_code.description",
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Description"
   },
   {
-   "fieldname": "boq_item_name",
-   "fieldtype": "Data",
-   "label": "BOQ Item Name",
+   "fieldname": "detailed_measurement_section",
+   "fieldtype": "Section Break",
+   "label": "Detailed Measurement"
+  },
+  {
+   "fieldname": "no",
+   "fieldtype": "Float",
+   "label": "No",
+   "precision": "2"
+  },
+  {
+   "fieldname": "column_break_gosp8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "length",
+   "fieldtype": "Float",
+   "label": "Length",
+   "precision": "2"
+  },
+  {
+   "fieldname": "column_break_bxwp2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "breath",
+   "fieldtype": "Float",
+   "label": "Breath",
+   "precision": "2"
+  },
+  {
+   "fieldname": "column_break_ymaax",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "height",
+   "fieldtype": "Float",
+   "label": "Height",
+   "precision": "2"
+  },
+  {
+   "fieldname": "column_break_zzxte",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "coefficient",
+   "fieldtype": "Float",
+   "label": "Coefficient",
+   "precision": "2"
+  },
+  {
+   "fieldname": "claim_detail_section",
+   "fieldtype": "Section Break",
+   "label": "Claim Detail"
+  },
+  {
+   "fieldname": "column_break_kooix",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "claimed_amount",
+   "fieldtype": "Currency",
+   "label": "Claimed Amount",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "unclaimed_quantity",
+   "fieldtype": "Float",
+   "label": "Unclaimed Quantity",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "unclaimed_amount",
+   "fieldtype": "Currency",
+   "label": "Unclaimed Amount",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "claimed_quantity",
+   "fieldtype": "Float",
+   "label": "Claimed Quantity",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "booked_quantity",
+   "fieldtype": "Float",
+   "label": "Booked Quantity",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "booked_amount",
+   "fieldtype": "Currency",
+   "label": "Booked Amount",
    "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-04-27 18:04:20.642442",
+ "modified": "2024-11-16 10:36:15.753531",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Subcontract Item",

@@ -14,15 +14,15 @@ frappe.ui.form.on("Task", {
 	},
 
 	onload: function (frm) {
-		frm.set_query("task", "depends_on", function () {
-			let filters = {
-				name: ["!=", frm.doc.name]
-			};
-			if (frm.doc.project) filters["project"] = frm.doc.project;
-			return {
-				filters: filters
-			};
-		})
+		// frm.set_query("task", "depends_on", function () {
+		// 	let filters = {
+		// 		name: ["!=", frm.doc.name]
+		// 	};
+		// 	if (frm.doc.project) filters["project"] = frm.doc.project;
+		// 	return {
+		// 		filters: filters
+		// 	};
+		// })
 
 		frm.set_query("parent_task", function () {
 			let filters = {
@@ -34,6 +34,21 @@ frappe.ui.form.on("Task", {
 				filters: filters
 			}
 		});
+	},
+
+	expected_end_date: function (frm) { 
+		if (frm.doc.expected_start_date && frm.doc.expected_end_date) {
+			frappe.call({
+				method: "get_task_duration",
+				doc: frm.doc,
+				callback: function(r) {
+					if (r.message !== undefined) {
+                        frm.set_value("duration", r.message);
+                        frm.refresh_field("duration");
+					}
+				}
+			});
+		}
 	},
 
 	is_group: function (frm) {

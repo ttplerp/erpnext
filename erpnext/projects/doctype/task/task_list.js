@@ -1,5 +1,5 @@
 frappe.listview_settings['Task'] = {
-	add_fields: ["project", "status", "priority", "exp_start_date",
+	add_fields: ["project", "status", "exp_start_date",
 		"exp_end_date", "subject", "progress", "depends_on_tasks"],
 	filters: [["status", "=", "Open"]],
 	onload: function(listview) {

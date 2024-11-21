@@ -43,6 +43,15 @@ frappe.ui.form.on("Project", {
 			};
 		});
 
+		frm.set_query("location", function() {
+			return {
+				filters: {
+					"branch": frm.doc.branch
+				}
+			};
+		});
+		
+
 		// sales order
 		frm.set_query('sales_order', function () {
 			var filters = {
@@ -69,6 +78,22 @@ frappe.ui.form.on("Project", {
 		}
 		frm.trigger("set_custom_buttons");
 	},
+
+	expected_end_date: function (frm) { 
+		if (frm.doc.expected_start_date && frm.doc.expected_end_date) {
+			frappe.call({
+				method: "get_project_period",
+				doc: frm.doc,
+				callback: function(r) {
+					if (r.message !== undefined) {
+                        frm.set_value("project_period", r.message);
+                        frm.refresh_field("project_period");
+					}
+				}
+			});
+		}
+	},
+
 	project_type:function(frm){
 		if (frm.doc.project_type == "External") {
 			frm.set_query("party_type", function() {

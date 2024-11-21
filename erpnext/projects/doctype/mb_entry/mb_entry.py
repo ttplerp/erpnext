@@ -4,10 +4,10 @@
 # project_invoice.py
 '''
 --------------------------------------------------------------------------------------------------------------------------
-Version		  Author		  CreatedOn		  ModifiedOn		  Remarks
+Version		  Author		  				CreatedOn		  ModifiedOn		  Remarks
 ------------ --------------- ------------------ -------------------  -----------------------------------------------------
-1.0		  SHIV		 2017/09/21							Original Version
---------------------------------------------------------------------------------------------------------------------------																		  
+1.0		      Dawa Nyuehtyue Tshering		2024/11/15							   Original Version
+--------------------------------------------------------------------------------------------------------------------------			
 '''
 
 from __future__ import unicode_literals
@@ -22,20 +22,18 @@ class MBEntry(Document):
 		self.set_status()
 		self.default_validations()
 		self.set_defaults()
+		self.calculate_total_amount()
 		self.vilidate_milestone_based()
 				
 	def on_submit(self):
 		self.validate_boq_items()
-		self.update_boq()
-	
-	# def before_update_after_submit(self):
-	# 	frappe.throw("Here")
+		self.update_unclaimed_amount()
 
 	def before_cancel(self):
 		self.set_status()
 
 	def on_cancel(self):
-		self.update_boq()
+		self.update_unclaimed_amount(cancel=True)
 			
 	def set_status(self):
 		self.status = {
@@ -46,12 +44,15 @@ class MBEntry(Document):
 	
 	def vilidate_milestone_based(self):
 		if self.claim_percent:
-			for a in self.mb_entry_boq:
-				a.entry_quantity = (self.claim_percent/100)*a.act_quantity
-				a.entry_amount = (self.claim_percent/100)*a.act_quantity*a.entry_rate 
+			for a in self.items:
+				a.entry_quantity 	= (self.claim_percent/100) * a.act_quantity
+				a.entry_amount 		= (self.claim_percent/100) * a.act_quantity * a.entry_rate 
 
 	def default_validations(self):
-		for rec in self.mb_entry_boq:
+		for rec in self.items:
+			if rec.is_selected == 0 or not rec.is_selected:
+				frappe.db.sql("""delete from `tabMB Entry BOQ` where name = '{}'""".format(str(rec.name)))
+
 			# entry_amount = round(rec.entry_quantity, 2)*round(rec.entry_rate, 2)
 			if flt(rec.entry_quantity) > flt(rec.act_quantity):
 				frappe.throw(_("Row{0}: Entry Quantity cannot be greater than Balance Quantity").format(rec.idx))
@@ -79,82 +80,66 @@ class MBEntry(Document):
 			
 	def validate_boq_items(self):
 		source_table = "Subcontract" if self.subcontract else "BOQ"
-		source	   = self.subcontract if self.subcontract else self.boq
+		source = self.subcontract if self.subcontract else self.boq
 		
-		for rec in self.mb_entry_boq:
+		for rec in self.items:
 			if rec.is_selected == 1 and flt(rec.entry_amount) > 0:
-				item = frappe.db.sql("""
-								select
-										ifnull(balance_quantity,0) as balance_quantity,
-										ifnull(balance_amount,0) as balance_amount
-								from
-										`tab{1} Item`
-								where   name = '{0}'
-								""".format(rec.boq_item_name, source_table), as_dict=1)[0]
+				item_result = frappe.db.sql("""select
+													ifnull(t2.unclaimed_quantity, 0) as unclaimed_quantity,
+													ifnull(t2.unclaimed_amount, 0) as unclaimed_amount
+												from
+													`tab{1}` t1, `tab{1} Item` t2
+												where t1.name = '{2}'
+														and t1.name = t2.parent
+														and t2.bsr_code = '{0}'
+														and t1.docstatus = 1
+												""".format(rec.bsr_code, source_table, source), as_dict=True)
+				
+				if item_result:
+					item = item_result[0]
+					if (flt(rec.entry_quantity) > flt(item.unclaimed_quantity)) or \
+					(flt(rec.entry_amount) > flt(item.unclaimed_amount)):
+						frappe.throw(_('Row {0}: Insufficient Balance. Please refer to {1}# <a href="#Form/{1}/{2}">{2}</a>').format(
+							rec.idx, source_table, source))
+				else:
+					frappe.throw(_('Row {0}: No balance found for BSR Code {1} in {2}# <a href="#Form/{2}/{3}">{3}</a>').format(
+						rec.idx, rec.bsr_code, source_table, source))
 
-				if (flt(rec.entry_quantity) > flt(item.balance_quantity)) or \
-					(flt(rec.entry_amount) > flt(item.balance_amount)):
-						frappe.throw(_('Row{0}: Insufficient Balance. Please refer to {1}# <a href="#Form/{1}/{2}">{2}</a>').format(rec.idx, source_table,source))
-								
-	def update_boq(self):
-		source_table = "Subcontract" if self.subcontract else "BOQ"
-		source	   = self.subcontract if self.subcontract else self.boq
+	def calculate_total_amount(self):
+		total_amount = 0.0
+		for d in self.items:
+			if d.is_selected:
+				total_amount += d.entry_amount
+		self.total_entry_amount = total_amount
+		self.total_balance_amount = total_amount
 
-		boq_list = frappe.db.sql("""
-						select
-								meb.boq_item_name,
-								sum(
-										case
-										when '{0}' = 'Milestone Based' then 0
-										else
-												case
-												when meb.docstatus < 2 then ifnull(meb.entry_quantity,0)
-												else -1*ifnull(meb.entry_quantity,0)
-												end
-										end
-								) as entry_quantity,
-								sum(
-										case
-										when meb.docstatus < 2 then ifnull(meb.entry_amount,0)
-										else -1*ifnull(meb.entry_amount,0)
-										end
-								) as entry_amount
-						from  `tabMB Entry BOQ` as meb
-						where meb.parent		= '{1}'
-						and   meb.is_selected   = 1
-						group by meb.boq_item_name
-						""".format(self.boq_type, self.name), as_dict=1)
-
-		for item in boq_list:
-			frappe.db.sql("""
-					update `tab{3} Item`
-					set
-							booked_quantity  = ifnull(booked_quantity,0) + ifnull({1},0),
-							booked_amount	= ifnull(booked_amount,0) + ifnull({2},0),
-							balance_quantity = ifnull(balance_quantity,0) - ifnull({1},0),
-							balance_amount   = ifnull(balance_amount,0) - ifnull({2},0)
-					where name = '{0}'
-					""".format(item.boq_item_name, flt(item.entry_quantity), flt(item.entry_amount), source_table))
-
-	def calulate_total_amount(self):
-		total_entry_amount = total_balance_amount = 0
-		if self.docstatus != 1:
-			for a in self.mb_entry_boq:
-				if a.entry_amount and a.is_selected == 1:
-					total_entry_amount += flt(a.entry_amount)
-		total_balance_amount = flt(total_entry_amount - self.total_received_amount,2)
-		self.total_entry_amount = total_entry_amount
-		self.total_balance_amount = total_balance_amount
-		self.save()
-
+	def update_unclaimed_amount(self, cancel=False):
+		parent_table = "Subcontract" if self.subcontract else "BOQ"
+		child_table  = "Subcontract Item" if self.subcontract else "BOQ Item"
+		parent_doc = frappe.get_doc(parent_table, self.subcontract if self.subcontract else self.boq)
+		if cancel:
+			for item in self.get("items"):
+				if item.is_selected and item.bsr_code:
+					child_doc = frappe.get_doc(child_table, {'bsr_code': item.bsr_code, 'parent': parent_doc.name})
+					child_doc.unclaimed_quantity	+= flt(item.entry_quantity)
+					child_doc.unclaimed_amount 		+= flt(item.entry_amount)
+					child_doc.booked_quantity 		-= flt(item.entry_quantity)
+					child_doc.booked_amount 		-= flt(item.entry_amount)
+					child_doc.save(ignore_permissions=True)
+		else:			
+			for item in self.get("items"):
+				if item.is_selected and item.bsr_code:
+					child_doc = frappe.get_doc(child_table, {'bsr_code': item.bsr_code, 'parent': parent_doc.name})
+					child_doc.unclaimed_quantity	-= flt(item.entry_quantity)
+					child_doc.unclaimed_amount 	 	-= flt(item.entry_amount)
+					child_doc.booked_quantity 		+= flt(item.entry_quantity)
+					child_doc.booked_amount 		+= flt(item.entry_amount)
+					child_doc.save(ignore_permissions=True)
+			
 
 @frappe.whitelist()
 def make_details(source_name, target_doc=None, args=None):
 	from frappe.model.mapper import get_mapped_doc
-	# if args is None:
-	# 	args = {}
-	# if isinstance(args, str):
-	# 	args = json.loads(args)
 
 	def post_process(source, target):
 		target.child_ref = frappe.flags.args.child_ref
@@ -191,7 +176,7 @@ def make_mb_invoice(source_name, target_doc=None):
 		target_doc.reference_name	= source_doc.name
 
 	def update_reference(source_doc, target_doc, source_parent):
-			pass
+		pass
 			
 	doclist = get_mapped_doc("MB Entry", source_name, {
 		"MB Entry": {

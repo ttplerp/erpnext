@@ -29,6 +29,37 @@ frappe.ui.form.on("BOQ Adjustment Item",{
 	
 	boq_item_remove: function(frm, cdt, cdn){
 		calculate_total_amount(frm);
+	},
+
+	no: function (frm, cdt, cdn) {
+		let child = locals[cdt][cdn];
+		let quant = child.no * child.coefficient * child.height * child.length * child.breath
+		frappe.model.set_value(cdt, cdn, 'adjustment_quantity', parseFloat(quant));
+		frm.refresh_field("adjustment_quantity", cdt, cdn)
+	},
+	breath: function (frm, cdt, cdn) {
+		let child = locals[cdt][cdn];
+		let quant = child.no * child.coefficient * child.height * child.length * child.breath
+		frappe.model.set_value(cdt, cdn, 'adjustment_quantity', parseFloat(quant));
+		frm.refresh_field("adjustment_quantity", cdt, cdn)
+	},
+	height: function (frm, cdt, cdn) {
+		let child = locals[cdt][cdn];
+		let quant = child.no * child.coefficient * child.height * child.length * child.breath
+		frappe.model.set_value(cdt, cdn, 'adjustment_quantity', parseFloat(quant));
+		frm.refresh_field("adjustment_quantity", cdt, cdn)
+	},
+	length: function (frm, cdt, cdn) {
+		let child = locals[cdt][cdn];
+		let quant = child.no * child.coefficient * child.height * child.length * child.breath
+		frappe.model.set_value(cdt, cdn, 'adjustment_quantity', parseFloat(quant));
+		frm.refresh_field("adjustment_quantity", cdt, cdn)
+	},
+	coefficient: function (frm, cdt, cdn) {
+		let child = locals[cdt][cdn];
+		let quant = child.no * child.coefficient * child.height * child.length * child.breath
+		frappe.model.set_value(cdt, cdn, 'adjustment_quantity', parseFloat(quant));
+		frm.refresh_field("adjustment_quantity", cdt, cdn)
 	}
 });
 

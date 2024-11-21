@@ -988,13 +988,12 @@
   {
    "fieldname": "tds_account_item",
    "fieldtype": "Table",
-   "label": "TDS Account Item",
+   "label": "TDS and Retention Accounts",
    "options": "TDS Account Item"
   },
   {
    "fieldname": "tds_accounts_section",
-   "fieldtype": "Section Break",
-   "label": "TDS Accounts"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "coal_raising_settings_section",
@@ -1179,7 +1178,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2024-01-25 11:00:13.919568",
+ "modified": "2024-11-17 18:42:34.790000",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",

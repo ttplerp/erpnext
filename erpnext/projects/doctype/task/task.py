@@ -35,19 +35,41 @@ class Task(NestedSet):
 	def validate(self):
 		self.validate_dates()
 		self.validate_task_weigth()
+		self.get_task_duration()
 		self.validate_parent_expected_end_date()
 		self.validate_parent_project_dates()
 		self.validate_progress()
-		self.validate_status()
-		self.update_depends_on()
+		# self.validate_status()
+		# self.update_depends_on()
 		self.validate_dependencies_for_template_task()
 		self.validate_completed_on()
+
+	def on_update(self):
+		self.update_nsm_model()
+		# self.update_project()
+		# self.check_recursion()
+		# self.reschedule_dependent_tasks()
+		# self.unassign_todo()
+		# self.populate_depends_on()
+	
+	def on_submit(self):
+		self.update_project()
+
+	def before_update_after_submit(self):
+		self.update_project()
+
+	def on_update_after_submit(self):
+		self.validate_percent_progress()
+		self.update_project()
+
+	def after_delete(self):
+		self.update_project()
 	
 	def validate_dates(self):
 		if (
-			self.exp_start_date
-			and self.exp_end_date
-			and getdate(self.exp_start_date) > getdate(self.exp_end_date)
+			self.expected_start_date
+			and self.expected_end_date
+			and getdate(self.expected_start_date) > getdate(self.expected_end_date)
 		):
 			frappe.throw(
 				_("{0} can not be greater than {1}").format(
@@ -65,6 +87,7 @@ class Task(NestedSet):
 					frappe.bold("Actual Start Date"), frappe.bold("Actual End Date")
 				)
 			)
+
 	def validate_task_weigth(self):
 		exists = frappe.db.sql("""select name from `tabTask` where docstatus !=2 and project=%s""", self.project, as_dict=True)
 		if exists:
@@ -85,12 +108,12 @@ class Task(NestedSet):
 
 	def validate_parent_expected_end_date(self):
 		if self.parent_task:
-			parent_exp_end_date = frappe.db.get_value("Task", self.parent_task, "exp_end_date")
-			if parent_exp_end_date and getdate(self.get("exp_end_date")) > getdate(parent_exp_end_date):
+			parent_expected_end_date = frappe.db.get_value("Task", self.parent_task, "expected_end_date")
+			if parent_expected_end_date and getdate(self.get("expected_end_date")) > getdate(parent_expected_end_date):
 				frappe.throw(
 					_(
 						"Expected End Date should be less than or equal to parent task's Expected End Date {0}."
-					).format(getdate(parent_exp_end_date))
+					).format(getdate(parent_expected_end_date))
 				)
 
 	def validate_parent_project_dates(self):
@@ -101,15 +124,15 @@ class Task(NestedSet):
 
 		if expected_end_date:
 			validate_project_dates(
-				getdate(expected_end_date), self, "exp_start_date", "exp_end_date", "Expected"
+				getdate(expected_end_date), self, "expected_start_date", "expected_end_date", "Expected"
 			)
 			validate_project_dates(
 				getdate(expected_end_date), self, "act_start_date", "act_end_date", "Actual"
 			)
 
 	def validate_status(self):
-		if self.is_template and self.status != "Template":
-			self.status = "Template"
+		# if self.is_template and self.status != "Template":
+		# 	self.status = "Template"
 		if self.status != self.get_db_value("status") and self.status == "Completed":
 			for d in self.depends_on:
 				if frappe.db.get_value("Task", d.task, "status") not in ("Completed", "Cancelled"):
@@ -150,26 +173,15 @@ class Task(NestedSet):
 		if self.completed_on and getdate(self.completed_on) > getdate():
 			frappe.throw(_("Completed On cannot be greater than Today"))
 
-	def update_depends_on(self):
-		depends_on_tasks = ""
-		for d in self.depends_on:
-			if d.task and d.task not in depends_on_tasks:
-				depends_on_tasks += d.task + ","
-		self.depends_on_tasks = depends_on_tasks
+	# def update_depends_on(self):
+	# 	depends_on_tasks = ""
+	# 	for d in self.depends_on:
+	# 		if d.task and d.task not in depends_on_tasks:
+	# 			depends_on_tasks += d.task + ","
+	# 	self.depends_on_tasks = depends_on_tasks
 
 	def update_nsm_model(self):
 		frappe.utils.nestedset.update_nsm(self)
-
-	def on_update(self):
-		self.update_nsm_model()
-		self.check_recursion()
-		self.reschedule_dependent_tasks()
-		self.update_project()
-		self.unassign_todo()
-		self.populate_depends_on()
-	
-	def on_update_after_submit(self):
-		self.validate_percent_progress()
 
 	def validate_percent_progress(self):
 		if self.status == "Completed" and self.progress != 100:
@@ -197,8 +209,19 @@ class Task(NestedSet):
 		self.act_start_date = tl.start_date
 		self.act_end_date = tl.end_date
 
+	@frappe.whitelist()
+	def get_task_duration(self):
+		task_duration = 0
+		if self.expected_start_date and self.expected_end_date:
+			if getdate(self.expected_start_date) > getdate(self.expected_end_date):
+				frappe.throw("Expected start date cannot be after expected end date")
+			else:
+				task_duration = flt((getdate(self.expected_end_date)-getdate(self.expected_start_date)).days) + 1
+		self.duration = task_duration
+		return task_duration
+
 	def update_project(self):
-		if self.project and not self.flags.from_project:
+		if self.project:
 			frappe.get_cached_doc("Project", self.project).update_project()
 
 	def check_recursion(self):
@@ -223,7 +246,7 @@ class Task(NestedSet):
 					break
 
 	def reschedule_dependent_tasks(self):
-		end_date = self.exp_end_date or self.act_end_date
+		end_date = self.expected_end_date or self.act_end_date
 		if end_date:
 			for task_name in frappe.db.sql(
 				"""
@@ -238,14 +261,14 @@ class Task(NestedSet):
 			):
 				task = frappe.get_doc("Task", task_name.name)
 				if (
-					task.exp_start_date
-					and task.exp_end_date
-					and task.exp_start_date < getdate(end_date)
+					task.expected_start_date
+					and task.expected_end_date
+					and task.expected_start_date < getdate(end_date)
 					and task.status == "Open"
 				):
-					task_duration = date_diff(task.exp_end_date, task.exp_start_date)
-					task.exp_start_date = add_days(end_date, 1)
-					task.exp_end_date = add_days(task.exp_start_date, task_duration)
+					task_duration = date_diff(task.expected_end_date, task.expected_start_date)
+					task.expected_start_date = add_days(end_date, 1)
+					task.expected_end_date = add_days(task.expected_start_date, task_duration)
 					task.flags.ignore_recursion_check = True
 					task.save()
 
@@ -271,14 +294,11 @@ class Task(NestedSet):
 
 		self.update_nsm_model()
 
-	def after_delete(self):
-		self.update_project()
-
 	def update_status(self):
-		if self.status not in ("Cancelled", "Completed") and self.exp_end_date:
+		if self.status not in ("Cancelled", "Completed") and self.expected_end_date:
 			from datetime import datetime
 
-			if self.exp_end_date < datetime.now().date():
+			if self.expected_end_date < datetime.now().date():
 				self.db_set("status", "Overdue", update_modified=False)
 				self.update_project()
 
@@ -340,10 +360,9 @@ def set_tasks_as_overdue():
 				continue
 		frappe.get_doc("Task", task.name).update_status()
 
-
 @frappe.whitelist()
-def make_timesheet(source_name, target_doc=None, ignore_permissions=False):
-	def set_missing_values(source, target):
+def make_timesheet(source_name, target_doc=None):
+	def set_missing_values(source, target, source_parent):
 		target.append(
 			"time_logs",
 			{
@@ -354,14 +373,15 @@ def make_timesheet(source_name, target_doc=None, ignore_permissions=False):
 			},
 		)
 
-	doclist = get_mapped_doc(
-		"Task",
-		source_name,
-		{"Task": {"doctype": "Timesheet"}},
-		target_doc,
-		postprocess=set_missing_values,
-		ignore_permissions=ignore_permissions,
-	)
+	doclist = get_mapped_doc("Task", source_name, {
+				"Task": {
+						"doctype": "Timesheet",
+						"field_map": {
+							"project": "project"
+						},
+						"postprocess": set_missing_values,
+					}
+				}, target_doc)
 
 	return doclist
 

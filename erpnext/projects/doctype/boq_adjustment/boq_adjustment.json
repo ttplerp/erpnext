@@ -7,19 +7,20 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "adjustment_date",
+  "name_of_work",
   "adjustment_type",
   "project",
+  "boq",
+  "column_break_lvqpp",
   "branch",
   "cost_center",
   "column_break_40",
-  "boq",
+  "adjustment_date",
   "boq_date",
   "boq_type",
   "sb_totals",
-  "total_amount",
-  "section_break_20",
   "boq_item",
+  "total_amount",
   "remarks",
   "sb_notes",
   "notes",
@@ -73,6 +74,7 @@
   {
    "fieldname": "boq",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "BOQ",
    "options": "BOQ",
    "read_only": 1
@@ -106,15 +108,11 @@
   {
    "bold": 1,
    "fieldname": "total_amount",
-   "fieldtype": "Float",
+   "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Total Adjusted Amount (+/-)",
    "precision": "2",
    "read_only": 1
-  },
-  {
-   "fieldname": "section_break_20",
-   "fieldtype": "Section Break"
   },
   {
    "fieldname": "boq_item",
@@ -141,12 +139,21 @@
    "options": "BOQ Adjustment",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "name_of_work",
+   "fieldtype": "Data",
+   "label": "Name of Work"
+  },
+  {
+   "fieldname": "column_break_lvqpp",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-08-03 12:49:05.917942",
+ "modified": "2024-11-18 09:20:33.765562",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "BOQ Adjustment",

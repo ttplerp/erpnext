@@ -10,12 +10,14 @@
   "type_of_payment",
   "business_activity",
   "branch",
+  "cost_center",
   "payment_type",
   "payment_order_status",
   "settle_project_imprest",
   "imprest_party",
   "column_break_5",
   "posting_date",
+  "project",
   "company",
   "mode_of_payment",
   "section_break_10",
@@ -92,10 +94,6 @@
   "deductions",
   "transaction_references",
   "clearance_date",
-  "accounting_dimensions_section",
-  "project",
-  "dimension_col_break",
-  "cost_center",
   "section_break_12",
   "status",
   "custom_remarks",
@@ -590,16 +588,6 @@
    "read_only": 1
   },
   {
-   "collapsible": 1,
-   "fieldname": "accounting_dimensions_section",
-   "fieldtype": "Section Break",
-   "label": "Accounting Dimensions"
-  },
-  {
-   "fieldname": "dimension_col_break",
-   "fieldtype": "Column Break"
-  },
-  {
    "default": "Draft",
    "fieldname": "status",
    "fieldtype": "Select",
@@ -816,6 +804,7 @@
    "read_only": 1
   },
   {
+   "depends_on": "eval:!doc.project",
    "fieldname": "advance_payment",
    "fieldtype": "Section Break",
    "label": "Advance Payment"
@@ -832,9 +821,11 @@
    "options": "Payment Entry Advance"
   },
   {
+   "depends_on": "eval:!doc.project",
    "fieldname": "advance_type",
    "fieldtype": "Link",
    "label": "Advance Type",
+   "mandatory_depends_on": "eval:!doc.project",
    "options": "Advance Type"
   },
   {
@@ -877,7 +868,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-03-26 14:17:22.871854",
+ "modified": "2024-11-17 18:46:11.877009",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Payment Entry",

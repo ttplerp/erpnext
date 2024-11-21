@@ -38,14 +38,15 @@ class ProjectAdvance(Document):
 				frappe.throw(_('Journal Entry  <a href="#Form/Journal Entry/{0}">{0}</a> for this transaction needs to be cancelled first').format(self.journal_entry),title='Not permitted')
 
 	def on_cancel(self):
-		self.project_advance_item_entry()
+		self.project_advance_item_entry(cancel=True)
 
 	def on_update_after_submit(self):
 		self.project_advance_item_entry()
 
-	def project_advance_item_entry(self):
-		if self.docstatus == 2:
+	def project_advance_item_entry(self, cancel=False):
+		if cancel:
 			frappe.db.sql("delete from `tabProject Advance Item` where parent='{project}' and advance_name = '{advance_name}'".format(project=self.project, advance_name=self.name))
+
 		else:
 			if not frappe.db.exists("Project Advance Item", {"parent": self.project, "advance_name": self.name}):
 				doc = frappe.get_doc("Project", self.project)
@@ -55,7 +56,7 @@ class ProjectAdvance(Document):
 				row.advance_amount      = flt(self.received_amount)+flt(self.paid_amount)
 				row.received_amount     = flt(self.received_amount)
 				row.paid_amount         = flt(self.paid_amount)
-				row.adjustment_amount   = flt(self.adjustment_amount)
+				row.adjusted_amount   	= flt(self.adjusted_amount)
 				row.balance_amount      = flt(self.balance_amount)
 				row.save(ignore_permissions=True)
 			else:
@@ -64,7 +65,7 @@ class ProjectAdvance(Document):
 				row.advance_amount      = flt(self.received_amount)+flt(self.paid_amount)
 				row.received_amount     = flt(self.received_amount)
 				row.paid_amount         = flt(self.paid_amount)
-				row.adjustment_amount   = flt(self.adjustment_amount)
+				row.adjusted_amount   	= flt(self.adjusted_amount)
 				row.balance_amount      = flt(self.balance_amount)
 				row.save(ignore_permissions=True)
 							
@@ -89,18 +90,21 @@ class ProjectAdvance(Document):
 			self.journal_entry_status = None
 			self.payment_type  = "Receive" if self.party_type == "Customer" else "Pay" 
 			if self.payment_type == "Receive":
-				self.paid_amount = self.advance_amount_requested
-			else:
 				self.received_amount = self.advance_amount_requested
-			self.adjustment_amount = 0
+				self.paid_amount = 0.0
+			else:
+				self.paid_amount = self.advance_amount_requested
+				self.received_amount = 0.0
+			self.adjusted_amount = 0.0
 			self.balance_amount = self.advance_amount_requested
+			
 		# if not self.advance_account:
 		# 	self.advance_account = get_party_account(self.party_type, self.party, self.company, is_advance=True)
 		if self.project:
 			project = frappe.get_doc("Project", self.project)
 
 			if project.status in ('Completed','Cancelled'):
-				frappe.throw(_("Operation not permitted on already {0} Project.").format(base_project.status),title="Project Advance: Invalid Operation")
+				frappe.throw(_("Operation not permitted on already {0} Project.").format(project.status),title="Project Advance: Invalid Operation")
 					
 			self.cost_center      = project.cost_center
 			self.branch           = project.branch
@@ -212,4 +216,3 @@ class ProjectAdvance(Document):
 			self.db_set("journal_entry", je.name)
 			self.db_set("journal_entry_status", "Forwarded to accounts for processing payment on {0}".format(now_datetime().strftime('%Y-%m-%d %H:%M:%S')))
 			frappe.msgprint(_('{} posted to accounts').format(frappe.get_desk_link(je.doctype,je.name)))
-
