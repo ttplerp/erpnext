@@ -1,11 +1,6 @@
 {
- "charts": [
-  {
-   "chart_name": "Project Summary",
-   "label": "Open Projects"
-  }
- ],
- "content": "[{\"id\":\"vO4uwzOSDP\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Open Projects\",\"col\":12}},{\"id\":\"xb2MdZPCNf\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"ZKKuKUAcHO\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"id\":\"tLwRrIlakC\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Task\",\"col\":3}},{\"id\":\"jITaBNvy0G\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Project\",\"col\":3}},{\"id\":\"FLmsgfU-yd\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Timesheet\",\"col\":3}},{\"id\":\"S20pbwq6pX\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Project Billing Summary\",\"col\":3}},{\"id\":\"JAArQu_POc\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":3}},{\"id\":\"214ZFJC-Gw\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"rrGlsmc9-P\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"id\":\"RHJzpnbHIH\",\"type\":\"card\",\"data\":{\"card_name\":\"Projects\",\"col\":4}},{\"id\":\"XFFTen32al\",\"type\":\"card\",\"data\":{\"card_name\":\"Time Tracking\",\"col\":4}},{\"id\":\"JF_9SfPzM1\",\"type\":\"card\",\"data\":{\"card_name\":\"Bills of Quantities\",\"col\":4}},{\"id\":\"nEkxvd1RU6\",\"type\":\"card\",\"data\":{\"card_name\":\"Payment\",\"col\":4}},{\"id\":\"we48OnhiKl\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}},{\"id\":\"zhzDH2xeal\",\"type\":\"card\",\"data\":{\"card_name\":\"Project Reports\",\"col\":4}},{\"id\":\"cosx3HlLa0\",\"type\":\"card\",\"data\":{\"card_name\":\"Project Settings\",\"col\":4}}]",
+ "charts": [],
+ "content": "[{\"id\":\"U6mwFrZ_zz\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Masters Data, Transactions and Reports</b></span>\",\"col\":12}},{\"id\":\"cYYyWo1cie\",\"type\":\"card\",\"data\":{\"card_name\":\"Master Data\",\"col\":4}},{\"id\":\"Xv4VpjVwXq\",\"type\":\"card\",\"data\":{\"card_name\":\"Bills of Quantities\",\"col\":4}},{\"id\":\"eca57-7H8d\",\"type\":\"card\",\"data\":{\"card_name\":\"Equipment & Mess Management\",\"col\":4}},{\"id\":\"VAL1lhRtNV\",\"type\":\"card\",\"data\":{\"card_name\":\"Project Advance and Invoice \",\"col\":4}},{\"id\":\"AxV1Db8um1\",\"type\":\"card\",\"data\":{\"card_name\":\"Project Settings\",\"col\":4}},{\"id\":\"xLL23b2nma\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}},{\"id\":\"pjWVFlFrLJ\",\"type\":\"card\",\"data\":{\"card_name\":\"Registers Report\",\"col\":4}},{\"id\":\"mV3yCVGZqz\",\"type\":\"card\",\"data\":{\"card_name\":\"Daily Reports\",\"col\":4}}]",
  "creation": "2020-03-02 15:46:04.874669",
  "custom_blocks": [],
  "docstatus": 0,
@@ -17,14 +12,6 @@
  "is_hidden": 0,
  "label": "Projects",
  "links": [
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Projects",
-   "link_count": 0,
-   "onboard": 0,
-   "type": "Card Break"
-  },
   {
    "dependencies": "",
    "hidden": 0,
@@ -81,14 +68,6 @@
    "type": "Link"
   },
   {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Time Tracking",
-   "link_count": 0,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
    "dependencies": "",
    "hidden": 0,
    "is_query_report": 0,
@@ -119,6 +98,82 @@
    "link_to": "Activity Cost",
    "link_type": "DocType",
    "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Project Settings",
+   "link_count": 1,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Project Settings",
+   "link_count": 0,
+   "link_to": "Projects Settings",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Project Advance and Invoice ",
+   "link_count": 2,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Project Advance",
+   "link_count": 0,
+   "link_to": "Project Advance",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Project Invoice",
+   "link_count": 0,
+   "link_to": "Project Invoice",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Equipment & Mess Management",
+   "link_count": 2,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Project Equipment Engagement",
+   "link_count": 0,
+   "link_to": "Project Equipment Engagement",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Project Mess Management",
+   "link_count": 0,
+   "link_to": "Project Mess Management",
+   "link_type": "DocType",
+   "onboard": 1,
    "type": "Link"
   },
   {
@@ -162,16 +217,6 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "MB Entry",
-   "link_count": 0,
-   "link_to": "MB Entry",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Subcontract Adjustment",
    "link_count": 0,
    "link_to": "Subcontract Adjustment",
@@ -182,8 +227,114 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Project Reports",
-   "link_count": 1,
+   "label": "MB Entry",
+   "link_count": 0,
+   "link_to": "MB Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Registers Report",
+   "link_count": 5,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Project Register",
+   "link_count": 0,
+   "link_to": "Project Register",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Project Invoice Register",
+   "link_count": 0,
+   "link_to": "Project Invoice Register",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "BOQ Register",
+   "link_count": 0,
+   "link_to": "BOQ Register",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "MB Register",
+   "link_count": 0,
+   "link_to": "MB Register",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Project Advance Register",
+   "link_count": 0,
+   "link_to": "Project Advance Register",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Daily Reports",
+   "link_count": 3,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Daily Project Profit & Loss",
+   "link_count": 0,
+   "link_to": "Daily Project Profit & Loss",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Daily Work Report",
+   "link_count": 0,
+   "link_to": "Daily Work Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Daily Record of Measurement",
+   "link_count": 0,
+   "link_to": "Daily Record of Measurement",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Reports",
+   "link_count": 2,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -198,25 +349,6 @@
    "type": "Link"
   },
   {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Reports",
-   "link_count": 12,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "dependencies": "Timesheet",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Daily Timesheet Summary",
-   "link_count": 0,
-   "link_to": "Daily Timesheet Summary",
-   "link_type": "Report",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
    "dependencies": "Project",
    "hidden": 0,
    "is_query_report": 1,
@@ -228,121 +360,42 @@
    "type": "Link"
   },
   {
-   "dependencies": "Project",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Project Billing Summary",
-   "link_count": 0,
-   "link_to": "Project Billing Summary",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "Task",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Delayed Tasks Summary",
-   "link_count": 0,
-   "link_to": "Delayed Tasks Summary",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Project Register",
-   "link_count": 0,
-   "link_to": "Project Register",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "BOQ Register",
-   "link_count": 0,
-   "link_to": "BOQ Register",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "MB Register",
-   "link_count": 0,
-   "link_to": "MB Register",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Project Advance Register",
-   "link_count": 0,
-   "link_to": "Project Advance Register",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Project Invoice Register",
-   "link_count": 0,
-   "link_to": "Project Invoice Register",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Project Timeline Report",
-   "link_count": 0,
-   "link_to": "Project Timeline Report",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Daily Record of Measurement",
-   "link_count": 0,
-   "link_to": "Daily Record of Measurement",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Daily Work Report",
-   "link_count": 0,
-   "link_to": "Daily Work Report",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Payment",
-   "link_count": 3,
+   "label": "Master Data",
+   "link_count": 4,
    "onboard": 0,
    "type": "Card Break"
   },
   {
+   "dependencies": "",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Project Advance",
+   "label": "Project",
    "link_count": 0,
-   "link_to": "Project Advance",
+   "link_to": "Project",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Task",
+   "link_count": 0,
+   "link_to": "Task",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Project Type",
+   "link_count": 0,
+   "link_to": "Project Type",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -350,43 +403,15 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Project Invoice",
+   "label": "Bhutan Schedule of Rates",
    "link_count": 0,
-   "link_to": "Project Invoice",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Journal Entry",
-   "link_count": 0,
-   "link_to": "Journal Entry",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Project Settings",
-   "link_count": 1,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Project Settings",
-   "link_count": 0,
-   "link_to": "Projects Settings",
+   "link_to": "Bhutan Schedule of Rates",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
   }
  ],
- "modified": "2023-10-17 09:44:07.201527",
+ "modified": "2024-11-21 15:19:28.359627",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Projects",
@@ -398,38 +423,6 @@
  "restrict_to_domain": "",
  "roles": [],
  "sequence_id": 22.0,
- "shortcuts": [
-  {
-   "color": "Blue",
-   "format": "{} Assigned",
-   "label": "Task",
-   "link_to": "Task",
-   "stats_filter": "{\n    \"_assign\": [\"like\", '%' + frappe.session.user + '%'],\n    \"status\": \"Open\"\n}",
-   "type": "DocType"
-  },
-  {
-   "color": "Blue",
-   "format": "{} Open",
-   "label": "Project",
-   "link_to": "Project",
-   "stats_filter": "{\n    \"status\": \"Open\"\n}",
-   "type": "DocType"
-  },
-  {
-   "label": "Timesheet",
-   "link_to": "Timesheet",
-   "type": "DocType"
-  },
-  {
-   "label": "Project Billing Summary",
-   "link_to": "Project Billing Summary",
-   "type": "Report"
-  },
-  {
-   "label": "Dashboard",
-   "link_to": "Project",
-   "type": "Dashboard"
-  }
- ],
+ "shortcuts": [],
  "title": "Projects"
 }
