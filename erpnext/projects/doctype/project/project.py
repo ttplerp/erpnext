@@ -22,7 +22,7 @@ class Project(Document):
 
 	def autoname(self):
 		year = get_fiscal_year(getdate(nowdate()), company="VAJRA BUILDERS PRIVATE LIMITED")[0]
-		name = "VAJRA/" + str(self.department_abbr) + "/" + str(self.file_no) + "/Project/" + str(year) +"/"
+		name = "VBPL/"+ str(self.department_abbr)+ "/"+ str(self.file_no)+"/Project/"+str(year) +"/"
 		self.name = make_autoname(str(name) + ".#####")
 		
 	def onload(self):
