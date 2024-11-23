@@ -28,7 +28,7 @@ class CustomWorkflow:
         self.field_list		= ["user_id","employee_name","designation","name"]
         if self.doc.doctype != "Material Request" and self.doc.doctype not in ("Asset Issue Details", "Compile Budget","POL Expense","Vehicle Request", "Repair And Services", "Asset Movement", "Budget Reappropiation"):
             self.employee		= frappe.db.get_value("Employee", self.doc.employee, self.field_list)
-            if not frappe.db.exists("Employee", self.doc.employee, "reports_to"):
+            if not (frappe.db.exists("Employee", self.doc.employee, "reports_to")):
                 frappe.throw("Reports to for Employee {} is not set.".format(self.doc.employee), title="Missing Data")
             self.reports_to = frappe.db.get_value("Employee", {"name":frappe.db.get_value("Employee", self.doc.employee, "reports_to")}, self.field_list)
             
@@ -192,11 +192,14 @@ class CustomWorkflow:
     def set_approver(self, approver_type):
         if approver_type == "Supervisor":
             if self.doc.doctype in ("Travel Request", "Travel Authorization", "Travel Claim", "Employee Separation","Vehicle Request", "Material Request", "Repair And Services","Overtime Application"):
+                if not self.reports_to:
+                    self.reports_to=self.hr_approver
                 officiating = get_officiating_employee(self.reports_to[3])
                 if officiating:
                     officiating = frappe.db.get_value("Employee", officiating[0].officiate, self.field_list)
                 vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.reports_to[0]
                 vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.reports_to[1]
+                
                 if self.doc.doctype != "Vehicle Request":
                     vars(self.doc)[self.doc_approver[2]] = officiating[2] if officiating else self.expense_approver[2]
             else:
@@ -429,8 +432,6 @@ class CustomWorkflow:
             self.performance_evaluation()
         elif self.doc.doctype == "Employee Transfer":
             self.employee_transfer()
-        elif self.doc.doctype == "Employee Benefit Claim":
-            self.employee_benefit_claim()
         elif self.doc.doctype == "POL Expense":
             self.pol_expenses()
         elif self.doc.doctype == "Budget Reappropiation":
@@ -529,13 +530,10 @@ class CustomWorkflow:
                     frappe.throw("Only {} can edit/submit this document".format(self.doc.approver))
     
     def employee_benefits(self):
-        if self.new_state.lower() in ("Draft".lower(), "Waiting GM Approval".lower()):
-            if self.new_state.lower() == "Waiting GM Approval".lower():
-                if "HR User" not in frappe.get_roles(frappe.session.user):
-                    frappe.throw("Only HR can Apply this Appeal")
-            self.set_approver("HRGM")
-
-        elif self.new_state.lower() in ("Approved".lower()):
+        if self.new_state.lower() in ("Draft".lower(), "Waiting Hr Approval".lower()):
+            self.set_approver("HR")
+            
+        elif self.new_state.lower() in ("Approved".lower()) and self.old_state.lower() != self.new_state.lower():
             if self.doc.benefit_approver != frappe.session.user:
                 frappe.throw("Only {} can edit/submit this document".format(self.doc.benefit_approver_name))
                     
@@ -1026,6 +1024,7 @@ class CustomWorkflow:
 
     def employee_transfer(self):
         if self.doc.workflow_state == "Draft":
+            '''
             if self.doc.transfer_type != 'Personal Request':
                 if "HR User" not in frappe.get_roles(frappe.session.user):
                     frappe.throw("Only HR User can apply for Management Transfer or Mutual Swipe")
@@ -1034,6 +1033,7 @@ class CustomWorkflow:
                     frappe.throw("HR User can apply for Management Transfer or Mutual Swipe only")
                 if frappe.session.user != frappe.db.get_value("Employee",self.doc.employee,"user_id"):
                     frappe.throw("Only the selected employee {0} can apply for employee transfer".format(self.doc.employee))
+            '''
             supervisor_id = frappe.db.get_value("Employee", self.doc.employee, "reports_to")
             self.doc.supervisor_name = frappe.db.get_value("Employee", supervisor_id, "employee_name")
             self.doc.supervisor_email = frappe.db.get_value("Employee", supervisor_id, "company_email")
