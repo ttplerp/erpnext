@@ -7,12 +7,12 @@
  "document_type": "Document",
  "engine": "InnoDB",
  "field_order": [
-  "branch",
+  "title",
   "column_break_iui3f",
+  "branch",
   "cost_center",
   "section_break_s8phb",
   "enote_format",
-  "title",
   "enote_type",
   "reviewer_required",
   "review_complete",
@@ -68,6 +68,7 @@
   {
    "fieldname": "forward_to",
    "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "Approver / Forward To",
    "no_copy": 1,
    "options": "User"
@@ -169,6 +170,7 @@
   {
    "fieldname": "branch",
    "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "Branch",
    "options": "Branch"
   },
@@ -192,7 +194,7 @@
  "icon": "fa fa-file-text",
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-24 16:24:15.327035",
+ "modified": "2024-11-23 11:13:39.062133",
  "modified_by": "Administrator",
  "module": "eNote",
  "name": "eNote",
