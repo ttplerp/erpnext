@@ -525,9 +525,9 @@ class ProjectInvoice(AccountsController):
 
 				if total_invoice_amount:
 					doc = frappe.get_doc("Subcontract" if i.subcontract else "BOQ", i.subcontract if i.subcontract else i.boq)
-					doc.claimed_amount  	    = flt(doc.claimed_amount) + flt(total_invoice_amount)
-					doc.total_claimed_amount  	= flt(doc.claimed_amount) + flt(total_invoice_amount)
-					doc.total_unclaimed_amount 	= flt(doc.total_unclaimed_amount) - flt(total_invoice_amount)
+					doc.total_claimed_amount  	+= flt(total_invoice_amount)
+					doc.total_booked_amount  	-= flt(total_invoice_amount)
+					doc.total_unclaimed_amount 	-= flt(total_invoice_amount)
 					doc.save(ignore_permissions = True)
 
 	def update_mb_entries(self, cancel=False):

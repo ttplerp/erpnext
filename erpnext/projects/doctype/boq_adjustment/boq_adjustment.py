@@ -96,6 +96,7 @@ class BOQAdjustment(Document):
 			# Update BOQ
 			boq_doc = frappe.get_doc("BOQ", self.boq)
 			boq_doc.total_amount   = flt(boq_doc.total_amount) + flt(total_amount)
+			boq_doc.total_adjusted_amount = flt(boq_doc.total_adjusted_amount) + flt(adjustment_amount)
 			boq_doc.total_unclaimed_amount = flt(boq_doc.total_unclaimed_amount) + flt(total_amount)
 			boq_doc.save(ignore_permissions = True)
 

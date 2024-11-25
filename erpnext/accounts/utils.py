@@ -980,14 +980,43 @@ def get_account_name(
         "name",
     )
 
-
 @frappe.whitelist()
-def get_tds_account(percent, company):
+def get_tds_account(percent, company, party_type=None):
+    account = None
     if not percent:
         frappe.throw("TDS Percent is mandatory")
-    return frappe.db.get_value(
-        "TDS Account Item", {"parent": company, "tds_percent": percent}, "account"
-    )
+   
+    if party_type == "Customer":
+        account = frappe.db.get_value(
+            "TDS Account Item", {"parent": company, "tds_percent": percent}, "receivable_account"
+        )  
+        if not account:
+            frappe.throw("Please set TDS Account in Company")
+    else:
+        account = frappe.db.get_value(
+            "TDS Account Item", {"parent": company, "tds_percent": percent}, "account"
+        )
+        if not account:
+            frappe.throw("Please set TDS Account in Company")
+    return account
+    
+@frappe.whitelist()
+def get_retention_account(percent, company, party_type=None):
+    account = None
+    if not percent:
+        frappe.throw("TDS Percent is mandatory")
+   
+    if party_type == "Customer":
+        account = frappe.db.get_value(
+            "TDS Account Item", {"parent": company, "tds_percent": percent}, "receivable_account"
+        )
+        if not account:
+            frappe.throw("Please set Account in Company for Receivable")
+    else:
+        account = frappe.db.get_value(
+            "TDS Account Item", {"parent": company, "tds_percent": percent}, "account"
+        )
+    return account
 
 
 @frappe.whitelist()

@@ -74,7 +74,6 @@
   {
    "fieldname": "boq",
    "fieldtype": "Link",
-   "hidden": 1,
    "label": "BOQ",
    "options": "BOQ",
    "read_only": 1
@@ -153,7 +152,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-11-18 09:20:33.765562",
+ "modified": "2024-11-25 12:45:54.122640",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "BOQ Adjustment",

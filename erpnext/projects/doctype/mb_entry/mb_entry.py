@@ -28,12 +28,14 @@ class MBEntry(Document):
 	def on_submit(self):
 		self.validate_boq_items()
 		self.update_unclaimed_amount()
+		self.update_boq_booked_amount()
 
 	def before_cancel(self):
 		self.set_status()
 
 	def on_cancel(self):
 		self.update_unclaimed_amount(cancel=True)
+		self.update_boq_booked_amount(cancel=True)
 			
 	def set_status(self):
 		self.status = {
@@ -105,6 +107,12 @@ class MBEntry(Document):
 					frappe.throw(_('Row {0}: No balance found for BSR Code {1} in {2}# <a href="#Form/{2}/{3}">{3}</a>').format(
 						rec.idx, rec.bsr_code, source_table, source))
 
+	def update_boq_booked_amount(self, cancel=False):
+		total_amount = -1*flt(self.total_entry_amount) if cancel else flt(self.total_entry_amount)
+		doc = frappe.get_doc("BOQ", self.boq)
+		doc.total_booked_amount += flt(total_amount)
+		doc.save(ignore_permissions=True)
+	
 	def calculate_total_amount(self):
 		total_amount = 0.0
 		for d in self.items:

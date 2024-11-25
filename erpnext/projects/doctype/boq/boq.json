@@ -21,16 +21,13 @@
   "boq_item",
   "section_break_10",
   "total_amount",
-  "total_unclaimed_amount",
-  "column_break_10",
   "addition_amount",
-  "claimed_amount",
-  "price_adjustment",
-  "substitution_amount",
+  "column_break_10",
+  "total_adjusted_amount",
+  "total_booked_amount",
   "column_break_20",
+  "total_unclaimed_amount",
   "total_claimed_amount",
-  "received_amount",
-  "paid_amount",
   "boq_history",
   "boq_history_item",
   "substitution_history",
@@ -142,7 +139,8 @@
    "allow_on_submit": 1,
    "fieldname": "addition_amount",
    "fieldtype": "Currency",
-   "label": "Addition Amount(X)",
+   "hidden": 1,
+   "label": "Addition Amount",
    "read_only": 1
   },
   {
@@ -150,54 +148,8 @@
    "fieldtype": "Column Break"
   },
   {
-   "allow_on_submit": 1,
-   "fieldname": "price_adjustment",
-   "fieldtype": "Currency",
-   "hidden": 1,
-   "label": "Price Adjustment (B)",
-   "precision": "2",
-   "read_only": 1
-  },
-  {
-   "allow_on_submit": 1,
-   "fieldname": "substitution_amount",
-   "fieldtype": "Currency",
-   "hidden": 1,
-   "label": "Substitution Amount(Y)",
-   "read_only": 1
-  },
-  {
    "fieldname": "column_break_20",
    "fieldtype": "Column Break"
-  },
-  {
-   "allow_on_submit": 1,
-   "depends_on": "eval:(doc.party_type !== \"Supplier\")",
-   "fieldname": "received_amount",
-   "fieldtype": "Currency",
-   "hidden": 1,
-   "label": "Amount Received (C)",
-   "precision": "2",
-   "read_only": 1
-  },
-  {
-   "allow_on_submit": 1,
-   "depends_on": "eval:(doc.party_type === \"Supplier\")",
-   "fieldname": "paid_amount",
-   "fieldtype": "Currency",
-   "hidden": 1,
-   "label": "Amount Paid (C)",
-   "read_only": 1
-  },
-  {
-   "allow_on_submit": 1,
-   "bold": 1,
-   "fieldname": "claimed_amount",
-   "fieldtype": "Currency",
-   "in_list_view": 1,
-   "label": "Invoiced Amount ",
-   "precision": "2",
-   "read_only": 1
   },
   {
    "fieldname": "section_break_20",
@@ -306,12 +258,27 @@
    "fieldtype": "Currency",
    "label": "Total Claimed Amount",
    "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "total_adjusted_amount",
+   "fieldtype": "Currency",
+   "label": "Total Adjusted Amount (B)",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "total_booked_amount",
+   "fieldtype": "Currency",
+   "label": "Total Booked Amount",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-11-19 11:44:24.958201",
+ "modified": "2024-11-25 17:45:22.893761",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "BOQ",

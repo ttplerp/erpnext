@@ -8,10 +8,13 @@
  "field_order": [
   "tds_percent",
   "column_break_2",
-  "account"
+  "account",
+  "column_break_iaihb",
+  "receivable_account"
  ],
  "fields": [
   {
+   "columns": 2,
    "fieldname": "tds_percent",
    "fieldtype": "Select",
    "in_list_view": 1,
@@ -24,18 +27,30 @@
    "fieldtype": "Column Break"
   },
   {
+   "columns": 4,
    "fieldname": "account",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Account",
-   "options": "Account",
-   "reqd": 1
+   "label": "Account (Payable)",
+   "options": "Account"
+  },
+  {
+   "fieldname": "column_break_iaihb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 4,
+   "fieldname": "receivable_account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Account (Receivable)",
+   "options": "Account"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-04-17 12:12:27.586452",
+ "modified": "2024-11-17 18:11:07.332471",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "TDS Account Item",

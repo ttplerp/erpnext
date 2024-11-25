@@ -56,18 +56,20 @@ frappe.ui.form.on('BOQ', {
 								__("Make"), "icon-file-alt"
 						);
 			
-			if (frm.doc.party_type !== "Supplier") {
+			if (frm.doc.party_type !== "Supplier" && parseFloat(frm.doc.total_amount) != parseFloat(frm.doc.total_claimed_amount)) {
 				frm.add_custom_button(__("Subcontract"), function () { frm.trigger("make_boq_subcontract") }, __("Make"), "icon-file-alt");
 			}
 		}
 
-		if (frm.doc.docstatus == 1 && parseFloat(frm.doc.claimed_amount) < (parseFloat(frm.doc.total_amount) + parseFloat(frm.doc.price_adjustment))) {
-			frm.add_custom_button(__("Measurement Book Entry"), function () { frm.trigger("make_book_entry") },
-				__("Make"), "icon-file-alt"
-			);
-			frm.add_custom_button(__("Project Invoice"), function () { frm.trigger("make_project_ivoice") },
-				__("Make"), "icon-file-alt"
-			);
+		if (frm.doc.docstatus == 1) {
+			if (parseFloat(frm.doc.total_unclaimed_amount) > 0 && parseFloat(frm.doc.total_amount) != parseFloat(frm.doc.total_claimed_amount)) {
+				frm.add_custom_button(__("Measurement Book Entry"), function () { frm.trigger("make_book_entry") },
+				__("Make"), "icon-file-alt");
+			}
+			if (parseFloat(frm.doc.total_booked_amount) > 0) {
+				frm.add_custom_button(__("Project Invoice"), function () { frm.trigger("make_project_ivoice") },
+				__("Make"), "icon-file-alt");
+			}
 		}
         // frm.set_query("boq_code", "boq_item", function () {
         //     return {

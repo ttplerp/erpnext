@@ -39,8 +39,8 @@ class BOQ(Document):
 				row.boq_name            = self.name
 				row.boq_date            = self.boq_date
 				row.amount              = flt(self.total_amount)
-				row.price_adjustment    = flt(self.price_adjustment)
-				row.total_amount        = flt(self.total_amount)+flt(self.price_adjustment)
+				row.adjusted_amount    	= flt(self.total_adjusted_amount)
+				row.total_amount        = flt(self.total_amount)
 				# row.received_amount     = flt(self.received_amount)
 				# row.paid_amount         = flt(self.paid_amount)
 				# row.balance_amount      = flt(self.balance_amount)
@@ -49,8 +49,8 @@ class BOQ(Document):
 				row = frappe.get_doc("Project BOQ Item", {"parent": self.project, "boq_name": self.name})
 				row.boq_date            = self.boq_date
 				row.amount              = flt(self.total_amount)
-				row.price_adjustment    = flt(self.price_adjustment)
-				row.total_amount        = flt(self.total_amount)+flt(self.price_adjustment)
+				row.adjusted_amount    	= flt(self.total_adjusted_amount)
+				row.total_amount        = flt(self.total_amount)
 				# row.received_amount     = flt(self.received_amount)
 				# row.paid_amount         = flt(self.paid_amount)
 				# row.balance_amount      = flt(self.balance_amount)

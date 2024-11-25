@@ -513,6 +513,7 @@
   {
    "fieldname": "section_break_27",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Consolidation"
   },
   {
@@ -551,8 +552,7 @@
   },
   {
    "fieldname": "bank_infromation_section",
-   "fieldtype": "Section Break",
-   "label": "Bank Information"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "bank_branch",
@@ -661,6 +661,7 @@
   {
    "fieldname": "supplier_bank_account",
    "fieldtype": "Table",
+   "label": "Bank Information",
    "options": "Supplier Bank Account"
   },
   {
@@ -727,7 +728,7 @@
    "link_fieldname": "party"
   }
  ],
- "modified": "2024-10-15 15:13:23.437454",
+ "modified": "2024-11-14 11:30:20.193962",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Supplier",
