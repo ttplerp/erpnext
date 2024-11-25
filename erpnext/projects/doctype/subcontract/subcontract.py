@@ -87,6 +87,8 @@ class Subcontract(Document):
 		self.claimed_amount   = 0.0
 		self.unclaimed_amount   = 0.0
 		self.total_unclaimed_amount = 0.0
+		self.total_booked_amount = 0.0
+		self.total_claimed_amount = 0.0
 
 		for item in self.boq_item:
 			item.amount           = flt(item.quantity)*flt(item.rate)
@@ -98,6 +100,8 @@ class Subcontract(Document):
 			if item.is_selected and flt(item.amount):
 				self.total_amount    += flt(item.amount)
 				self.total_unclaimed_amount  += flt(item.unclaimed_amount)
+				self.total_booked_amount += flt(item.booked_amount)
+				self.total_claimed_amount += flt(item.claimed_amount)
 
 			if flt(item.quantity) < 0:
 				frappe.throw(_("Row#{0} : Invalid quantity"),title="Invalid Data")

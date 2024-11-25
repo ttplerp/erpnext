@@ -1,12 +1,8 @@
-# -*- coding: utf-8 -*-
-# Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and contributors
-# For license information, please see license.txt
-# project_invoice.py
 '''
 --------------------------------------------------------------------------------------------------------------------------
-Version		  Author		  				CreatedOn		  ModifiedOn		  Remarks
+Version		  Author		  				CreatedOn		ModifiedOn		 	Remarks
 ------------ --------------- ------------------ -------------------  -----------------------------------------------------
-1.0		      Dawa Nyuehtyue Tshering		2024/11/15							   Original Version
+1.0		      Dawa Nyuehtyue Tshering		2024/11/15		2024/11/15			Original Version
 --------------------------------------------------------------------------------------------------------------------------			
 '''
 
@@ -109,8 +105,12 @@ class MBEntry(Document):
 
 	def update_boq_booked_amount(self, cancel=False):
 		total_amount = -1*flt(self.total_entry_amount) if cancel else flt(self.total_entry_amount)
-		doc = frappe.get_doc("BOQ", self.boq)
-		doc.total_booked_amount += flt(total_amount)
+		if self.subcontract:
+			doc = frappe.get_doc("Subcontract", self.subcontract)
+			doc.total_booked_amount += flt(total_amount)
+		else:
+			doc = frappe.get_doc("BOQ", self.boq)
+			doc.total_booked_amount += flt(total_amount)
 		doc.save(ignore_permissions=True)
 	
 	def calculate_total_amount(self):

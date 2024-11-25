@@ -34,13 +34,13 @@ frappe.ui.form.on('Subcontract', {
 			);
 		}
 		
-		if(frm.doc.docstatus==1 && parseFloat(frm.doc.claimed_amount) < (parseFloat(frm.doc.total_amount)+parseFloat(frm.doc.price_adjustment))){
-			frm.add_custom_button(__("Measurement Book Entry"),function(){frm.trigger("make_book_entry")},
-				__("Make"), "icon-file-alt"
-			);
-			frm.add_custom_button(__("Invoice"),function(){frm.trigger("make_mb_invoice")},
-				__("Make"), "icon-file-alt"
-			);			
+		if (parseFloat(frm.doc.total_unclaimed_amount) > 0 && parseFloat(frm.doc.total_amount) != parseFloat(frm.doc.total_booked_amount)) {
+			frm.add_custom_button(__("Measurement Book Entry"), function () { frm.trigger("make_book_entry") },
+			__("Make"), "icon-file-alt");
+		}
+		if (parseFloat(frm.doc.total_booked_amount) > 0) {
+			frm.add_custom_button(__("Project Invoice"), function () { frm.trigger("make_mb_invoice") },
+			__("Make"), "icon-file-alt");
 		}
 	},
     make_subcontract_adjustment: function(frm) {
