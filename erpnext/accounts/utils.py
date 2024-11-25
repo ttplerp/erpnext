@@ -1543,9 +1543,9 @@ def create_payment_ledger_entry(
                         gle.debit_in_account_currency - gle.credit_in_account_currency
                     )
                 elif account_type == "Payable":
-                    dr_or_cr = gle.credit - gle.debit
+                    dr_or_cr = flt(gle.credit) - flt(gle.debit)
                     dr_or_cr_account_currency = (
-                        gle.credit_in_account_currency - gle.debit_in_account_currency
+                        flt(gle.credit_in_account_currency) - flt(gle.debit_in_account_currency)
                     )
 
                 if cancel:
