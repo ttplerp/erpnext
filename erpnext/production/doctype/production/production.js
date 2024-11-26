@@ -137,7 +137,7 @@ cur_frm.fields_dict['raw_materials'].grid.get_field('item_code').get_query = fun
     };
 }
 
-cur_frm.fields_dict['items'].grid.get_field('item_code').get_query = function(frm, cdt, cdn) {
+cur_frm.fields_dict['transporter_items'].grid.get_field('item_code').get_query = function(frm, cdt, cdn) {
 	return {
         filters: {
             "disabled": 0,
@@ -145,7 +145,7 @@ cur_frm.fields_dict['items'].grid.get_field('item_code').get_query = function(fr
         }
     };
 }
-cur_frm.fields_dict['items'].grid.get_field('equipment').get_query = function(frm, cdt, cdn) {
+cur_frm.fields_dict['transporter_items'].grid.get_field('equipment').get_query = function(frm, cdt, cdn) {
 	return {
         filters: {
             "enabled": 1,
