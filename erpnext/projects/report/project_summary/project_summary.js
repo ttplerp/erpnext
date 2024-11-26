@@ -45,17 +45,17 @@ frappe.query_reports["Project Summary"] = {
 			"options": "Project Type"
 		},
 	],
-	"formatter": function(value, row, column, data, default_formatter) {
-		value = default_formatter(value, row, column, data);
-		if (column.id == "net_profit") {
-			if (data["net_profit"] > 0) {
-				value = `<p style="color: green; font-weight: bold">${value}</p>`;
-			} else if (data["net_profit"] < 0) {
-				value = `<p style="color: red; font-weight: bold">${value}</p>`;
-			} else {
-				value = `<p style="color: gray; font-weight: normal">${value}</p>`;
-			}
-		}
-		return value;
-	}
+	// "formatter": function(value, row, column, data, default_formatter) {
+	// 	value = default_formatter(value, row, column, data);
+	// 	if (column.id == "net_profit") {
+	// 		if (data["net_profit"] > 0) {
+	// 			value = `<p style="color: green; font-weight: bold">${value}</p>`;
+	// 		} else if (data["net_profit"] < 0) {
+	// 			value = `<p style="color: red; font-weight: bold">${value}</p>`;
+	// 		} else {
+	// 			value = `<p style="color: gray; font-weight: normal">${value}</p>`;
+	// 		}
+	// 	}
+	// 	return value;
+	// }
 };
