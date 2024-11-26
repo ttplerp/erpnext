@@ -438,7 +438,7 @@ class Production(StockController):
 		else:
 			return frappe.db.get_value('Mineral Raising Group',self.mineral_raising_group,['default_oms'])
 	def make_production_entry(self):
-		for a in self.items:
+		for a in self.transporter_items:
 			doc = frappe.new_doc("Production Entry")
 			doc.flags.ignore_permissions = 1
 			doc.item_code = a.item_code
