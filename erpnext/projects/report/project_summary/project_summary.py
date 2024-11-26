@@ -84,7 +84,7 @@ def get_columns(filters):
 		{"fieldtype": "Float",	"fieldname": "project_value", "label": _("Project Value (Nu.)"),  "width": 200},
 		{"fieldtype": "Float",	"fieldname": "project_income", "label": _("Income (Nu.)"), "width": 150},
 		{"fieldtype": "Float",	"fieldname": "project_expense", "label": _("Expense (Nu.)"), "width": 150},
-		{"fieldtype": "Data",	"fieldname": "net_profit", "label": _("Net Profit (Nu.)"), "width": 150},
+		{"fieldtype": "Float",	"fieldname": "net_profit", "label": _("Net Profit (Nu.)"), "width": 150},
 		{"fieldtype": "Link", 	"fieldname": "project_type", "label": _("Type"),  "options": "Project Type", "width": 120},
 		{"fieldtype": "Date",	"fieldname": "expected_start_date","label": _("Start Date"),  "width": 120},
 		{"fieldtype": "Date",	"fieldname": "expected_end_date", "label": _("End Date"),  "width": 120},
