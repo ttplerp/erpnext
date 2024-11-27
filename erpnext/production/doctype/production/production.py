@@ -333,7 +333,7 @@ class Production(StockController):
 			else:
 				product_items[str(item.item_code)+"||"+str(item.warehouse)]["qty"] += item.qty
 				product_items[str(item.item_code)+"||"+str(item.warehouse)]["ratio"] += item.ratio if item.ratio else 0
-				product_items[str(item.item_code)+"||"+str(item.warehouse)]["qty"] = flt(product_items[str(item.item_code)+"||"+str(item.warehouse)]["qty"],2)
+				product_items[str(item.item_code)+"||"+str(item.warehouse)]["qty"] = flt(product_items[str(item.item_code)+"||"+str(item.warehouse)]["qty"])
 		for product in product_items:
 			row = self.append("items")
 			row.item_code = product.split("||")[0]
