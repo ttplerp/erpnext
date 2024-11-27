@@ -19,7 +19,7 @@ class HousingApplication(Document):
 			self.validate_detail()
 		self.validate_duplicate()
 		
-		self.check_app_limit()
+		# self.check_app_limit()
 		creation_time = frappe.utils.get_datetime(self.get('creation'))
 		if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2:
 			self.generate_rank()
@@ -50,11 +50,12 @@ class HousingApplication(Document):
 			if self.application_status=="Pending":
 				frappe.throw("Cannot submit while the application status is still pending")
 	def check_employee_type(self):
-		if self.is_new() and self.employment_type == "Civil Servant":
-			frappe.throw("New applications for civil servants are temporarily suspended, due to a substantial backlog")
+		if self.is_new() and not self.employment_type == "Civil Servant":
+			# frappe.throw("New applications for civil servants are temporarily suspended, due to a substantial backlog")
+			frappe.throw("Applications are currently only allowed for Civil Servants")
    
-		if self.is_new() and self.work_station != "Thimphu":
-			frappe.throw("Applications are currently only allowed for Thimphu.")
+		if self.is_new() and self.work_station not in ("Samdrup Jongkhar","Phuentsholing")  :
+			frappe.throw("Applications are currently only allowed for Samdrup Jongkhar and Phuentsholing")
    
 	def check_app_limit(self):
 		limit = frappe.db.sql('''
@@ -73,10 +74,10 @@ class HousingApplication(Document):
 		
 		grade = self.grade
 		
-		# if total_salary >= 80000 and grade not in  ('ES3','EX3','ES2','EX2','ES1','EX1') :
-		# 	frappe.throw("Since the total gross salary exceeds Nu.80000, you are not applicable")
-		if self.is_new() and total_salary > 16000:
-			frappe.throw("Private applicants of gross houshold income below Nu.16,000 is accepted for now")
+		if self.is_new() and total_salary >= 80000 and grade not in  ('ES3','EX3','ES2','EX2','ES1','EX1') :
+			frappe.throw("Since the total gross salary exceeds Nu.80000, you are not applicable")
+		# if self.is_new() and total_salary > 16000:
+		# 	frappe.throw("Private applicants of gross houshold income below Nu.16,000 is accepted for now")
 
 	def update_ranks(self):
     # Fetch the applicant list filtered by application_status, building_classification, and work_station, sorted by application_date_time
@@ -213,8 +214,16 @@ class HousingApplication(Document):
 
 
 	def validate_duplicate(self):
-		if frappe.db.exists("Housing Application", {"cid":self.cid, "name":("!=",self.name), "docstatus":("!=", 2)}):
-			frappe.throw("Applicant with <b>CID No. {} </b>has already registered for Housing application".format(self.cid))
+		exists = frappe.db.exists("Housing Application", {
+			"cid": self.cid,
+			"name": ("!=", self.name),
+			"docstatus": ("<", 2),  # Ensures only submitted (docstatus 1) or draft (docstatus 0) records are considered
+			"application_status": ("not in", ["Rejected"]),
+			"work_station": self.work_station,
+			})
+
+		if exists:
+	  		frappe.throw("Applicant with <b>CID No. {} </b>has already registered for Housing application".format(self.cid))
 
 		if frappe.db.exists("Tenant Information", {"tenant_cid":self.cid, "status":"Allocated", "docstatus":("!=", 2)}):
 			frappe.throw("Applicant with <b>CID No. {} </b> is an active  tenant in Tenant Information".format(self.cid))
