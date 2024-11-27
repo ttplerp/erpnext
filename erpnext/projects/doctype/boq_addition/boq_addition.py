@@ -22,7 +22,7 @@ class BOQAddition(Document):
 		self.update_boq_and_project()
 
 	def on_cancel(self):
-		self.update_boq_item(cancel=False)
+		self.update_boq_item(cancel=True)
 		self.update_additional_history(cancel=True)
 		self.update_boq_and_project()
 
@@ -48,7 +48,7 @@ class BOQAddition(Document):
 		boq = frappe.get_doc("BOQ", self.boq)	
 		for d in self.boq_item:
 			if cancel:
-				frappe.db.sql(""" delete from `tabBOQ Item` where ref_name = '{0}'""".format(d.name))
+				frappe.db.sql(""" delete from `tabBOQ Item` where bsr_code = '{0}'""".format(d.bsr_code))
 			else:
 				boq.flags.ignore_permissions = 1
 				boq.append('boq_item', {
@@ -80,7 +80,7 @@ class BOQAddition(Document):
 	def update_additional_history(self, cancel=False):
 		if cancel:
 			frappe.db.sql(""" 
-				delete from `tabBOQ Addition History` where parent='{boq}' and  transaction_name = '{reference_name}'
+				delete from `tabBOQ Addition History` where parent='{boq}' and reference_name = '{reference_name}'
 			""".format(boq = self.boq, reference_name=self.name))
 		else:
 			doc = frappe.get_doc("BOQ", self.boq)

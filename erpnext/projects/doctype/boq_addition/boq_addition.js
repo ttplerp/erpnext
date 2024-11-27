@@ -18,6 +18,7 @@ frappe.ui.form.on('BOQ Addition', {
 	},
 	
 	onload: function(frm){
+		frm.ignore_doctypes_on_cancel_all = ['BOQ', 'BOQ Addition'];
 		frm.fields_dict.boq.get_query = function(){
 			return {
 				filters:{
