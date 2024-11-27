@@ -12,6 +12,7 @@ from frappe.utils import cstr, flt, getdate, today, now_datetime
 class BOQAddition(Document):
 	def validate(self):
 		self.set_defaults()
+		self.validate_boq_duplicate_bsr_code()
 		self.validate_boq_and_items()
 
 	def on_submit(self):
@@ -20,6 +21,9 @@ class BOQAddition(Document):
 		self.update_boq_item()
 		self.update_additional_history()
 		self.update_boq_and_project()
+
+	# def before_cancel(self):
+	# 	self.validate_boq_adjustment()
 
 	def on_cancel(self):
 		self.update_boq_item(cancel=True)
@@ -38,7 +42,37 @@ class BOQAddition(Document):
 		if flt(self.total_amount) <= 0:
 			frappe.throw("Total Amount Should be Greater Than Zero")
 
-	def validate_boq_and_items(self):
+	def validate_boq_duplicate_bsr_code(self):
+		bsr_code_list = frappe.db.sql("""
+				SELECT t1.bsr_code
+				FROM `tabBOQ Item` t1
+				WHERE parent = %s
+			""", (self.boq), as_dict=True)
+
+		existing_bsr_codes = {item['bsr_code'] for item in bsr_code_list}
+
+		for i in self.boq_item:
+			if i.bsr_code in existing_bsr_codes:
+				frappe.throw("BSR Code {} already exists in {}".format(i.bsr_code, frappe.get_desk_link("BOQ", self.boq)))
+
+	def validate_boq_adjustment(self):
+		# Fetch data from the database
+		bsr_code_list = frappe.db.sql("""
+				SELECT t1.bsr_code, t1.adjusted_quantity
+				FROM `tabBOQ Item` t1
+				WHERE parent = %s
+			""", (self.boq), as_dict=True)
+
+		# Create a dictionary for fast lookup
+		adjusted_quantity_map = {d['bsr_code']: d.adjusted_quantity for d in bsr_code_list}
+
+		# Check for each item in self.boq_item
+		for a in self.boq_item:
+			if a.bsr_code in adjusted_quantity_map and adjusted_quantity_map[a.bsr_code] > 0:
+				frappe.throw("Please cancel BOQ Adjustment first.")
+
+
+	def validate_boq_and_items(self):	
 		if self.addition_date  < self.boq_date:
 			frappe.throw(_("Addition Date cannot be earlier to BOQ Date"),title="Invalid Data")
 		elif self.addition_date > today():

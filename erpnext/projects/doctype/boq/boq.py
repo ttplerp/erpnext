@@ -154,7 +154,8 @@ def make_additional_boq(source_name, target_doc=None):
 		"BOQ": {
 			"doctype": "BOQ Addition",
 			"field_map": {
-					"name": "boq"
+					"name": "boq",
+					"boq_date": "entry_date"
 			},
 			"postprocess": update_master
 		}
