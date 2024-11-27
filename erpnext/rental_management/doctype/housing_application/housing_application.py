@@ -57,6 +57,7 @@ class HousingApplication(Document):
 		if self.is_new() and self.work_station not in ("Samdrup Jongkhar","Phuentsholing")  :
 			frappe.throw("Applications are currently only allowed for Samdrup Jongkhar and Phuentsholing")
    
+   
 	def check_app_limit(self):
 		limit = frappe.db.sql('''
                         select name from `tabHousing Application` where work_station="Thimphu" and employment_type="Corporation, Private and etc"
