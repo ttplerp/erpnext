@@ -85,7 +85,6 @@ class BOQAddition(Document):
 		else:
 			doc = frappe.get_doc("BOQ", self.boq)
 			row = doc.append("boq_addition_item", {})
-			row.reference_type          = self.doctype
 			row.reference_name          = self.name
 			row.reference_date          = self.addition_date
 			row.initial_amount          = flt(doc.total_amount)
