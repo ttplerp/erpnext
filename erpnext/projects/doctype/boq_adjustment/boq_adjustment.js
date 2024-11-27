@@ -6,6 +6,8 @@ frappe.ui.form.on('BOQ Adjustment', {
 
 	// }
     onload:function(frm){
+		frm.ignore_doctypes_on_cancel_all = ['BOQ', 'BOQ Addition', 'BOQ Adjustment'];
+
         frm.fields_dict.boq.get_query = function(){
 			return {
 				filters:{

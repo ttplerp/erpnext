@@ -50,7 +50,6 @@ class BOQAdjustment(Document):
 			total_amt = frappe.db.get_value("BOQ", self.boq, "total_amount")
 			doc = frappe.get_doc("BOQ", self.boq)
 			row = doc.append("boq_history_item", {})
-			row.reference_type          = self.doctype
 			row.reference_name          = self.name
 			row.adjustment_date         = self.adjustment_date
 			row.initial_amount          = flt(total_amt)
