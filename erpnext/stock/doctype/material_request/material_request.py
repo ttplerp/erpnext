@@ -864,7 +864,7 @@ def create_pick_list(source_name, target_doc=None):
 def get_permission_query_conditions(user):
     if not user: user = frappe.session.user
     user_roles = frappe.get_roles(user)
-    if "Administrator" in user_roles or "System Manager" in user_roles or "Purchase User" in user_roles: 
+    if "Administrator" in user_roles or "System Manager" in user_roles or "Purchase User" in user_roles or "CEO" in user_roles: 
         return
 
     ceo_or_general_manager = 1 if 'General Manager' in user_roles or 'CEO' in user_roles else 0

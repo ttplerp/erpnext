@@ -1,0 +1,36 @@
+{
+ "creation": "2022-03-11 00:21:56.737373",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "department",
+  "department_name"
+ ],
+ "fields": [
+  {
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Department",
+   "options": "Department"
+  },
+  {
+   "fetch_from": "department.department_name",
+   "fieldname": "department_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Department Name"
+  }
+ ],
+ "istable": 1,
+ "modified": "2022-03-11 00:21:56.737373",
+ "modified_by": "Administrator",
+ "module": "TAS",
+ "name": "TAS Assign Department",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

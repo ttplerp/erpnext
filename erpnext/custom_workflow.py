@@ -999,14 +999,9 @@ class NotifyCustomWorkflow:
 		if self.new_state == "Draft":
 			return
 		elif self.new_state in ("Approved", "Rejected", "Cancelled", "Claimed", "Submitted", "Recouped"):
-			if self.doc.doctype == "Material Request" and self.doc.owner != "Administrator":
-				self.notify_employee()
-			else:
 				self.notify_employee()
 		elif self.new_state.startswith("Waiting") and self.old_state != self.new_state and self.doc.doctype not in ("Asset Issue Details","Project Capitalization", "Imprest Recoup"):
 			self.notify_approver()
-		# elif self.new_state.startswith("Waiting") and self.old_state != self.new_state and self.doc.doctype in ("Asset Issue Details","Project Capitalization"):
-		# 	self.notify_finance_users()
 		elif self.new_state.startswith("Verified") and self.old_state != self.new_state:
 			self.notify_approver()
 		else:

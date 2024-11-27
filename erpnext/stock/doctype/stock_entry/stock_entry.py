@@ -1431,7 +1431,7 @@ class StockEntry(StockController):
 				)
 
 	@frappe.whitelist()
-	def get_items(self):
+	def get_items(self, cost_center='None'):
 		self.set("items", [])
 		self.validate_work_order()
 
@@ -1461,7 +1461,11 @@ class StockEntry(StockController):
 					if self.to_warehouse and self.pro_doc:
 						for item in item_dict.values():
 							item["to_warehouse"] = self.pro_doc.wip_warehouse
-					self.add_to_stock_entry_detail(item_dict)
+							#frappe.throw(str(item))
+							# if cost_center!="None":
+							# 	item_dict['cost_center']=cost_center
+					
+					self.add_to_stock_entry_detail(item_dict, cost_center=cost_center)
 
 				elif (
 					self.work_order
@@ -1842,6 +1846,7 @@ class StockEntry(StockController):
 				self.update_item_in_stock_entry_detail(row, item, qty)
 
 	def update_item_in_stock_entry_detail(self, row, item, qty) -> None:
+		
 		ste_item_details = {
 			"from_warehouse": item.warehouse,
 			"to_warehouse": "",
@@ -1985,11 +1990,11 @@ class StockEntry(StockController):
 		)
 		return [d.item_code for d in job_card_items]
 
-	def add_to_stock_entry_detail(self, item_dict, bom_no=None):
+	def add_to_stock_entry_detail(self, item_dict, bom_no=None, cost_center='None'):
 		
 		for d in item_dict:
+			
 			item_row = item_dict[d]
-			# frappe.throw(str(item_row))
 			stock_uom = item_row.get("stock_uom") or frappe.db.get_value("Item", d, "stock_uom")
 
 			se_child = self.append("items")
@@ -2001,9 +2006,12 @@ class StockEntry(StockController):
 			se_child.qty = flt(item_row["qty"], se_child.precision("qty"))
 			se_child.allow_alternative_item = item_row.get("allow_alternative_item", 0)
 			se_child.subcontracted_item = item_row.get("main_item_code")
-			se_child.cost_center = item_row.get("cost_center") or get_default_cost_center(
-				item_row, company=self.company
-			)
+			if cost_center!='None':
+				se_child.cost_center=cost_center
+			else:
+				se_child.cost_center = item_row.get("cost_center") or (cost_center!='None') or get_default_cost_center(
+							item_row, company=self.company
+						) 
 			se_child.is_finished_item = item_row.get("is_finished_item", 0)
 			se_child.is_scrap_item = item_row.get("is_scrap_item", 0)
 			se_child.is_process_loss = item_row.get("is_process_loss", 0)

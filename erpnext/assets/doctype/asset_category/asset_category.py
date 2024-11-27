@@ -17,7 +17,7 @@ class AssetCategory(Document):
 
 	def validate_finance_books(self):
 		for d in self.finance_books:
-			if d.asset_sub_category not in ("Investment Property"):
+			if d.asset_sub_category not in ("Investment Property", "Land"):
 				for field in ("Total Number of Depreciations", "Frequency of Depreciation"):
 					if cint(d.get(frappe.scrub(field))) < 1:
 						frappe.throw(

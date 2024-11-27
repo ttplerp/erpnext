@@ -1186,6 +1186,7 @@ def make_stock_entry(work_order_id, purpose, qty=None):
 	stock_entry.branch = work_order.branch
 	stock_entry.bom_no = work_order.bom_no
 	stock_entry.use_multi_level_bom = work_order.use_multi_level_bom
+	#stock_entry.cost_center=work_order.cost_center
 	# accept 0 qty as well
 	stock_entry.fg_completed_qty = (
 		qty if qty is not None else (flt(work_order.qty) - flt(work_order.produced_qty))
@@ -1195,7 +1196,9 @@ def make_stock_entry(work_order_id, purpose, qty=None):
 		stock_entry.inspection_required = frappe.db.get_value(
 			"BOM", work_order.bom_no, "inspection_required"
 		)
-
+	
+	
+		
 	if purpose == "Material Transfer for Manufacture":
 		stock_entry.to_warehouse = wip_warehouse
 		stock_entry.project = work_order.project
@@ -1203,10 +1206,15 @@ def make_stock_entry(work_order_id, purpose, qty=None):
 		stock_entry.from_warehouse = wip_warehouse
 		stock_entry.to_warehouse = work_order.fg_warehouse
 		stock_entry.project = work_order.project
-
+	
 	stock_entry.set_stock_entry_type()
-	stock_entry.get_items()
+	cost_center=frappe.db.get_value("Branch", stock_entry.branch, 'cost_center')
+	stock_entry.get_items(cost_center)
 	stock_entry.set_serial_no_batch_for_finished_good()
+	# stock_entry.additional_costs.cost_center=frappe.db.get_value(
+	# 			"Branch", work_order.branch, "cost_center"
+	# 		)
+ 
 	return stock_entry.as_dict()
 
 

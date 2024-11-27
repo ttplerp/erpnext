@@ -1,0 +1,165 @@
+{
+ "autoname": "TASEXT.###",
+ "creation": "2022-03-18 23:23:53.587937",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "tas_calendar",
+  "target_date_section",
+  "target_start_date",
+  "cb_3",
+  "target_end_date",
+  "review_date_section",
+  "review_start_date",
+  "cb_7",
+  "review_end_date",
+  "evaluation_date_section",
+  "evaluation_start_date",
+  "cb_11",
+  "evaluation_end_date",
+  "remarks",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "tas_calendar",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "TAS Calendar",
+   "options": "TAS Calendar",
+   "reqd": 1
+  },
+  {
+   "fieldname": "target_date_section",
+   "fieldtype": "Section Break",
+   "label": "Target Date Setup"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "target_start_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Target Start Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "target_end_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Target End Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "review_date_section",
+   "fieldtype": "Section Break",
+   "label": "Review Date Setup"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "review_start_date",
+   "fieldtype": "Date",
+   "label": "Review Start Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "review_end_date",
+   "fieldtype": "Date",
+   "label": "Review End Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "evaluation_date_section",
+   "fieldtype": "Section Break",
+   "label": "Evaluation Date Setup"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "evaluation_start_date",
+   "fieldtype": "Date",
+   "label": "Evaluation Start Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "evaluation_end_date",
+   "fieldtype": "Date",
+   "label": "Evaluation End Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "TAS Extension",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "is_submittable": 1,
+ "modified": "2022-07-20 16:38:38.578719",
+ "modified_by": "Administrator",
+ "module": "TAS",
+ "name": "TAS Extension",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "PMD",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

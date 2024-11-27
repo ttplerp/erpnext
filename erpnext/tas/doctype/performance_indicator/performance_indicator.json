@@ -1,0 +1,73 @@
+{
+ "autoname": "field:performance_indicator",
+ "creation": "2023-03-10 16:02:35.721928",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "performance_indicator",
+  "performance_target",
+  "background",
+  "risk_associated",
+  "measures_and_outputs",
+  "calculation_method"
+ ],
+ "fields": [
+  {
+   "fieldname": "performance_target",
+   "fieldtype": "Small Text",
+   "label": "Performance Target"
+  },
+  {
+   "fieldname": "background",
+   "fieldtype": "Small Text",
+   "label": "Background"
+  },
+  {
+   "fieldname": "risk_associated",
+   "fieldtype": "Small Text",
+   "label": "Risk Associated"
+  },
+  {
+   "fieldname": "measures_and_outputs",
+   "fieldtype": "Small Text",
+   "label": "Measures and outputs"
+  },
+  {
+   "fieldname": "calculation_method",
+   "fieldtype": "Text Editor",
+   "label": "Calculation Method"
+  },
+  {
+   "fieldname": "performance_indicator",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Performance Indicator",
+   "reqd": 1,
+   "unique": 1
+  }
+ ],
+ "modified": "2023-03-10 16:10:29.469601",
+ "modified_by": "Administrator",
+ "module": "TAS",
+ "name": "Performance Indicator",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

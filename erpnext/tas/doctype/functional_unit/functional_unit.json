@@ -1,0 +1,94 @@
+{
+ "autoname": "field:functional_unit",
+ "creation": "2023-01-30 10:22:58.215847",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "performance_level",
+  "functional_unit",
+  "parent_unit",
+  "sb_description",
+  "description"
+ ],
+ "fields": [
+  {
+   "fieldname": "performance_level",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Performance Level",
+   "options": "Performance Level",
+   "reqd": 1
+  },
+  {
+   "fieldname": "functional_unit",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Functional Unit",
+   "options": "Department",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "parent_unit",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Parent Unit",
+   "options": "Functional Unit"
+  },
+  {
+   "fieldname": "sb_description",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text Editor",
+   "label": "Brief description about the Unit"
+  }
+ ],
+ "modified": "2023-01-30 10:43:08.155949",
+ "modified_by": "Administrator",
+ "module": "TAS",
+ "name": "Functional Unit",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "PMD",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Employee",
+   "share": 1
+  }
+ ],
+ "search_fields": "performance_level, parent_unit",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "functional_unit",
+ "track_changes": 1
+}

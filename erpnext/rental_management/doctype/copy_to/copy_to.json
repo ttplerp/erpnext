@@ -1,0 +1,31 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2024-04-10 14:57:32.371825",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "copy_to"
+ ],
+ "fields": [
+  {
+   "fieldname": "copy_to",
+   "fieldtype": "Text",
+   "label": "Copy To"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-04-10 14:57:32.371825",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Copy To",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

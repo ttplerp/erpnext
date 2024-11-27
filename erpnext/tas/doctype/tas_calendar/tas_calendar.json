@@ -1,0 +1,201 @@
+{
+ "actions": [],
+ "autoname": "field:fiscal_year",
+ "creation": "2022-03-10 22:33:23.236941",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "fiscal_year",
+  "target_date_section",
+  "html_target_setup",
+  "target_start_date",
+  "target_end_date",
+  "cb_7",
+  "html_review_setup",
+  "review_start_date",
+  "review_end_date",
+  "cb_11",
+  "html_evaluation_setup",
+  "evaluation_start_date",
+  "evaluation_end_date",
+  "sb_compact_settings",
+  "financial_target_weightage",
+  "non_financial_target_weightage",
+  "common_target_weightage",
+  "sb_15",
+  "remarks",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "fiscal_year",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Fiscal Year",
+   "options": "Fiscal Year",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "target_date_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "target_start_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Target Start Date",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "target_end_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Target End Date",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "review_start_date",
+   "fieldtype": "Date",
+   "label": "Review Start Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "review_end_date",
+   "fieldtype": "Date",
+   "label": "Review End Date",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "evaluation_start_date",
+   "fieldtype": "Date",
+   "label": "Evaluation Start Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "evaluation_end_date",
+   "fieldtype": "Date",
+   "label": "Evaluation End Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "TAS Calendar",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Reason for Extension",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_15",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "html_target_setup",
+   "fieldtype": "HTML",
+   "options": "<h6 class=\"form-section-heading \">Target Date Setup</h6>"
+  },
+  {
+   "fieldname": "html_review_setup",
+   "fieldtype": "HTML",
+   "options": "<h6 class=\"form-section-heading \">Review Setup</h6>"
+  },
+  {
+   "fieldname": "html_evaluation_setup",
+   "fieldtype": "HTML",
+   "options": "<h6 class=\"form-section-heading \">Evaluation Setup</h6>"
+  },
+  {
+   "fieldname": "sb_compact_settings",
+   "fieldtype": "Section Break",
+   "label": "Compact Settings"
+  },
+  {
+   "fieldname": "financial_target_weightage",
+   "fieldtype": "Percent",
+   "label": "Financial Target Weightage"
+  },
+  {
+   "fieldname": "non_financial_target_weightage",
+   "fieldtype": "Percent",
+   "label": "Non-Financial Target Weightage"
+  },
+  {
+   "fieldname": "common_target_weightage",
+   "fieldtype": "Percent",
+   "label": "Common Target Weightage"
+  }
+ ],
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-08-15 14:46:03.036286",
+ "modified_by": "Administrator",
+ "module": "TAS",
+ "name": "TAS Calendar",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Employee",
+   "share": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

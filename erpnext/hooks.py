@@ -616,6 +616,7 @@ permission_query_conditions = {
 	"Production":"erpnext.production.doctype.production.production.get_permission_query_conditions",
 	"Budget Reappropiation":"erpnext.budget.doctype.budget_reappropiation.budget_reappropiation.get_permission_query_conditions",
 	"Equipment Request":"erpnext.fleet_management.doctype.equipment_request.equipment_request.get_permission_query_conditions",
+	"Housing Application":"erpnext.rental_management.doctype.housing_application.housing_application.get_permission_query_conditions",
 }
 
 user_privacy_documents = [

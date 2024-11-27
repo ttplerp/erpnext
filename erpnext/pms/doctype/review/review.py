@@ -122,8 +122,8 @@ def create_evaluation(source_name, target_doc=None):
 		"Negative Target Review":{
 			"doctype":"Performance Evaluation Negative Target"
 		}
-	}, target_doc)
 
+	}, target_doc)
 	return doclist
 
 @frappe.whitelist()

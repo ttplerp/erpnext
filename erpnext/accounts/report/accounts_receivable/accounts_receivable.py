@@ -785,7 +785,6 @@ class ReceivablePayableReport(object):
 		self,
 	):
 		self.customter = qb.DocType("Customer")
-
 		if self.filters.get("customer_group"):
 			self.get_hierarchical_filters("Customer Group", "customer_group")
 
@@ -834,10 +833,18 @@ class ReceivablePayableReport(object):
 		lft, rgt = frappe.db.get_value(doctype, self.filters.get(key), ["lft", "rgt"])
 
 		doc = qb.DocType(doctype)
+		
 		ple = self.ple
+		# ple = "tabPayment Ledger Entry"
 		customer = self.customer
+		# customer = `tabCoustomer`
+
 		groups = qb.from_(doc).select(doc.name).where((doc.lft >= lft) & (doc.rgt <= rgt))
+		# groups = SELECT `name` FROM `tabCustomer Group` WHERE `lft`>=10 AND `rgt`<=11
+		
 		customers = qb.from_(customer).select(customer.name).where(customer[key].isin(groups))
+		# customers =SELECT `name` FROM `tabCustomer` WHERE `customer_group` IN (SELECT `name` FROM `tabCustomer Group` WHERE `lft`>=10 AND `rgt`<=11)
+
 		self.qb_selection_filter.append(ple.isin(ple.party.isin(customers)))
 
 	def add_accounting_dimensions_filters(self):

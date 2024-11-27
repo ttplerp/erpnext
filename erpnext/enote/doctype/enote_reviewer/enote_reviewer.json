@@ -1,0 +1,80 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2024-05-31 11:53:23.678128",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+    "employee",
+    "employee_name",
+    "status",
+    "section_break_3",
+    "user_id",
+    "designation",
+    "review"
+   ],
+   "fields": [
+    {
+     "fieldname": "employee",
+     "fieldtype": "Link",
+     "ignore_user_permissions": 1,
+     "in_list_view": 1,
+     "label": "Employee",
+     "options": "Employee"
+    },
+    {
+     "fetch_from": "employee.employee_name",
+     "fieldname": "employee_name",
+     "fieldtype": "Data",
+     "in_list_view": 1,
+     "label": "Employee Name",
+     "read_only": 1
+    },
+    {
+     "fieldname": "section_break_3",
+     "fieldtype": "Section Break"
+    },
+    {
+     "default": "Review Required\n",
+     "fieldname": "status",
+     "fieldtype": "Data",
+     "in_list_view": 1,
+     "label": "Status",
+     "read_only": 1
+    },
+    {
+     "depends_on": "eval:doc.status !=\"Reviewed\" && frappe.session.user == doc.user_id",
+     "fieldname": "review",
+     "fieldtype": "Button",
+     "label": "Review"
+    },
+    {
+     "fetch_from": "employee.user_id",
+     "fieldname": "user_id",
+     "fieldtype": "Data",
+     "label": "User Id",
+     "read_only": 1
+    },
+    {
+     "fetch_from": "employee.designation",
+     "fieldname": "designation",
+     "fieldtype": "Data",
+     "label": "Designation",
+     "read_only": 1
+    }
+   ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-05-31 11:53:23.678128",
+ "modified_by": "Administrator",
+ "module": "eNote",
+ "name": "eNote Reviewer",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

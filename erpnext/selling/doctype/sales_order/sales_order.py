@@ -675,12 +675,14 @@ def make_delivery_note(source_name, target_doc=None, skip_item_mapping=False):
 		item = get_item_defaults(target.item_code, source_parent.company)
 		item_group = get_item_group_defaults(target.item_code, source_parent.company)
 
-		if item:
-			target.cost_center = (
-				frappe.db.get_value("Project", source_parent.project, "cost_center")
-				or item.get("buying_cost_center")
-				or item_group.get("buying_cost_center")
-			)
+		# if item:
+		# 	target.cost_center = (
+		# 		frappe.db.get_value("Project", source_parent.project, "cost_center")
+		# 		or item.get("buying_cost_center")
+		# 		or item_group.get("buying_cost_center")
+		# 	)
+		target.cost_center=source_parent.cost_center
+		#frappe.throw(str(source_parent))
 
 	mapper = {
 		"Sales Order": {"doctype": "Delivery Note", "validation": {"docstatus": ["=", 1]}},

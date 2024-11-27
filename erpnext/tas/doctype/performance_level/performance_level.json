@@ -1,0 +1,108 @@
+{
+ "allow_rename": 1,
+ "autoname": "field:performance_level",
+ "creation": "2022-08-07 11:34:08.359679",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "performance_level",
+  "parent_level",
+  "is_root_level"
+ ],
+ "fields": [
+  {
+   "fieldname": "performance_level",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Performance Level",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "parent_level",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Parent Level",
+   "options": "Performance Level"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_root_level",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is root level ?"
+  }
+ ],
+ "modified": "2023-03-12 15:55:25.445111",
+ "modified_by": "Administrator",
+ "module": "TAS",
+ "name": "Performance Level",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR User",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Head",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Chief",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Director",
+   "share": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "PMD",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "performance_level",
+ "track_changes": 1
+}

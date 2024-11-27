@@ -1,0 +1,43 @@
+{
+ "creation": "2022-03-10 23:23:33.876316",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "performance_level",
+  "cb_2",
+  "weightage"
+ ],
+ "fields": [
+  {
+   "fieldname": "performance_level",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Performance Level",
+   "options": "TAS Performance Level",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "weightage",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Weightage (%)",
+   "reqd": 1
+  }
+ ],
+ "istable": 1,
+ "modified": "2022-03-10 23:23:33.876316",
+ "modified_by": "Administrator",
+ "module": "TAS",
+ "name": "TAS Level Weightage Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

@@ -1,0 +1,58 @@
+{
+ "creation": "2023-03-11 14:41:18.655639",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "functional_unit",
+  "weightage",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "functional_unit",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Functional Unit",
+   "options": "Functional Unit",
+   "reqd": 1
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "weightage",
+   "fieldtype": "Percent",
+   "in_list_view": 1,
+   "label": "Weightage"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Remarks"
+  }
+ ],
+ "modified": "2023-03-16 10:54:41.256022",
+ "modified_by": "Administrator",
+ "module": "TAS",
+ "name": "Assign Target Item",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

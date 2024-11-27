@@ -1,0 +1,32 @@
+{
+ "attach_print": 1,
+ "channel": "Email",
+ "condition": "doc.application_status == \"Approved\"",
+ "creation": "2023-12-12 14:27:46.321783",
+ "date_changed": "date",
+ "days_in_advance": 1,
+ "docstatus": 0,
+ "doctype": "Notification",
+ "document_type": "Housing Clearance",
+ "enabled": 1,
+ "event": "Submit",
+ "idx": 0,
+ "is_standard": 1,
+ "message": "Add your message here",
+ "modified": "2023-12-12 15:59:04.558805",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Housing Clearance",
+ "owner": "Administrator",
+ "print_format": "Housing Clearance Certificate",
+ "recipients": [
+  {
+   "receiver_by_document_field": "email"
+  }
+ ],
+ "send_system_notification": 0,
+ "send_to_all_assignees": 1,
+ "sender": "NHDCL Noreply",
+ "sender_email": "erp@nhdcl.bt",
+ "subject": "Housing Clearance: {{ doc.name }}"
+}

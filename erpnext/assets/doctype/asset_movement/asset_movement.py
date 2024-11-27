@@ -64,7 +64,7 @@ class AssetMovement(Document):
 			if self.purpose == "Transfer":
 				if not d.target_cost_center and not d.to_employee:
 					frappe.throw(_("Target Cost Center/ To Employee is required while transferring Asset {0}").format(d.asset))
-				if d.source_cost_center == d.target_cost_center:
+				if self.transfer_from == "Cost Center" and d.source_cost_center == d.target_cost_center:
 					frappe.throw(_("Source and Target Cost Center cannot be same"))
 
 			if self.purpose == "Receipt":

@@ -18,6 +18,7 @@
                         <div class="input-group">
                             <input name="cid" class="form-control" type="text" value="{{ frappe.form_dict.cid or '' }}"
                                 placeholder="{{ _('Enter Applicant CID') }}" required pattern="[0-9]{11}">
+                            
                             <div class="input-group-append">
                                 <button type="submit" class="btn btn-sm btn-primary btn-search">
                                     {{ _('Submit') }}

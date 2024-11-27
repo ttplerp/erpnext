@@ -152,10 +152,10 @@ class Company(NestedSet):
 		if not frappe.db.get_value("Department", {"company": self.name}):
 			self.create_default_departments()
 
-		if not frappe.local.flags.ignore_chart_of_accounts:
-			self.set_default_accounts()
-			if self.default_cash_account:
-				self.set_mode_of_payment_account()
+		# if not frappe.local.flags.ignore_chart_of_accounts:
+		# 	self.set_default_accounts()
+		# 	if self.default_cash_account:
+		# 		self.set_mode_of_payment_account()
 
 		if self.default_currency:
 			frappe.db.set_value("Currency", self.default_currency, "enabled", 1)

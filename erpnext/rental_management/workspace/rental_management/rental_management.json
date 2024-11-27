@@ -312,9 +312,47 @@
   },
   {
    "hidden": 0,
+   "is_query_report": 1,
+   "label": "Housing Application Report",
+   "link_count": 0,
+   "link_to": "Housing Application Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Allotment",
+   "link_count": 2,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Housing Application",
+   "link_count": 0,
+   "link_to": "Housing Application",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Allotment",
+   "link_count": 0,
+   "link_to": "Tenant Information",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
    "is_query_report": 0,
    "label": "Reports",
-   "link_count": 7,
+   "link_count": 9,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -400,35 +438,17 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
-   "label": "Allotment",
-   "link_count": 2,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Housing Application",
+   "is_query_report": 1,
+   "label": "Security Deposit  Report",
    "link_count": 0,
-   "link_to": "Housing Application",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Allotment",
-   "link_count": 0,
-   "link_to": "Tenant Information",
-   "link_type": "DocType",
+   "link_to": "Security Deposit  Report",
+   "link_type": "Report",
    "onboard": 0,
    "type": "Link"
   }
  ],
- "modified": "2023-11-20 13:01:28.862862",
- "modified_by": "lhendrup.dorji@thimphutechpark.bt",
+ "modified": "2024-04-05 09:36:01.099265",
+ "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Management",
  "owner": "Administrator",

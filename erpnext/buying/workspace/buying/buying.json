@@ -474,7 +474,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Settings",
-   "link_count": 6,
+   "link_count": 4,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -501,17 +501,6 @@
    "type": "Link"
   },
   {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Terms and Conditions Template",
-   "link_count": 0,
-   "link_to": "Terms and Conditions",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
    "hidden": 0,
    "is_query_report": 0,
    "label": "Item",
@@ -524,26 +513,16 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Item Price",
+   "label": "Item Group",
    "link_count": 0,
-   "link_to": "Item Price",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Annual Tender",
-   "link_count": 0,
-   "link_to": "Annual Tender",
+   "link_to": "Item Group",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
   }
  ],
- "modified": "2023-06-21 16:41:19.093569",
- "modified_by": "lhendrup.dorji@thimphutechpark.bt",
+ "modified": "2024-10-18 15:25:37.462701",
+ "modified_by": "tshering.lham@thimphutechpark.bt",
  "module": "Buying",
  "name": "Buying",
  "owner": "Administrator",

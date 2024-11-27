@@ -71,6 +71,7 @@ def create_logbook(source_name, target_doc=None):
 			"doctype": "Vehicle Logbook"
 		},
 	}, target_doc)
+	
 
 	return doclist
 

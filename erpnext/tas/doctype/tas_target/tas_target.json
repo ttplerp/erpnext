@@ -1,0 +1,111 @@
+{
+ "autoname": "fiscal_year.-.performance_level.-.###",
+ "creation": "2022-03-11 00:36:36.432961",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "title",
+  "target",
+  "sb_2",
+  "fiscal_year",
+  "cb_4",
+  "performance_level",
+  "sb_6",
+  "assign_department",
+  "sb_8",
+  "assign_division"
+ ],
+ "fields": [
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "label": "TAS Title",
+   "reqd": 1
+  },
+  {
+   "fieldname": "target",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Target",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sb_2",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "fiscal_year",
+   "fieldtype": "Link",
+   "label": "Fiscal Year",
+   "options": "Fiscal Year",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "performance_level",
+   "fieldtype": "Link",
+   "label": "Performance Level",
+   "options": "TAS Performance Level",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sb_6",
+   "fieldtype": "Section Break",
+   "label": "Assign Department"
+  },
+  {
+   "fieldname": "assign_department",
+   "fieldtype": "Table",
+   "options": "TAS Assign Department"
+  },
+  {
+   "fieldname": "sb_8",
+   "fieldtype": "Section Break",
+   "label": "Assign Division",
+   "options": "TAS Assign Division"
+  },
+  {
+   "fieldname": "assign_division",
+   "fieldtype": "Table",
+   "options": "TAS Assign Division"
+  }
+ ],
+ "modified": "2022-03-11 00:58:14.744449",
+ "modified_by": "Administrator",
+ "module": "TAS",
+ "name": "TAS Target",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

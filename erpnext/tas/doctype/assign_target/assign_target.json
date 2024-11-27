@@ -1,0 +1,152 @@
+{
+ "autoname": "TASAT.#####",
+ "creation": "2023-03-11 14:40:18.363287",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "tas_calendar",
+  "performance_level",
+  "performance_indicator",
+  "performance_target",
+  "cb_3",
+  "target_category",
+  "weightage",
+  "sb_units",
+  "show_dependents",
+  "items",
+  "sb_references",
+  "company",
+  "cb_6",
+  "tas_target_setup",
+  "target_reference"
+ ],
+ "fields": [
+  {
+   "fieldname": "performance_indicator",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Performance Indicator",
+   "read_only": 1
+  },
+  {
+   "fieldname": "performance_target",
+   "fieldtype": "Small Text",
+   "ignore_xss_filter": 1,
+   "in_list_view": 1,
+   "label": "Performance Target",
+   "read_only": 1
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Assign Target",
+   "options": "Assign Target Item"
+  },
+  {
+   "fieldname": "cb_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "weightage",
+   "fieldtype": "Percent",
+   "label": "Target Weightage",
+   "read_only": 1
+  },
+  {
+   "fieldname": "target_reference",
+   "fieldtype": "Data",
+   "label": "Target Reference",
+   "read_only": 1,
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1
+  },
+  {
+   "fieldname": "tas_calendar",
+   "fieldtype": "Link",
+   "label": "TAS Calendar",
+   "options": "TAS Calendar",
+   "read_only": 1,
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "performance_level",
+   "fieldtype": "Link",
+   "ignore_xss_filter": 1,
+   "in_list_view": 1,
+   "label": "Performance Level",
+   "options": "Performance Level",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "tas_target_setup",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "TAS Target Setup",
+   "options": "TAS Target Setup",
+   "read_only": 1,
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "show_dependents",
+   "fieldtype": "Check",
+   "label": "Show direct dependent units only"
+  },
+  {
+   "fieldname": "sb_units",
+   "fieldtype": "Section Break",
+   "label": "Assign Target to Units"
+  },
+  {
+   "fieldname": "target_category",
+   "fieldtype": "Select",
+   "label": "Target Category",
+   "options": "\nFinancial Target\nNon Financial Target\nCommon Target",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_references",
+   "fieldtype": "Section Break",
+   "label": "References"
+  },
+  {
+   "fieldname": "cb_6",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "modified": "2023-03-16 12:26:46.423540",
+ "modified_by": "Administrator",
+ "module": "TAS",
+ "name": "Assign Target",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "performance_target",
+ "track_changes": 1
+}

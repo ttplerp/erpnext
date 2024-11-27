@@ -1,0 +1,164 @@
+{
+ "creation": "2022-03-11 16:55:30.136569",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "tas_calendar",
+  "performance_indicator",
+  "sb_target_settings",
+  "performance_target",
+  "but_assign_target",
+  "parent_target",
+  "cb_3",
+  "target_type",
+  "quantity",
+  "quality",
+  "target_dummy",
+  "cb_6",
+  "timeline",
+  "weightage",
+  "sb_timeline_settings",
+  "sb_target_writeup",
+  "background",
+  "cb_1",
+  "risks_associated",
+  "measures_and_outputs"
+ ],
+ "fields": [
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "performance_indicator",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Performance Indicator",
+   "reqd": 1
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "timeline",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Timeline",
+   "options": "\nYearly\nHalf Yearly\nQuarterly\nMonthly\nJanuary\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember",
+   "reqd": 1
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "weightage",
+   "fieldtype": "Percent",
+   "in_list_view": 1,
+   "label": "Weightage",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sb_target_settings",
+   "fieldtype": "Section Break",
+   "label": "Target Settings"
+  },
+  {
+   "fieldname": "background",
+   "fieldtype": "Small Text",
+   "label": "Background"
+  },
+  {
+   "fieldname": "risks_associated",
+   "fieldtype": "Small Text",
+   "label": "Risks associated"
+  },
+  {
+   "fieldname": "measures_and_outputs",
+   "fieldtype": "Small Text",
+   "label": "Measures and outputs"
+  },
+  {
+   "default": "Quantity",
+   "fieldname": "target_type",
+   "fieldtype": "Select",
+   "label": "Quantity / Quality",
+   "options": "\nQuantity\nQuality",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.target_type == \"Quantity\"",
+   "fieldname": "quantity",
+   "fieldtype": "Float",
+   "label": "Quantity"
+  },
+  {
+   "depends_on": "eval:doc.target_type == \"Quality\"",
+   "fieldname": "quality",
+   "fieldtype": "Percent",
+   "label": "Quality"
+  },
+  {
+   "fieldname": "target_dummy",
+   "fieldtype": "Data",
+   "label": "Quantity/Quality",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_timeline_settings",
+   "fieldtype": "Section Break",
+   "label": "Timeline Settings"
+  },
+  {
+   "fieldname": "cb_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.docstatus == 1",
+   "fieldname": "but_assign_target",
+   "fieldtype": "Button",
+   "label": "Assign Target"
+  },
+  {
+   "fieldname": "cb_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sb_target_writeup",
+   "fieldtype": "Section Break",
+   "label": "Target Writeup"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "performance_target",
+   "fieldtype": "Small Text",
+   "ignore_xss_filter": 1,
+   "in_list_view": 1,
+   "label": "Performance Target",
+   "reqd": 1
+  },
+  {
+   "fieldname": "parent_target",
+   "fieldtype": "Data",
+   "label": "Parent Target",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "tas_calendar",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "TAS Calendar",
+   "options": "TAS Calendar",
+   "search_index": 1
+  }
+ ],
+ "istable": 1,
+ "modified": "2023-03-16 12:37:56.542337",
+ "modified_by": "Administrator",
+ "module": "TAS",
+ "name": "Financial Target Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

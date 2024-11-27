@@ -591,7 +591,7 @@ def update_ranking():
 		select maximum_income from `tabBuilding Classification` where name = "Class IB"
 									""")
 		max_income_value = class_ib_maxincome[0][0]
-		if total_gross_salary >= max_income_value:
+		if total_gross_salary >= max_income_value and application.get('grade') not in  ('ES3','EX3','ES2','EX2','ES1','EX1'):
 			# print(f"{application.get('name')} is not eligible")
 			update_query = """
     					UPDATE `tabHousing Application`

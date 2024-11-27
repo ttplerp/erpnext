@@ -91,7 +91,8 @@
   "column_break_51",
   "purchase_receipt_amount",
   "default_finance_book",
-  "amended_from"
+  "amended_from",
+  "disable_depreciation"
  ],
  "fields": [
   {
@@ -655,6 +656,13 @@
    "fieldtype": "Barcode",
    "label": "Asset Barcode",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "disable_depreciation",
+   "fieldtype": "Check",
+   "label": "Disable Depreciation",
+   "read_only": 1
   }
  ],
  "idx": 72,
@@ -677,7 +685,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2023-04-26 17:58:24.084220",
+ "modified": "2024-10-25 14:48:56.937939",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",

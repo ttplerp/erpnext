@@ -158,7 +158,7 @@ class Asset(AccountsController):
 		if not self.asset_category:
 			self.asset_category = frappe.get_cached_value("Item", self.item_code, "asset_category")
 
-		if not flt(self.gross_purchase_amount) and self.asset_category != "Investment Property":
+		if not flt(self.gross_purchase_amount) and self.asset_category not in ("Investment Property", "Land"):
 			frappe.throw(_("Gross Purchase Amount is mandatory"), frappe.MandatoryError)
 
 		if is_cwip_accounting_enabled(self.asset_category):
@@ -413,7 +413,7 @@ class Asset(AccountsController):
 			if n == 0:
 				from_date = add_days(
 					self.available_for_use_date, -1
-				)  
+				)
 				days = date_diff(finance_book.depreciation_start_date, from_date)
 				depreciation_amount = get_depreciation_amount(self, value_after_depreciation, finance_book, schedule_date, days)
 
@@ -576,6 +576,7 @@ class Asset(AccountsController):
 		# otherwise, if number_of_depreciations_booked = 2, available_for_use_date = 01/01/2020 and frequency_of_depreciation = 12
 		# from_date = 01/01/2022
 		from_date = self.get_modified_available_for_use_date(row)
+  
 		days = date_diff(row.depreciation_start_date, from_date) + 1
 
 		# if frequency_of_depreciation is 12 months, total_days = 365
@@ -593,7 +594,7 @@ class Asset(AccountsController):
 		)
 
 	def validate_asset_finance_books(self, row):
-		if self.asset_category != "Investment Property":
+		if self.asset_category not in ("Investment Property", "Land"):
 			if flt(row.expected_value_after_useful_life) >= flt(self.gross_purchase_amount):
 				frappe.throw(
 					_("Row {0}: Expected Value After Useful Life must be less than Gross Purchase Amount").format(
@@ -800,7 +801,7 @@ class Asset(AccountsController):
 		elif self.docstatus == 1:
 			status = "Submitted"
 
-			if self.asset_category != "Investment Property":
+			if self.asset_category not in ("Investment Property", "Land"):
 				if self.journal_entry_for_scrap:
 					status = "Scrapped"
 				elif self.finance_books:
@@ -928,7 +929,7 @@ class Asset(AccountsController):
 				})
 			je.submit()
 
-		if self.is_existing_asset and self.asset_category != "Investment Property" and self.opening_accumulated_depreciation:
+		if self.is_existing_asset and self.asset_category not in ("Investment Property", "Land") and self.opening_accumulated_depreciation:
 			je = frappe.new_doc("Journal Entry")
 			je.flags.ignore_permissions = 1 
 			je.update({

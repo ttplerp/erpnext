@@ -10,7 +10,7 @@ function getApplicantInfo() {
     frappe.call({
         method: "erpnext.www.check-status.index.get_applicant_info", // Replace with the actual method path
         args: {
-            cid: cidValue
+            cid: categoryInput
         },
         callback: function (r) {
             if (!r.message) {
@@ -32,7 +32,7 @@ function displayApplicantInfo(response) {
         var tableHTML = '<table class="table table-bordered table-striped table-condensed table-custom-width">' +
             '<colgroup><col style="width: 50%;"><col style="width: 50%;"></colgroup>' +
             '<thead><tr><th colspan="2" class="table-heading-one">Applicant Information</th></tr></thead>' +
-            '<tbody>' +
+            '<tbody>' + 
             '<tr><td class="table-heading">CID</td><td>' + applicant.cid + '</td></tr>' +
             '<tr><td class="table-heading">Applicant Name</td><td>' + applicant.applicant_name + '</td></tr>' +
             '<tr><td class="table-heading">Employment Type</td><td>' + applicant.employment_type + '</td></tr>' +

@@ -14,19 +14,18 @@
   {
    "fieldname": "employee",
    "fieldtype": "Link",
-   "ignore_user_permissions": 1,
    "in_list_view": 1,
-   "label": "Employee",
-   "options": "Employee"
+   "label": "User",
+   "options": "User"
   },
   {
-   "fetch_from": "employee.employee_name",
+   "fetch_from": "employee.full_name",
    "fieldname": "employee_name",
    "fieldtype": "Data",
    "label": "Employee Name"
   },
   {
-   "fetch_from": "employee.user_id",
+   "fetch_from": "employee.username",
    "fieldname": "user_id",
    "fieldtype": "Data",
    "label": "User id"
@@ -35,7 +34,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-12-04 15:37:05.242297",
+ "modified": "2024-05-31 12:00:14.743556",
  "modified_by": "Administrator",
  "module": "eNote",
  "name": "Note Copy",

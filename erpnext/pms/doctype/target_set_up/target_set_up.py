@@ -16,7 +16,7 @@ class TargetSetUp(Document):
 		self.load_pre_requirement()
 		self.check_target()
 		self.check_duplicate_entry() 
-		validate_workflow_states(self) 
+		# validate_workflow_states(self) 
 		if self.workflow_state != "Approved":
 			notify_workflow_states(self)
 		if self.reference and self.reason:
@@ -76,9 +76,9 @@ class TargetSetUp(Document):
 		elif self.workflow_state == 'Draft' or self.workflow_state == 'Rejected':
 			return   
 		# check whether pms is active for target setup       
-		elif not frappe.db.exists("PMS Calendar",{"name": self.pms_calendar, "docstatus": 1,
-					"target_start_date":("<=",nowdate()),"target_end_date":(">=",nowdate())}):
-			frappe.throw(_('Target Set Up for PMS Calendar <b>{}</b> is not open').format(self.pms_calendar))
+		# elif not frappe.db.exists("PMS Calendar",{"name": self.pms_calendar, "docstatus": 1,
+		# 			"target_start_date":("<=",nowdate()),"target_end_date":(">=",nowdate())}):
+		# 	frappe.throw(_('Target Set Up for PMS Calendar <b>{}</b> is not open').format(self.pms_calendar))
 
 	def check_duplicate_entry(self):
 		# check duplicate entry for particular employee
