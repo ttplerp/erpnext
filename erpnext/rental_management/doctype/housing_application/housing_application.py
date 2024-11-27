@@ -1,4 +1,4 @@
-# Copyright (c) 2023, Frappe Technologies Pvt. Ltd. and contributors
+``# Copyright (c) 2023, Frappe Technologies Pvt. Ltd. and contributors
 # For license information, please see license.txt
 
 import frappe
@@ -280,3 +280,4 @@ def get_permission_query_conditions(user):
 			and bi.parent = ab.name
 			and bi.branch = `tabHousing Application`.work_station)
 	)""".format(user=user)
+``

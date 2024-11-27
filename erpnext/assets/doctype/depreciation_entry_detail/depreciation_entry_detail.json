@@ -1,6 +1,5 @@
 {
  "actions": [],
- "allow_rename": 1,
  "creation": "2024-10-25 13:53:55.166278",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -13,7 +12,8 @@
   "income_depreciation_amount",
   "accumulated_depreciation_amount",
   "income_accumulated_depreciation",
-  "journal_entry"
+  "journal_entry",
+  "depreciation_income_tax"
  ],
  "fields": [
   {
@@ -78,12 +78,18 @@
    "label": "Mgt. Accumulated Depreciation",
    "options": "Company:company:default_currency",
    "read_only": 1
+  },
+  {
+   "fieldname": "depreciation_income_tax",
+   "fieldtype": "Data",
+   "label": "Depreciation Income Tax",
+   "read_only": 1
   }
  ],
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-10-25 14:40:04.684941",
+ "modified": "2024-11-06 14:35:04.077238",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Depreciation Entry Detail",
@@ -98,6 +104,18 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Asset User",
    "share": 1,
    "write": 1
   },

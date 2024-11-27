@@ -42,7 +42,7 @@ class DepreciationEntry(Document):
 
 	def cancel_depreciation_entry(self, publish_progress=False):
 		title = 'Cancelling Depreciation Entry'
-		self.check_cbs_upload()
+		# self.check_cbs_upload()
 		show_progress(publish_progress, 5, 'Rollback changes on Depreciation Schedule...', title)
 		self.update_schedules(cancel=True, publish_progress=publish_progress, title=title)
 		show_progress(publish_progress, 25, 'Rollback changes on Assets...', title)
@@ -75,7 +75,7 @@ class DepreciationEntry(Document):
 					debit, credit, account_currency, 
 					debit_in_account_currency, credit_in_account_currency, 
 					voucher_type, voucher_no, against_voucher_type, against_voucher,
-					remarks, company, business_activity, 
+					remarks, company, 
 					owner, creation, modified_by, modified, docstatus, idx, is_opening, is_advance, 
 					fiscal_year, use_cheque_lot)
 				VALUES {}""".format(values))
@@ -84,7 +84,7 @@ class DepreciationEntry(Document):
 		gl_list = []
 		asset_category = self.get_asset_category()
 		li = frappe.db.sql("""select a.name asset, a.company, a.cost_center, a.branch, 
-						a.business_activity, a.asset_category, 
+						a.asset_category, 
 						ded.name, ded.schedule_date, 
 						ded.depreciation_amount, ded.accumulated_depreciation_amount,
 						ded.income_depreciation_amount, ded.income_accumulated_depreciation
@@ -95,8 +95,8 @@ class DepreciationEntry(Document):
 		for i in li:
 			if not i.cost_center:
 				frappe.throw(_("Cost Center is missing for {}").format(frappe.get_desk_link("Asset", i.asset)))
-			elif not i.business_activity:
-				frappe.throw(_("Business Activity is missing for {}").format(frappe.get_desk_link("Asset", i.asset)))
+			# elif not i.business_activity:
+			# 	frappe.throw(_("Business Activity is missing for {}").format(frappe.get_desk_link("Asset", i.asset)))
 			elif not i.asset_category:
 				frappe.throw(_("Asset Category is mandatory for {}").format(frappe.get_desk_link("Asset Category", i.asset_category)))
 
@@ -114,7 +114,7 @@ class DepreciationEntry(Document):
 					i.depreciation_amount if j == 'debit' else 0, i.depreciation_amount if j == 'credit' else 0, 'BTN', 
 					i.depreciation_amount if j == 'debit' else 0, i.depreciation_amount if j == 'credit' else 0,
 					'Depreciation Entry', self.name, "Asset", i.asset,
-					'Depreciation for {}-{}'.format(str(self.month), str(self.fiscal_year)), self.company, i.business_activity,
+					'Depreciation for {}-{}'.format(str(self.month), str(self.fiscal_year)), self.company,
 					frappe.session.user, str(get_datetime()), frappe.session.user, str(get_datetime()), 1, 0, 'No', 'No',
 					getdate(self.to_date).strftime('%Y'), 0
 				))
@@ -326,7 +326,7 @@ class DepreciationEntry(Document):
 def show_progress(publish_progress, progress, description, title=None):
 	if publish_progress:
 		frappe.publish_progress(progress, 
-						title = title if title else _("Downloading data from CBS..."),
+						title = title if title else _("No Title..."),
 						description = description)
 		sleep(1)
 

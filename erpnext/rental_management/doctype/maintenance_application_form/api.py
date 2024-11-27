@@ -72,11 +72,33 @@ def get_cid_detail(tenant_cid):
 
 """ {"tenant_cid": "cid here"} """
 @frappe.whitelist(methods=['GET'])
+def get_applicant_info(applicant_cid):
+	if applicant_cid:
+		sql_query = """ 
+				SELECT name, applicant_name, cid, gender, employment_type, applicant_rank, application_status, 
+					mobile_no, flat_no, building_classification, application_date_time
+				from `tabHousing Application`
+				where cid = %(applicant_cid)s
+			"""
+		
+		# Parameters to pass to the query
+		query_params = {"applicant_cid": applicant_cid}
+
+		data = frappe.db.sql(sql_query, query_params, as_dict=True)
+		# Return the data as JSON to the client side
+
+		if len(data) > 0:
+			return {'status_code':200,  'message': 'Successful', 'data': data}
+		else:
+			return {'status_code':404,  'message': 'No data found!'}
+
+@frappe.whitelist(methods=['GET'])
 def tenant_cid(tenant_cid):
 	try:
 		# Execute SQL query
 		sql_query = """
-		SELECT name, tenant_name, block_no, flat_no, location_name,dzongkhag,locations,phone_no, name,tenant_cid
+		SELECT name as tenant_id, tenant_name, block_no, flat_no, location_name,dzongkhag,locations,phone_no,tenant_cid,
+		rate_per_sqft as rate, total_floor_area as floor_area, initial_allotment_date as allotment_date, rental_term_year as rental_year
 		FROM `tabTenant Information` 
 		WHERE tenant_cid = %(tenant_cid)s
 		"""
@@ -85,10 +107,11 @@ def tenant_cid(tenant_cid):
 
 		data = frappe.db.sql(sql_query, query_params, as_dict=True)
 		# Return the data as JSON to the client side
+
 		if len(data) > 0:
-			return data
+			return {'status_code':200,  'message': 'Successful', 'data': data}
 		else:
-			return {'status_code':404,  'message': 'No data found!'}
+			return {'status_code':404,  'message': 'No dataaaa found!', 'data': {}}
 	except Exception as e:
 		frappe.log_error(_("Error in Tenant Info.: {0}").format(e))
-		return None
+		return {'status_code':502,  'message': 'Server error'}
