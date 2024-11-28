@@ -69,6 +69,22 @@ class Supplier(TransactionBase):
 		validate_party_accounts(self)
 		self.validate_internal_supplier()
 		self.validate_domestic_supplier()
+		self.set_default_bank_account()
+
+	def set_default_bank_account(self):
+		if self.get("banks"):
+			default_bank_account = 0
+			for a in self.get("banks"):
+				if a.default:
+					default_bank_account += 1
+					self.bank_name = a.bank_name
+					self.bank_branch  = a.bank_branch
+					self.bank_account_type = a.bank_account_type
+					self.account_number = a.account_number
+			if default_bank_account == 0:
+				frappe.throw("Please set a default bank account under Bank Information")
+			elif default_bank_account > 1:
+				frappe.throw("Only one bank account is allowed to set a default")
 
 	@frappe.whitelist()
 	def get_supplier_group_details(self):

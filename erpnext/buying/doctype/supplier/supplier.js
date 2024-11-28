@@ -50,6 +50,15 @@ frappe.ui.form.on("Supplier", {
 				}
 			};
 		});
+
+		frm.set_query("bank_branch", "banks", function(doc, cdt, cdn) {
+			let d = locals[cdt][cdn];
+			return {
+				filters: {
+					'financial_institution': d.bank_name
+				}
+			};
+		});
 	},
 
 	refresh: function (frm) {
