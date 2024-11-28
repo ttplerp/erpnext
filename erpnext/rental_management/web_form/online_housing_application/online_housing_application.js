@@ -15,9 +15,12 @@ frappe.ready(function() {
 	// Auto Populate details if the applicant it civil servant
 	frappe.web_form.on('employment_type', (field, value) => {
 		if(value=="Civil Servant"){
-			frappe.throw("New applications for civil servants are temporarily suspended, due to a substantial backlog")
+			// frappe.throw("New applications for civil servants are temporarily suspended, due to a substantial backlog")
 			get_employee_detail(applicant_cid, category="Applicant");
 			frappe.web_form.set_value('gross_salary_info', 'Your gross salary will be fetched from EPEMS.');
+		}
+		else{
+			frappe.throw("New applications are allowed only for civil servants in Phuentsholing and Samdrup Jongkhar.")
 		}
 	});
 
@@ -36,6 +39,13 @@ frappe.ready(function() {
 			
 		}
 	});
+
+	// frappe.web_form.validate = () => {
+		
+	// 		frappe.msgprint('Value must be more than 1000');
+			
+	// 	}
+	// });
 
 
 
@@ -75,8 +85,14 @@ frappe.web_form.set_value('date_of_birth',formattedDate);
 					$('[data-fieldname="spouse_dzongkhag"]').val(r.message['dzongkhagName']);
 					$('[data-fieldname="spouse_gewog"]').val(r.message['gewogName']);
 					$('[data-fieldname="spouse_village"]').val(r.message['permanentVillagename']);
-					$('[data-fieldname="spouse_dob"]').val(r.message['dob']);
-					frappe.web_form.set_value('spouse_dob',r.message['dob']);
+					// $('[data-fieldname="spouse_dob"]').val(r.message['dob']);
+					// var formattedDate = `${year}-${month}-${day}`;
+					var [day, month, year] = r.message['dob'].split('/');
+					var formattedDate = `${year}-${month}-${day}`;
+
+$('[data-fieldname="spouse_dob"]').val(formattedDate);
+frappe.web_form.set_value('spouse_dob',formattedDate);
+					// frappe.web_form.set_value('spouse_dob',r.message['dob']);
 				}
 			}else{
 				frappe.throw("No such CID details found")

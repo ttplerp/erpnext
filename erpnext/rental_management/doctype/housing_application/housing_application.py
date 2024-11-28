@@ -1,4 +1,4 @@
-``# Copyright (c) 2023, Frappe Technologies Pvt. Ltd. and contributors
+# Copyright (c) 2023, Frappe Technologies Pvt. Ltd. and contributors
 # For license information, please see license.txt
 
 import frappe
@@ -70,8 +70,23 @@ class HousingApplication(Document):
 	def check_salary(self):
 		gross_salary = float(self.gross_salary) if self.gross_salary else 0
 		spouse_gross_salary = float(self.spouse_gross_salary) if self.spouse_gross_salary else 0
+  
+		if self.employment_type == "Civil Servant":
+			data1=get_civil_servant_detail(cid=self.cid)
+			if data1:
+				if 'GrossPay' in data1:
+					gross_salary = data1['GrossPay']
+				else:
+					gross_salary = 0
+			data2=get_civil_servant_detail(cid=self.spouse_cid)
+			if data2:
+				if 'GrossPay' in data2:
+					spouse_gross_salary = data2['GrossPay']
+				else:
+					spouse_gross_salary =0
 		
-		total_salary = gross_salary + spouse_gross_salary
+		total_salary = float(gross_salary) + float(spouse_gross_salary)
+		# frappe.throw(str(total_salary))
 		
 		grade = self.grade
 		
@@ -280,4 +295,3 @@ def get_permission_query_conditions(user):
 			and bi.parent = ab.name
 			and bi.branch = `tabHousing Application`.work_station)
 	)""".format(user=user)
-``

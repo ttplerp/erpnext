@@ -591,7 +591,7 @@ def update_ranking():
 		select maximum_income from `tabBuilding Classification` where name = "Class IB"
 									""")
 		max_income_value = class_ib_maxincome[0][0]
-		if total_gross_salary >= max_income_value and application.get('grade') not in  ('ES3','EX3','ES2','EX2','ES1','EX1'):
+		if total_gross_salary >= max_income_value:
 			# print(f"{application.get('name')} is not eligible")
 			update_query = """
     					UPDATE `tabHousing Application`
@@ -760,9 +760,91 @@ def test():
     frappe.throw('test')
     
 def updateHousingApplicantsdata():
-    # update_gross_sal()
+    update_gross_sal()
     update_ranking()
     update_builCate()
     update_ranking_3pa()
     updateNotEligibleRanking()
     
+
+import csv
+import frappe
+import os
+
+def create_csv_in_erpnext_path():
+    try:
+        # Data to be written to the CSV file
+        data = [
+            ["Name", "Email", "Phone"],
+            ["John Doe", "john@example.com", "1234567890"],
+            ["Jane Doe", "jane@example.com", "0987654321"]
+        ]
+
+        # Define the full path to the desired directory
+        custom_path = os.path.expanduser('~/erp/apps/erpnext')
+
+        # Check if the directory exists, if not, print an error
+        if not os.path.exists(custom_path):
+            print(f"Directory does not exist: {custom_path}")
+            return
+
+        # Define the file path for the CSV file
+        file_path = os.path.join(custom_path, 'contacts2.csv')
+
+        # Create the CSV file in the specified directory
+        with open(file_path, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerows(data)
+
+        print(f"CSV file successfully created at: {file_path}")
+
+    except Exception as e:
+        # Log any errors that occur
+        frappe.msgprint(f"An error occurred: {str(e)}")
+
+from erpnext.rental_management.doctype.api_setting.api_setting import get_cid_detail, get_civil_servant_detail
+def tenant_info():
+                
+    # Fetch tenant_cid for tenants in 'Thimphu' with status 'Allocated'
+    data = frappe.db.sql('''
+        SELECT name, tenant_cid, tenant_name,block_no,flat_no,initial_allotment_date,locations,total_floor_area,building_classification
+        FROM `tabTenant Information` 
+        WHERE dzongkhag = "Thimphu" AND status = "Allocated";
+    ''', as_dict=True)
+
+    # Define the custom path for CSV (change this path if needed)
+    custom_path = os.path.expanduser('~/erp/apps/erpnext')  # Adjust path as needed
+    file_path = os.path.join(custom_path, 'tenant_info_11_26.csv')
+
+    # Prepare CSV headers
+    headers = ['Tenant Name', 'Cid', 'Designation','Grade','salary','old flat no','block no id','flat no id','current rent','initial allotment date','location','total_floor_area','classification','department','Ministry_agency']
+
+    # Create CSV file
+    with open(file_path, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(headers)  # Write headers to CSV
+
+        # Loop through tenants, fetch civil servant details, and write to CSV
+        for i in data:
+            latest_rent = frappe.db.sql('''
+                                        select rental_amount from `tabTenant Rental Charges` where parent='{name}' and '2024-09-18' between from_date and to_date
+                                        '''.format(name=i['name']))
+            if not latest_rent:
+                latest_rent = '0'
+            old_flat_no = frappe.db.sql('''
+                                        select old_flat_no from `tabFlat No` where name = '{name}'
+                                        '''.format(name=i['flat_no']))
+            if not old_flat_no:
+                old_flat_no = 'None'
+            data1 = get_civil_servant_detail(cid=i['tenant_cid'])
+            first_name = data1.get('firstName', '')  # Fetch first name or default to empty if not found
+            designation = data1.get('Designation', '')
+            grade = data1.get('positionLevel', '')
+            salary = data1.get('GrossPay', '')
+            dept= data1.get('DeptName','')
+            ministry_agency= data1.get('FullWorkingAgency','')
+            writer.writerow([i['tenant_name'],i['tenant_cid'], designation,grade,salary,old_flat_no[0][0],i['block_no'],i['flat_no'],latest_rent[0][0],i['initial_allotment_date'],i['locations'],i['total_floor_area'],i['building_classification'],dept,ministry_agency])  # Write tenant CID and first name to CSV
+            print(i['name'])
+
+    frappe.msgprint(f"CSV file created at: {file_path}")
+        
