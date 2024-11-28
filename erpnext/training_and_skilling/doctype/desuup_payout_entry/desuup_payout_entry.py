@@ -443,7 +443,7 @@ class DesuupPayoutEntry(Document):
 			party = frappe.db.get_value("Desuup Deployment Entry", self.desuup_deployment, "party")
 			party_name = frappe.db.get_value("Desuup Deployment Entry", self.desuup_deployment, "party_name")
 			if not party:
-				frappe.throw("Please set part in {}".format(frappe.get_desk_link("Desuup Deployment Entry", self.desuup_deployment)))
+				frappe.throw("Please set party in {}".format(frappe.get_desk_link("Desuup Deployment Entry", self.desuup_deployment)))
 
 		# Initialize dictionaries for grouping
 		aggregated_values = {}
