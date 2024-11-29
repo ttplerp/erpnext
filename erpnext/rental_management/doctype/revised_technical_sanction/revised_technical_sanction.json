@@ -82,7 +82,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Maintenance Type",
-   "options": "Minor\nPlanned\nAdhoc",
+   "options": "\nMinor\nMajor\nPlanned\nAdhoc",
    "read_only": 1,
    "reqd": 1
   },
@@ -312,7 +312,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-11-29 11:44:20.729928",
+ "modified": "2024-11-29 15:26:41.296958",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Revised Technical Sanction",
