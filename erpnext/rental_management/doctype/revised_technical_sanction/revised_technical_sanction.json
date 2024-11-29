@@ -106,9 +106,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Location",
-   "options": "Locations",
-   "read_only": 1,
-   "reqd": 1
+   "options": "Locations"
   },
   {
    "fieldname": "company",
@@ -314,7 +312,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-05 10:14:18.896417",
+ "modified": "2024-11-29 11:44:20.729928",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Revised Technical Sanction",
