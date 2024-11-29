@@ -10,7 +10,7 @@ function getApplicantInfo() {
     frappe.call({
         method: "erpnext.www.check-status.index.get_applicant_info", // Replace with the actual method path
         args: {
-            cid: categoryInput
+            cid: cidValue
         },
         callback: function (r) {
             if (!r.message) {
