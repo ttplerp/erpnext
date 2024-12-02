@@ -525,16 +525,14 @@
    "fieldtype": "Link",
    "label": "Bank Name",
    "options": "Financial Institution",
-   "read_only": 1,
-   "reqd": 1
+   "read_only": 1
   },
   {
    "fieldname": "bank_branch",
    "fieldtype": "Link",
    "label": "Bank Branch",
    "options": "Financial Institution Branch",
-   "read_only": 1,
-   "reqd": 1
+   "read_only": 1
   },
   {
    "fieldname": "col_break_002",
@@ -545,15 +543,13 @@
    "fieldtype": "Link",
    "label": "Bank Account Type",
    "options": "Bank Account Type",
-   "read_only": 1,
-   "reqd": 1
+   "read_only": 1
   },
   {
    "fieldname": "account_number",
    "fieldtype": "Data",
    "label": "Account Number",
-   "read_only": 1,
-   "reqd": 1
+   "read_only": 1
   },
   {
    "fieldname": "banks",
@@ -576,7 +572,7 @@
    "link_fieldname": "party"
   }
  ],
- "modified": "2024-11-28 17:13:23.936004",
+ "modified": "2024-12-02 12:28:39.503184",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Supplier",
