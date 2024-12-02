@@ -223,7 +223,7 @@ def get_item_details(doc_name):
 	res = frappe.db.sql(
 		"""
 		select 
-			t2.bsr_code, t2.uom, t2.description, t2.rate, t2.quantity_after_subcontract as total_quantity, t2.no, t2.length, t2.breath, t2.height, t2.coefficient
+			t1.name as boq, t2.bsr_code, t2.uom, t2.description, t2.rate, t2.quantity_after_subcontract as total_quantity, t2.no, t2.length, t2.breath, t2.height, t2.coefficient
 		from `tabBOQ` t1, `tabBOQ Item` t2
 		where t1.name = t2.parent
 		and t1.docstatus = 1
@@ -233,6 +233,7 @@ def get_item_details(doc_name):
 		""", (doc_name), as_dict=True
 	)
 	for a in res:
+		a['boq'] = a.boq
 		a['boq_quantity'] = a.total_quantity
 		a['quantity'] = a.total_quantity
 		a['unclaimed_quantity'] = a.total_quantity

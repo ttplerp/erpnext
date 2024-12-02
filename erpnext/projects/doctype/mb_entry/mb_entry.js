@@ -146,7 +146,7 @@ var make_details =  function (frm, cdt, cdn) {
 }
 
 var check_uncheck_all = function(frm){
-	let meb =frm.doc.mb_entry_boq || [];
+	let meb = frm.doc.items || [];
 
 	for(var id in meb){
 		frappe.model.set_value("MB Entry BOQ", meb[id].name, "is_selected", frm.doc.check_all);

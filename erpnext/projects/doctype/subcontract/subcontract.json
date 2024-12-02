@@ -80,8 +80,7 @@
    "fieldtype": "Link",
    "label": "BOQ",
    "options": "BOQ",
-   "read_only": 1,
-   "reqd": 1
+   "read_only": 1
   },
   {
    "default": "Item Based",
@@ -228,7 +227,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-11-25 19:08:20.171049",
+ "modified": "2024-11-29 14:01:50.373775",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Subcontract",

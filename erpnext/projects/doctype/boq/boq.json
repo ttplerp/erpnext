@@ -132,7 +132,6 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Total Amount (A)",
-   "precision": "2",
    "read_only": 1
   },
   {
@@ -249,7 +248,6 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Total Unclaimed Amount",
-   "precision": "2",
    "read_only": 1
   },
   {
@@ -264,7 +262,6 @@
    "fieldname": "total_adjusted_amount",
    "fieldtype": "Currency",
    "label": "Total Adjusted Amount (B)",
-   "precision": "2",
    "read_only": 1
   },
   {
@@ -278,7 +275,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-11-25 17:45:22.893761",
+ "modified": "2024-11-29 16:40:08.528685",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "BOQ",

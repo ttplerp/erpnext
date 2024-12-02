@@ -20,6 +20,7 @@ class MBEntry(Document):
 		self.set_defaults()
 		self.calculate_total_amount()
 		self.vilidate_milestone_based()
+		self.remove_not_selected_bsr()
 				
 	def on_submit(self):
 		self.validate_boq_items()
@@ -58,23 +59,30 @@ class MBEntry(Document):
 				frappe.throw(_("Row{0}: Entry Amount cannot be greater than Balance Amount").format(rec.idx))
 			elif flt(rec.entry_quantity) < 0 or flt(rec.entry_amount) < 0:
 				frappe.throw(_("Row{0}: Value cannot be in negative").format(rec.idx))
+
+	def remove_not_selected_bsr(self):
+		to_remove = []
+		for d in self.get("items"):
+			if not d.is_selected:
+				to_remove.append(d)
+		[self.remove(d) for d in to_remove]
 			   
 	def set_defaults(self):
 		if self.project:
-			base_project		  = frappe.get_doc("Project", self.project)
-			self.company		  = base_project.company
-			self.customer		 = base_project.customer
-			self.branch		   = base_project.branch
-			self.cost_center	  = base_project.cost_center
+			base_project		= frappe.get_doc("Project", self.project)
+			self.company		= base_project.company
+			self.customer		= base_project.customer
+			self.branch		   	= base_project.branch
+			self.cost_center	= base_project.cost_center
 
 		if base_project.status in ('Completed','Cancelled'):
 			frappe.throw(_("Operation not permitted on already {0} Project.").format(base_project.status),title="MB Entry: Invalid Operation")
 				
 		if self.boq:
-			base_boq			  = frappe.get_doc("BOQ", self.boq)
-			self.cost_center	  = base_boq.cost_center
-			self.branch		   = base_boq.branch
-			self.boq_type		 = base_boq.boq_type
+			base_boq			= frappe.get_doc("BOQ", self.boq)
+			self.cost_center	= base_boq.cost_center
+			self.branch		    = base_boq.branch
+			self.boq_type		= base_boq.boq_type
 			
 	def validate_boq_items(self):
 		source_table = "Subcontract" if self.subcontract else "BOQ"

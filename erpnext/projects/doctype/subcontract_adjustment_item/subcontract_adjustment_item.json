@@ -6,10 +6,12 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "is_selected",
   "bsr_code",
-  "column_break_10",
-  "description",
   "uom",
+  "column_break_10",
+  "boq",
+  "description",
   "section_break_10",
   "quantity",
   "column_break_40",
@@ -62,7 +64,7 @@
    "fieldname": "quantity",
    "fieldtype": "Float",
    "label": "Initial Quantity",
-   "precision": "2",
+   "precision": "9",
    "read_only": 1
   },
   {
@@ -117,7 +119,7 @@
    "fieldtype": "Float",
    "in_list_view": 1,
    "label": "Add. Quantity (+/-)",
-   "precision": "2"
+   "precision": "9"
   },
   {
    "fieldname": "column_break_55",
@@ -125,7 +127,7 @@
   },
   {
    "fieldname": "adjustment_rate",
-   "fieldtype": "Float",
+   "fieldtype": "Currency",
    "hidden": 1,
    "label": "Add. Rate",
    "precision": "2"
@@ -164,7 +166,6 @@
    "fetch_from": "bsr_code.description",
    "fieldname": "description",
    "fieldtype": "Small Text",
-   "in_list_view": 1,
    "label": "Description"
   },
   {
@@ -216,12 +217,29 @@
    "fieldtype": "Float",
    "label": "Coefficient",
    "precision": "2"
+  },
+  {
+   "columns": 2,
+   "fieldname": "boq",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "BOQ",
+   "options": "BOQ",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "default": "0",
+   "fieldname": "is_selected",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Select"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-11-14 20:00:13.948882",
+ "modified": "2024-12-02 15:28:01.059797",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Subcontract Adjustment Item",

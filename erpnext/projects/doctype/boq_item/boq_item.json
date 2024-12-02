@@ -125,14 +125,14 @@
    "fieldtype": "Float",
    "in_list_view": 1,
    "label": "Quantity",
-   "precision": "2"
+   "precision": "9"
   },
   {
    "allow_on_submit": 1,
    "fieldname": "adjustment_quantity",
    "fieldtype": "Float",
    "label": "Adjustment Quantity",
-   "precision": "2",
+   "precision": "4",
    "read_only": 1
   },
   {
@@ -144,8 +144,7 @@
    "fieldname": "rate",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Rate",
-   "precision": "2"
+   "label": "Rate"
   },
   {
    "fieldname": "column_break_50",
@@ -158,7 +157,6 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Amount",
-   "precision": "2",
    "read_only": 1
   },
   {
@@ -220,7 +218,7 @@
    "fieldname": "claimed_quantity",
    "fieldtype": "Float",
    "label": "Claimed Quantity",
-   "precision": "2",
+   "precision": "9",
    "read_only": 1
   },
   {
@@ -228,6 +226,7 @@
    "fieldname": "claimed_amount",
    "fieldtype": "Currency",
    "label": "Claimed Amount",
+   "precision": "4",
    "read_only": 1
   },
   {
@@ -244,7 +243,7 @@
    "fieldname": "quantity_before_subcontract",
    "fieldtype": "Float",
    "label": "Quantity Before Subcontract",
-   "precision": "2",
+   "precision": "4",
    "read_only": 1
   },
   {
@@ -256,7 +255,7 @@
    "fieldname": "quantity_after_subcontract",
    "fieldtype": "Float",
    "label": "Quantity After Subcontract",
-   "precision": "2",
+   "precision": "4",
    "read_only": 1
   },
   {
@@ -269,7 +268,7 @@
    "fieldname": "unclaimed_quantity",
    "fieldtype": "Float",
    "label": "Unclaimed Quantity",
-   "precision": "2",
+   "precision": "9",
    "read_only": 1
   },
   {
@@ -277,7 +276,7 @@
    "fieldname": "unclaimed_amount",
    "fieldtype": "Currency",
    "label": "Unclaimed Amount",
-   "precision": "2",
+   "precision": "4",
    "read_only": 1
   },
   {
@@ -285,7 +284,7 @@
    "fieldname": "booked_quantity",
    "fieldtype": "Float",
    "label": "Booked Quantity",
-   "precision": "2",
+   "precision": "4",
    "read_only": 1
   },
   {
@@ -293,13 +292,14 @@
    "fieldname": "booked_amount",
    "fieldtype": "Currency",
    "label": "Booked Amount",
+   "precision": "9",
    "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-11-16 10:36:35.476150",
+ "modified": "2024-11-29 17:12:27.182989",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "BOQ Item",

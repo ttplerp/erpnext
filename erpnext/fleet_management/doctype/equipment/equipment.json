@@ -18,6 +18,7 @@
   "enabled",
   "hired_equipment",
   "status",
+  "rate_per_hour",
   "equipment_information_section",
   "equipment_name",
   "equipment_category",
@@ -357,11 +358,16 @@
    "fieldtype": "Data",
    "label": "Reading UOM",
    "read_only": 1
+  },
+  {
+   "fieldname": "rate_per_hour",
+   "fieldtype": "Currency",
+   "label": "Rate Per Hour"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-08-03 18:54:16.139361",
+ "modified": "2024-11-29 17:00:20.668585",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment",

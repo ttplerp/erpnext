@@ -1,12 +1,9 @@
-# Copyright (c) 2017, Frappe Technologies Pvt. Ltd. and Contributors
-# License: GNU General Public License v3. See license.txt
-
-
 import frappe
 from frappe import _
 from frappe.desk.reportview import get_match_cond
 from frappe.model.document import Document
 from frappe.utils import add_days, flt, get_datetime, get_time, get_url, nowtime, today, getdate, nowdate
+from frappe.model.mapper import get_mapped_doc
 
 from erpnext import get_default_company
 from erpnext.controllers.employee_boarding_controller import update_employee_boarding_status
@@ -661,6 +658,48 @@ def update_project_sales_billing():
 	for project in project_map.values():
 		project.save()
 
+@frappe.whitelist()
+def make_subcontract(source_name, target_doc=None):
+	item_details = get_item_details(source_name)
+	def set_missing_values(source, target):
+		target.party_type = "Supplier" if source.party_type == "Customer" else None
+		target.party = None
+		target.set(
+			"boq_item",
+			[d for d in item_details]
+		)
+
+	doclist = get_mapped_doc("Project", source_name, {
+		"Project": {
+			"doctype": "Subcontract"
+		}
+	}, target_doc, set_missing_values)
+
+	return doclist
+
+def get_item_details(doc_name):
+	res = frappe.db.sql(
+		"""
+		select 
+			t1.name as boq, t2.bsr_code, t2.uom, t2.description, t2.rate, t2.quantity_after_subcontract as total_quantity, t2.no, t2.length, t2.breath, t2.height, t2.coefficient
+		from `tabBOQ` t1, `tabBOQ Item` t2
+		where t1.name = t2.parent
+		and t1.docstatus = 1
+		and t1.project = %s
+		and t2.quantity_after_subcontract > 0
+		order by t2.bsr_code asc
+		""", (doc_name), as_dict=True
+	)
+	for a in res:
+		a['boq'] = a.boq
+		a['boq_quantity'] = a.total_quantity
+		a['quantity'] = a.total_quantity
+		a['unclaimed_quantity'] = a.total_quantity
+		a['boq_rate'] = a.rate
+		a['amount'] = flt(a.rate) * flt(a.total_quantity)
+		a['boq_amount'] = flt(a.rate) * flt(a.total_quantity)
+		a['unclaimed_amount'] = flt(a.rate) * flt(a.total_quantity)
+	return res
 
 @frappe.whitelist()
 def create_kanban_board_if_not_exists(project):

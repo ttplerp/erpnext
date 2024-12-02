@@ -22,12 +22,20 @@ from erpnext.accounts.general_ledger import (
 )
 
 class ProjectInvoice(AccountsController):
+	def autoname(self):
+		if self.party_type == "Customer":
+			prefix = "RABINV"
+		else:
+			prefix = "SUBINV"
+		self.name = frappe.model.naming.make_autoname(f"{prefix}.YYYY.MM.####")
+
 	def validate(self):
 		self.set_status()
 		self.set_defaults()
 		self.validate_mb_entries()
 		self.validate_items()
 		self.load_invoice_boq()
+		self.validate_outstanding_amount()
 				
 	def on_submit(self):
 		self.update_boq_item()
@@ -45,6 +53,10 @@ class ProjectInvoice(AccountsController):
 		self.make_gl_entry()
 		self.project_invoice_item_entry(cancel=True)
 		self.update_advance_balance(cancel=True)
+
+	def validate_outstanding_amount(self):
+		if flt(self.outstanding_amount)< 0:
+			frappe.throw("Outstanding amount cannot be less than {}".format(frappe.bold(self.outstanding_amount)))
 
 	def set_status(self, update=False, status=None, update_modified=True):
 		if self.is_new():
@@ -116,12 +128,6 @@ class ProjectInvoice(AccountsController):
 
 			if base_project.status in ('Completed','Cancelled'):
 				frappe.throw(_("Operation not permitted on already {0} Project.").format(base_project.status),title="Project Invoice: Invalid Operation")
-
-		if self.boq:
-			base_boq              = frappe.get_doc("BOQ", self.boq)
-			self.cost_center      = base_boq.cost_center
-			self.branch           = base_boq.branch
-			self.boq_type         = base_boq.boq_type
 
 	def validate_mb_entries(self):
 		for i in self.get("project_invoice_mb"):
@@ -339,10 +345,10 @@ class ProjectInvoice(AccountsController):
 				total_advance_amount += flt(item.allocated_amount)
 		self.total_advance_amount = flt(total_advance_amount)
 
-		if self.tds_amount:
+		if self.tds_amount and self.tds_percent:
 			total_deduction_amount += self.tds_amount
 		
-		if self.retention_amount:
+		if self.retention_amount and self.retention_percent:
 			total_deduction_amount += self.retention_amount
 
 		return total_deduction_amount
@@ -465,7 +471,7 @@ class ProjectInvoice(AccountsController):
 			if not self.retention_account:
 				self.retention_account = get_tds_account(self.retrntion_percent, self.company, self.party_type)
 					
-			retwntion_account_type = frappe.db.get_value(doctype="Account", filters=self.tds_account, fieldname=["account_type"])
+			retention_account_type = frappe.db.get_value(doctype="Account", filters=self.tds_account, fieldname=["account_type"])
 
 			gl_entries.append(
 				self.get_gl_dict({
@@ -473,12 +479,14 @@ class ProjectInvoice(AccountsController):
 					"credit" if self.party_type == "Supplier" else "debit": flt(self.retention_amount),
 					"credit_in_account_currency" if self.party_type == "Supplier" else "debit_in_account_currency": flt(self.retention_amount),
 					"cost_center": self.cost_center,
-					"account_type": retwntion_account_type,
+					"account_type": retention_account_type,
 					"is_advance": "No",
 					"reference_type": self.doctype,
 					"reference_name": self.name,
 					"project": self.project,
-					"posting_date":self.invoice_date
+					"posting_date":self.invoice_date,
+					"party_type": self.party_type,
+					"party": self.party
 				})
 			)
 
@@ -576,18 +584,29 @@ class ProjectInvoice(AccountsController):
 			frappe.msgprint("There is no entries found")
 
 	def get_mb_data(self):
-		result = frappe.db.sql("""
+		cond = ""
+		params = [self.project, self.party_type, self.party]
+
+		if self.subcontract:
+			cond = "and subcontract = %s"
+			params.append(self.subcontract)
+		else:
+			cond = "and boq is not null"
+
+		query = """
 			select *
 			from `tabMB Entry`
-			where project = '{project}'
+			where project = %s
 			and docstatus = 1
-			and party_type = '{party_type}'
-			and party = '{party}'
-			and boq = '{boq}'
+			and party_type = %s
+			and party = %s
+			{0}
 			and total_balance_amount > 0
-			""".format(project=self.project, party_type=self.party_type, party=self.party, boq=self.boq), as_dict=True)
+		""".format(cond)  # Insert dynamic condition
 
-		return result
+		return frappe.db.sql(query, tuple(params), as_dict=True)
+
+
 			
 @frappe.whitelist()
 def get_project_party_type(doctype, txt, searchfield, start, page_len, filters):

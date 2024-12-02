@@ -103,6 +103,7 @@
   "allow_back_date_scrap",
   "reset_asset_value",
   "column_break_40",
+  "credit_account",
   "gain_disposal_account",
   "loss_disposal_account",
   "depreciation_cost_center",
@@ -1171,6 +1172,12 @@
    "fieldtype": "Link",
    "label": "National Worker Advance Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "credit_account",
+   "fieldtype": "Link",
+   "label": "Credit Account",
+   "options": "Account"
   }
  ],
  "icon": "fa fa-building",
@@ -1178,7 +1185,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2024-11-17 18:42:34.790000",
+ "modified": "2024-11-26 11:23:23.522955",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",

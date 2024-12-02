@@ -114,29 +114,30 @@ frappe.ui.form.on("Project", {
 	},
 	set_custom_buttons: function(frm) {
 		if (!frm.is_new()) {
-			frm.add_custom_button(__('Duplicate Project with Tasks'), () => {
-				frm.events.create_duplicate(frm);
-			}, __("Actions"));
+			// frm.add_custom_button(__('Duplicate Project with Tasks'), () => {
+			// 	frm.events.create_duplicate(frm);
+			// }, __("Actions"));
+
+			frm.trigger("make_subcontract");
 
 			frm.trigger("set_project_status_button");
 
+			// if (frappe.model.can_read("Task")) {
+			// 	frm.add_custom_button(__("Gantt Chart"), function () {
+			// 		frappe.route_options = {
+			// 			"project": frm.doc.name
+			// 		};
+			// 		frappe.set_route("List", "Task", "Gantt");
+			// 	}, __("View"));
 
-			if (frappe.model.can_read("Task")) {
-				frm.add_custom_button(__("Gantt Chart"), function () {
-					frappe.route_options = {
-						"project": frm.doc.name
-					};
-					frappe.set_route("List", "Task", "Gantt");
-				}, __("View"));
-
-				frm.add_custom_button(__("Kanban Board"), () => {
-					frappe.call('erpnext.projects.doctype.project.project.create_kanban_board_if_not_exists', {
-						project: frm.doc.name
-					}).then(() => {
-						frappe.set_route('List', 'Task', 'Kanban', frm.doc.project_name);
-					});
-				}, __("View"));
-			}
+			// 	frm.add_custom_button(__("Kanban Board"), () => {
+			// 		frappe.call('erpnext.projects.doctype.project.project.create_kanban_board_if_not_exists', {
+			// 			project: frm.doc.name
+			// 		}).then(() => {
+			// 			frappe.set_route('List', 'Task', 'Kanban', frm.doc.project_name);
+			// 		});
+			// 	}, __("View"));
+			// }
 		}
 
 
@@ -188,6 +189,17 @@ frappe.ui.form.on("Project", {
 			});
 		});
 	},
+
+	make_subcontract: function(frm) {
+		frm.add_custom_button(__('Make Subcontract'), () => {
+			console.log("Here");
+			frappe.model.open_mapped_doc({
+				method: "erpnext.projects.doctype.project.project.make_subcontract",
+				frm: frm
+			});
+		}, __("Actions"));
+	}
+
 
 });
 

@@ -13,6 +13,7 @@ class Subcontract(Document):
 	def validate(self):
 		self.set_defaults()
 		self.validate_defaults()
+		self.remove_not_selected_bsr()
 		self.validate_selected_items()
 
 	def on_submit(self):
@@ -24,16 +25,23 @@ class Subcontract(Document):
 	def update_boq(self, cancel=False):
 		for d in self.boq_item:
 			if d.is_selected and flt(d.amount) and d.bsr_code:
-				doc = frappe.get_doc("BOQ Item", {"bsr_code": d.bsr_code, "parent": self.boq})
+				doc = frappe.get_doc("BOQ Item", {"bsr_code": d.bsr_code, "parent": d.boq})
 				if cancel:
 					doc.quantity_after_subcontract += flt(d.quantity)
 				else:
 					doc.quantity_after_subcontract -= flt(d.quantity)
 				doc.save(ignore_permissions=True)
 
+	def remove_not_selected_bsr(self):
+		to_remove = []
+		for d in self.get("boq_item"):
+			if not d.is_selected:
+				to_remove.append(d)
+		[self.remove(d) for d in to_remove]
+
 	def validate_selected_items(self):
 		for d in self.boq_item:
-			doc = frappe.get_doc("BOQ Item", {"bsr_code": d.bsr_code, "parent": self.boq})
+			doc = frappe.get_doc("BOQ Item", {"bsr_code": d.bsr_code, "parent": d.boq})
 			if d.quantity > doc.quantity_after_subcontract:
 				frappe.throw(_("Quantity for Subcontract in Row #{} exceeds the available BOQ balance quantity. "
 							"Entered Quantity: {} units, Available Balance Quantity: {} units. "
@@ -130,6 +138,9 @@ class Subcontract(Document):
 def make_subcontract_adjustment(source_name, target_doc=None):
 	def update_master(source_doc, target_doc, source_parent):
 		target_doc.total_amount = 0.0
+
+	def update_item(source_doc, target_doc, source_parent):
+		target_doc.is_selected  = 0
 			
 	doclist = get_mapped_doc("Subcontract", source_name, {
 			"Subcontract": {
@@ -147,7 +158,8 @@ def make_subcontract_adjustment(source_name, target_doc=None):
 					"bsr_code": "bsr_code",
 					"quantity": "adjustment_quantity",
 					"amount": "adjustment_amount",
-				},
+				}, 
+				"postprocess": update_item
 			}
 	}, target_doc)
 
