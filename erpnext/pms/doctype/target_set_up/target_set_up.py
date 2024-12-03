@@ -13,6 +13,7 @@ from erpnext.custom_workflow import validate_workflow_states, notify_workflow_st
 
 class TargetSetUp(Document):
 	def validate(self):
+		self.get_supervisor_id()
 		self.load_pre_requirement()
 		self.check_target()
 		self.check_duplicate_entry() 
