@@ -116,12 +116,12 @@ class TargetSetUp(Document):
 					frappe.throw(
 						title=_('Error'),
 						msg=_("<b>{}</b> value is not allowed for <b>Quantity</b> in Target Item at Row <b>{}</b>".format(t.quantity,i+1)))
-
+				'''
 				if t.qty_quality == 'Quality' and flt(t.quality) <= 0 :
 					frappe.throw(
 						title=_("Error"),
 						msg=_("<b>{}</b> value is not allowed for <b>Quality</b> in Target Item at Row <b>{}</b>".format(t.quality,i+1)))
-
+				'''
 				if flt(t.weightage) > flt(self.max_weightage_for_target) or flt(t.weightage) < flt(self.min_weightage_for_target):
 					frappe.throw(
 						title=_('Error'),
