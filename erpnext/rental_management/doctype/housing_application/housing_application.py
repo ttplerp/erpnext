@@ -23,6 +23,7 @@ class HousingApplication(Document):
 		creation_time = frappe.utils.get_datetime(self.get('creation'))
 		if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2:
 			self.generate_rank()
+		self.check_spouse_gross()
 	
 	def onload(self):
 		# Initialize the gross salary values
@@ -191,7 +192,8 @@ class HousingApplication(Document):
 
 	def on_submit(self):
 		pass
-	
+
+     
 	def check_agree(self):
 		if not self.agree:
 			frappe.throw("You must <b>Agree to Terms</b> in order to submit the application")
@@ -228,7 +230,9 @@ class HousingApplication(Document):
 			else:
 				self.applicant_rank = 1
 
-
+	def check_spouse_gross(self):
+		if (self.marital_status!="Married") :
+			self.spouse_gross_salary = 0
 	def validate_duplicate(self):
 		exists = frappe.db.exists("Housing Application", {
 			"cid": self.cid,
