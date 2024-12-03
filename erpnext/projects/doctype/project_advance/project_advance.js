@@ -15,6 +15,14 @@ frappe.ui.form.on('Project Advance', {
 				}
 			};
 		});
+
+		frm.set_query("imprest_party", function(doc){
+			return {
+				filters: {
+					'status': 'Active'
+				}
+			}
+		});
 	},
 	
 	refresh: function(frm) {

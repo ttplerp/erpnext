@@ -11,15 +11,15 @@
   "company",
   "branch",
   "cost_center",
+  "imprest_advance_settlement",
+  "imprest_party",
+  "imprest_patry_name",
   "column_break_3",
   "advance_date",
   "party_type",
   "party",
   "advance_type",
   "advance_account",
-  "customer",
-  "customer_details",
-  "supplier",
   "section_break_10",
   "payment_type",
   "currency",
@@ -96,12 +96,11 @@
   },
   {
    "fieldname": "party_type",
-   "fieldtype": "Link",
+   "fieldtype": "Select",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Party Type",
-   "options": "DocType",
-   "read_only": 1,
+   "options": "\nCustomer\nSupplier",
    "reqd": 1
   },
   {
@@ -111,7 +110,6 @@
    "in_standard_filter": 1,
    "label": "Party",
    "options": "party_type",
-   "read_only": 1,
    "reqd": 1
   },
   {
@@ -119,31 +117,6 @@
    "fieldtype": "Link",
    "label": "Advance Account",
    "options": "Account"
-  },
-  {
-   "fieldname": "customer",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "in_list_view": 1,
-   "label": "Customer",
-   "options": "Customer",
-   "read_only": 1
-  },
-  {
-   "fieldname": "customer_details",
-   "fieldtype": "Text",
-   "hidden": 1,
-   "label": "Address",
-   "options": "customer.customer_details",
-   "read_only": 1
-  },
-  {
-   "fieldname": "supplier",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Supplier",
-   "options": "Supplier",
-   "read_only": 1
   },
   {
    "fieldname": "section_break_10",
@@ -161,7 +134,8 @@
    "fieldname": "currency",
    "fieldtype": "Link",
    "label": "Currency",
-   "options": "Currency"
+   "options": "Currency",
+   "read_only": 1
   },
   {
    "fieldname": "exchange_rate",
@@ -323,12 +297,32 @@
    "options": "Company:company:default_currency",
    "precision": "2",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "imprest_advance_settlement",
+   "fieldtype": "Check",
+   "label": "Settle From Imprest Advance"
+  },
+  {
+   "depends_on": "eval:doc.imprest_advance_settlement",
+   "fieldname": "imprest_party",
+   "fieldtype": "Link",
+   "label": "Imprest Party",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "imprest_party.employee_name",
+   "fieldname": "imprest_patry_name",
+   "fieldtype": "Data",
+   "label": "Imprest Patry Name",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-11-17 16:46:41.069252",
+ "modified": "2024-12-03 11:39:43.461161",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project Advance",

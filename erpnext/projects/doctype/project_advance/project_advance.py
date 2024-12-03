@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-# Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and contributors
-# For license information, please see license.txt
 '''
 --------------------------------------------------------------------------------------------------------------------------
 Version          Author          CreatedOn          ModifiedOn          Remarks
@@ -144,9 +141,14 @@ class ProjectAdvance(Document):
 			frappe.throw(_("Advance GL is not defined in Projects Accounts Settings."))
 		adv_gl_det = frappe.db.get_value(doctype="Account", filters=adv_gl, fieldname=["account_type","is_an_advance_account"], as_dict=True)
 
-		debit_credit_acc = frappe.db.get_value("Company", self.company, "default_bank_account")
-		if not debit_credit_acc:
-			frappe.throw('Set default bank account in Company {}'.format(self.company))
+		if self.imprest_advance_settlement:
+			debit_credit_acc = frappe.db.get_value("Company", self.company, "imprest_advance_account")
+			if not debit_credit_acc:
+				frappe.throw('Set imprest advance account in Company {}'.format(self.company))
+		else:
+			debit_credit_acc = frappe.db.get_value("Company", self.company, "default_bank_account")
+			if not debit_credit_acc:
+				frappe.throw('Set default bank account in Company {}'.format(self.company))
 		
 		# --- Commented by Dawa Tshering on 17/10/2023
 		'''
@@ -191,17 +193,21 @@ class ProjectAdvance(Document):
 				"account": debit_credit_acc,
 				"credit_in_account_currency": flt(self.advance_amount),
 				"cost_center": self.cost_center,
-				"party_check": 0,
+				"party_type": "Employee" if self.imprest_advance_settlement else "",
+				"party": self.imprest_party if self.imprest_advance_settlement else "",
 				# "account_type": exp_gl_det.account_type,
 				"is_advance": "Yes",
 			})
 
 		je = frappe.new_doc("Journal Entry")
 		
+		voucher_type = get_voucher_type(self)
+		naming_series = get_naming_series(self)
+		
 		je.update({
 				"doctype": "Journal Entry",
-				"voucher_type": "Bank Entry",
-				"naming_series": "Bank Receipt Voucher" if self.payment_type == "Receive" else "Bank Payment Voucher",
+				"voucher_type": voucher_type,
+				"naming_series": naming_series,
 				"title": "Project Advance - "+self.project,
 				"user_remark": "Project Advance - "+self.project,
 				"posting_date": nowdate(),
@@ -216,3 +222,15 @@ class ProjectAdvance(Document):
 			self.db_set("journal_entry", je.name)
 			self.db_set("journal_entry_status", "Forwarded to accounts for processing payment on {0}".format(now_datetime().strftime('%Y-%m-%d %H:%M:%S')))
 			frappe.msgprint(_('{} posted to accounts').format(frappe.get_desk_link(je.doctype,je.name)))
+
+def get_voucher_type(doc):
+	if doc.imprest_advance_settlement:
+		return "Bank Entry"
+	else:
+		return "Journal Entry"
+
+def get_naming_series(doc):
+	if doc.imprest_advance_settlement:
+		return "Journal Voucher"
+	else:
+		return "Bank Receipt Voucher" if doc.payment_type == "Receive" else "Bank Payment Voucher",
