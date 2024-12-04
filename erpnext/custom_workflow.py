@@ -464,6 +464,10 @@ class CustomWorkflow:
                     if not self.advance_approver:
                         frappe.throw("Please set advance approver for employee <strong>{}</strong>".format(employee))
 
+        if self.doc.doctype == "Employee Loan":
+            self.loan_approver = frappe.db.get_value("Employee", frappe.db.get_single_value("HR Settings", "loan_approver"), self.field_list)
+            if not self.loan_approver:
+                    frappe.throw("Please set Loan approver in HR Settings.")
 
         if self.doc.doctype == "Employee Advance":
             self.data = frappe.db.sql("""
@@ -921,6 +925,21 @@ class CustomWorkflow:
                 vars(self.doc)[self.doc_approver[2]] = (
                     officiating[2] if officiating else self.reports_to[2]
                 )
+        elif approver_type == "Loan Approver":
+            officiating = get_officiating_employee(self.loan_approver[3])
+            if officiating:
+                officiating = frappe.db.get_value(
+                    "Employee", officiating[0].officiate, self.field_list
+                )
+            vars(self.doc)[self.doc_approver[0]] = (
+                officiating[0] if officiating else self.loan_approver[0]
+            )
+            vars(self.doc)[self.doc_approver[1]] = (
+                officiating[1] if officiating else self.loan_approver[1]
+            )
+            vars(self.doc)[self.doc_approver[2]] = (
+                officiating[2] if officiating else self.loan_approver[2]
+            )
 
         elif approver_type == "POL Approver":
             officiating = get_officiating_employee(self.pol_approver[3])
@@ -1685,6 +1704,8 @@ class CustomWorkflow:
             self.material_request()
         elif self.doc.doctype == "Employee Advance":
             self.employee_advance()
+        elif self.doc.doctype == "Employee Loan":
+            self.employee_loan()
         elif self.doc.doctype == "Employee Transfer":
             self.employee_transfer()
         elif self.doc.doctype == "Training Nomination":
@@ -2575,6 +2596,20 @@ class CustomWorkflow:
                 frappe.throw(
                     _("Only {} can Cancel this Travel Request").format(self.doc.supervisor_name)
                 )
+
+    def employee_loan(self):
+        if self.new_state.lower() in ("Payment Awaited".lower()):
+            if self.doc.owner != frappe.session.user and self.new_state.lower() != self.old_state.lower():
+                frappe.throw("Only {} can Apply this request".format(self.doc.owner))
+            self.set_approver("Loan Approver")
+
+        elif self.new_state.lower() == "Approved".lower():
+            if self.doc.loan_approver != frappe.session.user:
+                frappe.throw("Only {} can Approve this request".format(self.doc.loan_approver_name))
+
+        elif self.new_state.lower() == "Cancelled".lower():
+            if self.doc.loan_approver != frappe.session.user:
+                frappe.throw("Only {} can Cancel this request".format(self.doc.loan_approver_name))
 
     def employee_advance(self):
         if self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
@@ -4046,6 +4081,11 @@ def get_field_map():
             "advance_approver",
             "advance_approver_name",
             "advance_approver_designation",
+        ],
+        "Employee Loan": [
+            "loan_approver",
+            "loan_approver_name",
+            "loan_approver_designation",
         ],
         "Vehicle Request": ["approver", "approver_name", "aprover_designation"],
         "Employee Advance Settlement": [
