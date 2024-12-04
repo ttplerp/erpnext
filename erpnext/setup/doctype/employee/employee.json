@@ -428,7 +428,8 @@
    "mandatory_depends_on": "eval:doc.salary_mode == 'Bank'",
    "oldfieldname": "bank_name",
    "oldfieldtype": "Link",
-   "options": "Financial Institution"
+   "options": "Financial Institution",
+   "read_only": 1
   },
   {
    "depends_on": "eval:doc.salary_mode == 'Bank'",
@@ -437,7 +438,8 @@
    "label": "Bank A/C No.",
    "mandatory_depends_on": "eval:doc.salary_mode == 'Bank'",
    "oldfieldname": "bank_ac_no",
-   "oldfieldtype": "Data"
+   "oldfieldtype": "Data",
+   "read_only": 1
   },
   {
    "collapsible": 1,
@@ -887,7 +889,8 @@
    "fieldtype": "Link",
    "label": "Bank Branch",
    "mandatory_depends_on": "eval:doc.salary_mode == 'Bank'",
-   "options": "Financial Institution Branch"
+   "options": "Financial Institution Branch",
+   "read_only": 1
   },
   {
    "depends_on": "eval:doc.salary_mode == 'Bank'",
@@ -895,7 +898,8 @@
    "fieldtype": "Link",
    "label": "Bank Account Type",
    "mandatory_depends_on": "eval:doc.salary_mode == 'Bank'",
-   "options": "Bank Account Type"
+   "options": "Bank Account Type",
+   "read_only": 1
   },
   {
    "fieldname": "business_activity",
@@ -1123,7 +1127,7 @@
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2024-12-04 17:17:24.374796",
+ "modified": "2024-12-04 17:36:11.941620",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
