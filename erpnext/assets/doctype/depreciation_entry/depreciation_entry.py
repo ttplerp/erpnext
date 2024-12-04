@@ -147,15 +147,15 @@ class DepreciationEntry(Document):
 		# 	asset.set_value_after_depreciation()
 		# 	asset.set_status()
 		# frappe.db.commit()
-		frappe.db.sql("""update `tabAsset` a
-			set a.value_after_depreciation = ifnull(a.gross_purchase_amount,0)
+		frappe.db.sql("""update `tabAsset` a, `tabAsset Finance Book` b
+			set b.value_after_depreciation = ifnull(a.gross_purchase_amount,0)
 											 - ifnull(a.opening_accumulated_depreciation,0)
 											 - ifnull((select sum(ifnull(ds.depreciation_amount,0))
 												from `tabDepreciation Schedule` ds
 												where ds.parent = a.name
 												and (ifnull(ds.journal_entry,'') != '' or ifnull(ds.depreciation_entry,'') != '')
 												),0)
-			where exists(select 1
+			where b.parent=a.name and exists(select 1
 				from `tabDepreciation Entry Detail` ded
 				where ded.depreciation_entry = "{}"
 				and ded.parent = a.name)
