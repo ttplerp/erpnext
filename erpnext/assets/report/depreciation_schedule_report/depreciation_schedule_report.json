@@ -1,0 +1,39 @@
+{
+ "add_total_row": 1,
+ "columns": [],
+ "creation": "2024-12-04 14:47:20.322713",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "New Letter head",
+ "modified": "2024-12-04 14:47:20.322713",
+ "modified_by": "Administrator",
+ "module": "Assets",
+ "name": "Depreciation Schedule Report",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Asset",
+ "report_name": "Depreciation Schedule Report",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Employee"
+  },
+  {
+   "role": "Administrator"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "System Manager"
+  }
+ ]
+}
