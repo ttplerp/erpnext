@@ -163,26 +163,26 @@ class DepreciationEntry(Document):
 		frappe.db.commit()
 
 	def update_asset_status(self):
-		frappe.db.sql("""update `tabAsset` a
+		frappe.db.sql("""update `tabAsset` a, `tabAsset Finance Book` b
 			set a.status = (CASE 
 								WHEN journal_entry_for_scrap IS NOT NULL THEN 'Scrapped'
 								WHEN status = 'Sold' THEN status
-								WHEN ifnull(value_after_depreciation,0) <= ifnull(expected_value_after_useful_life,0) THEN 'Fully Depreciated'
-								WHEN ifnull(value_after_depreciation,0) < ifnull(gross_purchase_amount) THEN 'Partially Depreciated'
+								WHEN ifnull(b.value_after_depreciation,0) <= ifnull(b.expected_value_after_useful_life,0) THEN 'Fully Depreciated'
+								WHEN ifnull(b.value_after_depreciation,0) < ifnull(a.gross_purchase_amount) THEN 'Partially Depreciated'
 								ELSE status
 							END), 
 				a.disable_depreciation = (CASE
 											WHEN (CASE 
 												WHEN journal_entry_for_scrap IS NOT NULL THEN 'Scrapped'
 												WHEN status = 'Sold' THEN status
-												WHEN ifnull(value_after_depreciation,0) <= ifnull(expected_value_after_useful_life,0) THEN 'Fully Depreciated'
-												WHEN ifnull(value_after_depreciation,0) < ifnull(gross_purchase_amount) THEN 'Partially Depreciated'
+												WHEN ifnull(b.value_after_depreciation,0) <= ifnull(b.expected_value_after_useful_life,0) THEN 'Fully Depreciated'
+												WHEN ifnull(b.value_after_depreciation,0) < ifnull(a.gross_purchase_amount) THEN 'Partially Depreciated'
 												ELSE status
 												END) NOT IN ('Submitted', 'Partially Depreciated') THEN 1
 											WHEN asset_status IN ('Auctioned', 'Marked for Auction') THEN 1
 											ELSE 0
 										END) 
-			where exists(select 1
+			where b.parent=a.name and exists(select 1
 				from `tabDepreciation Entry Detail` ded
 				where ded.depreciation_entry = "{}"
 				and ded.parent = a.name)
