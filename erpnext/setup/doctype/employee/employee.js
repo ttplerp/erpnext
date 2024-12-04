@@ -34,6 +34,15 @@ frappe.ui.form.on("Employee", {
 		// $(".grid-add-row").addClass('hidden');
 	},
 	onload: function (frm) {
+		frm.set_query("bank_branch", "bank_details", function(doc, cdt, cdn) {
+			let d = locals[cdt][cdn];
+			return {
+				filters: {
+					'financial_institution': d.bank_name
+				}
+			};
+		});
+
 		frm.set_query("department", function() {
 			return {
 				"filters": {

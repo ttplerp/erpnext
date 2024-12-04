@@ -46,6 +46,22 @@ class Employee(NestedSet):
 			existing_user_id = frappe.db.get_value("Employee", self.name, "user_id")
 			if existing_user_id:
 				remove_user_permission("Employee", self.name, existing_user_id)
+		self.set_default_bank_account()
+
+	def set_default_bank_account(self):
+		if self.get("bank_details"):
+			default_bank_account = 0
+			for a in self.get("bank_details"):
+				if a.default:
+					default_bank_account += 1
+					self.bank_name = a.bank_name
+					self.bank_branch  = a.bank_branch
+					self.bank_account_type = a.bank_account_type
+					self.account_number = a.account_number
+			if default_bank_account == 0:
+				frappe.throw("Please set a default bank account under Bank Information")
+			elif default_bank_account > 1:
+				frappe.throw("Only one bank account is allowed to set a default")
 
 	def after_rename(self, old, new, merge):
 		self.db_set("employee", new)

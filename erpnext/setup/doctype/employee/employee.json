@@ -99,14 +99,18 @@
   "salary_currency",
   "salary_mode",
   "bank_details_section",
+  "bank_details",
+  "section_break_rlmjr",
   "bank_name",
   "bank_branch",
+  "cb_50",
   "bank_account_type",
   "bank_ac_no",
-  "cb_50",
+  "section_break_fw9jl",
   "tpn_number",
   "pf_number",
   "pf_tiers",
+  "column_break_xfs1b",
   "gis_number",
   "gis_policy_number",
   "advance_approver",
@@ -570,8 +574,7 @@
   },
   {
    "fieldname": "educational_qualification",
-   "fieldtype": "Section Break",
-   "label": "Educational Qualification"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "education",
@@ -583,8 +586,7 @@
    "collapsible": 1,
    "fieldname": "previous_work_experience",
    "fieldtype": "Section Break",
-   "label": "Previous Work Experience",
-   "options": "Simple"
+   "label": "Previous Work Experience"
   },
   {
    "fieldname": "external_work_history",
@@ -593,17 +595,15 @@
    "options": "Employee External Work History"
   },
   {
-   "collapsible": 1,
    "fieldname": "history_in_company",
-   "fieldtype": "Section Break",
-   "label": "History In Company",
-   "options": "Simple"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "internal_work_history",
    "fieldtype": "Table",
    "label": "Internal Work History",
-   "options": "Employee Internal Work History"
+   "options": "Employee Internal Work History",
+   "read_only": 1
   },
   {
    "collapsible": 1,
@@ -1100,13 +1100,30 @@
    "fieldname": "cid_no",
    "fieldtype": "Data",
    "label": "CID No./WP No."
+  },
+  {
+   "fieldname": "bank_details",
+   "fieldtype": "Table",
+   "options": "Employee Bank Account"
+  },
+  {
+   "fieldname": "section_break_rlmjr",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_fw9jl",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_xfs1b",
+   "fieldtype": "Column Break"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2024-11-05 17:05:33.165927",
+ "modified": "2024-12-04 17:17:24.374796",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
