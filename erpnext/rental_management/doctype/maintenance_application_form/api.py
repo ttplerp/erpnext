@@ -166,6 +166,8 @@ def post_housing_application():
 		doc.cid = data.get('applicant_cid')
 		doc.applicant_name = data.get('applicant_name')
 		doc.gender = data.get('gender')
+		doc.marital_status = data.get('marital_status')
+		doc.work_station = data.get('work_station')
 		doc.dzongkhag = data.get('dzongkhag')
 		doc.gewog = data.get('gewog')
 		doc.village = data.get('village')
