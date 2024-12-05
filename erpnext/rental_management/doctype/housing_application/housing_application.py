@@ -245,7 +245,7 @@ class HousingApplication(Document):
 		if exists:
 	  		frappe.throw("Applicant with <b>CID No. {} </b>has already registered for Housing application".format(self.cid))
 
-		if frappe.db.exists("Tenant Information", {"tenant_cid":self.cid, "status":"Allocated", "docstatus":("!=", 2)}):
+		if self.is_new() and frappe.db.exists("Tenant Information", {"tenant_cid":self.cid, "status":"Allocated", "docstatus":("!=", 2)}):
 			frappe.throw("Applicant with <b>CID No. {} </b> is an active  tenant in Tenant Information".format(self.cid))
 
 @frappe.whitelist()
@@ -288,7 +288,7 @@ def get_permission_query_conditions(user):
 	if not user: user = frappe.session.user
 	user_roles = frappe.get_roles(user)
 
-	if user == "Administrator" or "System Manager" in user_roles or "Allotment Manager" in user_roles: 
+	if user == "Administrator" or "System Manager" in user_roles or "Stock Master" in user_roles or "Allotment Manager" in user_roles: 
 		return
 
 	return """(
