@@ -155,3 +155,51 @@ def housing_clearance():
 	except Exception as e:
 		frappe.log_error(_("Error in Tenant Info.: {0}").format(e))
 		return {'status_code':502,  'message': 'Server error'}
+
+# @frappe.whitelist(methods=['POST'])
+@frappe.whitelist(allow_guest=True)
+def post_housing_application():
+	data = json.loads(frappe.request.data)
+	
+	try:
+		doc = frappe.new_doc('Housing Application')
+		doc.cid = data.get('applicant_cid')
+		doc.applicant_name = data.get('applicant_name')
+		doc.gender = data.get('gender')
+		doc.dzongkhag = data.get('dzongkhag')
+		doc.gewog = data.get('gewog')
+		doc.village = data.get('village')
+		doc.date_of_birth = data.get('date_of_birth')
+
+		doc.employment_type = data.get('employment_type')
+		doc.designation = data.get('designation')
+		doc.ministry_agency = data.get('ministry_agency')
+		doc.grade = data.get('grade')
+		doc.department = data.get('department')
+		doc.employee_id = data.get('employee_id')
+		doc.gross_salary = data.get('gross_salary')
+		doc.email_id = data.get('email_id')
+		doc.mobile_no = data.get('mobile_no')
+
+		if data.get('spouse_cid'):
+			doc.spouse_cid = data.get('spouse_cid')
+			doc.spouse_name = data.get('spouse_name')
+			doc.spouse_dzongkhag = data.get('spouse_dzongkhag')
+			doc.spouse_gewog = data.get('spouse_gewog')
+			doc.spouse_village = data.get('spouse_village')
+			doc.spouse_dob = data.get('spouse_dob')
+
+		if data.get('spouse_employment_type'):
+			doc.spouse_employment_type = data.get('spouse_employment_type')
+			doc.spouse_designation = data.get('spouse_designation')
+			doc.spouse_ministry = data.get('spouse_ministry')
+			doc.spouse_grade = data.get('spouse_grade')
+			doc.spouse_department = data.get('spouse_department')
+			doc.spouse_employee_id = data.get('spouse_employee_id')
+			doc.spouse_gross_salary = data.get('spouse_gross_salary')
+
+		doc.insert()
+		
+		return {'status_code':200,  'message': 'Housing Application Form Successfully Applied'}
+	except Exception as e:
+		return {'status_code':502,  'message': 'Server error'}
