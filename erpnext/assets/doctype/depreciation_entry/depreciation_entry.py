@@ -14,7 +14,7 @@ class DepreciationEntry(Document):
 
 	def on_submit(self):
 		self.check_mandatory()
-		self.process_depreciation_entry()
+		self.enqueue_depreciation_processing()
 
 	def on_cancel(self):
 		self.cancel_depreciation_entry(publish_progress=True)
@@ -28,8 +28,8 @@ class DepreciationEntry(Document):
 		if getdate(self.posting_date) > getdate(today()):
 			frappe.throw(_("<b>Posting Date</b> cannot be a future date"))
 
-	def process_depreciation_entry(self):
-		frappe.enqueue(process_depreciation_entry, job_name='DEPRECIATIONENTRY', timeout=1500, doc=self, publish_progress=True)
+	def enqueue_depreciation_processing(self):
+		frappe.enqueue(process_depreciation_entry(self, publish_progress=True), queue="long")
 		# self.process_depreciation_entry()
 
 	# def process_depreciation_entry(self):
@@ -45,13 +45,17 @@ class DepreciationEntry(Document):
 		# self.check_cbs_upload()
 		show_progress(publish_progress, 5, 'Rollback changes on Depreciation Schedule...', title)
 		self.update_schedules(cancel=True, publish_progress=publish_progress, title=title)
+
 		show_progress(publish_progress, 25, 'Rollback changes on Assets...', title)
 		self.set_value_after_depreciation()
 		self.update_asset_status()
+
 		show_progress(publish_progress, 50, 'Removing Depreciation Entry Details...', title)
 		self.remove_depreciation_details()
+
 		show_progress(publish_progress, 75, 'Removing GL Entries...', title)
 		self.remove_gl_entries()
+
 		show_progress(publish_progress, 100, 'Depreciation Entry cancelled successfully...', title)
 		frappe.msgprint(_("Depreciation Entry {} cancelled successfully...").format(self.name), alert=True)
 
@@ -67,6 +71,8 @@ class DepreciationEntry(Document):
 
 	def make_gl_entries(self, publish_progress=False, title=None):
 		gl_list = self.get_gl_entries(publish_progress, title)
+		# frappe.throw("<pre>{}</pre>".format(frappe.as_json(gl_list)))
+
 		if not gl_list:
 			return
 		values = ', '.join(map(str, gl_list))
@@ -77,7 +83,7 @@ class DepreciationEntry(Document):
 					voucher_type, voucher_no, against_voucher_type, against_voucher,
 					remarks, company, 
 					owner, creation, modified_by, modified, docstatus, idx, is_opening, is_advance, 
-					fiscal_year, use_cheque_lot)
+					fiscal_year)
 				VALUES {}""".format(values))
 
 	def get_gl_entries(self, publish_progress=False, title=None):
@@ -116,7 +122,7 @@ class DepreciationEntry(Document):
 					'Depreciation Entry', self.name, "Asset", i.asset,
 					'Depreciation for {}-{}'.format(str(self.month), str(self.fiscal_year)), self.company,
 					frappe.session.user, str(get_datetime()), frappe.session.user, str(get_datetime()), 1, 0, 'No', 'No',
-					getdate(self.to_date).strftime('%Y'), 0
+					getdate(self.to_date).strftime('%Y')
 				))
 		return gl_list
 
@@ -333,14 +339,23 @@ def show_progress(publish_progress, progress, description, title=None):
 @frappe.whitelist()
 def process_depreciation_entry(doc, publish_progress=False):
 	title = 'Processing Depreciation Entry'
-	show_progress(publish_progress, 5, 'Creating GL Entries...', title)
-	doc.make_gl_entries(publish_progress, title)
-	show_progress(publish_progress, 25, 'Updating Depreciation Schedules...', title)
-	doc.update_schedules()
-	show_progress(publish_progress, 50, 'Updating Assets...', title)
-	doc.set_value_after_depreciation()
-	show_progress(publish_progress, 75, 'Updating Assets...', title)
-	doc.update_asset_status()
-	show_progress(publish_progress, 99, 'Complted successfully...', title)
-	frappe.db.commit()
-	frappe.msgprint(_("Depreciation Entry {} created successfully...").format(doc.name), alert=True)
+	try:
+		show_progress(publish_progress, 5, 'Creating GL Entries...', title)
+		doc.make_gl_entries(publish_progress, title)
+
+		show_progress(publish_progress, 25, 'Updating Depreciation Schedules...', title)
+		doc.update_schedules()
+
+		show_progress(publish_progress, 50, 'Updating Assets...', title)
+		doc.set_value_after_depreciation()
+
+		show_progress(publish_progress, 75, 'Updating Assets...', title)
+		doc.update_asset_status()
+		
+		show_progress(publish_progress, 99, 'Complted successfully...', title)
+		frappe.db.commit()
+		frappe.msgprint(_("Depreciation Entry {} created successfully...").format(doc.name), alert=True)
+	except Exception as e:
+		frappe.db.rollback()
+		# frappe.log_error(message=str(e), title="Depreciation Entry Processing Failed")
+		frappe.throw(_("An error occurred while processing the depreciation entry."))

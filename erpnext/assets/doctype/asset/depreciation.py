@@ -31,7 +31,9 @@ def get_depreciable_assets(date):
 		from tabAsset a, `tabDepreciation Schedule` ds
 		where a.name = ds.parent and a.docstatus=1 and ds.schedule_date<=%s and a.calculate_depreciation = 1
 			and a.status in ('Submitted', 'Partially Depreciated')
-			and ifnull(ds.journal_entry, '')=''""",
+			and a.disable_depreciation = 0
+			and ifnull(ds.journal_entry, '')=''
+			and ifnull(ds.depreciation_entry,'')=''""",
 		date,
 	)
 
