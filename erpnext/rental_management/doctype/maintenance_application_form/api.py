@@ -182,6 +182,7 @@ def post_housing_application():
 		doc.gross_salary = data.get('gross_salary')
 		doc.email_id = data.get('email_id')
 		doc.mobile_no = data.get('mobile_no')
+		doc.agree = data.get('agree')
 
 		if data.get('spouse_cid'):
 			doc.spouse_cid = data.get('spouse_cid')
