@@ -179,9 +179,14 @@ class SalesInvoice(SellingController):
 		self.reset_default_field_value("set_warehouse", "items", "warehouse")
 	def calculate_charges(self):
 		total_charges = 0
+		total_qty = 0
+		for i in self.items:
+			total_qty += i.qty
 		for d in self.other_charges:
+			d.amount = flt(flt(d.rate) * flt(total_qty),2)
 			total_charges += flt(d.amount)
 		self.total_charges = total_charges
+		self.grand_total = flt(self.total + self.total_charges,2)
 	def validate_fixed_asset(self):
 		for d in self.get("items"):
 			if d.is_fixed_asset and d.meta.get_field("asset") and d.asset:
