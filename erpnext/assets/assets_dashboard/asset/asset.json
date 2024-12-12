@@ -10,6 +10,7 @@
    "card": "Asset Value"
   }
  ],
+ "chart_options": "",
  "charts": [
   {
    "chart": "Asset Value Analytics",
@@ -17,11 +18,11 @@
   },
   {
    "chart": "Category-wise Asset Value",
-   "width": "Half"
+   "width": "Full"
   },
   {
    "chart": "Location-wise Asset Value",
-   "width": "Half"
+   "width": "Full"
   }
  ],
  "creation": "2020-07-14 18:23:53.343082",
@@ -31,8 +32,8 @@
  "idx": 0,
  "is_default": 0,
  "is_standard": 1,
- "modified": "2020-07-21 18:14:25.078929",
- "modified_by": "Administrator",
+ "modified": "2024-12-04 17:23:08.111848",
+ "modified_by": "pralad.rai@thimphutechpark.bt",
  "module": "Assets",
  "name": "Asset",
  "owner": "Administrator"
