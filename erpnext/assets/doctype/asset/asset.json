@@ -69,6 +69,7 @@
   "income_tax_opening_depreciation_amount",
   "opening_accumulated_depreciation",
   "number_of_depreciations_booked",
+  "number_of_income_depreciations_booked",
   "section_break_36",
   "finance_books",
   "section_break_33",
@@ -705,6 +706,11 @@
    "fieldtype": "Data",
    "label": "Asset Sub Category Abbreviation",
    "read_only": 1
+  },
+  {
+   "fieldname": "number_of_income_depreciations_booked",
+   "fieldtype": "Int",
+   "label": "Number of Income Depreciations Booked"
   }
  ],
  "idx": 72,
@@ -727,7 +733,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2024-10-31 17:03:51.432148",
+ "modified": "2024-12-12 17:01:44.389125",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",
