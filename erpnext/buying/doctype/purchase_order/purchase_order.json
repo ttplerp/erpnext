@@ -30,6 +30,7 @@
   "amended_from",
   "accounting_dimensions_section",
   "cost_center",
+  "file_no",
   "dimension_col_break",
   "project",
   "drop_ship",
@@ -1210,13 +1211,20 @@
    "fieldtype": "Link",
    "label": "Deliver To",
    "options": "Cost Center"
+  },
+  {
+   "description": "Eg: BDB/ADM/PROC-23/2024",
+   "fieldname": "file_no",
+   "fieldtype": "Data",
+   "label": "File No:.",
+   "reqd": 1
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 105,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-12-01 12:21:26.747177",
+ "modified": "2024-12-13 13:01:21.332144",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Purchase Order",
