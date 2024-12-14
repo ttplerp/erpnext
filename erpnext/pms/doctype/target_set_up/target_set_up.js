@@ -135,6 +135,14 @@ var add_btn = (frm)=>{
 			});
 		}).addClass("btn-primary custom-create custom-create-css");
 	}
+	if (frm.doc.docstatus == 1){
+		frm.add_custom_button(__('Create Evaluation'), ()=>{
+			frappe.model.open_mapped_doc({
+				method: "erpnext.pms.doctype.target_set_up.target_set_up.create_evaluation",	
+				frm: cur_frm
+			});
+		}).addClass("btn-primary custom-create custom-create-css")
+	}
 }
 
 var hr_add_btn = (frm)=>{

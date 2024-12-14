@@ -27,6 +27,7 @@
   "column_break_13",
   "designation",
   "review",
+  "target_set_up",
   "date_of_joining",
   "section_break_20",
   "region",
@@ -821,11 +822,18 @@
    "fieldname": "get_leadership_competency",
    "fieldtype": "Button",
    "label": "Get Leadership Competency"
+  },
+  {
+   "fieldname": "target_set_up",
+   "fieldtype": "Link",
+   "label": "Target Set Up",
+   "options": "Target Set Up",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-16 11:12:52.428088",
+ "modified": "2024-12-14 11:55:00.664444",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Performance Evaluation",
