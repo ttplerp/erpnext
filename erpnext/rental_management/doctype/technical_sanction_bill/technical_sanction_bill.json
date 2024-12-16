@@ -96,7 +96,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Maintenance Type",
-   "options": "\nMinor\nPlanned\nAdhoc",
+   "options": "\nMajor\nMinor\nPlanned\nAdhoc",
    "read_only": 1,
    "reqd": 1
   },
@@ -445,7 +445,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-12-18 13:02:34.553792",
+ "modified": "2024-12-16 19:16:16.886519",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Technical Sanction Bill",
