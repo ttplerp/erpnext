@@ -304,6 +304,12 @@ def get_depreciation_details(filters):
 def get_columns():
     return [
         {
+            "fieldname": "old_asset_code",
+            "label": _("Old Asset Code"),
+            "fieldtype": "Data",
+            "width": 120
+        },
+        {
             "fieldname": "asset_code",
             "label": _("Asset Code"),
             "fieldtype": "Link",
@@ -320,6 +326,13 @@ def get_columns():
             "fieldname": "serial_number",
             "label": _("Serial Number"),
             "fieldtype": "Data",
+            "width": 120
+        },
+        {
+            "fieldname": "vehicle_number",
+            "label": _("Vehicle Number"),
+            "fieldtype": "Link",
+            "options": "Vehicle",
             "width": 120
         },
         {
@@ -450,19 +463,6 @@ def get_columns():
             "fieldname": "net_income_tax",
             "label": _("Net Income Tax"),
             "fieldtype": "Currency",
-            "width": 120
-        },
-        {
-            "fieldname": "old_asset_code",
-            "label": _("Old Asset Code"),
-            "fieldtype": "Data",
-            "width": 120
-        },
-        {
-            "fieldname": "vehicle_number",
-            "label": _("Vehicle Number"),
-            "fieldtype": "Link",
-            "options": "Vehicle",
             "width": 120
         },
         {
