@@ -620,6 +620,7 @@
    "label": "Vehicle Number"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "serial_number",
    "fieldtype": "Data",
    "label": "Serial No"
@@ -710,7 +711,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2024-02-29 11:29:38.847841",
+ "modified": "2024-12-18 10:40:52.861864",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",
