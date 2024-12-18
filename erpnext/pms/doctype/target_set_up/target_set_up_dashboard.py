@@ -6,11 +6,16 @@ def get_data():
 		'fieldname': 'name',
 		'non_standard_fieldnames': {
 			'Review': 'target',
+			'Performance Evaluation':'target_set_up'
 		},
 		'transactions': [
 			{
 				'label': _('Review'),
 				'items': ['Review']
+			},
+			{
+				'label': _('Performance Evaluation'),
+				'items': ['Performance Evaluation']
 			}
 		]
 	}

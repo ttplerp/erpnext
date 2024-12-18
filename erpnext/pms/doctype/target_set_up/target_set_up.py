@@ -202,6 +202,32 @@ def create_review(source_name, target_doc=None):
 	return doclist
 
 @frappe.whitelist()
+def create_evaluation(source_name, target_doc=None):
+	if frappe.db.exists('Performance Evaluation',
+		{'target_set_up':source_name,
+			'docstatus':('!=',2)
+		}):
+		frappe.throw(
+			title='Error',
+			msg="You have already created Evaluation for this Target")
+	doclist = get_mapped_doc("Target Set Up", source_name, {
+		"Target Set Up": {
+			"doctype": "Performance Evaluation",
+			"field_map":{
+					"target_set_up":"name"
+				},
+		},
+		"Performance Target Evaluation":{
+			"doctype":"Evaluate Target Item"
+		},
+		"Negative Target":{
+			"doctype":"Performance Evaluation Negative Target"
+		}
+
+	}, target_doc)
+	return doclist
+
+@frappe.whitelist()
 def apply_target_filter(doctype, txt, searchfield, start, page_len, filters):
 	cond = " parent = '{}' ".format(filters['parent'])
 	return frappe.db.sql("""select name, performance_target from `tabCommon Target Details`
