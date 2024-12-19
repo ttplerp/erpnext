@@ -225,9 +225,9 @@ class ProjectAdvance(Document):
 
 def get_voucher_type(doc):
 	if doc.imprest_advance_settlement:
-		return "Bank Entry"
-	else:
 		return "Journal Entry"
+	else:
+		return "Bank Entry"
 
 def get_naming_series(doc):
 	if doc.imprest_advance_settlement:
