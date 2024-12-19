@@ -133,6 +133,7 @@
    "reqd": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "credit_account",
    "fieldtype": "Link",
    "label": "Credit Account",
@@ -239,6 +240,7 @@
    "label": "Payment Details"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "mode_of_payment",
    "fieldtype": "Link",
    "label": "Mode of Payment",
@@ -289,14 +291,13 @@
    "fieldname": "payment_status",
    "fieldtype": "Data",
    "ignore_user_permissions": 1,
-   "label": "Payment Status",
-   "read_only": 1
+   "label": "Payment Status"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-10-11 15:49:32.414603",
+ "modified": "2024-12-19 16:31:01.772713",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "TDS Remittance",
