@@ -17,6 +17,9 @@
   "item_name",
   "asset_identification_code",
   "engine_no",
+  "asset_station",
+  "asset_category",
+  "asset_sub_category",
   "column_break_8",
   "purchase_receipt",
   "warehouse",
@@ -245,12 +248,33 @@
    "fieldtype": "Data",
    "label": "Asset Identification Code",
    "reqd": 1
+  },
+  {
+   "fieldname": "asset_station",
+   "fieldtype": "Link",
+   "label": "Asset Station",
+   "options": "Asset Station",
+   "reqd": 1
+  },
+  {
+   "fieldname": "asset_category",
+   "fieldtype": "Link",
+   "label": "Asset Category",
+   "options": "Asset Category",
+   "reqd": 1
+  },
+  {
+   "fieldname": "asset_sub_category",
+   "fieldtype": "Link",
+   "label": "Asset Sub Category",
+   "options": "Asset Sub Category",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-11-09 14:10:08.086440",
+ "modified": "2024-11-26 10:32:09.846916",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Asset Issue Details",

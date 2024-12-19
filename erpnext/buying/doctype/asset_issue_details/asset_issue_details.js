@@ -13,11 +13,17 @@ frappe.ui.form.on('Asset Issue Details', {
 		});
 	},
 	refresh: function (frm) {
+		frm.set_query('asset_sub_category', () => {
+			return {
+				filters: {'asset_category': frm.doc.asset_category}
+			}
+		});
+
 		frm.set_query('issued_to', function(doc, cdt, cdn) {
 			return {
 				filters: {
 					"branch": frm.doc.branch,
-					"status":"Active"
+					"status": "Active"
 				}
 			}
 		});

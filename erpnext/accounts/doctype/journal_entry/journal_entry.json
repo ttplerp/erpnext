@@ -66,15 +66,16 @@
   "select_print_heading",
   "addtional_info",
   "payment_order",
-  "payment_status",
   "column_break3",
   "is_opening",
   "stock_entry",
   "subscription_section",
   "auto_repeat",
   "bank_payment",
-  "amended_from",
-  "utility_bill"
+  "utility_bill",
+  "column_break_c2bk6",
+  "payment_status",
+  "amended_from"
  ],
  "fields": [
   {
@@ -623,6 +624,10 @@
    "fieldtype": "Check",
    "label": "Settle Project Imprest",
    "read_only": 1
+  },
+  {
+   "fieldname": "column_break_c2bk6",
+   "fieldtype": "Column Break"
   }
  ],
  "icon": "fa fa-file-text",
@@ -634,7 +639,7 @@
    "link_fieldname": "journal_entry"
   }
  ],
- "modified": "2024-03-11 11:24:17.580933",
+ "modified": "2024-12-19 16:14:42.147279",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",

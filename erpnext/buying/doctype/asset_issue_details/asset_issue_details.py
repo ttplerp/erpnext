@@ -47,29 +47,29 @@ class AssetIssueDetails(Document):
             frappe.throw(_("Issuing Quantity cannot be greater than Balance Quantity i.e., {}").format(flt(balance_qty)), title="Insufficient Balance")
 
     def make_asset(self, qty):       
-        item_doc = frappe.get_doc("Item",self.item_code)
+        item_doc = frappe.get_doc("Item", self.item_code)
         if not cint(item_doc.is_fixed_asset):
             frappe.throw(_("Item selected is not a fixed asset"))
 
-        if item_doc.asset_category:
-            asset_category = frappe.db.get_value("Asset Category", item_doc.asset_category, "name")
+        if self.asset_category:
+            asset_category = frappe.db.get_value("Asset Category", self.asset_category, "name")
             fixed_asset_account, credit_account=frappe.db.get_value("Asset Category Account", {'parent':asset_category}, ['fixed_asset_account','credit_account'])
-            if item_doc.asset_sub_category:
+            if self.asset_sub_category:
                 for a in frappe.db.sql("""select total_number_of_depreciations, income_depreciation_percent 
                                         from `tabAsset Finance Book` where parent = '{0}' 
                                         and `asset_sub_category`='{1}'
-                                        """.format(asset_category, item_doc.asset_sub_category), as_dict=1):
+                                        """.format(asset_category, self.asset_sub_category), as_dict=1):
                     total_number_of_depreciations = a.total_number_of_depreciations
                     depreciation_percent = a.income_depreciation_percent
             else:
-                frappe.throw(_("No Asset Sub-Category for Item: " +"{}").format(self.item_name))
+                frappe.throw(_("Please set Asset Sub-Category for Item: " +"{}").format(self.item_name))
         else:
-            frappe.throw(_("<b>Asset Category</b> is missing for material {}").format(frappe.get_desk_link("Item", self.item_code)))
+            frappe.throw(_("<b>Asset Category</b> is missing for material {}").format(self.item_code))
 
         item_data = frappe.db.get_value(
-            "Item", self.item_code, ["asset_naming_series", "asset_category","asset_sub_category"], as_dict=1
+            "Item", self.item_code, ["asset_naming_series",], as_dict=1
         )
-        asset_abbr = frappe.db.get_value('Asset Category',item_data.get("asset_category"),'abbr')
+        asset_abbr = frappe.db.get_value('Asset Category', self.asset_category, 'abbr')
         asset = frappe.get_doc(
             {
                 "doctype": "Asset",
@@ -77,8 +77,8 @@ class AssetIssueDetails(Document):
                 "asset_name": self.item_name,
                 "asset_identification_code": self.asset_identification_code,
                 "naming_series": item_data.get("asset_naming_series") or "AST",
-                "asset_category": item_data.get("asset_category"),
-                "asset_sub_category":item_data.get("asset_sub_category"),
+                "asset_category": self.asset_category,
+                "asset_sub_category": self.asset_sub_category,
                 "abbr": asset_abbr,
                 "cost_center": frappe.db.get_value("Branch", self.branch, "cost_center"),
                 "company": self.company,
