@@ -113,9 +113,12 @@
   "nationality",
   "blood_group",
   "health_details",
+  "section_break_106",
+  "cid_number",
+  "issue_date",
+  "validity",
   "passport_details_section",
   "passport_number",
-  "cid_number",
   "work_permit_number",
   "valid_upto",
   "column_break_73",
@@ -128,6 +131,11 @@
   "column_break_114",
   "thram_no",
   "house_no",
+  "location_details",
+  "village_",
+  "district",
+  "state",
+  "column_break_127",
   "profile_tab",
   "bio",
   "educational_qualification",
@@ -751,6 +759,7 @@
    "label": "Profile"
   },
   {
+   "depends_on": "eval:doc.nationality==\"Indian\"",
    "fieldname": "passport_details_section",
    "fieldtype": "Section Break",
    "label": "Passport Details"
@@ -1048,18 +1057,60 @@
    "unique": 1
   },
   {
+   "depends_on": "eval:doc.nationality==\"Bhutanese\"",
    "fieldname": "cid_number",
    "fieldtype": "Data",
    "label": "CID Number",
    "reqd": 1,
    "unique": 1
+  },
+  {
+   "depends_on": "eval:doc.nationality==\"Indian\"",
+   "fieldname": "location_details",
+   "fieldtype": "Section Break",
+   "label": "Location Details"
+  },
+  {
+   "fieldname": "village_",
+   "fieldtype": "Data",
+   "label": "Village"
+  },
+  {
+   "fieldname": "district",
+   "fieldtype": "Data",
+   "label": "District "
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Data",
+   "label": "State"
+  },
+  {
+   "depends_on": "eval:doc.nationality==\"Bhutanese\"",
+   "fieldname": "section_break_106",
+   "fieldtype": "Section Break",
+   "label": "CID Details"
+  },
+  {
+   "fieldname": "issue_date",
+   "fieldtype": "Data",
+   "label": "Date of Issue"
+  },
+  {
+   "fieldname": "validity",
+   "fieldtype": "Data",
+   "label": "Valid Upto"
+  },
+  {
+   "fieldname": "column_break_127",
+   "fieldtype": "Column Break"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2024-09-01 07:24:22.277531",
+ "modified": "2024-11-18 10:37:04.588887",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
