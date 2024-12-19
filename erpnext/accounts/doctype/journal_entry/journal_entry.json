@@ -586,7 +586,8 @@
    "allow_on_submit": 1,
    "fieldname": "payment_status",
    "fieldtype": "Data",
-   "label": "Payment Status"
+   "label": "Payment Status",
+   "read_only": 1
   },
   {
    "allow_on_submit": 1,
@@ -614,7 +615,8 @@
    "fieldname": "utility_bill",
    "fieldtype": "Link",
    "label": "Utility Bill",
-   "options": "Utility Bill"
+   "options": "Utility Bill",
+   "read_only": 1
   },
   {
    "default": "0",
@@ -637,7 +639,7 @@
    "link_fieldname": "journal_entry"
   }
  ],
- "modified": "2024-12-19 16:48:30.968889",
+ "modified": "2024-12-19 18:58:31.854733",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",
