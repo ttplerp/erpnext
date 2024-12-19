@@ -307,7 +307,8 @@ class Asset(AccountsController):
             finance_book.total_number_of_depreciations
         ) - cint(self.number_of_depreciations_booked)
 
-        has_pro_rata = self.check_is_pro_rata(finance_book)
+        # has_pro_rata = self.check_is_pro_rata(finance_book)
+        has_pro_rata = False
         if has_pro_rata:
             number_of_pending_depreciations += 1
 

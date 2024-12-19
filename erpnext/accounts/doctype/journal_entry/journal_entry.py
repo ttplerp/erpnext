@@ -164,22 +164,22 @@ class JournalEntry(AccountsController):
     def update_supplier_advance(self, cancel=None):
         ad_doc = frappe.get_doc("Advance", self.reference_doctype)
         supplier_doc = frappe.get_doc(ad_doc.party_type, ad_doc.party)
-        # frappe.throw(str(ad_doc.party_type))
 
         cond = ""
         if ad_doc.advance_type == "National Subcontractor Advance":
             cond += " AND project = '{}'".format(ad_doc.project)
 
         advances = frappe.db.sql("""
-                SELECT 
-                    name, advance_type, advance_account, advance_amount, balance_amount,advance_date
-                FROM 
-                    `tabAdvance Item` 
-                WHERE 
-                    advance_type = '{0}'
-                    and parent = '{1}' {cond}
-            """.format(ad_doc.advance_type, ad_doc.party, cond=cond), as_dict=1)
-        
+                                    SELECT 
+                                        name, advance_type, advance_account, advance_amount, balance_amount, advance_date
+                                    FROM 
+                                        `tabAdvance Item` 
+                                    WHERE 
+                                        advance_type = %s
+                                        AND parent = %s {cond}
+                                """.format(cond=cond), 
+                                    values=(ad_doc.advance_type, ad_doc.party), 
+                                    as_dict=True)
         if advances:
             if cancel:
                 advance_amount = flt(advances[0].advance_amount - ad_doc.advance_amount)

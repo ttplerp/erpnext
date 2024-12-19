@@ -211,9 +211,6 @@ class Item(Document):
 			if self.is_stock_item:
 				frappe.throw(_("Fixed Asset Item must be a non-stock item."))
 
-			if not self.asset_category:
-				frappe.throw(_("Asset Category is mandatory for Fixed Asset item"))
-
 			if self.stock_ledger_created():
 				frappe.throw(_("Cannot be a fixed asset item as Stock Ledger is created."))
 

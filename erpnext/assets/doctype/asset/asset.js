@@ -293,7 +293,7 @@ frappe.ui.form.on('Asset', {
 	},
 
 
-	item_code: function(frm) {
+	asset_sub_category: function(frm) {
 		if(frm.doc.item_code) {
 			frm.trigger('set_finance_book');
 		}
