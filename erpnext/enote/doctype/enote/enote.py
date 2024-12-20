@@ -97,6 +97,12 @@ class eNote(Document):
 			
 				if not check_remark:
 					frappe.throw("Please write a remarks to <b>{}</b> the document".format(action))
+
+			if action == "Approve":
+				#check if forward_to field is valid
+				if self.forward_to == frappe.session.user:
+					frappe.throw("Not allowed to approve as the approver is set {}".format(self.forward_to))
+
 			# to record the approve action witout remarks
 			# if action == "Approve":
 			self.upsert_remark(action)
