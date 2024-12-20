@@ -99,7 +99,7 @@ class eNote(Document):
 					frappe.throw("Please write a remarks to <b>{}</b> the document".format(action))
 
 			if action == "Approve":
-				#check if forward_to field is valid
+				#Check if approve field is valid
 				if self.forward_to != frappe.session.user:
 					frappe.throw("Not allowed to approve as the approver is set {}".format(self.forward_to))
 
