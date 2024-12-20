@@ -598,33 +598,14 @@ class CustomWorkflow:
                 frappe.throw("Only Accounts User can reject this Asset.")
 
     def leave_application(self):
-        ''' Leave Application Workflow
-            1. Casual Leave, Earned Leave & Paternity Leave: 
-                * Employee -> Supervisor
-            2. Medical Leave:
-                * Employee -> Department Head (if the leave is within 5 days)
-                * Employee -> CEO (more than 5 days)
-            3. Bereavement & Maternity:
-                * Employee -> Department Head
-            4. Extraordinary Leave:
-                * Employee -> CEO 
-        '''
-        if self.new_state.lower() in ("Draft".lower()):
-            if frappe.session.user != self.doc.owner:
-                frappe.throw("Only {} can apply this leave".format(self.doc.owner))
-
-        elif self.new_state.lower() == ("Waiting Approval".lower()):
+        if self.new_state.lower() == ("Waiting Approval".lower()):
             self.set_approver("Supervisor")
-
         elif self.new_state.lower() == ("Approved".lower()):
             if self.doc.supervisor != frappe.session.user:
                 frappe.throw("Only {} can Approve this Leave Application".format(self.doc.supervisor))
-
         elif self.new_state.lower() == ("Rejected".lower() or "Rejected by CEO".lower()):
             if self.doc.supervisor != frappe.session.user:
                 frappe.throw("Only {} can Reject this Leave Application".format(self.doc.supervisor))
-        else:
-            frappe.throw(_("Invalid Workflow State {}").format(self.doc.workflow_state))
 
     def leave_encashment(self):
         ''' Leave Encashment Workflow
@@ -1385,46 +1366,6 @@ class NotifyCustomWorkflow:
             # for email
             "subject": email_template.subject
         })
-
-    def notify_travel_administrators(self):
-        receipients = []
-        region = frappe.db.get_value("Employee",self.doc.employee,"region")
-        if region == "Western Region":
-            email_group = "Travel Adminstrator, Western Region"
-        elif region == "South Western Region":
-            email_group = "Travel Administrator, South Western Region"
-        elif region == "Eastern Region":
-            email_group = "Travel Administrator, Eastern Region"
-        elif region == "Central Region":
-            email_group = "Travel Administrator, Central Region"
-        else:
-            email_group = "Travel Administrator, CHQ"
-        if self.doc.doctype == "Travel Claim":
-            if self.doc.travel_type in ("Training","Meeting and Seminars","BT DAY","Pilgrimage"):
-                email_group = "Travel Administrator, CHQ"
-        ta = frappe.get_list("Email Group Member", filters={"email_group":email_group}, fields=['email'])
-        if ta:
-            receipients = [a['email'] for a in ta]
-            parent_doc = frappe.get_doc(self.doc.doctype, self.doc.name)
-            args = parent_doc.as_dict()
-            if self.doc.doctype == "Travel Claim":
-                template = frappe.db.get_single_value('HR Settings', 'claim_approval_notification_template')
-                if not template:
-                    frappe.msgprint(_("Please set default template for Claim Approval Notification in HR Settings."))
-                    return
-            if not template:
-                frappe.msgprint(_("Please set default template for {}.").format(self.doc.doctype))
-                return
-            email_template = frappe.get_doc("Email Template", template)
-            message = frappe.render_template(email_template.response, args)
-            # frappe.throw(self.doc.get(self.doc_approver[0]))
-            self.notify({
-                # for post in messages
-                "message": message,
-                "message_to": receipients,
-                # for email
-                "subject": email_template.subject
-            })
 
     def notify_ta_finance(self):
         receipients = []
