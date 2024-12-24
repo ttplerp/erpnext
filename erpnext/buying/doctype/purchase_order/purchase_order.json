@@ -150,7 +150,13 @@
   "order_header_and_footer_section",
   "po_header",
   "column_break_140",
-  "po_footer_text"
+  "po_footer_text",
+  "approver_detail_section",
+  "approver",
+  "approver_name",
+  "column_break_x84eh",
+  "approver_designation",
+  "approver_division"
  ],
  "fields": [
   {
@@ -1213,18 +1219,55 @@
    "options": "Cost Center"
   },
   {
+   "allow_on_submit": 1,
    "description": "Eg: BDB/ADM/PROC-23/2024",
    "fieldname": "file_no",
    "fieldtype": "Data",
-   "label": "File No:.",
+   "label": "File No:."
+  },
+  {
+   "fieldname": "approver_detail_section",
+   "fieldtype": "Section Break",
+   "label": "Approver Detail"
+  },
+  {
+   "fieldname": "approver",
+   "fieldtype": "Link",
+   "label": "Approver",
+   "options": "Employee",
    "reqd": 1
+  },
+  {
+   "fetch_from": "approver.employee_name",
+   "fieldname": "approver_name",
+   "fieldtype": "Data",
+   "label": "Approver Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_x84eh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "approver.designation",
+   "fieldname": "approver_designation",
+   "fieldtype": "Data",
+   "label": "Approver Designation",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "approver.division",
+   "fieldname": "approver_division",
+   "fieldtype": "Data",
+   "label": "Approver Division",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 105,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-12-13 13:01:21.332144",
+ "modified": "2024-12-24 13:46:57.873694",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Purchase Order",
