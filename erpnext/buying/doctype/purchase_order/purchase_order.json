@@ -133,6 +133,7 @@
   "column_break_86",
   "language",
   "group_same_items",
+  "hide_sign",
   "subscription_section",
   "from_date",
   "to_date",
@@ -154,9 +155,9 @@
   "approver_designation",
   "approver_division",
   "order_header_and_footer_section",
-  "po_footer_text",
+  "po_header",
   "column_break_140",
-  "po_header"
+  "po_footer_text"
  ],
  "fields": [
   {
@@ -1191,7 +1192,7 @@
    "label": "Purchase Order Header and Footer"
   },
   {
-   "default": "With reference to your quotation no. ............. dated .............., kindly arrange to supply the following materials at your quoted rate and forward the bill for settlement.",
+   "default": "You are kindly requested to supply the following materials at your quoted rate and forward the bill for settlement.",
    "fieldname": "po_header",
    "fieldtype": "Text Editor",
    "label": "Purchase Order Header"
@@ -1201,7 +1202,7 @@
    "fieldtype": "Column Break"
   },
   {
-   "default": "Thanking You<br>\nYours Sincerely<br><br><br>\n\n\n\n\nChhimi Rinzin<br>\nGeneral Manager-HRAD<br><br>\n\n\n\nCc:<br>\n<ol>\n  <li>GM, HRAD/PMD/RSLO for information;</li>\n  <li>Sr. Mines Manager, KGM for information;</li>\n  <li>Asst. Manager, AFD, RSLO, S/J for information;</li>\n <li>Procurement/Store Asst. for necessary action.</li>\n</ol>",
+   "default": " Cc:\n   1. GM, ADM & HRM Department, for information;\n   2. Finance Head, Finance Division for information;\n   3. Store Unit, for information;\n   4. Office Copy.",
    "fieldname": "po_footer_text",
    "fieldtype": "Text Editor",
    "label": "Purchase Order Footer"
@@ -1262,13 +1263,19 @@
    "fieldtype": "Data",
    "label": "Approver Division",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "hide_sign",
+   "fieldtype": "Check",
+   "label": "Hide Signature in Print Format"
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 105,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-12-24 16:00:20.378027",
+ "modified": "2024-12-24 17:07:40.558324",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Purchase Order",
