@@ -1202,7 +1202,7 @@
    "fieldtype": "Column Break"
   },
   {
-   "default": " Cc:\n   1. GM, ADM & HRM Department, for information;\n   2. Finance Head, Finance Division for information;\n   3. Store Unit, for information;\n   4. Office Copy.",
+   "default": "Cc: <br>\n 1. GM, ADM &amp; HRM Department, for information<br>\n 2. Finance Head, Finance Division for information <br>\n 3. Store Unit, for information<br>\n 4. Office Copy<br>",
    "fieldname": "po_footer_text",
    "fieldtype": "Text Editor",
    "label": "Purchase Order Footer"
@@ -1275,7 +1275,7 @@
  "idx": 105,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-12-24 17:07:40.558324",
+ "modified": "2024-12-24 17:18:11.243463",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Purchase Order",
