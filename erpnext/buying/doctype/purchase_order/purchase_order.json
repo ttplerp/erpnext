@@ -1221,6 +1221,7 @@
   },
   {
    "allow_on_submit": 1,
+   "default": "BDB/ADM/PROC-",
    "description": "Eg: BDB/ADM/PROC-23/2024",
    "fieldname": "file_no",
    "fieldtype": "Data",
@@ -1276,7 +1277,7 @@
  "idx": 105,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-12-24 17:23:16.613425",
+ "modified": "2024-12-24 17:30:33.281873",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Purchase Order",
