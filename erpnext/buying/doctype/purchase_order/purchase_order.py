@@ -80,6 +80,39 @@ class PurchaseOrder(BuyingController):
 			self.doctype, self.supplier, self.company, self.inter_company_order_reference
 		)
 		self.reset_default_field_value("set_warehouse", "items", "warehouse")
+		self.send_notification()
+	
+	def send_notification(self):
+		action = frappe.request.form.get('action')  
+		if self.workflow_state == "Draft" or action == "Save":
+			return
+		elif action =="Forward to Approver":
+			approver = frappe.db.get_value("Employee", self.approver,"user_id")
+			self.notify(approver)
+		elif action in ("Approve","Reject"):
+			self.notify(self.owner)
+	
+	def notify(self,recipients):
+		args = self.get_args()
+		try:
+			email_template = frappe.get_doc("Email Template", 'Purchase Order')
+			message = frappe.render_template(email_template.response, args)
+			subject = email_template.subject
+
+			frappe.sendmail(
+				recipients=recipients,
+				subject=_(subject), 
+				message= _(message), 
+			)
+		except :
+			frappe.msgprint(_("Purchase Order Status Notification is missing."))
+	
+	#Added by Thukten on 11-11-2024
+	def get_args(self):
+		parent_doc = frappe.get_doc(self.doctype, self.name)
+		args = parent_doc.as_dict()
+		args.workflow_state = self.workflow_state
+		return args
 
 	def validate_with_previous_doc(self):
 		super(PurchaseOrder, self).validate_with_previous_doc(
