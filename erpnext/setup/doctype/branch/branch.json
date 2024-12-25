@@ -52,7 +52,9 @@
   {
    "fieldname": "abbr",
    "fieldtype": "Data",
-   "label": "Abbreviation"
+   "label": "Abbreviation",
+   "length": 3,
+   "unique": 1
   },
   {
    "fieldname": "region",
@@ -118,7 +120,7 @@
  "icon": "fa fa-code-fork",
  "idx": 1,
  "links": [],
- "modified": "2022-12-20 13:43:20.954545",
+ "modified": "2024-12-24 14:25:48.148053",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Branch",

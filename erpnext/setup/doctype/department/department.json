@@ -8,6 +8,7 @@
  "engine": "InnoDB",
  "field_order": [
   "department_name",
+  "abbr",
   "parent_department",
   "column_break_3",
   "company",
@@ -146,13 +147,22 @@
    "fieldname": "is_unit",
    "fieldtype": "Check",
    "label": "Is Unit"
+  },
+  {
+   "fieldname": "abbr",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Abbr",
+   "length": 3,
+   "translatable": 1,
+   "unique": 1
   }
  ],
  "icon": "fa fa-sitemap",
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2022-12-12 12:05:33.196861",
+ "modified": "2024-12-25 11:31:10.385722",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Department",

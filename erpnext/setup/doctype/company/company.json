@@ -157,11 +157,13 @@
   {
    "fieldname": "abbr",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Abbr",
    "oldfieldname": "abbr",
    "oldfieldtype": "Data",
    "reqd": 1,
-   "set_only_once": 1
+   "set_only_once": 1,
+   "unique": 1
   },
   {
    "bold": 1,
@@ -985,7 +987,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2024-07-22 14:06:43.386087",
+ "modified": "2024-12-24 14:48:57.958550",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",
