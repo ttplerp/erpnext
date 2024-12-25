@@ -444,6 +444,7 @@
    "options": "fa fa-file-text"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "mode_of_payment",
    "fieldtype": "Link",
    "label": "Mode of Payment",
@@ -639,7 +640,7 @@
    "link_fieldname": "journal_entry"
   }
  ],
- "modified": "2024-12-19 18:58:31.854733",
+ "modified": "2024-12-25 10:05:02.058181",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",
