@@ -610,7 +610,6 @@
    "fieldname": "asset_rate",
    "fieldtype": "Currency",
    "label": "Asset Rate",
-   "read_only": 1,
    "reqd": 1
   },
   {
@@ -712,7 +711,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2024-12-19 15:59:07.830433",
+ "modified": "2024-12-26 11:13:54.994361",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",
