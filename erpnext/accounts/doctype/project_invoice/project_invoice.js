@@ -145,7 +145,7 @@ frappe.ui.form.on('Project Invoice', {
 				},
 				callback: function(r) {
 					if(r.message) {
-						frm.set_value("debit_credit_account",r.message)
+						frm.set_value("debit_credit_account", r.message)
 						frm.refresh_fields("debit_credit_account")
 					}
 				}

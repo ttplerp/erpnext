@@ -341,6 +341,7 @@
    "fetch_from": "branch.cost_center",
    "fieldname": "cost_center",
    "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "Cost Center",
    "options": "Cost Center",
    "read_only": 1
@@ -571,7 +572,7 @@
  "index_web_pages_for_search": 1,
  "links": [],
  "max_attachments": 4,
- "modified": "2024-11-20 13:21:09.962672",
+ "modified": "2024-12-26 15:35:27.459912",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project",

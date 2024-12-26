@@ -390,6 +390,7 @@ def get_party_account(party_type, party=None, company=None, doctype=None, is_adv
 				{"parenttype": party_group_doctype, "parent": group, "company": company},
 				"account",
 			)
+
 	if not account and party_type in ["Customer", "Supplier", "Employee"]:
 		# ---- Added by Dawa Tshering on 16/10/2023 ----
 		if doctype == 'Project Invoice':
@@ -402,9 +403,7 @@ def get_party_account(party_type, party=None, company=None, doctype=None, is_adv
 			else:
 				if party_type == "Supplier":
 					party_country = frappe.get_cached_value("Supplier", party, "country")
-					default_account_name = (
-					"national_wage_payable" if party_country == "Bhutan" else "foreign_wage_payable"
-				)
+					default_account_name = ("national_contractor_payable" if party_country == "Bhutan" else "foreign_contractor_payable")
 				if party_type == "Customer":
 					party_country = frappe.get_cached_value("Customer", party, "country")
 					default_account_name = "project_invoice_account"

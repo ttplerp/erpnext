@@ -16,6 +16,12 @@
   "column_break_dend2",
   "foreign_wage_payable",
   "foreign_wage",
+  "supplier_section",
+  "national_contractor_payable",
+  "national_contractor",
+  "column_break_xside",
+  "foreign_contractor_payable",
+  "foreign_contractor",
   "customer_client_section",
   "income_account",
   "carriage_charge",
@@ -83,7 +89,7 @@
   {
    "fieldname": "sub_contractor_supplier_section",
    "fieldtype": "Section Break",
-   "label": "Sub Contractor (Supplier)"
+   "label": "MR Employee"
   },
   {
    "fieldname": "customer_client_section",
@@ -117,11 +123,44 @@
    "fieldtype": "Link",
    "label": "Carriage Payable",
    "options": "Account"
+  },
+  {
+   "fieldname": "supplier_section",
+   "fieldtype": "Section Break",
+   "label": "Supplier"
+  },
+  {
+   "fieldname": "national_contractor",
+   "fieldtype": "Link",
+   "label": "National Contractor (Expense Account)",
+   "options": "Account"
+  },
+  {
+   "fieldname": "foreign_contractor",
+   "fieldtype": "Link",
+   "label": "Foreign Contractor (Expense Account)",
+   "options": "Account"
+  },
+  {
+   "fieldname": "column_break_xside",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "national_contractor_payable",
+   "fieldtype": "Link",
+   "label": "National Contractor Payable",
+   "options": "Account"
+  },
+  {
+   "fieldname": "foreign_contractor_payable",
+   "fieldtype": "Link",
+   "label": "Foreign Contractor Payable",
+   "options": "Account"
   }
  ],
  "issingle": 1,
  "links": [],
- "modified": "2023-11-16 10:22:16.567670",
+ "modified": "2024-12-26 15:56:30.886642",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Projects Settings",

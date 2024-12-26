@@ -1451,11 +1451,10 @@ class PaymentEntry(AccountsController):
                     gl_entries.append(
                         self.get_gl_dict(
                                 {
-                                    "account": receivable_account,
-                                    # "account_currency": self.paid_from_account_currency,
-                                    "against": receivable_account,
-                                    "credit_in_account_currency": self.paid_amount,
+                                    "account": self.paid_from,
                                     "credit": self.paid_amount,  # base_received_amount
+                                    "against": self.paid_to,
+                                    "credit_in_account_currency": self.paid_amount,
                                     "cost_center": self.cost_center,
                                     },
                                     item=self,
@@ -1478,11 +1477,10 @@ class PaymentEntry(AccountsController):
                     gl_entries.append(
                         self.get_gl_dict(
                                 {
-                                    "account": receivable_account,
-                                    # "account_currency": self.paid_from_account_currency,
-                                    "against": self.bank_account,
+                                    "account": self.paid_from,
+                                    "against": self.paid_to,
                                     "credit_in_account_currency": self.paid_amount,
-                                    "credit": self.paid_amount,  # base_received_amount
+                                    "credit": self.paid_amount,
                                     "cost_center": self.cost_center,
                                     'party_type': self.party_type,
 				                    'party': self.party,
@@ -2641,15 +2639,17 @@ def set_party_account(dt, dn, doc, party_type, is_advance=None):
     elif dt in ["Transporter Invoice", "EME Invoice", "Repair And Service Invoice", "POL Receive Invoice", "HIre Charge Invoice"]:
         party_account = doc.credit_account
     elif dt == "Project Invoice":
-        account_name = ''
-        supplier_type = frappe.db.get_value("Supplier", {"name":doc.party}, "supplier_type")
-        if supplier_type == "Domestic Vendor":
-            account_name = 'national_wage_payable'
-        elif supplier_type == "International Vendor":
-            account_name = 'foreign_wage_payable'
-        else:
-            frappe.throw("Supplier Type for supplier {} must be either {} or {}.".format(frappe.bold(doc.party), frappe.bold("International Vendor"), frappe.bold("Domestic Vendor")))
-        party_account = frappe.db.get_single_value("Projects Settings", account_name)
+        party_country = frappe.get_cached_value("Supplier", doc.party, "country")
+        default_account_name = ("national_contractor_payable" if party_country == "Bhutan" else "foreign_contractor_payable")
+        # account_name = ''
+        # supplier_type = frappe.db.get_value("Supplier", {"name":doc.party}, "supplier_type")
+        # if supplier_type == "Domestic Vendor":
+        #     account_name = 'national_wage_payable'
+        # elif supplier_type == "International Vendor":
+        #     account_name = 'foreign_wage_payable'
+        # else:
+        #     frappe.throw("Supplier Type for supplier {} must be either {} or {}.".format(frappe.bold(doc.party), frappe.bold("International Vendor"), frappe.bold("Domestic Vendor")))
+        party_account = frappe.db.get_single_value("Projects Settings", default_account_name)
 
     else:
         party_account = get_party_account(

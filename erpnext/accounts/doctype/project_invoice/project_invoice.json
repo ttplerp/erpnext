@@ -276,6 +276,7 @@
    "fieldtype": "Link",
    "label": "Debit/Credit Account",
    "options": "Account",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -364,7 +365,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-12-03 15:42:17.240796",
+ "modified": "2024-12-26 17:07:59.881931",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Project Invoice",

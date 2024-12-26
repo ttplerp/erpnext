@@ -366,9 +366,9 @@ class ProjectInvoice(AccountsController):
 	def make_party_gl_entry(self, gl_entries):
 		if self.party_type == "Supplier":
 			supplier_country = frappe.db.get_value('Supplier', self.party, 'country')
-			income_expense_account = frappe.db.get_single_value("Projects Settings", "national_wage" if supplier_country == "Bhutan" else "foreign_wage")
+			income_expense_account = frappe.db.get_single_value("Projects Settings", "national_contractor" if supplier_country == "Bhutan" else "foreign_contractor")
 		else:
-			income_expense_account = frappe.db.get_single_value("Projects Settings", "income_account")
+			income_expense_account = frappe.db.get_value("Branch", self.branch, "revenue_bank_account")
 		if not income_expense_account:
 			frappe.throw('Set accounts in Projects Settings')
 
