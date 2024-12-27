@@ -250,7 +250,9 @@ erpnext.stock.PurchaseReceiptController = class PurchaseReceiptController extend
 				{	"fieldtype": "Select",
 					"label": __("Material Name"),
 					"fieldname": "item_name",
-					"options": doc.items.map(d => d.idx+' '+d.item_name),
+					"options": doc.items
+						.filter(d => d.is_fixed_asset === 1)
+						.map(d => d.idx+' '+d.item_name),
 					"reqd": 1 
 				},
 				{	"fieldtype": "Button", "label": __('Issue Asset'),
