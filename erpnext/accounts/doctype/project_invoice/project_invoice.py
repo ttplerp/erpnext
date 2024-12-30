@@ -118,6 +118,8 @@ class ProjectInvoice(AccountsController):
 
 	def set_defaults(self):
 		if self.project:
+			account = get_party_account(self.party_type, self.party, self.company, self.doctype)
+			self.debit_credit_account = account
 			base_project          = frappe.get_doc("Project", self.project)
 			self.company          = base_project.company
 			self.branch           = base_project.branch
