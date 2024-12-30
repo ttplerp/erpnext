@@ -31,8 +31,11 @@ class UtilityBill(Document):
     def validate_rrco_payment(self):
         for a in self.get("item"):
             if a.party == "RRCO":
-                if not self.tds_remittance or not self.journal_entry:
+                if not self.tds_remittance and not self.journal_entry:
                     frappe.throw("Please link with TDS Remittance and Journal Entry")
+               
+                if self.tds_remittance and self.journal_entry:
+                    frappe.throw("Cannot link both TDS Remittance and Journal Entry")
 
     def update_pi_number(self):
         for a in self.get("item"):

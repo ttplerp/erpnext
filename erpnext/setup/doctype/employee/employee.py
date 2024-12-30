@@ -88,7 +88,7 @@ class Employee(NestedSet):
 		frappe.utils.nestedset.update_nsm(self)
 
 	def on_update(self):
-		self.update_nsm_model()
+		# self.update_nsm_model()
 		if self.user_id:
 			self.update_user()
 			self.update_user_permissions()
@@ -336,7 +336,7 @@ class Employee(NestedSet):
 			throw(_("Employee cannot report to himself."))
 
 	def on_trash(self):
-		self.update_nsm_model()
+		# self.update_nsm_model()
 		delete_events(self.doctype, self.name)
 
 	def validate_preferred_email(self):

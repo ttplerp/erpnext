@@ -56,6 +56,9 @@ class BankPayment(Document):
         self.update_transaction_status()
 
     def on_cancel(self):
+        if frappe.session.user == "Administrator":
+            return
+            
         self.check_for_transactions_in_progress()
         self.update_status()
         self.update_transaction_status(cancel=True)
@@ -152,7 +155,7 @@ class BankPayment(Document):
             "Bank Payment Settings", "BOBL", "transaction_limit"
         )
         get_transaction = frappe.db.sql(
-            """select count(bpi.employee) from `tabBank Payment` bp, `tabBank Payment Item` bpi where bp.name=bpi.parent and bp.name='{}'""".format(
+            """select count(bpi.name) from `tabBank Payment` bp, `tabBank Payment Item` bpi where bp.name=bpi.parent and bp.name='{}'""".format(
                 self.name
             )
         )
@@ -717,34 +720,48 @@ class BankPayment(Document):
                 supplier, employee = None, None
                 for i in payment_dtl:
                     if i["party_type"] == "Supplier":
-                        query = """select s.bank_name, s.bank_branch, s.bank_account_type, 
-										s.account_number as bank_account_no, s.supplier_name as beneficiary_name,
-										(CASE WHEN s.bank_name = "INR" THEN s.inr_bank_code ELSE NULL END) inr_bank_code,
-										(CASE WHEN s.bank_name = "INR" THEN s.inr_purpose_code ELSE NULL END) inr_purpose_code
-										from `tabSupplier` s
-										WHERE s.name = '{party}'
-									""".format(
-                            party=i["party"]
-                        )
-                        supplier = i["party"]
+                        query = """
+                            SELECT 
+                                s.bank_name, s.bank_branch, s.bank_account_type, 
+                                s.account_number AS bank_account_no, s.supplier_name AS beneficiary_name,
+                                CASE WHEN s.bank_name = "INR" THEN s.inr_bank_code ELSE NULL END AS inr_bank_code,
+                                CASE WHEN s.bank_name = "INR" THEN s.inr_purpose_code ELSE NULL END AS inr_purpose_code
+                            FROM 
+                                `tabSupplier` s
+                            WHERE 
+                                s.name = %s
+                        """
+                        params = [i["party"]]
+                        
                     elif i["party_type"] == "Employee":
-                        query = """select e.bank_name, e.bank_branch, e.bank_account_type, e.employee_name as beneficiary_name,
-										e.bank_ac_no as bank_account_no, NULL inr_bank_code, NULL inr_purpose_code
-										from `tabEmployee` e
-										WHERE e.name = '{party}'
-									""".format(
-                            party=i["party"]
-                        )
-                        employee = i["party"]
+                        query = """
+                            SELECT 
+                                e.bank_name, e.bank_branch, e.bank_account_type, 
+                                e.employee_name AS beneficiary_name,
+                                e.bank_ac_no AS bank_account_no, NULL AS inr_bank_code, NULL AS inr_purpose_code
+                            FROM 
+                                `tabEmployee` e
+                            WHERE 
+                                e.name = %s
+                        """
+                        params = [i["party"]]
+                        
                     elif i["party_type"] == "Muster Roll Employee":
-                        query = """select e.bank_name, e.bank_branch, e.bank_account_type, e.person_name as beneficiary_name,
-										e.bank_ac_no as bank_account_no, NULL inr_bank_code, NULL inr_purpose_code
-										from `tabMuster Roll Employee` e
-										WHERE e.name = '{party}'
-									""".format(
-                            party=i["party"]
-                        )
-                    dtl = frappe.db.sql(query, as_dict=True)
+                        query = """
+                            SELECT 
+                                e.bank_name, e.bank_branch, e.bank_account_type, 
+                                e.person_name AS beneficiary_name,
+                                e.bank_ac_no AS bank_account_no, NULL AS inr_bank_code, NULL AS inr_purpose_code
+                            FROM 
+                                `tabMuster Roll Employee` e
+                            WHERE 
+                                e.name = %s
+                        """
+                        params = [i["party"]]
+                    
+                    # Execute the query with parameters
+                    dtl = frappe.db.sql(query, params, as_dict=True)
+
                     data.append(
                         frappe._dict(
                             {
