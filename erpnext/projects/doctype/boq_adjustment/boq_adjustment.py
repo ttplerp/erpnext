@@ -71,14 +71,14 @@ class BOQAdjustment(Document):
 			adjustment_quantity = 0.0 if self.boq_type == "Milestone Based" else flt(adjustment_quantity)
 			# adjustment_rate     = flt(adjustment_amount) if self.boq_type == "Milestone Based" else 0.0
 
-			i.unclaimed_quantity, i.unclaimed_amount = frappe.db.get_value("BOQ Item", {"bsr_code": i.bsr_code}, ["unclaimed_quantity", "unclaimed_amount"])
+			i.unclaimed_quantity, i.unclaimed_amount = frappe.db.get_value("BOQ Item", {"bsr_code": i.bsr_code, "parent": self.boq}, ["unclaimed_quantity", "unclaimed_amount"])
 
 			if (flt(i.unclaimed_amount) + flt(i.adjustment_amount)) < 0:
 				msg = '<b>Reference# : <a href="#Form/BOQ/{0}">{0}</a></b>'.format(self.boq)
 				frappe.throw(_("Row#{0} : Adjustment beyond available balance is not allowed.<br>{1}").format(i.idx,msg), title="Insufficient Balance")
 
 			# Update BOQ Item
-			bi_doc                  	= frappe.get_doc("BOQ Item", {"bsr_code": i.bsr_code})
+			bi_doc                   	= frappe.get_doc("BOQ Item", {"bsr_code": i.bsr_code, "parent": self.boq})
 			# rate                    	= flt(bi_doc.rate) + flt(adjustment_rate)
 			bi_doc.adjustment_quantity  += flt(adjustment_quantity)
 			bi_doc.adjustment_amount    += flt(adjustment_amount)
