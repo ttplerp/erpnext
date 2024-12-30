@@ -235,6 +235,7 @@ class DepreciationEntry(Document):
 			from `tabAsset` a, `tabDepreciation Schedule` ds
 			where a.docstatus = 1
 			and a.disable_depreciation = 0
+			and a.status in ('Submitted', 'Partially Depreciated')
 			and ds.parent = a.name
 			and ds.schedule_date between "{from_date}" and "{to_date}"
 			and ds.depreciation_amount > 0
