@@ -273,6 +273,7 @@ def make_book_entry(source_name, target_doc=None):
 		target_doc.act_rate      = flt(target_doc.entry_rate)
 		target_doc.act_amount    = flt(target_doc.entry_amount)
 		target_doc.original_rate = flt(target_doc.entry_rate)
+		target_doc.boq = source_parent.name
 			
 	doclist = get_mapped_doc("BOQ", source_name, {
 		"BOQ": {

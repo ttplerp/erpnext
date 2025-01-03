@@ -254,6 +254,7 @@ def make_book_entry(source_name, target_doc=None):
 				"doctype": "MB Entry BOQ",
 				"field_map": {
 						"bsr_code": "bsr_code",
+						"boq": "boq",
 						"no": "no",
 						"length": "length",
 						"breath": "breath",
