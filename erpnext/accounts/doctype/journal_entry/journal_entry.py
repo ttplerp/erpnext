@@ -357,12 +357,12 @@ class JournalEntry(AccountsController):
 
     def update_reference_document(self, cancel=False):
         if cancel:
-            # Updating status for MR Invoice Entry
-            if self.reference_type == "MR Invoice Entry" and self.reference_doctype:
-                doc = frappe.get_doc("MR Invoice Entry", self.reference_doctype)
-                doc.db_set("status", "Paid")
-
             for a in self.get("accounts"):
+                 # Updating status for MR Invoice Entry
+                if a.reference_type == "MR Invoice Entry" and a.reference_name:
+                    doc = frappe.get_doc("MR Invoice Entry", a.reference_name)
+                    doc.db_set("status", "Unpaid")
+
                  # update project advance 
                 if a.reference_type == "Project Advance" and a.reference_name:
                     doc = frappe.get_doc("Project Advance", a.reference_name)
@@ -395,14 +395,14 @@ class JournalEntry(AccountsController):
                             )
                 if a.reference_type == "MR Employee Invoice" and a.reference_name:
                     doc = frappe.get_doc("MR Employee Invoice", a.reference_name)
-                    doc.db_set("payment_status", "Paid")
+                    doc.db_set("payment_status", "Unpaid")
         else:
-            # Updating status for MR Invoice Entry
-            if self.reference_type == "MR Invoice Entry" and self.reference_doctype:
-                doc = frappe.get_doc("MR Invoice Entry", self.reference_doctype)
-                doc.db_set("status", "Unpaid")
-
             for a in self.get("accounts"):
+                # Updating status for MR Invoice Entry
+                if a.reference_type == "MR Invoice Entry" and a.reference_name:
+                    doc = frappe.get_doc("MR Invoice Entry", a.reference_name)
+                    doc.db_set("status", "Paid")
+
                 # update project advance 
                 if a.reference_type == "Project Advance" and a.reference_name:
                     doc = frappe.get_doc("Project Advance", a.reference_name)
@@ -415,7 +415,7 @@ class JournalEntry(AccountsController):
                 # Update MR Employee Invoice
                 if a.reference_type == "MR Employee Invoice" and a.reference_name:
                     doc = frappe.get_doc("MR Employee Invoice", a.reference_name)
-                    doc.db_set("payment_status", "Unpaid")
+                    doc.db_set("payment_status", "Paid")
 
                 if frappe.db.exists(
                     "Purchase Taxes and Charges",
