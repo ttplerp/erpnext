@@ -2332,8 +2332,9 @@ class CustomWorkflow:
                                         * Employee -> Supervisor - HR Manager.
         """
         if self.new_state.lower() == "Draft".lower():
-            if self.doc.owner != frappe.session.user:
-                frappe.throw("Only the document owner can Apply this material request.")
+            user_roles = frappe.get_roles(frappe.session.user)
+            if self.doc.owner != frappe.session.user and "HR User" not in user_roles:
+                frappe.throw("Only the document owner or a user with the 'HR User' role can apply this material request.")
 
         elif (self.old_state.lower() == "Draft".lower() and self.new_state.lower() != "Draft".lower()):
             if self.doc.owner != frappe.session.user:
