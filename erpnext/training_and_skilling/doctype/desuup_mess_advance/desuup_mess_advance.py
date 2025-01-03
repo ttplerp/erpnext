@@ -24,13 +24,19 @@ class DesuupMessAdvance(Document):
 
 	def calculate_mess_amount(self):
 		month_start_date, month_end_date = self.get_start_end_month_date()
-
 		mess_amt = frappe.db.get_single_value("Desuup Settings", "mess_advance")
 		total_adv = 0
-
 		days_in_month = calendar.monthrange(month_end_date.year, month_end_date.month)[1]
 
 		for adv in self.items:
+			if self.advance_for in ("OJT", "Production"):
+				query = frappe.db.sql("select mess_amount from `tabDesuup Deployment Entry Item` where parent=%s and desuup=%s", 
+                      (self.desuup_deployment_entry, adv.desuup), as_dict=True)
+				if query:
+					mess_amt = query[0].get('mess_amount', 0)
+				else:
+					mess_amt = 0
+		
 			days = (getdate(adv.to_date) - getdate(adv.from_date)).days + 1
 			mess_adv_amt = flt(mess_amt)/30
 
@@ -100,10 +106,11 @@ class DesuupMessAdvance(Document):
 
 	def get_conditions(self):
 		cond = ''
-		if self.training_management:
+		if self.advance_for == "Trainee" :
 			cond += " and t1.name = '{}'".format(self.training_management)
-		if self.training_center:
 			cond += " and t1.training_center = '{}'".format(self.training_center)
+		else:
+			cond += " and t1.name = '{}'".format(self.desuup_deployment_entry)
 		return cond
 	
 	def get_desuup_list(self):
@@ -166,7 +173,8 @@ class DesuupMessAdvance(Document):
 					t1.cost_center, 
 					t2.desuup, 
 					t2.desuup_name, 
-					t2.is_mess_member 
+					t2.is_mess_member,
+					t2.mess_amount 
 				FROM 
 					`tabDesuup Deployment Entry` t1
 				INNER JOIN 
@@ -203,7 +211,8 @@ class DesuupMessAdvance(Document):
 					t1.cost_center, 
 					t2.desuup, 
 					t2.desuup_name, 
-					t2.is_mess_member 
+					t2.is_mess_member ,
+					t2.mess_amount
 				FROM 
 					`tabDesuup Deployment Entry` t1
 				INNER JOIN 
@@ -386,7 +395,8 @@ class DesuupMessAdvance(Document):
 		self.to_date = month_end_date
 
 	def get_start_end_month_date(self):
-		month_start_date = "-".join([str(date.today().year), self.month, "01"])
+		year = self.posting_date.split("-")[0]
+		month_start_date = "-".join([year, self.month, "01"])
 		month_end_date   = get_last_day(month_start_date)
 
 		return month_start_date, month_end_date
@@ -429,8 +439,13 @@ class DesuupMessAdvance(Document):
 
 	@frappe.whitelist()
 	def set_advance_party(self):
-		self.paid_to = frappe.db.get_value("Training Center", self.training_center, "party")
-		if not self.paid_to:
-			frappe.throw("Please set party in training center '{}'".format(frappe.get_desk_link("Training Center", self.training_center)))
+		if self.advance_for == "Trainee":
+			self.paid_to = frappe.db.get_value("Training Center", self.training_center, "party")
+			if not self.paid_to:
+				frappe.throw("Please set party in training center '{}'".format(frappe.get_desk_link("Training Center", self.training_center)))
+		else:
+			self.paid_to = frappe.db.get_value("Desuup Deployment Entry", self.desuup_deployment_entry, "party")
+			if not self.paid_to:
+				frappe.throw("Please set party in {}".format(frappe.get_desk_link("Desuup Deployment Entry", self.desuup_deployment_entry)))
 
 	

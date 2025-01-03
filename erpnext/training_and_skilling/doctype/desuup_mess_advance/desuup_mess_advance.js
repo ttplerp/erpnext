@@ -45,6 +45,16 @@ frappe.ui.form.on('Desuup Mess Advance', {
 		});
 	},
 
+	desuup_deployment_entry: function (frm) {
+		frappe.call({
+			method: "set_advance_party",
+			doc: frm.doc,
+			callback: function(r) {
+				frm.refresh_field("paid_to")
+			}
+		});
+	},
+
 	month: function (frm) {
 		frappe.call({
 			method: "set_dates",
