@@ -2331,14 +2331,14 @@ class CustomWorkflow:
                         1. All other types of leaves
                                         * Employee -> Supervisor - HR Manager.
         """
+        user_roles = frappe.get_roles(frappe.session.user)
         if self.new_state.lower() == "Draft".lower():
-            user_roles = frappe.get_roles(frappe.session.user)
             if self.doc.owner != frappe.session.user and "HR User" not in user_roles:
                 frappe.throw("Only the document owner or a user with the 'HR User' role can apply this material request.")
 
         elif (self.old_state.lower() == "Draft".lower() and self.new_state.lower() != "Draft".lower()):
-            if self.doc.owner != frappe.session.user:
-                frappe.throw("Only the document owner can Apply this leave application.")
+            if self.doc.owner != frappe.session.user and "HR User" not in user_roles:
+                frappe.throw("Only the document owner or a user with the 'HR User' role can apply this material request.")
 
             if self.doc.designation in ["Dy. CEO", "Chief Executive Officer"]:
                 self.doc.workflow_state = "Waiting Approval"
