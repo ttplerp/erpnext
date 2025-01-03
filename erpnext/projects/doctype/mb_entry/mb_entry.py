@@ -98,7 +98,7 @@ class MBEntry(Document):
 												where t1.name = '{2}'
 														and t1.name = t2.parent
 														and t2.bsr_code = '{0}'
-														adn t2.boq = '{3}'
+														and t2.boq = '{3}'
 														and t1.docstatus = 1
 												""".format(rec.bsr_code, source_table, source, rec.boq), as_dict=True)
 				
