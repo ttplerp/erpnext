@@ -471,7 +471,7 @@ class ProjectInvoice(AccountsController):
 	def make_retention_gl_entry(self, gl_entries):
 		if flt(self.retention_amount) > 0:
 			if not self.retention_account:
-				self.retention_account = get_tds_account(self.retrntion_percent, self.company, self.party_type)
+				self.retention_account = get_tds_account(self.retention_percent, self.company, self.party_type)
 					
 			retention_account_type = frappe.db.get_value(doctype="Account", filters=self.tds_account, fieldname=["account_type"])
 
