@@ -11,6 +11,7 @@
   "entry_type_and_date",
   "business_activity",
   "branch",
+  "branch_abbr",
   "title",
   "voucher_type",
   "naming_series",
@@ -115,10 +116,9 @@
    "no_copy": 1,
    "oldfieldname": "naming_series",
    "oldfieldtype": "Select",
-   "options": "Journal Voucher\nBank Payment Voucher\nBank Receipt Voucher\nCash Receipt Voucher\nCash Payment Voucher\nContra Entry\nMaintenance Invoice",
+   "options": "Journal Voucher (JV)\nBank Voucher (BV)\nCash Voucher (CV)\nContra Entry (CE)",
    "print_hide": 1,
-   "reqd": 1,
-   "set_only_once": 1
+   "reqd": 1
   },
   {
    "fieldname": "column_break1",
@@ -654,6 +654,12 @@
    "ignore_user_permissions": 1,
    "label": "Bank Account",
    "options": "Account"
+  },
+  {
+   "fetch_from": "branch.abbr",
+   "fieldname": "branch_abbr",
+   "fieldtype": "Data",
+   "label": "Branch Abbr"
   }
  ],
  "icon": "fa fa-file-text",
@@ -665,7 +671,7 @@
    "link_fieldname": "journal_entry"
   }
  ],
- "modified": "2024-10-19 12:31:00.606282",
+ "modified": "2025-01-03 11:14:01.078597",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",

@@ -40,44 +40,26 @@ class JournalEntry(AccountsController):
 	# Ver 1.0 by SSK on 09/08/2016, autoname() method is added
 	def autoname(self):
 		series_seq = ""
-		if self.voucher_type == 'Journal Entry':
-				series_seq = 'JEJV'
-		elif self.voucher_type == 'Bank Entry':
-				if self.naming_series == 'Bank Payment Voucher':
-						series_seq = 'JEBP'
-				elif self.naming_series == 'Bank Receipt Voucher':
-						series_seq = 'JEBR'
-				else:
-						series_seq = 'JEBE'
-		elif self.voucher_type == 'Cash Entry':
-				if self.naming_series == 'Cash Payment Voucher':
-						series_seq = 'JECP'
-				elif self.naming_series == 'Cash Receipt Voucher':
-						series_seq = 'JECR'
-				else:
-						series_seq = 'JECA'
-		elif self.voucher_type == 'Debit Note':
-				series_seq = 'JEDN'
-		elif self.voucher_type == 'Credit Note':
-				series_seq = 'JECN'
-		elif self.voucher_type == 'Contra Entry':
-				series_seq = 'JECE'
-		elif self.voucher_type == 'Excise Entry':
-				series_seq = 'JEEE'
-		elif self.voucher_type == 'Write Off Entry':
-				series_seq = 'JEWE'
-		elif self.voucher_type == 'Opening Entry':
-					series_seq = 'JEOP'
-		elif self.voucher_type == 'Depreciation Entry':
-				series_seq = 'JEDE'
-		elif self.voucher_type == 'Maintenance Invoice':
-				series_seq = 'JEMA'
-		elif self.voucher_type == 'Hire Invoice':
-				series_seq = 'JEHI'
+		if self.naming_series == 'Journal Voucher (JV)':
+			series_seq = 'JV'
+		elif self.naming_series == "Bank Voucher (BV)":
+			series_seq = "BV"
+		elif self.naming_series == 'Cash Voucher (CV)':
+			series_seq = "CV"
+		elif self.naming_series == 'Contra Entry (CE)':
+			series_seq = "CE"
 		else:
-				series_seq = 'JEJE'
+			frappe.throw(" {} Voucher Type is not available in current setting".format(self.voucher_type))
+			
+		from datetime import datetime
+		company_abbr = frappe.db.get_value("Company",self.company, "abbr")
+		date_object = datetime.strptime(self.posting_date, "%Y-%m-%d")
+		date_yy = date_object.strftime("%y")
+		date_mm = date_object.strftime("%m")
 
-		self.name = make_autoname(str(series_seq) + '.YY.MM.#####')
+		naming_ser = str(company_abbr) +"/"+ str(self.branch_abbr) + "/" + str(series_seq) + "/" + str(date_yy) +"-"+ str(date_mm)+"/"
+
+		self.name = make_autoname(naming_ser + '.#####')
 
 	def get_feed(self):
 		return self.voucher_type
