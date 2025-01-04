@@ -804,7 +804,6 @@
    "read_only": 1
   },
   {
-   "depends_on": "eval:!doc.project",
    "fieldname": "advance_payment",
    "fieldtype": "Section Break",
    "label": "Advance Payment"
@@ -868,7 +867,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-12-26 17:19:11.464022",
+ "modified": "2024-12-26 18:51:47.995855",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Payment Entry",

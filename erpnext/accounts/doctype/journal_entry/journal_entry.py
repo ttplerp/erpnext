@@ -224,6 +224,8 @@ class JournalEntry(AccountsController):
                     "payment_type": ad_doc.payment_type,
                 },
             )
+            ad_doc.db_set('payment_status', 'Piad')
+            ad_doc.db_set('journal_entry_status', "Paid on {0}".format(now_datetime().strftime("%Y-%m-%d %H:%M:%S")))
             supplier_doc.save(ignore_permissions=True)
 
     def on_cancel(self):
