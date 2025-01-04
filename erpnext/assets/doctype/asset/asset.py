@@ -1097,9 +1097,8 @@ class Asset(AccountsController):
                 },
             )
             je.submit()
-
-        days = date_diff(self.available_for_use_date, self.purchase_date)
-        if self.is_existing_asset and self.asset_category != "Land" and days > 30:
+        
+        if self.is_existing_asset and self.asset_category != "Land":
             je = frappe.new_doc("Journal Entry")
             je.flags.ignore_permissions = 1
             je.voucher_type = (
@@ -1110,23 +1109,15 @@ class Asset(AccountsController):
             je.total_debit = self.opening_accumulated_depreciation
             je.update(
                 {
-                    "voucher_type": "Opening Entry"
-                    if self.is_opening == "Yes"
-                    else "Journal Entry",
+                    "voucher_type": "Opening Entry" if self.is_opening == "Yes" else "Journal Entry",
                     "company": self.company,
                     "remark": self.name + " (" + self.asset_name + ") Asset Issued",
-                    "user_remark": self.name
-                    + " ("
-                    + self.asset_name
-                    + ") Asset Issued",
-                    "posting_date": self.posting_date
-                    if self.posting_date
-                    else self.purchase_date,
+                    "user_remark": self.name + " ("+ self.asset_name + ") Asset Issued",
+                    "posting_date": self.posting_date if self.posting_date else self.purchase_date,
                     "branch": self.branch,
                 }
             )
 
-            # credit account update
             je.append(
                 "accounts",
                 {
@@ -1139,7 +1130,6 @@ class Asset(AccountsController):
                 },
             )
 
-            # debit account update
             je.append(
                 "accounts",
                 {
