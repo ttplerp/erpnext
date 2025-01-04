@@ -95,7 +95,7 @@ class MBEntry(Document):
 						IFNULL(t2.unclaimed_quantity, 0) AS unclaimed_quantity,
 						IFNULL(t2.unclaimed_amount, 0) AS unclaimed_amount
 					FROM
-						`tab{}` t1, `tab{}_Item` t2
+						`tab{}` t1, `tab{} Item` t2
 					WHERE
 						t1.name = %s
 						AND t1.name = t2.parent
