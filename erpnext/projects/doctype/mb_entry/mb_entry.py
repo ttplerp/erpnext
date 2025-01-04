@@ -87,20 +87,27 @@ class MBEntry(Document):
 	def validate_boq_items(self):
 		source_table = "Subcontract" if self.subcontract else "BOQ"
 		source = self.subcontract if self.subcontract else self.boq
-		
+
 		for rec in self.items:
 			if rec.is_selected == 1 and flt(rec.entry_amount) > 0:
-				item_result = frappe.db.sql("""select
-													ifnull(t2.unclaimed_quantity, 0) as unclaimed_quantity,
-													ifnull(t2.unclaimed_amount, 0) as unclaimed_amount
-												from
-													`tab{1}` t1, `tab{1} Item` t2
-												where t1.name = '{2}'
-														and t1.name = t2.parent
-														and t2.bsr_code = '{0}'
-														and t2.boq = '{3}'
-														and t1.docstatus = 1
-												""".format(rec.bsr_code, source_table, source, rec.boq), as_dict=True)
+				query = """
+					SELECT
+						IFNULL(t2.unclaimed_quantity, 0) AS unclaimed_quantity,
+						IFNULL(t2.unclaimed_amount, 0) AS unclaimed_amount
+					FROM
+						`tab{}` t1, `tab{}_Item` t2
+					WHERE
+						t1.name = %s
+						AND t1.name = t2.parent
+						AND t2.bsr_code = %s
+						{}
+				""".format(source_table, source_table, "AND t2.boq = %s" if self.subcontract else "")
+				
+				params = (source, rec.bsr_code)
+				if self.subcontract:
+					params += (rec.boq,)
+				
+				item_result = frappe.db.sql(query, params, as_dict=True)
 				
 				if item_result:
 					item = item_result[0]
@@ -111,7 +118,7 @@ class MBEntry(Document):
 				else:
 					frappe.throw(_('Row {0}: No balance found for BSR Code {1} in {2}# <a href="#Form/{2}/{3}">{3}</a>').format(
 						rec.idx, rec.bsr_code, source_table, source))
-
+						
 	def update_boq_booked_amount(self, cancel=False):
 		total_amount = -1*flt(self.total_entry_amount) if cancel else flt(self.total_entry_amount)
 		if self.subcontract:
