@@ -53,7 +53,7 @@ class JournalEntry(AccountsController):
 			
 		from datetime import datetime
 		company_abbr = frappe.db.get_value("Company",self.company, "abbr")
-		date_object = datetime.strptime(self.posting_date, "%Y-%m-%d")
+		date_object = datetime.strptime(str(self.posting_date), "%Y-%m-%d")
 		date_yy = date_object.strftime("%y")
 		date_mm = date_object.strftime("%m")
 
