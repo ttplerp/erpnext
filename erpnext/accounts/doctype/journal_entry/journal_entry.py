@@ -49,7 +49,7 @@ class JournalEntry(AccountsController):
 		elif self.naming_series == 'Contra Entry (CE)':
 			series_seq = "CE"
 		else:
-			frappe.throw(" {} Voucher Type is not available in current setting".format(self.voucher_type))
+			frappe.throw(" {} Naming Series is not available in current setting".format(self.naming_series))
 			
 		from datetime import datetime
 		company_abbr = frappe.db.get_value("Company",self.company, "abbr")
