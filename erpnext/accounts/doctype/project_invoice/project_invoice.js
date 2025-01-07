@@ -48,7 +48,7 @@ frappe.ui.form.on('Project Invoice', {
 				frappe.route_options = {
 					voucher_no: frm.doc.name,
 					from_date: frm.doc.invoice_date,
-					to_date: frm.doc_invoice_date,
+					to_date: frm.doc.invoice_date,
 					company: frm.doc.company,
 					group_by_voucher: false
 				};
