@@ -177,6 +177,8 @@
   {
    "fieldname": "advance_for",
    "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Advance For",
    "options": "\nTrainee\nOJT\nProduction",
    "reqd": 1
@@ -193,7 +195,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-28 11:30:09.116308",
+ "modified": "2025-01-07 15:39:10.909302",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Mess Advance",

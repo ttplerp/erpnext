@@ -395,7 +395,7 @@ class DesuupMessAdvance(Document):
 		self.to_date = month_end_date
 
 	def get_start_end_month_date(self):
-		year = self.posting_date.split("-")[0]
+		year = str(getdate(self.posting_date).year)
 		month_start_date = "-".join([year, self.month, "01"])
 		month_end_date   = get_last_day(month_start_date)
 

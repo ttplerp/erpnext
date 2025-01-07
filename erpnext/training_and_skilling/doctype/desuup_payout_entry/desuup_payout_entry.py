@@ -82,29 +82,28 @@ class DesuupPayoutEntry(Document):
 			monthly_stipend_amt, monthly_mess_amt = self.get_stipend_amount()
 			if self.payment_for == "Trainee":
 				item.monthly_stipend_amount = monthly_stipend_amt
+				item.monthly_mess_amount = monthly_mess_amt if item.is_mess_member else 0.0
 			mess_adv_amt, adv_party = self.get_advance_amount(item.desuup, item.reference_doctype, item.reference_name)
 			if item.is_mess_member and mess_adv_amt > 0:
-				item.monthly_mess_amount = monthly_mess_amt
-
 				item.mess_advance_party = adv_party
 				item.mess_advance_amount = mess_adv_amt
 
 				if item.days_in_month == item.total_days_present:
-					stipend = flt(item.monthly_stipend_amount - monthly_mess_amt)
-					adv_amt = flt(monthly_mess_amt)
+					stipend = flt(item.monthly_stipend_amount - item.monthly_mess_amount)
+					adv_amt = flt(item.monthly_mess_amount)
 
 					item.stipend_amount = flt(stipend, 2)
 					item.mess_advance_used = flt(adv_amt, 2)	
 				else:
 					if flt(item.total_days_present) > 30:
-						stipend = flt(item.monthly_stipend_amount - monthly_mess_amt)
-						adv_amt = flt(monthly_mess_amt)
+						stipend = flt(item.monthly_stipend_amount - item.monthly_mess_amount)
+						adv_amt = flt(item.monthly_mess_amount)
 
 						item.stipend_amount = flt(stipend, 2)
 						item.mess_advance_used = flt(adv_amt, 2)	
 					else:
-						stipend = flt(item.monthly_stipend_amount - monthly_mess_amt)/flt(30)
-						adv_amt = flt(monthly_mess_amt)/flt(30)
+						stipend = flt(item.monthly_stipend_amount - item.monthly_mess_amount)/flt(30)
+						adv_amt = flt(item.monthly_mess_amount)/flt(30)
 
 						item.stipend_amount = flt(stipend * total_days, 2)
 						item.mess_advance_used = flt(adv_amt * total_days, 2)
@@ -281,6 +280,7 @@ class DesuupPayoutEntry(Document):
 				t2.desuup, 
 				t2.desuup_name, 
 				t2.amount as monthly_pay_amount, 
+				t2.mess_amount as monthly_mess_amount,
 				t1.branch, 
 				t1.cost_center,
 				t1.start_date from_date,
@@ -328,6 +328,7 @@ class DesuupPayoutEntry(Document):
 				t2.desuup, 
 				t2.desuup_name, 
 				t2.amount as monthly_pay_amount, 
+				t2.mess_amount as monthly_mess_amount, 
 				t1.branch, 
 				t1.cost_center,
 				t1.start_date from_date,

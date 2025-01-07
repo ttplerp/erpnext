@@ -97,6 +97,8 @@
   {
    "fieldname": "deployment_type",
    "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Deployment Type",
    "options": "\nOJT\nProduction",
    "reqd": 1
@@ -188,7 +190,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-24 20:29:18.548496",
+ "modified": "2025-01-07 15:35:38.235130",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Deployment Entry",
