@@ -56,16 +56,23 @@ class Item(Document):
 		self.set_onload("asset_naming_series", get_asset_naming_series())
 
 	def autoname(self):
-		# if frappe.db.exists("Item",{"item_group":self.item_group}):
-		# 	prev_item = frappe.db.sql("select name from `tabItem` where item_group = '{}' order by name desc limit 1".format(self.item_group))
-		# 	self.item_code = self.name = cstr(cint(prev_item[0][0]) + 1)
-		# else:
-		# 	self.item_code = self.name = make_autoname('ABC{}.#####'.format(frappe.db.get_value('Item Group',self.item_group,'item_code_base')))[3:]
-		abb = frappe.db.get_value('Item Group', self.item_group, 'item_code_base')
-		if not abb:
-			frappe.throw('Set Item Group Abbreviation for item group {}'.format("<a href='/app/Form/Item Group/{0}'><b>{0}</b></a>").format(self.item_group))
-		self.item_code = make_autoname(('{}.######'.format(abb)))
-
+		base = frappe.db.get_value("Item Group", self.item_group, "item_code_base")
+		if not base:
+			frappe.throw(
+				_("Setup Item Code Base in Item Group '{}'").format(
+					frappe.get_desk_link("Item Group", self.item_group)
+				),
+				title=_("Missing Item Code Base")
+			)
+		self.item_code = make_autoname(f"{base}.#######")
+		
+		if not self.item_code:
+			frappe.throw(
+				_("Item Code is mandatory because Item is not automatically numbered."),
+				title=_("Missing Item Code")
+			)
+		self.item_code = strip(self.item_code)
+		self.name = self.item_code
 
 	def after_insert(self):
 		"""set opening stock and item price"""
