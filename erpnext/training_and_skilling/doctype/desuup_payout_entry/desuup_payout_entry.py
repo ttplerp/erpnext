@@ -69,7 +69,7 @@ class DesuupPayoutEntry(Document):
 
 
 	def calculate_amount(self):
-		year = self.posting_date.split("-")[0]
+		year = str(getdate(self.posting_date).year)
 		month_start_date = "-".join([year, self.month, "01"])
 		month_end_date   = get_last_day(month_start_date)
 		days_in_month = calendar.monthrange(month_end_date.year, month_end_date.month)[1]
@@ -192,7 +192,7 @@ class DesuupPayoutEntry(Document):
 		months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 		month = str(int(months.index(self.month_name))+1).rjust(2,"0")
 
-		year = self.posting_date.split("-")[0]
+		year = str(getdate(self.posting_date).year)
 		month_start_date = "-".join([year, month, "01"])
 		month_end_date   = get_last_day(month_start_date)
 
