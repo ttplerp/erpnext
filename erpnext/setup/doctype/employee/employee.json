@@ -768,8 +768,7 @@
   },
   {
    "fieldname": "bank_details_section",
-   "fieldtype": "Section Break",
-   "label": "Bank Details"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "column_break_9",
@@ -1103,8 +1102,10 @@
    "label": "CID No./WP No."
   },
   {
+   "depends_on": "eval:doc.salary_mode == 'Bank'",
    "fieldname": "bank_details",
    "fieldtype": "Table",
+   "label": "Bank Details",
    "options": "Employee Bank Account"
   },
   {
@@ -1130,7 +1131,7 @@
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2025-01-08 11:51:43.224046",
+ "modified": "2025-01-08 11:58:24.981396",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
