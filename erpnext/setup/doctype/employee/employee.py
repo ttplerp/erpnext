@@ -57,7 +57,7 @@ class Employee(NestedSet):
 					self.bank_name = a.bank_name
 					self.bank_branch  = a.bank_branch
 					self.bank_account_type = a.bank_account_type
-					self.account_number = a.account_number
+					self.bank_ac_no = a.account_number
 			if default_bank_account == 0:
 				frappe.throw("Please set a default bank account under Bank Information")
 			elif default_bank_account > 1:
