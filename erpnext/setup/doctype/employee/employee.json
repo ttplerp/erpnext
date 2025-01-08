@@ -51,12 +51,13 @@
   "company_details_section",
   "company",
   "department",
+  "division",
+  "section",
   "employee_number",
   "column_break_25",
   "branch",
   "cost_center",
-  "division",
-  "section",
+  "project",
   "unit",
   "performance_evaluation_section",
   "include_in_performance_evaluation",
@@ -425,7 +426,6 @@
    "fieldname": "bank_name",
    "fieldtype": "Link",
    "label": "Bank Name",
-   "mandatory_depends_on": "eval:doc.salary_mode == 'Bank'",
    "oldfieldname": "bank_name",
    "oldfieldtype": "Link",
    "options": "Financial Institution",
@@ -436,7 +436,6 @@
    "fieldname": "bank_ac_no",
    "fieldtype": "Data",
    "label": "Bank A/C No.",
-   "mandatory_depends_on": "eval:doc.salary_mode == 'Bank'",
    "oldfieldname": "bank_ac_no",
    "oldfieldtype": "Data",
    "read_only": 1
@@ -884,7 +883,6 @@
    "read_only": 1
   },
   {
-   "depends_on": "eval:doc.salary_mode == 'Bank'",
    "fieldname": "bank_branch",
    "fieldtype": "Link",
    "label": "Bank Branch",
@@ -893,7 +891,6 @@
    "read_only": 1
   },
   {
-   "depends_on": "eval:doc.salary_mode == 'Bank'",
    "fieldname": "bank_account_type",
    "fieldtype": "Link",
    "label": "Bank Account Type",
@@ -1121,13 +1118,19 @@
   {
    "fieldname": "column_break_xfs1b",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2024-12-04 17:36:11.941620",
+ "modified": "2025-01-08 11:45:39.224799",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
