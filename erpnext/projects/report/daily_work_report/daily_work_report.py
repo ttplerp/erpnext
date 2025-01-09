@@ -1,19 +1,22 @@
-# Copyright (c) 2023, Frappe Technologies Pvt. Ltd. and contributors
-# For license information, please see license.txt
+'''
+--------------------------------------------------------------------------------------------------------------------------
+Version		 	Author		  				CreatedOn		 	ModifiedOn		  	Remarks
+------------ --------------- ------------------ -------------------  -----------------------------------------------------
+1.0		      	Dawa Nyuehtyue Tshering		2024/11/21			2025/01/07			Original Version
+--------------------------------------------------------------------------------------------------------------------------			
+'''
 
 import frappe
 from frappe import _
 from frappe.utils import flt, getdate, cint, today, add_years, date_diff, nowdate
 
 def execute(filters=None):
-	today = nowdate()
-	if filters.date:
-		if getdate(filters.date) != getdate(today):
-			frappe.throw(_("You cannot enter a date in the past or future. Please select the current date."))
-
-	data = get_data(filters)
-	# if filters.report_type == "Labour Cost Details":
-	columns = get_columns(filters)
+	if filters.show_overall == 1:
+		columns = get_overall_columns(filters)
+		data = get_overall_data(filters)
+	else:
+		data = get_data(filters)
+		columns = get_columns(filters)
 	return columns, data
 
 def get_columns(filters):
@@ -56,7 +59,7 @@ def get_columns(filters):
 			{"label": _("Designation"), "fieldname": "designation", "fieldtype": "Link", "options":"Designation", "width": 200},
 			{"label": _("Cost Center"), "fieldname": "cost_center", "fieldtype": "Link", "options":"Cost Center", "width": 150},
 			{"label": _("Daily Rate"), "fieldname": "daily_rate", "fieldtype": "Currency", "width": 150},
-			{"label": _("Basic Pay"), "fieldname": "basic_pay", "fieldtype": "Currency", "width": 150},
+			{"label": _("Total Earning"), "fieldname": "total_earning", "fieldtype": "Currency", "width": 150},
 			{"label": _("Date of joining"), "fieldname": "date_of_joining", "fieldtype": "Date", "width": 150},
 		]
 	elif filters.report_type == "Expenditure for Mess":
@@ -84,12 +87,10 @@ def get_columns(filters):
 def get_data(filters):
 	data = []
 	cond = ""
-	if filters.project:
-		cond += "AND mre.project='{0}'".format(filters.project)
 	if filters.cost_center:
 		cond += "AND mre.cost_center='{0}'".format(filters.cost_center)
-	if filters.mr_type:
-		cond += "AND mre.muster_roll_type='{0}'".format(filters.mr_type)
+	if filters.project:
+		cond += "AND mre.project='{0}'".format(filters.project)
 
 	if filters.report_type == "Labour Cost Details":
 		reqular = """
@@ -146,6 +147,8 @@ def get_data(filters):
 		cond = ""
 		if filters.cost_center:
 			cond = "AND t1.cost_center='{0}'".format(filters.cost_center)
+		if filters.project:
+			cond = "AND t1.project='{0}'".format(filters.project)
 		equipments = """
 			SELECT
 				t1.project,
@@ -166,6 +169,8 @@ def get_data(filters):
 		cond = ""
 		if filters.cost_center:
 			cond += "AND sed.cost_center='{0}'".format(filters.cost_center)
+		if filters.project:
+			cond += "AND sed.project='{0}'".format(filters.project)
 		equipment = """
 			SELECT
 				sed.item_code,
@@ -207,6 +212,8 @@ def get_data(filters):
 		cond = ""
 		if filters.cost_center:
 			cond = "AND t1.cost_center='{0}'".format(filters.cost_center)
+		if filters.project:
+			cond += "AND t1.project='{0}'".format(filters.project)
 		query = """
 				select 
 					t1.project,
@@ -229,24 +236,201 @@ def get_data(filters):
 		cond = ""
 		if filters.cost_center:
 			cond = "AND t1.cost_center='{0}'".format(filters.cost_center)
+		if filters.project:
+			cond = "AND t1.project='{0}'".format(filters.project)
 		query = """
 					SELECT 
 						t1.employee,
 						t1.employee_name,
 						t1.cost_center,
 						t1.designation,
-						t3.amount / 30 AS daily_rate,
-						t3.amount as basic_pay,
+						t2.total_earning / 30 AS daily_rate,
+						t2.total_earning as total_earning,
 						t1.date_of_joining
 					FROM 
 						`tabEmployee` t1
 					JOIN 
-						`tabSalary Structure` t2 ON t1.employee = t2.employee
-					JOIN 
-						`tabSalary Detail` t3 ON t2.name = t3.parent
+						`tabSalary Structure` t2 ON t1.name = t2.employee
 					WHERE 
 						t1.status = 'Active'
-						AND t3.salary_component = 'Basic Pay' {}
+						{}
 				""".format(cond)
 		data = frappe.db.sql(query, as_dict=True)
 	return data
+
+def get_overall_columns(filters):
+	return [
+		{"fieldtype": "Link", "fieldname": "cost_center", "label": _("Cost Center"), "options": "Cost Center", "width": 200},
+		{"fieldtype": "Link", "fieldname": "project", "label": _("Project"), "options": "Project", "width": 200},
+		{"fieldtype": "Float", "fieldname": "equipment_machinary", "label": _("Equipment (Nu.)"), "width": 150},
+		{"fieldtype": "Float", "fieldname": "hsd", "label": _("HSD (Nu.)"), "width": 150},
+		{"fieldtype": "Float", "fieldname": "piu", "label": _("PIU (Nu.)"), "width": 150},
+		{"fieldtype": "Float", "fieldname": "mess", "label": _("Mess (Nu.)"), "width": 150},
+		{"fieldtype": "Float", "fieldname": "material", "label": _("Material (Nu.)"), "width": 150},
+		{"fieldtype": "Data", "fieldname": "total_mr", "label": _("Total MR"), "width": 100},
+		{"fieldtype": "Float", "fieldname": "labour_cost", "label": _("Labour (Nu.)"), "width": 150},
+		{"fieldtype": "Float", "fieldname": "income", "label": _("Income (Nu.)"), "width": 150},    
+		{"fieldtype": "Float", "fieldname": "expense", "label": _("Expense (Nu.)"), "width": 150},    
+		{"fieldtype": "Float", "fieldname": "profit", "label": _("Profit (Nu.)"), "width": 150},    
+	]
+
+def get_overall_data(filters):
+	data = []
+	conditions, params = get_conditions(filters)
+
+	project_list = fetch_query(
+		f"""
+		SELECT name, project_name, cost_center 
+		FROM `tabProject` {conditions}
+		""",
+		params
+	)
+
+	for project in project_list:
+		cost_center, project_name = project['cost_center'], project['name']
+
+		equipment_machinary = get_equipment_machinary(cost_center, project_name, filters.date)
+		hsd = get_hsd_details(cost_center, project_name, filters.date)
+		piu = get_piu_details(cost_center, project_name)
+		mess = get_mess_details(cost_center, project_name, filters.date)
+		material = get_material_details(cost_center, project_name, filters.date)
+		total_mr, labour_cost = get_labour_details(cost_center, project_name, filters.date)
+
+		expense = sum([
+			flt(equipment_machinary),
+			flt(hsd),
+			flt(mess),
+			flt(piu),
+			flt(material),
+			flt(labour_cost)
+		])
+		income = flt(get_rom_details(cost_center, project_name, filters.date))
+		profit = income - expense
+
+		data.append({
+			"project": project['name'],
+			"project_name": project['project_name'],
+			"cost_center": cost_center,
+			"equipment_machinary": flt(equipment_machinary),
+			"hsd": flt(hsd),
+			"piu": flt(piu),
+			"mess": flt(mess),
+			"material": flt(material),
+			"total_mr": total_mr,
+			"labour_cost": flt(labour_cost),
+			"income": income,
+			"expense": expense,
+			"profit": profit,
+		})
+
+	data.append(get_totals_row(data))
+	return data
+
+
+def get_conditions(filters):
+	conditions = []
+	params = {}
+
+	if filters.get('project'):
+		conditions.append("name = %(project)s")
+		params["project"] = filters['project']
+	if filters.get('cost_center'):
+		conditions.append("cost_center = %(cost_center)s")
+		params["cost_center"] = filters['cost_center']
+
+	return ("WHERE " + " AND ".join(conditions)) if conditions else "", params
+
+def fetch_query(query, params):
+	try:
+		return frappe.db.sql(query, params, as_dict=True)
+	except Exception as e:
+		frappe.log_error(message=str(e), title=_("Query Execution Failed"))
+		return []
+
+def get_totals_row(data):
+	totals = {key: 0 for key in data[0].keys() if isinstance(data[0][key], (int, float))}
+	for row in data:
+		for key in totals.keys():
+			totals[key] += flt(row[key])
+	totals.update({
+		"project": _("Total"),
+		"cost_center": ""
+	})
+	return totals
+
+def get_equipment_machinary(cost_center, project, date):
+	return execute_query("""
+		SELECT SUM(t2.amount) as total_amount
+		FROM `tabProject Equipment Engagement` t1, `tabProject Equipment Engagement Item` t2
+		WHERE t1.name = t2.parent AND t1.docstatus = 1 AND t1.cost_center = %s AND t1.project = %s AND t1.posting_date = %s
+	""", (cost_center, project, date))
+
+def get_hsd_details(cost_center, project, date):
+	return execute_query("""
+		SELECT SUM(t2.amount) as total_amount
+		FROM `tabPOL Issue` t1, `tabPOL Issue Items` t2
+		WHERE t1.name = t2.parent AND t1.docstatus = 1 AND t1.cost_center = %s AND t1.project = %s AND t1.posting_date = %s
+	""", (cost_center, project, date))
+
+def get_piu_details(cost_center, project):
+	return execute_query("""
+		SELECT SUM(t2.total_earning / 30) AS total_amount
+		FROM `tabEmployee` t1
+		JOIN `tabSalary Structure` t2 ON t1.name = t2.employee
+		WHERE t1.status = 'Active' AND t2.is_active ='Yes' AND t1.cost_center = %s AND t1.project = %s
+	""", (cost_center, project))
+
+def get_mess_details(cost_center, project, date):
+	return execute_query("""
+		SELECT SUM(amount) as total_amount
+		FROM `tabProject Mess Management`
+		WHERE docstatus = 1 AND cost_center = %s AND project = %s AND posting_date = %s
+	""", (cost_center, project, date))
+
+def get_material_details(cost_center, project, date):
+	return execute_query("""
+		SELECT SUM(t2.amount) as total_amount
+		FROM `tabStock Entry` t1, `tabStock Entry Detail` t2
+		WHERE t1.name = t2.parent AND t1.stock_entry_type = "Material Issue" AND t1.docstatus = 1 AND t2.cost_center = %s AND t2.project = %s AND t1.posting_date = %s
+	""", (cost_center, project, date))
+
+def get_labour_details(cost_center, project, date):
+
+	mr_total, labour_cost = frappe.db.sql(
+		"""
+		SELECT COUNT(t1.name) AS mr_total, SUM(t1.rate_per_day) AS total_amount
+		FROM `tabMuster Roll Employee` t1
+		INNER JOIN `tabMuster Roll Attendance` t2 ON t1.name = t2.mr_employee
+		WHERE t1.status = 'Active'
+		AND t1.cost_center = %s
+		AND t1.project = %s
+		AND t2.date = %s
+		""",
+		(cost_center, project, date),
+	)[0] or (0, 0.0)
+
+	overtime_cost = frappe.db.sql(
+		"""
+		SELECT SUM(t2.number_of_hours * t1.rate_per_hour) AS total_amount
+		FROM `tabMuster Roll Employee` t1
+		INNER JOIN `tabMuster Roll Overtime Entry` t2 ON t1.name = t2.mr_employee
+		WHERE t1.status = 'Active'
+		AND t2.docstatus = 1
+		AND t1.cost_center = %s
+		AND t1.project = %s
+		AND t2.date = %s
+		""",
+		(cost_center, project, date),
+	)[0][0] or 0.0
+	return mr_total, flt(labour_cost) + flt(overtime_cost)
+
+def get_rom_details(cost_center, project, date):
+	return execute_query("""
+		SELECT SUM(t1.amount) as total_amount
+		FROM `tabRecord Of Measurement` t1, `tabRecord Of Measurement Item` t2
+		WHERE t2.parent = t1.name AND t1.docstatus = 1 AND t1.cost_center = %s AND t1.project = %s AND t1.posting_date = %s
+	""", (cost_center, project, date))
+
+def execute_query(query, params):
+	result = fetch_query(query, params)
+	return result[0].get('total_amount', 0) if result else 0

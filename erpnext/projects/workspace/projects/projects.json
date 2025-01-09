@@ -265,44 +265,6 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Daily Reports",
-   "link_count": 3,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Daily Project Profit & Loss",
-   "link_count": 0,
-   "link_to": "Daily Project Profit & Loss",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Daily Work Report",
-   "link_count": 0,
-   "link_to": "Daily Work Report",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Daily Record of Measurement",
-   "link_count": 0,
-   "link_to": "Daily Record of Measurement",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Reports",
    "link_count": 2,
    "onboard": 0,
@@ -409,9 +371,47 @@
    "link_type": "DocType",
    "onboard": 1,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Daily Reports",
+   "link_count": 3,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Daily Project Profit & Loss",
+   "link_count": 0,
+   "link_to": "Daily Project Profit & Loss",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Daily Work Report",
+   "link_count": 0,
+   "link_to": "Daily Work Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Daily Record of Measurement",
+   "link_count": 0,
+   "link_to": "Daily Record of Measurement",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2024-11-21 17:00:19.321345",
+ "modified": "2025-01-09 18:24:25.719411",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Projects",

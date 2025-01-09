@@ -109,7 +109,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-09 11:22:24.391565",
+ "modified": "2025-01-09 14:03:11.661645",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Unvalued Asset",
@@ -136,6 +136,17 @@
    "read": 1,
    "report": 1,
    "role": "Asset Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Asset User",
    "share": 1,
    "write": 1
   }

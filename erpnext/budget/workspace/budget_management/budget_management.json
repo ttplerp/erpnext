@@ -9,7 +9,7 @@
  "hide_custom": 0,
  "icon": "color-rank",
  "idx": 0,
- "is_hidden": 0,
+ "is_hidden": 1,
  "label": "Budget Management",
  "links": [
   {
@@ -175,7 +175,7 @@
    "type": "Link"
   }
  ],
- "modified": "2023-07-27 13:05:46.016388",
+ "modified": "2025-01-09 18:24:58.414614",
  "modified_by": "Administrator",
  "module": "Budget",
  "name": "Budget Management",
