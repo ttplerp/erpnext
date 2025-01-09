@@ -25,7 +25,7 @@ frappe.query_reports["Daily Work Report"] = {
             "label": __("Report Type"),
             "fieldtype": "Select",
             "options": "\nLabour Cost Details\nMachinery and Equipment\nMaterial Consumption\nExpenditure of Project Implementation Unit\nExpenditure for Mess\nHSD Issued Details",
-            "reqd": 1
+            // "reqd": 1
         },
         {
             "fieldname": "date",
