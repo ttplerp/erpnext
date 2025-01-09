@@ -61,6 +61,14 @@ frappe.ui.form.on('Asset', {
 			};
 		});
 
+		frm.set_query("asset_sub_category", function() {
+			return {
+				"filters": {
+					"asset_category": frm.doc.asset_category
+				}
+			};
+		});
+
 		erpnext.accounts.dimensions.setup_dimension_filters(frm, frm.doctype);
 	},
 

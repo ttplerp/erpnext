@@ -28,6 +28,7 @@
   "naming_series",
   "asset_barcode",
   "asset_name",
+  "column_break_krioz",
   "asset_category",
   "asset_sub_category",
   "abbr",
@@ -67,7 +68,7 @@
   "income_tax_opening_depreciation_amount",
   "opening_accumulated_depreciation",
   "number_of_depreciations_booked",
-  "section_break_36",
+  "asset_depreciation_schedule_tab",
   "finance_books",
   "section_break_33",
   "depreciation_method",
@@ -502,12 +503,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "depends_on": "calculate_depreciation",
-   "fieldname": "section_break_36",
-   "fieldtype": "Section Break",
-   "label": "Finance Books"
-  },
-  {
    "fieldname": "split_from",
    "fieldtype": "Link",
    "hidden": 1,
@@ -689,6 +684,16 @@
    "fieldtype": "Link",
    "label": "Asset Station ",
    "options": "Asset Station"
+  },
+  {
+   "fieldname": "column_break_krioz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "calculate_depreciation",
+   "fieldname": "asset_depreciation_schedule_tab",
+   "fieldtype": "Tab Break",
+   "label": "Asset Depreciation Schedule"
   }
  ],
  "idx": 72,
@@ -711,7 +716,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2024-12-26 11:13:54.994361",
+ "modified": "2025-01-09 12:14:27.083398",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",
