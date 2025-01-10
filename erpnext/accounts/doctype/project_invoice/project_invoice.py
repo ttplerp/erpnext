@@ -392,7 +392,7 @@ class ProjectInvoice(AccountsController):
 		else:
 			income_expense_account = frappe.db.get_value("Branch", self.branch, "revenue_bank_account")
 			if not income_expense_account:
-				frappe.throw("Please ser default revenue account in {}".format(frappe.get_desk_link("Branch", self.branch)))
+				frappe.throw("Please set default revenue account in {}".format(frappe.get_desk_link("Branch", self.branch)))
 		if not income_expense_account:
 			frappe.throw('Set accounts in Projects Settings')
 
