@@ -73,7 +73,7 @@
    "fieldname": "entry_quantity",
    "fieldtype": "Float",
    "label": "Quantity",
-   "precision": "2",
+   "precision": "9",
    "read_only": 1
   },
   {
@@ -135,7 +135,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-31 15:13:57.695345",
+ "modified": "2025-01-10 13:17:42.441088",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Detailed MB Entry BOQ",
