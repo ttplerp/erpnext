@@ -13,7 +13,7 @@ from frappe.model.document import Document
 from frappe.utils import flt, time_diff_in_hours, get_datetime, getdate, cint, get_datetime_str
 from erpnext.controllers.accounts_controller import AccountsController
 from erpnext.accounts.party import get_party_account
-from erpnext.accounts.utils import get_tds_account, get_account_type
+from erpnext.accounts.utils import get_tds_account, get_retention_account, get_account_type
 from erpnext.accounts.general_ledger import (
 	get_round_off_account_and_cost_center,
 	make_gl_entries,
@@ -33,7 +33,8 @@ class ProjectInvoice(AccountsController):
 		self.set_status()
 		self.set_defaults()
 		self.validate_mb_entries()
-		self.validate_items()
+		self.calculate_totals()
+		self.validate_tds_retention()
 		self.load_invoice_boq()
 		self.validate_outstanding_amount()
 				
@@ -319,18 +320,22 @@ class ProjectInvoice(AccountsController):
 					"modified_by": self.modified_by,
 					"owner": self.owner
 			})
-				
-	def validate_items(self):
-		total_amount    = 0
 
+	@frappe.whitelist()
+	def calculate_totals(self):
+		total = 0.0
 		for rec in self.project_invoice_mb:
 			if rec.is_selected:
-				total_amount += flt(rec.entry_amount)
+				total += flt(rec.entry_amount)
+		self.price_adjustment_amount = flt(total) * flt(self.price_adjustment_percent)
+		total += flt(self.price_adjustment_amount)
 
 		self.total_deduction_amount = self.calculate_total_deductions()
 
-		self.total_amount 	= flt(total_amount)
+		self.total_amount 	= flt(total)
 		self.net_amount 	= self.outstanding_amount	= flt(self.total_amount) - flt(self.total_deduction_amount)
+
+		self.validate_tds_retention()
 		
 		if flt(self.total_amount) == 0:
 			frappe.throw(_("Total Amount should be greater than zero"), title="Invalid Data")
@@ -354,6 +359,21 @@ class ProjectInvoice(AccountsController):
 			total_deduction_amount += self.retention_amount
 
 		return total_deduction_amount
+	
+	def validate_tds_retention(self):
+		if self.tds_percent:
+			self.tds_account = get_tds_account(self.tds_percent, self.company, self.party_type)
+			self.tds_amount = flt(self.tds_percent) / 100 * flt(self.total_amount or 0)
+		else:
+			self.tds_amount = 0.00
+			self.tds_account = None
+
+		if self.retention_percent:
+			self.retention_account = get_retention_account(self.retention_percent, self.company, self.party_type)
+			self.retention_amount = flt(self.retention_percent) / 100 * flt(self.total_amount or 0)
+		else:
+			self.retention_amount = 0.00
+			self.retention_account = None
 
 	def make_gl_entry(self):
 		gl_entries = []

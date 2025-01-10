@@ -162,6 +162,14 @@ frappe.ui.form.on('Project Invoice', {
 		});
 	},
 
+	price_adjustment_percent: function (frm) {
+		calculate_totals(frm);
+	},
+
+	price_adjustment_amount: function (frm) {
+		calculate_totals(frm);
+	},
+
 	check_all: function (frm) {
 		check_uncheck_all(frm);
 	},
@@ -173,6 +181,7 @@ frappe.ui.form.on('Project Invoice', {
 	get_mb_entries: function (frm, cdt, cdn) {
 		get_mb_list(frm);
 	},
+
 });
 
 frappe.ui.form.on("Project Invoice BOQ", {
@@ -226,21 +235,31 @@ var get_mb_list = function (frm) {
 }
 
 var calculate_totals = function (frm) {
-	var pi = frm.doc.project_invoice_boq || [];
-	var mb = frm.doc.project_invoice_mb || [];
-	var gross_invoice_amount = 0.0
+	frappe.call({
+		method: "calculate_totals",
+		doc: frm.doc,
+		callback: function (r) {
+			frm.refresh_fields()
+		},
+		freeze: true,
+		freeze_message: "Recalculating ..."
+	})
 
-	if (frm.doc.docstatus != 1) {
+	// var pi = frm.doc.project_invoice_boq || [];
+	// var mb = frm.doc.project_invoice_mb || [];
+	// var gross_invoice_amount = 0.0
+
+	// if (frm.doc.docstatus != 1) {
 		
-		for (var i = 0; i < mb.length; i++) {
-			if (mb[i].entry_amount && mb[i].is_selected == 1) {
-				gross_invoice_amount += flt(mb[i].entry_amount);
-			}
-		}
+	// 	for (var i = 0; i < mb.length; i++) {
+	// 		if (mb[i].entry_amount && mb[i].is_selected == 1) {
+	// 			gross_invoice_amount += flt(mb[i].entry_amount);
+	// 		}
+	// 	}
 
-		cur_frm.set_value("net_amount", (gross_invoice_amount - frm.doc.total_deduct_amount))
-		cur_frm.set_value("total_amount", (gross_invoice_amount));
-	}
+	// 	cur_frm.set_value("net_amount", ((gross_invoice_amount + frm.doc.price_adjustment_amount) - frm.doc.total_deduct_amount))
+	// 	cur_frm.set_value("total_amount", (gross_invoice_amount + frm.doc.price_adjustment_amount));
+	// }
 }
 
 var check_uncheck_all = function (frm) {
@@ -252,11 +271,11 @@ var check_uncheck_all = function (frm) {
 
 frappe.ui.form.on("Project Invoice Deduction", {
 	amount: function (frm, cdt, cdn) {
-		calculate_deductions(frm, cdt, cdn);
+		calculate_totals(frm, cdt, cdn);
 	},
 
 	deductions_remove: function (frm, cdt, cdn) {
-		calculate_deductions(frm, cdt, cdn);
+		calculate_totals(frm, cdt, cdn);
 	},
 
 	deductions_add: function (frm, cdt, cdn) {
@@ -264,13 +283,14 @@ frappe.ui.form.on("Project Invoice Deduction", {
 		frappe.model.set_value(cdt, cdn, 'cost_center', frm.doc.cost_center);
 	},
 });
+
 frappe.ui.form.on("Project Invoice Advance", {
 	allocated_amount: function (frm) {
-		calculate_deductions(cur_frm);
+		calculate_totals(frm);
 	},
 
 	advances_remove: function (frm) {
-		calculate_deductions(cur_frm);
+		calculate_totals(frm);
 	},
 });
 
@@ -310,34 +330,10 @@ function get_advance_list(frm) {
 	}
 }
 
-
 function tds_retention_calculation(frm) {
 	cur_frm.set_value("tds_amount", (cur_frm.doc.tds_percent / 100) * cur_frm.doc.total_amount);
 	cur_frm.set_value("retention_amount", (cur_frm.doc.retention_percent / 100) * cur_frm.doc.total_amount);
 	cur_frm.refresh_field("tds_amount")
 	cur_frm.refresh_field("retention_amount")
-	calculate_deductions(cur_frm)
-};
-
-function calculate_deductions(frm) {
-	// Other deductions
-	let total_deduction_amount = 0
-	if (frm.doc.deductions) {
-		frm.doc.deductions.map(item => {
-			total_deduction_amount += item.amount
-		})
-	}
-
-	if (frm.doc.advances) {
-		frm.doc.advances.map(item => {
-			total_deduction_amount += item.allocated_amount
-		})
-	}
-	if (frm.doc.tds_amount) {
-		total_deduction_amount += frm.doc.tds_amount
-	}
-
-	frm.doc.total_deduction_amount = total_deduction_amount
-	cur_frm.refresh_field("total_deduction_amount")
 	calculate_totals(frm)
-}
+};
