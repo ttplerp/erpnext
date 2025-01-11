@@ -268,6 +268,7 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "outstanding_amount",
    "fieldtype": "Currency",
    "label": "Outstanding Amount",
@@ -380,7 +381,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-10 12:37:46.605465",
+ "modified": "2025-01-11 16:31:31.408760",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Project Invoice",
