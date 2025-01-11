@@ -1438,7 +1438,7 @@ class PaymentEntry(AccountsController):
 					)
 			
 			if self.payment_type in ("Receive"):
-				ad_payable = frappe.db.get_single_value("Maintenance Settings", "hire_equipment_accountoutward")
+				# ad_payable = frappe.db.get_single_value("Maintenance Settings", "hire_equipment_accountoutward")
 				receivable_account = frappe.db.get_single_value("Maintenance Settings", "hire_charge_recievable_account")
 				# cash_accc = frappe.db.get_value('Company', {"name": "VAJRA BUILDERS PRIVATE LIMITED"}, 'default_cash_account')
 				net_receivable = self.paid_amount - self.total_advance_amount
