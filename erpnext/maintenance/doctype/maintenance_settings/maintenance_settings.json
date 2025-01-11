@@ -27,6 +27,7 @@
   "hiring_charges_section",
   "vehicle_expense_account",
   "hire_charge_payable_account",
+  "hire_charge_recievable_account",
   "column_break_gfnlq",
   "machine_expense_account",
   "transportation_charges_section",
@@ -38,7 +39,9 @@
   "pol_payable",
   "column_break_jgskp",
   "fuel_advance_account",
-  "hired_fuel_expense_account"
+  "hired_fuel_expense_account",
+  "section_break_ecggc",
+  "hire_equipment_accountoutward"
  ],
  "fields": [
   {
@@ -144,12 +147,6 @@
    "options": "Account"
   },
   {
-   "fieldname": "hire_charge_payable_account",
-   "fieldtype": "Link",
-   "label": "Hire Charge Payable Account ",
-   "options": "Account"
-  },
-  {
    "fieldname": "column_break_gfnlq",
    "fieldtype": "Column Break"
   },
@@ -224,12 +221,35 @@
    "fieldtype": "Link",
    "label": "Offense GL",
    "options": "Account"
+  },
+  {
+   "fieldname": "section_break_ecggc",
+   "fieldtype": "Section Break",
+   "label": "Equipment Hiring"
+  },
+  {
+   "fieldname": "hire_equipment_accountoutward",
+   "fieldtype": "Link",
+   "label": "Hire Equipment Account Outward",
+   "options": "Account"
+  },
+  {
+   "fieldname": "hire_charge_recievable_account",
+   "fieldtype": "Link",
+   "label": "Hire Charge Recievable Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "hire_charge_payable_account",
+   "fieldtype": "Link",
+   "label": "Hire Charge Payable Account ",
+   "options": "Account"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-03-19 11:45:44.321207",
+ "modified": "2024-10-24 14:51:48.070975",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Maintenance Settings",
