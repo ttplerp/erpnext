@@ -820,11 +820,9 @@
    "options": "Payment Entry Advance"
   },
   {
-   "depends_on": "eval:!doc.project",
    "fieldname": "advance_type",
    "fieldtype": "Link",
    "label": "Advance Type",
-   "mandatory_depends_on": "eval:!doc.project",
    "options": "Advance Type"
   },
   {
@@ -867,7 +865,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-12-26 18:51:47.995855",
+ "modified": "2025-01-11 16:19:55.687850",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Payment Entry",
