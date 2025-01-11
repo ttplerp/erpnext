@@ -24,12 +24,14 @@
   "due_date",
   "bill_date",
   "invoice_no",
+  "column_break_j8fzu",
   "posting_time",
   "delay_by",
   "set_posting_time",
   "is_paid",
   "is_return",
   "apply_tds",
+  "bill_received",
   "amended_from",
   "accounting_dimensions_section",
   "cost_center",
@@ -1477,13 +1479,24 @@
    "label": "Imprest Party",
    "mandatory_depends_on": "eval:doc.settle_project_imprest == 1",
    "options": "Employee"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "bill_received",
+   "fieldtype": "Check",
+   "label": "Bill Received"
+  },
+  {
+   "fieldname": "column_break_j8fzu",
+   "fieldtype": "Column Break"
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 204,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-03-29 14:48:19.628545",
+ "modified": "2025-01-11 17:14:43.957563",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Purchase Invoice",

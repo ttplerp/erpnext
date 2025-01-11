@@ -135,6 +135,7 @@ class PurchaseInvoice(BuyingController):
         self.validate_multiple_billing("Purchase Receipt", "pr_detail", "amount", "items")
         self.create_remarks()
         self.set_status()
+        self.validate_bill_verifier()
         self.validate_purchase_receipt_if_update_stock()
         validate_inter_company_party(
             self.doctype,
@@ -145,6 +146,36 @@ class PurchaseInvoice(BuyingController):
         self.reset_default_field_value("set_warehouse", "items", "warehouse")
         self.reset_default_field_value("rejected_warehouse", "items", "rejected_warehouse")
         self.reset_default_field_value("set_from_warehouse", "items", "from_warehouse")
+
+    def on_update_after_submit(self):
+        self.validate_bill_verifier()
+
+    def validate_bill_verifier(self):
+        if self.bill_received:
+            bill_verifiers = frappe.db.get_list(
+                "Bill Verifiers",
+                fields=["user"],
+                filters={},
+                ignore_permissions=True
+            )
+            
+            if not bill_verifiers:
+                frappe.throw(
+                    "The Bill Verifier is not set in Buying Settings. Please configure a Bill Verifier to proceed.",
+                    title="Verifier Missing"
+                )
+
+            verifier_users = [bv.get("user") for bv in bill_verifiers]
+
+            if frappe.session.user not in verifier_users:
+                authorized_users = ", ".join(
+                    [f"<b>{frappe.get_value('User', user, 'full_name')} ({user})</b>" for user in verifier_users]
+                )
+                frappe.throw(
+                    f"Only the following users are authorized to mark the bill as 'Received': {authorized_users}. "
+                    "Please contact them for further action.",
+                    title="Access Denied"
+                )
 
     def validate_release_date(self):
         if self.release_date and getdate(nowdate()) >= getdate(self.release_date):
@@ -567,6 +598,7 @@ class PurchaseInvoice(BuyingController):
         self.check_prev_docstatus()
         self.update_status_updater_args()
         self.update_prevdoc_status()
+        self.validate_bill_verifier()
 
         frappe.get_doc("Authorization Control").validate_approving_authority(
             self.doctype, self.company, self.base_grand_total
