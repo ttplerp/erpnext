@@ -486,7 +486,9 @@ class ProjectInvoice(AccountsController):
 					"reference_type": self.doctype,
 					"reference_name": self.name,
 					"project": self.project,
-					"posting_date":self.invoice_date
+					"posting_date":self.invoice_date,
+					"party_type": self.party_type,
+					"party": self.party,
 				})
 			)
 
