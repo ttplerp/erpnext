@@ -1,0 +1,98 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-01-12 11:31:01.147514",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "employee_name",
+  "column_break_ifkio",
+  "branch",
+  "salary_slip",
+  "designation",
+  "column_break_ycnxd",
+  "gross_salary",
+  "salary_tax",
+  "health_contribution"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Employee Name"
+  },
+  {
+   "fieldname": "salary_slip",
+   "fieldtype": "Link",
+   "label": "Salary Slip",
+   "options": "Salary Slip",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.designation",
+   "fieldname": "designation",
+   "fieldtype": "Link",
+   "label": "Designation",
+   "options": "Designation"
+  },
+  {
+   "fetch_from": "employee.branch",
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch"
+  },
+  {
+   "fieldname": "column_break_ifkio",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_ycnxd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "gross_salary",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Gross Salary",
+   "read_only": 1
+  },
+  {
+   "fieldname": "salary_tax",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Salary Tax",
+   "read_only": 1
+  },
+  {
+   "fieldname": "health_contribution",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Health Contribution",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-01-12 17:24:33.744413",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Employee TDS Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

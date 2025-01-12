@@ -16,7 +16,9 @@
   "region",
   "fiscal_year",
   "month",
+  "number_of_employees",
   "pbva",
+  "bulk_leave_encashment",
   "sb_filters",
   "from_date",
   "cb_9",
@@ -29,6 +31,14 @@
   "cheque_no",
   "21",
   "cheque_date",
+  "section_break_5h4of",
+  "employees",
+  "section_break_llhcs",
+  "total_gross_salary",
+  "column_break_qfmka",
+  "total_salary_tax",
+  "column_break_tbaom",
+  "total_health_contribution",
   "sb_invoice_details",
   "items",
   "sb_totals",
@@ -43,7 +53,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Purpose",
-   "options": "\nOther Invoice\nEmployee Salary\nLeave Encashment\nPBVA\nBonus",
+   "options": "\nOther Invoice\nEmployee Salary\nLeave Encashment\nBulk Leave Encashment",
    "reqd": 1
   },
   {
@@ -111,22 +121,22 @@
    "label": "Filters"
   },
   {
-   "depends_on": "eval:!in_list([\"Employee Salary\",\"Bonus\",\"PBVA\"], doc.purpose)",
+   "depends_on": "eval:!in_list([\"Employee Salary\",\"Bulk Leave Encashment\",\"Bonus\",\"PBVA\"], doc.purpose)",
    "fieldname": "from_date",
    "fieldtype": "Date",
    "label": "From Date",
-   "mandatory_depends_on": "eval:!in_list([\"Employee Salary\",\"Bonus\",\"PBVA\"], doc.purpose)"
+   "mandatory_depends_on": "eval:!in_list([\"Employee Salary\",\"Bulk Leave Encashment\",\"Bonus\",\"PBVA\"], doc.purpose)"
   },
   {
    "fieldname": "cb_9",
    "fieldtype": "Column Break"
   },
   {
-   "depends_on": "eval:!in_list([\"Employee Salary\",\"Bonus\",\"PBVA\"], doc.purpose)",
+   "depends_on": "eval:!in_list([\"Employee Salary\",\"Bulk Leave Encashment\",\"Bonus\",\"PBVA\"], doc.purpose)",
    "fieldname": "to_date",
    "fieldtype": "Date",
    "label": "To Date",
-   "mandatory_depends_on": "eval:!in_list([\"Employee Salary\",\"Bonus\",\"PBVA\"], doc.purpose)"
+   "mandatory_depends_on": "eval:!in_list([\"Employee Salary\",\"Bulk Leave Encashment\",\"Bonus\",\"PBVA\"], doc.purpose)"
   },
   {
    "fieldname": "sb_receipt_details",
@@ -165,15 +175,17 @@
   },
   {
    "fieldname": "sb_invoice_details",
-   "fieldtype": "Section Break",
-   "label": "Invoice Details"
+   "fieldtype": "Section Break"
   },
   {
+   "depends_on": "eval:!in_list([\"Employee Salary\",\"Bulk Leave Encashment\",\"Bonus\",\"PBVA\"], doc.purpose)",
    "fieldname": "items",
    "fieldtype": "Table",
+   "label": "Invoice Details",
    "options": "TDS Remittance Item"
   },
   {
+   "depends_on": "eval:doc.purpose !=\"Employee Salary\"",
    "fieldname": "sb_totals",
    "fieldtype": "Section Break"
   },
@@ -213,12 +225,69 @@
    "label": "Company",
    "options": "Company",
    "reqd": 1
+  },
+  {
+   "fieldname": "section_break_5h4of",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.purpose===\"Employee Salary\"",
+   "fieldname": "employees",
+   "fieldtype": "Table",
+   "label": "Employee Details",
+   "options": "Employee TDS Item"
+  },
+  {
+   "depends_on": "eval:doc.purpose == \"Employee Salary\"",
+   "fieldname": "number_of_employees",
+   "fieldtype": "Int",
+   "label": "Number Of Employees",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.purpose === \"Bulk Leave Encashment\"",
+   "fieldname": "bulk_leave_encashment",
+   "fieldtype": "Link",
+   "label": "Bulk Leave Encashment",
+   "mandatory_depends_on": "eval:doc.purpose === \"Bulk Leave Encashment\"",
+   "options": "Bulk Leave Encashment"
+  },
+  {
+   "depends_on": "eval:doc.purpose===\"Employee Salary\"",
+   "fieldname": "section_break_llhcs",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "total_gross_salary",
+   "fieldtype": "Currency",
+   "label": "Total Gross Salary",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_qfmka",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_salary_tax",
+   "fieldtype": "Currency",
+   "label": "Total Salary Tax",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_tbaom",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_health_contribution",
+   "fieldtype": "Currency",
+   "label": "Total Health Contribution",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-17 12:12:32.334917",
+ "modified": "2025-01-12 17:35:49.067068",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "TDS Receipt Update",
