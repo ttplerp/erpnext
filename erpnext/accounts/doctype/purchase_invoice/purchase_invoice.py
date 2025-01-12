@@ -1676,8 +1676,9 @@ class PurchaseInvoice(BuyingController):
                             {
                                 "account": tax.account_head,
                                 "cost_center": tax.cost_center,
-                                "against": self.supplier,
                                 "credit": valuation_tax[tax.name],
+                                "party_type": "Supplier",
+                                "party": self.supplier,
                                 "remarks": self.remarks or _("Accounting Entry for Stock"),
                             },
                             item=tax,

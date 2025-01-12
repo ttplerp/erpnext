@@ -6,6 +6,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "invoice_no",
   "posting_date",
   "party_type",
   "party",
@@ -15,7 +16,6 @@
   "bill_no",
   "cb_3",
   "tax_account",
-  "invoice_no",
   "tds_amount",
   "tpn",
   "cost_center",
@@ -52,6 +52,7 @@
   {
    "fieldname": "invoice_no",
    "fieldtype": "Dynamic Link",
+   "in_list_view": 1,
    "label": "Invoice No",
    "options": "invoice_type"
   },
@@ -76,7 +77,6 @@
   {
    "fieldname": "party_name",
    "fieldtype": "Data",
-   "in_list_view": 1,
    "label": "Party Name",
    "read_only": 1
   },
@@ -128,7 +128,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-12-14 12:24:02.879579",
+ "modified": "2025-01-12 18:55:17.291754",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "TDS Remittance Item",
