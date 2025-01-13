@@ -375,13 +375,13 @@
    "fieldname": "price_adjustment_percent",
    "fieldtype": "Float",
    "label": "Price Adjustment (%)",
-   "precision": "4"
+   "precision": "9"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-11 16:31:31.408760",
+ "modified": "2025-01-13 12:11:54.874331",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Project Invoice",
