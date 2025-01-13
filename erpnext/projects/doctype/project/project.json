@@ -1,9 +1,9 @@
 {
  "actions": [],
  "allow_import": 1,
- "allow_rename": 1,
  "autoname": "PROJ.-.YY.-.MM.-.####",
  "creation": "2013-03-07 11:55:07",
+ "default_view": "Tree",
  "doctype": "DocType",
  "document_type": "Setup",
  "engine": "InnoDB",
@@ -77,7 +77,12 @@
   "column_break_45",
   "message",
   "section_break_swgx7",
-  "company"
+  "company",
+  "lft",
+  "rgt",
+  "is_group",
+  "old_parent",
+  "parent_project"
  ],
  "fields": [
   {
@@ -565,19 +570,57 @@
    "fieldname": "project_value",
    "fieldtype": "Currency",
    "label": "Project Value"
+  },
+  {
+   "fieldname": "lft",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Left",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "rgt",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Right",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_group",
+   "fieldtype": "Check",
+   "label": "Is Group"
+  },
+  {
+   "fieldname": "old_parent",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Old Parent",
+   "options": "Project"
+  },
+  {
+   "depends_on": "eval:!doc.is_group",
+   "fieldname": "parent_project",
+   "fieldtype": "Link",
+   "label": "Parent Project",
+   "options": "Project"
   }
  ],
  "icon": "fa fa-puzzle-piece",
  "idx": 29,
  "index_web_pages_for_search": 1,
+ "is_tree": 1,
  "links": [],
  "max_attachments": 4,
- "modified": "2024-12-26 15:35:27.459912",
+ "modified": "2025-01-13 13:07:46.382608",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project",
  "name_case": "UPPER CASE",
  "naming_rule": "Expression (old style)",
+ "nsm_parent_field": "parent_project",
  "owner": "Administrator",
  "permissions": [
   {

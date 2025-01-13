@@ -18,6 +18,16 @@ frappe.ui.form.on("Project", {
 		};
 	},
 	onload: function (frm) {
+		frm.set_query("parent_project", function() {
+			return {
+				filters: {
+					company: frm.doc.company,
+					is_group: 1,
+					cost_center: frm.doc.cost_center
+				}
+			}
+		});
+
 		const so = frm.get_docfield("sales_order");
 		so.get_route_options_for_new_doc = () => {
 			if (frm.is_new()) return;
