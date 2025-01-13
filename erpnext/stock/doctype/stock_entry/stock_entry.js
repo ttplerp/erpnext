@@ -179,6 +179,15 @@ frappe.ui.form.on('Stock Entry', {
 	},
 
 	refresh: function (frm) {
+		frm.fields_dict['project'].get_query = function(doc) {
+            return {
+                filters: {
+                    status: 'Open', 
+                    company: frm.doc.company
+                }
+            };
+        };
+
 		frm.events.create_custom_buttons(frm)
 		if (!frm.doc.docstatus) {
 			frm.trigger('validate_purpose_consumption');
