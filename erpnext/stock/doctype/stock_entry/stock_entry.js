@@ -184,7 +184,7 @@ frappe.ui.form.on('Stock Entry', {
                 filters: {
                     status: 'Open', 
                     company: frm.doc.company,
-					cost_center: frm.doc.cost_center,
+					branch: frm.doc.branch,
                 }
             };
         };
