@@ -234,6 +234,7 @@
    "fieldname": "title",
    "fieldtype": "Data",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Title",
    "reqd": 1
   },
@@ -275,7 +276,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-11-29 16:40:08.528685",
+ "modified": "2025-01-13 19:55:22.996488",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "BOQ",
