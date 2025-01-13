@@ -183,7 +183,8 @@ frappe.ui.form.on('Stock Entry', {
             return {
                 filters: {
                     status: 'Open', 
-                    company: frm.doc.company
+                    company: frm.doc.company,
+					cost_center: frm.doc.cost_center,
                 }
             };
         };
