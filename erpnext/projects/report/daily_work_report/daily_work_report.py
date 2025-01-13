@@ -391,7 +391,7 @@ def get_material_details(cost_center, project, date):
 	return execute_query("""
 		SELECT SUM(t2.amount) as total_amount
 		FROM `tabStock Entry` t1, `tabStock Entry Detail` t2
-		WHERE t1.name = t2.parent AND t1.stock_entry_type = "Material Issue" AND t1.docstatus = 1 AND t2.cost_center = %s AND t2.project = %s AND t1.posting_date = %s
+		WHERE t1.name = t2.parent AND t1.stock_entry_type = "Material Issue" AND t1.docstatus = 1 AND t2.cost_center = %s AND t1.project = %s AND t1.posting_date = %s
 	""", (cost_center, project, date))
 
 def get_labour_details(cost_center, project, date):
