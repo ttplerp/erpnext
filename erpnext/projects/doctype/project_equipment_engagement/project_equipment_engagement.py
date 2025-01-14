@@ -29,7 +29,7 @@ class ProjectEquipmentEngagement(Document):
 	def fill_equipment_details(self):
 		filters = self.make_filters()
 		equipments = get_equipment_list(filters=filters, as_dict=True)
-		self.set("equipments", [])
+		self.set("items", [])
 
 		if not equipments:
 			error_msg = _(
@@ -39,14 +39,13 @@ class ProjectEquipmentEngagement(Document):
 			)
 			frappe.throw(error_msg, title=_("No equipments found"))
 
-		self.set("equipments", equipments)
+		self.set("items", equipments)
 
 def get_equipment_list(
 	filters,
 	as_dict=True,
 ) -> list:
 	Equipment = frappe.qb.DocType("Equipment")
-	
 	query = (
 		frappe.qb.from_(Equipment)
 		.where(
