@@ -8,8 +8,8 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "project",
   "branch",
+  "project",
   "column_break_kuigf",
   "posting_date",
   "cost_center",
@@ -30,7 +30,6 @@
    "reqd": 1
   },
   {
-   "fetch_from": "project.branch",
    "fieldname": "branch",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -98,7 +97,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-11-19 10:07:01.197343",
+ "modified": "2025-01-14 00:41:19.059454",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project Equipment Engagement",

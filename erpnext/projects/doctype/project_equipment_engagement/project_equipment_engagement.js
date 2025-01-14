@@ -2,11 +2,23 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Project Equipment Engagement', {
+	onload: function (frm) {
+		let grid = frm.fields_dict['items'].grid;
+		grid.cannot_add_rows = true;
+	},
+
 	refresh: function(frm) {
+		if (frm.doc.docstatus != 1 && !frm.is_new()) {
+			frm.add_custom_button(__("Get Equipment"), function () {
+				frm.events.get_equipment_details(frm);
+			}).toggleClass("btn-primary", !(frm.doc.items || []).length);
+		}
+
 		frm.set_query("project", function(doc){
 			return {
 				filters: {
 					'status': "Open",
+					'branch': doc.branch,
 				}
 			}
 		});
@@ -18,7 +30,26 @@ frappe.ui.form.on('Project Equipment Engagement', {
 				}
 			}
 		});
-	}
+	},
+
+	get_equipment_details: function (frm) {
+		return frappe
+			.call({
+				doc: frm.doc,
+				method: "fill_equipment_details",
+				freeze: true,
+				freeze_message: __("Fetching Equipment"),
+			})
+			.then((r) => {
+				if (r.docs?.[0]?.items) {
+					frm.dirty();
+					frm.save();
+				}
+
+				frm.refresh();
+				frm.scroll_to_field("items");
+			});
+	},
 });
 
 frappe.ui.form.on('Project Equipment Engagement Item', {
