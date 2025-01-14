@@ -309,7 +309,7 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 			left join `tabCustomer` c on t.party_type = 'Customer' and c.name = t.party
 			left join `tabSupplier` s on t.party_type = 'Supplier' and s.name = t.party
 			left join `tabTDS Receipt Entry` tre on tre.invoice_no = t.name
-		where t.posting_date between %(from_date)s and %(to_date)s
+		where t.posting_date between %(from_date)s and %(to_date)s and t.settle_imprest_advance != 1
 		{accounts_cond}
 		and t.docstatus = 1
 		{existing_cond}
