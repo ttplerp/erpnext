@@ -98,7 +98,7 @@ class ProjectInvoice(AccountsController):
 				row.boq                     = self.boq
 				row.subcontract             = self.subcontract
 				row.total_amount            = flt(self.total_amount)
-				# row.price_adjustment_amount = flt(self.price_adjustment_amount)
+				row.price_adjustment_amount = flt(self.price_adjustment_amount)
 				row.net_invoice_amount      = flt(self.net_amount)
 				# row.total_received_amount   = flt(self.total_received_amount)
 				# row.total_paid_amount       = flt(self.total_paid_amount)
@@ -110,7 +110,7 @@ class ProjectInvoice(AccountsController):
 				row.boq                     = self.boq
 				row.subcontract             = self.subcontract
 				row.total_amount    = flt(self.total_amount)
-				# row.price_adjustment_amount = flt(self.price_adjustment_amount)
+				row.price_adjustment_amount = flt(self.price_adjustment_amount)
 				row.net_invoice_amount      = flt(self.net_amount)
 				# row.total_received_amount   = flt(self.total_received_amount)
 				# row.total_paid_amount       = flt(self.total_paid_amount)
@@ -327,7 +327,7 @@ class ProjectInvoice(AccountsController):
 		for rec in self.project_invoice_mb:
 			if rec.is_selected:
 				total += flt(rec.entry_amount)
-		self.price_adjustment_amount = flt(total) * flt(self.price_adjustment_percent)
+		# self.price_adjustment_amount = flt(total) * flt(self.price_adjustment_percent)
 		total += flt(self.price_adjustment_amount)
 
 		self.total_deduction_amount = self.calculate_total_deductions()

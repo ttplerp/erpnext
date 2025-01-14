@@ -162,9 +162,9 @@ frappe.ui.form.on('Project Invoice', {
 		});
 	},
 
-	price_adjustment_percent: function (frm) {
-		calculate_totals(frm);
-	},
+	// price_adjustment_percent: function (frm) {
+	// 	calculate_totals(frm);
+	// },
 
 	price_adjustment_amount: function (frm) {
 		calculate_totals(frm);
