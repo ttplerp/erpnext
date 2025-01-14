@@ -10,7 +10,7 @@
  "idx": 0,
  "is_standard": "Yes",
  "letter_head": "Vajra Builders Private Limited",
- "modified": "2025-01-14 23:39:49.477436",
+ "modified": "2025-01-14 23:46:36.270154",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Daily Work Report",
@@ -29,9 +29,6 @@
   },
   {
    "role": "HR Manager"
-  },
-  {
-   "role": "Muster Roll Creator"
   },
   {
    "role": "Projects User"
