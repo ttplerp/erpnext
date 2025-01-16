@@ -2,50 +2,40 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Reimbursement', {
-	onload: function(frm) {
-		// Ver 2.0 Begins, following code added by SHIV on 28/11/2017
-		if(frm.doc.__islocal) {
-			frappe.call({
-				method: "erpnext.custom_utils.get_user_info",
-				args: {"user": frappe.session.user},
-				callback(r) {
-					cur_frm.set_value("company", r.message.company);
+	
+	refresh: function(frm){
+		frm.set_query("branch", function(doc){
+			return {
+				filters: {
+					'company': doc.company,
 				}
-			});
-		}
+			}
+		});
+
+		frm.set_query("credit_account", function(doc){
+			return {
+				filters: {
+					'company': doc.company,
+				}
+			}
+		});
 	},
-	purpose: function(frm){
-		if(frm.doc.purpose == 'Hiring/Transportation'){
+
+	type: function (frm) {
+		if (frm.doc.type) {
 			frappe.call({
-				method: "frappe.client.get",
-				args: {
-					doctype: "Maintenance Accounts Settings",
-					fieldname: "hire_expense_account",
-				},
+				method: "get_expense_account",
+				doc: frm.doc,
 				callback: function (r) {
 					if (r.message) {
-						cur_frm.set_value("expense_account", r.message.hire_expense_account);
+						cur_frm.set_value("expense_account", r.message);
 						refresh_field('expense_account');
 					}
 				}
-			});
-		}
-		else if(frm.doc.purpose == 'POL/Maintenance'){
-			frappe.call({
-				method: 'frappe.client.get',
-				args: {
-					doctype: 'Maintenance Accounts Settings',
-					fieldname: "default_pol_advance_account"
-				},
-				callback: function (r) {
-					if (r.message) {
-						cur_frm.set_value("expense_account", r.message.default_pol_advance_account);
-						refresh_field('expense_account');
-					}
-				}
-			});
+			})
 		}
 	},
+
 	credit_account: function (frm) {
 		frappe.model.get_value("Account", frm.doc.credit_account, "account_type", function (d){
 			if (d.account_type == 'Payable' || d.account_type == 'Receivable'){

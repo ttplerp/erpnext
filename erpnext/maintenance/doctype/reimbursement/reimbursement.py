@@ -86,7 +86,6 @@ class Reimbursement(Document):
 			"business_activity": self.business_activity,
 		})
 
-
 		je.append("accounts",{
 			"account": debit_account,
 			"debit_in_account_currency": self.amount,
@@ -97,3 +96,23 @@ class Reimbursement(Document):
 		je.insert()
 		self.db_set("journal_entry",je.name)
 		frappe.msgprint(_('Journal Entry {} posted to accounts').format(frappe.get_desk_link(je.doctype,je.name)))
+
+	@frappe.whitelist()
+	def get_expense_account(self):
+		ReimbursementType = frappe.qb.DocType("Reimbursement Type")
+		CompanyAccount = frappe.qb.DocType("Reimbursement Account")
+
+		query = (
+			frappe.qb.from_(ReimbursementType)
+			.join(CompanyAccount)
+			.on(CompanyAccount.parent == ReimbursementType.name)
+			.select(CompanyAccount.account)
+			.where(
+				(ReimbursementType.disabled != 1)
+				& (CompanyAccount.company == self.company)
+			)
+		)
+
+		results = query.run(as_dict=True)
+
+		return results[0]["account"] if results else None

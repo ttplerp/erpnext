@@ -8,12 +8,11 @@
  "field_order": [
   "company",
   "branch",
-  "posting_date",
-  "purpose",
+  "type",
   "column_break_001",
+  "posting_date",
   "cost_center",
   "business_activity",
-  "type",
   "section_break_001",
   "expense_account",
   "items",
@@ -35,7 +34,6 @@
   {
    "fieldname": "company",
    "fieldtype": "Link",
-   "hidden": 1,
    "label": "Company",
    "options": "Company"
   },
@@ -48,18 +46,11 @@
    "reqd": 1
   },
   {
+   "default": "Today",
    "fieldname": "posting_date",
    "fieldtype": "Date",
    "in_list_view": 1,
    "label": "Posting Date",
-   "reqd": 1
-  },
-  {
-   "fieldname": "purpose",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Purpose",
-   "options": "\nHiring/Transportation\nPOL/Maintenance",
    "reqd": 1
   },
   {
@@ -85,9 +76,9 @@
   },
   {
    "fieldname": "type",
-   "fieldtype": "Select",
+   "fieldtype": "Link",
    "label": "Type",
-   "options": "\nInternal\nExternal"
+   "options": "Reimbursement Type"
   },
   {
    "fieldname": "section_break_001",
@@ -188,7 +179,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-08-24 17:30:30.904004",
+ "modified": "2025-01-16 15:17:39.272760",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Reimbursement",
