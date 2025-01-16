@@ -25,6 +25,12 @@ frappe.ui.form.on("Item", {
 	},
 
 	refresh: function(frm) {
+		if (frm.doc.is_fixed_asset && !frm.is_new()) {
+            frm.set_df_property('item_name', 'read_only', 1);
+        } else {
+            frm.set_df_property('item_name', 'read_only', 0);
+        }
+
 		frm.set_df_property('item_code','reqd',0)
 		if (frm.doc.is_stock_item) {
 			frm.add_custom_button(__("Stock Balance"), function() {
