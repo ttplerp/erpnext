@@ -79,8 +79,9 @@ class MaterialRequest(BuyingController):
 
 	def validate(self):
 		super(MaterialRequest, self).validate()
-		if frappe.db.get_value("Cost Center", self.cost_center, "cost_center_for") == "DSP":
+		if self.company != "De-suung HQ":
 			validate_workflow_states(self)
+
 		self.validate_schedule_date()
 		self.check_for_on_hold_or_closed_status("Sales Order", "sales_order")
 		self.validate_uom_is_integer("uom", "qty")
@@ -118,38 +119,9 @@ class MaterialRequest(BuyingController):
 		self.set_actual_qty()
 
 		""" check if employee or not """
-		employee = frappe.db.get_value("Employee", {"user_id": frappe.session.user}, "name")
-		if not employee:
-			frappe.throw("Only Employee can crate the Material Request")
-
-		if self.workflow_state != "Approved" and frappe.db.get_value("Cost Center", self.cost_center, "cost_center_for") == "DSP":
-			notify_workflow_states(self)
-
-		# **** To record the details of Material Requester **** #
-		if self.workflow_state == "Draft":
-			creator_user_id, creator_employee_name, creator_name = frappe.db.get_value(
-				"Employee", {"user_id": frappe.session.user}, ["user_id", "employee_name", "name"]) or None
-			if creator_user_id:
-				self.creator = creator_name
-				self.creator_name = creator_employee_name
-
-		# **** To record the details of Verifier **** #
-		if self.workflow_state == "Waiting For Approver" and frappe.db.get_value("Cost Center", self.cost_center, "cost_center_for") == "DSP":
-			verifier_user_id, verifier_employee_name = frappe.db.get_value(
-				"Employee", {"user_id": frappe.session.user}, ["user_id", "employee_name"]) or None
-			
-			if verifier_user_id:
-				self.verifier = verifier_user_id
-				self.verified_by = verifier_employee_name
-		
-		# **** To record the details of Approver **** #
-		if self.workflow_state == "Approved" and frappe.db.get_value("Cost Center", self.cost_center, "cost_center_for") == "DSP":
-			approver_user_id, approver_employee_name = frappe.db.get_value(
-				"Employee", {"user_id": frappe.session.user}, ["user_id", "employee_name"]) or None
-			
-			if approver_user_id:
-				self.approver = approver_user_id
-				self.approver_name = approver_employee_name
+		# employee = frappe.db.get_value("Employee", {"user_id": frappe.session.user}, "name")
+		# if not employee:
+		# 	frappe.throw("Only Employee can crate the Material Request")
 
 	def before_update_after_submit(self):
 		self.validate_schedule_date()
@@ -172,8 +144,6 @@ class MaterialRequest(BuyingController):
 		self.update_requested_qty_in_production_plan()
 		if self.material_request_type == "Purchase":
 			self.validate_budget()
-		if frappe.db.get_value("Cost Center", self.cost_center, "cost_center_for") == "DSP":
-			notify_workflow_states(self)
 		
 	def before_save(self):
 		self.set_status(update=True)

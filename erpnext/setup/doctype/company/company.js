@@ -226,7 +226,13 @@ erpnext.company.setup_queries = function(frm) {
 		["capital_work_in_progress_account", {"account_type": "Capital Work in Progress"}],
 		["asset_received_but_not_billed", {"account_type": "Asset Received But Not Billed"}],
 		["unrealized_profit_loss_account", {"root_type": ["in", ["Liability", "Asset"]]}],
-		["default_provisional_account", {"root_type": ["in", ["Liability", "Asset"]]}]
+		["default_provisional_account", {"root_type": ["in", ["Liability", "Asset"]]}],
+
+		// Added by Dawa Tshering on 1/13/2025
+		["advance_received_from_customer", {"root_type": ["in", ["Liability"]], "account_type": "Payable"}],
+		["advance_paid_to_supplier", {"root_type": ["in", ["Asset"]], "account_type": "Receivable"}],
+		
+
 	], function(i, v) {
 		erpnext.company.set_custom_query(frm, v);
 	});

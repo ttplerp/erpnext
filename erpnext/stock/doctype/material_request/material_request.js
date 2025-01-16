@@ -47,6 +47,14 @@ frappe.ui.form.on('Material Request', {
 				}
 			}
 		});
+
+		frm.set_query("branch", function(doc){
+			return {
+				filters: {
+					company: doc.company,
+				}
+			}
+		})
 	},
 
 	onload: function (frm) {

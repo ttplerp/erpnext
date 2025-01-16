@@ -3,6 +3,14 @@
 
 frappe.ui.form.on('Branch', {
 	refresh: function(frm) {
+		frm.set_query("expense_bank_account", function(doc){
+			return {
+				filters: {
+					'company': doc.company,
+					'account_type': 'Bank'
+				}
+			}
+		});
 
 	}
 });

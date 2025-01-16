@@ -43,6 +43,74 @@ class CustomWorkflow:
 			# if not self.hrgm:
 			# 	frappe.throw('Please set department approver in {}'.format(frappe.get_desk_link("Department", self.doc.department)))
 			# self.dir_approver	= frappe.db.get_value("Employee", frappe.db.get_value("Department", frappe.db.get_value("Department", frappe.db.get_value("Employee", self.doc.employee, "department"), "parent_department"),"approver"), self.field_list)
+		
+
+		### =============== *** =============== *** === DAWA TSHERING === *** =============== *** =============== ###
+		elif self.doc.doctype == "Material Request":
+
+			approver_settings = frappe.qb.DocType("Approver Settings")
+			supervisor_item = frappe.qb.DocType("Supervisor Item")
+			manager_item = frappe.qb.DocType("Manager Item")
+
+			supervisor_list = (
+				frappe.qb.from_(approver_settings)
+				.join(supervisor_item)
+				.on(supervisor_item.parent == approver_settings.name)
+				.select(
+					supervisor_item.user,
+					supervisor_item.user_name
+				)
+				.where(
+					(approver_settings.disabled != 1)
+					& (approver_settings.name == "Material Request")
+					& (supervisor_item.company == self.doc.company)
+				)
+			).run(as_dict=True)
+
+			manager_list = (
+				frappe.qb.from_(approver_settings)
+				.join(manager_item)
+				.on(manager_item.parent == approver_settings.name)
+				.select(
+					manager_item.user,
+					manager_item.user_name
+				)
+				.where(
+					(approver_settings.disabled != 1)
+					& (approver_settings.name == "Material Request")
+					& (manager_item.company == self.doc.company)
+				)
+			).run(as_dict=True)
+
+			if not supervisor_list:
+				frappe.throw(_("No supervisor found for the Material Request in company {0}. Please configure the approver settings.".format(self.doc.company)))
+
+			if not manager_list:
+				frappe.throw(_("No manager found for the Material Request in company {0}. Please configure the approver settings.".format(self.doc.company)))
+
+			supervisor_user_id = supervisor_list[0].get('user')
+			manager_user_id = manager_list[0].get('user')
+
+			if not supervisor_user_id:
+				frappe.throw(_("Supervisor user ID is missing for the Material Request in company {0}. Please verify the Supervisor Item details.".format(self.doc.company)))
+
+			if not manager_user_id:
+				frappe.throw(_("Manager user ID is missing for the Material Request in company {0}. Please verify the Manager Item details.".format(self.doc.company)))
+			
+			supervior_details = frappe.db.get_value("Employee", {"user_id": supervisor_user_id}, self.field_list)
+			manager_details = frappe.db.get_value("Employee", {"user_id": manager_user_id}, self.field_list)
+			
+			if not supervior_details:
+				frappe.throw(_("Employee details not found for supervisor with user ID {0}. Please verify the supervisor's employee record.".format(supervisor_user_id)))
+			
+			if not supervior_details:
+				frappe.throw(_("Employee details not found for manager with user ID {0}. Please verify the manager's employee record.".format(manager_user_id)))
+			
+			self.supervior = supervior_details
+			self.manager = manager_details
+		### =============== *** =============== *** === DAWA TSHERING === *** =============== *** =============== ###
+	
+
 		self.login_user		= frappe.db.get_value("Employee", {"user_id": frappe.session.user}, self.field_list)
 		#self.final_approver= frappe.db.get_value("Employee", {"user_id": get_final_approver(doc.branch)}, self.field_list)
 		self.final_approver	= []
@@ -58,13 +126,27 @@ class CustomWorkflow:
 			emp.save(ignore_permissions=True)
 
 	def set_approver(self, approver_type):
+
+		### =============== *** =============== *** === DAWA TSHERING === *** =============== *** =============== ###
+
 		if approver_type == "Supervisor":
-			officiating = get_officiating_employee(self.reports_to[3])
+			officiating = get_officiating_employee(self.supervior[3])
 			if officiating:
 				officiating = frappe.db.get_value("Employee", officiating[0].officiate, self.field_list)
-			vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.reports_to[0]
-			vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.reports_to[1]
-			vars(self.doc)[self.doc_approver[2]] = officiating[2] if officiating else self.reports_to[2]
+			vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.supervior[0]
+			vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.supervior[1]
+			vars(self.doc)[self.doc_approver[2]] = officiating[2] if officiating else self.supervior[2]
+
+		elif approver_type == "Manager":
+			officiating = get_officiating_employee(self.manager[3])
+			if officiating:
+				officiating = frappe.db.get_value("Employee", officiating[0].officiate, self.field_list)
+			vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.manager[0]
+			vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.manager[1]
+			vars(self.doc)[self.doc_approver[2]] = officiating[2] if officiating else self.manager[2]
+
+		### =============== *** =============== *** === DAWA TSHERING === *** =============== *** =============== ###
+
 		elif approver_type == "HRM":
 			officiating = get_officiating_employee(self.hrm_approver[3])
 			if officiating:
@@ -72,6 +154,7 @@ class CustomWorkflow:
 			vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.hrm_approver[0]
 			vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.hrm_approver[1]
 			vars(self.doc)[self.doc_approver[2]] = officiating[2] if officiating else self.hrm_approver[2]
+
 		elif approver_type == "HRD":
 			officiating = get_officiating_employee(self.hrd_approver[3])
 			if officiating:
@@ -79,6 +162,7 @@ class CustomWorkflow:
 			vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.hrd_approver[0]
 			vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.hrd_approver[1]
 			vars(self.doc)[self.doc_approver[2]] = officiating[2] if officiating else self.hrd_approver[2]
+
 		elif approver_type == "Department Head":
 			officiating = get_officiating_employee(self.dept_approver[3])
 			if officiating:
@@ -86,6 +170,7 @@ class CustomWorkflow:
 			vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.dept_approver[0]
 			vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.dept_approver[1]
 			vars(self.doc)[self.doc_approver[2]] = officiating[2] if officiating else self.dept_approver[2]
+
 		elif approver_type == "Director":
 			officiating = get_officiating_employee(self.dir_approver[3])
 			if officiating:
@@ -93,6 +178,7 @@ class CustomWorkflow:
 			vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.dir_approver[0]
 			vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.dir_approver[1]
 			vars(self.doc)[self.doc_approver[2]] = officiating[2] if officiating else self.dir_approver[2]
+
 		elif approver_type == "CEO":
 			officiating = get_officiating_employee(self.ceo[3])
 			if officiating:
@@ -100,6 +186,7 @@ class CustomWorkflow:
 			vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.ceo[0]
 			vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.ceo[1]
 			vars(self.doc)[self.doc_approver[2]] = officiating[2] if officiating else self.ceo[2]
+
 		elif approver_type == "Final Approver":
 			officiating = get_officiating_employee(self.final_approver[3])
 			if officiating:
@@ -344,37 +431,39 @@ class CustomWorkflow:
 			if self.doc.approver != frappe.session.user:
 				frappe.throw("Only {} can Cancel this request".format(self.doc.approver_name))
 
-	def material_request(self):
-		workflow_state    = self.new_state.lower()
-		# to restrict Admin in creating MR
-		# if not self.login_user: 
-		#     frappe.throw("You do not have permission to create MR!")
-		# owner        = frappe.db.get_value("Employee", {"user_id": self.doc.owner}, ["user_id","employee_name","designation","name"])
-		# employee          = frappe.db.get_value("Employee", owner[3], ["user_id","employee_name","designation","name"])
-		# reports_to        = frappe.db.get_value("Employee", frappe.db.get_value("Employee", owner[3], "reports_to"), ["user_id","employee_name","designation","name"])
-		# frappe.throw(self.new_state.lower())
-		if workflow_state == "Waiting For Verifier".lower() and workflow_state != self.old_state.lower():
-			if (self.doc.owner != frappe.session.user) and "MR User" not in frappe.get_roles(self.doc.owner):
-				frappe.throw("Only the creator of MR can Apply.")
-					
-		elif workflow_state == "Waiting For Approver".lower() and workflow_state != self.old_state.lower():
-			# pmt = frappe.get_list("Program Management Team", filters={"parent":self.doc.cost_center}, fields=['pmt_user_id'])
-			# if pmt:
-			#     receipients = [a['pmt_user_id'] for a in pmt]
-			#     frappe.throw(str(receipients))
-			# pmt_user_id = frappe.db.sql("select pmt_user_id from `tabProgram Management Team` where parent='{}'".format(self.doc.cost_center), as_dict=1)
-			pmt_user_id = frappe.db.sql("select p.user_id from `tabMR PMT And Domain Lead` p, `tabMR PMT List` a where a.parent=p.name and p.active = 1 and a.cost_center='{}'".format(self.doc.cost_center), as_dict=1)
-			receipients = [a['user_id'] for a in pmt_user_id if frappe.db.get_value("User", a['user_id'], "enabled") == 1]
-			# frappe.throw(str(receipients))
-			if frappe.session.user not in receipients:
-				frappe.throw("Only PMT Verifier for <b>{}</b> can Verify".format(self.doc.cost_center))
+	### =============== *** =============== *** === DAWA TSHERING === *** =============== *** =============== ###
 
-		elif workflow_state == "Approved".lower() and workflow_state != self.old_state.lower():
-			# domain_lead = frappe.db.sql("select domain_lead_user_id from `tabDomain Lead` where parent='{}'".format(self.doc.cost_center), as_dict=1)
-			domain_lead = frappe.db.sql("select p.user_id from `tabMR PMT And Domain Lead` p, `tabMR Domain List` a where a.parent=p.name and p.active = 1 and a.cost_center='{}'".format(self.doc.cost_center), as_dict=1)
-			receipients = [a['user_id'] for a in domain_lead if frappe.db.get_value("User", a['user_id'], "enabled") == 1]
-			if frappe.session.user not in receipients:
-				frappe.throw("Only Domain Lead Approver for {} can Approve".format(self.doc.cost_center))
+	def material_request(self):
+		if self.new_state.lower() in ("Draft".lower()):
+			if frappe.session.user != self.doc.owner:
+				frappe.throw("Only {} can apply this request".format(self.doc.owner))
+
+		elif self.new_state.lower() == ("Waiting Supervisor Approval".lower()):
+			if frappe.session.user != self.doc.owner:
+				frappe.throw("Only {} can apply this request".format(self.doc.owner))
+			self.set_approver("Supervisor")
+		
+		elif self.new_state.lower() == ("Waiting Approval".lower()):
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Forward this Request".format(self.doc.approver_name))
+			self.set_approver("Manager")
+
+		elif self.new_state.lower() == ("Approved".lower()):
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Approve this Request".format(self.doc.approver_name))
+
+		elif self.new_state.lower() == ("Rejected".lower()):
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Reject this Request".format(self.doc.approver_name))
+
+		elif self.new_state.lower() == "Cancelled".lower():
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Cancel this request".format(self.doc.approver_name))
+		else:
+			frappe.throw(_("Invalid Workflow State {}").format(self.doc.workflow_state))
+
+	### =============== *** =============== *** === DAWA TSHERING === *** =============== *** =============== ###
+
 
 	def festival_advance(self):
 		''' Leave Encashment Workflow
