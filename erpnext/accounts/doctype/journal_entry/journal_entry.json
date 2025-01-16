@@ -8,7 +8,7 @@
  "document_type": "Document",
  "engine": "InnoDB",
  "field_order": [
-  "entry_type_and_date",
+  "company",
   "branch",
   "title",
   "voucher_type",
@@ -21,7 +21,6 @@
   "posting_date",
   "mode_of_payment",
   "from_template",
-  "company",
   "apply_tds",
   "tax_withholding_category",
   "2_add_edit_gl_entries",
@@ -78,11 +77,6 @@
  ],
  "fields": [
   {
-   "fieldname": "entry_type_and_date",
-   "fieldtype": "Section Break",
-   "options": "fa fa-flag"
-  },
-  {
    "allow_on_submit": 1,
    "fieldname": "title",
    "fieldtype": "Data",
@@ -132,7 +126,6 @@
    "search_index": 1
   },
   {
-   "fetch_from": "branch.company",
    "fieldname": "company",
    "fieldtype": "Link",
    "in_standard_filter": 1,
@@ -141,7 +134,6 @@
    "oldfieldtype": "Link",
    "options": "Company",
    "print_hide": 1,
-   "remember_last_selected_value": 1,
    "reqd": 1,
    "search_index": 1
   },
@@ -623,7 +615,7 @@
  "idx": 176,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-16 13:05:34.815792",
+ "modified": "2025-01-16 15:01:47.495793",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",
