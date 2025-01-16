@@ -89,6 +89,8 @@
   {
    "fieldname": "boq",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "BOQ",
    "options": "BOQ",
    "read_only": 1
@@ -156,6 +158,8 @@
   {
    "fieldname": "branch",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Branch",
    "options": "Branch",
    "reqd": 1
@@ -164,7 +168,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-11-20 19:18:12.581179",
+ "modified": "2025-01-16 22:18:37.387535",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Record Of Measurement",
@@ -223,6 +227,5 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
- "title_field": "boq"
+ "states": []
 }
