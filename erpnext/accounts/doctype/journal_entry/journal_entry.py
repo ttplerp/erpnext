@@ -1340,6 +1340,7 @@ class JournalEntry(AccountsController):
                         "Payable",
                         "Expense Account",
                         "Income Account",
+                        "Tax"
                     ]:
                         party_type = d.party_type
                         party = d.party
@@ -1393,6 +1394,7 @@ class JournalEntry(AccountsController):
         from erpnext.accounts.general_ledger import make_gl_entries
 
         gl_map = self.build_gl_map()
+
         if self.voucher_type in ("Deferred Revenue", "Deferred Expense"):
             update_outstanding = "No"
         else:

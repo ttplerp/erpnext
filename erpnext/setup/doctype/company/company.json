@@ -95,6 +95,7 @@
   "default_provisional_account",
   "expenses_included_in_valuation",
   "fixed_asset_defaults",
+  "fixed_asset_account",
   "accumulated_depreciation_account",
   "depreciation_expense_account",
   "series_for_depreciation_entry",
@@ -1178,6 +1179,12 @@
    "fieldtype": "Link",
    "label": "Credit Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "fixed_asset_account",
+   "fieldtype": "Link",
+   "label": "Fixed Asset Account",
+   "options": "Account"
   }
  ],
  "icon": "fa fa-building",
@@ -1185,7 +1192,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2024-11-26 11:23:23.522955",
+ "modified": "2025-01-16 19:31:05.839116",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",
