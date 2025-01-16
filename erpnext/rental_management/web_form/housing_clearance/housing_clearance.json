@@ -20,7 +20,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2023-12-21 12:31:31.801695",
+ "modified": "2025-01-16 14:17:09.855359",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "housing-clearance",
@@ -93,7 +93,7 @@
    "label": "Purpose",
    "max_length": 0,
    "max_value": 0,
-   "options": "\nVoluntary\nSupernation\nTermination\nCompletion of contract\nDeceased\nOthers",
+   "options": "\nVoluntary\nSuperannuation\nTermination\nCompletion of contract\nDeceased\nOthers",
    "read_only": 0,
    "reqd": 1,
    "show_in_filter": 0
