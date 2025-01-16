@@ -84,7 +84,7 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Rate",
-   "precision": "2",
+   "precision": "9",
    "read_only": 1
   },
   {
@@ -240,7 +240,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-10 13:16:44.490353",
+ "modified": "2025-01-16 14:32:10.824543",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "MB Entry BOQ",

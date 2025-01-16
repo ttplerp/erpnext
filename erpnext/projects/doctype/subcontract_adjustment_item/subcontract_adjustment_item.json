@@ -75,6 +75,7 @@
    "fieldname": "rate",
    "fieldtype": "Float",
    "label": "Initial Rate",
+   "precision": "9",
    "read_only": 1
   },
   {
@@ -130,7 +131,7 @@
    "fieldtype": "Currency",
    "hidden": 1,
    "label": "Add. Rate",
-   "precision": "2"
+   "precision": "9"
   },
   {
    "fieldname": "column_break_60",
@@ -239,7 +240,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-12-02 15:28:01.059797",
+ "modified": "2025-01-16 14:31:42.451199",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Subcontract Adjustment Item",
