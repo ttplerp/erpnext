@@ -163,8 +163,7 @@
    "fieldname": "cost_center_for",
    "fieldtype": "Select",
    "label": "For DSP/DHQ",
-   "options": "\nDHQ\nDSP",
-   "reqd": 1
+   "options": "\nDHQ\nDSP"
   },
   {
    "depends_on": "eval:doc.center_category!=\"DSP Domain\" && doc.is_group!=1",
@@ -193,7 +192,7 @@
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2024-05-28 20:56:34.437136",
+ "modified": "2025-01-16 12:39:51.407602",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Cost Center",

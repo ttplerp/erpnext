@@ -25,7 +25,22 @@ frappe.ui.form.on("Journal Entry", {
 	},
 
 	onload:function(frm){
-		draw_tds_table(frm)
+		frm.set_query("branch", function(){
+			return {
+				filters: {
+					'company': frm.doc.company,
+				}
+			}
+		})
+
+		// frm.set_query("party", "accounts", function(){
+		// 	return {
+		// 		filters: {
+		// 			'company': frm.doc.company,
+		// 		}
+		// 	}
+		// })
+		draw_tds_table(frm);
 		create_custom_buttons(frm);
 	},
 
@@ -126,6 +141,15 @@ frappe.ui.form.on("Journal Entry", {
 	},
 
 	company: function(frm) {
+		frappe.call({
+			method: "set_letter_head",
+			doc: frm.doc,
+			callback: function(r){
+				frm.set_value("letter_head", r.message)
+				refresh_field("letter_head")
+			}
+		});
+
 		frappe.call({
 			method: "frappe.client.get_value",
 			args: {

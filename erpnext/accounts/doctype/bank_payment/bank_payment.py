@@ -43,7 +43,7 @@ class BankPayment(Document):
         self.update_totals()
         self.get_bank_available_balance()
         self.check_one_one_or_bulk_payment()
-        self.update_pi_number()
+        # self.update_pi_number()
         if self.transaction_type == "Leave Travel Concession":
             self.validate_je()
         
@@ -57,9 +57,9 @@ class BankPayment(Document):
         self.update_transaction_status()
     
     def on_cancel(self):
-        self.check_for_transactions_in_progress()
+        # self.check_for_transactions_in_progress()
         self.update_status()
-        self.update_transaction_status(cancel=True)
+        # self.update_transaction_status(cancel=True)
   
     def update_pi_number(self):
         if self.payment_type == "One-One Payment":
@@ -179,13 +179,23 @@ class BankPayment(Document):
 
         # Duplicate transaction checks
         for i in self.get("items"):
-            cond = ''
+            cond = []
+            params = []
+
             if i.desuup:
-                cond += " AND bpi.desuup = '{0}'".format(i.desuup)
+                cond.append("bpi.desuup = %s")
+                params.append(i.desuup)
             if i.employee:
-                cond += " AND bpi.employee = '{0}'".format(i.employee)
+                cond.append("bpi.employee = %s")
+                params.append(i.employee)
             if i.supplier:
-                cond += " AND bpi.supplier = '{0}'".format(i.supplier)
+                cond.append("bpi.supplier = %s")
+                params.append(i.supplier)
+            
+            # Build the condition string by joining conditions with "AND"
+            cond_str = " AND ".join(cond)
+            if cond_str:
+                cond_str = " AND " + cond_str
             
             # Fetch financial_system_code if bank_branch is provided and financial_system_code is not set
             if i.bank_branch and not i.financial_system_code:
@@ -193,7 +203,7 @@ class BankPayment(Document):
             
             # Ensure bank_account_type and bank_account_no are provided
             if not i.bank_account_type or not i.bank_account_no:
-                frappe.throw("Row#{}: <b>Bank Account Type</b> or <b>Account No</b> are missing ".format(i.idx))
+                frappe.throw("Row#{}: <b>Bank Account Type</b> or <b>Account No</b> are missing".format(i.idx))
             
             # Check for duplicate transactions
             duplicate_check_query = """
@@ -212,9 +222,12 @@ class BankPayment(Document):
                     AND bpi.status != 'Failed'
                     {0}
                 )
-            """.format(cond)
+            """.format(cond_str)
+
+            # Add the main parameters for the query
+            params = [self.name, i.transaction_type, i.transaction_id, i.transaction_reference] + params
             
-            for j in frappe.db.sql(duplicate_check_query, (self.name, i.transaction_type, i.transaction_id, i.transaction_reference), as_dict=True):
+            for j in frappe.db.sql(duplicate_check_query, tuple(params), as_dict=True):
                 frappe.throw(_("Row#{}: {} is already processed via {}").format(
                     i.idx, frappe.get_desk_link(i.transaction_type, i.transaction_id),
                     frappe.get_desk_link(self.doctype, j.name)
@@ -850,6 +863,7 @@ class BankPayment(Document):
                         LEFT JOIN `tabFinancial Institution Branch` fib ON fib.name = IFNULL(t1.bank_branch, e.bank_branch)
                     WHERE t1.fiscal_year = '{salary_year}'
                     AND t1.month = '{salary_month}'
+                    AND t1.company = '{company}'
                     AND t1.docstatus = 1
                     AND e.salary_mode = 'Bank'
                     {cond}
@@ -867,6 +881,7 @@ class BankPayment(Document):
         """.format(salary_year=self.fiscal_year, 
             salary_month=self.get_month_id(self.month),
             month=self.month,
+            company=self.company,
             bank_payment = self.name,
             cond = cond), as_dict=True)
     

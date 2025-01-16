@@ -33,6 +33,14 @@ frappe.ui.form.on('Asset', {
 			};
 		});
 
+		frm.set_query("issue_to_employee", function() {
+			return {
+				"filters": {
+					"company": frm.doc.company,
+				}
+			};
+		});
+
 		erpnext.accounts.dimensions.setup_dimension_filters(frm, frm.doctype);
 	},
 

@@ -65,6 +65,7 @@ class Asset(AccountsController):
 		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry")
 		make_reverse_gl_entries(voucher_type="Asset", voucher_no=self.name)
 		self.db_set("booked_fixed_asset", 0)
+		
 	def fetch_default_account(self):
 		# self.asset_account, self.credit_account, self.accumulated_depreciation_account = frappe.db.get_value('Asset Category Account',{'parent':self.asset_category},['fixed_asset_account','credit_account','accumulated_depreciation_account'])
 		asset_account, credit_account, accumulated_depreciation_account = frappe.db.get_value('Asset Category Account',{'parent':self.asset_category},['fixed_asset_account','credit_account','accumulated_depreciation_account'])
@@ -1217,6 +1218,7 @@ def make_journal_entry(asset_name):
 	je.voucher_type = "Depreciation Entry"
 	je.naming_series = depreciation_series
 	je.company = asset.company
+	je.branch = asset.branch
 	je.remark = "Depreciation Entry against asset {0}".format(asset_name)
 
 	je.append(
@@ -1291,7 +1293,7 @@ def get_permission_query_conditions(user):
 	if not user: user = frappe.session.user
 	user_roles = frappe.get_roles(user)
 
-	if user == "Administrator" or "System Manager" in user_roles or "Purchase Master" in user_roles: 
+	if user == "Administrator" or "System Manager" in user_roles: 
 		return
 
 	return """(

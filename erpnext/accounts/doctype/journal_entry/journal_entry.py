@@ -150,6 +150,13 @@ class JournalEntry(AccountsController):
 		self.link_je_to_doc(cancel=self.docstatus == 2)
 		self.update_reference_document(cancel=1)
 
+	@frappe.whitelist()
+	def set_letter_head(self):
+		if self.company:
+			default_letter_head = frappe.db.get_value("Company", self.company, "default_letter_head")
+			self.letter_head = default_letter_head
+			return default_letter_head
+
 	def get_title(self):
 		return self.pay_to_recd_from or self.accounts[0].account
 	
