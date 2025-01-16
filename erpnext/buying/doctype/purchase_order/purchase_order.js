@@ -157,7 +157,7 @@ erpnext.buying.PurchaseOrderController = class PurchaseOrderController extends e
 		this.frm.custom_make_buttons = {
 			'Purchase Receipt': 'Purchase Receipt',
 			'Purchase Invoice': 'Purchase Invoice',
-			'Payment Entry': 'Payment',
+			// 'Payment Entry': 'Payment',
 			'Subcontracting Order': 'Subcontracting Order',
 			'Stock Entry': 'Material to Supplier'
 		}
@@ -252,10 +252,10 @@ erpnext.buying.PurchaseOrderController = class PurchaseOrderController extends e
 					// 	cur_frm.add_custom_button(__('Payment'), cur_frm.cscript.make_payment_entry, __('Create'));
 					// }
  
-					if(flt(doc.per_billed)==0) {
-						this.frm.add_custom_button(__('Payment Request'),
-							function() { me.make_payment_request() }, __('Create'));
-					}
+					// if(flt(doc.per_billed)==0) {
+					// 	this.frm.add_custom_button(__('Payment Request'),
+					// 		function() { me.make_payment_request() }, __('Create'));
+					// }
 
 					if(!doc.auto_repeat) {
 						cur_frm.add_custom_button(__('Subscription'), function() {
