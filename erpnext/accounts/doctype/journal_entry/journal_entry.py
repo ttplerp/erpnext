@@ -116,6 +116,7 @@ class JournalEntry(AccountsController):
 		self.validate_empty_accounts_table()
 		self.set_account_and_party_balance()
 		self.validate_inter_company_accounts()
+		self.validate_verifier()
 
 		if self.docstatus == 0:
 			self.apply_tax_withholding()
@@ -1134,6 +1135,51 @@ class JournalEntry(AccountsController):
 				doc.save(ignore_permissions = True)
 
 				frappe.db.sql(""" delete from `tabTransaction Details` where invoice_no = %s """, self.name)
+
+	### =============== *** =============== *** === DAWA TSHERING === *** =============== *** =============== ###
+
+	def validate_verifier(self):
+		approver_settings = frappe.qb.DocType("Approver Settings")
+		supervisor_item = frappe.qb.DocType("Supervisor Item")
+		manager_item = frappe.qb.DocType("Manager Item")
+
+		supervisor_list = (
+			frappe.qb.from_(approver_settings)
+			.join(supervisor_item)
+			.on(supervisor_item.parent == approver_settings.name)
+			.select(
+				supervisor_item.user,
+				supervisor_item.user_name
+			)
+			.where(
+				(approver_settings.disabled != 1)
+				& (supervisor_item.company == self.company)
+				& (approver_settings.name == self.doctype)
+			)
+		).run(as_dict=True)
+
+		manager_list = (
+			frappe.qb.from_(approver_settings)
+			.join(manager_item)
+			.on(manager_item.parent == approver_settings.name)
+			.select(
+				manager_item.user,
+				manager_item.user_name
+			)
+			.where(
+				(approver_settings.disabled != 1)
+				& (manager_item.company == self.company)
+				& (approver_settings.name == self.doctype)
+			)
+		).run(as_dict=True)
+
+		if supervisor_list:
+			self.verifier_name = supervisor_list[0].get('user_name')
+		if manager_list:
+			self.approver_name = manager_list[0].get('user_name')
+
+	### =============== *** =============== *** === DAWA TSHERING === *** =============== *** =============== ###
+
 
 @frappe.whitelist()
 def get_default_bank_cash_account(company, account_type=None, mode_of_payment=None, account=None, cost_center=None):
