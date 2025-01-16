@@ -24,6 +24,7 @@ frappe.ui.form.on("Warehouse", {
 			return {
 				filters: {
 					is_group: 1,
+					company: frm.doc.company
 				},
 			};
 		});

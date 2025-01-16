@@ -403,15 +403,17 @@
    "fieldname": "bank_name",
    "fieldtype": "Link",
    "label": "Bank Name",
+   "mandatory_depends_on": "eval:doc.salary_mode == 'Bank'",
    "oldfieldname": "bank_name",
    "oldfieldtype": "Link",
-   "options": "Bank"
+   "options": "Financial Institution"
   },
   {
    "depends_on": "eval:doc.salary_mode == 'Bank'",
    "fieldname": "bank_ac_no",
    "fieldtype": "Data",
    "label": "Bank A/C No.",
+   "mandatory_depends_on": "eval:doc.salary_mode == 'Bank'",
    "oldfieldname": "bank_ac_no",
    "oldfieldtype": "Data"
   },
@@ -863,15 +865,19 @@
    "read_only": 1
   },
   {
+   "depends_on": "eval:doc.salary_mode == 'Bank'",
    "fieldname": "bank_branch",
    "fieldtype": "Link",
    "label": "Bank Branch",
-   "options": "Bank Branch"
+   "mandatory_depends_on": "eval:doc.salary_mode == 'Bank'",
+   "options": "Financial Institution Branch"
   },
   {
+   "depends_on": "eval:doc.salary_mode == 'Bank'",
    "fieldname": "bank_account_type",
    "fieldtype": "Link",
    "label": "Bank Account Type",
+   "mandatory_depends_on": "eval:doc.salary_mode == 'Bank'",
    "options": "Bank Account Type"
   },
   {
@@ -970,7 +976,7 @@
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2023-10-25 09:09:42.676182",
+ "modified": "2025-01-16 12:15:35.231733",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",

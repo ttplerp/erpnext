@@ -51,6 +51,13 @@ frappe.ui.form.on("Employee", {
 				}
 			};
 		});
+		frm.set_query('branch', function(doc) {
+			return {
+				filters: {
+					"company": doc.company
+				}
+			};
+		});
 		frm.set_query("section", function() {
 			return {
 				"filters": {
