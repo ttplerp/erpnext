@@ -81,6 +81,7 @@ class MaterialRequest(BuyingController):
 		super(MaterialRequest, self).validate()
 		if self.company != "De-suung HQ":
 			validate_workflow_states(self)
+			notify_workflow_states(self)
 
 		self.validate_schedule_date()
 		self.check_for_on_hold_or_closed_status("Sales Order", "sales_order")
@@ -119,9 +120,9 @@ class MaterialRequest(BuyingController):
 		self.set_actual_qty()
 
 		""" check if employee or not """
-		# employee = frappe.db.get_value("Employee", {"user_id": frappe.session.user}, "name")
-		# if not employee:
-		# 	frappe.throw("Only Employee can crate the Material Request")
+		employee = frappe.db.get_value("Employee", {"user_id": frappe.session.user}, "name")
+		if not employee:
+			frappe.throw("Only Employee can crate the Material Request")
 
 	def before_update_after_submit(self):
 		self.validate_schedule_date()
@@ -140,6 +141,8 @@ class MaterialRequest(BuyingController):
 
 	def on_submit(self):
 		# frappe.db.set(self, 'status', 'Submitted')
+		if self.company != "De-suung HQ":
+			notify_workflow_states(self)
 		self.update_requested_qty()
 		self.update_requested_qty_in_production_plan()
 		if self.material_request_type == "Purchase":
@@ -247,6 +250,8 @@ class MaterialRequest(BuyingController):
 				)
 
 	def on_cancel(self):
+		if self.company != "De-suung HQ":
+			notify_workflow_states(self)
 		self.update_requested_qty()
 		self.update_requested_qty_in_production_plan()
 

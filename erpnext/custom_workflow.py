@@ -891,6 +891,14 @@ class NotifyCustomWorkflow:
 
 		if self.new_state == "Draft":
 			return
+		
+		elif self.new_state in ("Approved", "Rejected", "Cancelled"):
+			self.notify_employee()
+		elif self.new_state.startswith("Waiting") and self.old_state != self.new_state:
+			self.notify_approver()
+		else:
+			frappe.msgprint(_("Email notifications not configured for workflow state {}").format(self.new_state))
+		'''
 		elif self.new_state in ("Approved", "Rejected", "Cancelled", "Domain Lead Rejected"):
 			if self.doc.doctype == "Material Request" and self.new_state == "Approved":
 				self.notify_fd_head()
@@ -905,6 +913,7 @@ class NotifyCustomWorkflow:
 				self.notify_approver()
 		else:
 			frappe.msgprint(_("Email notifications not configured for workflow state {}").format(self.new_state))
+		'''
 
 def get_field_map():
 	return {
