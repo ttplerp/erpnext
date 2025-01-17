@@ -57,18 +57,25 @@ erpnext.PointOfSale.Controller = class {
 			});
 		}
 		const dialog = new frappe.ui.Dialog({
-			title: __('Create POS Opening Entry'),
+			title: __("Create POS Opening Entry"),
 			static: true,
 			fields: [
 				{
-					fieldtype: 'Link', label: __('Company'), default: frappe.defaults.get_default('company'),
-					options: 'Company', fieldname: 'company', reqd: 1
+					fieldtype: "Link",
+					label: __("Company"),
+					default: frappe.defaults.get_default("company"),
+					options: "Company",
+					fieldname: "company",
+					reqd: 1,
 				},
 				{
-					fieldtype: 'Link', label: __('POS Profile'),
-					options: 'POS Profile', fieldname: 'pos_profile', reqd: 1,
-					get_query: () => pos_profile_query,
-					onchange: () => fetch_pos_payment_methods()
+					fieldtype: "Link",
+					label: __("POS Profile"),
+					options: "POS Profile",
+					fieldname: "pos_profile",
+					reqd: 1,
+					get_query: () => pos_profile_query(),
+					onchange: () => fetch_pos_payment_methods(),
 				},
 				{
 					fieldname: "balance_details",
@@ -78,32 +85,38 @@ erpnext.PointOfSale.Controller = class {
 					in_place_edit: true,
 					reqd: 1,
 					data: [],
-					fields: table_fields
-				}
+					fields: table_fields,
+				},
 			],
-			primary_action: async function({ company, pos_profile, balance_details }) {
+			primary_action: async function ({ company, pos_profile, balance_details }) {
 				if (!balance_details.length) {
 					frappe.show_alert({
 						message: __("Please add Mode of payments and opening balance details."),
-						indicator: 'red'
-					})
+						indicator: "red",
+					});
 					return frappe.utils.play_sound("error");
 				}
 
 				// filter balance details for empty rows
-				balance_details = balance_details.filter(d => d.mode_of_payment);
+				balance_details = balance_details.filter((d) => d.mode_of_payment);
 
 				const method = "erpnext.selling.page.point_of_sale.point_of_sale.create_opening_voucher";
-				const res = await frappe.call({ method, args: { pos_profile, company, balance_details }, freeze:true });
+				const res = await frappe.call({
+					method,
+					args: { pos_profile, company, balance_details },
+					freeze: true,
+				});
 				!res.exc && me.prepare_app_defaults(res.message);
 				dialog.hide();
 			},
-			primary_action_label: __('Submit')
+			primary_action_label: __("Submit"),
 		});
 		dialog.show();
-		const pos_profile_query = {
-			query: 'erpnext.accounts.doctype.pos_profile.pos_profile.pos_profile_query',
-			filters: { company: dialog.fields_dict.company.get_value() }
+		const pos_profile_query = () => {
+			return {
+				query: "erpnext.accounts.doctype.pos_profile.pos_profile.pos_profile_query",
+				filters: { company: dialog.fields_dict.company.get_value() },
+			};
 		};
 	}
 
@@ -115,19 +128,19 @@ erpnext.PointOfSale.Controller = class {
 		this.item_stock_map = {};
 		this.settings = {};
 
-		frappe.db.get_value('Stock Settings', undefined, 'allow_negative_stock').then(({ message }) => {
+		frappe.db.get_value("Stock Settings", undefined, "allow_negative_stock").then(({ message }) => {
 			this.allow_negative_stock = flt(message.allow_negative_stock) || false;
 		});
 
 		frappe.call({
 			method: "erpnext.selling.page.point_of_sale.point_of_sale.get_pos_profile_data",
-			args: { "pos_profile": this.pos_profile },
+			args: { pos_profile: this.pos_profile },
 			callback: (res) => {
 				const profile = res.message;
 				Object.assign(this.settings, profile);
-				this.settings.customer_groups = profile.customer_groups.map(group => group.name);
+				this.settings.customer_groups = profile.customer_groups.map((group) => group.name);
 				this.make_app();
-			}
+			},
 		});
 	}
 
