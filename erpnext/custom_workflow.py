@@ -599,6 +599,14 @@ class NotifyCustomWorkflow:
 			if not template:
 				frappe.msgprint(_("Please set default template for Encashment Status Notification in HR Settings."))
 				return
+		### ===== ###
+		elif self.doc.doctype == "Material Request":
+			template = frappe.db.get_single_value('Stock Settings', 'mr_status_notification_template')
+			if not template:
+				frappe.msgprint(_("Please set default template for Material Request Status Notification in Stock Settings."))
+				return
+		### ====+ ###
+
 		elif self.doc.doctype == "Salary Advance":
 			template = frappe.db.get_single_value('HR Settings', 'advance_status_notification_template')
 			if not template:
@@ -684,6 +692,15 @@ class NotifyCustomWorkflow:
 				if not template:
 					frappe.msgprint(_("Please set default template for Encashment Approval Notification in HR Settings."))
 					return
+
+			### ===== ###
+			elif self.doc.doctype == "Material Request":
+				template = frappe.db.get_single_value('Stock Settings', 'mr_approval_notification_template')
+				if not template:
+					frappe.msgprint(_("Please set default template for Material Request Approval Notification in Stock Settings."))
+					return
+			### ===== ###
+
 			elif self.doc.doctype == "Salary Advance":
 				template = frappe.db.get_single_value('HR Settings', 'advance_approval_notification_template')
 				if not template:
