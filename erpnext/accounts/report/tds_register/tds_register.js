@@ -9,7 +9,7 @@ frappe.query_reports["TDS Register"] = {
 			"label": __("Fiscal Year"),
 			"fieldtype": "Link",
 			"options": "Fiscal Year",
-			"default": frappe.defaults.get_user_default("fiscal_year"),
+			// "default": frappe.defaults.get_user_default("fiscal_year"),
 			"reqd": 1,
 			"on_change": function(query_report) {
 				var fiscal_year = query_report.get_values().fiscal_year;
