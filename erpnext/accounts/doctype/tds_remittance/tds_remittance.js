@@ -10,6 +10,9 @@ frappe.ui.form.on('TDS Remittance', {
 	},
 
 	refresh: function (frm) {
+
+		refresh_html(frm);
+
 		if (frm.doc.docstatus == 1) {
 			show_custom_buttons(frm);
 		}
@@ -77,17 +80,17 @@ var show_custom_buttons = function(frm){
 	});
 
 	// show General Ledger
-	frm.add_custom_button(__('Accounting Ledger'), function () {
-		frappe.route_options = {
-			voucher_no: frm.doc.name,
-			from_date: frm.doc.posting_date,
-			to_date: frm.doc.posting_date,
-			company: frm.doc.company,
-			group_by_voucher: false
-		};
-		frappe.set_route("query-report", "General Ledger");
-	}, __("View"));
-	cur_frm.page.set_inner_btn_group_as_primary(__('View'));
+	// frm.add_custom_button(__('Accounting Ledger'), function () {
+	// 	frappe.route_options = {
+	// 		voucher_no: frm.doc.name,
+	// 		from_date: frm.doc.posting_date,
+	// 		to_date: frm.doc.posting_date,
+	// 		company: frm.doc.company,
+	// 		group_by_voucher: false
+	// 	};
+	// 	frappe.set_route("query-report", "General Ledger");
+	// }, __("View"));
+	// cur_frm.page.set_inner_btn_group_as_primary(__('View'));
 }
 
 var get_details = function(frm){
@@ -113,4 +116,15 @@ var calculate_total = function (frm) {
 	let grand_total = 0
 	grand_total = frm.doc.total_tds + fines_and_penalties
 	frm.set_value('grand_total', grand_total)
+}
+
+var refresh_html = function(frm){
+	var journal_entry_status = "";
+	if(frm.doc.journal_entry_status){
+		journal_entry_status = '<div style="font-style: italic; font-size: 0.8em; ">* '+frm.doc.journal_entry_status+'</div>';
+	}
+	
+	if(frm.doc.journal_entry){
+		$(cur_frm.fields_dict.journal_entry_html.wrapper).html('<label class="control-label" style="padding-right: 0px;">Journal Entry</label><br><b>'+'<a href="/desk/Form/Journal Entry/'+frm.doc.journal_entry+'">'+frm.doc.journal_entry+"</a> "+"</b>"+journal_entry_status);
+	}	
 }

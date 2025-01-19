@@ -3,7 +3,7 @@
 
 import frappe
 from frappe.model.document import Document
-from frappe.utils import flt, cint
+from frappe.utils import flt, cint, now_datetime
 from erpnext.accounts.general_ledger import make_gl_entries
 from frappe import _
 from erpnext.controllers.accounts_controller import AccountsController
@@ -15,27 +15,20 @@ class TDSRemittance(AccountsController):
 		self.calculate_total()
 
 	def on_submit(self):
-		self.make_gl_entries()
+		self.post_journal_entry()
+		# self.make_gl_entries()
 
 	def on_cancel(self):
-		self.make_gl_entries()
+		for t in frappe.get_all("Journal Entry", ["name"], {"name": self.journal_entry, "docstatus": ("<",2)}):
+			frappe.throw(_('Journal Entry  <a href="#Form/Journal Entry/{0}">{0}</a> for this transaction needs to be cancelled first').format(self.journal_entry),title='Not permitted')
+		# self.make_gl_entries()
 
-	# def get_condition(self):
-	# 	branch =[b.branch for b in frappe.db.sql('''select branch from `tabRegion Item` where parent = '{}' '''.format(self.region), as_dict=1)]
-	# 	if len(branch) > 1:
-	# 		return ' AND t.branch in {} '.format(tuple(branch))
-	# 	elif len(branch) == 1 :
-	# 		return " AND t.branch = '{}'".format(branch[0])
-	# 	return ''
 	@frappe.whitelist()
 	def get_details(self):
 		total_tds_amount = total_bill_amount = 0
-		# if not self.region:
-		# 	frappe.throw("Region is required")
 		if self.purpose != 'Other Invoice':
 			return total_tds_amount, total_bill_amount
 		cond = ""
-		# self.get_condition()
 
 		entries = get_tds_invoices(self.tax_withholding_category, self.from_date, self.to_date, self.name, filter_existing=True, cond= cond)
 		if not entries:
@@ -57,6 +50,63 @@ class TDSRemittance(AccountsController):
 			self.total_tds 		+= flt(d.tds_amount)
 			self.total_amount 	+= flt(d.bill_amount)
 		self.grand_total = self.total_tds + self.fines_and_penalties
+
+	def post_journal_entry(self):
+		fines_penalties_account = frappe.db.get_value("Company", self.company, "fines_and_penalties_account")
+		if not fines_penalties_account:
+			frappe.throw(
+				title="Missing Account Configuration",
+				msg="Please set the Fines and Penalties account in {}".format(
+					frappe.get_desk_link("Company", self.company)
+				),
+			)
+
+		# Posting Journal Entry
+		accounts = []
+		for item in self.items:
+			accounts.append({
+				"account": str(item.tax_account),
+				"debit": item.tds_amount,
+				"debit_in_account_currency": item.tds_amount,
+				"cost_center": item.cost_center,
+				"party_type": item.party_type,
+				"party": item.party,
+				"reference_type":	self.doctype,
+				"reference_name": self.name
+				})
+			
+		if self.fines_and_penalties > 0:
+			accounts.append({
+				"account": fines_penalties_account,
+				"debit": flt(self.fines_and_penalties),
+				"debit_in_account_currency": flt(self.fines_and_penalties),
+				"cost_center": self.cost_center,
+			})
+			
+		accounts.append({
+			"account": str(self.credit_account),
+			"credit": flt(self.total_tds + self.fines_and_penalties) if self.fines_and_penalties > 0 else self.total_tds,
+			"credit_in_account_currency": flt(self.total_tds + self.fines_and_penalties) if self.fines_and_penalties > 0 else self.total_tds,
+			"cost_center": self.cost_center,
+		})
+
+		je = frappe.new_doc("Journal Entry")
+		je.update({
+				"doctype": "Journal Entry",
+				"voucher_type": "Journal Entry",
+				"naming_series": "Journal Voucher",
+				"title": "TDS Remittance - " +self.tax_withholding_category,
+				"user_remark": "TDS Remittance - " +self.tax_withholding_category,
+				"company": self.company,
+				"accounts": accounts,
+				"branch": self.branch,
+				"posting_date": self.posting_date,
+		})
+
+		je.save(ignore_permissions = True)
+		self.db_set("journal_entry", je.name)
+		self.db_set("journal_entry_status", "Forwarded to accounts for processing payment on {0}".format(now_datetime().strftime('%Y-%m-%d %H:%M:%S')))
+		frappe.msgprint(_('{} posted to accounts').format(frappe.get_desk_link(je.doctype,je.name)))
 
 	def make_gl_entries(self):
 		gl_entries   = []
@@ -311,7 +361,7 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 			left join `tabCustomer` c on t.party_type = 'Customer' and c.name = t.party
 			left join `tabSupplier` s on t.party_type = 'Supplier' and s.name = t.party
 			left join `tabTDS Receipt Entry` tre on tre.invoice_no = t.name
-		where t.posting_date between %(from_date)s and %(to_date)s and t.settle_imprest_advance != 1
+		where t.posting_date between %(from_date)s and %(to_date)s
 		{accounts_cond}
 		and t.docstatus = 1
 		{existing_cond}

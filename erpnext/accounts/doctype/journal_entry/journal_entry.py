@@ -374,6 +374,10 @@ class JournalEntry(AccountsController):
                     doc = frappe.get_doc("Employee Loan", a.reference_name)
                     doc.db_set('journal_entry_status', "Cancelled on {0}".format(now_datetime().strftime("%Y-%m-%d %H:%M:%S")))
 
+                if a.reference_type == "TDS Remittance" and a.reference_name:
+                    doc = frappe.get_doc("TDS Remittance", a.reference_name)
+                    doc.db_set('journal_entry_status', "Cancelled on {0}".format(now_datetime().strftime("%Y-%m-%d %H:%M:%S")))
+
                 if a.reference_type == "Purchase Receipt" and a.reference_name:
                     taxes_doc = frappe.get_doc(
                         "Purchase Taxes and Charges",
@@ -412,6 +416,10 @@ class JournalEntry(AccountsController):
 
                 if a.reference_type == "Employee Loan" and a.reference_name:
                     doc = frappe.get_doc("Employee Loan", a.reference_name)
+                    doc.db_set('journal_entry_status', "Paid on {0}".format(now_datetime().strftime("%Y-%m-%d %H:%M:%S")))
+
+                if a.reference_type == "TDS Remittance" and a.reference_name:
+                    doc = frappe.get_doc("TDS Remittance", a.reference_name)
                     doc.db_set('journal_entry_status', "Paid on {0}".format(now_datetime().strftime("%Y-%m-%d %H:%M:%S")))
 
                 # Update MR Employee Invoice
