@@ -367,7 +367,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-29 17:00:20.668585",
+ "modified": "2025-01-19 19:19:38.687848",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment",
@@ -419,9 +419,8 @@
    "write": 1
   }
  ],
- "search_fields": "equipment_category,equipment_type, equipment_model",
+ "search_fields": "equipment_name, equipment_category,equipment_type, equipment_model",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
- "title_field": "equipment_name"
+ "states": []
 }
