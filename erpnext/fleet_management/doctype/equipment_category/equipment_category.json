@@ -57,7 +57,7 @@
   {
    "fieldname": "pol_advance_account",
    "fieldtype": "Link",
-   "label": "POL Advance Account",
+   "label": "POL Expense Account",
    "options": "Account",
    "reqd": 1
   },
@@ -87,7 +87,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-11-21 16:33:17.484989",
+ "modified": "2024-10-19 14:19:03.541943",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment Category",
