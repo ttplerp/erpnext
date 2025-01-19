@@ -8,6 +8,7 @@
  "engine": "InnoDB",
  "field_order": [
   "purpose",
+  "payroll_entry",
   "branch",
   "cost_center",
   "cb_6",
@@ -246,12 +247,19 @@
    "fieldtype": "Link",
    "label": "Employee Branch",
    "options": "Branch"
+  },
+  {
+   "depends_on": "eval:doc.purpose==\"Employee Salary\"",
+   "fieldname": "payroll_entry",
+   "fieldtype": "Link",
+   "label": "Payroll Entry ID",
+   "options": "Payroll Entry"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-19 10:43:03.554949",
+ "modified": "2025-01-19 14:10:18.894101",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "TDS Receipt Update",
