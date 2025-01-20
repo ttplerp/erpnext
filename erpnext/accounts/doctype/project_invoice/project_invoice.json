@@ -219,8 +219,7 @@
    "fieldname": "tds_amount",
    "fieldtype": "Currency",
    "label": "TDS Amount",
-   "precision": "2",
-   "read_only": 1
+   "precision": "3"
   },
   {
    "fieldname": "column_break_38",
@@ -347,8 +346,7 @@
    "fieldname": "retention_amount",
    "fieldtype": "Currency",
    "label": "Retention Amount",
-   "precision": "2",
-   "read_only": 1
+   "precision": "3"
   },
   {
    "depends_on": "eval:doc.retention_percent",
@@ -381,7 +379,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-14 13:51:44.603745",
+ "modified": "2025-01-20 19:00:44.943041",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Project Invoice",
