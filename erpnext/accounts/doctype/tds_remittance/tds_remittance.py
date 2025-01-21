@@ -354,7 +354,7 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 		select t.posting_date, 'Repair And Service Invoice' as invoice_type, t.name as invoice_no, t.party_type, t.party,
 			(case when t.party_type = 'Customer' then c.tax_id when t.party_type = 'Supplier' then s.supplier_tpn_no else null end) as tpn, 
 			t.cost_center,
-			t.total_amount as bill_amount, t.tds_amount, t.tds_account as tax_account,
+			t.net_amount as bill_amount, t.tds_amount, t.tds_account as tax_account,
 			tre.tds_remittance, tre.tds_receipt_update,
 			(case when tre.tds_receipt_update is not null then 'Paid' else 'Unpaid' end) remittance_status
 		from `tabRepair And Service Invoice` as t
@@ -367,7 +367,7 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 		{existing_cond}
 		{party_cond}
 		{cond}
-		and (t.total_amount > 0 or t.tds_amount > 0)
+		and (t.net_amount > 0 or t.tds_amount > 0)
 		""".format(accounts_cond=accounts_cond, cond=cond, existing_cond=existing_cond, party_cond=party_cond),
 		params, as_dict=True)
 	

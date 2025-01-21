@@ -62,8 +62,14 @@ class RepairAndServiceInvoice(AccountsController):
 				status = "Cancelled"
 			elif self.docstatus == 1:
 				if update:
-					if outstanding_amount > 0 and self.total_amount > outstanding_amount:
-						self.status = "Partly Paid"
+					if outstanding_amount > 0:
+						amt_aft_tds_discount = 0.0
+						amt_aft_tds_discount = flt(self.tds_amount)+flt(self.deduction_amount)
+						temp = self.total_amount - amt_aft_tds_discount
+						if temp == self.outstanding_amount:
+							self.status = "Overdue"
+						else:
+							self.status = "Partly Paid"
 					elif outstanding_amount == 0.00:
 						self.status = "Paid"
 				else:
@@ -260,20 +266,21 @@ class RepairAndServiceInvoice(AccountsController):
 				)
 			)
 		
-		gl_entries.append(
-			self.get_gl_dict(
-				{
-					"account": credit_account,
-					"party_type": "Employee" if self.settle_imprest_advance else self.party_type,
-					"party": self.imprest_party if self.settle_imprest_advance else self.party,
-					"credit": flt(self.imprest_amount) if self.settle_imprest_advance else flt(self.outstanding_amount),
-					"credit_in_account_currency": flt(self.imprest_amount) if self.settle_imprest_advance else flt(self.outstanding_amount),
-					"cost_center": self.cost_center,
-					"voucher_no": self.name,
-					"voucher_type": self.doctype,
-				},
-				self.currency,
-			))
+		if self.outstanding_amount or self.imprest_amount:
+			gl_entries.append(
+				self.get_gl_dict(
+					{
+						"account": credit_account,
+						"party_type": "Employee" if self.settle_imprest_advance else self.party_type,
+						"party": self.imprest_party if self.settle_imprest_advance else self.party,
+						"credit": flt(self.imprest_amount) if self.settle_imprest_advance else flt(self.outstanding_amount),
+						"credit_in_account_currency": flt(self.imprest_amount) if self.settle_imprest_advance else flt(self.outstanding_amount),
+						"cost_center": self.cost_center,
+						"voucher_no": self.name,
+						"voucher_type": self.doctype,
+					},
+					self.currency,
+				))
 		make_gl_entries(gl_entries, update_outstanding="No", cancel=(self.docstatus == 2), merge_entries=False)
 
 	def make_filters(self):

@@ -6,6 +6,7 @@ frappe.listview_settings['Repair And Service Invoice'] = {
 	get_indicator: function(doc) {
 		const status_colors = {
 			"Unpaid": "orange",
+			"Overdue": "orange",
 			"Paid": "green",
 			"Cancelled": "red",
 			"Draft": "red",
