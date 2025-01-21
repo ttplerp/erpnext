@@ -403,7 +403,7 @@ class StockController(AccountsController):
         # To handle delivery note and sales invoice
         if row.get("item_row"):
             row = row.get("item_row")
-        if self.doctype in ("POL Receive", "POL Issue"):
+        if self.doctype in ("POL Receive", "POL Issue", "Equipment Material Issue"):
             row = self
         dimensions = get_evaluated_inventory_dimension(row, sl_dict, parent_doc=self)
         for dimension in dimensions:
