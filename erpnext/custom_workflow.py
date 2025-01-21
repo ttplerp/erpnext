@@ -438,7 +438,7 @@ class CustomWorkflow:
 			if frappe.session.user != self.doc.owner:
 				frappe.throw("Only {} can apply this request".format(self.doc.owner))
 
-		elif self.new_state.lower() == ("Waiting Supervisor Approval".lower()):
+		elif self.new_state.lower() == ("Waiting for Verification".lower()):
 			if frappe.session.user != self.doc.owner:
 				frappe.throw("Only {} can apply this request".format(self.doc.owner))
 			self.set_approver("Supervisor")
@@ -581,9 +581,14 @@ class NotifyCustomWorkflow:
 		self.login_user		= frappe.db.get_value("Employee", {"user_id": frappe.session.user}, self.field_list)
 
 	def notify_employee(self):
-		employee = frappe.get_doc("Employee", self.doc.employee)
-		if not employee.user_id:
-			return
+		user_id = ""
+		if self.doc.doctype != "Material Request":
+			employee = frappe.get_doc("Employee", self.doc.employee)
+			user_id = employee.user_id
+			if not employee.user_id:
+				return
+		else:
+			user_id = self.doc.owner
 
 		# parent_doc = frappe.get_doc(self.doc.doctype, self.doc.name)
 		# args = parent_doc.as_dict()
@@ -605,7 +610,7 @@ class NotifyCustomWorkflow:
 			if not template:
 				frappe.msgprint(_("Please set default template for Material Request Status Notification in Stock Settings."))
 				return
-		### ====+ ###
+		### ===== ###
 
 		elif self.doc.doctype == "Salary Advance":
 			template = frappe.db.get_single_value('HR Settings', 'advance_status_notification_template')
@@ -670,7 +675,7 @@ class NotifyCustomWorkflow:
 		self.notify({
 			# for post in messages
 			"message": message,
-			"message_to": employee.user_id,
+			"message_to": user_id,
 			# for email
 			"subject": email_template.subject,
 			"notify": "employee"
