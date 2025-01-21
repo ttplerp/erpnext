@@ -4,9 +4,10 @@ def get_data():
 	return {
         "fieldname": "reference_name",
 		"non_standard_fieldnames": {
-			"Repair And Service": "repair_and_services",
+			"Repair And Services": "repair_and_services",
 		},
 		"transactions": [
-			{"label": _("Related Transaction"), "items": ["Payment Entry","Journal Entry","Repair And Service"]},
+			# {"label": _("Related Transaction"), "items": ["Payment Entry","Journal Entry","Repair And Services"]},
+			{"label": _("Related Transaction"), "items": ["Payment Entry"]},
 		],
 	}

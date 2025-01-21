@@ -158,45 +158,35 @@ class PaymentEntry(AccountsController):
 							ref_doc.payment_status = "Unpaid"
 						ref_doc.save(ignore_permissions = True)
 						frappe.msgprint("Updated Project Invoice {}".format(ref.reference_name))
-						
-		# for a in self.references:
-		# 	if a.reference_doctype == "Project Invoice":
-		# 		payment_status = ""
-		# 		outstanding_amount = frappe.db.get_value(
-		# 			"Project Invoice", a.reference_name, "outstanding_amount"
-		# 		)
-		# 		total_received_amount = frappe.db.get_value(
-		# 			"Project Invoice", a.reference_name, "total_received_amount"
-		# 		)
-		# 		total_balance_amount = frappe.db.get_value(
-		# 			"Project Invoice", a.reference_name, "total_balance_amount"
-		# 		)
-		# 		if not cancel:
-		# 			outstanding_amount -= self.paid_amount
-		# 			total_received_amount += self.paid_amount
-		# 		else:
-		# 			outstanding_amount += self.paid_amount
-		# 			total_received_amount -= self.paid_amount
 
-		# 		if outstanding_amount == 0:
-		# 			payment_status = "Paid"
-		# 		elif flt(outstanding_amount, 2) < flt(total_balance_amount):
-		# 			payment_status = "Partly Paid"
-		# 		else:
-		# 			payment_status = "Unpaid"
+			# elif ref.reference_doctype == 'Repair And Service Invoice':
+			# 	allocated_amount = flt(ref.allocated_amount)
+			# 	if allocated_amount > 0:
+					
+			# 		ref_doc = frappe.get_doc("Repair And Service Invoice", ref.reference_name)
+			# 		outstanding_amount = flt(ref_doc.outstanding_amount)
 
-		# 		frappe.db.sql(
-		# 			"""
-		# 			update `tabProject Invoice` set outstanding_amount = {}, total_received_amount = {}, payment_status = '{}'
-		# 			where name = '{}'
-		# 		""".format(
-		# 				flt(outstanding_amount, 2),
-		# 				flt(total_received_amount, 2),
-		# 				payment_status,
-		# 				a.reference_name,
-		# 			)
-		# 		)
-		# 		frappe.msgprint("Updated Project Invoice {}".format(a.reference_name))
+			# 		if allocated_amount > outstanding_amount and self.docstatus < 2:
+			# 			frappe.throw(_("Invoice #{0}: Allocated amount {1} cannot exceed outstanding amount {2}")
+			# 						.format(ref.reference_name, "{:,.2f}".format(allocated_amount), "{:,.2f}".format(outstanding_amount)))
+			# 		else:
+			# 			allocated_amount = -1 * allocated_amount if cancel else allocated_amount
+
+			# 			ref_doc.outstanding_amount = flt(ref_doc.outstanding_amount) - allocated_amount
+
+			# 			if ref_doc.outstanding_amount == 0:
+			# 				ref_doc.status = "Paid"
+			# 			elif flt(ref_doc.outstanding_amount, 2) != flt(ref_doc.total_amount):
+			# 				ref_doc.status = "Partly Paid"
+			# 			else:
+			# 				ref_doc.status = "Unpaid"
+
+			# 			try:
+			# 				ref_doc.save(ignore_permissions=True)
+			# 				frappe.msgprint("Updated Repair And Service Invoice {}".format(ref.reference_name))
+			# 			except Exception as e:
+			# 				frappe.throw(_("Failed to update invoice {}: {}").format(ref.reference_name, str(e)))
+
 
 			elif ref.reference_doctype == "POL Receive Invoice":
 				payment_status = ""
@@ -2734,8 +2724,8 @@ def set_grand_total_and_outstanding_amount(party_amount, dt, party_account_curre
 	elif dt in ["Transporter Invoice", "EME Invoice", "Repair And Service Invoice"]:
 		grand_total = doc.grand_total
 		outstanding_amount = doc.outstanding_amount
-		if dt == "Repair And Service Invoice" and doc.tds_account and doc.tds_amount:
-			grand_total = outstanding_amount = flt(doc.net_amount)
+		if dt == "Repair And Service Invoice":
+			grand_total = outstanding_amount = flt(doc.outstanding_amount)
 	elif dt in ["POL Receive Invoice"]:
 		grand_total = outstanding_amount = doc.amount
 	else:

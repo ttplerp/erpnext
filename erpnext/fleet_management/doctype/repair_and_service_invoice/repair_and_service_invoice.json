@@ -13,29 +13,37 @@
   "repair_and_services_type",
   "out_source",
   "status",
-  "bill_no",
-  "bill_date",
   "column_break_7",
-  "posting_date",
   "party_type",
   "party",
   "credit_account",
+  "column_break_s7a9i",
+  "posting_date",
+  "bill_date",
+  "bill_no",
   "settle_imprest_advance",
   "imprest_party",
   "section_break_2",
   "items",
-  "checked_by",
+  "section_break_bnljm",
+  "deductions",
+  "section_break_tnlr8",
+  "advance_type",
+  "advances",
   "section_break_15",
   "total_amount",
   "grand_total",
   "column_break_34",
+  "deduction_amount",
+  "net_amount",
+  "column_break_4gesp",
+  "total_advance_allocated",
   "outstanding_amount",
   "tds_details_section",
   "tds_percent",
   "tds_amount",
   "column_break_a7a2t",
   "tds_account",
-  "net_amount",
   "section_break_5",
   "repair_and_services_date",
   "equipment",
@@ -101,13 +109,8 @@
    "fieldname": "items",
    "fieldtype": "Table",
    "label": "Repair And Services Invoice Item",
-   "options": "Repair And Services Invoice Item"
-  },
-  {
-   "fieldname": "checked_by",
-   "fieldtype": "Link",
-   "label": "Checked By",
-   "options": "Employee"
+   "options": "Repair And Services Invoice Item",
+   "read_only": 1
   },
   {
    "fieldname": "section_break_15",
@@ -125,6 +128,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "outstanding_amount",
    "fieldtype": "Currency",
    "label": "Outstanding Amount",
@@ -237,6 +241,7 @@
   {
    "fieldname": "credit_account",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Credit Account",
    "options": "Account"
   },
@@ -245,6 +250,7 @@
    "fieldtype": "Select",
    "label": "Party Type",
    "options": "\nEmployee\nSupplier",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -253,6 +259,7 @@
    "in_list_view": 1,
    "label": "Party",
    "options": "party_type",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -338,15 +345,62 @@
    "fieldtype": "Column Break"
   },
   {
+   "fieldname": "section_break_bnljm",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "deductions",
+   "fieldtype": "Table",
+   "options": "RNS Invoice Deduction Item",
+   "read_only": 1
+  },
+  {
+   "fieldname": "deduction_amount",
+   "fieldtype": "Currency",
+   "label": "Deduction Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_s7a9i",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_tnlr8",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "advances",
+   "fieldtype": "Table",
+   "no_copy": 1,
+   "options": "Repair and Service Invoice Advance"
+  },
+  {
+   "fieldname": "advance_type",
+   "fieldtype": "Link",
+   "label": "Advance Type",
+   "options": "Advance Type"
+  },
+  {
+   "fieldname": "column_break_4gesp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_advance_allocated",
+   "fieldtype": "Currency",
+   "label": "Total Advance Allocated",
+   "read_only": 1
+  },
+  {
    "fieldname": "net_amount",
-   "fieldtype": "Data",
-   "label": "Net Amount"
+   "fieldtype": "Currency",
+   "label": "Net Amount (After Discount)",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-03-19 09:46:13.641419",
+ "modified": "2025-01-19 18:26:38.774740",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Repair And Service Invoice",

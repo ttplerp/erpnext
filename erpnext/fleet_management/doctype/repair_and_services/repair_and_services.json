@@ -9,59 +9,58 @@
  "field_order": [
   "branch",
   "cost_center",
-  "repair_and_services_type",
   "out_source",
-  "set_warehouse",
   "column_break_2",
+  "repair_and_services_type",
+  "bill_no",
+  "bill_date",
+  "column_break_spfhe",
   "posting_date",
-  "posting_time",
-  "other_details_section",
-  "start_date",
-  "completion_status",
-  "recent_maintenance_date",
-  "column_break_13",
-  "end_date",
-  "total_hrs",
+  "imprest_settlement",
+  "imprest_party",
+  "credit_account",
   "column_break_4",
   "equipment",
-  "equipment_type",
-  "equipment_model",
   "hired_equipment",
+  "column_break_0axci",
+  "equipment_type",
   "column_break_11",
   "equipment_category",
-  "current_km",
-  "km_difference",
   "supplier_details_section",
   "party_type",
+  "column_break_vswbm",
   "party",
   "parts_to_be_change_section",
   "items",
   "section_break_26",
+  "deductions",
+  "section_break_ic1sb",
+  "tds_percent",
+  "column_break_uwgsq",
+  "tds_amount",
+  "column_break_w86c3",
+  "tds_account",
+  "section_break_qpjtp",
   "total_out_source_amt",
+  "grand_total",
+  "outstanding_amount",
   "column_break_27",
   "total_stock_amt",
-  "column_break_30",
   "total_amount",
-  "nature_of_break_down",
-  "defect",
-  "section_break_15",
-  "fleet_comment",
-  "company",
-  "sb_12",
-  "tc_name",
-  "sb123",
-  "job_outsource_header",
-  "cb123",
-  "job_outsource_footer",
-  "amended_from",
-  "paid",
+  "column_break_30",
+  "deduction_amount",
+  "net_amount",
   "sb_approver",
   "approver",
   "cb_approver_01",
   "approver_name",
   "cb_approver_02",
   "approver_designation",
-  "status"
+  "additional_information_section",
+  "company",
+  "column_break_hw4f9",
+  "journal_entry",
+  "amended_from"
  ],
  "fields": [
   {
@@ -97,92 +96,22 @@
    "fieldtype": "Section Break"
   },
   {
-   "fieldname": "nature_of_break_down",
-   "fieldtype": "Section Break",
-   "hidden": 1,
-   "label": "Nature of Break Down"
-  },
-  {
-   "fieldname": "defect",
-   "fieldtype": "Text Editor",
-   "hidden": 1,
-   "label": "Defects / Malfunction Observed Comments on Repair "
-  },
-  {
-   "fieldname": "section_break_15",
-   "fieldtype": "Section Break"
-  },
-  {
-   "allow_on_submit": 1,
-   "fieldname": "fleet_comment",
-   "fieldtype": "Small Text",
-   "label": "Comments Or Remarks"
-  },
-  {
    "fieldname": "company",
    "fieldtype": "Link",
    "label": "Company",
-   "options": "Company",
-   "read_only": 1
-  },
-  {
-   "collapsible": 1,
-   "fieldname": "sb_12",
-   "fieldtype": "Section Break",
-   "hidden": 1,
-   "label": "Job Outsourced Terms and Conditions"
-  },
-  {
-   "fieldname": "tc_name",
-   "fieldtype": "Link",
-   "label": "Purchase Terms & Condition Template",
-   "options": "Terms and Conditions"
-  },
-  {
-   "collapsible": 1,
-   "fieldname": "sb123",
-   "fieldtype": "Section Break",
-   "label": "Job Outsource Header Footer",
-   "read_only": 1
-  },
-  {
-   "fieldname": "job_outsource_header",
-   "fieldtype": "Text Editor",
-   "label": "Job Outsource Header"
-  },
-  {
-   "fieldname": "cb123",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "job_outsource_footer",
-   "fieldtype": "Text Editor",
-   "label": "Job Outsource Footer"
+   "options": "Company"
   },
   {
    "fieldname": "parts_to_be_change_section",
-   "fieldtype": "Section Break",
-   "label": "PARTS TO BE CHANGE"
+   "fieldtype": "Section Break"
   },
   {
    "allow_bulk_edit": 1,
    "fieldname": "items",
    "fieldtype": "Table",
-   "label": "Items",
+   "label": "PARTS TO BE CHANGE",
    "options": "Repair And Services Item",
    "reqd": 1
-  },
-  {
-   "depends_on": "eval:doc.equipment",
-   "fieldname": "current_km",
-   "fieldtype": "Float",
-   "label": "Current KM/HR"
-  },
-  {
-   "fieldname": "km_difference",
-   "fieldtype": "Float",
-   "label": "KM/HR Difference",
-   "read_only": 1
   },
   {
    "fieldname": "total_amount",
@@ -209,15 +138,6 @@
    "read_only": 1
   },
   {
-   "depends_on": "eval:doc.equipment",
-   "fetch_from": "equipment.equipment_model",
-   "fieldname": "equipment_model",
-   "fieldtype": "Link",
-   "label": "Equipment/Vehicle Model",
-   "options": "Equipment Model",
-   "read_only": 1
-  },
-  {
    "default": "Today",
    "fieldname": "posting_date",
    "fieldtype": "Date",
@@ -228,8 +148,7 @@
   {
    "depends_on": "eval:doc.out_source",
    "fieldname": "supplier_details_section",
-   "fieldtype": "Section Break",
-   "label": "Party Details"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "amended_from",
@@ -253,26 +172,11 @@
    "read_only": 1
   },
   {
-   "fieldname": "recent_maintenance_date",
-   "fieldtype": "Date",
-   "label": "Recent Maintenance Date",
-   "read_only": 1
-  },
-  {
    "default": "0",
    "fetch_from": "equipment.hired_equipment",
    "fieldname": "hired_equipment",
    "fieldtype": "Check",
    "label": "Is Hired Equipment/Vehicle?",
-   "read_only": 1
-  },
-  {
-   "allow_on_submit": 1,
-   "default": "0",
-   "fieldname": "paid",
-   "fieldtype": "Check",
-   "hidden": 1,
-   "label": "Paid",
    "read_only": 1
   },
   {
@@ -294,7 +198,8 @@
    "fieldname": "repair_and_services_type",
    "fieldtype": "Select",
    "label": "Repair and Services Type",
-   "options": "\nPreventive Maintenance\nRegular Maintenance\nBreakdown Maintenance"
+   "options": "\nPreventive Maintenance\nRegular Maintenance\nBreakdown Maintenance",
+   "reqd": 1
   },
   {
    "fieldname": "sb_approver",
@@ -330,24 +235,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "start_date",
-   "fieldtype": "Datetime",
-   "label": "Start Date",
-   "reqd": 1
-  },
-  {
-   "allow_on_submit": 1,
-   "fieldname": "end_date",
-   "fieldtype": "Datetime",
-   "label": "End Date"
-  },
-  {
-   "fieldname": "total_hrs",
-   "fieldtype": "Float",
-   "label": "Total Hrs",
-   "read_only": 1
-  },
-  {
    "fieldname": "total_out_source_amt",
    "fieldtype": "Currency",
    "label": "Total Out Source Amt",
@@ -372,44 +259,135 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "set_warehouse",
-   "fieldtype": "Link",
-   "label": "Warehouse",
-   "options": "Warehouse"
-  },
-  {
-   "allow_on_submit": 1,
-   "fieldname": "completion_status",
-   "fieldtype": "Select",
-   "label": "Status",
-   "options": "In Process\nCompleted",
-   "reqd": 1
-  },
-  {
-   "fieldname": "status",
-   "fieldtype": "Data",
-   "label": "Status"
-  },
-  {
-   "fieldname": "posting_time",
-   "fieldtype": "Time",
-   "label": "Posting Time",
-   "reqd": 1
-  },
-  {
-   "fieldname": "other_details_section",
-   "fieldtype": "Section Break",
-   "label": "Other Details"
-  },
-  {
-   "fieldname": "column_break_13",
+   "fieldname": "column_break_vswbm",
    "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.out_source",
+   "fieldname": "deduction_amount",
+   "fieldtype": "Currency",
+   "label": "Deduction Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "grand_total",
+   "fieldtype": "Currency",
+   "label": "Grand Total",
+   "read_only": 1
+  },
+  {
+   "fieldname": "outstanding_amount",
+   "fieldtype": "Currency",
+   "label": "Outstanding Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bill_no",
+   "fieldtype": "Data",
+   "label": "Bill No"
+  },
+  {
+   "fieldname": "bill_date",
+   "fieldtype": "Date",
+   "label": "Bill Date"
+  },
+  {
+   "fieldname": "deductions",
+   "fieldtype": "Table",
+   "label": "Deductions",
+   "options": "Repair And Services Deduction"
+  },
+  {
+   "fieldname": "section_break_ic1sb",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_spfhe",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "additional_information_section",
+   "fieldtype": "Section Break",
+   "label": "Additional Information"
+  },
+  {
+   "fieldname": "column_break_hw4f9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_0axci",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tds_percent",
+   "fieldtype": "Select",
+   "label": "TDS Percent",
+   "options": "\n2"
+  },
+  {
+   "fieldname": "column_break_uwgsq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.tds_percent",
+   "fieldname": "tds_amount",
+   "fieldtype": "Currency",
+   "label": "TDS Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_w86c3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tds_account",
+   "fieldtype": "Link",
+   "label": "TDS Account",
+   "options": "Account",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_qpjtp",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "imprest_settlement",
+   "fieldtype": "Check",
+   "label": "Settle From Imprest Advance"
+  },
+  {
+   "depends_on": "eval:doc.imprest_settlement",
+   "fieldname": "imprest_party",
+   "fieldtype": "Link",
+   "label": "Imprest Party",
+   "mandatory_depends_on": "eval:doc.imprest_settlement",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "credit_account",
+   "fieldtype": "Link",
+   "label": "Credit Account",
+   "options": "Account",
+   "read_only": 1
+  },
+  {
+   "fieldname": "journal_entry",
+   "fieldtype": "Data",
+   "label": "Journal Entry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "net_amount",
+   "fieldtype": "Currency",
+   "label": "Net Amount (After Discount)",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-10-05 12:05:15.782426",
+ "modified": "2025-01-19 01:41:10.944352",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Repair And Services",

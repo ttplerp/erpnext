@@ -1,7 +1,18 @@
 // Copyright (c) 2022, Frappe Technologies Pvt. Ltd. and contributors
 // For license information, please see license.txt
+
 frappe.ui.form.on('Repair And Service Invoice', {
+	onload: function (frm) {
+		let grid = frm.fields_dict['advances'].grid;
+        grid.cannot_add_rows = true;
+	},
 	refresh: function(frm) {
+		if (frm.doc.docstatus === 0 && !frm.is_new()) {
+			frm.add_custom_button(__("Get Advance"), function () {
+				frm.events.get_advance_details(frm);
+			}).toggleClass("btn-primary", !(frm.doc.employees || []).length);
+		}
+
 		if (frm.doc.docstatus == 1){
 			cur_frm.add_custom_button(__('Ledger'), function() {
 				frappe.route_options = {
@@ -32,18 +43,33 @@ frappe.ui.form.on('Repair And Service Invoice', {
 				},
 				callback: function(r) {
 					if(r.message) {
-						frm.set_value("tds_account",r.message)
+						frm.set_value("tds_account", r.message)
 						frm.refresh_fields("tds_account")
-						frm.set_value("tds_amount", parseFloat(frm.doc.grand_total) * (parseFloat(frm.doc.tds_percent) / 100));
-						frm.set_value("net_amount", parseFloat(frm.doc.grand_total)-parseFloat(frm.doc.tds_amount));
+						frm.set_value("tds_amount", parseFloat(frm.doc.total_amount) * (parseFloat(frm.doc.tds_percent) / 100));
+						frm.set_value("outstanding_amount", parseFloat(frm.doc.outstanding_amount) - parseFloat(frm.doc.tds_amount));
 					}
 				}
 			});
 		}
 	},
 
-
-
+	get_advance_details: function (frm) {
+		return frappe
+			.call({
+				doc: frm.doc,
+				method: "fill_advance_details",
+				freeze: true,
+				freeze_message: __("Fetching Advanes "),
+			})
+			.then((r) => {
+				if (r.docs?.[0]?.advances) {
+					frm.dirty();
+					frm.save();
+				}
+				frm.refresh();
+				frm.scroll_to_field("advances");
+			});
+	},
 
 	make_payment_entry:function(frm){
 		frappe.call({
@@ -63,39 +89,6 @@ frappe.ui.form.on('Repair And Service Invoice', {
 		frm.set_value("party","")
 		frm.refresh_field("party")
 	},
-	party:function(frm){
-		if (frm.doc.party){
-			frappe.call({
-				method: "erpnext.accounts.party.get_party_account",
-				args: {
-					party_type:frm.doc.party_type,
-					party:frm.doc.party,
-					company: frm.doc.company,
-				},
-				callback: function(r) {
-					if(r.message) {
-						frm.set_value("credit_account",r.message)
-						frm.refresh_fields("credit_account")
-					}
-				}
-			});
-		}
-	},
-	settle_imprest_advance: function(frm){
-		if(frm.doc.settle_imprest_advance==1){
-			frappe.call({
-				method: "get_imprest_advance_account",
-				doc: frm.doc,
-				callback: function(r){
-					frm.set_value("credit_account",r.message);
-				}
-			})
-		}
-		else{
-			frm.set_value("credit_account", null);
-		}
-		frm.refresh_field("credit_account");
-	}
 });
 
 frappe.ui.form.on('Repair And Services Invoice Item', {

@@ -2890,15 +2890,11 @@ class CustomWorkflow:
     def repair_services(self):
         if not self.old_state:
             return
+        
         elif self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
             if self.doc.owner != frappe.session.user:
                 frappe.throw("Only {} can Apply this request".format(self.doc.owner))
             self.set_approver("Supervisor")
-
-        elif self.new_state.lower() == "Waiting Approval".lower():
-            if self.doc.approver != frappe.session.user:
-                frappe.throw("Only {} can Forward this request".format(self.doc.approver_name))
-            self.set_approver("Advance Approver")
             
         elif self.new_state.lower() == "Approved".lower():
             if self.doc.approver != frappe.session.user:

@@ -2,48 +2,15 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Repair And Services', {
-	setup:function(frm){
-		if(frm.doc.__islocal){
-			frm.set_value("posting_time",frappe.datetime.now_time())
-			frm.refresh_field("posting_time")
-		}
-	},
-	onload:function(frm){
-		if(frm.doc.__islocal){
-			frm.set_value("posting_time",frappe.datetime.now_time())
-			frm.refresh_field("posting_time")
-		}
-	},
 	refresh: function(frm) {
-		if(frm.doc.docstatus == 1) {
-			cur_frm.add_custom_button(__("Stock Ledger"), function() {
-				frappe.route_options = {
-					voucher_no: frm.doc.name,
-					from_date: frm.doc.posting_date,
-					to_date: frm.doc.posting_date,
-					company: frm.doc.company
-				};
-				frappe.set_route("query-report", "Stock Ledger");
-			}, __("View"));
-
-			cur_frm.add_custom_button(__('Accounting Ledger'), function() {
-				frappe.route_options = {
-					voucher_no: frm.doc.name,
-					from_date: frm.doc.posting_date,
-					to_date: frm.doc.posting_date,
-					company: frm.doc.company,
-					group_by_voucher: false
-				};
-				frappe.set_route("query-report", "General Ledger");
-			}, __("View"));
-			if (cint(frm.doc.out_source) == 1 && frm.doc.total_amount > 0 && cint(frm.doc.paid) == 0) {
-				frm.add_custom_button("Invoice", function () {
-					frappe.model.open_mapped_doc({
-						method: "erpnext.fleet_management.doctype.repair_and_services.repair_and_services.make_repair_and_services_invoice",
-						frm: cur_frm
-					})
-				},__("Create"));
+		frm.set_query("equipment", function (doc) {
+			return {
+				filters: {
+					'branch': doc.branch,
+				}
 			}
+		});
+		if(frm.doc.docstatus == 1) {
 			frm.add_custom_button("Request Material", function() {
 				frappe.model.open_mapped_doc({
 					method: "erpnext.fleet_management.doctype.repair_and_services.repair_and_services.make_mr",
@@ -51,12 +18,36 @@ frappe.ui.form.on('Repair And Services', {
 				});
 			},__("Create"));
 		}
-	}
-});
-frappe.ui.form.on('Repair And Services Item', {
-	// refresh: function(frm) {
+	},
 
-	// }
+	party_type: function(frm) {
+		frm.set_value("party","")
+		frm.refresh_field("party")
+	},
+
+	tds_percent:function(frm){
+		if (frm.doc.tds_percent){
+			frappe.call({
+				method: "erpnext.accounts.utils.get_tds_account",
+				args: {
+					percent:frm.doc.tds_percent,
+					company:frm.doc.company
+				},
+				callback: function(r) {
+					if(r.message) {
+						frm.set_value("tds_account", r.message)
+						frm.refresh_fields("tds_account")
+						frm.set_value("tds_amount", parseFloat(frm.doc.total_amount) * (parseFloat(frm.doc.tds_percent) / 100));
+						frm.set_value("outstanding_amount", parseFloat(frm.doc.outstanding_amount) - parseFloat(frm.doc.tds_amount));
+					}
+				}
+			});
+		}
+	},
+
+});
+
+frappe.ui.form.on('Repair And Services Item', {
 	rate:function(frm,cdt,cdn){
 		calculate_amount(frm,cdt,cdn)
 	},
