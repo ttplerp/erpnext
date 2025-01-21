@@ -15,6 +15,7 @@ class RepairAndServiceInvoice(AccountsController):
 	def validate(self):
 		self.calculate_total_amount()
 		self.set_status()
+		self.validate_imprest_party_amount()
 
 	def on_submit(self):
 		self.set_status(update=True)
@@ -72,6 +73,11 @@ class RepairAndServiceInvoice(AccountsController):
 
 		if update:
 			self.db_set("status", self.status, update_modified=update_modified)
+
+	def validate_imprest_party_amount(self):
+		if self.settle_imprest_advance:
+			self.imprest_amount = self.outstanding_amount
+			self.outstanding_amount = 0.0
 
 	def calculate_total_amount(self):
 		self.total_amount = self.net_amount = self.outstanding_amount = 0
@@ -254,21 +260,20 @@ class RepairAndServiceInvoice(AccountsController):
 				)
 			)
 		
-		if flt(self.outstanding_amount) > 0:
-			gl_entries.append(
-				self.get_gl_dict(
-					{
-						"account": credit_account,
-						"party_type": "Employee" if self.settle_imprest_advance else self.party_type,
-						"party": self.imprest_party if self.settle_imprest_advance else self.party,
-						"credit": flt(self.outstanding_amount),
-						"credit_in_account_currency": flt(self.outstanding_amount),
-						"cost_center": self.cost_center,
-						"voucher_no": self.name,
-						"voucher_type": self.doctype,
-					},
-					self.currency,
-				))
+		gl_entries.append(
+			self.get_gl_dict(
+				{
+					"account": credit_account,
+					"party_type": "Employee" if self.settle_imprest_advance else self.party_type,
+					"party": self.imprest_party if self.settle_imprest_advance else self.party,
+					"credit": flt(self.imprest_amount) if self.settle_imprest_advance else flt(self.outstanding_amount),
+					"credit_in_account_currency": flt(self.imprest_amount) if self.settle_imprest_advance else flt(self.outstanding_amount),
+					"cost_center": self.cost_center,
+					"voucher_no": self.name,
+					"voucher_type": self.doctype,
+				},
+				self.currency,
+			))
 		make_gl_entries(gl_entries, update_outstanding="No", cancel=(self.docstatus == 2), merge_entries=False)
 
 	def make_filters(self):

@@ -38,6 +38,7 @@
   "net_amount",
   "column_break_4gesp",
   "total_advance_allocated",
+  "imprest_amount",
   "outstanding_amount",
   "tds_details_section",
   "tds_percent",
@@ -395,12 +396,19 @@
    "fieldtype": "Currency",
    "label": "Net Amount (After Discount)",
    "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.settle_imprest_advance",
+   "fieldname": "imprest_amount",
+   "fieldtype": "Currency",
+   "label": "Imprest Amount",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-19 18:26:38.774740",
+ "modified": "2025-01-21 20:49:51.188485",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Repair And Service Invoice",
