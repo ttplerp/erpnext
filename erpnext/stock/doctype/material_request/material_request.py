@@ -34,11 +34,6 @@ class MaterialRequest(BuyingController):
 		else:
 			series = 'MRP'
 			self.name = make_autoname(str(series) + ".YY.MM.####")
-	def get_feed(self):
-		return
-
-	def check_if_already_pulled(self):
-		pass
 
 	def validate_qty_against_so(self):
 		so_items = {}  # Format --> {'SO/00001': {'Item/001': 120, 'Item/002': 24}}
@@ -79,7 +74,7 @@ class MaterialRequest(BuyingController):
 
 	def validate(self):
 		super(MaterialRequest, self).validate()
-		if self.company != "De-suung HQ":
+		if self.company not in ("De-suung HQ", "De-suung Skilling"):
 			validate_workflow_states(self)
 			notify_workflow_states(self)
 
@@ -87,6 +82,7 @@ class MaterialRequest(BuyingController):
 		self.check_for_on_hold_or_closed_status("Sales Order", "sales_order")
 		self.validate_uom_is_integer("uom", "qty")
 		self.validate_material_request_type()
+		self.set_verifier()
 		if not self.status:
 			self.status = "Draft"
 
@@ -120,9 +116,41 @@ class MaterialRequest(BuyingController):
 		self.set_actual_qty()
 
 		""" check if employee or not """
-		employee = frappe.db.get_value("Employee", {"user_id": frappe.session.user}, "name")
-		if not employee:
-			frappe.throw("Only Employee can crate the Material Request")
+		# employee = frappe.db.get_value("Employee", {"user_id": frappe.session.user}, "name")
+		# if not employee:
+		# 	frappe.throw("Only Employee can crate the Material Request")
+	
+	### ******** ====================================================== ************* ###
+	def set_verifier(self):
+		if self.company not in ("De-suung HQ", "De-suung Skilling"):
+			return
+		approver_settings = frappe.qb.DocType("Approver Settings")
+		supervisor_item = frappe.qb.DocType("Supervisor Item")
+		supervisor_list = (
+			frappe.qb.from_(approver_settings)
+			.join(supervisor_item)
+			.on(supervisor_item.parent == approver_settings.name)
+			.select(
+				supervisor_item.user,
+				supervisor_item.user_name
+			)
+			.where(
+				(approver_settings.disabled != 1)
+				& (approver_settings.name == self.doctype)
+				& (supervisor_item.company == self.company)
+			)
+		).run(as_dict=True)
+
+		if not supervisor_list:
+				frappe.throw(_("No supervisor found for the Material Request in company {0}. Please configure the approver settings.".format(self.doc.company)))
+
+		self.verifier = supervisor_list[0].get('user')
+		self.verifier_name = supervisor_list[0].get('user_name')
+
+		self.creator = self.owner
+		self.creator_name = frappe.db.get_value("User", self.owner, "full_name")
+
+	### ********** ================================================================*********************** #####
 
 	def before_update_after_submit(self):
 		self.validate_schedule_date()
@@ -140,8 +168,7 @@ class MaterialRequest(BuyingController):
 			self.title = _("{0} Request for {1}").format(self.material_request_type, items)[:100]
 
 	def on_submit(self):
-		# frappe.db.set(self, 'status', 'Submitted')
-		if self.company != "De-suung HQ":
+		if self.company not in ("De-suung HQ", "De-suung Skilling"):
 			notify_workflow_states(self)
 		self.update_requested_qty()
 		self.update_requested_qty_in_production_plan()

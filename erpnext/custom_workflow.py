@@ -388,8 +388,8 @@ class CustomWorkflow:
 				frappe.throw("Only {} can Reject this request".format(self.doc.supervisor_name))
 			self.doc.document_status = "Rejected"
 		elif self.new_state.lower() == "Cancelled".lower():
-			if frappe.session.user not in (doc.get(document_approver[0]),"Administrator"):
-				frappe.throw(_("Only {} can Cancel this document.").format(self.doc.supervisor_name))
+			if frappe.session.user != "Administrator":
+				frappe.throw(_("Only {} can Cancel this document.").format("Administrator"))
 			self.doc.document_status = "Cancelled"
 
 	def travel_claim(self):

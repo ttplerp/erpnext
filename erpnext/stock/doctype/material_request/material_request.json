@@ -36,12 +36,14 @@
   "approver",
   "column_break_26",
   "approver_name",
-  "verifier",
-  "verified_by",
   "column_break_29",
   "approver_designation",
+  "section_break_32",
   "creator",
   "creator_name",
+  "column_break_35",
+  "verifier",
+  "verifier_name",
   "more_info",
   "per_ordered",
   "column_break2",
@@ -377,14 +379,9 @@
   },
   {
    "fieldname": "verifier",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "label": "Verifier",
-   "read_only": 1
-  },
-  {
-   "fieldname": "verified_by",
-   "fieldtype": "Data",
-   "label": "Verified By",
+   "options": "User",
    "read_only": 1
   },
   {
@@ -393,9 +390,9 @@
   },
   {
    "fieldname": "creator",
-   "fieldtype": "Data",
-   "hidden": 1,
+   "fieldtype": "Link",
    "label": "Creator",
+   "options": "User",
    "read_only": 1
   },
   {
@@ -441,13 +438,27 @@
    "label": "Total Amount",
    "precision": "2",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_32",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_35",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "verifier_name",
+   "fieldtype": "Data",
+   "label": "Verifier Name",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-ticket",
  "idx": 70,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-16 02:56:47.732132",
+ "modified": "2025-01-22 16:05:21.557163",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Material Request",
