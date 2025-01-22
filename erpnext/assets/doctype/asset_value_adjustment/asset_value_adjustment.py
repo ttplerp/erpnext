@@ -46,6 +46,7 @@ class AssetValueAdjustment(Document):
 		self.update_asset()
 
 	def on_cancel(self):
+		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
 		# doc = frappe.get_doc("Journal Entry", self.journal_entry)
 		# doc.cancel()
 		# self.reschedule_depreciations(self.current_asset_value)
@@ -56,6 +57,7 @@ class AssetValueAdjustment(Document):
 	def remove_adjustment_value(self):
 		doc = frappe.get_doc("Asset", self.asset)
 		doc.db_set("additional_value", doc.additional_value - self.difference_amount)
+		doc.db_set("gross_purchase_amount", doc.gross_purchase_amount - self.difference_amount)
 	
 	def update_asset(self, cancel=False):
 		if self.re_valued:
