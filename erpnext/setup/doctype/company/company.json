@@ -133,7 +133,9 @@
   "repair_and_maintenance_account",
   "pol_advance_account",
   "column_break_123",
-  "pol_account"
+  "pol_account",
+  "dsp_account_settings_section",
+  "mess_advance_account"
  ],
  "fields": [
   {
@@ -952,6 +954,17 @@
    "fieldtype": "Link",
    "label": "POL Advance Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "dsp_account_settings_section",
+   "fieldtype": "Section Break",
+   "label": "DSP Account Settings"
+  },
+  {
+   "fieldname": "mess_advance_account",
+   "fieldtype": "Link",
+   "label": "Mess Advance Account",
+   "options": "Account"
   }
  ],
  "icon": "fa fa-building",
@@ -959,7 +972,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2024-06-07 13:01:37.793249",
+ "modified": "2025-01-22 17:01:22.536088",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",

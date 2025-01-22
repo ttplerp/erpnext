@@ -337,9 +337,11 @@ class DesuupMessAdvance(Document):
 	def post_journal_entry(self):
 		accounts = []
 		bank_account = frappe.db.get_value("Company", self.company, "default_bank_account")
-		debit_account = frappe.db.get_single_value("Desuup Settings", "mess_advance_account")
+		mess_advance_account = frappe.db.get_value("Company", self.company, "mess_advance_account")
 		if not bank_account:
 			frappe.throw("Set default bank account in company {}".format(frappe.bold(self.company)))
+		if not mess_advance_account:
+			frappe.throw("Set mess advance account in company {}".format(frappe.bold(self.company)))
 
 		# Dictionary to hold aggregated amounts by cost center
 		cost_center_amounts = {}
@@ -351,7 +353,7 @@ class DesuupMessAdvance(Document):
 		# Create journal entry lines for each cost center
 		for cost_center, amount in cost_center_amounts.items():
 			accounts.append({
-				"account": debit_account,
+				"account": mess_advance_account,
 				"debit_in_account_currency": amount,
 				"cost_center": cost_center,
 				"party_check": 1,
