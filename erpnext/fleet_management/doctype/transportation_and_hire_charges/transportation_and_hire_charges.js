@@ -20,7 +20,8 @@ frappe.ui.form.on('Transportation and Hire Charges', {
 		frm.set_query("equipment", function(doc) {
 			return {
 				filters: {
-					'equipment_type': doc.equipment_type
+					'equipment_type': doc.equipment_type,
+					'branch': doc.branch
 				}
 			}
 		});

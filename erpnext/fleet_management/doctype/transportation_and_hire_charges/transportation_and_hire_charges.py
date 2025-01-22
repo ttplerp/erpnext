@@ -406,15 +406,31 @@ def make_payment_entry(dt,
 
 def set_party_account(dt, dn, doc, party_type):
 	if party_type == "Supplier":
-		party_account = frappe.db.get_value("Charge Type", doc.invoice_type, "default_expense_account")
-		
+		party_account = frappe.db.get_value("Charge Type", doc.invoice_type, "default_payable_account")
+			
 		if not party_account:
-			frappe.throw("The default expense account is not set for the selected Charge Type. Please configure it in the Charge Type record: {}".format(frappe.get_desk_link("Charge Type", doc.invoice_type)), title="Expense Account Missing")
+			frappe.throw("The default payable account is not set for the selected Charge Type. Please configure it in the Charge Type record: {}".format(frappe.get_desk_link("Charge Type", doc.invoice_type)), title="Payable Account Missing")
+		
 	else:
-		party_account = frappe.db.get_value("Equipment Type", doc.equipment_type, "default_income_account")
+		Customer = frappe.qb.DocType("Customer")
+		PartyAccount = frappe.qb.DocType("Party Account")
+
+		query = (
+			frappe.qb.from_(Customer)
+			.join(PartyAccount)
+			.on(Customer.name == PartyAccount.parent)
+			.where(PartyAccount.company == doc.company)
+			.select(PartyAccount.account)
+		)
+		result = query.run()
+		if result:
+			party_account = result[0][0]
+		else:
+			party_account = None
 		
 		if not party_account:
-			frappe.throw("The default income account is not set for the selected Equipment Type. Please configure it in the Equipment Type record: {}".format(frappe.get_desk_link("Equipment Type", doc.equipment_type)), title="Income Account Missing")
+			frappe.throw("The default receivable account is not set for the selected Customer. Please configure it in the Customer: {}".format(frappe.get_desk_link("Customer", doc.party)), title="Default Receivable Account Missing")
+
 	return party_account
 
 def set_party_account_currency(dt, party_account, doc):
