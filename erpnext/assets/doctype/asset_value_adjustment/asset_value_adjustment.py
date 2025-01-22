@@ -51,7 +51,7 @@ class AssetValueAdjustment(Document):
 		# doc.cancel()
 		# self.reschedule_depreciations(self.current_asset_value)
 		self.change_value(self.current_asset_value)
-		self.remove_adjustment_value()
+		# self.remove_adjustment_value()
 		self.update_asset(cancel=True)
 	
 	def remove_adjustment_value(self):
@@ -192,7 +192,7 @@ class AssetValueAdjustment(Document):
 		# if asset.status == 'Fully Depreciated':
 		# 	asset.prepare_depreciation_data(revaluation_date=self.date)
 
-	def change_value(self, value):	
+	def change_value(self, values):	
 		asset= self.asset
 		value = flt(self.difference_amount)
 		start_date = self.date
