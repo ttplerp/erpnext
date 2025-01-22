@@ -6,7 +6,7 @@ frappe.ui.form.on('BOQ Adjustment', {
 
 	// }
     onload:function(frm){
-		frm.ignore_doctypes_on_cancel_all = ['BOQ', 'BOQ Addition', 'BOQ Adjustment'];
+		frm.ignore_doctypes_on_cancel_all = ["BOQ", "BOQ Adjustment", "BOQ Addition","Project Invoice", "Subcontract", "MB Entry", "Record Of Measurement"];
 
         frm.fields_dict.boq.get_query = function(){
 			return {

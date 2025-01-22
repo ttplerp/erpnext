@@ -17,6 +17,7 @@ class BOQAdjustment(Document):
 		self.update_boq_and_project()
 		
 	def on_cancel(self):
+		self.ignore_linked_doctypes = ("Project Invoice", "Subcontract", "MB Entry", "Record Of Measurement")
 		self.update_adjustment_history(cancel=True)
 		self.update_boq_and_project(cancel=True)
 
