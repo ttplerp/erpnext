@@ -957,7 +957,7 @@
   },
   {
    "fieldname": "dsp_account_settings_section",
-   "fieldtype": "Section Break",
+   "fieldtype": "Tab Break",
    "label": "DSP Account Settings"
   },
   {
@@ -972,7 +972,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2025-01-22 17:01:22.536088",
+ "modified": "2025-01-22 17:13:29.840830",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",

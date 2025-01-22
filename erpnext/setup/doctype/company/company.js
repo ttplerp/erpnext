@@ -231,6 +231,8 @@ erpnext.company.setup_queries = function(frm) {
 		// Added by Dawa Tshering on 1/13/2025
 		["advance_received_from_customer", {"root_type": ["in", ["Liability"]], "account_type": "Payable"}],
 		["advance_paid_to_supplier", {"root_type": ["in", ["Asset"]], "account_type": "Receivable"}],
+		["mess_advance_account", {"root_type": "Expense"}],
+
 		
 
 	], function(i, v) {
