@@ -56,8 +56,8 @@ class AssetValueAdjustment(Document):
 	
 	def remove_adjustment_value(self):
 		doc = frappe.get_doc("Asset", self.asset)
-		doc.db_set("additional_value", doc.additional_value - self.difference_amount)
-		doc.db_set("gross_purchase_amount", doc.gross_purchase_amount - self.difference_amount)
+		doc.db_set("additional_value", flt(doc.additional_value - self.difference_amount))
+		doc.db_set("gross_purchase_amount", flt(doc.gross_purchase_amount - self.difference_amount))
 	
 	def update_asset(self, cancel=False):
 		if self.re_valued:
@@ -194,7 +194,7 @@ class AssetValueAdjustment(Document):
 
 	def change_value(self, value):	
 		asset= self.asset
-		value = flt(value)
+		value = flt(self.difference_amount)
 		start_date = self.date
 		credit_account = self.credit_account
 		asset_account = self.fixed_asset_account
@@ -205,8 +205,8 @@ class AssetValueAdjustment(Document):
 			if asset_obj and asset_obj.docstatus == 1:
 				value = -1*flt(value) if self.docstatus == 2 else flt(value)
 				#Make GL Entries for additional values and update gross_amount (rate)
-				asset_obj.db_set("additional_value", flt(asset_obj.additional_value) + flt(self.difference_amount))
-				asset_obj.db_set("gross_purchase_amount", flt(flt(asset_obj.gross_purchase_amount) + flt(self.difference_amount)))
+				asset_obj.db_set("additional_value", flt(asset_obj.additional_value) + flt(value))
+				asset_obj.db_set("gross_purchase_amount", flt(flt(asset_obj.gross_purchase_amount) + flt(value)))
 				if self.docstatus == 1:
 					self.make_gl_entry(asset_account, credit_account, value, asset_obj, start_date)
 				#Get dep. schedules which had not yet happened
