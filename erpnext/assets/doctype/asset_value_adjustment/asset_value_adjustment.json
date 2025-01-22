@@ -17,6 +17,7 @@
   "value_details_section",
   "current_asset_value",
   "new_asset_value",
+  "re_valued",
   "column_break_11",
   "difference_amount",
   "journal_entry",
@@ -156,12 +157,18 @@
    "fieldtype": "Data",
    "label": "Asset Name",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "re_valued",
+   "fieldtype": "Check",
+   "label": "Revalued Asset"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-11-09 16:42:41.627456",
+ "modified": "2024-01-24 11:44:49.342337",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset Value Adjustment",

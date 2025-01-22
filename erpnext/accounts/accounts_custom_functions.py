@@ -151,3 +151,17 @@ def update_jv(jv_name, dep_amount):
             gl_obj.db_set("credit_in_account_currency", flt(dep_amount))
             gl_obj.db_set("credit", flt(dep_amount))
 
+def update_de(de_name, dep_amount, asset):
+    ##Change the total debit and credit
+    # jv.db_set("total_debit", flt(dep_amount))
+    # jv.db_set("total_credit", flt(dep_amount))
+    ##Change credit/debit_in_account_currency
+    gl_list = frappe.db.sql("select name from `tabGL Entry` where voucher_no = '{}' and against_voucher = '{}'".format(de_name, asset), as_dict=True)
+    for gl in gl_list:
+        gl_obj = frappe.get_doc("GL Entry", gl.name)
+        if gl_obj.debit_in_account_currency > 0:
+            gl_obj.db_set("debit_in_account_currency", flt(dep_amount))
+            gl_obj.db_set("debit", flt(dep_amount))
+        else:
+            gl_obj.db_set("credit_in_account_currency", flt(dep_amount))
+            gl_obj.db_set("credit", flt(dep_amount))
