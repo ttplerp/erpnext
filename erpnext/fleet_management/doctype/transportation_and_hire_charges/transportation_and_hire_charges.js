@@ -16,6 +16,14 @@ frappe.ui.form.on('Transportation and Hire Charges', {
 				filters: {is_group:0}
 			}
 		}
+
+		frm.set_query("equipment", function(doc) {
+			return {
+				filters: {
+					'equipment_type': doc.equipment_type
+				}
+			}
+		});
     },
 
 	refresh: function(frm) {
@@ -61,8 +69,9 @@ frappe.ui.form.on('Transportation and Hire Charges', {
 			frappe.call({
 				method: "erpnext.accounts.utils.get_tds_account",
 				args: {
-					percent:frm.doc.tds_percent,
-					company:frm.doc.company
+					percent: frm.doc.tds_percent,
+					company: frm.doc.company,
+					party_type: frm.doc.party_type
 				},
 				callback: function(r) {
 					if(r.message) {
@@ -90,12 +99,12 @@ frappe.ui.form.on('Transportation and Hire Charges', {
 
 	make_payment_entry: function(frm) {
 		frappe.call({
-			method:"erpnext.accounts.doctype.payment_entry.payment_entry.get_payment_entry",
+			method:"erpnext.fleet_management.doctype.transportation_and_hire_charges.transportation_and_hire_charges.make_payment_entry",
 			args: {
 				dt: frm.doc.doctype,
 				dn: frm.doc.name,
-				party_type: "Supplier",
-				invoice_type: frm.doc.invoice_type,
+				party_type:frm.doc.party_type,
+				party:frm.doc.party
 			},
 			callback: function (r) {
 				var doc = frappe.model.sync(r.message);

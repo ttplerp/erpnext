@@ -22,8 +22,9 @@
   "column_break_11",
   "party",
   "section_break_98xne",
-  "equipment_no",
   "equipment_type",
+  "column_break_93nxz",
+  "equipment",
   "section_break_pozlm",
   "amount",
   "addition_items",
@@ -103,9 +104,11 @@
    "fieldtype": "Section Break"
   },
   {
+   "depends_on": "eval:doc.party_type === \"Customer\"",
    "fieldname": "equipment_type",
    "fieldtype": "Link",
    "label": "Equipment Type",
+   "mandatory_depends_on": "eval:doc.party_type === \"Customer\"",
    "options": "Equipment Type"
   },
   {
@@ -125,11 +128,6 @@
   {
    "fieldname": "column_break_11",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "equipment_no",
-   "fieldtype": "Data",
-   "label": "Equipment No"
   },
   {
    "fieldname": "section_break_pozlm",
@@ -191,7 +189,8 @@
   },
   {
    "fieldname": "section_break_19",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Additional Information"
   },
   {
    "fieldname": "company",
@@ -275,6 +274,7 @@
    "options": "Transportation and Hire Charges Addition"
   },
   {
+   "depends_on": "eval:doc.party_type === \"Supplier\"",
    "fieldname": "material_issue_details",
    "fieldtype": "Table",
    "label": "Material Issue Amount Details",
@@ -302,11 +302,23 @@
   {
    "fieldname": "section_break_98xne",
    "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.party_type === \"Customer\"",
+   "fieldname": "equipment",
+   "fieldtype": "Link",
+   "label": "Equipment",
+   "mandatory_depends_on": "eval:doc.party_type === \"Customer\"",
+   "options": "Equipment"
+  },
+  {
+   "fieldname": "column_break_93nxz",
+   "fieldtype": "Column Break"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-21 22:59:22.526761",
+ "modified": "2025-01-22 20:14:48.217421",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Transportation and Hire Charges",

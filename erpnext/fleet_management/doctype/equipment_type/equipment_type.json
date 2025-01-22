@@ -12,9 +12,11 @@
   "pol_expense_limit",
   "reading_uom",
   "column_break_6",
+  "disabled",
   "is_container",
   "doesnt_have_own_tank",
-  "disabled"
+  "section_break_gv7vn",
+  "default_income_account"
  ],
  "fields": [
   {
@@ -68,11 +70,21 @@
    "fieldname": "pol_expense_limit",
    "fieldtype": "Currency",
    "label": "POL Advance Limit"
+  },
+  {
+   "fieldname": "section_break_gv7vn",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "default_income_account",
+   "fieldtype": "Link",
+   "label": "Default Income Account",
+   "options": "Account"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-16 16:19:09.710633",
+ "modified": "2025-01-22 19:36:27.914616",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment Type",
