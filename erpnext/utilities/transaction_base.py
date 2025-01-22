@@ -167,11 +167,11 @@ def validate_uom_is_integer(doc, uom_field, qty_fields, child_dt=None):
 	if isinstance(qty_fields, str):
 		qty_fields = [qty_fields]
 
-	distinct_uoms = tuple(set(uom for uom in (d.get(uom_field) for d in doc.get_all_children()) if uom))
-	integer_uoms = set(
-		d[0]
-		for d in frappe.db.get_values(
-			"UOM", (("name", "in", distinct_uoms), ("must_be_whole_number", "=", 1)), cache=True
+	distinct_uoms = list(set(d.get(uom_field) for d in doc.get_all_children()))
+	integer_uoms = list(
+		filter(
+			lambda uom: frappe.db.get_value("UOM", uom, "must_be_whole_number", cache=True) or None,
+			distinct_uoms,
 		)
 	)
 
@@ -183,16 +183,12 @@ def validate_uom_is_integer(doc, uom_field, qty_fields, child_dt=None):
 			for f in qty_fields:
 				qty = d.get(f)
 				if qty:
-					precision = d.precision(f)
-					if abs(cint(qty) - flt(qty, precision)) > 0.0000001:
+					if abs(cint(qty) - flt(qty)) > 0.0000001:
 						frappe.throw(
 							_(
 								"Row {1}: Quantity ({0}) cannot be a fraction. To allow this, disable '{2}' in UOM {3}."
 							).format(
-								flt(qty, precision),
-								d.idx,
-								frappe.bold(_("Must be Whole Number")),
-								frappe.bold(d.get(uom_field)),
+								qty, d.idx, frappe.bold(_("Must be Whole Number")), frappe.bold(d.get(uom_field))
 							),
 							UOMMustBeIntegerError,
 						)
