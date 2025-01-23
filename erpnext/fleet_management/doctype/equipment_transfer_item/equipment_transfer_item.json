@@ -1,0 +1,90 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-01-23 17:06:50.162780",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "equipment",
+  "column_break_z7ufj",
+  "equipment_name",
+  "column_break_04gqf",
+  "equipment_type",
+  "column_break_hgtdo",
+  "to_branch",
+  "column_break_7dr3x",
+  "to_cost_center"
+ ],
+ "fields": [
+  {
+   "fieldname": "equipment",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Equipment",
+   "options": "Equipment",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_z7ufj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "equipment.equipment_name",
+   "fieldname": "equipment_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Equipment Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_04gqf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "equipment.equipment_type",
+   "fieldname": "equipment_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Equipment Type",
+   "options": "Equipment Type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_hgtdo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "to_branch",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "To Branch",
+   "options": "Branch"
+  },
+  {
+   "fieldname": "column_break_7dr3x",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "to_branch.cost_center",
+   "fieldname": "to_cost_center",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "To Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-01-23 17:21:53.580558",
+ "modified_by": "Administrator",
+ "module": "Fleet Management",
+ "name": "Equipment Transfer Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
