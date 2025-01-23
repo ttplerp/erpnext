@@ -210,12 +210,12 @@ class AssetValueAdjustment(Document):
 				if self.docstatus == 1:
 					self.make_gl_entry(asset_account, credit_account, value, asset_obj, start_date)
 				#Get dep. schedules which had not yet happened
-				schedules = frappe.db.get_all("Depreciation Schedule", order_by="schedule_date", filters = {"parent": asset_obj.name, "schedule_date": [">", start_date]},fields={"name", "schedule_date", "journal_entry", "depreciation_entry", "depreciation_amount", "accumulated_depreciation_amount", "income_depreciation_amount","income_accumulated_depreciation"})
+				schedules = frappe.db.get_all("Depreciation Schedule", order_by="schedule_date", filters = {"parent": asset_obj.name, "schedule_date": [">=", start_date]},fields={"name", "schedule_date", "journal_entry", "depreciation_entry", "depreciation_amount", "accumulated_depreciation_amount", "income_depreciation_amount","income_accumulated_depreciation"})
 				##Get total number of dep days for the asset
 				total_days = get_number_of_days(start_date, schedules[-1]['schedule_date'])
 				##Assign the last dep schedule date for num of days calc
 				asset_depreciation_percent = asset_obj.get('finance_books')[0].income_depreciation_percent
-				last_sch_date = start_date
+				last_sch_date = add_days(getdate(start_date), -1)
 				for i in schedules:
 					#Add additional values to the depreciation schedules
 					#Calc num of days for each dep schedule
