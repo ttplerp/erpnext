@@ -372,6 +372,28 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 		params, as_dict=True)
 	
 	# Transportaion and hire chagres
+	trans_hire_charges_entries = frappe.db.sql(
+		"""
+		select t.posting_date, 'Transportation and Hire Charges' as invoice_type, t.name as invoice_no, t.party_type, t.party,
+			(case when t.party_type = 'Customer' then c.tax_id when t.party_type = 'Supplier' then s.supplier_tpn_no else null end) as tpn, 
+			t.cost_center,
+			t.amount as bill_amount, t.tds_amount, t.tds_account as tax_account,
+			tre.tds_remittance, tre.tds_receipt_update,
+			(case when tre.tds_receipt_update is not null then 'Paid' else 'Unpaid' end) remittance_status
+		from `tabTransportation and Hire Charges` as t
+			left join `tabCustomer` c on t.party_type = 'Customer' and c.name = t.party
+			left join `tabSupplier` s on t.party_type = 'Supplier' and s.name = t.party
+			left join `tabTDS Receipt Entry` tre on tre.invoice_no = t.name
+		where t.posting_date between %(from_date)s and %(to_date)s
+		{accounts_cond}
+		and t.docstatus = 1
+		{existing_cond}
+		{party_cond}
+		{cond}
+		and (t.amount > 0 or t.tds_amount > 0)
+		""".format(accounts_cond=accounts_cond, cond=cond, existing_cond=existing_cond, party_cond=party_cond),
+		params, as_dict=True)
+	
 	trans_hire_charges = frappe.db.sql(
 		"""
 		select t.posting_date, 'Transportation and Hire Charge Invoice' as invoice_type, t.name as invoice_no, t.party_type, t.party,
@@ -444,7 +466,7 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 		""".format(accounts_cond=accounts_cond, cond=cond, existing_cond=existing_cond),
 		params, as_dict=True)
 
-	entries = pi_entries + pe_entries + je_entries + emp_adv_settlement + repair_and_service_inv + trans_hire_charges + project_invoice_entries + mr_invoice_entries
+	entries = pi_entries + pe_entries + je_entries + emp_adv_settlement + repair_and_service_inv + trans_hire_charges_entries + trans_hire_charges + project_invoice_entries + mr_invoice_entries
 	entries = sorted(entries, key=lambda d: (d['posting_date'], d['invoice_no']))
 	return entries
 
