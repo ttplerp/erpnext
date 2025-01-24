@@ -14,6 +14,7 @@ from erpnext.accounts.utils import check_clearance_date
 class TDSRemittance(AccountsController):
 	def validate(self):
 		self.calculate_total()
+		self.update_party_name()
 
 	def on_submit(self):
 		self.make_gl_entries()
@@ -22,15 +23,24 @@ class TDSRemittance(AccountsController):
 		self.make_gl_entries()
 		check_clearance_date(self.doctype, self.name)
 	
+	def update_party_name(self):
+		for a in self.items:
+			if not a.party_name:
+				a.party_name = frappe.db.get_value("Supplier",a.party,"supplier_name")
+	
 	@frappe.whitelist()
 	def get_details(self):
 		total_tds_amount = total_bill_amount = 0
 
-		if self.purpose != 'Other Invoice':
+		if not self.purpose:
 			return total_tds_amount, total_bill_amount
 
-		entries = get_tds_invoices(self, self.tax_withholding_category, self.from_date, self.to_date, \
-			self.name, filter_existing=True)
+		if self.purpose == "Other Invoice":
+			entries = get_tds_invoices(self, self.tax_withholding_category, self.from_date, self.to_date, \
+				self.name, filter_existing=True)
+		else:
+			entries = get_salary_slip(self, self.payroll_entry)
+
 		if not entries:
 			frappe.msgprint(_("No Records Found"))
 
@@ -62,22 +72,36 @@ class TDSRemittance(AccountsController):
 			))
 
 		if flt(self.total_tds) > 0:
-			for item in self.items:
+			if self.purpose == "Other Invoice":
+				for item in self.items:
+					gl_entries.append(
+						self.get_gl_dict({
+							"account": str(item.tax_account),
+							"debit": item.tds_amount,
+							"debit_in_account_currency": item.tds_amount,
+							"voucher_type": self.doctype,
+							"voucher_no": self.name,
+							"cost_center": item.cost_center,
+							"business_activity": item.business_activity,
+							"against_voucher_type":	item.invoice_type,
+							"against_voucher": item.invoice_no,
+							"party_type": item.party_type,
+							"party": item.party
+						},
+						account_currency= "BTN"))
+			else:
 				gl_entries.append(
-					self.get_gl_dict({
-						"account": str(item.tax_account),
-						"debit": item.tds_amount,
-						"debit_in_account_currency": item.tds_amount,
-						"voucher_type": self.doctype,
-						"voucher_no": self.name,
-						"cost_center": item.cost_center,
-						"business_activity": item.business_activity,
-						"against_voucher_type":	item.invoice_type,
-						"against_voucher": item.invoice_no,
-						"party_type": item.party_type,
-						"party": item.party
-					},
-					account_currency= "BTN"))
+						self.get_gl_dict({
+							"account": str(item.tax_account),
+							"debit": self.total_tds,
+							"debit_in_account_currency": self.total_tds,
+							"voucher_type": self.doctype,
+							"voucher_no": self.name,
+							"cost_center": self.cost_center,
+							"against_voucher_type":	"Payroll Entry",
+							"against_voucher": self.payroll_entry,
+						},
+						account_currency= "BTN"))
 				
 			if self.fines_and_penalties > 0:
 				gl_entries.append(
@@ -104,14 +128,33 @@ class TDSRemittance(AccountsController):
 					"cost_center": self.cost_center,
 					"against_voucher_type":	self.doctype,
 					"against_voucher": self.name,
-					"business_activity": default_business_activity,
-					"party_type": item.party_type,
-					"party": item.party
 				},
 				account_currency="BTN"))
 			make_gl_entries(gl_entries, cancel=(self.docstatus == 2),update_outstanding="No", merge_entries=False)
 		else:
 			frappe.throw("Total TDS Amount is Zero.")
+
+
+def get_salary_slip(self, payroll_entry):
+	entries = []
+	
+	if not payroll_entry:
+		frappe.msgprint(_("<b>Payroll Entry</b> is mandatory"))
+		return entries
+	
+	condition =  """ and d.salary_component="{}" and d.amount > 0 """.format(self.purpose)
+	
+	entries = frappe.db.sql("""
+			select end_date as posting_date, 'Salary Slip' as invoice_type, e.name as invoice_no, 
+			'Employee' as party_type, e.employee as party, e.employee_name as party_name, 
+			e.gross_pay as bill_amount, d.amount as tds_amount, e.tpn_number as tpn
+			from `tabSalary Slip` e left join `tabSalary Detail` d  on  e.name=d.parent
+			where d.docstatus=1
+			and e.payroll_entry = '{0}'
+			{1}
+		""".format(payroll_entry, condition), as_dict = True)
+
+	return entries
 
 
 def get_tds_invoices(self, tax_withholding_category, from_date, to_date, name, filter_existing = False, party_type = None):
@@ -147,10 +190,11 @@ def get_tds_invoices(self, tax_withholding_category, from_date, to_date, name, f
 		existing_cond = _get_existing_cond()
 	
 	# Purchase Invoice
+	#t1.base_total+t1.base_tax_amount as bill_amount  replaced by total as bill_amount
 	if not party_type or party_type == "Supplier":
 		pi_entries = frappe.db.sql("""select t.posting_date, 'Purchase Invoice' as invoice_type, t.name as invoice_no,  
 				'Supplier' as party_type, t.supplier as party, s.tax_id as tpn, t.business_activity,t.cost_center,
-				t1.base_total+t1.base_tax_amount as bill_amount, 
+				t.total as bill_amount, 
 				case when t1.base_tax_amount > 0 then t1.base_tax_amount else t1.tax_amount end as tds_amount,
 				t1.account_head as tax_account, tre.tds_remittance, tre.tds_receipt_update,
 				(case when tre.tds_receipt_update is not null then 'Paid' else 'Unpaid' end) remittance_status
@@ -289,4 +333,3 @@ def get_permission_query_conditions(user):
 			and bi.parent = ab.name
 			and bi.branch = `tabTDS Remittance`.branch)
 	)""".format(user=user)
-

@@ -57,7 +57,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Purpose",
-   "options": "\nOther Invoice\nSalary Tax\nPF\nGIS",
+   "options": "\nOther Invoice\nSalary Tax\nPF\nGIS\nHealth Contribution",
    "reqd": 1
   },
   {
@@ -181,7 +181,7 @@
   {
    "fieldname": "total_tds",
    "fieldtype": "Currency",
-   "label": "Total TDS Amount",
+   "label": "Total Remittance Amount",
    "read_only": 1
   },
   {
@@ -328,7 +328,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-21 20:54:35.558579",
+ "modified": "2025-01-24 08:28:15.689545",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "TDS Remittance",
