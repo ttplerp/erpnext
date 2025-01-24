@@ -10,6 +10,13 @@ frappe.ui.form.on('TDS Remittance', {
 	},
 
 	refresh: function (frm) {
+		cur_frm.set_query("payroll_entry", function(){
+			return {
+				"filters": [
+					["docstatus", "=", "1"],					
+				]
+			}
+		});
 		if (frm.doc.docstatus == 1) {
 			show_custom_buttons(frm);
 		}
@@ -19,6 +26,7 @@ frappe.ui.form.on('TDS Remittance', {
 				get_details(frm);
 			}).addClass("btn-primary")
 		}
+		
 	},
 
 	base_on_region: function(frm){
@@ -29,6 +37,13 @@ frappe.ui.form.on('TDS Remittance', {
 	tax_withholding_category: function(frm){
 		cur_frm.clear_table("items");
 		cur_frm.refresh_field("items");
+	},
+	purpose: function(frm){
+		console.log("testing");
+		frappe.model.get_value('Salary Component', {'name': frm.doc.purpose}, 'gl_head',
+			function(d) {
+			  cur_frm.set_value("account",d.gl_head);
+		  });
 	}
 });
 
@@ -185,12 +200,6 @@ var get_details = function(frm) {
 	};
   };
   
-
-
-
-
-  
-
 // var get_details = function(frm){
 // 	frm.clear_table("items");
 // 	frm.refresh_field("items");
