@@ -139,10 +139,22 @@ def get_data(filters):
                     ),0)
                 ) 
             ) gross_addition,
-            (CASE WHEN a.status in ('Scrapped', 'Sold') AND a.disposal_date BETWEEN '{from_date}' AND '{to_date}'
-                THEN IFNULL(a.gross_purchase_amount,0)
-                ELSE 0
-            END) AS gross_adjustment,
+            (
+                (CASE WHEN a.status in ('Scrapped', 'Sold') AND a.disposal_date BETWEEN '{from_date}' AND '{to_date}'
+                    THEN IFNULL(a.gross_purchase_amount,0)
+                    ELSE 0
+                END)
+                +
+                (
+                    IFNULL((SELECT SUM(IFNULL(am.difference_amount,0))
+                    FROM `tabAsset Value Adjustment` am
+                    WHERE am.asset = a.name
+                    AND am.docstatus = 1
+                    AND am.date BETWEEN '{from_date}' AND '{to_date}'
+                    AND am.difference_amount < 0
+                    ),0)
+                )  
+            )    AS gross_adjustment,
             0 AS dep_opening,
             0 AS dep_addition,
             (CASE WHEN a.status in ('Scrapped', 'Sold') AND a.disposal_date BETWEEN '{from_date}' AND '{to_date}'
@@ -211,7 +223,7 @@ def get_data(filters):
         for a in asset_data:
             gross_opening  	= flt(a.gross_opening,2)
             gross_addition 	= flt(a.gross_addition,2)
-            gross_adjustment= flt(a.gross_adjustment,2)
+            gross_adjustment= flt(abs(a.gross_adjustment),2)
             gross_total	= gross_opening + gross_addition - gross_adjustment
             dep_opening	= 0
             dep_addition	= 0
