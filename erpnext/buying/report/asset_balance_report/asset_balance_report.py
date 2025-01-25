@@ -107,7 +107,7 @@ def get_columns():
 		{
 			"fieldname": "purchase_receipt",
 			"label": "Purchase Receipt",
-			"fieldtype": "Data",
+			"fieldtype": "Link",
 			"options": "Purchase Receipt",
 			"width": 500
 		}
