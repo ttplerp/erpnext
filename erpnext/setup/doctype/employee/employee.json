@@ -34,10 +34,10 @@
   "region",
   "reports_to",
   "reports_to_name",
-  "business_activity",
   "column_break_22",
-  "education_level",
   "employee_qualification",
+  "employee_level",
+  "education_level",
   "employment_status",
   "probation_end_date",
   "temporary_end_date",
@@ -53,6 +53,7 @@
   "department",
   "division",
   "section",
+  "business_activity",
   "employee_number",
   "column_break_25",
   "branch",
@@ -1004,8 +1005,10 @@
   },
   {
    "fieldname": "employee_qualification",
-   "fieldtype": "Data",
-   "label": "Employee Qualification"
+   "fieldtype": "Link",
+   "label": "Employee Qualification",
+   "options": "Employee Qualification",
+   "reqd": 1
   },
   {
    "depends_on": "eval:doc.employment_status==\"Temporary\";",
@@ -1018,8 +1021,7 @@
    "fieldname": "education_level",
    "fieldtype": "Link",
    "label": "Education Level",
-   "options": "Education Level",
-   "reqd": 1
+   "options": "Education Level"
   },
   {
    "fieldname": "family_details_tab",
@@ -1125,13 +1127,19 @@
    "fieldtype": "Link",
    "label": "Project",
    "options": "Project"
+  },
+  {
+   "fieldname": "employee_level",
+   "fieldtype": "Link",
+   "label": "Employee Level",
+   "options": "Employee Level"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2025-01-08 11:58:24.981396",
+ "modified": "2025-01-25 16:24:00.892980",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
