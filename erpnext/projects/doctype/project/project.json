@@ -86,6 +86,7 @@
  ],
  "fields": [
   {
+   "bold": 1,
    "fieldname": "project_name",
    "fieldtype": "Data",
    "label": "Project Name",
@@ -614,7 +615,7 @@
  "is_tree": 1,
  "links": [],
  "max_attachments": 4,
- "modified": "2025-01-13 13:07:46.382608",
+ "modified": "2025-01-24 12:14:40.471079",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project",
