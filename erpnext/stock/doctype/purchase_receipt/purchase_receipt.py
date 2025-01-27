@@ -123,7 +123,7 @@ class PurchaseReceipt(BuyingController):
 
 	def validate(self):
 		self.validate_posting_time()
-		self.validate_posting_date_time()
+		# self.validate_posting_date_time()
 		super(PurchaseReceipt, self).validate()
 		if self._action == "submit":
 			self.make_batches("warehouse")
@@ -213,15 +213,16 @@ class PurchaseReceipt(BuyingController):
 
 	def validate_cwip_accounts(self):
 		for item in self.get("items"):
-			if item.is_fixed_asset and is_cwip_accounting_enabled(item.asset_category):
+			if item.is_fixed_asset:
+			# if item.is_fixed_asset and is_cwip_accounting_enabled(item.asset_category):
 				# check cwip accounts before making auto assets
 				# Improves UX by not giving messages of "Assets Created" before throwing error of not finding arbnb account
 				arbnb_account = self.get_company_default("asset_received_but_not_billed")
-				cwip_account = get_asset_account(
-					"capital_work_in_progress_account",
-					asset_category=item.asset_category,
-					company=self.company,
-				)
+				# cwip_account = get_asset_account(
+				# 	"capital_work_in_progress_account",
+				# 	asset_category=item.asset_category,
+				# 	company=self.company,
+				# )
 				break
 
 	def validate_provisional_expense_account(self):
@@ -415,7 +416,7 @@ class PurchaseReceipt(BuyingController):
 		self.make_item_gl_entries(gl_entries, warehouse_account=warehouse_account)
 		self.make_tax_gl_entries(gl_entries, via_landed_cost_voucher)
 		update_regional_gl_entries(gl_entries, self)
-
+	
 		return process_gl_map(gl_entries)
 
 	def make_item_gl_entries(self, gl_entries, warehouse_account=None):
@@ -658,15 +659,16 @@ class PurchaseReceipt(BuyingController):
 				landed_cost_entries = get_item_account_wise_additional_cost(self.name)
 
 				if d.is_fixed_asset:
-					account_type = (
-						"capital_work_in_progress_account"
-						if is_cwip_accounting_enabled(d.asset_category)
-						else "fixed_asset_account"
-					)
+					# account_type = (
+					# 	"capital_work_in_progress_account"
+					# 	if is_cwip_accounting_enabled(d.asset_category)
+					# 	else "fixed_asset_account"
+					# )
 
-					stock_asset_account_name = get_asset_account(
-						account_type, asset_category=d.asset_category, company=self.company
-					)
+					# stock_asset_account_name = get_asset_account(
+					# 	account_type, asset_category=d.asset_category, company=self.company
+					# )
+					stock_asset_account_name = self.get_company_default("fixed_asset_account")
 
 					stock_value_diff = (
 						flt(d.base_net_amount) + flt(d.item_tax_amount) + flt(d.landed_cost_voucher_amount)
@@ -1139,7 +1141,7 @@ def make_purchase_invoice(source_name, target_doc=None):
 					"purchase_order": "purchase_order",
 					"is_fixed_asset": "is_fixed_asset",
 					"asset_location": "asset_location",
-					"asset_category": "asset_category",
+					# "asset_category": "asset_category",
 				},
 				"postprocess": update_item,
 				"filter": lambda d: get_pending_qty(d)[0] <= 0
