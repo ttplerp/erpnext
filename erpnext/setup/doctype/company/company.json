@@ -135,7 +135,17 @@
   "column_break_123",
   "pol_account",
   "dsp_account_settings_section",
-  "mess_advance_account"
+  "ojt_expense_account",
+  "ojt_payable_account",
+  "column_break_129",
+  "stipend_expense_account",
+  "stipend_payable_account",
+  "section_break_132",
+  "mess_advance_account",
+  "refundable_mess_account",
+  "column_break_135",
+  "desuup_deduction_account",
+  "arrear_account"
  ],
  "fields": [
   {
@@ -965,6 +975,60 @@
    "fieldtype": "Link",
    "label": "Mess Advance Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "ojt_expense_account",
+   "fieldtype": "Link",
+   "label": "OJT Expense Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "ojt_payable_account",
+   "fieldtype": "Link",
+   "label": "OJT Payable Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "column_break_129",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "stipend_expense_account",
+   "fieldtype": "Link",
+   "label": "Stipend Expense Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "stipend_payable_account",
+   "fieldtype": "Link",
+   "label": "Stipend Payable Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "section_break_132",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "refundable_mess_account",
+   "fieldtype": "Link",
+   "label": "Refundable Mess Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "column_break_135",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "desuup_deduction_account",
+   "fieldtype": "Link",
+   "label": "Desuup Deduction Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "arrear_account",
+   "fieldtype": "Link",
+   "label": "Arrear Account",
+   "options": "Account"
   }
  ],
  "icon": "fa fa-building",
@@ -972,7 +1036,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2025-01-22 17:13:29.840830",
+ "modified": "2025-01-27 16:46:47.564130",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",
