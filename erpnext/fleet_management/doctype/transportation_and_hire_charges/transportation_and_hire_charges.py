@@ -247,7 +247,7 @@ class TransportationandHireCharges(AccountsController):
 
 			
 	def make_party_gl_entries(self, gl_entries):
-		def add_gl_entry(account, debit, credit):
+		def add_gl_entry(account, debit, credit, party_type=None, party=None):
 			gl_entries.append(
 				self.get_gl_dict({
 					"account": account,
@@ -257,8 +257,8 @@ class TransportationandHireCharges(AccountsController):
 					"credit_in_account_currency": credit,
 					"against_voucher": self.name,
 					"against_voucher_type": self.doctype,
-					"party_type": "Employee" if self.settle_imprest_advance else self.party_type,
-					"party": self.imprest_party if self.settle_imprest_advance else self.party,
+					"party_type": party_type,
+					"party": party,
 					"cost_center": self.cost_center,
 					"voucher_type": self.doctype,
 					"voucher_no": self.name,
@@ -284,8 +284,13 @@ class TransportationandHireCharges(AccountsController):
 			if not party_account:
 				frappe.throw("The default expense account is not set for the selected Charge Type. Please configure it in the Charge Type record: {}".format(frappe.get_desk_link("Charge Type", self.invoice_type)), title="Expense Account Missing")
 
-			add_gl_entry(party_account, self.amount, 0)
-			add_gl_entry(payable_account, 0, flt(self.outstanding_amount))
+			add_gl_entry(party_account, self.amount, 0, party_type=self.party_type, party=self.party)
+			party_type = ""
+			party = ""
+			if self.self.settle_imprest_advance:
+				party_type = "Employee"
+				party = self.imprest_party
+			add_gl_entry(payable_account, 0, flt(self.outstanding_amount), party_type=party_type, party=party)
 			
 		else:
 			party_account = frappe.db.get_value("Equipment Type", self.equipment_type, "default_income_account")
