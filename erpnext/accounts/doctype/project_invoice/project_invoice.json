@@ -1,6 +1,5 @@
 {
  "actions": [],
- "allow_rename": 1,
  "autoname": "PRJIN.-.YY.-.MM.-.DD.-.###",
  "creation": "2023-05-04 10:37:18.726328",
  "doctype": "DocType",
@@ -193,6 +192,7 @@
    "fieldname": "net_amount",
    "fieldtype": "Currency",
    "label": "Net Amount",
+   "precision": "4",
    "read_only": 1
   },
   {
@@ -219,7 +219,8 @@
    "fieldname": "tds_amount",
    "fieldtype": "Currency",
    "label": "TDS Amount",
-   "precision": "3"
+   "precision": "4",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_38",
@@ -241,6 +242,7 @@
    "fieldname": "total_deduction_amount",
    "fieldtype": "Currency",
    "label": "Total Deduction Amount",
+   "precision": "4",
    "read_only": 1
   },
   {
@@ -271,7 +273,7 @@
    "fieldname": "outstanding_amount",
    "fieldtype": "Currency",
    "label": "Outstanding Amount",
-   "precision": "2",
+   "precision": "4",
    "read_only": 1
   },
   {
@@ -317,13 +319,14 @@
    "fieldname": "total_advance_amount",
    "fieldtype": "Currency",
    "label": "Total Advance Amount",
+   "precision": "4",
    "read_only": 1
   },
   {
    "fieldname": "total_amount",
    "fieldtype": "Currency",
    "label": "Total Amount",
-   "precision": "2",
+   "precision": "4",
    "read_only": 1
   },
   {
@@ -346,7 +349,8 @@
    "fieldname": "retention_amount",
    "fieldtype": "Currency",
    "label": "Retention Amount",
-   "precision": "3"
+   "precision": "4",
+   "read_only": 1
   },
   {
    "depends_on": "eval:doc.retention_percent",
@@ -366,7 +370,8 @@
   {
    "fieldname": "price_adjustment_amount",
    "fieldtype": "Currency",
-   "label": "Price Adjustment Amount"
+   "label": "Price Adjustment Amount",
+   "precision": "4"
   },
   {
    "fieldname": "price_adjustment_percent",
@@ -379,7 +384,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-20 19:00:44.943041",
+ "modified": "2025-01-27 12:19:38.407007",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Project Invoice",
