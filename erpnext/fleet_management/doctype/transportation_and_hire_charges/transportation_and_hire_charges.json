@@ -43,6 +43,12 @@
   "tds_percent",
   "tds_account",
   "tds_amount",
+  "approver_details_section",
+  "approver",
+  "column_break_bs2ln",
+  "approver_name",
+  "column_break_lzwmc",
+  "approver_designation",
   "section_break_19",
   "company",
   "column_break_32",
@@ -315,11 +321,44 @@
   {
    "fieldname": "column_break_93nxz",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "approver_details_section",
+   "fieldtype": "Section Break",
+   "label": "Approver Details"
+  },
+  {
+   "fieldname": "approver",
+   "fieldtype": "Link",
+   "label": "Approver",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_bs2ln",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "approver_name",
+   "fieldtype": "Data",
+   "label": "Approver Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "approver_designation",
+   "fieldtype": "Link",
+   "label": "Approver Designation",
+   "options": "Designation",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_lzwmc",
+   "fieldtype": "Column Break"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-22 22:39:31.810195",
+ "modified": "2025-01-27 23:13:38.683557",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Transportation and Hire Charges",

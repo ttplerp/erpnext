@@ -24,6 +24,7 @@ from erpnext.accounts.doctype.bank_account.bank_account import (
 	get_bank_account_details,
 	get_party_bank_account,
 )
+from erpnext.custom_workflow import validate_workflow_states
 
 
 class TransportationandHireCharges(AccountsController):
@@ -35,6 +36,7 @@ class TransportationandHireCharges(AccountsController):
 			frappe.throw(_("Abbreviation not found for Charge Type: {0}").format(self.invoice_type), title="Missing Abbreviation")
 
 	def validate(self):
+		validate_workflow_states(self)
 		check_future_date(self.posting_date)		
 		self.calculate_totals()
 		self.validate_amount()

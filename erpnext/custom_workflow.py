@@ -49,9 +49,11 @@ class CustomWorkflow:
                 "POL Receive",
                 "Hire Charge Advance",
                 "Transportation and Hire Charge Entry",
+                "Transportation and Hire Charges",
                 "Muster Roll Advance",
                 "Advance",
                 "Employee Advance Settlement",
+                ""
             )
         ):
             self.employee = frappe.db.get_value("Employee", self.doc.owner, self.field_list)
@@ -720,6 +722,34 @@ class CustomWorkflow:
                 self.field_list,
             )
 
+        if (self.doc.doctype == "Transportation and Hire Charges"):
+            employee = frappe.db.get_value("Employee", {"user_id": self.doc.owner}, "name")
+            user_id = frappe.db.get_value("Employee", {"user_id": self.doc.owner}, "user_id")
+            if user_id != self.doc.owner:
+                frappe.throw('Only Employee can apply this document.')
+            
+            # Set supervisor
+            self.supervisor_data = frappe.db.sql("""
+                                    select si.supervisor from `tabSupervisor And Approver Mapper` sam,
+                                    `tabSupervisor Item` si where si.parent = sam.name and si.branch = '{}' and sam.employee = '{}'
+                                  """.format(self.doc.branch, employee))
+            if self.supervisor_data:
+                self.supervisor = self.supervisor_data[0][0]
+                self.advance_supervisor = frappe.db.get_value("Employee", self.supervisor, self.field_list) 
+            else:
+                frappe.throw("Not mapped with supervisor. Please contact ICT".format(employee))
+
+            # Set Approver
+            self.approver_data = frappe.db.sql("""
+                                    select ai.approver from `tabSupervisor And Approver Mapper` sam,
+                                    `tabApprover Item` ai where ai.parent = sam.name and ai.branch = '{}' and sam.employee = '{}'
+                                  """.format(self.doc.branch, employee))
+            if self.approver_data:
+                self.approver = self.approver_data[0][0]
+                self.advance_approver = frappe.db.get_value("Employee", self.approver, self.field_list)
+            else:
+                frappe.throw("Not mapped with approver. Please contact ICT".format(employee))
+
         if (self.doc.doctype == "Employee Advance Settlement"):
             self.data = frappe.db.sql("""
                                     select supervisor from `tabSupervisor And Approver Mapper` sam,
@@ -734,7 +764,7 @@ class CustomWorkflow:
                 if not self.expense_approver:
                     frappe.throw("Please set expense approver for employee <strong>{}</strong>".format(self.doc.employee))
 
-             # Set Approver
+            # Set Approver
             self.approver_data = frappe.db.sql("""
                                     select ai.approver from `tabSupervisor And Approver Mapper` sam,
                                     `tabApprover Item` ai where ai.parent = sam.name and ai.branch = '{}' and sam.employee = '{}'
@@ -880,7 +910,7 @@ class CustomWorkflow:
                 vars(self.doc)[self.doc_approver[2]] = (
                     officiating[2] if officiating else self.reports_to[2]
                 )
-            elif self.doc.doctype in ("Employee Advance", "Hire Charge Advance", "Muster Roll Advance", "Advance", "Transportation and Hire Charge Entry", "POL Receive", "Repair And Services"):
+            elif self.doc.doctype in ("Employee Advance", "Hire Charge Advance", "Muster Roll Advance", "Advance", "Transportation and Hire Charge Entry", "POL Receive", "Repair And Services", "Transportation and Hire Charges"):
                 officiating = get_officiating_employee(self.advance_supervisor[3])
                 if officiating:
                     officiating = frappe.db.get_value(
@@ -1762,6 +1792,8 @@ class CustomWorkflow:
             self.supplier_advance()
         elif self.doc.doctype == "Transportation and Hire Charge Entry":
             self.hire_charge_entry()
+        elif self.doc.doctype == "Transportation and Hire Charges":
+            self.transportation_and_hire_charges()
         else:
             frappe.throw(_("Workflow not defined for {}").format(self.doc.doctype))
 
@@ -1917,6 +1949,28 @@ class CustomWorkflow:
 
             else:
                 self.doc.workflow_state = "Waiting Chief, PCD Approval"
+
+    def transportation_and_hire_charges(self):
+        if self.new_state and self.old_state and self.new_state.lower() == self.old_state.lower():
+            return
+        
+        if self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
+            if self.doc.owner != frappe.session.user:
+                frappe.throw("Only {} can Apply this Document".format(self.doc.owner))
+            self.set_approver("Supervisor")
+
+        elif self.new_state.lower() == "Waiting Approval".lower():
+            if self.doc.approver != frappe.session.user:
+                frappe.throw("Only {} can Forward this request".format(self.doc.approver_name))
+            self.set_approver("Advance Approver")
+            
+        if self.new_state.lower() in ("Approved".lower()):
+            if self.doc.approver != frappe.session.user:
+                frappe.throw("Only {} can Approve this Document".format(self.doc.approver))
+
+        if self.new_state.lower() in ("Rejected".lower()):
+            if self.doc.approver != frappe.session.user:
+                frappe.throw("Only {} can reject this Document".format(self.doc.approver))
 
     def pol_expenses(self):
         if self.new_state and self.old_state and self.new_state.lower() == self.old_state.lower():
@@ -4142,6 +4196,7 @@ def get_field_map():
         "Muster Roll Advance": ["approver", "approver_name", "approver_designation"],
         "Advance": ["approver", "approver_name", "approver_designation"],
         "Transportation and Hire Charge Entry": ["approver", "approver_name", "approver_designation"],
+        "Transportation and Hire Charges": ["approver", "approver_name", "approver_designation"],
 
         "PMS Appeal": [],
         "Asset Issue Details": [],
