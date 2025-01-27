@@ -52,8 +52,7 @@
   "section_break_19",
   "company",
   "column_break_32",
-  "currency",
-  "amended_from"
+  "currency"
  ],
  "fields": [
   {
@@ -207,15 +206,6 @@
    "reqd": 1
   },
   {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Transportation and Hire Charges",
-   "print_hide": 1,
-   "read_only": 1
-  },
-  {
    "fieldname": "column_break_32",
    "fieldtype": "Column Break"
   },
@@ -226,15 +216,6 @@
    "label": "Currency",
    "options": "Currency",
    "reqd": 1
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Transportation and Hire Charges",
-   "print_hide": 1,
-   "read_only": 1
   },
   {
    "fieldname": "column_break_vakaf",
@@ -358,7 +339,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-27 23:13:38.683557",
+ "modified": "2025-01-27 23:20:31.544190",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Transportation and Hire Charges",
