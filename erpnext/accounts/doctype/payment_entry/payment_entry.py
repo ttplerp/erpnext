@@ -554,6 +554,7 @@ class PaymentEntry(AccountsController):
 						"Project Invoice",
 						"POL Receive Invoice",
 						"Transportation and Hire Charge Invoice",
+						"Transportation and Hire Charges",
 					):
 						if self.party != ref_doc.get(scrub(self.party_type)):
 							frappe.throw(
