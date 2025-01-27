@@ -287,7 +287,7 @@ class TransportationandHireCharges(AccountsController):
 			add_gl_entry(party_account, self.amount, 0, party_type=self.party_type, party=self.party)
 			party_type = ""
 			party = ""
-			if self.self.settle_imprest_advance:
+			if self.settle_imprest_advance:
 				party_type = "Employee"
 				party = self.imprest_party
 			add_gl_entry(payable_account, 0, flt(self.outstanding_amount), party_type=party_type, party=party)
