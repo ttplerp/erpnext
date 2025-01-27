@@ -326,7 +326,7 @@
    "fieldname": "total_amount",
    "fieldtype": "Currency",
    "label": "Total Amount",
-   "precision": "4",
+   "precision": "2",
    "read_only": 1
   },
   {
@@ -384,7 +384,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-27 12:27:28.156355",
+ "modified": "2025-01-27 20:22:25.095087",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Project Invoice",
