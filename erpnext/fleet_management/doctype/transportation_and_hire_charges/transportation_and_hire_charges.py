@@ -138,11 +138,11 @@ class TransportationandHireCharges(AccountsController):
 
 	def make_gl_entry(self, cancel=False):
 		gl_entries = []
-		self.make_party_gl_entries(gl_entries)
 		self.make_additional_gl_entries(gl_entries)
 		self.deduction_gl_entries(gl_entries)
 		self.make_tds_gl_entries(gl_entries)
 		self.make_material_issue_gl_entries(gl_entries)
+		self.make_party_gl_entries(gl_entries)
 		# frappe.throw("<pre>{}</pre>".format(frappe.as_json(gl_entries)))
 
 		gl_entries = merge_similar_entries(gl_entries)
@@ -255,8 +255,8 @@ class TransportationandHireCharges(AccountsController):
 					"credit_in_account_currency": credit,
 					"against_voucher": self.name,
 					"against_voucher_type": self.doctype,
-					"party_type": self.party_type,
-					"party": self.party,
+					"party_type": "Employee" if self.settle_imprest_advance else self.party_type,
+					"party": self.imprest_party if self.settle_imprest_advance else self.party,
 					"cost_center": self.cost_center,
 					"voucher_type": self.doctype,
 					"voucher_no": self.name,
@@ -264,13 +264,23 @@ class TransportationandHireCharges(AccountsController):
 			)
 
 		if self.party_type == "Supplier":
+			if self.settle_imprest_advance:
+				payable_account = frappe.db.get_value("Company", self.company, "imprest_advance_account")
+				if not payable_account:
+					frappe.throw(
+						title="Missing Imprest Advance Account",
+						msg="Please set the Imprest Advance Account in the company settings: {}".format(
+							frappe.get_desk_link("Company", self.company)
+						)
+					)
+			else:
+				payable_account = frappe.db.get_value("Charge Type", self.invoice_type, "default_payable_account")
+				if not payable_account:
+					frappe.throw("The default payable account is not set for the selected Charge Type. Please configure it in the Charge Type record: {}".format(frappe.get_desk_link("Charge Type", self.invoice_type)), title="Payable Account Missing")
+
 			party_account = frappe.db.get_value("Charge Type", self.invoice_type, "default_expense_account")
-			payable_account = frappe.db.get_value("Charge Type", self.invoice_type, "default_payable_account")
-			
 			if not party_account:
 				frappe.throw("The default expense account is not set for the selected Charge Type. Please configure it in the Charge Type record: {}".format(frappe.get_desk_link("Charge Type", self.invoice_type)), title="Expense Account Missing")
-			if not payable_account:
-				frappe.throw("The default payable account is not set for the selected Charge Type. Please configure it in the Charge Type record: {}".format(frappe.get_desk_link("Charge Type", self.invoice_type)), title="Payable Account Missing")
 
 			add_gl_entry(party_account, self.amount, 0)
 			add_gl_entry(payable_account, 0, flt(self.outstanding_amount))
