@@ -332,8 +332,8 @@ class ProjectInvoice(AccountsController):
 
 		self.total_deduction_amount = self.calculate_total_deductions()
 
-		self.total_amount 	= flt(total)
-		self.net_amount 	= self.outstanding_amount	= flt(self.total_amount) - flt(self.total_deduction_amount)
+		self.total_amount 	= flt(total, 2)
+		self.net_amount 	= self.outstanding_amount	= flt(self.total_amount, 2) - flt(self.total_deduction_amount, 2)
 
 		self.validate_tds_retention()
 		
@@ -363,14 +363,14 @@ class ProjectInvoice(AccountsController):
 	def validate_tds_retention(self):
 		if self.tds_percent:
 			self.tds_account = get_tds_account(self.tds_percent, self.company, self.party_type)
-			self.tds_amount = flt(self.tds_percent) / 100 * flt(self.total_amount or 0)
+			self.tds_amount = flt(self.tds_percent) / 100 * flt(self.total_amount or 0, 2)
 		else:
 			self.tds_amount = 0.00
 			self.tds_account = None
 
 		if self.retention_percent:
 			self.retention_account = get_retention_account(self.retention_percent, self.company, self.party_type)
-			self.retention_amount = flt(self.retention_percent) / 100 * flt(self.total_amount or 0)
+			self.retention_amount = flt(self.retention_percent) / 100 * flt(self.total_amount or 0, 2)
 		else:
 			self.retention_amount = 0.00
 			self.retention_account = None
