@@ -47,6 +47,24 @@ erpnext.accounts.PurchaseInvoice = class PurchaseInvoice extends erpnext.buying.
 		}
 	}
 
+	get_supplier_advances(doc) {
+		return frappe
+			.call({
+				doc: cur_frm.doc,
+				method: "fill_advance_details",
+				freeze: true,
+				freeze_message: __("Fetching Advanes ..."),
+			})
+			.then((r) => {
+				if (r.docs?.[0]?.supplier_advances) {
+					cur_frm.dirty();
+					cur_frm.save();
+				}
+				cur_frm.doc.refresh();
+				cur_frm.doc.scroll_to_field("supplier_advances");
+			});	
+	}
+
 	refresh(doc) {
 		const me = this;
 		super.refresh();

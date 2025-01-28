@@ -140,6 +140,9 @@
   "get_advances",
   "advances",
   "advance_tax",
+  "get_supplier_advances",
+  "advance_type",
+  "supplier_advances",
   "payment_schedule_section",
   "payment_terms_template",
   "ignore_default_payment_terms_template",
@@ -1045,8 +1048,6 @@
    "print_hide": 1
   },
   {
-   "collapsible": 1,
-   "collapsible_depends_on": "advances",
    "fieldname": "advances_section",
    "fieldtype": "Section Break",
    "label": "Advance Payments",
@@ -1058,12 +1059,14 @@
    "default": "0",
    "fieldname": "allocate_advances_automatically",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Set Advances and Allocate (FIFO)"
   },
   {
    "depends_on": "eval:!doc.allocate_advances_automatically",
    "fieldname": "get_advances",
    "fieldtype": "Button",
+   "hidden": 1,
    "label": "Get Advances Paid",
    "oldfieldtype": "Button",
    "print_hide": 1
@@ -1071,6 +1074,7 @@
   {
    "fieldname": "advances",
    "fieldtype": "Table",
+   "hidden": 1,
    "label": "Advances",
    "no_copy": 1,
    "oldfieldname": "advance_allocation_details",
@@ -1490,13 +1494,29 @@
   {
    "fieldname": "column_break_j8fzu",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "supplier_advances",
+   "fieldtype": "Table",
+   "options": "Purchase Invoice Supplier Advance"
+  },
+  {
+   "fieldname": "get_supplier_advances",
+   "fieldtype": "Button",
+   "label": "Get Supplier Advances"
+  },
+  {
+   "fieldname": "advance_type",
+   "fieldtype": "Link",
+   "label": "Advance Type",
+   "options": "Advance Type"
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 204,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-11 17:14:43.957563",
+ "modified": "2025-01-19 22:17:24.821170",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Purchase Invoice",
