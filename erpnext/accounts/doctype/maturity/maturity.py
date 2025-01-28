@@ -33,6 +33,9 @@ class Maturity(Document):
 				
 
 	def validate_existing(self):
+		if self.treasury_id:
+			if frappe.db.get_value("Treasury", self.treasury_id, "docstatus") != 1:
+				frappe.throw("Treasury {} should be submitted first".format(self.treasury_id))
 		if not self.posting_date:
 			frappe.throw("Please Enter Posting Date.")
 		if datetime.strptime(str(self.posting_date),"%Y-%m-%d") < datetime.strptime(str(frappe.db.get_value("Treasury", self.treasury_id, "issue_date")), "%Y-%m-%d"):
@@ -153,7 +156,7 @@ class Maturity(Document):
 			"reference_type": "Maturity",
 			"reference_name": self.name
 		})
-		frappe.throw("Credit:\nPrinciple Amount: {} Total Interest: {}\nDebit:\n Maturity Amount - TDS Amount: {} TDS Amount: {}".format(str(flt(frappe.db.get_value("Treasury", self.treasury_id, "principal_amount"),2)), str(flt(self.total_interest_amount,2)), str(flt(self.maturity_amount-self.tds_amount,2)), str(flt(self.tds_amount,2))))
+		# frappe.throw("Credit:\nPrinciple Amount: {} Total Interest: {}\nDebit:\n Maturity Amount - TDS Amount: {} TDS Amount: {}".format(str(flt(frappe.db.get_value("Treasury", self.treasury_id, "principal_amount"),2)), str(flt(self.total_interest_amount,2)), str(flt(self.maturity_amount-self.tds_amount,2)), str(flt(self.tds_amount,2))))
 
 		je.insert()
 
