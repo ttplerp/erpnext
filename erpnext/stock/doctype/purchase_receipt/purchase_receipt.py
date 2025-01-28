@@ -842,6 +842,8 @@ class PurchaseReceipt(BuyingController):
 			"cost_center": cost_center,
 			"debit": debit,
 			"credit": credit,
+			"party_type": "Supplier",
+			"party": self.supplier,
 			"against": against_account,
 			"remarks": remarks,
 		}
