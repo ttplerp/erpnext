@@ -476,7 +476,6 @@
    "collapsible": 1,
    "fieldname": "accounting",
    "fieldtype": "Section Break",
-   "hidden": 1,
    "label": "Accounting Details"
   },
   {
@@ -1110,7 +1109,7 @@
  "idx": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-01 15:15:14.963059",
+ "modified": "2025-01-23 12:11:32.739439",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Sales Invoice Item",

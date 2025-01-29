@@ -117,7 +117,7 @@ frappe.ui.form.on('Asset', {
 			// 	frm.trigger("split_asset");
 			// }, __("Manage"));
 
-			if (frm.doc.status != 'Fully Depreciated') {
+			if (!in_list(["Scrapped", "Sold", "Fully Depreciated"], frm.doc.status)) {
 				frm.add_custom_button(__("Adjust Asset Value"), function() {
 					frm.trigger("create_asset_value_adjustment");
 				}, __("Manage"));
@@ -572,17 +572,53 @@ erpnext.asset.set_accumulated_depreciation = function(frm) {
 };
 
 erpnext.asset.scrap_asset = function(frm) {
-	frappe.confirm(__("Do you really want to scrap this asset?"), function () {
-		frappe.call({
-			args: {
-				"asset_name": frm.doc.name
+	var doc = cur_frm.doc;
+	var dialog = new frappe.ui.Dialog({
+		title: __("Scrap Asset"),
+		fields: [
+			{	"fieldtype": "Date",
+				"label": __("Scrap Date"),
+				"fieldname": "scrap_date",
+				"options": '',
+				"reqd": 1 
 			},
-			method: "erpnext.assets.doctype.asset.depreciation.scrap_asset",
-			callback: function(r) {
+			{	"fieldtype": "Button", "label": __('Scrap Asset'),
+				"fieldname": "make_asset_scrap_entry", "cssClass": "btn-primary"
+			},
+		]
+	});
+
+	dialog.fields_dict.make_asset_scrap_entry.$input.click(function() {
+		var args = dialog.get_values();
+		// frappe.confirm(__("Do you really want to scrap this asset?"), function () {
+		frappe.call({
+			method:'erpnext.assets.doctype.asset.depreciation.scrap_asset',
+			args:{
+				"asset_name": frm.doc.name,
+				"scrap_date": args.scrap_date
+			},
+			callback:(r)=>{
+				frappe.msgprint('Asset Scrapped')
+				dialog.hide();
+				// return;
 				cur_frm.reload_doc();
 			}
 		})
-	})
+		// })
+	});
+	dialog.show()
+	// frappe.confirm(__("Do you really want to scrap this asset?"), function () {
+	// 	frappe.call({
+	// 		args: {
+	// 			"asset_name": frm.doc.name,
+	// 			"scrap_date": frm.doc.
+	// 		},
+	// 		method: "erpnext.assets.doctype.asset.depreciation.scrap_asset",
+	// 		callback: function(r) {
+	// 			cur_frm.reload_doc();
+	// 		}
+	// 	})
+	// })
 };
 
 erpnext.asset.restore_asset = function(frm) {

@@ -27,6 +27,7 @@
   "deliver_to",
   "order_confirmation_no",
   "order_confirmation_date",
+  "rental_site",
   "site_name",
   "amended_from",
   "accounting_dimensions_section",
@@ -1216,9 +1217,9 @@
   },
   {
    "fieldname": "site_name",
-   "fieldtype": "Link",
-   "label": "Site Name",
-   "options": "Site Name"
+   "fieldtype": "Dynamic Link",
+   "label": "Flat No/Block No/Locations",
+   "options": "rental_site"
   },
   {
    "fieldname": "cb_annual_tender",
@@ -1229,13 +1230,19 @@
    "fieldname": "annual_tender",
    "fieldtype": "Check",
    "label": "Annual Tender?"
+  },
+  {
+   "fieldname": "rental_site",
+   "fieldtype": "Select",
+   "label": "Rental Type",
+   "options": "\nFlat No\nLocation\nBlock No\nLocations"
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 105,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-02 15:00:25.276634",
+ "modified": "2025-01-29 16:02:19.373094",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Purchase Order",

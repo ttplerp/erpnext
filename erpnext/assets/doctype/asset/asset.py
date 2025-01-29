@@ -790,9 +790,14 @@ class Asset(AccountsController):
 
 	def set_status(self, status=None):
 		"""Get and update status"""
+		disable_depreciation = 0
 		if not status:
 			status = self.get_status()
+		
+		if status not in ["Draft","Submitted", "Partially Depreciated"]:
+			disable_depreciation = 1
 		self.db_set("status", status)
+		self.db_set("disable_depreciation", disable_depreciation)
 
 	def get_status(self):
 		"""Returns status based on whether it is draft, submitted, scrapped or depreciated"""
