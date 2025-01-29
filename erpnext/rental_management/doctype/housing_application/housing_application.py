@@ -14,16 +14,16 @@ class HousingApplication(Document):
 		self.check_agree()
 		self.check_status()
 		self.check_employee_type()
-		self.check_salary()
-		if self.application_status == None or self.application_status== 'Pending':
-			self.validate_detail()
+		# self.check_salary()
+		# if self.application_status == None or self.application_status== 'Pending':
+		# 	self.validate_detail()
 		self.validate_duplicate()
 		
 		# self.check_app_limit()
 		creation_time = frappe.utils.get_datetime(self.get('creation'))
 		if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2:
 			self.generate_rank()
-		self.check_spouse_gross()
+		# self.check_spouse_gross()
 	
 	def onload(self):
 		# Initialize the gross salary values
@@ -51,11 +51,12 @@ class HousingApplication(Document):
 			if self.application_status=="Pending":
 				frappe.throw("Cannot submit while the application status is still pending")
 	def check_employee_type(self):
-		if self.is_new() and not self.employment_type == "Civil Servant":
+		creation_time = frappe.utils.get_datetime(self.get('creation'))
+		if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2 and not self.employment_type == "Civil Servant":
 			# frappe.throw("New applications for civil servants are temporarily suspended, due to a substantial backlog")
 			frappe.throw("Applications are currently only allowed for Civil Servants")
    
-		if self.is_new() and self.work_station not in ("Samdrup Jongkhar","Phuentsholing")  :
+		if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2 and self.work_station not in ("Samdrup Jongkhar","Phuentsholing")  :
 			frappe.throw("Applications are currently only allowed for Samdrup Jongkhar and Phuentsholing")
    
    
