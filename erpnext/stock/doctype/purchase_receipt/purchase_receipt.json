@@ -27,6 +27,7 @@
   "apply_putaway_rule",
   "is_return",
   "return_against",
+  "rental_site",
   "site_name",
   "accounting_dimensions_section",
   "cost_center",
@@ -1189,16 +1190,22 @@
   },
   {
    "fieldname": "site_name",
-   "fieldtype": "Link",
-   "label": "Site Name",
-   "options": "Site Name"
+   "fieldtype": "Dynamic Link",
+   "label": "Flat No/Block No/Locations",
+   "options": "rental_site"
+  },
+  {
+   "fieldname": "rental_site",
+   "fieldtype": "Select",
+   "label": "Rental Type",
+   "options": "\nFlat No\nLocation\nBlock No\nLocations"
   }
  ],
  "icon": "fa fa-truck",
  "idx": 261,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-06 13:13:37.720039",
+ "modified": "2025-01-29 17:44:55.440851",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Purchase Receipt",
