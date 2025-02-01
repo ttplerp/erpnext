@@ -133,6 +133,14 @@ class ProjectInvoice(AccountsController):
 				frappe.throw(_("Operation not permitted on already {0} Project.").format(base_project.status),title="Project Invoice: Invalid Operation")
 
 	def validate_mb_entries(self):
+		new_record = []
+		for d in self.get("project_invoice_mb"):
+			if d.is_selected:
+				new_record.append(d)
+		for idx, record in enumerate(new_record, start=1):
+			record.idx = idx
+		self.set("project_invoice_mb", new_record)
+		
 		for i in self.get("project_invoice_mb"):
 			for t in frappe.get_all("Project Invoice MB", ["parent"], {"entry_name": i.entry_name, "is_selected": 1, "docstatus": 1}, order_by="boq, subcontract, parent"):
 				msg = '<b>Reference# : <a href="#Form/Project Invoice/{0}">{0}</a></b>'.format(t.parent)
