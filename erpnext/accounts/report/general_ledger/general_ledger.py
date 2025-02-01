@@ -186,7 +186,11 @@ def get_gl_entries(filters, accounting_dimensions):
 		select
 			name as gl_entry, posting_date, account, party_type, party,
 			voucher_type, voucher_no, {dimension_fields}
-			cost_center, project,
+			cost_center, project, 
+			(case when ifnull(project, '') != '' 
+				then (select a.project_name from tabProject a where a.name=project)
+				else ''
+			end) as project_title,
 			against_voucher_type, against_voucher, account_currency,
 			remarks, against, is_opening, creation {select_fields}
 		from `tabGL Entry` gl
@@ -588,6 +592,7 @@ def get_columns(filters):
 		{"label": _("Party Type"), "fieldname": "party_type", "width": 100},
 		{"label": _("Party"), "fieldname": "party", "width": 100},
 		{"label": _("Project"), "options": "Project", "fieldname": "project", "width": 100},
+		{"label": _("Project Title"), "fieldname": "project_title", "width": 100},
 	]
 
 	if filters.get("include_dimensions"):
