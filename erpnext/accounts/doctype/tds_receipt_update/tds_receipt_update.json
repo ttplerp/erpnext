@@ -118,22 +118,22 @@
    "label": "Filters"
   },
   {
-   "depends_on": "eval:!in_list([\"Employee Salary\",\"Bonus\",\"PBVA\"], doc.purpose)",
+   "depends_on": "eval:!in_list([\"Employee Salary\",\"PF\",\"GIS\",\"Health Contribution\"], doc.purpose)",
    "fieldname": "from_date",
    "fieldtype": "Date",
    "label": "From Date",
-   "mandatory_depends_on": "eval:!in_list([\"Employee Salary\",\"Bonus\",\"PBVA\"], doc.purpose)"
+   "mandatory_depends_on": "eval:!in_list([\"Employee Salary\",\"PF\",\"GIS\",\"Health Contribution\"], doc.purpose)"
   },
   {
    "fieldname": "cb_9",
    "fieldtype": "Column Break"
   },
   {
-   "depends_on": "eval:!in_list([\"Employee Salary\",\"Bonus\",\"PBVA\"], doc.purpose)",
+   "depends_on": "eval:!in_list([\"Employee Salary\",\"PF\",\"GIS\",\"Health Contribution\"], doc.purpose)",
    "fieldname": "to_date",
    "fieldtype": "Date",
    "label": "To Date",
-   "mandatory_depends_on": "eval:!in_list([\"Employee Salary\",\"Bonus\",\"PBVA\"], doc.purpose)"
+   "mandatory_depends_on": "eval:!in_list([\"Employee Salary\",\"PF\",\"GIS\",\"Health Contribution\"], doc.purpose)"
   },
   {
    "fieldname": "sb_receipt_details",
@@ -183,6 +183,7 @@
    "options": "TDS Remittance Item"
   },
   {
+   "depends_on": "eval:!in_list([\"Employee Salary\",\"PF\",\"GIS\",\"Health Contribution\"], doc.purpose)",
    "fieldname": "sb_totals",
    "fieldtype": "Section Break"
   },
@@ -205,11 +206,11 @@
    "read_only": 1
   },
   {
-   "depends_on": "eval:doc.purpose != 'Employee Salary';",
+   "depends_on": "eval:!in_list([\"Employee Salary\",\"PF\",\"GIS\",\"Health Contribution\"], doc.purpose)",
    "fieldname": "tax_withholding_category",
    "fieldtype": "Link",
    "label": "Tax Withholding Category",
-   "mandatory_depends_on": "eval:doc.purpose != 'Employee Salary';",
+   "mandatory_depends_on": "eval:!in_list([\"Employee Salary\",\"PF\",\"GIS\",\"Health Contribution\"], doc.purpose)",
    "options": "Tax Withholding Category"
   },
   {
@@ -262,7 +263,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-02-02 17:44:22.734414",
+ "modified": "2025-02-02 17:59:09.071320",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "TDS Receipt Update",
