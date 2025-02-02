@@ -48,7 +48,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Purpose",
-   "options": "\nOther Invoice\nEmployee Salary\nLeave Encashment\nPBVA\nBonus\nOvertime",
+   "options": "\nOther Invoice\nEmployee Salary\nPF\nGIS\nHealth Contribution\nLeave Encashment",
    "reqd": 1
   },
   {
@@ -77,7 +77,8 @@
    "read_only": 1
   },
   {
-   "depends_on": "eval:in_list([\"Employee Salary\",\"Bonus\",\"PBVA\"], doc.purpose)",
+   "depends_on": "eval:in_list([\"Employee Salary\",\"PF\",\"GIS\",\"Health Contribution\"], doc.purpose)",
+   "fetch_from": "payroll_entry.fiscal_year",
    "fieldname": "fiscal_year",
    "fieldtype": "Link",
    "label": "Fiscal Year",
@@ -96,7 +97,8 @@
    "options": "Region"
   },
   {
-   "depends_on": "eval:doc.purpose == \"Employee Salary\"",
+   "depends_on": "eval:in_list([\"Employee Salary\",\"PF\",\"GIS\",\"Health Contribution\"], doc.purpose)",
+   "fetch_from": "payroll_entry.month",
    "fieldname": "month",
    "fieldtype": "Select",
    "label": "Month",
@@ -223,7 +225,7 @@
    "reqd": 1
   },
   {
-   "depends_on": "eval:doc.purpose == \"Employee Salary\";",
+   "depends_on": "eval:in_list([\"Employee Salary\",\"PF\",\"GIS\",\"Health Contribution\"], doc.purpose)",
    "fieldname": "sb_employees",
    "fieldtype": "Section Break",
    "label": "Employees"
@@ -249,7 +251,7 @@
    "options": "Branch"
   },
   {
-   "depends_on": "eval:doc.purpose==\"Employee Salary\"",
+   "depends_on": "eval:in_list([\"Employee Salary\",\"PF\",\"GIS\",\"Health Contribution\"], doc.purpose)",
    "fieldname": "payroll_entry",
    "fieldtype": "Link",
    "label": "Payroll Entry ID",
@@ -259,7 +261,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-19 14:10:18.894101",
+ "modified": "2025-02-02 16:26:35.099200",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "TDS Receipt Update",
@@ -293,5 +295,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }
