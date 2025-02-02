@@ -74,7 +74,7 @@ class MaterialRequest(BuyingController):
 
 	def validate(self):
 		super(MaterialRequest, self).validate()
-		if self.company not in ("De-suung HQ", "De-suung Skilling"):
+		if self.company not in ("De-suung HQ"):
 			validate_workflow_states(self)
 			notify_workflow_states(self)
 
@@ -122,7 +122,7 @@ class MaterialRequest(BuyingController):
 	
 	### ******** ====================================================== ************* ###
 	def set_verifier(self):
-		if self.company not in ("De-suung HQ", "De-suung Skilling"):
+		if self.company in ("De-suung HQ"):
 			return
 		approver_settings = frappe.qb.DocType("Approver Settings")
 		supervisor_item = frappe.qb.DocType("Supervisor Item")
@@ -138,11 +138,19 @@ class MaterialRequest(BuyingController):
 				(approver_settings.disabled != 1)
 				& (approver_settings.name == self.doctype)
 				& (supervisor_item.company == self.company)
+				& (supervisor_item.branch == self.branch)
 			)
 		).run(as_dict=True)
 
 		if not supervisor_list:
-				frappe.throw(_("No supervisor found for the Material Request in company {0}. Please configure the approver settings.".format(self.doc.company)))
+			error_msg = _(
+				"No supervisor found for the Material Request in <br>Company: {0}"
+			).format(
+				frappe.bold(self.company),
+			)
+			if self.branch:
+				error_msg += "<br>" + _("Branch: {0}").format(frappe.bold(self.branch))
+			frappe.throw(error_msg, title=_("No verifier found"))
 
 		self.verifier = supervisor_list[0].get('user')
 		self.verifier_name = supervisor_list[0].get('user_name')

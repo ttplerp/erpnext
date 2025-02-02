@@ -8,8 +8,10 @@
  "field_order": [
   "company",
   "column_break_2",
-  "user",
+  "branch",
   "column_break_4",
+  "user",
+  "column_break_6",
   "user_name"
  ],
  "fields": [
@@ -45,12 +47,24 @@
    "in_list_view": 1,
    "label": "User Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-16 11:41:18.800925",
+ "modified": "2025-02-02 21:18:25.478505",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Manager Item",

@@ -64,6 +64,7 @@ class CustomWorkflow:
 					(approver_settings.disabled != 1)
 					& (approver_settings.name == "Material Request")
 					& (supervisor_item.company == self.doc.company)
+					& (supervisor_item.branch == self.doc.branch)
 				)
 			).run(as_dict=True)
 
@@ -79,14 +80,29 @@ class CustomWorkflow:
 					(approver_settings.disabled != 1)
 					& (approver_settings.name == "Material Request")
 					& (manager_item.company == self.doc.company)
+					& (manager_item.branch == self.doc.branch)
 				)
 			).run(as_dict=True)
 
 			if not supervisor_list:
-				frappe.throw(_("No supervisor found for the Material Request in company {0}. Please configure the approver settings.".format(self.doc.company)))
-
+				error_msg = _(
+					"No supervisor found for the Material Request in <br>Company: {0}"
+				).format(
+					frappe.bold(self.doc.company),
+				)
+				if self.doc.branch:
+					error_msg += "<br>" + _("Branch: {0}").format(frappe.bold(self.doc.branch))
+				frappe.throw(error_msg, title=_("No verifier found"))
+		
 			if not manager_list:
-				frappe.throw(_("No manager found for the Material Request in company {0}. Please configure the approver settings.".format(self.doc.company)))
+				error_msg = _(
+					"No approver found for the Material Request in <br>Company: {0}"
+				).format(
+					frappe.bold(self.doc.company),
+				)
+				if self.doc.branch:
+					error_msg += "<br>" + _("Branch: {0}").format(frappe.bold(self.doc.branch))
+				frappe.throw(error_msg, title=_("No approver found"))
 
 			supervisor_user_id = supervisor_list[0].get('user')
 			manager_user_id = manager_list[0].get('user')
