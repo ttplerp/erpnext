@@ -171,6 +171,7 @@
    "reqd": 1
   },
   {
+   "depends_on": "eval:doc.purpose==\"Other Invoice\"",
    "fieldname": "sb_invoice_details",
    "fieldtype": "Section Break",
    "label": "Invoice Details"
@@ -232,7 +233,7 @@
   },
   {
    "allow_bulk_edit": 1,
-   "depends_on": "eval:doc.purpose == \"Employee Salary\";",
+   "depends_on": "eval:in_list([\"Employee Salary\",\"PF\",\"GIS\",\"Health Contribution\"], doc.purpose)",
    "fieldname": "employees",
    "fieldtype": "Table",
    "label": "Employee Details",
@@ -261,7 +262,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-02-02 16:26:35.099200",
+ "modified": "2025-02-02 17:44:22.734414",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "TDS Receipt Update",
