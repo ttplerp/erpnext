@@ -334,7 +334,7 @@
    "ignore_user_permissions": 1,
    "label": "Approver",
    "options": "User",
-   "read_only": 1
+   "read_only_depends_on": "eval:doc.set_manual_approver == 0;"
   },
   {
    "fieldname": "column_break_17",
@@ -493,7 +493,7 @@
    "ignore_user_permissions": 1,
    "label": "Supervisor's Manager",
    "options": "User",
-   "read_only": 1
+   "read_only_depends_on": "eval:doc.set_manual_approver == 0;"
   },
   {
    "fetch_from": "supervisor_manager.full_name",
@@ -724,7 +724,7 @@
    "fieldname": "set_manual_approver",
    "fieldtype": "Check",
    "label": "Set Manual Approver",
-   "read_only": 1
+   "permlevel": 1
   },
   {
    "fieldname": "approver_in_first_level",
@@ -833,7 +833,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-12-14 11:55:00.664444",
+ "modified": "2025-02-03 14:49:05.967252",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Performance Evaluation",

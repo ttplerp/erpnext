@@ -245,7 +245,8 @@
    "ignore_user_permissions": 1,
    "label": "Approver",
    "options": "User",
-   "read_only": 1
+   "read_only": 1,
+   "read_only_depends_on": "eval:doc.set_manual_approver == 0;"
   },
   {
    "fieldname": "column_break_17",
@@ -465,7 +466,7 @@
    "fieldtype": "Check",
    "hidden": 1,
    "label": "Set Manual Approver",
-   "read_only": 1
+   "permlevel": 1
   },
   {
    "default": "0",
@@ -491,7 +492,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-11 16:35:55.130869",
+ "modified": "2025-02-03 14:51:57.389016",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Target Set Up",
