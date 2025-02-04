@@ -3,6 +3,9 @@
 
 frappe.ui.form.on('Project Invoice', {
 	onload: function (frm, cdt, cdn) {
+		let grid = frm.fields_dict['advances'].grid;
+        grid.cannot_add_rows = true;
+
 		if (frm.doc.project && frm.doc.__islocal) {
 			if (frm.doc.docstatus != 1) {
 				get_mb_list(frm);
