@@ -146,7 +146,7 @@ def get_data(filters):
             0 AS dep_opening,
             0 AS dep_addition,
             (CASE WHEN a.status in ('Scrapped', 'Sold') AND a.disposal_date BETWEEN '{from_date}' AND '{to_date}'
-                THEN IFNULL(a.gross_purchase_amount,0)-IFNULL(a.value_after_depreciation,0)
+                THEN IFNULL(a.gross_purchase_amount,0)-IFNULL(f.value_after_depreciation,0)
                 ELSE 0
             END) AS dep_adjustment,
             0 AS opening_income,
