@@ -43,10 +43,6 @@
   "items",
   "previous_balance_amount",
   "pol_received_details_section",
-  "from_date",
-  "column_break_35",
-  "to_date",
-  "section_break_37",
   "pol_received_item",
   "section_break_39",
   "total_qty_received",
@@ -273,6 +269,7 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "equipment",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -327,10 +324,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "section_break_37",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "get_previous",
    "fieldtype": "Button",
    "label": "Get Previous Expenses"
@@ -364,12 +357,14 @@
    "fieldname": "previous_km_reading",
    "fieldtype": "Float",
    "label": "Previous KM/HR Reading (KMs/Hrs)(E)",
+   "precision": "2",
    "read_only": 1
   },
   {
    "fieldname": "present_km_reading",
    "fieldtype": "Float",
-   "label": "Present KM/HR Reading (KMs/Hrs)(F)"
+   "label": "Present KM/HR Reading (KMs/Hrs)(F)",
+   "precision": "2"
   },
   {
    "fieldname": "column_break_41",
@@ -423,22 +418,7 @@
    "label": "POL Received Details"
   },
   {
-   "fieldname": "from_date",
-   "fieldtype": "Date",
-   "label": "From Date",
-   "mandatory_depends_on": "eval:doc.is_opening == 0"
-  },
-  {
-   "fieldname": "column_break_35",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "to_date",
-   "fieldtype": "Date",
-   "label": "To Date",
-   "mandatory_depends_on": "eval:doc.is_opening == 0"
-  },
-  {
+   "allow_on_submit": 1,
    "fieldname": "pol_received_item",
    "fieldtype": "Table",
    "label": "POL Received Item",
@@ -506,7 +486,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-05-31 11:29:09.334201",
+ "modified": "2024-11-05 11:47:56.503020",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Expense",
@@ -555,6 +535,5 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "equipment",
  "track_changes": 1
 }

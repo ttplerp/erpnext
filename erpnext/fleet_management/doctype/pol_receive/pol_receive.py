@@ -23,6 +23,7 @@ class POLReceive(StockController):
 		self.validate_data()
 		self.balance_check()
 		self.remove_unallocated_rows()
+		
 	def on_submit(self):
 		if cint(self.is_opening) == 0:
 			self.update_pol_expense()
@@ -115,29 +116,49 @@ class POLReceive(StockController):
 		if cint(self.direct_consumption) == 0:
 			return
 		if not self.uom:
-			self.uom = frappe.db.get_value("Equipment", self.equipment,"reading_uom")
+			self.uom = frappe.db.get_value("Equipment", self.equipment, "reading_uom")
 		if not self.uom:
-			self.uom = frappe.db.get_value("Equipment Type",self.equipment_type,"reading_uom")
+			self.uom = frappe.db.get_value("Equipment Type", self.equipment_type, "reading_uom")
+		
 		previous_km_reading = frappe.db.sql('''
 						select cur_km_reading from `tabPOL Receive` where docstatus = 1 
 						and equipment = '{}' and uom = '{}'
 						order by posting_date desc, posting_time desc
 						limit 1
 						'''.format(self.equipment, self.uom))
-		previous_km_reading_pol_issue = frappe.db.sql('''
-				select cur_km_reading
-				from `tabPOL Issue` p inner join `tabPOL Issue Items` pi on p.name = pi.parent	
-				where p.docstatus = 1 and pi.equipment = '{}'
-				and pi.uom = '{}' 
-				order by p.posting_date desc, p.posting_time desc
-				limit 1
-			'''.format(self.equipment, self.uom))
-		if not previous_km_reading and previous_km_reading_pol_issue:
-			previous_km_reading = previous_km_reading_pol_issue
-		elif previous_km_reading and previous_km_reading_pol_issue:
-			if flt(previous_km_reading[0][0]) < previous_km_reading_pol_issue[0][0]:
-				previous_km_reading = previous_km_reading_pol_issue
+		
+		# previous_km_reading_pol_issue = frappe.db.sql('''
+		# 		select cur_km_reading
+		# 		from `tabPOL Issue` p inner join `tabPOL Issue Items` pi on p.name = pi.parent	
+		# 		where p.docstatus = 1 and pi.equipment = '{}'
+		# 		and pi.uom = '{}' 
+		# 		order by p.posting_date desc, p.posting_time desc
+		# 		limit 1
+		# 	'''.format(self.equipment, self.uom))
+		
+		# if not previous_km_reading and previous_km_reading_pol_issue:
+		# 	previous_km_reading = previous_km_reading_pol_issue
+		# elif previous_km_reading and previous_km_reading_pol_issue:
+		# 	if flt(previous_km_reading[0][0]) < previous_km_reading_pol_issue[0][0]:
+		# 		previous_km_reading = previous_km_reading_pol_issue
 
+		previous_km_pol_expense = frappe.db.sql('''
+						SELECT 
+							present_km_reading 
+						FROM `tabPOL Expense` 
+						WHERE docstatus = 1 
+						AND equipment = '{}'
+						AND is_opening = 0
+						ORDER BY entry_date DESC, modified DESC
+						limit 1
+						'''.format(self.equipment))
+		
+		if not previous_km_reading and previous_km_pol_expense:
+			previous_km_reading = previous_km_pol_expense
+		elif previous_km_reading and previous_km_pol_expense:
+			if flt(previous_km_reading[0][0]) < previous_km_pol_expense[0][0]:
+				previous_km_reading = previous_km_pol_expense
+		
 		pv_km = 0
 		if not previous_km_reading:
 			pv_km = frappe.db.get_value("Equipment",self.equipment,"initial_km_reading")

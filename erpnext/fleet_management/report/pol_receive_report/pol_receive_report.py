@@ -32,20 +32,24 @@ def get_columns(filters):
 		{"fieldname":"rate","label":_("Rate"),"fieldtype":"Currency","width":120},
 		{"fieldname":"amount","label":_("Amount"),"fieldtype":"Currency","width":150},
 		{"fieldname":"mileage","label":_("Mileage"),"fieldtype":"Float","width":120},
+		{"fieldname":"previous_km","label":_("Previous KM"),"fieldtype":"Float","width":120},
+		{"fieldname":"current_km","label":_("Current KM"),"fieldtype":"Float","width":120},
+		{"fieldname":"km_difference","label":_("KM Diff"),"fieldtype":"Float","width":120},
 		{"fieldname":"memo_number","label":_("Cash Memo Number"),"fieldtype":"Data","width":120},
-		{"fieldname":"pol_slip_no","label":_("POL Slip No."),"fieldtype":"Data","width":120}
+		# {"fieldname":"pol_slip_no","label":_("POL Slip No."),"fieldtype":"Data","width":120}
 	]
 
 def get_data(filters):
 	conditions = get_conditions(filters)
 	if filters.aggregate:
 		query = frappe.db.sql("""select 
-									p.equipment, 
+									p.equipment,
 									p.equipment_type,
 									SUM(p.qty) as qty,  
-									ROUND(SUM(p.rate * p.qty)/ SUM(p.qty),2) as rate, 
-									SUM(ifnull(p.amount,0)) as amount,
-									ROUND(AVG(p.mileage),2) as mileage
+									ROUND(SUM(p.rate * p.qty)/ SUM(p.qty), 2) as rate, 
+									SUM(ifnull(p.amount, 0)) as amount,
+									ROUND(AVG(p.mileage), 2) as actual_mileage,
+									ROUND(SUM(p.km_difference)/SUM(p.qty), 2) as mileage
 								from 
 									`tabPOL Entry` p 
 								where docstatus = 1 {} 
@@ -66,11 +70,14 @@ def get_data(filters):
 						p.rate, 
 						ifnull(p.amount,0) as amount,
 						p.mileage,
+						pr.previous_km,
+						p.current_km,
+						p.km_difference,
 						p.memo_number,
 						p.pol_slip_no
 					from 
-						`tabPOL Entry` p 
-					where docstatus = 1 {} 
+						`tabPOL Entry` p, `tabPOL Receive` pr
+					where pr.name = p.reference and pr.docstatus = 1 {} 
 					ORDER BY p.posting_date DESC""".format(conditions),as_dict=True)
 	return query
 

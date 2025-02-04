@@ -26,6 +26,7 @@
   "equipment_category",
   "fuelbook_branch",
   "supplier",
+  "fuel_type",
   "hired_equipment",
   "section_break_4",
   "pol_type",
@@ -350,12 +351,20 @@
    "fieldname": "is_opening",
    "fieldtype": "Check",
    "label": "Is Opening"
+  },
+  {
+   "fetch_from": "equipment.fuel_type",
+   "fieldname": "fuel_type",
+   "fieldtype": "Link",
+   "label": "Fuel Type",
+   "options": "Fuel Type",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-26 11:31:47.850771",
+ "modified": "2024-10-29 10:40:30.847401",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Receive",

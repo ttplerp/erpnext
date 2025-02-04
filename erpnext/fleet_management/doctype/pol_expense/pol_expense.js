@@ -26,8 +26,9 @@ frappe.ui.form.on('POL Expense', {
 		// frm.refresh_field("to_date")
 	},
 	equipment:function(frm){
-		frm.events.get_previous(frm)
-		frm.events.set_fuelbook_filter(frm)
+		frm.events.get_previous(frm);
+		frm.events.set_fuelbook_filter(frm);
+		frm.events.get_pol_received(frm);
 	},
 	use_common_fuelbook:function(frm){
 		frm.events.set_fuelbook_filter(frm)
@@ -100,6 +101,7 @@ frappe.ui.form.on('POL Expense', {
 			});
 		}
 	},
+
 	get_previous:function(frm){
 		if ( (frm.doc.equipment && frm.doc.fuel_book) || (frm.doc.use_common_fuelbook == 1 && frm.doc.fuel_book)){
 			frappe.call({
@@ -108,6 +110,7 @@ frappe.ui.form.on('POL Expense', {
 				callback:function(r){
 					frm.refresh_field("items")
 					frm.refresh_field("previous_balance_amount")
+					frm.refresh_field("previous_km_reading")
 					frm.refresh_field("amount")
 					frm.refresh_field("expense_limit")
 					frm.dirty()
@@ -115,16 +118,15 @@ frappe.ui.form.on('POL Expense', {
 			})
 		}
 	},
-	from_date:function(frm){
-		frm.events.get_pol_received(frm)
-	},
-	to_date:function(frm){
-		frm.events.get_pol_received(frm)
-	},
-	get_pol_received:function(frm){
+	// from_date:function(frm){
+	// 	frm.events.get_pol_received(frm)
+	// },
+	// to_date:function(frm){
+	// 	frm.events.get_pol_received(frm)
+	// },
+	get_pol_received: function(frm){
 		if (cint(frm.doc.is_opening) == 1) return
-		if (frm.doc.from_date > frm.doc.to_date) frappe.throw("From Date cannot be greater than To Date")
-		if (frm.doc.from_date && frm.doc.to_date){
+		if (frm.doc.equipment){
 			frappe.call({
 				method:"get_pol_received",
 				doc:frm.doc,

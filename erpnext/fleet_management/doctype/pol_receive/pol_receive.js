@@ -2,6 +2,17 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('POL Receive', {
+	onload: function(frm){
+		frm.set_query("pol_type", function() {
+			return {
+				filters: {
+					"disabled": 0,
+					"is_pol_item":1,
+					"fuel_type": frm.doc.fuel_type,
+				}
+			};
+		});
+	},
 	refresh: function(frm) {
 		if (frm.doc.docstatus === 1 && frm.doc.use_common_fuelbook == 1) {
 			frm.add_custom_button(
@@ -101,14 +112,7 @@ frappe.ui.form.on('POL Receive', {
 		cur_frm.clear_table("items");
 	},
 });
-cur_frm.set_query("pol_type", function() {
-	return {
-		"filters": {
-		"disabled": 0,
-		"is_pol_item":1
-		}
-	};
-});
+
 var populate_child_table=(frm)=>{
 	if (frm.doc.fuelbook && frm.doc.total_amount) {
 		frappe.call({

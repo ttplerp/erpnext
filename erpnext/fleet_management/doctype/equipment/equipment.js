@@ -2,6 +2,15 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Equipment', {
+	onload: function(frm) {
+		frm.set_query("fuelbook", function(doc){
+			return {
+				filters: {
+					'equipment': doc.name,
+				}
+			}
+		});
+	},
 	setup:function(frm){
 		frm.set_query("asset_code",function(doc){
 			return {

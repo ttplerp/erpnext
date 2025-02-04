@@ -23,14 +23,16 @@ class POLExpense(AccountsController):
 			validate_workflow_states(self)
 		self.posting_date = self.entry_date
 		self.validate_amount()
+		self.calculate_km_diff()
+		self.validate_km_diff()
 		self.calculate_pol()
 		if cint(self.use_common_fuelbook) == 1:
 			self.credit_account = get_party_account(self.party_type, self.party, self.company, is_advance = True)
 		else:
 			self.credit_account = get_party_account(self.party_type, self.party, self.company)
 
-		if flt(self.is_opening) == 0 and self.workflow_state != "Approved" :
-			notify_workflow_states(self)
+		# if flt(self.is_opening) == 0 and self.workflow_state != "Approved" :
+		# 	notify_workflow_states(self)
 		self.set_status()
 
 	
@@ -38,8 +40,8 @@ class POLExpense(AccountsController):
 		if cint(self.use_common_fuelbook) == 0:
 			self.make_gl_entries()
 		self.post_journal_entry()
-		if flt(self.is_opening) == 0:
-			notify_workflow_states(self)
+		# if flt(self.is_opening) == 0:
+		# 	notify_workflow_states(self)
 
 	def before_cancel(self):
 		if self.is_opening:
@@ -81,6 +83,7 @@ class POLExpense(AccountsController):
 					"voucher_no":self.name,
 					"posting_date":self.entry_date
 				}, self.currency))
+				
 	def make_expense_gl_entry(self, gl_entries):
 		if flt(self.amount) > 0:
 			expense_account = frappe.db.get_value("Equipment Category", self.equipment_category,'pol_expense_account')
@@ -100,10 +103,11 @@ class POLExpense(AccountsController):
 					}, self.currency))
 
 	def calculate_pol(self):
-		if self.opening_pol_tank_balance and self.pol_issue_during_the_period and self.closing_pol_tank_balance :
-			self.total_petrol_diesel_consumed =  flt(self.opening_pol_tank_balance) + flt(self.pol_issue_during_the_period) - flt(self.closing_pol_tank_balance)
+		# if self.opening_pol_tank_balance and self.pol_issue_during_the_period and self.closing_pol_tank_balance :
+		# 	self.total_petrol_diesel_consumed = flt(self.opening_pol_tank_balance) + flt(self.pol_issue_during_the_period) - flt(self.closing_pol_tank_balance)
+		self.total_petrol_diesel_consumed = flt(self.opening_pol_tank_balance) + flt(self.pol_issue_during_the_period) - flt(self.closing_pol_tank_balance)
 		
-		if self.previous_km_reading and self.present_km_reading :
+		if self.previous_km_reading and self.present_km_reading:
 			self.total_km_reading = flt(self.present_km_reading) - flt(self.previous_km_reading)
 		
 		if self.total_km_reading and self.total_petrol_diesel_consumed:
@@ -113,48 +117,73 @@ class POLExpense(AccountsController):
 				self.average_km_reading = flt(self.total_petrol_diesel_consumed) / flt(self.total_km_reading)
 			
 	def validate_km_diff(self):
-		if flt(self.previous_km_reading) >= flt(self.present_km_reading):
+		if flt(self.previous_km_reading) > flt(self.present_km_reading):
 			throw("Previous reading({}) cannot be greater than current km {}".format(bold(self.previous_km_reading),bold(self.present_km_reading)))
 			
 	def calculate_km_diff(self):
-		pol_exp = qb.DocType("POL Expense")
 		if not self.uom:
-			self.uom = frappe.db.get_value("Equipment", self.equipment,"reading_uom")
+			self.uom = frappe.db.get_value("Equipment", self.equipment, "reading_uom")
+		
+		previous_km_pol_expense = frappe.db.sql("""
+												SELECT 
+										  			present_km_reading
+												FROM `tabPOL Expense`
+												WHERE equipment = %s
+													AND docstatus = 1
+												ORDER BY modified DESC LIMIT 1
+											""", (self.equipment))
+
+		# frappe.throw(str(previous_km_pol_expense))
+		# if self.items:
+		# 	last_item = self.items[-1]
+		# 	previous_km_pol_expense = frappe.db.sql('''
+		# 					SELECT 
+		# 						present_km_reading 
+		# 					FROM `tabPOL Expense` 
+		# 					WHERE docstatus = 1 
+		# 					AND name = '{}'
+		# 					'''.format(last_item.reference))
+
 		pol_rev = qb.DocType("POL Receive")
 		previous_km_reading = (
 						qb.from_(pol_rev)
 						.select(pol_rev.cur_km_reading)
-						.where((pol_rev.equipment == self.equipment) & (pol_rev.docstatus==1) & (pol_rev.uom == self.uom) & (pol_rev.posting_date<self.from_date))
+						.where((pol_rev.equipment == self.equipment) & (pol_rev.docstatus==1) & (pol_rev.uom == self.uom))
 						.orderby( pol_rev.posting_date,order=qb.desc)
 						.orderby( pol_rev.posting_time,order=qb.desc)
+						.orderby( pol_rev.modified,order=qb.desc)
 						.limit(1)
 						.run()
 						)
 		pv_km = 0
-		previous_km_reading_pol_issue = frappe.db.sql('''
-				select cur_km_reading
-				from `tabPOL Issue` p inner join `tabPOL Issue Items` pi on p.name = pi.parent	
-				where p.docstatus = 1 and pi.equipment = '{}'
-				and pi.uom = '{}' and p.posting_date < '{}'
-				order by p.posting_date desc, p.posting_time desc
-				limit 1
-			'''.format(self.equipment, self.uom, self.from_date))
 
-		if not previous_km_reading and previous_km_reading_pol_issue:
-			previous_km_reading = previous_km_reading_pol_issue
-		elif previous_km_reading and previous_km_reading_pol_issue:
-			if flt(previous_km_reading[0][0]) < previous_km_reading_pol_issue[0][0]:
-				previous_km_reading = previous_km_reading_pol_issue
+		# previous_km_reading_pol_issue = frappe.db.sql('''
+		# 		select cur_km_reading
+		# 		from `tabPOL Issue` p inner join `tabPOL Issue Items` pi on p.name = pi.parent	
+		# 		where p.docstatus = 1 and pi.equipment = '{}'
+		# 		and pi.uom = '{}' and p.posting_date < '{}'
+		# 		order by p.posting_date desc, p.posting_time desc
+		# 		limit 1
+		# 	'''.format(self.equipment, self.uom, self.from_date))
+
+		# if not previous_km_reading and previous_km_reading_pol_issue:
+		# 	previous_km_reading = previous_km_reading_pol_issue
+		# elif previous_km_reading and previous_km_reading_pol_issue:
+		# 	if flt(previous_km_reading[0][0]) < previous_km_reading_pol_issue[0][0]:
+		# 		previous_km_reading = previous_km_reading_pol_issue
+
+		previous_km_reading = previous_km_pol_expense
 
 		if not previous_km_reading:
 			pv_km = frappe.db.get_value("Equipment",self.equipment,"initial_km_reading")
 		else:
 			pv_km = previous_km_reading[0][0]
 		
+		pol_exp = qb.DocType("POL Expense")
 		closing_pol_tank_balance = (
 								qb.from_(pol_exp)
 								.select(pol_exp.closing_pol_tank_balance)
-								.where((pol_exp.equipment == self.equipment) & (pol_exp.docstatus==1) & (pol_exp.uom == self.uom) & (pol_exp.name != self.name) & (pol_exp.entry_date< self.from_date))
+								.where((pol_exp.equipment == self.equipment) & (pol_exp.docstatus==1) & (pol_exp.uom == self.uom) & (pol_exp.name != self.name))
 								.orderby( pol_exp.entry_date,order=qb.desc)
 								.orderby( pol_exp.name, order=qb.desc)
 								.limit(1)
@@ -184,7 +213,7 @@ class POLExpense(AccountsController):
 			if self.cheque_date:
 				r.append(_('Reference #{0} dated {1}').format(self.cheque_no, formatdate(self.cheque_date)))
 			else:
-				msgprint(_("Please enter Cheque Date date"), raise_exception=frappe.MandatoryError)
+				frappe.msgprint(_("Please enter Cheque Date date"), raise_exception=frappe.MandatoryError)
 		
 		if self.user_remark:
 			r.append(_("Note: {0}").format(self.user_remark))
@@ -227,29 +256,58 @@ class POLExpense(AccountsController):
 		#Set a reference to the claim journal entry
 		self.db_set("journal_entry",je.name)
 		frappe.msgprint(_('Journal Entry <a href="#Form/Journal Entry/{0}">{0}</a> posted to accounts').format(je.name))
+
 	@frappe.whitelist()
 	def get_pol_received(self):
 		if self.is_opening:
 			return
+		
 		pol_rev = qb.DocType("POL Receive")
-		self.set("pol_received_item",[])
+		pol_rev_item = qb.DocType("POL Receive Ref Item")
+		
+		existing_records = qb.from_(pol_rev).select(
+											pol_rev.name.as_("pol_receive_ref"),
+										).join(pol_rev_item).on(
+											pol_rev.name == pol_rev_item.pol_receive_ref
+										).where(
+											(pol_rev.docstatus == 1) & (pol_rev_item.docstatus == 1) &
+											(pol_rev.equipment == self.equipment)
+										).run(as_dict=True)
+		
+		self.set("pol_received_item", [])
 		total_qty = total_bill_amt = 0
-		for d in (qb.from_(pol_rev).select(pol_rev.name.as_("pol_receive_ref"),
-						pol_rev.km_difference.as_("km_hr_difference"),
-						pol_rev.cur_km_reading.as_("current_km_hr_reading"),
-						pol_rev.mileage, pol_rev.rate, pol_rev.total_amount.as_("bill_amount"), pol_rev.qty)
-						.where((pol_rev.docstatus == 1) & ( pol_rev.equipment == self.equipment)
-							& (pol_rev.posting_date >= self.from_date)
-							& ( pol_rev.posting_date <= self.to_date))).run(as_dict=True):
-			self.append("pol_received_item",d)
-			total_qty += flt(d.qty)
-			total_bill_amt += flt(d.bill_amount,2)
+
+		for d in (qb.from_(pol_rev).select(
+			pol_rev.name.as_("pol_receive_ref"),
+			pol_rev.supplier,
+			pol_rev.km_difference.as_("km_hr_difference"),
+			pol_rev.cur_km_reading.as_("current_km_hr_reading"),
+			pol_rev.mileage,
+			pol_rev.rate,
+			pol_rev.total_amount.as_("bill_amount"),
+			pol_rev.qty
+		).where(
+			(pol_rev.docstatus == 1) & 
+			(pol_rev.equipment == self.equipment) 
+			
+		).run(as_dict=True)):
+
+			existing_refs = {item.pol_receive_ref for item in existing_records}
+
+			if d.pol_receive_ref not in existing_refs:
+				self.append("pol_received_item", d)
+				total_qty += d.qty
+				total_bill_amt += d.bill_amount
+			# self.append("pol_received_item", d)
+			# total_qty += d.qty
+			# total_bill_amt += d.bill_amount
+			
 		self.total_qty_received = total_qty
 		self.total_bill_amount = total_bill_amt
 		self.pol_issue_during_the_period = total_qty
 		if not self.pol_received_item:
-			frappe.msgprint("No pol receive found within Date {} to {}".format(self.from_date, self.to_date))
-		self.calculate_km_diff()
+			frappe.msgprint("No pol receive found for equipment {}".format(self.equipment))
+		
 	def validate_amount(self):
 		if flt(self.amount) <= 0:
 			frappe.throw("Amount cannot be less than or equal to Zero")
@@ -286,13 +344,14 @@ class POLExpense(AccountsController):
 
 	@frappe.whitelist()
 	def pull_previous_expense(self):
+		self.calculate_km_diff()
 		pol_exp = qb.DocType(self.doctype)
 		total_amount = 0
 		if cint(self.use_common_fuelbook) == 1:
 			if not self.fuel_book:
 				frappe.throw("Fuel book is missing")
 			if flt(self.expense_limit) <= 0 :
-				self.expense_limit = frappe.db.get_value("Fuelbook", self.fuel_book,"expense_limit")
+				self.expense_limit = frappe.db.get_value("Fuelbook", self.fuel_book, "expense_limit")
 			for d in (qb.from_(pol_exp).select(pol_exp.name.as_("reference"), pol_exp.amount,pol_exp.adjusted_amount, pol_exp.balance_amount)
 						.where( (pol_exp.docstatus == 1 ) & ( pol_exp.balance_amount > 0 ) 
 							& (pol_exp.name != self.name) & (pol_exp.fuel_book == self.fuel_book))
