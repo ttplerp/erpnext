@@ -20,6 +20,7 @@
   "item_sub_group",
   "stock_uom",
   "hsn_code",
+  "fuel_type",
   "column_break0",
   "disabled",
   "allow_alternative_item",
@@ -949,6 +950,14 @@
    "fieldname": "hsn_code",
    "fieldtype": "Data",
    "label": "HSN Code"
+  },
+  {
+   "depends_on": "eval: doc.is_pol_item",
+   "fieldname": "fuel_type",
+   "fieldtype": "Link",
+   "label": "Fuel Type",
+   "mandatory_depends_on": "eval: doc.is_pol_item",
+   "options": "Fuel Type"
   }
  ],
  "icon": "fa fa-tag",
@@ -956,7 +965,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-12 16:41:28.318103",
+ "modified": "2024-10-29 10:38:28.065429",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",
