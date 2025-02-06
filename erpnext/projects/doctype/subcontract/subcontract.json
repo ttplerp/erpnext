@@ -18,6 +18,7 @@
   "boq_date",
   "project",
   "section_break_20",
+  "check_all",
   "boq_item",
   "boq_history",
   "boq_history_item",
@@ -222,12 +223,18 @@
    "fieldtype": "Currency",
    "label": "Total Adjusted Amount",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "check_all",
+   "fieldtype": "Check",
+   "label": "Check/Uncheck All"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-11-29 14:01:50.373775",
+ "modified": "2025-02-06 23:33:39.990147",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Subcontract",

@@ -61,11 +61,13 @@ class MBEntry(Document):
 				frappe.throw(_("Row{0}: Value cannot be in negative").format(rec.idx))
 
 	def remove_not_selected_bsr(self):
-		to_remove = []
+		new_record = []
 		for d in self.get("items"):
-			if not d.is_selected:
-				to_remove.append(d)
-		[self.remove(d) for d in to_remove]
+			if d.is_selected:
+				new_record.append(d)
+		for idx, record in enumerate(new_record, start=1):
+			record.idx = idx
+		self.set("items", new_record)
 			   
 	def set_defaults(self):
 		if self.project:
