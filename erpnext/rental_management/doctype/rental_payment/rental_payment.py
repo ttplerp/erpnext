@@ -144,7 +144,7 @@ class RentalPayment(AccountsController):
 			excess += flt(a.excess_amount)
 			pre_rent += flt(a.pre_rent_amount)
 			# property_mgt_amount += flt(a.property_management_amount)
-			total_amount_received += flt(a.rent_received) + flt(a.security_deposit_amount) + flt(a.penalty) + flt(a.excess_amount) + flt(a.pre_rent_amount_received)
+			total_amount_received += flt(a.rent_received, 2) + flt(a.security_deposit_amount, 2) + flt(a.penalty, 2) + flt(a.excess_amount, 2) + flt(a.pre_rent_amount_received, 2)
 
 		if self.rent_write_off:
 			self.rent_write_off_amount = write_off_amount
@@ -155,7 +155,7 @@ class RentalPayment(AccountsController):
 		self.pre_rent_amount = pre_rent
 		self.tds_amount = tds_amount
 		self.property_management_amount = property_mgt_amount
-		self.total_amount_received = flt(total_amount_received)
+		self.total_amount_received = flt(total_amount_received, 2)
 		# if self.tds_amount > 0 and not self.tds_account:
 		# 	frappe.throw("Please select TDS Account")
 
