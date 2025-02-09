@@ -137,7 +137,9 @@
   "production_account_settings_section",
   "default_production_account",
   "column_break_124",
-  "default_unloading_account"
+  "default_unloading_account",
+  "seal",
+  "sign"
  ],
  "fields": [
   {
@@ -980,6 +982,16 @@
    "fieldtype": "Link",
    "label": "Fines and Penalties",
    "options": "Account"
+  },
+  {
+   "fieldname": "seal",
+   "fieldtype": "Attach Image",
+   "label": "Company Seal"
+  },
+  {
+   "fieldname": "sign",
+   "fieldtype": "Attach Image",
+   "label": "Authorized Signature for TDS Certificate"
   }
  ],
  "icon": "fa fa-building",
@@ -987,7 +999,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2024-12-24 14:48:57.958550",
+ "modified": "2025-02-09 15:20:53.446566",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",
