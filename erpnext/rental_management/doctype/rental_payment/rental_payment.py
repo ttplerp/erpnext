@@ -83,16 +83,16 @@ class RentalPayment(AccountsController):
 									else:
 										penalty_on = flt(a.bill_amount)
 									penalty_amt =  flt(penalty_rate)/100.00 * flt(months +1) * flt(penalty_on)
-								a.penalty = round(penalty_amt)
+								a.penalty = flt(penalty_amt, 2)
 								total_penalty += a.penalty
 							else:
 								frappe.throw("Penalty Rate and Payment Due Date are missing in Rental Setting")
 					else:
 						if a.penalty > 0:
-							total_penalty += a.penalty
+							total_penalty += flt(a.penalty, 2)
 				else:
 					a.penalty = 0.00					
-			self.penalty_amount = round(total_penalty)
+			self.penalty_amount = flt(total_penalty, 2)
 		else:
 			for a in self.items:
 				a.write_off_penalty = 1
