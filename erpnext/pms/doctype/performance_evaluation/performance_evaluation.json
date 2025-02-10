@@ -329,6 +329,7 @@
    "label": "APPROVAL DETAILS"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "approver",
    "fieldtype": "Link",
    "ignore_user_permissions": 1,
@@ -341,6 +342,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "fetch_from": "approver.full_name",
    "fieldname": "approver_name",
    "fieldtype": "Data",
@@ -638,6 +640,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "approver_designation",
    "fieldtype": "Data",
    "ignore_user_permissions": 1,
@@ -719,6 +722,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "bold": 1,
    "default": "0",
    "fieldname": "set_manual_approver",
@@ -833,7 +837,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2025-02-03 14:49:05.967252",
+ "modified": "2025-02-10 15:02:38.809576",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Performance Evaluation",
