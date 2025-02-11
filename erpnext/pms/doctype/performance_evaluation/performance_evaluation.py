@@ -186,9 +186,13 @@ class PerformanceEvaluation(Document):
 			frappe.throw('Competency cannot be empty please use <b>Get Competency Button</b>')
 		total = 0
 		for item in self.evaluate_competency_item:
-			if not item.achievement:
+			if not item.weightage_percent:
 				frappe.throw('You need to rate competency at row <b>{}</b>'.format(item.idx))
-
+			if item.weightage_percent >100:
+				frappe.throw('Self Rating should be within 100 % in <b>{}</b>'.format(item.idx))
+			if item.weightage_percent >=95:
+				if not item.comment:
+					frappe.throw('If Self Rating is more than 95, comment is necessary in <b>{}</b>'.format(item.idx));
 			tot_rating = flt(item.weightage_percent)/100 * flt(item.weightage)
 			item.average = tot_rating
 
