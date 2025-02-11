@@ -25,6 +25,7 @@ class CustomWorkflow:
 
 		self.field_map 		= get_field_map()
 		self.doc_approver	= self.field_map[self.doc.doctype]
+		
 		self.field_list		= ["user_id","employee_name","designation","name"]
 		if self.doc.doctype != "Material Request" and self.doc.doctype not in ("Asset Issue Details", "Compile Budget","POL Expense","Vehicle Request", "Repair And Services", "Asset Movement", "Budget Reappropiation", "Employee Advance"):
 			self.employee		= frappe.db.get_value("Employee", self.doc.employee, self.field_list)
@@ -64,19 +65,46 @@ class CustomWorkflow:
 		
 		if self.doc.doctype in ("POL Expense"):
 			department = frappe.db.get_value("Employee", {"user_id":self.doc.owner},"department")
+			cost_center = frappe.db.get_value("Employee", {"user_id":self.doc.owner},"cost_center")
+			
 			section = frappe.db.get_value("Employee", {"user_id":self.doc.owner},"section")
-			if section in ("Chunaikhola Dolomite Mines - SMCL","Samdrup Jongkhar - SMCL"):
-				self.pol_approver = frappe.db.get_value("Employee",{"user_id":frappe.db.get_value(
-					"Department Approver",
-					{"parent": section, "parentfield": "expense_approvers", "idx": 1},
-					"approver",
-				)},self.field_list)
-			else:
-				self.pol_approver = frappe.db.get_value("Employee",{"user_id":frappe.db.get_value(
-					"Department Approver",
-					{"parent": department, "parentfield": "expense_approvers", "idx": 1},
-					"approver",
-				)},self.field_list)
+			# if cost_center in ("Chunaikhola Dolomite Mines - SMCL","Samdrup Jongkhar - SMCL"):
+			# 	self.pol_approver = frappe.db.get_value("Employee",{"user_id":frappe.db.get_value(
+			# 		"Department Approver",
+			# 		{"parent": section, "parentfield": "expense_approvers", "idx": 1},
+			# 		"approver",
+			# 	)},self.field_list)
+			if self.new_state.lower() == "Waiting for Verification".lower():
+				
+				approver = frappe.db.get_value("Department", section, "approver")
+			
+				if approver:  # Ensure pol_approver is not None
+   
+					self.pol_approver = frappe.db.get_value("Employee", {"name": approver}, self.field_list)
+				else:
+					frappe.throw("Please add approver in the department {}".format(section))
+			elif self.new_state.lower() == "Waiting Approval".lower():
+				approver = frappe.db.get_value("Company","State Mining Corporation Ltd","pol_approver")
+				if approver:
+					self.pol_approver = frappe.db.get_value("Employee", {"name": approver}, self.field_list)
+				else:
+					frappe.throw("Please set POL Approver in Company under others setting")
+				
+
+			# if cost_center in ("Chunaikhola Dolomite Mine - SMCL","Samdrup Jongkhar - SMCL"):
+			# 	pol_approver = frappe.db.get_value("Cost Center", cost_center, "pol_approver")
+			# 	if pol_approver:  # Ensure pol_approver is not None
+   
+			# 		self.pol_approver = frappe.db.get_value("Employee", {"name": pol_approver}, self.field_list)
+			# 	else:
+			# 		self.pol_approver = None
+				
+			# else:
+			# 	self.pol_approver = frappe.db.get_value("Employee",{"user_id":frappe.db.get_value(
+			# 		"Department Approver",
+			# 		{"parent": department, "parentfield": "expense_approvers", "idx": 1},
+			# 		"approver",
+			# 	)},self.field_list)
 		if self.doc.doctype in ("Budget Reappropiation"):
 			department = frappe.db.get_value("Employee", {"user_id":self.doc.owner},"department")
 			section = frappe.db.get_value("Employee", {"user_id":self.doc.owner},"section")
@@ -399,6 +427,10 @@ class CustomWorkflow:
 			vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.budget_reappropiation_approver[0]
 			vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.budget_reappropiation_approver[1]
 			vars(self.doc)[self.doc_approver[2]] = officiating[2] if officiating else self.budget_reappropiation_approver[2]
+		elif approver_type == "POL Expense Verifier":
+			vars(self.doc)[self.doc_approver[0]] = self.pol_approver[0]
+			vars(self.doc)[self.doc_approver[1]] = self.pol_approver[1]
+			vars(self.doc)[self.doc_approver[2]] = self.pol_approver[2]
 		else:
 			frappe.throw(_("Invalid approver type for Workflow"))
 
@@ -500,16 +532,25 @@ class CustomWorkflow:
 	def pol_expenses(self):
 		if self.new_state and self.old_state and self.new_state.lower() == self.old_state.lower():
 			return
-		if self.new_state.lower() in ("Waiting GM Approval".lower()):
+		if self.new_state.lower() in ("Waiting for Verification".lower()):
+			self.set_approver("POL Expense Verifier")
 			if self.doc.owner != frappe.session.user:
 				frappe.throw("Only {} can Apply this Document".format(self.doc.owner))
-			self.set_approver("POL Approver")
+			# self.set_approver("POL Approver")
+		if self.new_state.lower() in ("Waiting Approval".lower()):
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can verify this Document".format(self.doc.approver))
+			self.set_approver("POL Expense Verifier")
 		if self.new_state.lower() in ("Approved".lower()):
+		
 			if self.doc.approver != frappe.session.user:
 				frappe.throw("Only {} can Approve this Document".format(self.doc.approver))
+			# if "Fleet Manager" not in frappe.get_roles(frappe.session.user):
+			# 	frappe.throw("Only Fleet Manager role can Approve this Document")
 		if self.new_state.lower() in ("Rejected".lower()):
-			if self.doc.approver != frappe.session.user:
-				frappe.throw("Only {} can reject this Document".format(self.doc.approver))
+			# if self.doc.approver != frappe.session.user:
+			if "Fleet Manager" not in frappe.get_roles(frappe.session.user):
+				frappe.throw("Only Fleet Manager role can reject this Document")
 
 	def employee_separation(self):
 		if self.new_state.lower() in ("Draft".lower(), "Waiting Supervisor Approval".lower()):
