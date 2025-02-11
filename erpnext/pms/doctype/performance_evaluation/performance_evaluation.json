@@ -329,18 +329,20 @@
    "label": "APPROVAL DETAILS"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "approver",
    "fieldtype": "Link",
    "ignore_user_permissions": 1,
    "label": "Approver",
    "options": "User",
-   "read_only": 1
+   "read_only_depends_on": "eval:doc.set_manual_approver == 0;"
   },
   {
    "fieldname": "column_break_17",
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "fetch_from": "approver.full_name",
    "fieldname": "approver_name",
    "fieldtype": "Data",
@@ -493,7 +495,7 @@
    "ignore_user_permissions": 1,
    "label": "Supervisor's Manager",
    "options": "User",
-   "read_only": 1
+   "read_only_depends_on": "eval:doc.set_manual_approver == 0;"
   },
   {
    "fetch_from": "supervisor_manager.full_name",
@@ -638,6 +640,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "approver_designation",
    "fieldtype": "Data",
    "ignore_user_permissions": 1,
@@ -719,12 +722,13 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "bold": 1,
    "default": "0",
    "fieldname": "set_manual_approver",
    "fieldtype": "Check",
    "label": "Set Manual Approver",
-   "read_only": 1
+   "permlevel": 1
   },
   {
    "fieldname": "approver_in_first_level",
@@ -833,7 +837,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-12-14 11:55:00.664444",
+ "modified": "2025-02-10 15:02:38.809576",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Performance Evaluation",

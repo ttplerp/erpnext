@@ -139,7 +139,10 @@ class InterestAccrual(Document):
 		days -= days_paid
 		month = flt(str(self.posting_date).split("-")[1])
 		# days_in_month = flt(calendar.monthrange(int(2024), month)[1])
-		days_in_month = no_of_days_in_month = get_date_diff(get_first_day(getdate(self.posting_date)), get_last_day(getdate(self.posting_date)))
+		if str(treasury.issue_date).split("-")[0] == str(self.posting_date).split("-")[0] and str(treasury.issue_date).split("-")[1] == str(self.posting_date).split("-")[1]:
+			days_in_month = no_of_days_in_month = get_date_diff(treasury.issue_date, get_last_day(getdate(self.posting_date)))
+		else:
+			days_in_month = no_of_days_in_month = get_date_diff(get_first_day(getdate(self.posting_date)), get_last_day(getdate(self.posting_date)))
 		if days > days_in_month:
 			days = days_in_month
 		self.days = days

@@ -32,10 +32,13 @@ class PerformanceEvaluation(Document):
 		else:  
 			self.validate_calendar()
 		self.validate_no_months_served()
-		validate_workflow_states(self) 
+		if self.workflow_state == "Waiting Approval":
+			self.set_manual_approver = 0
+		if self.set_manual_approver !=1:
+			validate_workflow_states(self) 
 		if self.workflow_state != "Approved":
 			notify_workflow_states(self)
-
+		
 		# to record the approver details when it is manually set to be used if the pms gets Rejected
 		if self.eval_workflow_state == "Waiting Supervisor Approval":
 			# sup_user_id, sup_name = frappe.db.get_value(
@@ -365,6 +368,7 @@ def set_perc_approver(perc):
 
 def get_permission_query_conditions(user):
 	# restrict user from accessing this doctype
+	
 	if not user: user = frappe.session.user
 	user_roles = frappe.get_roles(user)
 
@@ -381,6 +385,7 @@ def get_permission_query_conditions(user):
 				where `tabEmployee`.name = `tabPerformance Evaluation`.employee
 				and `tabEmployee`.user_id = '{user}')
 		or
-		(`tabPerformance Evaluation`.approver = '{user}' and `tabPerformance Evaluation`.eval_workflow_state not in ('Draft', 'Rejected', 'Cancelled'))
+		(`tabPerformance Evaluation`.approver = '{user}' and `tabPerformance Evaluation`.workflow_state not in ('Draft', 'Rejected', 'Cancelled'))
 		)""".format(user=user)
 
+#and `tabPerformance Evaluation`.eval_workflow_state not in ('Draft', 'Rejected', 'Cancelled')

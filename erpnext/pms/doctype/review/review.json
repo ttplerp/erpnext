@@ -231,7 +231,8 @@
    "fieldtype": "Link",
    "label": "Approver",
    "options": "User",
-   "read_only": 1
+   "read_only": 1,
+   "read_only_depends_on": "eval:doc.set_manual_approver == 0;"
   },
   {
    "fieldname": "column_break_17",
@@ -389,7 +390,7 @@
    "fieldname": "set_manual_approver",
    "fieldtype": "Check",
    "label": "Set Manual Approver",
-   "read_only": 1
+   "permlevel": 1
   },
   {
    "depends_on": "eval:doc.negative_target==1",
@@ -445,7 +446,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-05 15:15:19.581581",
+ "modified": "2025-02-03 14:51:22.156620",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Review",

@@ -123,7 +123,7 @@ class Treasury(Document):
 	def check_date_for_interest(self):
 		show = 0
 		if self.issue_date:
-			if nowdate() > self.issue_date:
+			if nowdate() > self.issue_date and not frappe.db.exists("Maturity", {"treasury_id": self.name}):
 				show = 1
 		return show
 
@@ -131,7 +131,7 @@ class Treasury(Document):
 	def check_date_for_maturity(self):
 		show = 0
 		if self.issue_date:
-			if nowdate() >= self.issue_date:
+			if nowdate() >= self.issue_date and not frappe.db.exists("Maturity", {"treasury_id": self.name}):
 				show = 1
 		return show
 
@@ -231,12 +231,14 @@ def make_treasury_maturity(source_name, target_doc=None):
 		# days_in_month = flt(calendar.monthrange(int(2024), month)[1])
 		days_in_month = no_of_days_in_month = get_date_diff(get_first_day(getdate(source.maturity_date)), get_last_day(getdate(source.maturity_date)))
 		if days > days_in_month:
-			days = days_in_month
+			days = days_in_month+1
+		days = days+1
 		d2 = datetime.strptime(str(source.maturity_date).split("-")[0]+"-12-31","%Y-%m-%d").date()
 		d3 = datetime.strptime(str(source.maturity_date).split("-")[0]+"-01-01","%Y-%m-%d").date()
-		days_in_year = (d2-d3).days
+		days_in_year = ((d2-d3).days)+1
 		interest_amount = flt(flt(source.principal_amount) * (flt(source.interest_rate)*0.01) *(flt(days)/flt(days_in_year)),2)
 		total_interest = flt(total_interest+interest_amount,2)
+		target.interest_rate = source.interest_rate
 		target.interest_amount = flt(interest_amount,2)
 		# target.total_interest_amount = total_interest
 		target.maturity_amount = flt(source.principal_amount+total_interest,2)

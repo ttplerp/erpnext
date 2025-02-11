@@ -9,7 +9,7 @@ frappe.ui.form.on('Performance Evaluation', {
 	},
 	
 	refresh: (frm)=>{
-		if (frm.doc.docstatus == 0 && frappe.user.has_role(['HR Manager', 'HR User'])){
+		if (frappe.user.has_role(['HR Manager', 'HR User'])){
 			frm.set_df_property('set_manual_approver', 'read_only', 0);
 		}else{
 			frm.set_df_property('set_manual_approver', 'read_only', 1);
