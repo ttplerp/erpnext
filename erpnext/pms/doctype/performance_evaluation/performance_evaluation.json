@@ -461,12 +461,14 @@
   },
   {
    "bold": 1,
+   "depends_on": "eval:in_list([\"Draft\",\"Rejected\"],doc.workflow_state)",
    "fieldname": "employee_comment",
    "fieldtype": "Small Text",
    "label": "Employee's Comments, if any"
   },
   {
    "bold": 1,
+   "depends_on": "eval:in_list([\"Draft\",\"Rejected\"],doc.workflow_state)",
    "fieldname": "supervisor_comment",
    "fieldtype": "Small Text",
    "label": "Supervisor's Comments, if any"
@@ -837,7 +839,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2025-02-10 15:02:38.809576",
+ "modified": "2025-02-11 16:51:37.678649",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Performance Evaluation",
