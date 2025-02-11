@@ -468,7 +468,7 @@
   },
   {
    "bold": 1,
-   "depends_on": "eval:in_list([\"Draft\",\"Rejected\"],doc.workflow_state)",
+   "depends_on": "eval:in_list([\"Waiting Approval\"],doc.workflow_state)",
    "fieldname": "supervisor_comment",
    "fieldtype": "Small Text",
    "label": "Supervisor's Comments, if any"
@@ -839,7 +839,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2025-02-11 16:51:37.678649",
+ "modified": "2025-02-11 17:40:30.186179",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Performance Evaluation",
