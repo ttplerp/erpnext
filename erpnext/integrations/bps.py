@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 import frappe
 from frappe import _
-from frappe.utils import cint, flt, get_bench_path, get_datetime, get_site_path, add_days
+from frappe.utils import cint, flt, get_bench_path, get_datetime, get_site_path, add_days, nowdate, getdate, formatdate
 from erpnext.accounts.doctype.bank_payment_settings.bank_payment_settings import get_upload_path
 import paramiko
 import sys, hashlib, os, signal, errno, logging, traceback
@@ -54,7 +54,7 @@ class SftpClient:
 		if self.file_exists(remote_path) or retry == 0:
 			self._connection.get(remote_path, local_path, callback=None)
 		elif retry > 0:
-			time.sleep(5)
+			sleep(5)
 			retry = retry - 1
 			self.download(remote_path, local_path, retry=retry)
 
@@ -133,6 +133,72 @@ def get_files_waiting_ack():
 		waiting_ack_formatted.setdefault('-'.join([next_day[:4], next_day[5:7]]), {}).setdefault('-'.join([next_day[:4], next_day[5:7], next_day[8:]]),[]).append(file)
 	frappe.db.commit()
 	return waiting_ack_formatted
+
+@frappe.whitelist()
+def download_bs(bank='BOBL', bs_date=None):
+	if bs_date:
+		download_bank_statement(bank='BOBL', bs_date=bs_date)
+	else:
+		bs_date_month = getdate().month if getdate().month > 9 else "0"+str(getdate().month)
+		bs_date_year = getdate().year
+		bs_date_day = getdate().day
+		for i in range(1, bs_date_day+1):
+			day = i if i > 9 else "0"+str(i)
+			bs_date = str(bs_date_year) + "-" + str(bs_date_month) + "-" + str(day)
+			if not frappe.db.exists("Bank Statement Files",{"bank_statement_date":bs_date}):
+				download_bank_statement(bank='BOBL', bs_date=bs_date)
+
+''' download the bank statement files from bank and make BRS Entry accordingly '''
+@frappe.whitelist()
+def download_bank_statement(bank='BOBL', bs_date=None):
+	remote_base = frappe.db.get_value('Bank Payment Settings', bank, 'report_path')
+	file_name = frappe.db.get_value('Bank Payment Settings', bank, 'day_txn_file_name')
+	statement_date = getdate(bs_date) if bs_date else getdate()
+	if frappe.db.exists("Bank Statement Files", {"bank_statement_date":statement_date}):
+		print("Bank Statement already downloaded for " + str(statement_date))
+		return
+	try:
+		logging.info("*** Downloading Bank Statement FILE started ***")
+		monthly_folder = statement_date.strftime("%b-%y")
+		file_ext = statement_date.strftime("%Y%m%d")
+		remote_path = '/'.join([str(remote_base),str(monthly_folder)])
+		file_name = file_name.replace('YYYYMMDD',file_ext)
+		try:
+			sftp = SftpClient(bank)
+		except Exception as e:
+			logging.critical("CONNECTION_FAILURE {}".format(traceback.format_exc()))
+			logging.info("Re-trying to connect ...")
+			sleep(10)
+
+		logging.info("Files waiting for Bank Statement: {}".format(file_name))
+
+		if sftp.file_exists(remote_path):
+			# create local directories
+			filepath = get_site_path('private','files','epayment','DAY_TXN_REPORT',monthly_folder).rstrip("/")
+			print(filepath)
+			if not os.path.exists(filepath):
+				os.makedirs(filepath)
+			try:
+				sftp.download(remote_path='/'.join([remote_path, file_name]),
+					local_path = '/'.join([filepath, file_name]))
+			except Exception as e:
+				logging.error("DOWNLOAD_FAILED {}".format(traceback.format_exc()))
+			else:
+				''' Update in Bank Statement File Doctype '''
+				downloaded_file = '/'.join([filepath, file_name])
+				if os.path.exists(downloaded_file):
+					doc = frappe.get_doc({
+						'doctype' : "Bank Statement Files",
+						'bank_statement_file' : downloaded_file,
+						'bank_statement_date' : statement_date
+					})
+					doc.save()
+		print("**** Bank Statement Downloaded for {} ****".format(statement_date))													
+		sftp.close()
+		return
+	except KeyboardInterrupt:
+		print("INFO : Press Ctrl+C to terminate the process")
+		if sftp: sftp.close()
 
 @frappe.whitelist()
 def process_files(bank='BOBL'):
@@ -222,7 +288,7 @@ def update_bank_payment_status(file_name, file_status, bank, ack_file=None):
 	''' update status of the file '''
 	if not frappe.db.exists('Bank Payment Upload', {'file_name': file_name}):
 		return
-	
+
 	processing = completed = failed = 0
 	doc = frappe.get_doc('Bank Payment', frappe.db.get_value('Bank Payment Upload', {'file_name': file_name}, "parent"))
 	doc_modified = 0	
@@ -246,11 +312,26 @@ def update_bank_payment_status(file_name, file_status, bank, ack_file=None):
 		elif status == 'Completed':
 			completed += 1
 
-	# update status in Bank Payment Item
-	# data = []
-	# if ack_file:
-	# 	with open(ack_file, 'rb') as localfile:
-	# 		data = list(csv.reader(localfile))
+	# update bank's response in the respective bank payment item
+	if ack_file:
+		logging.info("Updating Bank Response...")
+		with open(ack_file, 'r') as file:
+			csv_reader = csv.reader(file)
+			rows = list(csv_reader)
+
+			for idx, row in enumerate(rows):
+				if ack_file.endswith('_VALERR.csv'):
+					if idx == len(rows) - 1:
+						continue
+
+				bank_account_no_from_ack = row[1]
+				bank_response = row[8]
+
+				for rec in doc.items:
+					if rec.bank_account_no == bank_account_no_from_ack:
+						doc_modified += 1
+						bpi = frappe.get_doc('Bank Payment Item', rec.name)
+						bpi.db_set('error_message', bank_response)
 
 	counter = 0
 	for rec in doc.items:
@@ -284,6 +365,7 @@ def update_bank_payment_status(file_name, file_status, bank, ack_file=None):
 		doc.db_set('workflow_state', status if status else doc.status)
 		doc.reload()
 		doc.update_transaction_status()
+		doc.append_bank_response_in_bpi()
 		doc.reload()
 
 def check_kill_process(pstring):
