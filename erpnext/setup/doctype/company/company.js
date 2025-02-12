@@ -43,6 +43,15 @@ frappe.ui.form.on("Company", {
 				}
 			};
 		});
+
+		frm.set_query("company_cost_center", function() {
+			return {
+				filters:{
+					'is_group': 0,
+					'company': frm.doc.company
+				}
+			};
+		});
 	},
 
 	company_name: function(frm) {
