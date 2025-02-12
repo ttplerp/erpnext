@@ -48,7 +48,7 @@ frappe.ui.form.on("Company", {
 			return {
 				filters:{
 					'is_group': 0,
-					'company': frm.doc.company
+					'company': frm.doc.name
 				}
 			};
 		});
