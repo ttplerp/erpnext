@@ -671,7 +671,7 @@ class PurchaseInvoice(BuyingController):
 			supplier_advances = frappe.db.sql(query, (self.advance_type, self.party), as_dict=True)
 
 			if supplier_advances:
-				allocated_amount = -1 * flt(self.total_advance_allocated) if cancel else flt(self.total_advance_allocated)
+				allocated_amount = -1 * flt(self.total_advance) if cancel else flt(self.total_advance)
 				
 				adjusted_amount = flt(supplier_advances[0].adjusted_amount + allocated_amount)
 				balance_amount = flt(supplier_advances[0].advance_amount - allocated_amount)
