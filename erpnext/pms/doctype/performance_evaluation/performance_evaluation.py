@@ -164,7 +164,7 @@ class PerformanceEvaluation(Document):
 				item.average_rating = (flt(item.timeline_rating) + flt(item.quality_rating)) / 2
 			
 			elif item.qty_quality == 'Quantity':
-				if flt(item.quantity_achieved)> flt(item.quantity):
+				if flt(item.quantity_achieved)> flt(item.quantity) and not item.reverse_formula:
 					item.average_rating = item.weightage
 				else:
 					item.average_rating = (flt(item.timeline_rating) + flt(item.quantity_rating)) / 2
