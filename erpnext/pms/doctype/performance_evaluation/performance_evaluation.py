@@ -130,13 +130,16 @@ class PerformanceEvaluation(Document):
 					quality_rating = flt(item.quality_achieved) / flt(item.quality) * flt(item.weightage)
 				
 				item.quality_rating = quality_rating
-
+				
 			elif item.qty_quality == 'Quantity':
 				if item.quantity_achieved <= 0:
 					frappe.throw('Quality Achieved for target <b>{}</b> must be greater than 0'.format(item.performance_target))
-				
-				if flt(item.quantity_achieved)>= flt(item.quantity):
+				if flt(item.quantity_achieved)> flt(item.quantity):
+					quantity_rating = flt(item.weightage)
+					# frappe.throw(str(quantity_rating))
+				elif flt(item.quantity_achieved)== flt(item.quantity):
 					quantity_rating = flt(item.quantity)*flt(item.weightage)*0.01
+					
 				else:
 					quantity_rating = flt(item.quantity_achieved) / flt(item.quantity) * (flt(item.weightage))
 				if not item.reverse_formula and flt(item.quantity) != 0 and flt(item.weightage) != 0:
@@ -145,8 +148,9 @@ class PerformanceEvaluation(Document):
 					frappe.throw("Please tick 'Apply (<=) Operator and then 'Accept Zero Qty/Quality in row {} inside Work Performance: Targets & Accompolishment table".format(row))
 				else:
 					quantity_rating = flt(item.quantity)/flt(item.quantity_achieved) * (flt(item.weightage))
+				
 				item.quantity_rating = quantity_rating
-
+				
 			if flt(item.timeline_achieved)<= flt(item.timeline):
 				timeline_rating = flt(item.weightage)
 			else:
@@ -155,13 +159,20 @@ class PerformanceEvaluation(Document):
 			
 			if item.qty_quality == 'Quality':
 				item.average_rating = (flt(item.timeline_rating) + flt(item.quality_rating)) / 2
-
+			
 			elif item.qty_quality == 'Quantity':
-				item.average_rating = (flt(item.timeline_rating) + flt(item.quantity_rating)) / 2
+				if flt(item.quantity_achieved)> flt(item.quantity):
+					item.average_rating = item.weightage
+				else:
+					item.average_rating = (flt(item.timeline_rating) + flt(item.quantity_rating)) / 2
+				
+				
 			target_rating = frappe.db.get_value("PMS Group",self.pms_group,"weightage_for_target")
 			item.score = (flt(item.average_rating ) / flt(item.weightage))
 
 			total_score += flt(item.average_rating)
+			
+			
 		score =flt(total_score)/100 * flt(target_rating)
 		total_score = score
 		self.form_i_total_rating = total_score
@@ -207,9 +218,11 @@ class PerformanceEvaluation(Document):
 			frappe.throw('Competency cannot be empty please use <b>Get Leadership Competency button</b>')
 		total = 0
 		for item in self.evaluate_leadership_competency:
-			if not item.achievement:
+			if not item.weightage_percent:
 				frappe.throw('You need to rate leadership competency at row <b>{}</b>'.format(item.idx))
-
+			if item.weightage_percent >=95:
+				if not item.comment:
+					frappe.throw('If Self Rating is more than 95, comment is necessary in <b>{}</b>'.format(item.idx));
 			tot_rating = flt(item.weightage_percent)/100 * flt(item.weightage)
 			item.average = tot_rating
 
