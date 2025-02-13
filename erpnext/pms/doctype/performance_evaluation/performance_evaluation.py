@@ -134,6 +134,7 @@ class PerformanceEvaluation(Document):
 				item.quality_rating = quality_rating
 				
 			elif item.qty_quality == 'Quantity':
+				
 				if item.quantity_achieved <= 0:
 					frappe.throw('Quantity Achieved for target <b>{}</b> must be greater than 0'.format(item.performance_target))
 				
@@ -155,10 +156,13 @@ class PerformanceEvaluation(Document):
 				item.quantity_rating = quantity_rating
 				
 			if flt(item.timeline_achieved)<= flt(item.timeline):
+				# item.timeline_rating = (flt(item.timeline) / flt(item.timeline_achieved)  * (flt(item.weightage)*0.01))
+				item.timeline_rating = (flt(item.timeline_achieved) / flt(item.timeline)  * (flt(item.weightage)))
 				timeline_rating = flt(item.weightage)
 			else:
-				timeline_rating = flt(item.timeline) / flt(item.timeline_achieved)  * (flt(item.weightage)*0.01)
-			item.timeline_rating = timeline_rating
+				timeline_rating = flt(item.timeline) / flt(item.timeline)  * (flt(item.weightage)*0.01)
+			
+			# frappe.throw(str(item.timeline_rating))
 			
 			if item.qty_quality == 'Quality':
 				item.average_rating = (flt(item.timeline_rating) + flt(item.quality_rating)) / 2
@@ -168,6 +172,7 @@ class PerformanceEvaluation(Document):
 					item.average_rating = item.weightage
 				else:
 					item.average_rating = (flt(item.timeline_rating) + flt(item.quantity_rating)) / 2
+					
 				
 				
 			target_rating = frappe.db.get_value("PMS Group",self.pms_group,"weightage_for_target")
