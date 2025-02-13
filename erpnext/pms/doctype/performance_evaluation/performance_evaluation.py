@@ -16,7 +16,6 @@ class PerformanceEvaluation(Document):
 		if self.upload_old_data:
 			return 
 		# if self.eval_workflow_state != frappe.db.get_value('Performance Evaluation',self.name,'eval_workflow_state'): 
-		 
 		self.set_dafault_values() 
 		self.check_duplicate_entry()
 		self.calculate_target_score()
@@ -61,7 +60,8 @@ class PerformanceEvaluation(Document):
 	def on_update_after_submit(self):
 		if self.upload_old_data:
 			return
-		self.calculate_target_score()
+		if self.form_i:
+			self.calculate_target_score()
 		if self.form_ii:
 			self.calculate_competency_score()
 		if self.form_iii:
@@ -175,8 +175,11 @@ class PerformanceEvaluation(Document):
 
 			total_score += flt(item.average_rating)
 			
-			
-		score =flt(total_score)/100 * flt(target_rating)
+		if not self.form_i:
+			score = 0
+		else:
+			score =flt(total_score)/100 * flt(target_rating)
+		
 		total_score = score
 		self.form_i_total_rating = total_score
 		self.db_set('form_i_total_rating', self.form_i_total_rating)
@@ -399,6 +402,11 @@ def get_permission_query_conditions(user):
 
 	return """(
 		`tabPerformance Evaluation`.owner = '{user}'
+		or
+		exists(select 1
+				from `tabEmployee`
+				where `tabEmployee`.name = `tabPerformance Evaluation`.employee
+				and `tabEmployee`.user_id = '{user}')
 		or
 		exists(select 1
 				from `tabEmployee`

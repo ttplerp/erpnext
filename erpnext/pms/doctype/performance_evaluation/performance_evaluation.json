@@ -54,6 +54,7 @@
   "achievements_items",
   "part_b_section",
   "get_competency",
+  "rating_des",
   "evaluate_competency_item",
   "form_ii_total_rating",
   "section_break_18",
@@ -118,6 +119,7 @@
   {
    "fieldname": "employee",
    "fieldtype": "Link",
+   "ignore_user_permissions": 1,
    "in_standard_filter": 1,
    "label": "Employee ID",
    "options": "Employee",
@@ -372,7 +374,7 @@
    "read_only": 1
   },
   {
-   "description": "<b>Give comments if necessary specially when you reject the PMS</b>",
+   "description": "<b>Give comments if necessary, especially when you reject the PMS.</b>",
    "fieldname": "comment_section_section",
    "fieldtype": "Section Break",
    "label": "Comment Section"
@@ -836,11 +838,18 @@
    "label": "Target Set Up",
    "options": "Target Set Up",
    "read_only": 1
+  },
+  {
+   "bold": 1,
+   "default": "The Self Rating should be within the range 1 to 100",
+   "fieldname": "rating_des",
+   "fieldtype": "Data",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2025-02-11 17:59:46.807054",
+ "modified": "2025-02-13 17:41:28.488582",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Performance Evaluation",
