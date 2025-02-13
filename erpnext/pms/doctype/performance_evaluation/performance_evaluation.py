@@ -118,6 +118,8 @@ class PerformanceEvaluation(Document):
 			if item.qty_quality == 'Quality':
 				if item.quality_achieved <= 0:
 					frappe.throw('Quality Achieved for target <b>{}</b> must be greater than 0'.format(item.performance_target))
+				if item.quality_achieved > 100:
+					frappe.throw('Quality Achieved for target <b>{}</b> must be greater than 100'.format(item.performance_target))
 				if flt(item.quality_achieved) >= flt(item.quality):
 					quality_rating = item.weightage
 				if not item.reverse_formula and flt(item.quality) != 0 and flt(item.weightage) != 0:
@@ -133,7 +135,8 @@ class PerformanceEvaluation(Document):
 				
 			elif item.qty_quality == 'Quantity':
 				if item.quantity_achieved <= 0:
-					frappe.throw('Quality Achieved for target <b>{}</b> must be greater than 0'.format(item.performance_target))
+					frappe.throw('Quantity Achieved for target <b>{}</b> must be greater than 0'.format(item.performance_target))
+				
 				if flt(item.quantity_achieved)> flt(item.quantity):
 					quantity_rating = flt(item.weightage)
 					# frappe.throw(str(quantity_rating))
