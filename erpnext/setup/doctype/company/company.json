@@ -78,6 +78,7 @@
   "company_cost_center",
   "default_finance_book",
   "clearing_account",
+  "re_valued_asset_account",
   "tds_accounts_section",
   "tds_account_item",
   "auto_accounting_for_stock_settings",
@@ -106,6 +107,9 @@
   "asset_received_but_not_billed",
   "hr_accounts_setting_section",
   "salary_payable_account",
+  "muster_roll_payable_account",
+  "mr_wages_account",
+  "mr_overtime_account",
   "salary_tax_account",
   "overtime_allowance_account",
   "employer_contribution_to_pf",
@@ -145,7 +149,10 @@
   "coal_raising_credit_account",
   "coal_raising_expense_account",
   "column_break_131",
-  "coal_raising_penalty_account"
+  "coal_raising_penalty_account",
+  "pol_approval_section",
+  "pol_approver",
+  "pol_approver_name"
  ],
  "fields": [
   {
@@ -1030,6 +1037,48 @@
    "label": "POL Expense Account",
    "options": "Account",
    "reqd": 1
+  },
+  {
+   "fieldname": "re_valued_asset_account",
+   "fieldtype": "Link",
+   "label": "Revalued Asset Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "muster_roll_payable_account",
+   "fieldtype": "Link",
+   "label": "Muster Roll Payable Account",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "mr_wages_account",
+   "fieldtype": "Link",
+   "label": "MR Wages Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "mr_overtime_account",
+   "fieldtype": "Link",
+   "label": "MR Overtime Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "pol_approval_section",
+   "fieldtype": "Section Break",
+   "label": "POL Approval"
+  },
+  {
+   "fieldname": "pol_approver",
+   "fieldtype": "Link",
+   "label": "POL Approver",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "pol_approver.employee_name",
+   "fieldname": "pol_approver_name",
+   "fieldtype": "Data",
+   "label": "POL Approver Name"
   }
  ],
  "icon": "fa fa-building",
@@ -1037,7 +1086,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2023-02-02 14:05:35.977624",
+ "modified": "2025-01-31 16:28:55.355219",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",
