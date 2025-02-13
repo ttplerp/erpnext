@@ -450,7 +450,13 @@ class CustomWorkflow:
 	### =============== *** =============== *** === DAWA TSHERING === *** =============== *** =============== ###
 
 	def material_request(self):
-		if self.new_state.lower() in ("Draft".lower()):
+		if not self.old_state:
+			return
+		
+		if self.new_state and self.old_state and self.new_state.lower() == self.old_state.lower():
+			return
+
+		elif self.new_state.lower() in ("Draft".lower()):
 			if frappe.session.user != self.doc.owner:
 				frappe.throw("Only {} can apply this request".format(self.doc.owner))
 
