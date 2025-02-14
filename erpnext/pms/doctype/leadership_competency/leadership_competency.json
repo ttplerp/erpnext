@@ -92,7 +92,7 @@
    "label": "Remarks"
   },
   {
-   "description": "The rating should be within 1 to 100",
+   "description": "Rate within 100%, with 100 for full achievement and 1 for least achievement.",
    "fieldname": "weightage_percent",
    "fieldtype": "Float",
    "in_list_view": 1,
@@ -108,7 +108,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-02-13 17:32:24.077354",
+ "modified": "2025-02-13 23:23:01.005387",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Leadership Competency",

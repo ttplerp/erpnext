@@ -14,11 +14,13 @@ from erpnext.custom_workflow import validate_workflow_states, notify_workflow_st
 class PerformanceEvaluation(Document):
 	def validate(self):
 		if self.upload_old_data:
-			return 
-		# if self.eval_workflow_state != frappe.db.get_value('Performance Evaluation',self.name,'eval_workflow_state'): 
-		self.set_dafault_values() 
+			return
+		# if self.eval_workflow_state != frappe.db.get_value('Performance Evaluation',self.name,'eval_workflow_state'):
+		self.set_dafault_values()
 		self.check_duplicate_entry()
-		self.calculate_target_score()
+
+		if self.form_i:
+			self.calculate_target_score()
 		if self.form_ii:
 			self.calculate_competency_score()
 		if self.form_iii:
@@ -28,16 +30,16 @@ class PerformanceEvaluation(Document):
 		self.check_target()
 		if self.reference and self.reason:
 			return
-		else:  
+		else:
 			self.validate_calendar()
 		self.validate_no_months_served()
 		if self.workflow_state == "Waiting Approval":
 			self.set_manual_approver = 0
 		if self.set_manual_approver !=1:
-			validate_workflow_states(self) 
+			validate_workflow_states(self)
 		if self.workflow_state != "Approved":
 			notify_workflow_states(self)
-		
+
 		# to record the approver details when it is manually set to be used if the pms gets Rejected
 		if self.eval_workflow_state == "Waiting Supervisor Approval":
 			# sup_user_id, sup_name = frappe.db.get_value(
@@ -51,12 +53,12 @@ class PerformanceEvaluation(Document):
 			return
 		if self.reference and self.reason:
 			return
-		else:  
+		else:
 			self.validate_calendar()
 
 		#Added by Kinley Dorji for creating pms record in employee master
 		self.create_employee_pms_record()
-	
+
 	def on_update_after_submit(self):
 		if self.upload_old_data:
 			return
@@ -66,13 +68,13 @@ class PerformanceEvaluation(Document):
 			self.calculate_competency_score()
 		if self.form_iii:
 			self.calculate_leadership_competency_score()
-		
+
 		# self.calculate_negative_score()
 		self.calculate_final_score()
-		self.update_employee_pms_record() 
+		self.update_employee_pms_record()
 
 	def on_cancel(self):
-		self.remove_employee_pms_record()        
+		self.remove_employee_pms_record()
 
 	def set_dafault_values(self):
 		self.max_rating_limit = frappe.db.get_single_value('PMS Setting','max_rating_limit')
@@ -96,7 +98,7 @@ class PerformanceEvaluation(Document):
 			frappe.delete_doc("Employee PMS Rating",doc)
 		else:
 			frappe.msgprint("""No PMS record found in Employee Master Data of employee <a href= "#Form/Employee/{0}">{0}</a>""".format(self.employee))
-	
+
 	def update_employee_pms_record(self):
 		doc = frappe.get_doc("Employee", self.employee)
 		for d in doc.employee_pms:
@@ -105,7 +107,7 @@ class PerformanceEvaluation(Document):
 				d.final_score_percent = self.final_score_percent
 				d.overall_rating = self.overall_rating
 		doc.save(ignore_permissions=True)
-			
+
 	# calculate score and average of target
 	def calculate_target_score(self):
 		total_score = 0
@@ -117,74 +119,84 @@ class PerformanceEvaluation(Document):
 				frappe.throw('Timeline Achieved for target <b>{}</b> must be greater than 0'.format(item.performance_target))
 			if item.qty_quality == 'Quality':
 				if item.quality_achieved <= 0:
-					frappe.throw('Quality Achieved for target <b>{}</b> must be greater than 0'.format(item.performance_target))
-				if item.quality_achieved > 100:
-					frappe.throw('Quality Achieved for target <b>{}</b> must be greater than 100'.format(item.performance_target))
-				if flt(item.quality_achieved) >= flt(item.quality):
-					quality_rating = item.weightage
-				if not item.reverse_formula and flt(item.quality) != 0 and flt(item.weightage) != 0:
-					quality_rating = flt(item.quality_achieved) / flt(item.quality) * flt(item.weightage)
+					if self.workflow_state in ['Waiting Supervisor Approval','Waiting Approval']:
+						frappe.throw('Quality Achieved for target <b>{}</b> must be greater than 0'.format(item.performance_target))
+				if item.quality_achieved > item.quality and not item.reverse_formula:
+					item.quality_rating = flt(item.weightage)
+					quality_rating = flt(item.weightage)
 				elif not item.reverse_formula and flt(item.quality) == 0 and cint(item.accept_zero_qtyquality) == 0:
 					frappe.throw("Please tick 'Apply (<=) Operator and then 'Accept Zero Qty/Quality in row {} inside Work Performance: Targets & Accompolishment table".format(row))
 				elif item.reverse_formula and  cint(item.accept_zero_qtyquality) != 1:
-					quality_rating = flt(item.quality)/flt(item.quality_achieved) * flt(item.weightage)
+					if item.quality_achieved <= flt(item.quality):
+						quality_rating = flt(item.weightage)
+						item.quality_rating= flt(item.weightage)
+					else:
+						quality_rating = flt(item.quality)/flt(item.quality_achieved) * (flt(item.weightage))
+						item.quality_rating = quality_rating
 				else:
 					quality_rating = flt(item.quality_achieved) / flt(item.quality) * flt(item.weightage)
-				
-				item.quality_rating = quality_rating
-				
+					item.quality_rating = quality_rating
+
 			elif item.qty_quality == 'Quantity':
-				
+
 				if item.quantity_achieved <= 0:
-					frappe.throw('Quantity Achieved for target <b>{}</b> must be greater than 0'.format(item.performance_target))
-				
-				if flt(item.quantity_achieved)> flt(item.quantity):
+					if self.workflow_state in ['Waiting Supervisor Approval','Waiting Approval']:
+						frappe.throw('Quantity Achieved for target <b>{}</b> must be greater than 0'.format(item.performance_target))
+
+				if flt(item.quantity_achieved)> flt(item.quantity) and not item.reverse_formula:
 					quantity_rating = flt(item.weightage)
+					item.quantity_rating = flt(item.weightage)
 					# frappe.throw(str(quantity_rating))
 				elif flt(item.quantity_achieved)== flt(item.quantity):
 					quantity_rating = flt(item.quantity)*flt(item.weightage)*0.01
-					
-				else:
-					quantity_rating = flt(item.quantity_achieved) / flt(item.quantity) * (flt(item.weightage))
-				if not item.reverse_formula and flt(item.quantity) != 0 and flt(item.weightage) != 0:
+				elif not item.reverse_formula and flt(item.quantity) != 0 and flt(item.weightage) != 0:
 					quantity_rating = flt(item.quantity_achieved) / flt(item.quantity) * (flt(item.weightage))
 				elif not item.reverse_formula and flt(item.quantity) == 0 and cint(item.accept_zero_qtyquality) == 0:
 					frappe.throw("Please tick 'Apply (<=) Operator and then 'Accept Zero Qty/Quality in row {} inside Work Performance: Targets & Accompolishment table".format(row))
+				elif item.reverse_formula and  cint(item.accept_zero_qtyquality) != 1:
+					#quantity_rating = flt(item.quantity)/flt(item.quantity_achieved) * (flt(item.weightage))
+					# frappe.throw(str(quantity_rating))
+					if item.quantity_achieved <= flt(item.quantity):
+						quantity_rating = flt(item.weightage)
+						item.quantity_rating= flt(item.weightage)
+					else:
+						quantity_rating = flt(item.quantity)/flt(item.quantity_achieved) * (flt(item.weightage))
+						item.quantity_rating = quantity_rating
+		 				
+						
+						# item.quantity_rating = quantity_rating
 				else:
-					quantity_rating = flt(item.quantity)/flt(item.quantity_achieved) * (flt(item.weightage))
-				
-				item.quantity_rating = quantity_rating
-				
+					quantity_rating = flt(item.quantity_achieved) / flt(item.quantity) * (flt(item.weightage))
+					item.quantity_rating = quantity_rating
+
 			if flt(item.timeline_achieved)<= flt(item.timeline):
 				# item.timeline_rating = (flt(item.timeline) / flt(item.timeline_achieved)  * (flt(item.weightage)*0.01))
 				item.timeline_rating = (flt(item.timeline_achieved) / flt(item.timeline)  * (flt(item.weightage)))
-				timeline_rating = flt(item.weightage)
+				timeline_rating = flt(item.timeline_rating)
 			else:
-				timeline_rating = flt(item.timeline) / flt(item.timeline)  * (flt(item.weightage)*0.01)
-			
+				item.timeline_rating = flt(item.weightage)
+				timeline_rating = flt(item.weightage)
+
 			# frappe.throw(str(item.timeline_rating))
-			
+
 			if item.qty_quality == 'Quality':
 				item.average_rating = (flt(item.timeline_rating) + flt(item.quality_rating)) / 2
-			
+
 			elif item.qty_quality == 'Quantity':
-				if flt(item.quantity_achieved)> flt(item.quantity) and not item.reverse_formula:
-					item.average_rating = item.weightage
-				else:
-					item.average_rating = (flt(item.timeline_rating) + flt(item.quantity_rating)) / 2
-					
-				
-				
+				item.average_rating = (flt(item.timeline_rating) + flt(item.quantity_rating)) / 2
+
+
+
 			target_rating = frappe.db.get_value("PMS Group",self.pms_group,"weightage_for_target")
 			item.score = (flt(item.average_rating ) / flt(item.weightage))
 
 			total_score += flt(item.average_rating)
-			
+
 		if not self.form_i:
 			score = 0
 		else:
 			score =flt(total_score)/100 * flt(target_rating)
-		
+
 		total_score = score
 		self.form_i_total_rating = total_score
 		self.db_set('form_i_total_rating', self.form_i_total_rating)
@@ -205,16 +217,19 @@ class PerformanceEvaluation(Document):
 		# if self.eval_workflow_state == 'Draft':
 		# 	return
 		if not self.evaluate_competency_item:
-			frappe.throw('Competency cannot be empty please use <b>Get Competency Button</b>')
+			if self.workflow_state in ['Waiting Supervisor Approval','Waiting Approval']:
+				frappe.throw('Competency cannot be empty please use <b>Get Competency Button</b>')
 		total = 0
 		for item in self.evaluate_competency_item:
 			if not item.weightage_percent:
-				frappe.throw('You need to rate competency at row <b>{}</b>'.format(item.idx))
-			if item.weightage_percent >100:
-				frappe.throw('Self Rating should be within 100 % in <b>{}</b>'.format(item.idx))
+				if self.workflow_state in ['Waiting Supervisor Approval','Waiting Approval']:
+					frappe.throw('You need to rate competency at row <b>{}</b>'.format(item.idx))
 			if item.weightage_percent >=95:
 				if not item.comment:
-					frappe.throw('If Self Rating is more than 95, comment is necessary in <b>{}</b>'.format(item.idx));
+					frappe.throw('If Self Rating is more than 95, comment is necessary in Evaluate Competency row <b>{}</b>'.format(item.idx));
+			if item.weightage_percent >100:
+				frappe.throw('Self Rating cannot be more than 100 in Evaluate Competency row <b>{}</b>'.format(item.idx));
+
 			tot_rating = flt(item.weightage_percent)/100 * flt(item.weightage)
 			item.average = tot_rating
 
@@ -226,16 +241,20 @@ class PerformanceEvaluation(Document):
 
 	def calculate_leadership_competency_score(self):
 		if not self.evaluate_leadership_competency:
-			frappe.throw('Competency cannot be empty please use <b>Get Leadership Competency button</b>')
+			if self.workflow_state in ['Waiting Supervisor Approval','Waiting Approval']:
+				frappe.throw('Competency cannot be empty please use <b>Get Leadership Competency button</b>')
 		total = 0
 		for item in self.evaluate_leadership_competency:
 			if not item.weightage_percent:
-				frappe.throw('You need to rate leadership competency at row <b>{}</b>'.format(item.idx))
+				if self.workflow_state in ['Waiting Supervisor Approval','Waiting Approval']:
+					frappe.throw('You need to rate leadership competency at row <b>{}</b>'.format(item.idx))
 			if item.weightage_percent >=95:
 				if not item.comment:
-					frappe.throw('If Self Rating is more than 95, comment is necessary in <b>{}</b>'.format(item.idx));
+					frappe.throw('If Self Rating is more than 95, comment is necessary in Leadership Competancy row <b>{}</b>'.format(item.idx));
 			tot_rating = flt(item.weightage_percent)/100 * flt(item.weightage)
 			item.average = tot_rating
+			if item.weightage_percent >100:
+				frappe.throw('Self Rating cannot be more than 100 in Leadership Competency row <b>{}</b>'.format(item.idx));
 
 		leadership_competency_rating = frappe.db.get_value("PMS Group",self.pms_group,"weightage_for_form_three")
 		for item in self.evaluate_leadership_competency:
@@ -265,7 +284,7 @@ class PerformanceEvaluation(Document):
 				frappe.throw(title=_("Error"),
 				msg=_("No. of month served cannot be <b>{}</b> as you will have Two PMS".format(self.no_of_months_served)))
 			no_of_month_from_another_pms = frappe.db.get_value("Performance Evaluation",{'employee':self.employee,'pms_calendar':self.pms_calendar,'name':('!=',self.name),'docstatus':1},"no_of_months_served")
-			
+
 			if flt(self.no_of_months_served) + flt(no_of_month_from_another_pms) != 12 and no_of_month_from_another_pms:
 				frappe.throw(title=_("Error"),
 				msg=_("Sum of months served within 2 PMS must be <b>12</b> but your is <b>{}</b>".format(flt(self.no_of_months_served) + flt(no_of_month_from_another_pms))))
@@ -277,18 +296,18 @@ class PerformanceEvaluation(Document):
 				frappe.throw(_('You need to <b>Get The Target</b>'))
 		if not self.evaluate_competency_item:
 			frappe.throw(_('You need to <b>Get The Competency</b>'))
-			
+
 	def validate_calendar(self):
 		# check whether pms is active for target setup
 		if not frappe.db.exists("PMS Calendar", {"name": self.pms_calendar, "docstatus": 1, "evaluation_start_date": ("<=", nowdate()), "evaluation_end_date": (">=", nowdate())}):
 			frappe.throw(
 				_('Evaluation for PMS Calendar <b>{}</b> is not open, Check the posting date').format(self.pms_calendar))
 
-	def check_duplicate_entry(self):       
+	def check_duplicate_entry(self):
 		# check duplicate entry for particular employee
 		if self.reference and len(frappe.db.get_list('Performance Evaluation',filters={'employee': self.employee, 'pms_calendar': self.pms_calendar, 'docstatus': 1,'reference':self.reference})) > 2:
 			frappe.throw("You cannot set more than <b>2</b> Evaluation for PMS Calendar <b>{}</b>".format(self.pms_calendar))
-		
+
 		if self.reference and frappe.db.get_list('Performance Evaluation',filters={'employee': self.employee, 'pms_calendar': self.pms_calendar, 'docstatus': 1,'reference':self.reference,'review':self.review}):
 			frappe.throw("You cannot set more than <b>1</b> Performance Evaluation for PMS Calendar <b>{}</b> for Review <b>{}</b>".format(self.pms_calendar, self.review))
 
@@ -318,12 +337,12 @@ class PerformanceEvaluation(Document):
 			return
 		# get competency applicable to particular category
 		data = frappe.db.sql("""
-			SELECT 
+			SELECT
 				name as parent, competency, description, weightage, is_parent
-			FROM 
-				`tabWork Competency` 
+			FROM
+				`tabWork Competency`
 			WHERE `naming_series` = 'Form II'
-			ORDER BY 
+			ORDER BY
 				idx
 		""", as_dict=True)
 		if not data:
@@ -341,12 +360,12 @@ class PerformanceEvaluation(Document):
 			return
 		# get competency applicable to particular category
 		data = frappe.db.sql("""
-			SELECT 
+			SELECT
 				name as parent, competency, weightage, is_parent
-			FROM 
-				`tabWork Competency` 
+			FROM
+				`tabWork Competency`
 			WHERE `naming_series` = 'Form III'
-			ORDER BY 
+			ORDER BY
 				idx
 		""", as_dict=True)
 		if not data:
@@ -368,7 +387,7 @@ def pms_appeal(source_name, target_doc=None):
 			title='Error',
 			msg="You have already created PMS Appeal for this Evaluation")
 	doclist = get_mapped_doc("Performance Evaluation",
-		source_name, 
+		source_name,
 		{
 		"Performance Evaluation": {
 			"doctype": "PMS Appeal",
@@ -396,7 +415,7 @@ def set_perc_approver(perc):
 
 def get_permission_query_conditions(user):
 	# restrict user from accessing this doctype
-	
+
 	if not user: user = frappe.session.user
 	user_roles = frappe.get_roles(user)
 
