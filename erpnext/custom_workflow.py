@@ -1,14 +1,6 @@
 # Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and Contributors
 # License: GNU General Public License v3. See license.txt
 
-'''
-------------------------------------------------------------------------------------------------------------------------------------------
-Version          Author         Ticket#           CreatedOn          ModifiedOn          Remarks
------------- --------------- --------------- ------------------ -------------------  -----------------------------------------------------
-3.0               SHIV		                     28/01/2019                          Original Version
-------------------------------------------------------------------------------------------------------------------------------------------                                                                          
-'''
-
 from __future__ import unicode_literals
 import frappe
 from frappe import _
@@ -37,8 +29,7 @@ class CustomWorkflow:
                 
                 # if self.doc.doctype in ("Travel Authorization", "Travel Claim"):
                 # 	if self.doc.travel_type == "Training":
-                        
-        
+
                 if frappe.db.get_value("Employee", self.doc.employee, "expense_approver"):
                     self.expense_approver		= frappe.db.get_value("Employee", {"user_id":frappe.db.get_value("Employee", self.doc.employee, "expense_approver")}, self.field_list)
                 else:
@@ -638,22 +629,23 @@ class CustomWorkflow:
                 frappe.throw("Only {}, {}, {} can Reject this Application".format(self.doc_approver, self.doc_owner, employee_user))
         else:
             frappe.throw(_("Invalid Workflow State {}").format(self.doc.workflow_state))
+            
     def performance_evaluation(self):
         if self.new_state.lower() in ("Draft".lower()):
             if frappe.session.user != self.doc.owner:
                 frappe.throw("Only {} can apply this leave".format(self.doc.owner))
-
         elif self.new_state.lower() == ("Waiting Supervisor Approval".lower()):
             self.set_approver("Supervisor")
-
         elif self.new_state.lower() == ("Waiting Approval".lower()):
+            self.set_approver("Supervisor")
+            '''
             if self.doc.approver != frappe.session.user:
                 frappe.throw("Only {} can Forward this Application".format(self.doc.approver_name))
             self.set_approver("Supervisors Supervisor")
+            '''
         elif self.new_state.lower() == ("Approved".lower()):
             if self.doc.approver != frappe.session.user:
                 frappe.throw("Only {} can Approve this Application".format(self.doc.approver_name))
-
         elif self.new_state.lower() == ("Rejected".lower()):
             if self.doc.approver != frappe.session.user:
                 frappe.throw("Only {} can Reject this Application".format(self.doc.approver_name))
@@ -765,8 +757,13 @@ class CustomWorkflow:
         elif self.new_state.lower() == "Approved".lower():
             # self.doc.check_date()
             if self.doc.travel_type=="Training" or self.doc.travel_type == "Meeting and Seminars":
-                if frappe.session.user!=self.hr_approver[0 ]:
-                    frappe.throw("Only {} can Approve this request".format(self.hr_approver))
+                hr_approver = self.hr_approver
+                officiating = get_officiating_employee(self.hr_approver[3])
+                if officiating:
+                    officiating = frappe.db.get_value("Employee", officiating[0].officiate, self.field_list)
+                    hr_approver = officiating
+                if frappe.session.user!=hr_approver[0]:
+                    frappe.throw("Only {} can Approve this request".format(hr_approver))
             elif self.doc.supervisor != frappe.session.user:
                 frappe.throw("Only {} can Approve this request".format(self.doc.supervisor_name))
             self.doc.document_status = "Approved"
@@ -781,6 +778,8 @@ class CustomWorkflow:
             self.doc.document_status = "Cancelled"
 
     def employee_advance(self):
+        pass
+        '''
         if self.new_state.lower() in ("Waiting Approval".lower()):
             self.set_approver("SA_Approver")
 
@@ -795,11 +794,12 @@ class CustomWorkflow:
         elif self.new_state.lower() in ("Approved".lower()):
             if self.doc.advance_approver != frappe.session.user:
                 frappe.throw("Only {} can Approve this document".format(self.doc.advance_approver_name))
-        
+
         elif self.new_state.lower() in ("Rejected".lower()):
             if self.doc.advance_approver != frappe.session.user:
                 frappe.throw("Only {} can Reject this document".format(self.doc.advance_approver_name))
-    
+        '''
+        
     def vehicle_request(self):
         if self.new_state.lower() in ("Draft".lower()):
             if self.doc.owner != frappe.session.user:
@@ -1156,6 +1156,8 @@ class NotifyCustomWorkflow:
             if not template:
                 frappe.msgprint(_("Please set default template for Asset Status Notification in Asset Settings."))
                 return
+        elif self.doc.doctype == "Performance Evaluation":
+            template = "Performance Evaluation"
         else:
             template = ""
 

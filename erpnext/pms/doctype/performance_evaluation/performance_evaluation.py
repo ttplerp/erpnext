@@ -39,9 +39,9 @@ class PerformanceEvaluation(Document):
 			validate_workflow_states(self)
 		if self.workflow_state != "Approved":
 			notify_workflow_states(self)
-
+		
 		# to record the approver details when it is manually set to be used if the pms gets Rejected
-		if self.eval_workflow_state == "Waiting Supervisor Approval":
+		if self.eval_workflow_state == "Waiting Approval":
 			# sup_user_id, sup_name = frappe.db.get_value(
 			#     "Employee", {"user_id": self.approver}, ["user_id","first_name"]) or None
 			self.approver_in_first_level = self.approver
@@ -421,7 +421,7 @@ def get_permission_query_conditions(user):
 
 	if user == "Administrator":
 		return
-	if "HR User" in user_roles or "HR Manager" in user_roles:
+	if "HR Manager" in user_roles:
 		return
 
 	return """(
