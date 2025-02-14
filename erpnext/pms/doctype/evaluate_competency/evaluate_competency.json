@@ -195,6 +195,7 @@
    "label": "Competency Details"
   },
   {
+   "description": "Rate within 100%, with 100 for full achievement and 1 for least achievement.",
    "fieldname": "weightage_percent",
    "fieldtype": "Float",
    "in_list_view": 1,
@@ -213,7 +214,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-02-13 17:33:55.404820",
+ "modified": "2025-02-13 23:24:10.779721",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Evaluate Competency",
