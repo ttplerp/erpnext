@@ -344,14 +344,15 @@
    "fieldname": "retention_percent",
    "fieldtype": "Select",
    "label": "Retention Percent  (%)",
-   "options": "\n5\n10"
+   "options": "\n5\n10\nOther"
   },
   {
    "fieldname": "retention_amount",
    "fieldtype": "Currency",
    "label": "Retention Amount",
+   "mandatory_depends_on": "eval:doc.retention_percent == \"Other\";",
    "precision": "4",
-   "read_only": 1
+   "read_only_depends_on": "eval:doc.retention_percent != \"Other\";"
   },
   {
    "depends_on": "eval:doc.retention_percent",
@@ -385,7 +386,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-02-04 12:53:32.212639",
+ "modified": "2025-02-15 18:48:49.272261",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Project Invoice",

@@ -173,6 +173,10 @@ frappe.ui.form.on('Project Invoice', {
 		calculate_totals(frm);
 	},
 
+	retention_amount: function (frm) {
+		calculate_totals(frm);
+	},
+
 	check_all: function (frm) {
 		check_uncheck_all(frm);
 	},
@@ -334,9 +338,11 @@ function get_advance_list(frm) {
 }
 
 function tds_retention_calculation(frm) {
-	cur_frm.set_value("tds_amount", (cur_frm.doc.tds_percent / 100) * cur_frm.doc.total_amount);
-	cur_frm.set_value("retention_amount", (cur_frm.doc.retention_percent / 100) * cur_frm.doc.total_amount);
-	cur_frm.refresh_field("tds_amount")
-	cur_frm.refresh_field("retention_amount")
+	if (frm.doc.retention_percent != "Other") {
+		cur_frm.set_value("tds_amount", (cur_frm.doc.tds_percent / 100) * cur_frm.doc.total_amount);
+		cur_frm.set_value("retention_amount", (cur_frm.doc.retention_percent / 100) * cur_frm.doc.total_amount);
+		cur_frm.refresh_field("tds_amount")
+		cur_frm.refresh_field("retention_amount")
+	}
 	calculate_totals(frm)
 };

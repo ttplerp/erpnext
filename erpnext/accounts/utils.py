@@ -1005,18 +1005,23 @@ def get_retention_account(percent, company, party_type=None):
     account = None
     if not percent:
         frappe.throw("TDS Percent is mandatory")
-   
-    if party_type == "Customer":
-        account = frappe.db.get_value(
-            "TDS Account Item", {"parent": company, "tds_percent": percent}, "receivable_account"
-        )
+    if percent == "Other":
+        account = frappe.db.get_single_value("Projects Settings", "other_retention_account")
         if not account:
-            frappe.throw("Please set Account in Company for Receivable")
+            frappe.throw("Please set account in Projects Settings")
+        return account
     else:
-        account = frappe.db.get_value(
-            "TDS Account Item", {"parent": company, "tds_percent": percent}, "account"
-        )
-    return account
+        if party_type == "Customer":
+            account = frappe.db.get_value(
+                "TDS Account Item", {"parent": company, "tds_percent": percent}, "receivable_account"
+            )
+            if not account:
+                frappe.throw("Please set Account in Company for Receivable")
+        else:
+            account = frappe.db.get_value(
+                "TDS Account Item", {"parent": company, "tds_percent": percent}, "account"
+            )
+        return account
 
 
 @frappe.whitelist()

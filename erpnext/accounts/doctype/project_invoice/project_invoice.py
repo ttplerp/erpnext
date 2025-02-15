@@ -377,9 +377,12 @@ class ProjectInvoice(AccountsController):
 			self.tds_account = None
 
 		if self.retention_percent:
-			self.retention_account = get_retention_account(self.retention_percent, self.company, self.party_type)
-			self.retention_amount = flt(self.retention_percent) / 100 * flt(self.total_amount or 0, 2)
-		else:
+			if self.retention_percent != "Other":
+				self.retention_account = get_retention_account(self.retention_percent, self.company, self.party_type)
+				self.retention_amount = flt(self.retention_percent) / 100 * flt(self.total_amount or 0, 2)
+			else:
+				self.retention_account = frappe.db.get_single_value("Projects Settings", "other_retention_account")
+		else: 
 			self.retention_amount = 0.00
 			self.retention_account = None
 

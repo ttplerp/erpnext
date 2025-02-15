@@ -6,6 +6,8 @@
  "engine": "InnoDB",
  "field_order": [
   "timesheet_sb",
+  "other_retention_account",
+  "column_break_2mzbh",
   "ignore_workstation_time_overlap",
   "ignore_user_time_overlap",
   "ignore_employee_time_overlap",
@@ -67,7 +69,7 @@
   },
   {
    "fieldname": "account_settings_tab",
-   "fieldtype": "Tab Break",
+   "fieldtype": "Section Break",
    "label": "Account Settings"
   },
   {
@@ -156,11 +158,21 @@
    "fieldtype": "Link",
    "label": "Foreign Contractor Payable",
    "options": "Account"
+  },
+  {
+   "fieldname": "other_retention_account",
+   "fieldtype": "Link",
+   "label": "Other Retention Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "column_break_2mzbh",
+   "fieldtype": "Column Break"
   }
  ],
  "issingle": 1,
  "links": [],
- "modified": "2024-12-26 15:56:30.886642",
+ "modified": "2025-02-15 18:53:33.040493",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Projects Settings",
