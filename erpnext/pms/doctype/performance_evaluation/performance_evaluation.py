@@ -13,6 +13,7 @@ from erpnext.custom_workflow import validate_workflow_states, notify_workflow_st
 
 class PerformanceEvaluation(Document):
 	def validate(self):
+		
 		if self.upload_old_data:
 			return
 		# if self.eval_workflow_state != frappe.db.get_value('Performance Evaluation',self.name,'eval_workflow_state'):
@@ -33,12 +34,14 @@ class PerformanceEvaluation(Document):
 		else:
 			self.validate_calendar()
 		self.validate_no_months_served()
-		if self.workflow_state == "Waiting Approval":
-			self.set_manual_approver = 0
-		if self.set_manual_approver !=1:
+		# if self.workflow_state == "Waiting Approval":
+		# 	self.set_manual_approver = 0
+		
+		if self.set_approver_manually !=1:
 			validate_workflow_states(self)
 		if self.workflow_state != "Approved":
 			notify_workflow_states(self)
+		self.reset_manual_app()
 		
 		# to record the approver details when it is manually set to be used if the pms gets Rejected
 		if self.eval_workflow_state == "Waiting Approval":
@@ -48,6 +51,9 @@ class PerformanceEvaluation(Document):
 			self.approver_fl_name = self.approver_name
 			self.approver_fl_designation = self.approver_designation
 
+	def reset_manual_app(self):
+			self.set_approver_manually = 0
+	
 	def on_submit(self):
 		if self.upload_old_data:
 			return
@@ -58,7 +64,7 @@ class PerformanceEvaluation(Document):
 
 		#Added by Kinley Dorji for creating pms record in employee master
 		self.create_employee_pms_record()
-
+	
 	def on_update_after_submit(self):
 		if self.upload_old_data:
 			return

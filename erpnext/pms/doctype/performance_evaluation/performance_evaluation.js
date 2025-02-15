@@ -9,13 +9,16 @@ frappe.ui.form.on('Performance Evaluation', {
 	},
 	
 	refresh: (frm)=>{
-		if (frappe.user.has_role(['HR Manager', 'HR User'])){
-			frm.set_df_property('set_manual_approver', 'read_only', 0);
+		
+		if (frappe.user.has_role(['HR Manager'])){
+			
+			frm.set_df_property('set_approver_manually', 'read_only', 0);
 		}else{
-			frm.set_df_property('set_manual_approver', 'read_only', 1);
+			frm.set_df_property('set_approver_manually', 'read_only', 1);
+		
+		
 		}
 		
-		// }
 		if (frm.doc.docstatus === 1) {
 			cur_frm.add_custom_button('Appeal', function() {
 				frappe.model.open_mapped_doc({
@@ -47,14 +50,15 @@ frappe.ui.form.on('Performance Evaluation', {
 			}
 	},
 
-	set_manual_approver:function(frm){
-		if (flt(frm.doc.set_manual_approver) == 1){
-			frm.set_df_property('approver', 'read_only', 0);
-		}
-		else{
-			frm.set_df_property('approver', 'read_only', 1);
-		}
-	},
+	// set_approver_manually:function(frm){
+	// 	if (flt(frm.doc.set_approver_manually) == 1){
+	// 		frm.set_df_property('approver', 'read_only', 0);
+	// 	}
+	// 	else{
+	// 		console.lo
+	// 		frm.set_df_property('approver', 'read_only', 1);
+	// 	}
+	// },
 	get_competency: function(frm) {
 		if(frm.doc.docstatus != 1){
 			get_competency(frm)
