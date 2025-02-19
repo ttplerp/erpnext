@@ -96,6 +96,7 @@
   "approver_detail_section",
   "approver",
   "set_manual_approver",
+  "set_approver_manually",
   "approver_in_first_level",
   "supervisor_manager",
   "column_break_40",
@@ -137,6 +138,7 @@
    "fetch_from": "employee.pms_group",
    "fieldname": "pms_group",
    "fieldtype": "Link",
+   "ignore_user_permissions": 1,
    "label": "PMS Group",
    "options": "PMS Group",
    "read_only": 1,
@@ -727,11 +729,11 @@
    "fieldtype": "Column Break"
   },
   {
-   "allow_on_submit": 1,
    "bold": 1,
    "default": "0",
    "fieldname": "set_manual_approver",
    "fieldtype": "Check",
+   "ignore_user_permissions": 1,
    "label": "Set Manual Approver",
    "permlevel": 1
   },
@@ -845,11 +847,16 @@
    "fieldname": "rating_des",
    "fieldtype": "Data",
    "read_only": 1
+  },
+  {
+   "fieldname": "set_approver_manually",
+   "fieldtype": "Data",
+   "label": "Set Approver Manually"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2025-02-13 17:41:28.488582",
+ "modified": "2025-02-15 12:58:33.214747",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Performance Evaluation",
