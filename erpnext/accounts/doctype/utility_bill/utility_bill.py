@@ -251,9 +251,18 @@ class UtilityBill(Document):
         if self.item:
             count_child = 0
             for a in self.item:
+                debit_account = frappe.db.get_value("Company Utility Account", {"parent": a.utility_service_type, "company": self.company}, "account")
+                if not debit_account:
+                    frappe.throw(
+                        _("Account is not set for the Utility Service Type: {0}. Please set the account in the Utility Service Type record.").format(
+                            frappe.get_desk_link("Utility Service Type", a.utility_service_type)
+                        )
+                    )
+
                 if a.invoice_amount > 0 and a.payment_status == "Success":
                     doc.append("accounts", {
-                                "account": a.debit_account,
+                                # "account": a.debit_account,
+                                "account": debit_account,
                                 "debit_in_account_currency": a.net_amount,
                                 "reference_type": "",
                                 "reference_no": self.name,

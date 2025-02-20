@@ -1,4 +1,5 @@
 {
+ "actions": [],
  "allow_import": 1,
  "autoname": "field:service_name",
  "creation": "2021-05-20 04:42:14.096871",
@@ -18,7 +19,9 @@
   "payment_api_link",
   "column_break_9",
   "fetch_outstanding_api",
-  "fetch_outstanding_api_link"
+  "fetch_outstanding_api_link",
+  "company_account_section",
+  "accounts"
  ],
  "fields": [
   {
@@ -100,12 +103,24 @@
    "fieldtype": "Data",
    "label": "Fetch Outstanding API Link",
    "read_only": 1
+  },
+  {
+   "fieldname": "company_account_section",
+   "fieldtype": "Section Break",
+   "label": "Company Account"
+  },
+  {
+   "fieldname": "accounts",
+   "fieldtype": "Table",
+   "options": "Company Utility Account"
   }
  ],
- "modified": "2021-06-30 14:43:28.048875",
+ "links": [],
+ "modified": "2025-02-20 11:25:19.534014",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Utility Service Type",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
@@ -162,6 +177,7 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1,
  "track_seen": 1
 }
