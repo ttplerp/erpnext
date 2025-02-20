@@ -42,18 +42,11 @@ class Reimbursement(Document):
 			frappe.throw("Expense Account is mandatory")
 		if not advance_account:
 			frappe.throw("Setup Default Bank Account in Company Settings")
-
-		voucher_type = "Journal Entry"
-		voucher_series = "Journal Voucher"
-		party_type = ""
-		party = ""
-		account_type = frappe.db.get_value("Account", advance_account, "account_type")
-		if account_type == "Bank":
-			voucher_type = "Bank Entry"
-			voucher_series = "Bank Payment Voucher"
-		elif account_type == "Payable" or account_type == "Receivable":
-			party_type = self.party_type
-			party = self.party
+		
+		voucher_type = "Bank Entry"
+		voucher_series = "Bank Payment Voucher"
+		party_type = self.party_type
+		party = self.party
 		
 		r = []
 		if self.remarks:
