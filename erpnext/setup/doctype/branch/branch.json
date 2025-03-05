@@ -21,7 +21,9 @@
   "column_break_11",
   "revenue_bank_account",
   "epayment_bank_accounts_section",
-  "branch_bank_account"
+  "branch_bank_account",
+  "tab_seal_sign",
+  "seal_sign"
  ],
  "fields": [
   {
@@ -113,12 +115,22 @@
    "fieldname": "branch_bank_account",
    "fieldtype": "Table",
    "options": "Branch Bank Account"
+  },
+  {
+   "fieldname": "tab_seal_sign",
+   "fieldtype": "Section Break",
+   "label": "Sales Invoice Seal and Sign"
+  },
+  {
+   "fieldname": "seal_sign",
+   "fieldtype": "Attach",
+   "label": "Seal and Sign"
   }
  ],
  "icon": "fa fa-code-fork",
  "idx": 1,
  "links": [],
- "modified": "2023-03-14 11:57:08.953207",
+ "modified": "2025-03-05 16:18:15.695835",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Branch",
