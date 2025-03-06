@@ -23,12 +23,22 @@ class TargetSetUp(Document):
 			return
 		else:
 			self.validate_calendar()
+		self.record_self_rating()
 			
 	def on_submit(self):
 		if self.reference and self.reason:
 			return
 		else:
 			self.validate_calendar()
+	def record_self_rating(self):
+		if self.workflow_state == "Draft":
+			for i in self.target_item:
+				if i.quantity:
+					i.self_ratingquantityquality = i.quantity
+				if i.quality:
+					i.self_ratingquantityquality = i.quality
+				if i.timeline:
+					i.self_ratingtime= i.timeline
 
 	def load_pre_requirement(self):
 		doc = frappe.get_doc("PMS Setting")

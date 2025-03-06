@@ -11,6 +11,7 @@
   "weightage",
   "reverse_formula",
   "column_break_9",
+  "applylessthanseven",
   "qty_quality",
   "quantity",
   "quality",
@@ -18,7 +19,11 @@
   "timeline_base_on",
   "timeline",
   "section_break_9",
-  "description"
+  "description",
+  "history_section",
+  "self_ratingquantityquality",
+  "column_break_16",
+  "self_ratingtime"
  ],
  "fields": [
   {
@@ -93,7 +98,6 @@
    "description": "<b>Please tick this if your target is to be evaluated on saving(e.g Network Failure, OPEX, Resolving Customer Issues)</b>",
    "fieldname": "reverse_formula",
    "fieldtype": "Check",
-   "hidden": 1,
    "label": "Apply (&lt;=) Operator"
   },
   {
@@ -125,11 +129,38 @@
   {
    "fieldname": "column_break_9",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "history_section",
+   "fieldtype": "Section Break",
+   "label": "History"
+  },
+  {
+   "fieldname": "self_ratingquantityquality",
+   "fieldtype": "Data",
+   "label": "Self Rating(Quantity/Quality)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "self_ratingtime",
+   "fieldtype": "Data",
+   "label": "Self Rating(Time)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_16",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "applylessthanseven",
+   "fieldtype": "Check",
+   "label": "Apply (>=74.99)"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2023-10-03 09:44:02.531981",
+ "modified": "2024-12-06 14:29:33.066679",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Performance Target Evaluation",

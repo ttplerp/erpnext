@@ -10,6 +10,7 @@
   "performance_target",
   "weightage",
   "reverse_formula",
+  "applylessthanseven",
   "column_break_5",
   "qty_quality",
   "quality",
@@ -28,6 +29,7 @@
   "rating_section",
   "quality_rating",
   "quantity_rating",
+  "appraisers_remark",
   "column_break_11",
   "timeline_rating",
   "column_break_13",
@@ -37,13 +39,15 @@
   "review_details_section",
   "appraisees_remarks",
   "column_break_19",
-  "appraisers_remark",
   "section_break_12",
   "comment",
   "description_section",
   "description",
   "supervisor_rating",
-  "self_rating"
+  "self_rating",
+  "history_section",
+  "quantityquality_achieved",
+  "self_rating_timeline_achieved"
  ],
  "fields": [
   {
@@ -308,11 +312,32 @@
    "fieldname": "employee_remarks",
    "fieldtype": "Text",
    "label": "Employee Remarks"
+  },
+  {
+   "fieldname": "history_section",
+   "fieldtype": "Section Break",
+   "label": "History"
+  },
+  {
+   "fieldname": "quantityquality_achieved",
+   "fieldtype": "Data",
+   "label": "Self Rating Quality/Quantity Achieved"
+  },
+  {
+   "fieldname": "self_rating_timeline_achieved",
+   "fieldtype": "Data",
+   "label": "Self Rating Timeline Achieved"
+  },
+  {
+   "default": "0",
+   "fieldname": "applylessthanseven",
+   "fieldtype": "Check",
+   "label": "Apply (>=74.99)"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2023-09-28 15:42:36.038070",
+ "modified": "2024-12-06 14:35:04.017842",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Evaluate Target Item",

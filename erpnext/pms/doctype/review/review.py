@@ -14,17 +14,35 @@ from erpnext.custom_workflow import validate_workflow_states, notify_workflow_st
 class Review(Document):
 	def validate(self):
 		self.check_duplicate_entry()
-		validate_workflow_states(self)
+		# validate_workflow_states(self)
 		if self.workflow_state != "Approved":
 			notify_workflow_states(self)
 		self.check_target()
+		self.record_self_rating()
 
 	def on_submit(self):
 		if self.reference and self.reason:
 			return
 		else:
 			self.validate_calendar()
+   
+	def record_self_rating(self):
+		if self.workflow_state == "Draft":
+			for i in self.review_target_item:
+				if i.quantity:
+					i.self_ratingquantityquality = i.quantity
+				if i.quality:
+					i.self_ratingquantityquality = i.quality
+				if i.timeline:
+					i.self_ratingtime= i.timeline
 	
+				if i.quantity_achieved:
+					i.quantityquality_achieved = i.quantity_achieved
+				if i.quality_achieved:
+					i.quantityquality_achieved = i.quality_achieved
+				if i.timeline_achieved:
+					i.self_rating_timeline_achieved = i.timeline_achieved
+     
 	def validate_calendar(self): 
 		# check whether pms is active for review
 		if not frappe.db.exists("PMS Calendar",{"name": self.pms_calendar,"docstatus": 1,

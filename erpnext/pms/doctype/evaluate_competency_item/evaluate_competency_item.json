@@ -30,7 +30,9 @@
   "top_level",
   "self_rating",
   "supervisor_rating",
-  "weightage_percent"
+  "weightage_percent",
+  "section_break_26",
+  "self_rating_competency"
  ],
  "fields": [
   {
@@ -204,11 +206,20 @@
    "label": "Weightage Percent",
    "options": "10\n20\n30\n40\n50\n60\n70\n80\n90\n100",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_26",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "self_rating_competency",
+   "fieldtype": "Data",
+   "label": "Self Rating Competency"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2023-10-05 09:53:05.573959",
+ "modified": "2024-12-05 18:35:48.741338",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Evaluate Competency Item",

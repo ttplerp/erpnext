@@ -35,7 +35,8 @@ class PerformanceEvaluation(Document):
 			self.approver_in_first_level = self.approver
 			self.approver_fl_name = self.approver_name
 			self.approver_fl_designation = self.approver_designation
-
+		self.record_self_rating()
+  
 	def on_submit(self):
 		if self.upload_old_data:
 			return
@@ -46,7 +47,18 @@ class PerformanceEvaluation(Document):
 
 		#Added by Kinley Dorji for creating pms record in employee master
 		self.create_employee_pms_record()
-	
+	def record_self_rating(self):
+		if self.workflow_state == "Draft":
+			for i in self.evaluate_target_item:
+				if i.quantity_achieved:
+					i.quantityquality_achieved = i.quantity_achieved
+				if i.quality_achieved:
+					i.quantityquality_achieved = i.quality_achieved
+				if i.timeline_achieved:
+					i.self_rating_timeline_achieved = i.timeline_achieved
+			for y in self.evaluate_competency_item:
+				if y.achievement:
+					y.self_rating_competency=y.achievement
 	def on_update_after_submit(self):
 		if self.upload_old_data:
 			return
@@ -113,7 +125,7 @@ class PerformanceEvaluation(Document):
 				item.quality_rating = quality_rating
 
 			elif item.qty_quality == 'Quantity':
-				if item.quantity_achieved <= 0:
+				if item.quantity_achieved < 0:
 					frappe.throw('Quality Achieved for target <b>{}</b> must be greater than or equal to 0'.format(item.performance_target))
 				
 				if flt(item.quantity_achieved)>= flt(item.quantity):
@@ -136,7 +148,20 @@ class PerformanceEvaluation(Document):
 				item.average_rating = (flt(item.timeline_rating) + flt(item.quantity_rating)) / 2
 			target_rating = frappe.db.get_value("PMS Group",self.pms_group,"weightage_for_target")
 			item.score = (flt(item.average_rating ) / flt(item.weightage)) * 100
-
+			if item.quantity and item.quantity_achieved == 0:
+				item.score= 0
+			if item.quality and item.quality_achieved == 0:
+				item.score= 0
+			if item.applylessthanseven:
+				if item.quantity:
+					cal = (item.quantity_achieved / item.quantity)*100
+					if cal < 80:
+						item.score= 0
+				if item.quality:
+					cal = (item.quality_achieved / item.quality)*100
+					if cal < 80:
+						item.score= 0
+						
 			total_score += flt(item.average_rating)
 		score =flt(total_score)/100 * flt(target_rating)
 		total_score = score
