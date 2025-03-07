@@ -406,7 +406,7 @@ def get_gl_entries_on_asset_regain(asset, selling_amount=0, finance_book=None):
 	return gl_entries
 
 
-def get_gl_entries_on_asset_disposal(asset, selling_amount=0, finance_book=None):
+def get_gl_entries_on_asset_disposal(asset, selling_amount=0, finance_book=None, voucher_type=None, voucher_no=None):
 	(
 		fixed_asset_account,
 		asset,
