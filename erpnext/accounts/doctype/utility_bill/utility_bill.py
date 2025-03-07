@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and contributors
 # For license information, please see license.txt
 
@@ -21,6 +20,7 @@ class UtilityBill(Document):
         self.update_pi_number()
         if self.workflow_state == "Waiting For Verification":
             self.payment_status="Pending"
+        self.validate_rrco_payment()
             
     def before_submit(self):
         self.utility_payment()
@@ -28,6 +28,15 @@ class UtilityBill(Document):
         # if self.payment_status=="Payment Successful":
         #     self.make_direct_payment()
         
+    def validate_rrco_payment(self):
+        for a in self.get("item"):
+            if a.party == "RRCO":
+                if not self.tds_remittance and not self.journal_entry:
+                    frappe.throw("Please link with TDS Remittance and Journal Entry")
+               
+                if self.tds_remittance and self.journal_entry:
+                    frappe.throw("Cannot link both TDS Remittance and Journal Entry")
+
     def update_pi_number(self):
         for a in self.get("item"):
             if not a.pi_number:
@@ -47,6 +56,20 @@ class UtilityBill(Document):
 
     def on_submit(self):
         self.db_set("workflow_state", self.payment_status)
+        self.update_reference_document()
+
+    def update_reference_document(self):
+        if self.tds_remittance:
+            doc = frappe.get_doc("TDS Remittance", self.tds_remittance)
+            doc.payment_status = self.payment_status
+            doc.utility_bill = self.name
+            doc.save(ignore_permissions=True)
+        
+        if self.journal_entry:
+            doc = frappe.get_doc("Journal Entry", self.journal_entry)
+            doc.payment_status = self.payment_status
+            doc.utility_bill = self.name
+            doc.save(ignore_permissions=True)
     
     def on_cancel(self):
         if self.workflow_state=="Partial Payment" or self.workflow_state=="Payment Successful":
@@ -230,83 +253,47 @@ class UtilityBill(Document):
             d.fetch_status_code = res_status
 
     @frappe.whitelist()
-    def make_direct_payment(self):
-        if self.direct_payment:
-            frappe.throw("Direct Payment No. <b> {} </b>already created for this Utility Bill".format(self.direct_payment))
+    def make_journal_entry(self):
+        if self.journal_entry:
+            frappe.throw("Journal Entry No. <b> {} </b>already created for this Utility Bill".format(self.journal_entry))
 
-        doc = frappe.new_doc("Direct Payment")
+        doc = frappe.new_doc("Journal Entry")
         doc.branch = self.branch
-        doc.cost_center = self.cost_center
         doc.posting_date = self.posting_date
-        doc.payment_type = "Payment"
-        doc.tds_percent = self.tds_percent
-        doc.tds_account = self.tds_account
-        doc.credit_account = self.expense_account
+        doc.entry_type = "Bank Entry"
+        doc.naming_series = "Bank Payment Voucher"
         doc.utility_bill = str(self.name)
-        doc.business_activity = self.business_activity
         doc.remarks = "Utility Bill Payment " + str(self.name)
         doc.status = "Completed"
+        doc.cheque_no = self.name
+        doc.cheque_date = self.posting_date
+        doc.payment_status = "Payment Successful"
         if self.item:
             count_child = 0
             for a in self.item:
-                #if a.create_direct_payment:
                 if a.invoice_amount > 0 and a.payment_status == "Success":
-                    doc.append("item", {
+                    doc.append("accounts", {
+                                "account": a.debit_account if a.debit_account else frappe.db.get_value("Utility Service Type", a.utility_service_type, "expense_account"),
+                                "debit_in_account_currency": a.net_amount,
+                                "reference_type": "",
+                                "reference_no": self.name,
+                                "cost_center": self.cost_center,
                                 "party_type": "Supplier",
-                                "party": a.party,
-                                "account": a.debit_account,
-                                "amount": a.invoice_amount,
-                                "invoice_no": a.invoice_no,
-                                "invoice_date": a.invoice_date,
-                                "tds_applicable": a.tds_applicable,
-                                "taxable_amount": a.invoice_amount,
-                                "tds_amount": a.tds_amount,
-                                "net_amount": a.net_amount,
-                                "payment_status": "Payment Successful"
-                        })
+                                "party": a.party
+                        },)
+                    doc.append("accounts", {
+                        "account": self.expense_account,
+                        "credit_in_account_currency": a.net_amount,
+                        "cost_center": self.cost_center,
+                        "reference_type": ""
+                    })
                     count_child +=1
             if count_child > 0:
                 doc.save()
             if doc.name:
-                self.db_set("direct_payment", doc.name)
+                self.db_set("journal_entry", doc.name)
             return doc.name
-        # doc = frappe.new_doc("Direct Payment")
-        # doc.branch = self.branch
-        # doc.cost_center = self.cost_center
-        # doc.posting_date = self.posting_date
-        # doc.payment_type = "Payment"
-        # doc.tds_percent = self.tds_percent
-        # doc.tds_account = self.tds_account
-        # doc.credit_account = self.expense_account
-        # doc.utility_bill = str(self.name)
-        # doc.business_activity = self.business_activity
-        # doc.remarks = "Utility Bill Payment " + str(self.name)
-        # doc.status = "Completed"
-        # if self.item:
-        #     count_child = 0
-        #     for a in self.item:
-        #         if a.create_direct_payment:
-        #             if a.invoice_amount > 0 and a.payment_status == "Success":
-        #                 doc.append("item", {
-        #                         "party_type": "Supplier",
-        #                         "party": a.party,
-        #                         "account": a.debit_account,
-        #                         "amount": a.invoice_amount,
-        #                         "invoice_no": a.invoice_no,
-        #                         "invoice_date": a.invoice_date,
-        #                         "tds_applicable": a.tds_applicable,
-        #                         "taxable_amount": a.invoice_amount,
-        #                         "tds_amount": a.tds_amount,
-        #                         "net_amount": a.net_amount,
-        #                         "payment_status": "Payment Successful"
-        #                     })
-        #                 count_child +=1
-        #     if count_child > 0:
-        #         doc.submit()
-        #     if doc.name:
-        #         self.db_set("direct_payment", doc.name)
-        #         frappe.msgprint("Direct Payment created and submitted for this Utility Bill")
-                
+       
     def remove_bill_without_os(self):
         to_remove = []
         for d in self.get("item"):

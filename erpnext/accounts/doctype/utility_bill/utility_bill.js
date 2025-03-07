@@ -21,6 +21,22 @@ frappe.ui.form.on('Utility Bill', {
 					cur_frm.set_df_property("bank_balance", "hidden", 1);
 				}
 			});
+
+			frm.set_query("tds_remittance", function(doc) {
+				return {
+					filters: {
+						'payment_status': ['!=', 'Payment Successful']
+					}
+				};
+			});
+
+			frm.set_query("journal_entry", function(doc) {
+				return {
+					filters: {
+						'payment_status': ['!=', 'Payment Successful']
+					}
+				};
+			});
 	},
 	refresh: function(frm) {
 		cur_frm.set_query("utility_services", function() {
@@ -30,15 +46,15 @@ frappe.ui.form.on('Utility Bill', {
 				}
 			}
 		 });
-		 if(!frm.doc.direct_payment && frm.doc.docstatus === 1 && (frm.doc.payment_status === "Payment Successful" || frm.doc.payment_status === "Partial Payment")){
-			frm.add_custom_button("Create Direct Payment", function() {
+		 if ((!frm.doc.journal_entry && !frm.doc.tds_remittance) && frm.doc.docstatus === 1 && (frm.doc.payment_status === "Payment Successful" || frm.doc.payment_status === "Partial Payment")) {
+			frm.add_custom_button("Create Journal Entry", function() {
 				frappe.call({
-					"method": "make_direct_payment",
+					"method": "make_journal_entry",
 					"doc": cur_frm.doc,
 					callback: function(r, rt) {
 						if(r.message){
 							frm.refresh_fields();
-							frappe.set_route("Form", "Direct Payment", r.message);
+							frappe.set_route("Form", "Journal Entry", r.message);
 						}
 					}
 				});
