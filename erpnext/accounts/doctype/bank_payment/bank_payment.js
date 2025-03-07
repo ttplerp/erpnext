@@ -8,30 +8,7 @@ cur_frm.add_fetch("paid_from", "bank_account_type", "bank_account_type");
 cur_frm.add_fetch("paid_from", "bank_account_no", "bank_account_no");	
 frappe.ui.form.on('Bank Payment', {
 	setup: function(frm){
-		var status = {"Draft": "tomato",
-                        "Pending": "orange",
-                        "In progress": "blue",
-                        "Waiting Acknowledgement": "blue",
-						"Processing Acknowledgement": "yellow",
-                        "Upload Failed": "red",
-                        "Failed": "red",
-                        "Completed": "green",
-                        "Cancelled": "black"
-                        };
-		frm.set_indicator_formatter('status',
-			function(doc) {
-				return status[doc.status];
-		});
-
-		frm.set_indicator_formatter('transaction_id',
-			function(doc) {
-				return status[doc.status];
-		});
-
-		frm.set_indicator_formatter('file_name',
-			function(doc) {
-				return status[doc.status];
-		});
+		//Your code
 	},
 	onload: function(frm){
 		enable_disable(frm);
@@ -193,34 +170,14 @@ var enable_disable = function(frm){
 
 var process_payment = function(frm){
 	frappe.call({
-        method: "frappe.client.get",
-        args: {
-            doctype: "Bank Payment Settings",
-            name: "BOBL",
-        },
-        callback(r) {
-            if(r.message) {
-                var from_time = r.message.from_time;
-				var to_time = r.message.to_time;
-				var currentdate = new Date();
-				var currenttime = currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
-                if(currenttime < from_time && currenttime > to_time){
-					frappe.throw("BOBL Bank Payment Transaction is allowed from " + from_time + " to " + to_time)
-				}
-				frappe.call({
-					method: "process_payment",
-					doc: frm.doc,
-					callback: function(r){
-						cur_frm.reload_doc();
-					},
-					freeze: true,
-					freeze_message: "Processing payment.... Please Wait",
-				})
-            }
-        }
-    });
-	
-
+		method: "process_payment",
+		doc: frm.doc,
+		callback: function(r){
+			cur_frm.reload_doc();
+		},
+		freeze: true,
+        freeze_message: "Processing payment.... Please Wait",
+	})
 }
 
 var reupload_files = function(frm){
