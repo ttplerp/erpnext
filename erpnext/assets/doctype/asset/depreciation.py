@@ -59,7 +59,7 @@ def make_depreciation_entry(asset_name, date=None):
 	accounting_dimensions = get_checks_for_pl_and_bs_accounts()
 	branch = asset.branch
 	for d in asset.get("schedules"):
-		if not d.journal_entry and getdate(d.schedule_date) <= getdate(date):
+		if not d.journal_entry and getdate(d.schedule_date) <= getdate(date) and getdate(d.schedule_date) > getdate("2024-01-01"):
 			je = frappe.new_doc("Journal Entry")
 			je.voucher_type 	= "Depreciation Entry"
 			je.naming_series 	= depreciation_series
@@ -436,6 +436,12 @@ def get_gl_entries_on_asset_disposal(asset, selling_amount=0, finance_book=None,
 	disposal_account = loss_disposal_account if flt(profit_amount) < 0 else gain_disposal_account
 	if profit_amount:
 		get_profit_gl_entries(profit_amount, gl_entries, disposal_account, depreciation_cost_center)
+	
+	if voucher_type and voucher_no:
+		for entry in gl_entries:
+			entry["voucher_type"] = voucher_type
+			entry["voucher_no"] = voucher_no
+	
 	return gl_entries
 
 
