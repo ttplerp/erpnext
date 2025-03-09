@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and contributors
 # For license information, please see license.txt
 
@@ -20,7 +21,6 @@ class UtilityBill(Document):
         self.update_pi_number()
         if self.workflow_state == "Waiting For Verification":
             self.payment_status="Pending"
-        self.validate_rrco_payment()
             
     def before_submit(self):
         self.utility_payment()
@@ -28,15 +28,6 @@ class UtilityBill(Document):
         # if self.payment_status=="Payment Successful":
         #     self.make_direct_payment()
         
-    def validate_rrco_payment(self):
-        for a in self.get("item"):
-            if a.party == "RRCO":
-                if not self.tds_remittance and not self.journal_entry:
-                    frappe.throw("Please link with TDS Remittance and Journal Entry")
-               
-                if self.tds_remittance and self.journal_entry:
-                    frappe.throw("Cannot link both TDS Remittance and Journal Entry")
-
     def update_pi_number(self):
         for a in self.get("item"):
             if not a.pi_number:
@@ -56,20 +47,6 @@ class UtilityBill(Document):
 
     def on_submit(self):
         self.db_set("workflow_state", self.payment_status)
-        self.update_reference_document()
-
-    def update_reference_document(self):
-        if self.tds_remittance:
-            doc = frappe.get_doc("TDS Remittance", self.tds_remittance)
-            doc.payment_status = self.payment_status
-            doc.utility_bill = self.name
-            doc.save(ignore_permissions=True)
-        
-        if self.journal_entry:
-            doc = frappe.get_doc("Journal Entry", self.journal_entry)
-            doc.payment_status = self.payment_status
-            doc.utility_bill = self.name
-            doc.save(ignore_permissions=True)
     
     def on_cancel(self):
         if self.workflow_state=="Partial Payment" or self.workflow_state=="Payment Successful":
@@ -252,6 +229,7 @@ class UtilityBill(Document):
             d.outstanding_datetime = now_datetime()
             d.fetch_status_code = res_status
 
+    
     @frappe.whitelist()
     def make_journal_entry(self):
         if self.journal_entry:
@@ -260,20 +238,20 @@ class UtilityBill(Document):
         doc = frappe.new_doc("Journal Entry")
         doc.branch = self.branch
         doc.posting_date = self.posting_date
-        doc.entry_type = "Bank Entry"
-        doc.naming_series = "Bank Payment Voucher"
+        doc.entry_type = "Journal Entry"
+        doc.naming_series = "Journal Entry"
+        doc.company = "State Mining Corporation Ltd"
         doc.utility_bill = str(self.name)
         doc.remarks = "Utility Bill Payment " + str(self.name)
         doc.status = "Completed"
         doc.cheque_no = self.name
         doc.cheque_date = self.posting_date
-        doc.payment_status = "Payment Successful"
         if self.item:
             count_child = 0
             for a in self.item:
                 if a.invoice_amount > 0 and a.payment_status == "Success":
                     doc.append("accounts", {
-                                "account": a.debit_account if a.debit_account else frappe.db.get_value("Utility Service Type", a.utility_service_type, "expense_account"),
+                                "account": a.debit_account,
                                 "debit_in_account_currency": a.net_amount,
                                 "reference_type": "",
                                 "reference_no": self.name,
@@ -293,7 +271,7 @@ class UtilityBill(Document):
             if doc.name:
                 self.db_set("journal_entry", doc.name)
             return doc.name
-       
+                
     def remove_bill_without_os(self):
         to_remove = []
         for d in self.get("item"):
