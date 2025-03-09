@@ -43,7 +43,6 @@ class BankPayment(Document):
         self.update_totals()
         self.get_bank_available_balance()
         self.check_one_one_or_bulk_payment()
-        self.validate_approver()
         self.update_pi_number()
 
     def before_submit(self):
@@ -93,33 +92,7 @@ class BankPayment(Document):
                             for rec in self.items:
                                 if rec.bank_account_no == bank_account_no_from_ack:
                                     rec.db_set("error_message", bank_response)
-
-    def validate_approver(self):
-        if self.workflow_state == "Approved":
-            approver_dtl = []
-            for a in frappe.db.sql(
-                """select approver_user_id, approver_name, approver_employee
-											from `tabBank Payment Approver` 
-											where  minimum <= {0} and maximum >= {0}
-										""".format(
-                    self.total_amount
-                ),
-                as_dict=True,
-            ):
-                approver_dtl.append(a.approver_user_id)
-
-            if not approver_dtl:
-                frappe.throw(
-                    "Approver in Bank Payment Setting is not set. Please set the approver"
-                )
-            if frappe.session.user not in approver_dtl:
-                frappe.throw(
-                    "As per the Bank Payment Settings, {0} is/are designated to approved this payment".format(
-                        approver_dtl
-                    )
-                )
-            self.approver = get_fullname(frappe.session.user)
-            
+        
 
     def update_pi_number(self):
         if self.payment_type == "One-One Payment":
