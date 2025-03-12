@@ -14,6 +14,7 @@ from erpnext.accounts.doctype.bank_payment.bank_payment import get_transaction_i
 class TaxPayment(Document):
 	def validate(self): 
 		check_future_date(self.posting_date)
+		self.validate_outstanding()
 		self.get_bank_available_balance()
 		self.update_status()
 
@@ -25,6 +26,10 @@ class TaxPayment(Document):
 
 	def on_cancel(self):
 		self.update_status()
+
+	def validate_outstanding(self):
+		if self.outstanding_amount <= 0:
+			frappe.throw("Payment cannot be processed as the outstanding amount is zero.")
 
 	def update_status(self):
 		status = {0: "Draft", 1: "Pending", 2: "Cancelled"}[self.docstatus]
@@ -100,17 +105,17 @@ class TaxPayment(Document):
 				self.payment_response_msg = details['ErrorMessage']
 				status = "Payment Failed"
 
-		# Update status
-		if status:
-			self.db_set("status", status)
-			self.db_set("workflow_state", status)
-			self.reload()
+			# Update status
+			if status:
+				self.db_set("status", status)
+				self.db_set("workflow_state", status)
+				self.reload()
 
-		if self.tds_remittance:
-			doc = frappe.get_doc("TDS Remittance", self.tds_remittance)
-			doc.payment_status = status
-			doc.tax_payment = self.name
-			doc.save(ignore_permissions=True)
+			if self.tds_remittance:
+				doc = frappe.get_doc("TDS Remittance", self.tds_remittance)
+				doc.payment_status = status
+				doc.tax_payment = self.name
+				doc.save(ignore_permissions=True)
 
 	@frappe.whitelist()
 	def get_outstanding_amount(self):
