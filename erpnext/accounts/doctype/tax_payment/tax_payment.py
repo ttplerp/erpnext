@@ -29,6 +29,14 @@ class TaxPayment(Document):
 					frappe.msgprint(_("Unable to fetch Bank Balance.\n  {}").format(result['error']))
 
 	@frappe.whitelist()
+	def process_payment(self):
+		if self.status != "Pending":
+			frappe.msgprint(_("Only transactions in Pending status can be processed"))
+			return
+		
+		# here
+
+	@frappe.whitelist()
 	def get_outstanding_amount(self):
 		api_name = "Utility Payment - Outstanding Fetch"
 		url = "http://10.40.40.70:6969/mfmbs/amountfetchfromcorporate" 

@@ -71,7 +71,7 @@ function get_utility_outstandings(frm){
 		},
 		freeze: true,
 		freeze_message: "Fetching Utility Outstanding Amount..... Please Wait"
-	});     
+	});
 }
 
 function get_utility_services(frm){
@@ -85,7 +85,7 @@ function get_utility_services(frm){
 			},
 			freeze: true,
 			freeze_message: "Fetching Utility Outstanding Amount..... Please Wait"
-		});     
+		});
 	}else{
 		frappe.msgprint("To fetch Utility Outstanding Amount, provide Branch and Utility Services ID");
 	}

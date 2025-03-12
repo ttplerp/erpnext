@@ -1,10 +1,15 @@
 // Copyright (c) 2025, Frappe Technologies Pvt. Ltd. and contributors
 // For license information, please see license.txt
 
+cur_frm.add_fetch("bank_account", "bank_name", "bank_name");	
+cur_frm.add_fetch("bank_account", "bank_branch", "bank_branch");	
+cur_frm.add_fetch("bank_account", "bank_account_type", "bank_account_type");
 cur_frm.add_fetch("bank_account", "bank_account_no", "bank_ac_no");
 
 frappe.ui.form.on('Tax Payment', {
 	onload: function(frm) {
+		create_custom_buttons(frm);
+
 		frm.set_query("bank_account", function() {
 			return {
 				query: "erpnext.accounts.doctype.bank_payment.bank_payment.get_paid_from",
@@ -16,7 +21,7 @@ frappe.ui.form.on('Tax Payment', {
 	},
 
 	refresh: function(frm) {
-
+		create_custom_buttons(frm);
 	},
 
 	bank_ac_no: function(frm){
@@ -29,7 +34,6 @@ frappe.ui.form.on('Tax Payment', {
 				method: "get_outstanding_amount",
 				doc: frm.doc,
 				callback: function(r) {
-					// frm.set_value("outstanding_amount", r.message.outstanding_amount);
 					frm.refresh_fields();
 				}
 			})
@@ -55,4 +59,28 @@ var fetch_bank_balance = function(frm){
 			}
 		});
 	}
+}
+
+var create_custom_buttons = function(frm){
+	if(!frm.is_new() && !frm.is_dirty()){
+		if(frm.doc.docstatus == 1){
+			if(frm.doc.status == "Pending"){
+				frm.page.set_primary_action(__('Process Payment'), () => {
+					process_payment(frm);
+				});
+			}
+		}
+	}
+}
+
+var process_payment = function(frm){
+	frappe.call({
+		method: "process_payment",
+		doc: frm.doc,
+		callback: function(r){
+			cur_frm.reload_doc();
+		},
+		freeze: true,
+        freeze_message: "Processing payment.... Please Wait",
+	})
 }

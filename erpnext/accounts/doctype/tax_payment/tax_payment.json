@@ -1,27 +1,33 @@
 {
  "actions": [],
- "allow_rename": 1,
  "autoname": "TX.-.YYYY.-.MM.-.####",
  "creation": "2025-03-12 20:34:06.065630",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "basic_details",
   "branch",
   "bank_account",
-  "bank_ac_no",
-  "bank_balance",
-  "tds_remittance",
   "column_break_3",
   "posting_date",
-  "dv_number",
   "status",
+  "tds_details_section",
+  "tds_remittance",
+  "column_break_8",
+  "dv_number",
+  "section_break_9",
+  "bank_name",
+  "bank_branch",
+  "column_break_12",
+  "bank_account_type",
+  "bank_ac_no",
+  "bank_balance",
   "section_break_5",
   "get_outstanding",
   "api_respond_details_section",
   "outstanding_amount",
   "outstanding_datetime",
-  "column_break_10",
   "response_msg",
   "fetch_status_code",
   "column_break_13",
@@ -102,10 +108,6 @@
    "label": "API Respond Details"
   },
   {
-   "fieldname": "column_break_10",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "response_msg",
    "fieldtype": "Small Text",
    "label": "Fetch outstanding API Response"
@@ -171,7 +173,8 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "Pending"
+   "options": "Draft\nPending\nPayment Successful\nPayment Failed\nCancelled",
+   "read_only": 1
   },
   {
    "fieldname": "branch",
@@ -183,7 +186,9 @@
   {
    "fieldname": "bank_ac_no",
    "fieldtype": "Data",
-   "label": "Bank A/C No."
+   "label": "Bank A/C No.",
+   "no_copy": 1,
+   "read_only": 1
   },
   {
    "fieldname": "bank_account",
@@ -194,13 +199,62 @@
   {
    "fieldname": "bank_balance",
    "fieldtype": "Currency",
-   "label": "Bank Balance"
+   "label": "Bank Balance",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_9",
+   "fieldtype": "Section Break",
+   "label": "Bank Info"
+  },
+  {
+   "fieldname": "bank_name",
+   "fieldtype": "Link",
+   "label": "Bank Name",
+   "no_copy": 1,
+   "options": "Financial Institution",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_12",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "bank_account_type",
+   "fieldtype": "Link",
+   "label": "Bank Account Type",
+   "no_copy": 1,
+   "options": "Bank Account Type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bank_branch",
+   "fieldtype": "Link",
+   "label": "Bank Branch",
+   "no_copy": 1,
+   "options": "Financial Institution Branch",
+   "read_only": 1
+  },
+  {
+   "fieldname": "tds_details_section",
+   "fieldtype": "Section Break",
+   "label": "TDS Details"
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "basic_details",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-03-12 23:17:06.374576",
+ "modified": "2025-03-13 00:16:18.320544",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Tax Payment",
