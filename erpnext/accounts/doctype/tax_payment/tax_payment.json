@@ -12,10 +12,6 @@
   "column_break_3",
   "posting_date",
   "status",
-  "tds_details_section",
-  "tds_remittance",
-  "column_break_8",
-  "dv_number",
   "section_break_9",
   "bank_name",
   "bank_branch",
@@ -23,6 +19,10 @@
   "bank_account_type",
   "bank_ac_no",
   "bank_balance",
+  "tds_details_section",
+  "tds_remittance",
+  "column_break_8",
+  "dv_number",
   "section_break_5",
   "get_outstanding",
   "api_respond_details_section",
@@ -94,13 +94,15 @@
    "fieldname": "dv_number",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "DV Number",
+   "label": "Deposit Voucher Number",
    "reqd": 1
   },
   {
    "fieldname": "outstanding_amount",
    "fieldtype": "Currency",
-   "label": "Outstanding Amount"
+   "label": "Outstanding Amount",
+   "no_copy": 1,
+   "read_only": 1
   },
   {
    "fieldname": "api_respond_details_section",
@@ -110,7 +112,9 @@
   {
    "fieldname": "response_msg",
    "fieldtype": "Small Text",
-   "label": "Fetch outstanding API Response"
+   "label": "Fetch outstanding API Response",
+   "no_copy": 1,
+   "read_only": 1
   },
   {
    "fieldname": "fetch_status_code",
@@ -139,7 +143,9 @@
   {
    "fieldname": "payment_status_code",
    "fieldtype": "Data",
-   "label": "Payment Status Code"
+   "label": "Payment Status Code",
+   "no_copy": 1,
+   "read_only": 1
   },
   {
    "fieldname": "section_break_18",
@@ -167,7 +173,9 @@
   {
    "fieldname": "outstanding_datetime",
    "fieldtype": "Datetime",
-   "label": "Outstanding DateTime"
+   "label": "Outstanding DateTime",
+   "no_copy": 1,
+   "read_only": 1
   },
   {
    "fieldname": "status",
@@ -254,7 +262,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-03-13 00:16:18.320544",
+ "modified": "2025-03-13 00:22:42.543047",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Tax Payment",
