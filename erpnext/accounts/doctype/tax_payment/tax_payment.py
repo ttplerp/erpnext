@@ -6,7 +6,7 @@ import frappe
 import requests, json
 from frappe import _
 from frappe.model.document import Document
-from frappe.utils import flt, cint, getdate, get_datetime, get_url, nowdate, now_datetime, money_in_words
+from frappe.utils import now_datetime
 from erpnext.custom_utils import check_future_date
 from erpnext.integrations.bank_api import fetch_balance
 from erpnext.accounts.doctype.bank_payment.bank_payment import get_transaction_id
@@ -15,6 +15,16 @@ class TaxPayment(Document):
 	def validate(self): 
 		check_future_date(self.posting_date)
 		self.get_bank_available_balance()
+
+	def before_submit(self):
+		status = {0: "Draft", 1: "Pending", 2: "Cancelled"}[self.docstatus]
+		if self.docstatus == 2:
+			self.db_set("status", "Cancelled")
+			self.db_set("workflow_state", "Cancelled")
+		self.status = status
+
+	def on_submit(self):
+		self.pi_number = get_transaction_id()
 
 	def get_bank_available_balance(self):
 		if self.bank_account and frappe.db.get_value('Bank Payment Settings', "BOBL", 'enable_one_to_one'):
@@ -41,7 +51,6 @@ class TaxPayment(Document):
 			service_type = "RRCOTax"
 			consumer_field = "RRCOTaxCode"
 
-
 			os = str(self.outstanding_amount)
 			if os.count("."):
 				os_nu = os.split(".",1)[0]
@@ -67,7 +76,34 @@ class TaxPayment(Document):
 			self.request = str(payload)
 			headers = {
 				'Content-Type': 'application/json'
-			} 
+			}
+
+			response = requests.request("POST", url, headers=headers, data=payload)
+			details = response.json()
+			self.response = str(details)
+			res_status = details['statusCode']
+			self.payment_status_code = res_status
+
+			status = None
+			if res_status == "00":
+				self.payment_response_msg = details['ResultMessage']
+				self.payment_journal_no = details['jrnlno']
+				status = "Payment Successful"
+			else:
+				self.payment_response_msg = details['ErrorMessage']
+				status = "Payment Failed"
+
+		# Update status
+		if status:
+			self.db_set("status", status)
+			self.db_set("workflow_state", status)
+			self.reload()
+
+		if self.tds_remittance:
+			doc = frappe.get_doc("TDS Remittance", self.tds_remittance)
+			doc.payment_status = status
+			doc.tax_payment = self.name
+			doc.save(ignore_permissions=True)
 
 	@frappe.whitelist()
 	def get_outstanding_amount(self):

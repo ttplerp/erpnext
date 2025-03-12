@@ -41,7 +41,11 @@
   "cheque_no",
   "cheque_date",
   "section_break_34",
-  "amended_from"
+  "amended_from",
+  "more_info_section",
+  "tax_payment",
+  "column_break_38",
+  "payment_status"
  ],
  "fields": [
   {
@@ -262,12 +266,38 @@
   {
    "fieldname": "section_break_34",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "more_info_section",
+   "fieldtype": "Section Break",
+   "label": "More Info"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "tax_payment",
+   "fieldtype": "Link",
+   "label": "Tax Payment",
+   "no_copy": 1,
+   "options": "Tax Payment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_38",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "payment_status",
+   "fieldtype": "Data",
+   "label": "Payment Status",
+   "no_copy": 1,
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-01-09 16:11:42.569063",
+ "modified": "2025-03-13 01:07:22.311821",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "TDS Remittance",
