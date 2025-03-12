@@ -7,11 +7,15 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "company",
+  "branch",
+  "bank_account",
+  "bank_ac_no",
+  "bank_balance",
   "tds_remittance",
   "column_break_3",
   "posting_date",
   "dv_number",
+  "status",
   "section_break_5",
   "get_outstanding",
   "api_respond_details_section",
@@ -30,6 +34,7 @@
   "column_break_20",
   "response",
   "section_break_18",
+  "company",
   "amended_from"
  ],
  "fields": [
@@ -161,12 +166,41 @@
    "fieldname": "outstanding_datetime",
    "fieldtype": "Datetime",
    "label": "Outstanding DateTime"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Pending"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fieldname": "bank_ac_no",
+   "fieldtype": "Data",
+   "label": "Bank A/C No."
+  },
+  {
+   "fieldname": "bank_account",
+   "fieldtype": "Link",
+   "label": "Bank Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "bank_balance",
+   "fieldtype": "Currency",
+   "label": "Bank Balance"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-03-12 21:14:19.672685",
+ "modified": "2025-03-12 23:17:06.374576",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Tax Payment",
