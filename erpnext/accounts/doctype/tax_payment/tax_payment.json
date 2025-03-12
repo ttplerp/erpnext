@@ -86,6 +86,7 @@
    "fieldtype": "Section Break"
   },
   {
+   "depends_on": "eval:doc.docstatus == 0;",
    "fieldname": "get_outstanding",
    "fieldtype": "Button",
    "label": "Get Outstanding"
@@ -263,7 +264,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-03-13 00:25:40.412515",
+ "modified": "2025-03-13 00:45:20.069566",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Tax Payment",
