@@ -15,16 +15,23 @@ class TaxPayment(Document):
 	def validate(self): 
 		check_future_date(self.posting_date)
 		self.get_bank_available_balance()
+		self.update_status()
 
 	def before_submit(self):
+		self.update_status()
+
+	def on_submit(self):
+		self.pi_number = get_transaction_id()
+
+	def on_cancel(self):
+		self.update_status()
+
+	def update_status(self):
 		status = {0: "Draft", 1: "Pending", 2: "Cancelled"}[self.docstatus]
 		if self.docstatus == 2:
 			self.db_set("status", "Cancelled")
 			self.db_set("workflow_state", "Cancelled")
 		self.status = status
-
-	def on_submit(self):
-		self.pi_number = get_transaction_id()
 
 	def get_bank_available_balance(self):
 		if self.bank_account and frappe.db.get_value('Bank Payment Settings', "BOBL", 'enable_one_to_one'):
