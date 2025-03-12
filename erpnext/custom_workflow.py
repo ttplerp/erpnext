@@ -841,7 +841,7 @@ class CustomWorkflow:
 			self.set_approver("HRGM")
 		elif self.new_state.lower() in ("Approved".lower()):
 			if self.doc.approver != frappe.session.user:
-				frappe.throw("Only {} can Approve this document".format(self.doc.approver_id))
+				frappe.throw("Only {} can Approve this document".format(self.doc.approver))
 
 	def overtime_application(self):
 		if self.new_state.lower() in ("Draft".lower(), "Waiting Supervisor Approval".lower()):
