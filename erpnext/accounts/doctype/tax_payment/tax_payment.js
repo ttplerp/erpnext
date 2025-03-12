@@ -19,7 +19,7 @@ frappe.ui.form.on('Tax Payment', {
 
 	},
 
-	bank_account_no: function(frm){
+	bank_ac_no: function(frm){
 		fetch_bank_balance(frm);
 	},
 
