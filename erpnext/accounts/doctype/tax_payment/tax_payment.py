@@ -34,7 +34,40 @@ class TaxPayment(Document):
 			frappe.msgprint(_("Only transactions in Pending status can be processed"))
 			return
 		
-		# here
+		if self.outstanding_amount > 0 and not self.payment_status_code:
+			api_name = "Utility Payment - Payments"
+			url = "http://10.40.40.70:6969/mfmbs/paymentfromcorporate"
+			service_id = '1215'
+			service_type = "RRCOTax"
+			consumer_field = "RRCOTaxCode"
+
+
+			os = str(self.outstanding_amount)
+			if os.count("."):
+				os_nu = os.split(".",1)[0]
+				os_ch = os.split(".",1)[1]
+				os_ch = os_ch if len(os_ch) > 1 else str(os_ch)+"0"
+				actual_os = str(os_nu)+"."+str(os_ch)
+			else:
+				actual_os = str(os)
+
+			api_param = {
+				'USERID': 'k/2hOY+lcyyteFTNISyXYg==', 
+				'PWD': 'CCPztRtsxj5g8DjvV7bkKQ==', 
+				'CORP_KEY': 'NH', 
+				'serviceid': service_id, 
+				'servicetype': service_type, 
+				'FrmAcctNum': self.bank_ac_no,
+				'Amt': str(actual_os),
+				'pi': self.pi_number
+			}
+
+			api_param[consumer_field] = str(self.dv_number)
+			payload = json.dumps(api_param)
+			self.request = str(payload)
+			headers = {
+				'Content-Type': 'application/json'
+			} 
 
 	@frappe.whitelist()
 	def get_outstanding_amount(self):
