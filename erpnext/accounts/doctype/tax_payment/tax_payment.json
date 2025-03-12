@@ -1,0 +1,206 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "TX.-.YYYY.-.MM.-.####",
+ "creation": "2025-03-12 20:34:06.065630",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "company",
+  "tds_remittance",
+  "column_break_3",
+  "posting_date",
+  "dv_number",
+  "section_break_5",
+  "get_outstanding",
+  "api_respond_details_section",
+  "outstanding_amount",
+  "outstanding_datetime",
+  "column_break_10",
+  "response_msg",
+  "fetch_status_code",
+  "column_break_13",
+  "pi_number",
+  "payment_journal_no",
+  "payment_response_msg",
+  "payment_status_code",
+  "api_request_response_section",
+  "request",
+  "column_break_20",
+  "response",
+  "section_break_18",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Tax Payment",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "tds_remittance",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "TDS Remittance",
+   "options": "TDS Remittance",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_5",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "get_outstanding",
+   "fieldtype": "Button",
+   "label": "Get Outstanding"
+  },
+  {
+   "fieldname": "dv_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "DV Number",
+   "reqd": 1
+  },
+  {
+   "fieldname": "outstanding_amount",
+   "fieldtype": "Currency",
+   "label": "Outstanding Amount"
+  },
+  {
+   "fieldname": "api_respond_details_section",
+   "fieldtype": "Section Break",
+   "label": "API Respond Details"
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "response_msg",
+   "fieldtype": "Small Text",
+   "label": "Fetch outstanding API Response"
+  },
+  {
+   "fieldname": "fetch_status_code",
+   "fieldtype": "Data",
+   "label": "Fetch Response Status Code"
+  },
+  {
+   "fieldname": "column_break_13",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pi_number",
+   "fieldtype": "Data",
+   "label": "PI Number"
+  },
+  {
+   "fieldname": "payment_journal_no",
+   "fieldtype": "Data",
+   "label": "Payment Journal No"
+  },
+  {
+   "fieldname": "payment_response_msg",
+   "fieldtype": "Small Text",
+   "label": "Payment API Respond"
+  },
+  {
+   "fieldname": "payment_status_code",
+   "fieldtype": "Data",
+   "label": "Payment Status Code"
+  },
+  {
+   "fieldname": "section_break_18",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "api_request_response_section",
+   "fieldtype": "Section Break",
+   "label": "API Request & Response"
+  },
+  {
+   "fieldname": "request",
+   "fieldtype": "Small Text",
+   "label": "API Request"
+  },
+  {
+   "fieldname": "column_break_20",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "response",
+   "fieldtype": "Small Text",
+   "label": "API Respond"
+  },
+  {
+   "fieldname": "outstanding_datetime",
+   "fieldtype": "Datetime",
+   "label": "Outstanding DateTime"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-03-12 21:14:19.672685",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Tax Payment",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

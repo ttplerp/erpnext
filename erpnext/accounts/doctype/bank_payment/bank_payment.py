@@ -495,21 +495,20 @@ class BankPayment(Document):
             row.update({"note_type": i, "amount": debit_notes[i], "debit_note": None})
 
     def get_transactions(self):
+        if self.payment_type == "One-One Payment" and frappe.db.get_value("Bank Payment Settings", self.bank_name, "enable_one_to_one"):
+            limit = frappe.db.get_value("Bank Payment Settings", self.bank_name, "transaction_limit")
+        else:
+            limit = None
+
         data = []
-        if self.transaction_type == "Mechanical Payment":
-            data = self.get_mechanical_payments()
-        elif self.transaction_type == "Salary":
+        if self.transaction_type == "Salary":
             data = self.get_salary()
-        elif self.transaction_type in ("Bonus"):
-            frappe.msgprint(_("Under development"))
         elif self.transaction_type == "Payment Entry":
             data = self.get_payment_entry()
         elif self.transaction_type == "Journal Entry":
-            data = self.get_journal_entry()
+            data = self.get_journal_entry(limit)
         elif self.transaction_type == "Leave Travel Concession":
             data = self.get_ltc_payment()
-        elif self.transaction_type == "Employee Loan Payment":
-            data = self.get_loan_detail()
         elif self.transaction_type == "PBVA":
             data = self.get_pbva()
         elif self.transaction_type == "Bulk Leave Encashment":
@@ -517,86 +516,7 @@ class BankPayment(Document):
         data = merge_similar_entries(data)
         return data
 
-    """
-	# Fetch Employee Loan Details
-	# Author: thukday@gmail.com
-	# Date : 2022-02-07
-	"""
-
-    def get_loan_detail(self):
-        if not self.institution_name:
-            frappe.throw("Please select Financial Institution")
-
-        doc = frappe.get_doc("Financial Institution", self.institution_name)
-        if not doc.loan_payment_in_bob_account:
-            return frappe.db.sql(
-                """SELECT "Salary Slip" transaction_type, t1.name transaction_id, 
-							t2.name transaction_reference, t1.modified transaction_date,
-							t1.employee, t1.employee_name beneficiary_name, 
-							t2.institution_name bank_name, t2.bank_branch, fib.financial_system_code,
-							t2.bank_account_type, t2.reference_number as bank_account_no, t2.amount,
-							'Loan remittance for {month}-{salary_year}' remarks, "Draft" status						
-						FROM `tabSalary Slip` t1
-							JOIN `tabSalary Detail` t2 ON t1.name = t2.parent
-							LEFT JOIN `tabFinancial Institution Branch` fib ON fib.name = t2.bank_branch
-						WHERE t1.fiscal_year = '{salary_year}'
-						AND t2.amount > 0
-						AND t2.salary_component = 'Financial Institution Loan'
-						AND t1.month = '{salary_month}'
-						AND t1.docstatus = 1
-						AND t2.institution_name = '{institution}'
-						AND NOT EXISTS(select 1
-							FROM `tabBank Payment Item` bpi
-							WHERE bpi.transaction_type = 'Salary Slip'
-							AND bpi.transaction_id = t1.name
-							AND bpi.transaction_reference = t2.name
-							AND bpi.parent != '{bank_payment}'
-							AND bpi.docstatus != 2
-							AND bpi.status NOT IN ('Cancelled', 'Failed')
-						)
-					""".format(
-                    salary_year=self.fiscal_year,
-                    salary_month=self.get_month_id(self.month),
-                    month=self.month,
-                    institution=self.institution_name,
-                    bank_payment=self.name,
-                ),
-                as_dict=True,
-            )
-        else:
-            return frappe.db.sql(
-                """SELECT "Salary Slip" transaction_type, t1.name transaction_id, 
-							t2.name transaction_reference, t1.modified transaction_date,
-							fi.account_holder_name beneficiary_name, 
-							'BOBL' as bank_name, fi.bank_branch, fib.financial_system_code,
-							fi.bank_account_type, fi.account_no bank_account_no, sum(t2.amount) as amount,
-							'Loan remittance for {month}-{salary_year}' remarks, "Draft" status						
-						FROM `tabSalary Slip` t1
-							JOIN `tabSalary Detail` t2 ON t1.name = t2.parent
-							JOIN `tabFinancial Institution` fi ON fi.name = t2.institution_name
-							LEFT JOIN `tabFinancial Institution Branch` fib ON fib.name = fi.bank_branch
-						WHERE t1.fiscal_year = '{salary_year}'
-						AND t2.salary_component = 'Financial Institution Loan'
-						AND t1.month = '{salary_month}'
-						AND t1.docstatus = 1
-						AND t2.institution_name = '{institution}'
-					""".format(
-                    salary_year=self.fiscal_year,
-                    salary_month=self.get_month_id(self.month),
-                    month=self.month,
-                    institution=self.institution_name,
-                    bank_payment=self.name,
-                ),
-                as_dict=True,
-            )
-
-    """
-	#Fetch Transactions from Journal Entry
-	#Author : Thukten Dendup <thukday@gmail.com>
-	#Date: 2023-01-04
-	"""
-
-    def get_journal_entry(self):
+    def get_journal_entry(self, limit_value):
         data = []
         cond = ""
         if self.transaction_no:
@@ -606,22 +526,28 @@ class BankPayment(Document):
                 str(self.from_date), str(self.to_date)
             )
         for a in frappe.db.sql(
-            """SELECT je.name transaction_id, je.posting_date transaction_date, je.voucher_type,
-								je.user_remark
-								FROM `tabJournal Entry` je 
-								where je.docstatus = 1
-								{cond}
-								AND je.voucher_type in ('Bank Entry','Contra Entry') 
-								AND NOT EXISTS(select 1
-									FROM `tabBank Payment Item` bpi
-									WHERE bpi.transaction_type = 'Journal Entry'
+            """
+                SELECT 
+                    je.name transaction_id, 
+                    je.posting_date transaction_date, 
+                    je.voucher_type,
+					je.user_remark            
+                FROM `tabJournal Entry` je 
+				WHERE je.docstatus = 1
+				    {cond}
+					AND je.voucher_type in ('Bank Entry','Contra Entry') 
+					AND NOT EXISTS(
+                                    select 1
+					                FROM `tabBank Payment Item` bpi
+					                WHERE bpi.transaction_type = 'Journal Entry'
 									AND bpi.transaction_id = je.name
 									AND bpi.parent != '{bank_payment}'
 									AND bpi.docstatus != 2
 									AND bpi.status NOT IN ('Cancelled', 'Failed')
-								)
-								ORDER BY je.posting_date
-							""".format(
+					)
+				ORDER BY 
+                    je.posting_date
+			""".format(
                 bank_payment=self.name, cond=cond
             ),
             as_dict=True,
@@ -630,16 +556,20 @@ class BankPayment(Document):
                 debit_amt = credit_amt = 0.00
                 debit_bank_account = 0
                 for p in frappe.db.sql(
-                    """select a.account, round(a.debit_in_account_currency,2) as debit, 
-									round(a.credit_in_account_currency,2) as credit,
-									b.bank_name, b.bank_branch, b.bank_account_type, b.bank_account_no, b.company
-									from `tabJournal Entry Account` a
-									inner join `tabAccount` b on a.account = b.name
-									where a.parent = '{journal_entry}'
-									and b.account_type = "Bank"
-									""".format(
-                        journal_entry=a.transaction_id
-                    ),
+                    """
+                        select 
+                            a.account, 
+                            round(a.debit_in_account_currency, 2) as debit, 
+							round(a.credit_in_account_currency,2) as credit,
+							b.bank_name, 
+                            b.bank_branch, 
+                            b.bank_account_type, 
+                            b.bank_account_no, b.company
+						from `tabJournal Entry Account` a
+						inner join `tabAccount` b on a.account = b.name
+						where a.parent = '{journal_entry}'
+							and b.account_type = "Bank"
+					""".format(journal_entry=a.transaction_id),
                     as_dict=True,
                 ):
                     debit_amt += p.debit
@@ -663,22 +593,22 @@ class BankPayment(Document):
                         )
                     if flt(p.debit) > 0:
                         debit_bank_account += 1
+
             elif a.voucher_type == "Bank Entry":
                 payment_dtl = []
                 party_type = party = reference_type = reference_name = ""
                 for b in frappe.db.sql(
-                    """select party, party_type,
-										sum(if(credit>0, credit, credit_in_account_currency)) as credit,
-										sum(if(debit>0, debit, debit_in_account_currency)) as debit,
-										sum(tax_amount) as tax_amount
-									from `tabJournal Entry Account` 
-									where parent = '{journal_entry}'
-									AND party!="" AND party is NOT NULL
-									group by party
-								""".format(
-                        journal_entry=a.transaction_id
-                    ),
-                    as_dict=True,
+                    """select 
+                            party, 
+                            party_type,
+							sum(if(credit>0, credit, credit_in_account_currency)) as credit,
+							sum(if(debit>0, debit, debit_in_account_currency)) as debit,
+							sum(tax_amount) as tax_amount
+						from `tabJournal Entry Account` 
+						where parent = '{journal_entry}'
+							AND party!="" AND party is NOT NULL
+						group by party
+					""".format(journal_entry=a.transaction_id), as_dict=True
                 ):
                     amount = flt(b.debit - b.credit - b.tax_amount, 2)
                     payment_dtl.append(
@@ -692,11 +622,17 @@ class BankPayment(Document):
                     )
                 supplier, employee = None, None
                 for i in payment_dtl:
-                    if i["party_type"] == "Supplier":
+                    if i["party_type"] == "Customer":
+                        continue
+
+                    elif i["party_type"] == "Supplier":
                         query = """
                             SELECT 
-                                s.bank_name, s.bank_branch, s.bank_account_type, 
-                                s.account_number AS bank_account_no, s.supplier_name AS beneficiary_name,
+                                s.bank_name, 
+                                s.bank_branch, 
+                                s.bank_account_type, 
+                                s.account_number AS bank_account_no, 
+                                s.supplier_name AS beneficiary_name,
                                 CASE WHEN s.bank_name = "INR" THEN s.inr_bank_code ELSE NULL END AS inr_bank_code,
                                 CASE WHEN s.bank_name = "INR" THEN s.inr_purpose_code ELSE NULL END AS inr_purpose_code
                             FROM 
@@ -709,9 +645,13 @@ class BankPayment(Document):
                     elif i["party_type"] == "Employee":
                         query = """
                             SELECT 
-                                e.bank_name, e.bank_branch, e.bank_account_type, 
+                                e.bank_name, 
+                                e.bank_branch, 
+                                e.bank_account_type, 
                                 e.employee_name AS beneficiary_name,
-                                e.bank_ac_no AS bank_account_no, NULL AS inr_bank_code, NULL AS inr_purpose_code
+                                e.bank_ac_no AS bank_account_no, 
+                                NULL AS inr_bank_code, 
+                                NULL AS inr_purpose_code
                             FROM 
                                 `tabEmployee` e
                             WHERE 
@@ -722,9 +662,13 @@ class BankPayment(Document):
                     elif i["party_type"] == "Muster Roll Employee":
                         query = """
                             SELECT 
-                                e.bank_name, e.bank_branch, e.bank_account_type, 
+                                e.bank_name, 
+                                e.bank_branch, 
+                                e.bank_account_type, 
                                 e.person_name AS beneficiary_name,
-                                e.bank_ac_no AS bank_account_no, NULL AS inr_bank_code, NULL AS inr_purpose_code
+                                e.bank_ac_no AS bank_account_no, 
+                                NULL AS inr_bank_code, 
+                                NULL AS inr_purpose_code
                             FROM 
                                 `tabMuster Roll Employee` e
                             WHERE 
@@ -732,7 +676,6 @@ class BankPayment(Document):
                         """
                         params = [i["party"]]
                     
-                    # Execute the query with parameters
                     dtl = frappe.db.sql(query, params, as_dict=True)
 
                     data.append(
@@ -756,6 +699,9 @@ class BankPayment(Document):
                             }
                         )
                     )
+        if limit_value:
+            data = data[:limit_value]
+
         return data
 
     def get_payment_entry(self):
@@ -768,22 +714,30 @@ class BankPayment(Document):
             )
 
         return frappe.db.sql(
-            """SELECT "Payment Entry" transaction_type, pe.name transaction_id, 
-						pe.name transaction_reference, pe.posting_date transaction_date, 
-						pe.party as supplier, pe.party as beneficiary_name, 
-						s.bank_name as bank_name, s.bank_branch, fib.financial_system_code, s.bank_account_type, s.account_number as bank_account_no,
-						round(( pe.paid_amount_after_tax + (select ifnull(sum(ped.amount),0)
-											from `tabPayment Entry Deduction` ped
-											where ped.parent = pe.name
-											)
-						),2) amount,
-						(CASE WHEN s.bank_name = "INR" THEN s.inr_bank_code ELSE NULL END) inr_bank_code,
-						(CASE WHEN s.bank_name = "INR" THEN s.inr_purpose_code ELSE NULL END) inr_purpose_code,
-						"Draft" status
-					FROM `tabPayment Entry` pe
-					JOIN `tabSupplier` s ON s.name = pe.party
-					LEFT JOIN `tabFinancial Institution Branch` fib ON fib.name = s.bank_branch
-					WHERE pe.branch = "{branch}" 
+            """
+                SELECT 
+                    "Payment Entry" transaction_type, 
+                    pe.name transaction_id, 
+					pe.name transaction_reference, 
+                    pe.posting_date transaction_date, 
+					pe.party as supplier, 
+                    pe.party as beneficiary_name, 
+					s.bank_name as bank_name, 
+                    s.bank_branch, 
+                    fib.financial_system_code, 
+                    s.bank_account_type, 
+                    s.account_number as bank_account_no,
+					round(( pe.paid_amount_after_tax + (select ifnull(sum(ped.amount),0)
+                        from `tabPayment Entry Deduction` ped
+                        where ped.parent = pe.name
+                    )),2) amount,
+					(CASE WHEN s.bank_name = "INR" THEN s.inr_bank_code ELSE NULL END) inr_bank_code,
+					(CASE WHEN s.bank_name = "INR" THEN s.inr_purpose_code ELSE NULL END) inr_purpose_code,
+					"Draft" status
+				FROM `tabPayment Entry` pe
+				JOIN `tabSupplier` s ON s.name = pe.party
+				LEFT JOIN `tabFinancial Institution Branch` fib ON fib.name = s.bank_branch
+				WHERE pe.branch = "{branch}" 
 					{cond}
 					AND pe.docstatus = 1
 					AND pe.party_type = 'Supplier'
@@ -797,11 +751,10 @@ class BankPayment(Document):
 						AND bpi.docstatus != 2
 						AND bpi.status NOT IN ('Cancelled', 'Failed')
 					)
-		ORDER BY pe.posting_date, pe.name """.format(
-                bank_payment=self.name, branch=self.branch, cond=cond
-            ),
-            as_dict=True,
-        )
+		        ORDER BY pe.posting_date, pe.name """.format(bank_payment=self.name, branch=self.branch, cond=cond
+                ),
+                as_dict=True,
+            )
 
     def get_month_id(self, month_abbr):
         return {
@@ -847,19 +800,26 @@ class BankPayment(Document):
 
         cond = self.get_conditions()
         return frappe.db.sql(
-            """SELECT "Salary Slip" transaction_type, t1.name transaction_id, 
-						t1.name transaction_reference, t1.modified transaction_date,
-						t1.employee, t1.employee_name beneficiary_name, 
-						IFNULL(t1.bank_name, e.bank_name) bank_name, 
-						IFNULL(t1.bank_branch, e.bank_branch) bank_branch, fib.financial_system_code,
-						e.bank_account_type,
-						IFNULL(t1.bank_account_no, e.bank_ac_no) bank_account_no, 
-						round(t1.net_pay,2) amount,
-						'Salary for {month}-{salary_year}' remarks, "Draft" status						
-					FROM `tabSalary Slip` t1
-						JOIN `tabEmployee` e ON t1.employee = e.name
-						LEFT JOIN `tabFinancial Institution Branch` fib ON fib.name = IFNULL(t1.bank_branch, e.bank_branch)
-					WHERE t1.fiscal_year = '{salary_year}'
+            """ SELECT 
+                    "Salary Slip" transaction_type, 
+                    t1.name transaction_id, 
+					t1.name transaction_reference, 
+                    t1.modified transaction_date,
+					t1.employee, 
+                    t1.employee_name beneficiary_name, 
+					IFNULL(t1.bank_name, e.bank_name) bank_name, 
+					IFNULL(t1.bank_branch, 
+                    e.bank_branch) bank_branch, 
+                    fib.financial_system_code,
+					e.bank_account_type,
+					IFNULL(t1.bank_account_no, e.bank_ac_no) bank_account_no, 
+					round(t1.net_pay,2) amount,
+					'Salary for {month}-{salary_year}' remarks, 
+                    "Draft" status						
+				FROM `tabSalary Slip` t1
+				JOIN `tabEmployee` e ON t1.employee = e.name
+				LEFT JOIN `tabFinancial Institution Branch` fib ON fib.name = IFNULL(t1.bank_branch, e.bank_branch)
+				WHERE t1.fiscal_year = '{salary_year}'
 					AND t1.month = '{salary_month}'
 					AND t1.docstatus = 1
 					AND e.salary_mode = 'Bank'
@@ -875,52 +835,15 @@ class BankPayment(Document):
 						AND bpi.docstatus != 2
 						AND bpi.status NOT IN ('Cancelled', 'Failed')
 					)
-		""".format(
-                salary_year=self.fiscal_year,
-                salary_month=self.get_month_id(self.month),
-                month=self.month,
-                bank_payment=self.name,
-                cond=cond,
-            ),
-            as_dict=True,
-        )
-
-    def get_mechanical_payments(self):
-        if self.transaction_no:
-            cond = 'and t1.name = "{}"'.format(self.transaction_no)
-
-        data = frappe.db.sql(
-            """
-			select 
-				'Mechanical Payment' as transaction_type,
-				name 		 as transaction_id, 
-				posting_date 	 as transaction_date,
-				beneficiary_name,
-				beneficiary_bank as bank_name,
-				beneficiary_branch as bank_branch,
-				beneficiary_bank_account_no as bank_account_no,
-				round(net_amount,2) 	 as amount
-			from `tabMechanical Payment` t1
-			where t1.expense_account = "{paid_from}"
-			and t1.docstatus = 1
-			and t1.online_payment = 1
-			and t1.bank_payment is null
-			{cond}
-			and not exists(select 1
-				from `tabBank Payment Item` t2
-				where t2.transaction_type = "{transaction_type}"
-				and t2.transaction_id = t1.name
-				and t2.docstatus < 2
-				and t2.parent != "{name}")
-		""".format(
-                paid_from=self.paid_from,
-                name=self.name,
-                transaction_type=self.transaction_type,
-                cond=cond,
-            ),
-            as_dict=True,
-        )
-        return data
+            """.format(
+                    salary_year=self.fiscal_year,
+                    salary_month=self.get_month_id(self.month),
+                    month=self.month,
+                    bank_payment=self.name,
+                    cond=cond,
+                ),
+                as_dict=True,
+            )
 
     # ltc payment added by cety on 12/16/2021
     def get_ltc_payment(self):
@@ -1450,7 +1373,6 @@ def get_inter_bank_file(doc, filename, posting_date, account_type="01"):
 
     noof_transactions = slno
     return filepath, noof_transactions
-
 
 def format_amount(amount):
     amount_str = str(flt(amount, 2))
