@@ -103,6 +103,7 @@
   {
    "fieldname": "tds_percent",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "TDS percent",
    "options": "\n2\n3\n5\n10"
   },
@@ -197,7 +198,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-18 16:37:42.364115",
+ "modified": "2025-03-13 11:35:34.306383",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Utility Bill",
