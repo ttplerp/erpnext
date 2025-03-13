@@ -7,6 +7,17 @@ cur_frm.add_fetch("bank_account", "bank_account_type", "bank_account_type");
 cur_frm.add_fetch("bank_account", "bank_account_no", "bank_ac_no");
 
 frappe.ui.form.on('Tax Payment', {
+	setup: function(frm) {
+		frm.set_query("tds_remittance", function(){
+			return {
+				filters: {
+					'branch': frm.doc.branch,
+					'docstatus': 1
+				}
+			}
+		});
+	},
+
 	onload: function(frm) {
 		create_custom_buttons(frm);
 
