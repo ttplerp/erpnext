@@ -21,8 +21,9 @@
   "bank_balance",
   "tds_details_section",
   "tds_remittance",
-  "column_break_8",
   "dv_number",
+  "column_break_8",
+  "tax_payment_type",
   "section_break_5",
   "get_outstanding",
   "api_respond_details_section",
@@ -259,12 +260,19 @@
    "fieldname": "basic_details",
    "fieldtype": "Section Break",
    "label": "Basic Details"
+  },
+  {
+   "fieldname": "tax_payment_type",
+   "fieldtype": "Link",
+   "label": "Tax Payment Type",
+   "options": "Tax Payment Type",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-03-13 00:45:20.069566",
+ "modified": "2025-03-13 11:42:34.843660",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Tax Payment",
