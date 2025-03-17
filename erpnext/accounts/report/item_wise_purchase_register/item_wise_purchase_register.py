@@ -88,6 +88,7 @@ def _execute(filters=None, additional_table_columns=None, additional_query_colum
 				"credit_to": d.credit_to,
 				"mode_of_payment": d.mode_of_payment,
 				"project": d.project,
+				"branch": d.branch,
 				"company": d.company,
 				"purchase_order": d.purchase_order,
 				"purchase_receipt": d.purchase_receipt,
@@ -229,6 +230,13 @@ def get_columns(additional_table_columns, filters):
 			"width": 80,
 		},
 		{
+			"label": _("Branch"),
+			"fieldname": "branch",
+			"fieldtype": "Link",
+			"options": "Branch",
+			"width": 80,
+		},
+		{
 			"label": _("Company"),
 			"fieldname": "company",
 			"fieldtype": "Link",
@@ -298,6 +306,7 @@ def get_conditions(filters):
 		("from_date", " and `tabPurchase Invoice`.posting_date>=%(from_date)s"),
 		("to_date", " and `tabPurchase Invoice`.posting_date<=%(to_date)s"),
 		("mode_of_payment", " and ifnull(mode_of_payment, '') = %(mode_of_payment)s"),
+		("branch", " and `tabPurchase Invoice`.branch = %(branch)s")
 	):
 		if filters.get(opts[0]):
 			conditions += opts[1]
@@ -333,7 +342,7 @@ def get_items(filters, additional_query_columns):
 			`tabPurchase Invoice Item`.`purchase_receipt`, `tabPurchase Invoice Item`.`po_detail`,
 			`tabPurchase Invoice Item`.`expense_account`, `tabPurchase Invoice Item`.`stock_qty`,
 			`tabPurchase Invoice Item`.`stock_uom`, `tabPurchase Invoice Item`.`base_net_amount`,
-			`tabPurchase Invoice`.`supplier_name`, `tabPurchase Invoice`.`mode_of_payment` {0}
+			`tabPurchase Invoice`.`supplier_name`, `tabPurchase Invoice`.`mode_of_payment`, `tabPurchase Invoice`.`branch` {0}
 		from `tabPurchase Invoice`, `tabPurchase Invoice Item`
 		where `tabPurchase Invoice`.name = `tabPurchase Invoice Item`.`parent` and
 		`tabPurchase Invoice`.docstatus = 1 %s

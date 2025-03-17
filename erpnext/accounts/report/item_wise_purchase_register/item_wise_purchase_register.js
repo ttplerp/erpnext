@@ -47,6 +47,12 @@ frappe.query_reports["Item-wise Purchase Register"] = {
 			"fieldname": "group_by",
 			"fieldtype": "Select",
 			"options": ["Supplier", "Item Group", "Item", "Invoice"]
+		},
+		{
+			"fieldname":"branch",
+			"label": __("Branch"),
+			"fieldtype": "Link",
+			"options": "Branch"
 		}
 	],
 	"formatter": function(value, row, column, data, default_formatter) {
