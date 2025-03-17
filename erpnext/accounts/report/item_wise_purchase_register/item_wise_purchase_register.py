@@ -252,7 +252,7 @@ def get_columns(additional_table_columns, filters):
 		},
 		{
 			"label": _("Purchase Receipt"),
-			"fieldname": "Purchase Receipt",
+			"fieldname": "purchase_receipt",
 			"fieldtype": "Link",
 			"options": "Purchase Receipt",
 			"width": 100,
