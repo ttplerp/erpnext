@@ -132,6 +132,7 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Total Amount (A)",
+   "precision": "9",
    "read_only": 1
   },
   {
@@ -140,6 +141,7 @@
    "fieldtype": "Currency",
    "hidden": 1,
    "label": "Addition Amount",
+   "precision": "9",
    "read_only": 1
   },
   {
@@ -249,6 +251,7 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Total Unclaimed Amount",
+   "precision": "9",
    "read_only": 1
   },
   {
@@ -256,6 +259,7 @@
    "fieldname": "total_claimed_amount",
    "fieldtype": "Currency",
    "label": "Total Claimed Amount",
+   "precision": "9",
    "read_only": 1
   },
   {
@@ -263,6 +267,7 @@
    "fieldname": "total_adjusted_amount",
    "fieldtype": "Currency",
    "label": "Total Adjusted Amount (B)",
+   "precision": "9",
    "read_only": 1
   },
   {
@@ -270,13 +275,14 @@
    "fieldname": "total_booked_amount",
    "fieldtype": "Currency",
    "label": "Total Booked Amount",
+   "precision": "9",
    "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-20 14:55:27.956305",
+ "modified": "2025-03-19 16:08:40.913383",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "BOQ",
