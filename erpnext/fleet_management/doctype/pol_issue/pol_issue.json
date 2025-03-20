@@ -167,7 +167,7 @@
   },
   {
    "fieldname": "journal_entry",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "label": "Journal Entry",
    "options": "Journal Entry",
    "read_only": 1
@@ -222,7 +222,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-11-18 19:35:21.172281",
+ "modified": "2025-03-20 16:31:00.449991",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Issue",
