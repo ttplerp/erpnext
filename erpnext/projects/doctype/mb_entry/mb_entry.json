@@ -138,7 +138,7 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Total Entry Amount (A)",
-   "precision": "2",
+   "precision": "9",
    "read_only": 1
   },
   {
@@ -146,7 +146,7 @@
    "fieldname": "total_invoice_amount",
    "fieldtype": "Currency",
    "label": "Total Invoiced Amount (B)",
-   "precision": "2",
+   "precision": "9",
    "read_only": 1
   },
   {
@@ -154,7 +154,7 @@
    "fieldname": "total_balance_amount",
    "fieldtype": "Currency",
    "label": "Total Balance Amount (C=A-B)",
-   "precision": "2",
+   "precision": "9",
    "read_only": 1
   },
   {
@@ -217,7 +217,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-11-29 15:00:50.169672",
+ "modified": "2025-03-20 06:55:13.548297",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "MB Entry",
