@@ -970,7 +970,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-21 15:13:50.441974",
+ "modified": "2025-03-21 15:26:23.830970",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",
@@ -1034,7 +1034,7 @@
    "share": 1
   }
  ],
- "search_fields": "item_name,item_sub_group,item_group,description",
+ "search_fields": "item_name, item_sub_group, item_group, description",
  "show_name_in_global_search": 1,
  "show_preview_popup": 1,
  "sort_field": "modified",
