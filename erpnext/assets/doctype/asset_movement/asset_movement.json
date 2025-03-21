@@ -6,12 +6,12 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "company",
+  "branch",
   "purpose",
-  "from_employee",
+  "employee",
   "column_break_4",
+  "posting_date",
   "transfer_type",
-  "transaction_date",
   "to_single",
   "to_employee",
   "section_break_10",
@@ -19,6 +19,7 @@
   "assets",
   "reference",
   "reference_doctype",
+  "company",
   "column_break_9",
   "reference_name",
   "amended_from"
@@ -42,34 +43,20 @@
    "reqd": 1
   },
   {
-   "default": "Today",
-   "fieldname": "transaction_date",
-   "fieldtype": "Datetime",
-   "in_list_view": 1,
-   "label": "Transaction Date",
-   "reqd": 1
-  },
-  {
    "fieldname": "column_break_4",
    "fieldtype": "Column Break"
   },
   {
-   "collapsible": 1,
-   "fieldname": "reference",
-   "fieldtype": "Section Break",
-   "label": "Reference"
-  },
-  {
    "fieldname": "reference_doctype",
    "fieldtype": "Link",
-   "label": "Reference Document Type",
+   "label": "Reference Doctype",
    "no_copy": 1,
    "options": "DocType"
   },
   {
    "fieldname": "reference_name",
    "fieldtype": "Dynamic Link",
-   "label": "Reference Document Name",
+   "label": "Reference Name",
    "no_copy": 1,
    "options": "reference_doctype"
   },
@@ -98,7 +85,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "default": "Employee To Employee",
    "depends_on": "eval:doc.purpose == \"Transfer\"",
    "fieldname": "transfer_type",
    "fieldtype": "Select",
@@ -107,10 +93,17 @@
    "options": "\nEmployee To Employee\nCost Center To Cost Center"
   },
   {
-   "fieldname": "from_employee",
-   "fieldtype": "Link",
-   "label": "From Employee",
-   "options": "Employee"
+   "depends_on": "eval:doc.docstatus != 1",
+   "fieldname": "get_asset",
+   "fieldtype": "Button",
+   "label": "Get Asset"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date",
+   "reqd": 1
   },
   {
    "default": "0",
@@ -128,16 +121,28 @@
    "options": "Employee"
   },
   {
-   "depends_on": "eval:doc.docstatus != 1",
-   "fieldname": "get_asset",
-   "fieldtype": "Button",
-   "label": "Get Asset"
+   "fieldname": "reference",
+   "fieldtype": "Section Break",
+   "label": "More Info"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-26 15:38:25.163934",
+ "modified": "2025-03-21 11:51:41.753079",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset Movement",
