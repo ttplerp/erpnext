@@ -2,6 +2,9 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Interest Accrual', {
+	setup: function(frm){
+	frm.ignore_doctypes_on_cancel_all = ['Journal Entry'];
+	},
 	refresh: function(frm) {
 
 	},
@@ -16,7 +19,8 @@ frappe.ui.form.on('Interest Accrual', {
 				args: {'posting_date': frm.doc.posting_date},
 				callback: function(r){
 					if(r.message){
-						frm.set_value("month", r.message);
+						frm.set_value("month", r.message[0]);
+						frm.set_value("fiscal_year", r.message[1]);
 						frm.refresh_field("month");
 					}
 				}

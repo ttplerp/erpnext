@@ -646,12 +646,14 @@ class CustomWorkflow:
         elif self.new_state.lower() == ("Approved".lower()):
             if self.doc.approver != frappe.session.user:
                 frappe.throw("Only {} can Approve this Application".format(self.doc.approver_name))
-        elif self.new_state.lower() == ("Rejected".lower()):
+        elif self.new_state.lower() == ("Rejected".lower()) and self.old_state.lower() != self.new_state.lower():
             if self.doc.approver != frappe.session.user:
                 frappe.throw("Only {} can Reject this Application".format(self.doc.approver_name))
+        '''
         else:
             frappe.throw(_("Invalid Workflow State {}").format(self.doc.workflow_state))
-
+        '''
+        
     def salary_advance(self):
         ''' Salary Advance Workflow
             1. Employee -> GM -> CEO -> HR
@@ -708,6 +710,8 @@ class CustomWorkflow:
             self.doc.document_status = "Cancelled"
 
     def travel_authorization(self):
+        user = frappe.session.user
+        user_roles = frappe.get_roles(user)
         ''' Travel Authorization Workflow
             1. Employee -> Supervisor -> Approved
         '''

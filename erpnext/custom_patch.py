@@ -3,9 +3,942 @@ from erpnext.setup.doctype.employee.employee import create_user
 import csv
 from frappe.utils import flt, cint, nowdate, getdate, formatdate
 import math
+from frappe import _
 
 from erpnext.integrations.bps import process_files
 from erpnext.assets.doctype.asset.depreciation import make_depreciation_entry
+from hrms.hr.doctype.leave_application.leave_application import (
+    get_leave_balance_on,
+    get_leaves_for_period,
+    get_leave_entries,
+    get_holidays
+)
+from typing import Dict, Optional, Tuple
+from hrms.hr.utils import (
+    get_holiday_dates_for_employee,
+    get_leave_period,
+    set_employee_name,
+    share_doc_with_approver,
+    validate_active_employee,
+)
+from erpnext.setup.doctype.employee.employee import get_holiday_list_for_employee
+import calendar
+from datetime import datetime
+from frappe.utils import (
+    add_days,
+    cint,
+    cstr,
+    date_diff,
+    flt,
+    formatdate,
+    get_fullname,
+    get_link_to_form,
+    getdate,
+    nowdate,
+)
+
+def treasury_term():
+    count = 1
+    for a in frappe.db.get_all("Treasury", {"type_of_instrument": "Bond"}, ['name', 'day']):
+        term = flt(a.day/365,0)
+        print(str(count)+". "+str(term))
+        count += 1
+        # frappe.db.
+
+def update_advance_ss():
+    for a in frappe.db.sql("""select a.name, a.monthly_deduction, a.employee, a.advance_amount
+                                from `tabEmployee Advance` a
+                                where a.docstatus=1 and a.workflow_state="Claimed"
+                                and not exists(
+                                    select 1 from `tabEmployee Advance Settlement` s
+                                    where s.employee_advance_id = a.name
+                                )
+                    """, as_dict=True):
+        total_deducted = 0.00
+        os_amount = flt(a.advance_amount,2)
+        ss = None
+        for b in frappe.db.sql("""
+                            SELECT name, parenttype, amount, total_deductible_amount, total_deducted_amount,  
+                                total_outstanding_amount, creation  
+                            FROM `tabSalary Detail` 
+                            WHERE salary_component ='Salary Advance Deductions'  
+                            AND reference_number = '{}'
+                            order by creation asc
+                    """.format(a.name), as_dict=True):
+            if a.monthly_deduction == b.amount and b.parenttype=="Salary Slip":
+                total_deducted += b.amount
+                os_amount -= b.amount
+                frappe.db.sql("""update `tabSalary Detail` 
+                        set total_outstanding_amount='{0}',total_deducted_amount='{1}'
+                        where name='{2}' """.format(os_amount, total_deducted, b.name))
+            if b.parenttype=="Salary Structure":
+                ss=b.name
+
+        frappe.db.sql("""update `tabSalary Detail` 
+                        set total_outstanding_amount='{0}',total_deducted_amount='{1}'
+                        where name='{2}' """.format(os_amount, total_deducted, ss))
+        frappe.db.commit()
+        print("Employee Final:", a.employee, total_deducted, os_amount)
+        
+def make_pev_draft():
+    count = 1
+    for pev in frappe.db.sql("""
+                             select name from `tabPerformance Evaluation` where workflow_state = 'Approved'
+                             """,as_dict=1):
+        frappe.db.sql("""
+                      update `tabPerformance Evaluation` set docstatus = 0, workflow_state = 'Draft' where name = '{}'
+                      """.format(pev.name))
+        frappe.db.sql("""
+                      update `tabEvaluate Target Item` set docstatus = 0 where parent = '{}'
+                      """.format(pev.name))
+        frappe.db.sql("""
+                      update `tabEvaluate Additional Achievements` set docstatus = 0 where parent = '{}'
+                      """.format(pev.name))
+        frappe.db.sql("""
+                      update `tabEvaluate Competency` set docstatus = 0 where parent = '{}'
+                      """.format(pev.name))
+        frappe.db.sql("""
+                      update `tabLeadership Competency` set docstatus = 0 where parent = '{}'
+                      """.format(pev.name))
+        frappe.db.sql("""
+                      update `tabSupervisor Declaration` set docstatus = 0 where parent = '{}'
+                      """.format(pev.name))
+        print(str(count)+". "+pev.name)
+        count += 1
+    for ped in frappe.db.sql("""
+                             select name from `tabPerformance Evaluation` where workflow_state = 'Draft' and
+                             name not in ("PEVA2502240015-1", "PEVA2502130004", "PEVA2502250041", "PEVA2502260004")
+                             """,as_dict=1):
+        doc = frappe.get_doc("Performance Evaluation", ped.name)
+        doc.save(ignore_permissions=True)
+
+def make_pev_approved():
+    count = 1
+    for pev in frappe.db.sql("""
+                             select name from `tabPerformance Evaluation` where workflow_state = 'Draft'
+                             and name not in ("PEVA2502240015-1", "PEVA2502130004", "PEVA2502250041", "PEVA2502260004")
+                             """,as_dict=1):
+        frappe.db.sql("""
+                      update `tabPerformance Evaluation` set docstatus = 1, workflow_state = 'Approved' where name = '{}'
+                      """.format(pev.name))
+        frappe.db.sql("""
+                      update `tabEvaluate Target Item` set docstatus = 1 where parent = '{}'
+                      """.format(pev.name))
+        frappe.db.sql("""
+                      update `tabEvaluate Additional Achievements` set docstatus = 1 where parent = '{}'
+                      """.format(pev.name))
+        frappe.db.sql("""
+                      update `tabEvaluate Competency` set docstatus = 1 where parent = '{}'
+                      """.format(pev.name))
+        frappe.db.sql("""
+                      update `tabLeadership Competency` set docstatus = 1 where parent = '{}'
+                      """.format(pev.name))
+        frappe.db.sql("""
+                      update `tabSupervisor Declaration` set docstatus = 1 where parent = '{}'
+                      """.format(pev.name))
+        print(str(count)+". "+pev.name)
+        count += 1
+
+def check_asset_gross_rate():
+    i=1
+    for a in frappe.db.sql("""
+                            select name, gross_purchase_amount, asset_rate
+                            from `tabAsset` where gross_purchase_amount!=asset_rate
+                            order by name
+                        """, as_dict=True):
+        print(a.name, a.gross_purchase_amount, a.asset_rate , i)
+        #frappe.db.sql("update `tabAsset` set asset_rate='{}' where name='{}'".format(a.gross_purchase_amount, a.name))
+        i+=1
+    #frappe.db.commit()
+
+def delete_transaction_treasury():
+    for a in frappe.db.sql("""
+                           select name from `tabJournal Entry` where title like '%Treasury%'
+                           """,as_dict=1):
+        frappe.db.sql("delete from `tabJournal Entry` where name = '{}'".format(a.name))
+        frappe.db.sql("delete from `tabJournal Entry Account` where parent = '{}'".format(a.name))
+        frappe.db.sql("delete from `tabGL Entry` where voucher_no = '{}'".format(a.name))
+        for b in frappe.db.sql("""
+                               select name, cbs_entry from `tabCBS Entry Upload` where voucher_no = '{}'
+                               """.format(a.name),as_dict=1):
+            frappe.db.sql("delete from `tabCBS Entry Upload` where name = '{}'".format(b.name))
+            frappe.db.sql("delete from `tabCBS Entry Log` where parent = '{}'".format(b.cbs_entry))
+            frappe.db.sql("delete from `tabCBS Entry` where name = '{}'".format(b.cbs_entry))
+        print(a.name)
+
+
+def uncancel_asset():
+    for a in frappe.db.sql("""
+                           select name from `tabAsset` where docstatus = 2 and name like '%BDBL/E%' and
+                           asset_category = 'Furniture & Fixtures'
+                           """,as_dict=1):
+        frappe.db.sql("""
+                      update `tabAsset` set docstatus = 0 where name = '{}'
+                      """.format(a.name))
+        print(a.name)
+
+# def check_missing_de_link():
+#     df = pd.read_excel(r"/home/frappe/erp/apps/erpnext/erpnext/Dep ISSUE_2023.xlsx")
+#     df = df.to_dict()
+#     row1 = row2 = 0
+#     count  = 0
+#     for a in df.get('asset'):
+#         # if df.get('difference')[a]
+#         if flt(df.get('Difference')[a]) > 1:
+#             jes = frappe.db.sql("""
+#                     select je.name from `tabJournal Entry` je, `tabJournal Entry Account` jea where je.remark like '%Depreciation Entry against%' and jea.parent = je.name
+#                     and year(je.posting_date) = 2023 and jea.reference_name = '{0}' and je.docstatus = 1 group by je.name
+#             """.format(df.get('asset')[a]), as_dict=1)
+#             if jes:
+#                 for b in jes:
+#                     if not frappe.db.exists("Depreciation Schedule", {"journal_entry": b.name, "parent": df.get('asset')[a]}):
+#                         print(str(count)+". "+str(b.name))
+#                         je_doc = frappe.get_doc("Journal Entry", b.name)
+#                         je_doc.cancel()
+#                         if (count+1)%100 == 0:
+#                             frappe.db.commit()
+#                         count += 1
+#         # row1 += 1
+#     # print(df.get('asset')[0]+" "+str(df.get('Difference')[0]))
+#     # for a in df.asset:
+#     #     print(str(a))
+#     # count = 1
+#     # assets = frappe.db.sql("""
+
+#     #                     """,as_dict = 1)
+#     # if assets:
+#     #     for a in assets:
+#     #         asset_doc = frappe.get_doc("Asset", a.against_voucher)
+#     #         # for b in asset_doc.schedules:
+#     #         print(str(count)+". "+a.against_voucher)
+#     #         count+=1
+def update_interest_jv():
+    for ia in frappe.db.sql("""
+                            select ia.name, ia.posting_date from `tabInterest Accrual` ia where ia.journal_entry is not null and not exists(select 1 from `tabJournal Entry` je where je.name = ia.journal_entry) and ia.docstatus = 1
+                            """,as_dict=1):
+        frappe.db.sql("""update `tabInterest Accrual` set fiscal_year = '{}' where name = '{}'""".format(str(ia.posting_date).split("-")[0], ia.name))
+        print(ia.name)
+def asset_account_update():
+    i=1
+    acc="120060005 - Clearing Account Migration - BDBL"
+    for a in frappe.db.sql(""" select name, credit_account from `tabAsset` 
+                              where docstatus=0
+                              and name not in ("BDBL/F-CRP-00049","BDBL/E-TVS-00068","BDBL/C-MON-00270")
+                              and credit_account="120060004 - Stock Asset - BDBL"
+                        """, as_dict=True):
+        i+=1
+        print(i, a.name, a.credit_account)
+        frappe.db.sql("update `tabAsset` set credit_account='{}' where name='{}'".format(acc, a.name))
+    frappe.db.commit()
+        
+def update_stock_account():
+    acc="120060005 - Clearing Account Migration - BDBL"
+    for a in frappe.db.sql(""" select name from `tabAsset` 
+                              where docstatus=1 
+                              and name not in ("BDBL/F-CRP-00049","BDBL/E-TVS-00068","BDBL/C-MON-00270")
+                              and credit_account="120060004 - Stock Asset - BDBL"
+                        """, as_dict=True):
+        for b in frappe.db.sql(""" select name, parent, account from `tabJournal Entry Account`
+                                    where reference_name='{0}' and account="120060004 - Stock Asset - BDBL"
+                                """.format(a.name), as_dict=True):
+            for c in frappe.db.sql("""select name, voucher_no from `tabGL Entry`
+                                    where account='{0}' and voucher_no='{1}'
+                                """.format(b.account, b.parent), as_dict=True):
+                print(a.name, b.name, b.parent, b.account, c.name)
+                frappe.db.sql("update `tabGL Entry` set account='{}' where name='{}'".format(acc, c.name))
+                frappe.db.sql("update `tabJournal Entry Account` set account='{}' where name='{}'".format(acc, b.name))
+                frappe.db.sql("update `tabJournal Entry` set title='{}' where name='{}' and title='{}'".format(acc,b.parent,b.account))
+                frappe.db.sql("update `tabAsset` set credit_account='{}' where name='{}'".format(acc, a.name))
+            frappe.db.commit()
+
+def submit_asset_feb():
+    i=1
+    for a in frappe.db.sql(""" select name from `tabAsset` 
+                              where docstatus=0
+                              limit 1000
+                        """, as_dict=True):
+        doc = frappe.get_doc("Asset", a.name)
+        i+=1
+        print(i, doc.name, " Submitting ongoing")
+        doc.submit()
+
+def delete_asset_feb():
+    for d in frappe.db.sql("select name from `tabAsset` where name not in ('BDBL/F-CRP-00049','BDBL/E-TVS-00068','BDBL/C-MON-00270')", as_dict=1):
+        print(d.name)
+        frappe.db.sql("delete from `tabAsset Finance Book` where parent='{}'".format(d.name))
+        frappe.db.sql("delete from `tabDepreciation Schedule` where parent='{}'".format(d.name))
+        frappe.db.sql("delete from `tabAsset` where name='{}'".format(d.name))
+    frappe.db.commit()
+
+def delete_je_last_year():
+    count = 1
+    for je in frappe.db.sql("""select name, posting_date from `tabJournal Entry` where posting_date < '2025-01-01' """,as_dict=1):
+        print(je.name, je.posting_date)
+        frappe.db.sql("""
+                        delete from `tabGL Entry` where voucher_no = '{}'
+                        """.format(je.name))
+        frappe.db.sql("""
+                        delete from `tabPayment Ledger Entry` where voucher_no = '{}'
+                        """.format(je.name))
+        frappe.db.sql("""
+                        delete from `tabJournal Entry` where name = '{}'
+                        """.format(je.name))
+        frappe.db.sql("""
+                        delete from `tabJournal Entry Account` where parent = '{}'
+                        """.format(je.name))
+        count+=1
+        print(str(count)+". "+je.name)
+    frappe.db.commit()
+
+def update_asset_opening_account():
+    count = 1
+    for asset in frappe.db.get_all("Asset", {"docstatus": 1}):
+        for jva in frappe.db.get_all("Journal Entry Account", {"reference_name": asset.name, "account": "120060004 - Stock Asset - BDBL"}, ["name"]):
+            frappe.db.sql("update `tabJournal Entry Account` set account = '{}' where name = '{}'".format("120060005 - Clearing Account Migration - BDBL", jva.name))
+        for gle in frappe.db.get_all("GL Entry", {"against_voucher": asset.name, "account": "120060004 - Stock Asset - BDBL"}, ["name"]):
+            frappe.db.sql("update `tabGL Entry` set account = '{}' where name = '{}'".format("120060005 - Clearing Account Migration - BDBL", gle.name))
+        print(str(count)+". "+asset.name)
+        count += 1
+
+def delete_gl_today():
+    frappe.db.sql("delete from `tabGL Entry` where posting_date between '2024-01-01' and '2024-12-31'")
+    frappe.db.sql("delete from `tabPayment Ledger Entry` where posting_date between '2024-01-01' and '2024-12-31'")
+    frappe.db.commit()
+
+def update_travel():
+    #make TC draft
+    tc="TC250200049"
+    ta="TA250100017"
+
+    '''
+    frappe.db.sql("delete from `tabTravel Authorization` where name='{}'".format(ta))
+    frappe.db.sql("delete from `tabTravel Authorization Item` where parent='{}'".format(ta))
+
+    frappe.db.sql("delete from `tabTravel Claim` where name='{}'".format(tc))
+    frappe.db.sql("delete from `tabTravel Claim Item` where parent='{}'".format(tc))
+    '''
+
+    frappe.db.sql("update `tabTravel Authorization` set docstatus='0', workflow_state='Draft' where name='{}'".format(ta))
+    frappe.db.sql("update `tabTravel Authorization Item` set docstatus='0' where parent='{}'".format(ta))
+    
+    '''
+    frappe.db.sql("update `tabTravel Claim` set docstatus='0', workflow_state='Draft' where name='{}'".format(tc))
+    frappe.db.sql("update `tabTravel Claim Item` set docstatus='0' where parent='{}'".format(tc))
+    '''
+    frappe.db.commit()
+
+
+def update_swl():
+    i=0
+    for a in frappe.db.sql("""select parenttype, name, reference_type, salary_component 
+                    from `tabSalary Detail` where salary_component="SWL"
+                    """, as_dict=True):
+        i+=1
+        print(i, a.name, a.reference_type, a.salary_component, a.parenttype)
+        frappe.db.sql("update `tabSalary Detail` set reference_type='Staff Welfare Loan' where name='{}'".format(a.name))
+    frappe.db.commit()
+
+def check_gl_pl():
+    for a in frappe.db.sql("""
+                        select voucher_no, voucher_type from `tabGL Entry`
+                    """, as_dict=True):
+        if not frappe.db.exists(a.voucher_type, a.voucher_no):
+            print(a.voucher_type, a.voucher_no)
+            frappe.db.sql("delete from `tabGL Entry` where voucher_no='{}'".format(a.voucher_no))
+            frappe.db.sql("delete from `tabPayment Ledger Entry` where voucher_no='{}'".format(a.voucher_no))
+    frappe.db.commit()
+
+def post_le():
+    i=1
+    for a in frappe.db.sql("""
+                        select name, journal_entry from `tabLeave Encashment`
+                        where docstatus=1 and employee not in ("0827","0294","0275","0626","0640")
+                        and encashment_date > "2024-12-31"
+                        and journal_entry is NULL
+                        and name not in ("HR-ENC-2025-00086","HR-ENC-2025-00087")
+                    """, as_dict=True):
+        print(i, a.name, a.journal_entry)
+        doc = frappe.get_doc("Leave Encashment", a.name)
+        doc.post_accounts_entry()
+        i+=1
+    frappe.db.commit()
+
+def update_le_ea():
+    for a in frappe.db.sql("""select  jd.reference_name as ref_name, jd.reference_type
+                        from `tabJournal Entry` je inner join `tabJournal Entry Account` jd on je.name=jd.parent
+                        where jd.reference_type in ("Leave Encashment","Employee Advance")
+                        and je.docstatus=1
+                        group by jd.reference_name
+                        """, as_dict=True):
+        doc = frappe.get_doc(a.reference_type, a.ref_name)
+        if doc.workflow_state=="Approved":
+            frappe.db.sql("Update `tab{}` set workflow_state='Claimed' where name='{}'".format(a.reference_type, a.ref_name))
+
+
+        print(a.ref_name, a.reference_type, doc.workflow_state)
+    frappe.db.commit()
+
+def delete_journal_entry():
+    for a in frappe.db.sql("select name from `tabJournal Entry` where name in ('JEJV20250100197')", as_dict=True):
+        frappe.db.sql("delete from `tabGL Entry` where voucher_no='{}'".format(a.name))
+        frappe.db.sql("delete from `tabJournal Entry Account` where parent='{}'".format(a.name))
+        frappe.db.sql("delete from `tabPayment Ledger Entry` where voucher_no='{}'".format(a.name))
+        frappe.db.sql("delete from `tabJournal Entry` where name='{}'".format(a.name))
+        frappe.db.commit()
+
+def leave_encash():
+    for a in frappe.db.sql("""
+                    select je.name, jd.reference_type, jd.reference_name from `tabJournal Entry` je inner join `tabJournal Entry Account` jd on je.name=jd.parent
+                    where jd.reference_name in (
+                            select name from `tabLeave Encashment`
+                                where docstatus=1 and employee not in ("0827","0294","0275","0626","0640")
+                                and posting_date > "2024-12-31"
+                        )
+                    and jd.reference_type="Leave Encashment"
+                    and jd.docstatus !=2
+                            """, as_dict=True):
+        #frappe.db.sql("delete from `tabJournal Entry` where name='JEBE20250100390'".format(a.name))
+        #frappe.db.sql("delete from `tabJournal Entry Account` where parent='JEBE20250100390' ".format(a.name))
+        #frappe.db.sql("update `tabLeave Encashment` set journal_entry=NULL where name='{}'".format(a.reference_name))
+        print(a.reference_name, a.name)        
+    #frappe.db.commit()         
+       
+    #doc = frappe.get_doc("Leave Encashment","HR-ENC-2025-00209")
+    #doc.post_accounts_entry()
+
+def delete_sa_component():
+    for a in frappe.db.sql("""select st.name, st.employee_name, sd.name as child_name from `tabSalary Detail` sd 
+                join `tabSalary Structure` st on sd.parent=st.name 
+                where st.docstatus!=2
+                and parentfield="deductions"
+                and ((sd.to_date is NULL or sd.to_date="") or sd.to_date < '2024-12-31')
+            """, as_dict=True):
+        '''
+        doc = frappe.get_doc("Salary Structure", a.name)
+        rem_list = []
+        for b in doc.get("deductions"):
+            if b.name == a.child_name:
+                rem_list.append(b)
+
+        [doc.remove(a) for a in rem_list]
+        doc.save(ignore_permissions=True)
+        '''
+        print(a.name, a.employee_name)
+
+def delete_leave_encash():
+    for a in frappe.db.sql("select name from `tabLeave Encashment` where name='' and docstatus !=1", as_dict=True):
+        frappe.db.sql("delete from `tabLeave Encashment` where name='{}'".format(a.name))
+    frappe.db.commit()
+
+def change_je_date():
+    for a in frappe.db.sql("""select name, posting_date from `tabJournal Entry` 
+                        where reference_type='Payroll Entry' 
+                        and posting_date > '2024-12-31' 
+                    """,as_dict=True):
+        #print(a.name, a.posting_date, b.name,b.posting_date)
+        frappe.db.sql("""update `tabGL Entry` 
+                    set posting_date='2024-12-31' 
+                    where voucher_no='{}' and voucher_type='Journal Entry'
+                """.format(a.name))
+        frappe.db.sql("update `tabJournal Entry` set posting_date='2024-12-31' where name='{}'".format(a.name))
+    frappe.db.commit()
+
+def reset_password():
+    for a in frappe.db.sql("select name from `tabUser` where enabled=1 and name!='Administrator'", as_dict=True):
+        if frappe.db.exists("Employee", {"user_id": a.name}):
+            emp = frappe.get_doc("Employee", {"user_id": a.name})
+            doc = frappe.get_doc("User", a.name)
+            from datetime import datetime
+            date_object = datetime.strptime(str(emp.date_of_birth), "%Y-%m-%d")
+            date_dd_mm = str(date_object.strftime("%d"))+str(date_object.strftime("%m"))
+            new_password = "bdb@" + date_dd_mm
+            doc.new_password = new_password
+            doc.save()
+            recipients = str(a.name)
+            subject = "Password Changed Notice"
+            message = "Your ERP Password is changed to : {}".format(new_password)
+            frappe.sendmail(
+                recipients=recipients,
+                subject=_(subject),
+                message= _(message),
+            )    
+            print(emp.employee, date_dd_mm, new_password)
+        else:
+            print(a.name, "No Employee")
+
+def submit_asset_today():
+    i = 0
+    for a in frappe.db.sql("""
+                            select name from `tabAsset`
+                            where docstatus=0
+                    """, as_dict=True):
+        doc = frappe.get_doc("Asset", a.name)
+        value_after_depreciation = flt(doc.gross_purchase_amount) - flt(
+				doc.income_tax_opening_depreciation_amount
+			)
+        print(value_after_depreciation)
+        frappe.db.sql("""update `tabAsset Finance Book` set value_after_depreciation='{}'
+                        where parent='{}'
+                        """.format(value_after_depreciation, a.name))
+        frappe.db.commit()
+        doc.submit()
+        i+=1
+        print(i)
+
+def submit_ss():
+    i=1
+    for a in frappe.db.sql("select name from `tabSalary Slip` where payroll_entry='HR-PRUN-2025-00001' and docstatus=0", as_dict=True):
+        doc = frappe.get_doc("Salary Slip", a.name)
+        i+=1
+        print(i, a.name)
+        doc.submit()
+
+def delete_ss():
+    for a in frappe.db.sql("select *from `tabPayroll Entry` where name in ('HR-PRUN-2025-00003')", as_dict=True):
+        if a.docstatus !=2:
+            for b in frappe.db.sql("select name from `tabSalary Slip` where payroll_entry='{}'".format(a.name), as_dict=True):
+                frappe.db.sql("Delete from `tabSalary Detail` where parent='{}'".format(b.name))
+                frappe.db.sql("Delete from `tabOvertime Item` where parent='{}'".format(b.name))
+                frappe.db.sql("Delete from `tabSalary Slip Timesheet` where parent='{}'".format(b.name))
+                frappe.db.sql("Delete from `tabSalary Slip Item` where parent='{}'".format(b.name))
+                frappe.db.sql("Delete from `tabSalary Slip` where name='{}'".format(b.name))
+    frappe.db.commit()
+
+    
+'''
+section_list=[
+        # {
+        #     "division":"HR & Logistics Division - BDBL",
+        #     "branch" : "Human Resource & Administration",
+        #     "cost_center" : "0000 - Human Resource & Administration - BDBL"
+        # },
+        # {
+        #     "division":"Risk Management Division - BDBL",
+        #     "branch" : "Risk Management",
+        #     "cost_center" : "0000 - Risk Management - BDBL"
+        # },
+        # {
+        #     "division":"Legal Division - BDBL",
+        #     "branch" : "Legal",
+        #     "cost_center" : "0000 - Legal - BDBL"
+        # },
+        # {
+        #     "division":"CEO's Office - BDBL",
+        #     "branch" : "Office of CEO",
+        #     "cost_center" : "0000 - Office of CEO - BDBL"
+        # },
+        # {
+        #     "division":"Internal Audit  - BDBL",
+        #     "branch" : "Internal Audit",
+        #     "cost_center" : "0000 - Internal Audit - BDBL"
+        # },
+        # {
+        #     "division":"Finance & Accounts Division - BDBL",
+        #     "branch" : "Finance & Accounts",
+        #     "cost_center" : "0000 - Finance & Accounts - BDBL"
+        # },
+        # {
+        #     "division":"ICT & Digital Banking Division - BDBL",
+        #     "branch" : "ICT & Digital Banking",
+        #     "cost_center" : "0000 - ICT & Digital Banking - BDBL"
+        # },
+        # {
+        #     "division":"Policy & Planning Division- BDBL",
+        #     "branch" : "Credit",
+        #     "cost_center" : "0000 - Credit - BDBL"
+        # }
+        
+    ]
+'''
+from frappe.utils import (
+	add_days,
+	cint,
+	cstr,
+	date_diff,
+	flt,
+	formatdate,
+	get_fullname,
+	get_link_to_form,
+	getdate,
+	nowdate,
+    add_to_date
+)
+import datetime
+
+def update_icl():
+    subject_list=frappe.db.sql("""select verifier_mail, verifier_type 
+                            from `tabInternal Audit Clearance Verifier List` 
+                            where parent ='Audit Settings' 
+                            and ( parentfield='verifier' or parentfield='approver' )
+                        """, as_dict=True)
+    icthr = []
+    ictcr = []
+    afd = []
+    iad = []
+    for subject in subject_list:
+        if subject.verifier_type=="HR":
+            icthr.append(subject.verifier_mail)
+        if subject.verifier_type=="Credit":
+            ictcr.append(subject.verifier_mail)
+        if subject.verifier_type=="Finance":
+            afd.append(subject.verifier_mail)
+        if subject.verifier_type=="Audit":
+            iad.append(subject.verifier_mail)
+
+    for a in frappe.db.sql("""
+                        select * from `tabInternal Clearance`
+                      where docstatus !=2
+                    """, as_dict=True):
+            frappe.db.sql("""update `tabInternal Clearance` set 
+                            afd="{0}", ictcr="{1}", icthr="{2}", iad="{3}" 
+                            where name="{4}"
+                    """.format(str(afd), str(ictcr), str(icthr), str(iad), a.name))
+    frappe.db.commit()
+
+def delete_employee_adv():
+    for a in frappe.db.sql("select name, je_reference from `tabEmployee Advance` where advance_type='Salary Advance'", as_dict=True):
+        frappe.db.sql("delete from `tabGL Entry` where voucher_no='{}'".format(a.je_reference))
+        frappe.db.sql("delete from `tabJournal Entry Account` where parent='{}'".format(a.je_reference))
+        frappe.db.sql("delete from `tabJournal Entry` where name='{}'".format(a.je_reference))
+        frappe.db.sql("delete from `tabEmployee Advance` where name='{}'".format(a.name))
+    frappe.db.commit()
+
+def cancel_asset():
+    count = 1
+    for je in frappe.db.sql("""select distinct parent from `tabJournal Entry Account` where reference_type = 'Asset'""",as_dict=1):
+        je_doc = frappe.get_doc("Journal Entry", je.parent)
+        # je_doc.cancel()
+        frappe.db.sql("""
+                        delete from `tabGL Entry` where voucher_no = '{}'
+                        """.format(je.parent))
+        frappe.db.sql("""
+                        delete from `tabJournal Entry` where name = '{}'
+                        """.format(je.parent))
+        frappe.db.sql("""
+                        delete from `tabJournal Entry Account` where parent = '{}'
+                        """.format(je.parent))
+        print(str(count)+". "+je.parent)
+        count += 1
+
+def update_ic():
+    for a in frappe.db.sql("""
+                        select name, workflow_state,iad from `tabInternal Clearance`
+                        where docstatus = 0 and workflow_state="Waiting for Verification"
+                        and iad_clearance = 0
+                """, as_dict=True):
+        print(a.name, a.workflow_state, a.iad)
+        frappe.db.sql("update `tabInternal Clearance` set iad='penjor@bdb.bt' where name='{}'".format(a.name))
+    frappe.db.commit()
+
+def submit_asset():
+    count = 1
+    for a in frappe.db.get_all("Asset", {"docstatus":0}):
+        print(str(count)+". "+a.name)
+        asset = frappe.get_doc("Asset", a.name)
+        asset.save()
+        asset.submit()
+        count += 1
+
+def save_asset():
+    for a in frappe.db.sql("""
+                           select name from `tabAsset` where docstatus = 0
+                           """,as_dict=1):
+        doc = frappe.get_doc("Asset", a.name)
+        doc.save(ignore_permissions=1)
+        print(a.name)
+
+def update_ec():
+    for a in frappe.db.sql("""
+                        select name, docstatus, workflow_state from `tabExpense Claim`
+                        where docstatus=1 and workflow_state="Approved"
+                """, as_dict=True):
+        frappe.db.sql("update `tabExpense Claim` set workflow_state = 'Claimed' where name='{}'".format(a.name))
+        print(a.name, a.workflow_state, a.docstatus)
+    frappe.db.commit()
+
+def update_target():
+    for dos in frappe.db.sql("select name from `tabTarget Set Up` where workflow_state!='Draft'", as_dict=True):
+        doc = frappe.get_doc("Target Set Up", dos.name)
+        frappe.db.sql("update `tabTarget Set Up` set workflow_state='Draft' where name = '{}'".format(doc.name), as_dict=True)
+        # doc.save()
+        # for childoc in frappe.db.sql("select name, docstatus from `tabPerformance Target Evaluation` where parent='{}'".format(dos.name), as_dict=True):
+            # childoc.docstatus=0
+            # doc.save(
+            #     ignore_permissions=True, # ignore write permissions during insert
+            #     ignore_version=True # do not create a version record
+            # )
+            # status=frappe.db.sql("update `tabPerformance Target Evaluation` set docstatus=0 where name = '{}'".format(childoc.name), as_dict=True)
+            # print(status)
+            # print(childoc.docstatus)
+            # childoc.save()
+        # doc.save()
+
+def update_party_check_for_salary():
+    for jea in frappe.db.get_all("GL Entry", {"voucher_no": ["in", ('JEBP20241100042', 'JEJV20241100044')]}):
+        frappe.db.sql("""
+                      update `tabGL Entry` set party_check = 0 where name = '{}'
+                      """.format(jea.name))
+        print(jea.name)
+#
+def delete_loan():
+    for a in frappe.db.sql("""
+                    select name, parent, salary_component from `tabSalary Detail` where salary_component in ('Salary Saving Scheme')
+                """, as_dict=1):
+
+        # if a.parent=="0171/SST/00001":
+            # print(a.salary_component)
+        doc = frappe.get_doc("Salary Detail", a.name)
+        print(f"{doc.parent}               {doc.salary_component}       {doc.name}")
+        frappe.delete_doc("Salary Detail", a.name)
+        
+def update_branch_code():
+    for a in frappe.db.get_all("Branch", filters={"branch_code": ["in", (None, "")]}, fields=['name', 'cost_center']):
+        cc_code = frappe.db.get_value("Cost Center", a.cost_center, "cost_center_number")
+        frappe.db.sql("""
+                      update `tabBranch` set branch_code = '{}' where name = '{}'
+                      """.format(cc_code, a.name))
+        print(a.name)
+
+def check_ifrs_dep():
+    with open("/home/frappe/erp/update_dep_check.csv") as f:
+        reader = csv.reader(f)
+        mylist = list(reader)
+        c = 0
+        for i in mylist:
+            if c > 0:
+                doc=frappe.get_doc("Asset", str(i[0]))
+                diff = flt(doc.opening_accumulated_depreciation,2) - flt(i[1],2)
+                if diff != 0:
+                    print(doc.name, doc.opening_accumulated_depreciation, str(i[1]), diff)
+            #print(i[0]) #print(str(i[0], str(i[1])))
+            c += 1
+
+def asset_update_ifrs():
+    with open("/home/frappe/erp/update_depv1.csv") as f:
+        reader = csv.reader(f)
+        mylist = list(reader)
+        c = 0
+        for i in mylist:
+            if c >11992 and c < 22000:
+                asset_id = str(i[1])
+                #print(str(i[1]), str(i[0]))
+                if frappe.db.exists("Asset", str(i[0])):
+                    doc = frappe.get_doc("Asset", str(i[0]))
+                    doc.opening_accumulated_depreciation = flt(str(i[1]),2)
+                    doc.save()
+                    print(c, doc.name, str(i[1]), doc.opening_accumulated_depreciation)
+                else:
+                    print(c, "Cannot Find")
+            c += 1
+            
+
+def add_loan_component():
+    with open("/home/frappe/erp/ERP_upload_details.csv") as f:
+        reader = csv.reader(f)
+        mylist = list(reader)
+        c = 1
+        for i in mylist:
+            desuup_cid = str(i[1])
+            doc = frappe.get_doc("Salary Strcuture", {"employee":str[1]})
+            if doc:
+                if not frappe.db.exists("Salary Details", {"parentfield":"deductions", "parent":doc.name, "componenet_type":'FI Own Loan'}):
+                    doc.append("deductions",{
+                        'salary_component': "FI Own Loan",
+                        'amount': 23423,
+                        'fina':''
+                    })
+                doc.save()
+    
+def test():
+    frm_date="2024-09-01"
+    to_date="2024-10-26"
+    no_days=date_diff(to_date, frm_date)+1
+    
+    print(no_days)
+    final=no_days
+    total_days=0
+    is_sat=frappe.db.get_value("Holiday List", "Thimphu Holiday 2024", "saturday_half")
+    cur_date=frm_date
+    
+    con=frappe.db.sql("select * from `tabHoliday` where parent='Thimphu Holiday 2024'", as_dict=1)
+    
+    for i in range(0, no_days):
+        
+        for holiday in frappe.db.sql("select * from `tabHoliday` where parent='Thimphu Holiday 2024'", as_dict=1):
+            
+            # if holiday.holiday_date.weekday==5:
+            #     total_days+=0.5   
+            
+            # print(holiday.holiday_date==datetime.date(int(cur_date[:4]), int(cur_date[5:7]), int(cur_date[8:])))
+            if holiday.holiday_date==datetime.date(int(cur_date[:4]), int(cur_date[5:7]), int(cur_date[8:])):
+                # print(datetime.date(int(cur_date[:4]), int(cur_date[5:7]), int(cur_date[8:])))
+                if holiday.holiday_date.weekday()==5:
+                    
+                    print(f"Saturday: date {cur_date} holiday {holiday.holiday_date}" )
+                    final-=0.5   
+                else:
+                    final-=1
+                    print(f"Sunday date {cur_date} holiday {holiday.holiday_date}" )
+                    
+                
+                
+        cur_date=add_to_date(getdate(cur_date), days=1, as_string=True)
+        
+    print("Total Holliday: ", final)
+            
+            
+            
+    
+def save_salary_struc():
+    for a in frappe.db.sql("""
+                           select name from `tabSalary Structure` where is_active='yes'
+                           """, as_dict=1):
+        print(a)
+    
+        doc = frappe.get_doc("Salary Structure",a.name)
+        doc.save()
+
+def checkfunc():
+    leave_entries=get_leave_entries('0521', 'Casual Leave', '2024-01-01', '2024-12-31')
+    leave_days = 0
+    for leave_entry in leave_entries:
+        if leave_entry.transaction_type == "Leave Application":
+            half_day = 0
+            half_day_date = None
+            # fetch half day date for leaves with half days
+            if leave_entry.leaves % 1:
+                half_day = 1
+                half_day_date = frappe.db.get_value(
+                    "Leave Application", {"name": leave_entry.transaction_name}, ["half_day_date"]
+                )
+                
+            leave_days += (
+                get_number_of_leave_days(
+                    '0521',
+                    'Casual Leave',
+                    leave_entry.from_date,
+                    leave_entry.to_date,
+                    half_day,
+                    half_day_date,
+                    holiday_list=leave_entry.holiday_list,
+                )
+                * -1)
+
+    print(leave_days)
+
+def get_number_of_leave_days(
+    employee: str,
+    leave_type: str,
+    from_date: str,
+    to_date: str,
+    half_day: Optional[int] = None,
+    half_day_date: Optional[str] = None,
+    holiday_list: Optional[str] = None,
+) -> float:
+    """Returns number of leave days between 2 dates after considering half day and holidays
+    (Based on the include_holiday setting in Leave Type)"""
+    number_of_days = 0
+    if not holiday_list:
+        holiday_list = get_holiday_list_for_employee(employee)
+    if cint(half_day) == 1:
+        
+        if getdate(from_date) == getdate(to_date):
+            number_of_days = 0.5
+        elif half_day_date and getdate(from_date) <= getdate(half_day_date) <= getdate(to_date):
+            number_of_days = date_diff(to_date, from_date) + 0.5
+        else:
+            number_of_days = date_diff(to_date, from_date) + 1
+    else:
+        number_of_days = date_diff(to_date, from_date) + 1
+    
+    if not frappe.db.get_value("Leave Type", leave_type, "include_holiday"):
+        
+        number_of_days = flt(number_of_days) - flt(
+            get_holidays(employee, from_date, to_date, holiday_list=holiday_list)
+        )
+        
+        half = frappe.db.get_value("Holiday List", get_holiday_list_for_employee(employee), "saturday_half")
+        d = from_date
+        while(getdate(d) <= getdate(to_date)):
+            day = calendar.day_name[datetime.strptime(str(getdate(d)).split(" ")[0],"%Y-%m-%d").weekday()]
+            #For Saturday half day work time
+            # if getdate(d).weekday() == 5 and flt(get_holidays(employee, d, d)) == 0 and half:
+            # 	number_of_days-=0.5
+            half_working_day = frappe.db.sql("""select day from `tabHoliday List Days` where parent = '{}'""".format(holiday_list))
+            for hwd in half_working_day:
+                if day in hwd:
+                    if not frappe.db.exists("Holiday",{"parent":holiday_list,"holiday_date":datetime.strptime(str(d).split(" ")[0],"%Y-%m-%d")}):
+                        print(frappe.db.exists("Holiday",{"parent":holiday_list,"holiday_date":datetime.strptime(str(d).split(" ")[0],"%Y-%m-%d")}))
+                        number_of_days -= 0.5
+            d = frappe.utils.data.add_days(d, 1)
+           
+    return number_of_days   
+    
+def update_emp_dtl():
+    section_list= [
+    # {'section': '0010 - Thimphu Main Branch - BDBL', 'unit': None, 'branch': 'Thimphu Main Branch', 'cost_center': '0010 - Thimphu Main - BDBL'},
+    # {'section': '0020 - Thimphu - BDBL', 'unit': None, 'branch': 'Thimphu', 'cost_center': '0020 - Thimphu - BDBL'},  
+    # {'section': '0030 - Paro - BDBL', 'unit': None, 'branch': 'PARO', 'cost_center': '0030 - Paro - BDBL'}, 
+    # {'section': '0040 - Wangdue - BDBL', 'unit': None, 'branch': 'WANGDUE', 'cost_center': '0040 - WANGDUE - BDBL'}, 
+    # {'section': '0050 - Punakha - BDBL', 'unit': None, 'branch': 'PUNAKHA', 'cost_center': '0050 - PUNAKHA - BDBL'}, 
+    # {'section': '0060 - Gasa - BDBL', 'unit': None, 'branch': 'GASA', 'cost_center': '0060 - GASA - BDBL'}, 
+    # {'section': '0070 - Haa - BDBL', 'unit': None, 'branch': 'HAA MAIN', 'cost_center': '0070 - Haa Main - BDBL'}, 
+    # {'section': '0080 - Chukha - BDBL', 'unit': None, 'branch': 'CHUKHA', 'cost_center': '0080 - CHUKHA - BDBL'}, 
+    # {'section': '0090 - Tashigang - BDBL', 'unit': None, 'branch': 'TRASHIGANG MAIN', 'cost_center': '0090 - Trashigang Main - BDBL'}, 
+    # {'section': '0100 - Tashiyangtse - BDBL', 'unit': None, 'branch': 'Tashiyangtse Main', 'cost_center': '0100 - Tyangtse Main - BDBL'}, 
+    # {'section': '0110 - Mongar - BDBL', 'unit': None, 'branch': 'MONGAR MAIN', 'cost_center': '0110 - MONGAR MAIN - BDBL'},
+    # {'section': '0120 - Lhuntse - BDBL', 'unit': None, 'branch': 'LHUNTSE MAIN', 'cost_center': '0120 - LHUNTSE MAIN - BDBL'}, 
+    # {'section': '0130 - Samdrupjonkhar - BDBL', 'unit': None, 'branch': 'Samdrupjonkhar Main 0130', 'cost_center': '0130 - Sjongkhar Main - BDBL'}, 
+    # {'section': '0140 - Pemagatsel - BDBL', 'unit': None, 'branch': 'Pemagatsel Main', 'cost_center': '0140 - Pgatshel Main - BDBL'}, 
+    # {'section': '0150 - Bumthang - BDBL', 'unit': None, 'branch': 'BUMTHANG MAIN', 'cost_center': '0150 - BUMTHANG MAIN - BDBL'},  
+    # {'section': '0160 - Trongsa - BDBL', 'unit': None, 'branch': 'Trongsa Main', 'cost_center': '0160 - Trongsa Main - BDBL'}, 
+    # {'section': '0170 - Zhemgang - BDBL', 'unit': None, 'branch': 'ZHEMGANG MAIN', 'cost_center': '0170 - ZHEMGANG MAIN - BDBL'}, 
+    # {'section': '0180 - Sarpang - BDBL', 'unit': None, 'branch': 'Sarpang', 'cost_center': '0180 - Sarpang - BDBL'}, 
+    # {'section': '0190 - Dagana - BDBL', 'unit': None, 'branch': 'Dagana', 'cost_center': '0190 - Dagana - BDBL'}, 
+    # {'section': '0200 - Samtse - BDBL', 'unit': None, 'branch': 'SAMTSE MAIN', 'cost_center': '0200 - SAMTSE MAIN - BDBL'}, 
+    # {'section': '0210 - Tsirang - BDBL', 'unit': None, 'branch': 'Tsirang', 'cost_center': '0210 - Tsirang - BDBL'}, 
+    # {'section': '0220 - Wamrong - BDBL', 'unit': None, 'branch': 'Wamrong Main', 'cost_center': '0220 - WAMRONG MAIN - BDBL'}, 
+    # {'section': '0230 - Phuntsholing - BDBL', 'unit': None, 'branch': 'Phuntsholing', 'cost_center': '0230 - Phuntsholing - BDBL'}, 
+    # {'section': '0240 - Nganglam - BDBL', 'unit': None, 'branch': 'Nganglam', 'cost_center': '0240 - Nganglam - BDBL'}, 
+    # {'section': '0250 - Panbang - BDBL', 'unit': None, 'branch': 'Panbang', 'cost_center': '0250 - Panbang - BDBL'}, 
+    # {'section': '0260 - Dorokha - BDBL', 'unit': None, 'branch': 'Dorokha', 'cost_center': '0260 - Dorokha - BDBL'}, 
+    # {'section': '0270 - Jomotsangkha - BDBL', 'unit': None, 'branch': 'Jomotsangkha', 'cost_center': '0270 - Jomotsangkha - BDBL'}, 
+    # {'section': '0280 - Lhamoizingkha - BDBL', 'unit': None, 'branch': 'Lhamoizingkha', 'cost_center': '0280 - Lhamoizingkha - BDBL'}, 
+    # {'section': '0290 - Gelephu - BDBL', 'unit': None, 'branch': 'GELEPHU MAIN', 'cost_center': '0290 - GELEPHU MAIN - BDBL'}, 
+    # {'section': '0300 - Yadi - BDBL', 'unit': None, 'branch': 'YADHI MAIN', 'cost_center': '0300 - YADHI MAIN - BDBL'}, 
+    # {'section': '0310 - Dagepela - BDBL', 'unit': None, 'branch': 'Dagepela', 'cost_center': '0310 - DPELA MAIN - BDBL'}, 
+    # {'section': '0320 - Samdrupcholing - BDBL', 'unit': None, 'branch': 'Samdrupcholing', 'cost_center': '0320 - Samdrupcholing - BDBL'}, 
+    # {'section': '0330 - Tashicholing - BDBL', 'unit': None, 'branch': 'TASHICHOLING MAIN', 'cost_center': '0330 - TASHICHOLING MAIN - BDBL'}, 
+    # {'section': '0340 - Gedu - BDBL', 'unit': None, 'branch': 'GEDU MAIN', 'cost_center': '0340 - GEDU MAIN - BDBL'}, 
+    # {'section': '0350 - Gangtey - BDBL', 'unit': None, 'branch': 'GANGTEY MAIN', 'cost_center': '0350 - GANGTEY MAIN - BDBL'}, 
+    {'section': 'Customer Care - BDBL', 'unit': None, 'branch': 'Banking', 'cost_center': '0000 - Banking - BDBL'}, ]
+    # {'section': 'International Banking - BDBL', 'unit': None, 'branch': 'Banking', 'cost_center': '0000 - Banking - BDBL'}, 
+    # {'section': 'Corporate Banking - BDBL', 'unit': None, 'branch': 'Banking', 'cost_center': '0000 - Banking - BDBL'}, 
+    # {'section': 'Payment Settlement - BDBL', 'unit': None, 'branch': 'Banking', 'cost_center': '0000 - Banking - BDBL'}, 
+    # {'section': 'Retail Banking - BDBL', 'unit': None, 'branch': 'Banking', 'cost_center': '0000 - Banking - BDBL'}, ]
+    
+    for item in section_list:
+        
+        for a in frappe.db.sql("""
+                           select name, branch, cost_center, division, section, unit from `tabEmployee` where section="{sec}" 
+                           """.format(sec=item["section"] ), as_dict=1):
+            try:
+                doc = frappe.get_doc("Employee",a.name)
+                doc.branch = item['branch']
+                doc.cost_center = item['cost_center']
+                doc.save()
+            
+            
+                print(f'name: {doc.name}  section: {doc.section} unit: {doc.unit}   branch: {doc.branch}   cost center: {doc.cost_center}')
+            except:
+                pass
+    frappe.db.commit()
+    # for item in section_list:
+    #     for a in frappe.db.sql("""
+    #                         select DISTINCT section, name, branch, cost_center, division, unit from `tabEmployee` 
+    #                         """, as_dict=1):
+    #         print(f'name: {a.name}  division: {a.section}   branch: {a.branch}   cost center: {a.cost_center}')
+            
 
 def insert_ess_role():
     count = 1
@@ -124,20 +1057,6 @@ def depreciate_asset():
                            """,as_dict=1):
         count+=1
         # make_depreciation_entry(a.name, a.schedule_date)
-    print(str(count))
-
-def change_asset_status():
-    count=0
-    for d in frappe.db.sql("select name from `tabAsset` where docstatus=0 and posting_date <='2023-12-31'", as_dict=1):
-        # frappe.db.sql("update `tabAsset Finance Book` set docstatus=0 where parent='{}'".format(d.name))
-        # frappe.db.sql("update `tabDepreciation Schedule` set docstatus=0 where parent='{}'".format(d.name))
-        # frappe.db.sql("update `tabAsset` set docstatus=0 where name='{}'".format(d.name))
-
-        # frappe.db.sql("delete from `tabAsset Finance Book` where parent='{}'".format(d.name))
-        # frappe.db.sql("delete from `tabDepreciation Schedule` where parent='{}'".format(d.name))
-        # frappe.db.sql("delete from `tabAsset` where name='{}'".format(d.name))
-        count+=1
-    print(str(count))
 
 def delete_asset_related_data():
     # Fetch voucher_no values to delete
@@ -349,6 +1268,13 @@ def get_wrong_dn():
                 """, as_dict=True):
         i+=1
         print(str(i) + ", " + str(a.voucher_no))
+
+def rename_pr():
+    pr_name = "HR-PRUN-2025-00004"
+    rename_to = "HR-PRUN-2024-00041"
+    import frappe.model.rename_doc as rd
+    rd.rename_doc("Payroll Entry", pr_name, rename_to, force=True)
+
         
 def rename_asset():
     i = 0

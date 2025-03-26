@@ -965,6 +965,7 @@
   {
    "fieldname": "separation_benefits",
    "fieldtype": "Table",
+   "ignore_user_permissions": 1,
    "label": "Separation Benefits",
    "options": "Separation Benefits"
   },
@@ -1040,7 +1041,7 @@
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2024-10-21 12:55:35.345496",
+ "modified": "2025-03-10 16:15:36.631519",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",

@@ -128,20 +128,21 @@ class ExecuteAudit(Document):
 				frappe.throw("Only <b>{}</b> or Auditors: {} can Assign Direct Accountability for this request".format(self.supervisor_name, ", ".join(a for a in auditors)))
 			
 	def update_status(self, cancel=0):
-		pap = frappe.get_doc("Prepare Audit Plan", self.prepare_audit_plan_no)
-		execute_audit = frappe.get_doc("Execute Audit", self.name)
-		if not cancel:
-			pap.db_set("status", 'Audit Execution')
-			execute_audit.db_set("status", 'Exit Meeting')
-			for cl in execute_audit.get("audit_checklist"):
-				if cl.nature_of_irregularity in ('For Information','Found in order','Resolved'):
-					cl.db_set("status", 'Closed')
-		else:
-			pap.db_set("status", 'Engagement Letter')
-			execute_audit.db_set("status", 'Pending')
-			for cl in execute_audit.get("audit_checklist"):
-				if cl.nature_of_irregularity in ('Observation','Unresolved','Un-Reconciled'):
-					cl.db_set("status", 'Open')
+		if frappe.db.exists("Prepare Audit Plan", self.prepare_audit_plan_no):
+			pap = frappe.get_doc("Prepare Audit Plan", self.prepare_audit_plan_no)
+			execute_audit = frappe.get_doc("Execute Audit", self.name)
+			if not cancel:
+				pap.db_set("status", 'Audit Execution')
+				execute_audit.db_set("status", 'Exit Meeting')
+				for cl in execute_audit.get("audit_checklist"):
+					if cl.nature_of_irregularity in ('For Information','Found in order','Resolved'):
+						cl.db_set("status", 'Closed')
+			else:
+				pap.db_set("status", 'Engagement Letter')
+				execute_audit.db_set("status", 'Pending')
+				for cl in execute_audit.get("audit_checklist"):
+					if cl.nature_of_irregularity in ('Observation','Unresolved','Un-Reconciled'):
+						cl.db_set("status", 'Open')
 
 	@frappe.whitelist()
 	def get_audit_team(self):
@@ -226,7 +227,7 @@ def create_initial_report(source_name, target_doc=None):
 			}
 		},
 		"Direct Accountability Item": {
-					"doctype": "Audit Initial Report DA Item",
+					"doctype": "Audit Report DA Item",
 					"field_map": [
 						["child_ref", "name"],
 					]

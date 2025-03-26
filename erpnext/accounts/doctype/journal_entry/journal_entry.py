@@ -125,6 +125,7 @@ class JournalEntry(AccountsController):
 		self.update_inter_company_jv()
 		self.update_invoice_discounting()
 		self.update_pol_expense_status()
+		self.update_linked_doc()
 		self.link_je_to_reference(cancel=self.docstatus == 2)
 
 	def on_cancel(self):
@@ -143,6 +144,13 @@ class JournalEntry(AccountsController):
 		self.update_pol_expense_status(cancel=True)
 		check_clearance_date(self.doctype, self.name)
 		self.link_je_to_reference(cancel=self.docstatus == 2)
+
+	def update_linked_doc(self):
+		for a in self.get("accounts"):
+			if a.reference_type=="Employee Advance" and a.reference_name:
+				frappe.db.sql("Update `tabEmployee Advance` set workflow_state='Claimed' where name='{}'".format(a.reference_name))
+			if a.reference_type=="Leave Encashment" and a.reference_name:
+				frappe.db.sql("Update `tabLeave Encashment` set workflow_state='Claimed' where name='{}'".format(a.reference_name))
 
 	def on_trash(self):
 		self.unlink_transporter_invoice()
@@ -403,7 +411,7 @@ class JournalEntry(AccountsController):
 		for d in self.get("accounts"):
 			account_type = frappe.db.get_value("Account", d.account, "account_type")
 			if account_type in ["Receivable", "Payable"]:
-				if not (d.party_type and d.party):
+				if not (d.party_type and d.party) and d.party_check == 1:
 					frappe.throw(
 						_("Row {0}: Party Type and Party is required for Receivable / Payable account {1}").format(
 							d.idx, d.account
@@ -617,7 +625,7 @@ class JournalEntry(AccountsController):
 		casa_cr_count, party_dr_count = 0, 0
 		reference_type, reference_name = None, None
 		ignore_party_cr = 0
-		gis = sws = pf = sss = semso = loan = st = swl = hc = 0
+		gis = sws = pf = sss = semso = loan = st = swl = hc = ap = 0
 		for a in self.get("accounts"):
 			if flt(a.debit,2) and a.party_type and a.party:
 				# get Party Debit list
@@ -667,7 +675,7 @@ class JournalEntry(AccountsController):
 						party_dr_list = []
 						party_dr_amount, party_dr_count = 0, 0
 						if c.salary_component in ("Net Pay", "Financial Institution Loan", "Security Deposit", 
-													"PBVI", "Leave Travel Concession", "Bonus", "Salary Advance Deductions", "FI Loan Own", "Financial Institution Loan(Others)", "Salary Saving Scheme", "SWS", "GIS", "Salary Tax", "Semso", "PF", "SWL", "Health Contribution") and self.voucher_type == "Journal Entry":
+													"PBVI", "Leave Travel Concession", "Bonus", "Salary Advance Deductions", "FI Loan Own", "Financial Institution Loan(Others)", "Salary Saving Scheme", "SWS", "GIS", "Salary Tax", "Semso", "PF", "SWL", "Health Contribution", "Annuity Policy") and self.voucher_type == "Journal Entry":
 							''' get employee wise net pay details '''
 							details = None
 							if c.salary_component == "PBVA":
@@ -696,6 +704,10 @@ class JournalEntry(AccountsController):
 								if sss == 0:
 									details = get_sss_emp_details(payroll_entry=reference_name, salary_component=c.salary_component)
 									sss = 1
+							elif c.salary_component == "Annuity Policy":
+								if ap == 0:
+									details = get_sss_emp_details(payroll_entry=reference_name, salary_component=c.salary_component)
+									ap = 1
 							elif c.salary_component == "Health Contribution":
 								if hc == 0:
 									details = get_hc_emp_details(payroll_entry=reference_name, salary_component=c.salary_component)
@@ -716,12 +728,13 @@ class JournalEntry(AccountsController):
 								details = get_emp_component_amount(
 									payroll_entry=reference_name, salary_component=c.salary_component, party=c.party)
 	
-							if not details and c.amount and c.salary_component not in ("GIS", "PF", "SWS", "Salary Saving Scheme", "Salary Advance Deductions", "Net Pay", "Financial Institution Loan(Others)", "FI Loan Own", "Salary Tax", "Semso", "Health Contribution", "SWL"):
+							if not details and c.amount and c.salary_component not in ("GIS", "PF", "SWS", "Salary Saving Scheme", "Annuity Policy", "Salary Advance Deductions", "Net Pay", "Financial Institution Loan(Others)", "FI Loan Own", "Salary Tax", "Semso", "Health Contribution", "SWL"):
 								frappe.throw(_("Could not find Net Pay details for {}").format(
 									frappe.get_desk_link(reference_type, reference_name)))
 							if details:
 								for d in details:
-									if not d.account_number and c.salary_component not in ("GIS", "PF", "SWS", "Salary Saving Scheme", "Salary Tax", "Salary Advance Deductions", "Semso", "Financial Institution Loan(Others)", "FI Loan Own", "Semso", "SWL", "Health Contribution"):
+									# if not d.account_number and c.salary_component not in ("GIS", "PF", "SWS", "Salary Saving Scheme", "Annuity Policy", "Salary Tax", "Salary Advance Deductions", "Semso", "Financial Institution Loan(Others)", "FI Loan Own", "Semso", "SWL", "Health Contribution"):
+									if not d.account_number:
 										frappe.throw(_("{} A/C# missing for {}").format("Bank" if c.salary_component ==
 														"Net Pay" else c.salary_component, frappe.get_desk_link("Employee", d.employee)))
 									
@@ -735,7 +748,7 @@ class JournalEntry(AccountsController):
 										
 										party_dr_amount += flt(d.amount,2)
 										party_dr_count += 1
-								if c.salary_component not in ("GIS", "SWS", "PF", "Salary Saving Scheme", "Financial Institution Loan(Others)", "Salary Advance Deductions", "Salary Tax", "SWL", "Semso", "Health Contribution"):
+								if c.salary_component not in ("GIS", "SWS", "PF", "Salary Saving Scheme", "Annuity Policy", "Financial Institution Loan(Others)", "Salary Advance Deductions", "Salary Tax", "SWL", "Semso", "Health Contribution", "FI Loan Own"):
 									if flt(party_dr_amount, 2) != flt(c.amount,2):
 										frappe.throw(_("Total <b>{}({})</b> does not match with Total Credit Amount({}) {}").format(
 											c.salary_component, party_dr_amount, flt(c.amount,2), frappe.get_desk_link(reference_type, reference_name)))
@@ -868,7 +881,7 @@ class JournalEntry(AccountsController):
 	def validate_debit_credit_amount(self):
 		for d in self.get("accounts"):
 			if not flt(d.debit) and not flt(d.credit):
-				frappe.throw("Account: "+str(d.account)+" \n\n Cost Center: "+str(d.cost_center)+" \n\n Party"+str(d.party)+" \n\n Title: "+str(self.title))
+				# frappe.throw("Account: "+str(d.account)+" \n\n Cost Center: "+str(d.cost_center)+" \n\n Party"+str(d.party)+" \n\n Title: "+str(self.title))
 				frappe.throw(_("Row {0}: Both Debit and Credit values cannot be zero").format(d.idx))
 
 	def validate_total_debit_and_credit(self):

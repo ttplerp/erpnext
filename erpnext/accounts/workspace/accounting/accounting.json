@@ -101,57 +101,6 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Bank Statement",
-   "link_count": 4,
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Bank",
-   "link_count": 0,
-   "link_to": "Bank",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Bank Reconciliation Tool",
-   "link_count": 0,
-   "link_to": "Bank Reconciliation Tool",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Bank Clearance",
-   "link_count": 0,
-   "link_to": "Bank Clearance",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Bank Reconciliation Statement",
-   "link_count": 0,
-   "link_to": "Bank Reconciliation Statement",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "General Ledger",
    "link_count": 4,
    "link_type": "DocType",
@@ -459,8 +408,69 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "Bank Statement",
+   "link_count": 5,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Bank",
+   "link_count": 0,
+   "link_to": "Bank",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Bank Reconciliation Tool",
+   "link_count": 0,
+   "link_to": "Bank Reconciliation Tool",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Bank Clearance",
+   "link_count": 0,
+   "link_to": "Bank Clearance",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Bank Reconciliation Statement",
+   "link_count": 0,
+   "link_to": "Bank Reconciliation Statement",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Cheque Register",
+   "link_count": 0,
+   "link_to": "Cheque Register",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "CBS Integration",
-   "link_count": 2,
+   "link_count": 4,
    "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
@@ -484,10 +494,30 @@
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Delete Draft Payroll Entry",
+   "link_count": 0,
+   "link_to": "Modify Document",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Make TA & TC to Draft ",
+   "link_count": 0,
+   "link_to": "Modify Document",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2024-08-29 11:09:48.317577",
- "modified_by": "lhendrup.dorji@thimphutechpark.bt",
+ "modified": "2025-02-25 15:29:02.725595",
+ "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Accounting",
  "number_cards": [],

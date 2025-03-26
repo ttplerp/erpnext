@@ -127,7 +127,6 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 		accounts_cond = 'and t1.account_head in ({})'.format('"' + '","'.join(accounts) + '"')
 		accounts_cond_ti = 'and t1.account in ({})'.format('"' + '","'.join(accounts) + '"')
 		accounts_cond_eme = 'and t.tds_account in ({})'.format('"' + '","'.join(accounts) + '"')
-
 	if filter_existing:
 		existing_cond = _get_existing_cond()
 	
@@ -146,9 +145,10 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 				left join `tabTDS Receipt Entry` tre on tre.invoice_no = t.name 
 			where t.posting_date between '{from_date}' and '{to_date}'
 			{accounts_cond}
+			and t.taxes_and_charges = '{taxes_and_charges}'
 			and t.docstatus = 1 
 			{existing_cond}
-			{cond}""".format(accounts_cond = accounts_cond, cond = cond, existing_cond = existing_cond,\
+			{cond}""".format(accounts_cond = accounts_cond, cond = cond, taxes_and_charges = tax_withholding_category, existing_cond = existing_cond,\
 				from_date=from_date, to_date=to_date), as_dict=True)
 
 	# Payment Entry
@@ -169,10 +169,11 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 			left join `tabTDS Receipt Entry` tre on tre.invoice_no = t.name 
 		where t.posting_date between '{from_date}' and '{to_date}'
 		{accounts_cond}
+		and t.purchase_taxes_and_charges_template = '{taxes_and_charges}'
 		and t.docstatus = 1
 		{existing_cond}
 		{party_cond}
-		{cond}""".format(accounts_cond = accounts_cond, cond = cond, existing_cond = existing_cond,\
+		{cond}""".format(taxes_and_charges = tax_withholding_category, accounts_cond = accounts_cond, cond = cond, existing_cond = existing_cond,\
 			party_cond = party_cond, from_date=from_date, to_date=to_date), as_dict=True)
 
 	# Journal Entry
@@ -210,10 +211,11 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 		where t.posting_date between '{from_date}' and '{to_date}'
 		{accounts_cond}
 		and t.docstatus = 1 and t.apply_tds = 1 
-		{existing_cond}
+		{existing_cond}	
+		and t.tax_withholding_category = '{tax_category}'
 		{party_cond}
 		{cond}""".format(accounts_cond = accounts_cond, cond = cond, existing_cond = existing_cond,\
-			party_cond = party_cond, from_date=from_date, to_date=to_date), as_dict=True)
+			party_cond = party_cond, from_date=from_date, to_date=to_date, tax_category = tax_withholding_category), as_dict=True)
 	# Transporter Invoice
 	ti_entries = frappe.db.sql("""select t.posting_date, t.name as invoice_no, 'Transporter Invoice' as invoice_type,
 				'Supplier' as party_type, t.supplier as party, 

@@ -73,7 +73,6 @@ class Asset(AccountsController):
 		#self.make_asset_movement()
 		self.make_asset_je_entry()
 		if not self.booked_fixed_asset and self.validate_make_gl_entry():
-			frappe.throw("hello hi")
 			self.make_gl_entries()
 
 	def on_cancel(self):
@@ -119,13 +118,8 @@ class Asset(AccountsController):
 			self.set_accumulated_depreciation(date_of_sale, date_of_return)
 		else:
 			self.finance_books = []
-			'''
 			self.value_after_depreciation = flt(self.gross_purchase_amount) - flt(
 				self.opening_accumulated_depreciation
-			)
-			'''
-			self.value_after_depreciation = flt(self.gross_purchase_amount) - flt(
-				self.income_tax_opening_depreciation_amount
 			)
 
 	def validate_item(self):
@@ -295,7 +289,9 @@ class Asset(AccountsController):
 			# 	self.opening_accumulated_depreciation = (flt(self.gross_purchase_amount)/flt(finance_book.total_number_of_depreciations))*flt(self.number_of_depreciations_booked)
 			#change the ifrs dep code and uncomment
 			# self._make_depreciation_schedule(finance_book, start, date_of_sale)
-			self._make_income_depreciation_schedule(finance_book, start, date_of_sale)
+			if finance_book.income_depreciation_percent:
+				if finance_book.income_depreciation_percent > 0:
+					self._make_income_depreciation_schedule(finance_book, start, date_of_sale)
 
 	def _make_depreciation_schedule(self, finance_book, start, date_of_sale):
 		self.validate_asset_finance_books(finance_book)
@@ -323,7 +319,7 @@ class Asset(AccountsController):
 		if self.income_tax_opening_depreciation_amount:
 			income_accumulated_depreciation = self.income_tax_opening_depreciation_amount
 		count = 1
-		#frappe.msgprint(str(number_of_pending_depreciations))
+		frappe.msgprint(str(number_of_pending_depreciations))
 		# for n in range(start[finance_book.idx - 1], number_of_pending_depreciations):
 		for n in range(start[finance_book.idx - 1], number_of_pending_depreciations):
 			count += 1
@@ -560,18 +556,14 @@ class Asset(AccountsController):
 		value_after_depreciation = self._get_value_after_depreciation(finance_book)
 		finance_book.value_after_depreciation = value_after_depreciation
 		#for income depreciation
-		if cint(finance_book.income_depreciation_percent) < 1:
-			total_number_of_depreciations=0
-		else:
-			total_number_of_depreciations = flt(flt(100/finance_book.income_depreciation_percent)*12,0)
-
+		total_number_of_depreciations = flt(flt(100/finance_book.income_depreciation_percent)*12,0)
 		# number_of_pending_depreciations = cint(finance_book.total_number_of_depreciations) - cint(
 		# 	self.number_of_depreciations_booked
 		# ) uncomment for ifrs dep
 		number_of_pending_depreciations = cint(total_number_of_depreciations) - cint(
 			self.number_of_income_depreciations_booked
 		)
-
+		# frappe.throw(str(number_of_pending_depreciations))
 		has_pro_rata = self.check_is_pro_rata(finance_book)
 		# if has_pro_rata:
 		# 	number_of_pending_depreciations += 1
@@ -584,9 +576,10 @@ class Asset(AccountsController):
 		if self.income_tax_opening_depreciation_amount:
 			income_accumulated_depreciation = self.income_tax_opening_depreciation_amount
 		count = 1
-		#frappe.msgprint(str(number_of_pending_depreciations))
+		# frappe.msgprint(str(number_of_pending_depreciations))
 		# for n in range(start[finance_book.idx - 1], number_of_pending_depreciations):
-		for n in range(start[finance_book.idx - 1], number_of_pending_depreciations):
+		while (self.gross_purchase_amount-income_accumulated_depreciation) > 1:
+			# frappe.msgprint(str(count))
 			count += 1
 			# frappe.throw(str(number_of_pending_depreciations))
 			# <----------- actual erpnext code begins here ------------->
@@ -693,9 +686,9 @@ class Asset(AccountsController):
 			schedule_date = None
 			if skip_row:
 				continue
-			if not has_pro_rata or n < cint(number_of_pending_depreciations) - 1:
+			if not has_pro_rata or count < cint(number_of_pending_depreciations) - 1:
 				schedule_date = add_months(
-					finance_book.depreciation_start_date, n * cint(finance_book.frequency_of_depreciation)
+					finance_book.depreciation_start_date, count * cint(finance_book.frequency_of_depreciation)
 				)
 				if should_get_last_day:
 					schedule_date = get_last_day(schedule_date)
@@ -727,7 +720,7 @@ class Asset(AccountsController):
 				break
 
 			# # For first row
-			if n == 0:
+			if count == 0:
 				from_date = add_days(
 					self.available_for_use_date, -1
 				)  
@@ -737,15 +730,15 @@ class Asset(AccountsController):
 				# if str(schedule_date) == '2024-02-29':
 				# frappe.throw("here "+str(schedule_date)+" "+str(depreciation_amount))
 			# For last row
-			elif has_pro_rata and n == cint(number_of_pending_depreciations)-1:
+			elif has_pro_rata and count == cint(number_of_pending_depreciations)-1:
 				if not self.flags.increase_in_asset_life:
 					# In case of increase_in_asset_life, the self.to_date is already set on asset_repair submission
 					self.to_date = add_months(
 						self.available_for_use_date,
-						(n + self.number_of_depreciations_booked) * cint(finance_book.frequency_of_depreciation),
+						(count + self.number_of_depreciations_booked) * cint(finance_book.frequency_of_depreciation),
 					)
 				schedule_date = add_months(
-					finance_book.depreciation_start_date, n * cint(finance_book.frequency_of_depreciation)
+					finance_book.depreciation_start_date, count * cint(finance_book.frequency_of_depreciation)
 				)
 				if should_get_last_day:
 					schedule_date = get_last_day(schedule_date)
@@ -762,9 +755,9 @@ class Asset(AccountsController):
 				# schedule_date = add_days(schedule_date, days)
 				# frappe.throw("here "+str(schedule_date))
 				last_schedule_date = schedule_date
-			elif not has_pro_rata and n == cint(number_of_pending_depreciations) - 1:
+			elif not has_pro_rata and count == cint(number_of_pending_depreciations) - 1:
 				schedule_date = add_months(
-					finance_book.depreciation_start_date, n * cint(finance_book.frequency_of_depreciation)
+					finance_book.depreciation_start_date, count * finance_book.frequency_of_depreciation
 				)
 				if should_get_last_day:
 					schedule_date = get_last_day(schedule_date)
@@ -785,22 +778,23 @@ class Asset(AccountsController):
 			income_depreciation_amount = self._get_income_tax_depreciation_amount(finance_book, schedule_date, days, income_accumulated_depreciation)
 
 			income_accumulated_depreciation += flt(income_depreciation_amount)
-			
+			# count += 1
 			if not depreciation_amount:
 				continue
 
 			value_after_depreciation -= flt(depreciation_amount, self.precision("gross_purchase_amount"))
 			# Adjust depreciation amount in the last period based on the expected value after useful life
-			if finance_book.expected_value_after_useful_life and (
-				(
-					n == cint(number_of_pending_depreciations) - 1
-					and value_after_depreciation != finance_book.expected_value_after_useful_life
-				)
-				or value_after_depreciation < finance_book.expected_value_after_useful_life
-			):
-				depreciation_amount += value_after_depreciation - finance_book.expected_value_after_useful_life
-				skip_row = True
-			if depreciation_amount > 0:
+			# if finance_book.expected_value_after_useful_life and (
+			# 	(
+			# 		n == cint(number_of_pending_depreciations) - 1
+			# 		and value_after_depreciation != finance_book.expected_value_after_useful_life
+			# 	)
+			# 	or value_after_depreciation < finance_book.expected_value_after_useful_life
+			# ):
+			# 	depreciation_amount += value_after_depreciation - finance_book.expected_value_after_useful_life
+			# 	skip_row = True
+			#frappe.msgprint(str(count)+". "+str(income_depreciation_amount)+" "+str(income_accumulated_depreciation))
+			if income_depreciation_amount > 0:
 				# frappe.errprint(str(depreciation_amount))
 				# frappe.errprint(str(schedule_date))
 				self._add_depreciation_row(
@@ -849,8 +843,8 @@ class Asset(AccountsController):
 		else:
 		'''
 		value_after_depreciation = flt(self.gross_purchase_amount) - flt(
-				self.income_tax_opening_depreciation_amount
-			)
+			self.opening_accumulated_depreciation
+		)
 
 		return value_after_depreciation
 	def _get_income_tax_depreciation_amount(self,finance_book, schedule_date,no_of_days,income_accumulated_depreciation):
@@ -861,7 +855,7 @@ class Asset(AccountsController):
 			return income_depreciation_amount
 		elif (flt(self.gross_purchase_amount) - flt(finance_book.expected_value_after_useful_life)) - (flt(income_accumulated_depreciation)) > 1:
 			income_depreciation_amount = flt(income_depreciation_amount - ((income_accumulated_depreciation+income_depreciation_amount) - (flt(self.gross_purchase_amount) - flt(finance_book.expected_value_after_useful_life))),2)
-			#frappe.msgprint(str(income_depreciation_amount))
+			# frappe.msgprint(str(income_depreciation_amount))
 			return income_depreciation_amount
 		else:
 			return 0.0
@@ -962,23 +956,18 @@ class Asset(AccountsController):
 			self.number_of_depreciations_booked = 0
 		else:
 			depreciable_amount = flt(self.gross_purchase_amount) - flt(row.expected_value_after_useful_life)
-			'''
 			if flt(self.opening_accumulated_depreciation) > depreciable_amount:
 				frappe.throw(
 					_("Opening Accumulated Depreciation must be less than equal to {0}").format(
 						depreciable_amount
 					)
 				)
-			'''
 			# if self.opening_accumulated_depreciation:
 			# 	if not self.number_of_depreciations_booked:
 			# 		self.number_of_depreciations_booked = opening_accumulated_depreciation
 			# 		frappe.throw(_("Please set Number of Depreciations Booked"))
 			finance_books = get_item_details(self.item_code, self.asset_category, self.asset_sub_category, self.available_for_use_date)
-			if cint(finance_books[0]['income_depreciation_percent']) < 1:
-				total_number_of_depreciations=0
-			else:
-				total_number_of_depreciations = flt(flt(100/finance_books[0]['income_depreciation_percent'])*12,0)
+			total_number_of_depreciations = flt(flt(100/finance_books[0]['income_depreciation_percent'])*12,0)
 			if self.income_tax_opening_depreciation_amount:
 				# self.number_of_depreciations_booked = 0 #change after initial data import
 				self.number_of_income_depreciations_booked = 0 #change after initial data import
@@ -1271,7 +1260,6 @@ class Asset(AccountsController):
 		return cwip_account
 
 	def make_asset_je_entry(self):
-		clearing_account = frappe.db.get_value("Company", self.company, "clearing_account")
 		if self.gross_purchase_amount:
 			je = frappe.new_doc("Journal Entry")
 			je.flags.ignore_permissions = 1 
@@ -1286,7 +1274,7 @@ class Asset(AccountsController):
 
 			#credit account update
 			je.append("accounts", {
-				"account": self.credit_account if self.is_existing_asset == 0 else clearing_account,
+				"account": self.credit_account,
 				"credit_in_account_currency": self.gross_purchase_amount,
 				"credit": self.gross_purchase_amount,
 				"reference_type": "Asset",
@@ -1307,39 +1295,38 @@ class Asset(AccountsController):
 				})
 			je.submit()
 		if self.is_existing_asset:
-			if self.income_tax_opening_depreciation_amount > 0:
-				je = frappe.new_doc("Journal Entry")
-				je.flags.ignore_permissions = 1 
-				je.update({
-					"voucher_type": "Journal Entry",
-					"company": self.company,
-					"remark": self.name + " (" + self.asset_name + ") Asset Issued",
-					"user_remark": self.name + " (" + self.asset_name + ") Asset Issued",
-					"posting_date": self.posting_date if self.posting_date else self.purchase_date,
-					"branch": self.branch
-					})
+			je = frappe.new_doc("Journal Entry")
+			je.flags.ignore_permissions = 1 
+			je.update({
+				"voucher_type": "Journal Entry",
+				"company": self.company,
+				"remark": self.name + " (" + self.asset_name + ") Asset Issued",
+				"user_remark": self.name + " (" + self.asset_name + ") Asset Issued",
+				"posting_date": self.posting_date if self.posting_date else self.purchase_date,
+				"branch": self.branch
+				})
 
-				#credit account update
-				je.append("accounts", {
-					"account": self.accumulated_depreciation_account,
-					"credit_in_account_currency": self.income_tax_opening_depreciation_amount,
-					"credit": self.income_tax_opening_depreciation_amount,
-					"reference_type": "Asset",
-					"reference_name": self.name,
-					"cost_center": self.cost_center,
-					"business_activity": "Common"
-					})
+			#credit account update
+			je.append("accounts", {
+				"account": self.accumulated_depreciation_account,
+				"credit_in_account_currency": self.income_tax_opening_depreciation_amount,
+				"credit": self.income_tax_opening_depreciation_amount,
+				"reference_type": "Asset",
+				"reference_name": self.name,
+				"cost_center": self.cost_center,
+				"business_activity": "Common"
+				})
 
-				#debit account update
-				je.append("accounts", {
-					"account": self.credit_account if self.is_existing_asset ==  0 else clearing_account,
-					"debit_in_account_currency": self.income_tax_opening_depreciation_amount,
-					"debit": self.income_tax_opening_depreciation_amount,
-					"reference_type": "Asset",
-					"reference_name": self.name,
-					"cost_center": self.cost_center,
-					"business_activity": "Common"
-					})
+			#debit account update
+			je.append("accounts", {
+				"account": self.credit_account,
+				"debit_in_account_currency": self.income_tax_opening_depreciation_amount,
+				"debit": self.income_tax_opening_depreciation_amount,
+				"reference_type": "Asset",
+				"reference_name": self.name,
+				"cost_center": self.cost_center,
+				"business_activity": "Common"
+				})
 			je.submit()
 	#
 	def make_gl_entries(self):

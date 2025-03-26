@@ -19,14 +19,17 @@ def get_report_data(filters):
 	if filters.get('cbs_entry'):
 		if filters.get('voucher_type') and filters.get('voucher_no'):
 			res = frappe.db.get_all('CBS Entry Upload', {'cbs_entry': filters.get('cbs_entry'), 'voucher_type': filters.get('voucher_type'), 'voucher_no': filters.get('voucher_no')}, ['*'])
+			#frappe.throw("hi")
 		else:
 			res = frappe.db.get_all('CBS Entry Upload', {'cbs_entry': filters.get('cbs_entry')}, ['*'])
+			#frappe.throw('hi1')
 	else:
 		if filters.get('voucher_type') and filters.get('voucher_no') and frappe.db.exists('CBS Entry Upload', {'voucher_type': filters.get('voucher_type'), 'voucher_no': filters.get('voucher_no')}):
 			res = frappe.db.get_all('CBS Entry Upload', {'voucher_type': filters.get('voucher_type'), 'voucher_no': filters.get('voucher_no')}, ['*'])
+			#frappe.throw("hi2")
 		else:
 			res = get_data(doctype=filters.get("voucher_type"), docname=filters.get("voucher_no"), from_date=filters.get("from_date"), to_date=filters.get("to_date"))
-	#here
+			
 	if filters.get('show_errors') and res:
 		for i in res:
 			row = frappe._dict(i)

@@ -28,8 +28,9 @@ class CBSEntry(Document):
 		self.remove_entries()
 
 	def before_cancel(self):
-		if self.upload_file and self.status and self.status not in ("Failed", "Draft"):
-			frappe.throw(_("Cancellation of uploads in status <b>{}</b> not permitted").format(self.status), title="Not permitted")
+		pass
+		# if self.file_details and self.status and self.status not in ("Failed", "Draft"):
+		# 	frappe.throw(_("Cancellation of uploads in status <b>{}</b> not permitted").format(self.status), title="Not permitted")
 
 	def on_cancel(self):
 		self.remove_entries()
@@ -157,7 +158,7 @@ class CBSEntry(Document):
 									for pe in payroll_entry:
 										payroll_entry = pe.reference_name
 									file_name = str(self.name)+"-"+str(r)+".txt"
-									file_path = os.path.join("/home/frappe/erp/sites/dev.bdbl.bt/public/files/", file_name)
+									file_path = os.path.join("/home/frappe/erp/sites/erp.bdb.bt/public/files/", file_name)
 									file_url = "/files/"+file_name
 									# Open the file in write mode ('w'). This will create the file if it doesn't exist.
 									line_number = 1
@@ -169,9 +170,13 @@ class CBSEntry(Document):
 										for pt in formatted_json:
 											for fd in formatted_json[pt]:
 												if fd['account_number'] == None:
-													fd['account_number'] = "None"
-												branch_code = frappe.db.get_value("Branch", fd['branch'], "branch_code")
-												if fd['salary_component'] not in ("Net Pay", "Salary Advance Deductions", "FI Loan Own"):
+													# fd['account_number'] = "None"
+													frappe.throw("Account Number missing for Salary component {}".format(fd['salary_component']))
+												if frappe.db.get_value("Account", pljson.account, "initiating_branch") == "Self Branch":
+													branch_code = frappe.db.get_value("Branch", fd['branch'], "branch_code")
+												else:
+													branch_code = "0000"
+												if fd['salary_component'] not in ("Net Pay", "FI Loan Own"):
 													if frappe.db.get_value("Account", pljson.account, "gl_type") != "CASA":
 														fd["account_number"] = str(branch_code)+fd["account_number"]
 													else:
@@ -221,7 +226,7 @@ class CBSEntry(Document):
 										try:
 											with open(file_path, 'a') as file:
 												# Write some text to the file
-												file.write("\n"+pfdetails.branch_code+gpf_account_number+f"{' '*(16-len(str(pfdetails.branch_code+gpf_account_number)))}BTN000     D"+f"""{' '*(17-len(str(format(flt(pfdetails.employer_pf,2),'.2f'))))}{str(format(flt(pfdetails.employer_pf,2),'.2f'))}"""+"GPF Contribution"+pfdetails.branch+frappe.db.get_value("Payroll Entry", payroll_entry, "month_name")[:3]+frappe.db.get_value("Payroll Entry", payroll_entry, "fiscal_year"))
+												file.write("\n"+pfdetails.branch_code+gpf_account_number+f"{' '*(16-len(str(pfdetails.branch_code+gpf_account_number)))}BTN000     D"+f"""{' '*(17-len(str(format(flt(pfdetails.employer_pf,2),'.2f'))))}{str(format(flt(pfdetails.employer_pf,2),'.2f'))}"""+"GPF"+str(pfdetails.branch).split(" ")[0]+frappe.db.get_value("Payroll Entry", payroll_entry, "month_name")[:3]+frappe.db.get_value("Payroll Entry", payroll_entry, "fiscal_year"))
 										except Exception as e:
 											frappe.throw(f"Error writing to file: {e}")
 										t_debit += flt(pfdetails.employer_pf,2)
@@ -231,7 +236,7 @@ class CBSEntry(Document):
 									# 	contents = file.read()
 									# 	print(contents)
 									#---below line of code used for debugging---------------------
-									frappe.throw("Total Debit: "+str(flt(t_debit))+" Total Credit: "+str(flt(t_credit))+" Manpower expense: "+str(manpower)+" Employer PF: "+str(ac_pf))
+									# frappe.throw("Total Debit: "+str(flt(t_debit))+" Total Credit: "+str(flt(t_credit))+" Manpower expense: "+str(manpower)+" Employer PF: "+str(ac_pf))
 									#----------------------------------------=====================
 									if file_count == 1:
 										self.file_details = str(file_url)
@@ -269,6 +274,10 @@ class CBSEntry(Document):
 				if i.voucher_type == "Payment Entry":
 					party_type = frappe.db.get_value(i.voucher_type, i.voucher_no, "party_type")
 					party = frappe.db.get_value(i.voucher_type, i.voucher_no, "party")
+				if i.voucher_type == "Employee Advance Settlement":
+					party_type = "Employee"
+					party = frappe.db.get_value(i.voucher_type, i.voucher_no, "employee")
+
 				# frappe.throw(str(i.voucher_detail_no)+" "+str(party_type)+" "+(party)+" "+i.account)
 				# upload_list.append((
 				# 	frappe.generate_hash(txt="", length=10), reference_number, self.name, 
@@ -300,7 +309,7 @@ class CBSEntry(Document):
 				if not account_number:
 					if frappe.db.get_value("Account", i.account, "gl_type") == "CASA":
 						if party_type in ("Employee", "Supplier"):
-							frappe.throw("<b>Bank Account Number</b> is not set in {}}: {}".format(party_type, frappe.get_desk_link(party_type, party)))
+							frappe.throw("<b>Bank Account Number</b> is not set in {}: {}".format(party_type, frappe.get_desk_link(party_type, party)))
 						else:
 							frappe.throw("<b>Bank Account Number</b> is not set in Account: {}".format(frappe.get_desk_link("Account",i.account)))
 					else:

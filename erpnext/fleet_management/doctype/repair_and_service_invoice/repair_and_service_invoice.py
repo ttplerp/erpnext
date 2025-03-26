@@ -23,6 +23,8 @@ class RepairAndServiceInvoice(AccountsController):
 		self.update_repair_and_service()
 		# self.post_journal_entry()
 
+	def on_update(self):
+		self.set_status(update=True)
 	def on_cancel(self):
 		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
 		self.make_gl_entry()
@@ -31,7 +33,9 @@ class RepairAndServiceInvoice(AccountsController):
 	def update_repair_and_service(self):
 		if not self.repair_and_services:
 			return
-		value = 1
+		value = 0
+		if self.status == "Paid":
+			value = 1
 		if self.docstatus == 2:
 			value = 0
 		doc = frappe.get_doc("Repair And Services", self.repair_and_services)
@@ -43,6 +47,7 @@ class RepairAndServiceInvoice(AccountsController):
 			return
 
 		outstanding_amount = flt(self.outstanding_amount, 2)
+		value = 0
 		if not status:
 			if self.docstatus == 2:
 				status = "Cancelled"
@@ -55,10 +60,13 @@ class RepairAndServiceInvoice(AccountsController):
 					self.status = "Paid"
 				else:
 					self.status = "Submitted"
+					value = 1
 			else:
 				self.status = "Draft"
 
 		if update:
+			doc = frappe.get_doc("Repair And Services", self.repair_and_services)
+			doc.db_set("paid", value)
 			self.db_set("status", self.status, update_modified=update_modified)
 
 	def calculate_total(self):

@@ -331,13 +331,13 @@ def update_outstanding_amt(
 	)
 	if against_voucher_type == "Purchase Invoice":
 		bal = -bal
-	elif against_voucher_type == "Journal Entry":
+	elif against_voucher_type == "Journal Entry" and account not in ("200050013 - Withholding Tax Payable-Office Rent - BDBL", "200050007 - Withholding Tax Payable - BDBL"):
 		against_voucher_amount = flt(
 			frappe.db.sql(
 				"""
 			select sum(debit_in_account_currency) - sum(credit_in_account_currency)
 			from `tabGL Entry` where voucher_type = 'Journal Entry' and voucher_no = %s
-			and account = %s and (against_voucher is null or against_voucher='' or against_voucher_type in ('Leave Encashment')) {0}""".format(
+			and account = %s and (against_voucher is null or against_voucher='' or against_voucher_type in ('Leave Encashment', 'Journal Entry')) {0}""".format(
 					party_condition
 				),
 				(against_voucher, account),

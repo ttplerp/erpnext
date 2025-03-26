@@ -22,7 +22,7 @@ def get_columns(filters):
 			("Total Balance Amount") + ":Currency:200",
 		]
 	return [
-		("POL Expense") + ":Link/POL Expense:120",
+		("POL Expense") + ":Link/POL Advance:120",
 		("Equipment") + ":Link/Equipment:120",
 		("Equipment Type") + ":Link/Equipment Type:120",
 		("Fuelbook Branch") + ":Data:120",
@@ -46,7 +46,7 @@ def get_data(filters):
 								SUM(p.adjusted_amount), 
 								SUM(p.balance_amount)
 							from 
-								`tabPOL Expense` p 
+								`tabPOL Advance` p 
 							where docstatus = 1 {} 
 							GROUP BY p.equipment""".format(conditions))
 	else:
@@ -64,7 +64,7 @@ def get_data(filters):
 									p.balance_amount, 
 									p.credit_account
 								from 
-									`tabPOL Expense` p 
+									`tabPOL Advance` p 
 								where docstatus = 1 {} """.format(conditions))
 	return query
 

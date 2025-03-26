@@ -249,7 +249,7 @@ erpnext.stock.PurchaseReceiptController = class PurchaseReceiptController extend
 				{	"fieldtype": "Select",
 					"label": __("Material Name"),
 					"fieldname": "item_name",
-					"options": doc.items.map(d => d.item_name),
+					"options": doc.items.map(d => d.item_name+" "+d.rate),
 					"reqd": 1 
 				},
 				{	"fieldtype": "Button", "label": __('Issue Asset'),
@@ -260,14 +260,15 @@ erpnext.stock.PurchaseReceiptController = class PurchaseReceiptController extend
 		
 		dialog.fields_dict.make_asset_issue_entry.$input.click(function() {
 			var args = dialog.get_values();
-
+			var item_details = String(args.item_name).split(" ")
+			console.log(item_details[1])
 			frappe.call({
 				method:'frappe.client.get_value',
 				args:{
 					'doctype':'Item',
 					fieldname:"is_fixed_asset",
 					filters: {
-						"item_name": args.item_name,
+						"item_name": item_details[0],
 						"is_fixed_asset":1
 					}
 				},
@@ -278,7 +279,7 @@ erpnext.stock.PurchaseReceiptController = class PurchaseReceiptController extend
 							dialog.hide();
 							return;
 						}
-	
+						console.log("here "+item_details[0]+" "+item_details[1])
 						if(!args) return;
 						dialog.hide();
 	
@@ -286,7 +287,7 @@ erpnext.stock.PurchaseReceiptController = class PurchaseReceiptController extend
 						let item_code = ''
 						let asset_rate = ''
 						cur_frm.doc.items.map(d => {
-							if (d.item_name == args.item_name){
+							if (d.item_name == item_details[0] && d.valuation_rate == item_details[1]){
 								business_activity = d.business_activity;
 								item_code = d.item_code;
 								asset_rate = d.valuation_rate;

@@ -13,14 +13,14 @@ frappe.ui.form.on('Asset Issue Details', {
 		});
 	},
 	refresh: function (frm) {
-		frm.set_query('issued_to', function(doc, cdt, cdn) {
-			return {
-				filters: {
-					"branch": frm.doc.branch,
-					"status":"Active"
-				}
-			}
-		});
+		// frm.set_query('issued_to', function(doc, cdt, cdn) {
+		// 	return {
+		// 		filters: {
+		// 			"branch": frm.doc.branch,
+		// 			"status":"Active"
+		// 		}
+		// 	}
+		// });
 		frm.set_query("purchase_receipt",function(doc) {
 			return {
 				query: "erpnext.buying.doctype.asset_issue_details.asset_issue_details.check_item_code",
@@ -50,7 +50,8 @@ frappe.ui.form.on('Asset Issue Details', {
 				fieldname: ["valuation_rate","rate","warehouse"],
 				filters: {
 					"parent": frm.doc.purchase_receipt,
-					"item_code": frm.doc.item_code
+					"item_code": frm.doc.item_code,
+					"amount": frm.doc.asset_rate
 				}
 			},
 			callback: function(r){

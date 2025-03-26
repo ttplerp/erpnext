@@ -37,11 +37,11 @@ class PerformanceEvaluation(Document):
 		# if self.workflow_state == "Waiting Approval":
 		# 	self.set_manual_approver = 0
 		
-		if self.set_approver_manually !=1:
+		if self.set_approver_manually !=1 and self.workflow_state != "Draft":
 			validate_workflow_states(self)
 		if self.workflow_state != "Approved":
 			notify_workflow_states(self)
-		self.reset_manual_app()
+		# self.reset_manual_app()
 		
 		# to record the approver details when it is manually set to be used if the pms gets Rejected
 		if self.eval_workflow_state == "Waiting Approval":
@@ -175,9 +175,10 @@ class PerformanceEvaluation(Document):
 					quantity_rating = flt(item.quantity_achieved) / flt(item.quantity) * (flt(item.weightage))
 					item.quantity_rating = quantity_rating
 
-			if flt(item.timeline_achieved)<= flt(item.timeline):
+			if flt(item.timeline_achieved)>= flt(item.timeline):
 				# item.timeline_rating = (flt(item.timeline) / flt(item.timeline_achieved)  * (flt(item.weightage)*0.01))
-				item.timeline_rating = (flt(item.timeline_achieved) / flt(item.timeline)  * (flt(item.weightage)))
+				item.timeline_rating = (flt(item.timeline) / flt(item.timeline_achieved)  * (flt(item.weightage)))
+				# item.timeline_rating = (flt(item.timeline_achieved) / flt(item.timeline)  * (flt(item.weightage)))
 				timeline_rating = flt(item.timeline_rating)
 			else:
 				item.timeline_rating = flt(item.weightage)

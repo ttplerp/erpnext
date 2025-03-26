@@ -36,6 +36,7 @@ class CostCenter(NestedSet):
 		b.branch = self.cost_center_name.strip()
 		b.cost_center = self.name
 		b.company = self.company
+		b.branch_code = self.cost_center_number
 		b.expense_bank_account = frappe.db.get_value("Company", company, "default_bank_account")
 		b.save()
 		self.db_set("branch_created", 1)

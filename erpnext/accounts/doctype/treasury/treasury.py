@@ -16,7 +16,7 @@ class Treasury(Document):
 	def validate(self):
 		self.check_principal_amount()
 		self.calculate_number_of_days()
-
+		# self.calculate_maturity_amount()
 	def on_submit(self):
 		if self.is_existing == 0:
 			self.post_journal_entry()
@@ -36,12 +36,19 @@ class Treasury(Document):
 	def calculate_number_of_days(self):
 		if self.issue_date and self.maturity_date:
 			no_of_days = date_diff(self.maturity_date, self.issue_date)
+			term = flt(no_of_days/365,0)
 			self.db_set("day", flt(no_of_days))
-	
+			if frappe.db.get_value("Instrument Type", self.type_of_instrument, "investment_type") == "Long Term":
+				self.db_set("term", flt(term))
+
 	def check_principal_amount(self):
 		if flt(self.principal_amount) <= 0:
 			frappe.throw('Principal Amount should be greater than 0')
-	
+
+	def calculate_interest_amount(self):
+		if self.type_of_instrument in ("CP", "T-Bill"):
+			self.total_interest = self.maturity_amount - self.principal_amount
+
 	def post_journal_entry(self):
 		if not self.principal_amount:
 			frappe.throw("Total Principal Amount should be greater than zero")
@@ -131,7 +138,7 @@ class Treasury(Document):
 	def check_date_for_maturity(self):
 		show = 0
 		if self.issue_date:
-			if nowdate() >= self.issue_date and not frappe.db.exists("Maturity", {"treasury_id": self.name}):
+			if nowdate() >= self.issue_date and not frappe.db.exists("Maturity", {"treasury_id": self.name, "docstatus": 1}):
 				show = 1
 		return show
 
@@ -242,7 +249,10 @@ def make_treasury_maturity(source_name, target_doc=None):
 		target.interest_amount = flt(interest_amount,2)
 		# target.total_interest_amount = total_interest
 		target.maturity_amount = flt(source.principal_amount+total_interest,2)
-		target.tds_amount = flt(total_interest*0.05,2)
+		if source.type_of_instrument != "CP":
+			target.tds_amount = flt(total_interest*0.05,2)
+		else:
+			target.tds_amount = 0
 	def update_item(obj, target, source_parent):
 		pass
 

@@ -33,6 +33,8 @@ class RepairAndServices(StockController):
 	def on_submit(self):
 		self.calculate_total_hr()
 
+
+
 	def calculate_total_hr(self):
 		if self.start_date and self.end_date:
 			if self.start_date > self.end_date:
@@ -124,7 +126,13 @@ class RepairAndServices(StockController):
 				a.cost_center = self.cost_center
 				a.charge_amount = flt(a.qty) * flt(a.rate)
 				a.expense_account = frappe.db.get_value("Item Default", {'parent':a.item_code}, "expense_account")
-
+@frappe.whitelist()
+def check_invoice(doc):
+	invoice = 0
+	# frappe.throw(str(doc)+" "+str(frappe.db.get_value("Repair And Service Invoice", {"repair_and_services": str(doc), "docstatus": ["<", 2]})))
+	if frappe.db.exists("Repair And Service Invoice", {"repair_and_services": str(doc), "docstatus": ["<", 2]}):
+		invoice = 1
+	return invoice
 @frappe.whitelist()
 def make_mr(source_name, target_doc=None):
 	if frappe.db.exists("Material Request",{"repair_and_services":source_name}):

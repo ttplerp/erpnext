@@ -22,10 +22,11 @@ class Maturity(Document):
 
 	def before_cancel(self):
 		if self.journal_entry:
-			doc = frappe.get_doc("Journal Entry", self.journal_entry)
-			self.journal_entry = None
-			if doc.docstatus == 1:
-				doc.cancel()
+			for jv in str(self.journal_entry).split(", "):
+				doc = frappe.get_doc("Journal Entry", jv)
+				self.journal_entry = None
+				if doc.docstatus == 1:
+					doc.cancel()
 		for a in frappe.db.sql("""
 					select name from `tabGL Entry` where against_voucher = '{}'
 					""".format(self.name),as_dict=1):
@@ -92,9 +93,28 @@ class Maturity(Document):
 			AND tm.party = %s
 			LIMIT 1
 		"""
-
+		icredit_account_query = """
+			SELECT tmi.credit_account
+			FROM `tabTreasury Mapping Item` tmi
+			JOIN `tabTreasury Mapping` tm ON tmi.parent = tm.name
+			WHERE tmi.financial_schedule = 'Monthly Interest Accruals'
+			AND tm.party_type = %s
+			AND tm.party = %s
+			LIMIT 1
+		"""
+		idebit_account_query = """
+			SELECT tmi.debit_account
+			FROM `tabTreasury Mapping Item` tmi
+			JOIN `tabTreasury Mapping` tm ON tmi.parent = tm.name
+			WHERE tmi.financial_schedule = 'Monthly Interest Accruals'
+			AND tm.party_type = %s
+			AND tm.party = %s
+			LIMIT 1
+		"""
 		credit_account = frappe.db.sql(credit_account_query, (party_type, party))
+		icredit_account = frappe.db.sql(icredit_account_query, (party_type, party))
 		debit_account = frappe.db.sql(debit_account_query, (party_type, party))
+		idebit_account = frappe.db.sql(idebit_account_query, (party_type, party))
 		interest_account = frappe.db.sql(intrest_account_query, (party_type, party))
 		tds_account = frappe.db.sql(tds_account_query, (party_type, party))
 
@@ -131,37 +151,77 @@ class Maturity(Document):
 		je.append("accounts", {
 			"account": credit_account[0][0],
 			"credit_in_account_currency": flt(frappe.db.get_value("Treasury", self.treasury_id, "principal_amount"),2),
+			"credit": flt(frappe.db.get_value("Treasury", self.treasury_id, "principal_amount"),2),
 			"cost_center": self.cost_center,
-			"reference_type": "Maturity",
-			"reference_name": self.name,
+			"reference_type": "Treasury",
+			"reference_name": self.treasury_id,
+			"party_type": party_type,
+			"party": party
 		})
 		je.append("accounts", {
 			"account": interest_account[0][0],
 			"credit_in_account_currency": flt(self.total_interest_amount,2),
+			"credit": flt(self.total_interest_amount,2),
 			"cost_center": self.cost_center,
-			"reference_type": "Maturity",
-			"reference_name": self.name,
+			"reference_type": "Treasury",
+			"reference_name": self.treasury_id,
 		})
 		je.append("accounts", {
 			"account": debit_account[0][0],
 			"debit_in_account_currency": flt(self.maturity_amount-self.tds_amount,2),
+			"debit": flt(self.maturity_amount-self.tds_amount,2),
 			"cost_center": self.cost_center,
-			"reference_type": "Maturity",
-			"reference_name": self.name,
+			"reference_type": "Treasury",
+			"reference_name": self.treasury_id
 		})
-		je.append("accounts", {
-			"account": tds_account[0][0],
-			"debit_in_account_currency": flt(self.tds_amount,2),
-			"cost_center": self.cost_center,
-			"reference_type": "Maturity",
-			"reference_name": self.name
-		})
+		if self.tds_amount > 0:
+			je.append("accounts", {
+				"account": tds_account[0][0],
+				"debit_in_account_currency": flt(self.tds_amount,2),
+				"cost_center": self.cost_center,
+				"reference_type": "Treasury",
+				"reference_name": self.treasury_id
+			})
+
 		# frappe.throw("Credit:\nPrinciple Amount: {} Total Interest: {}\nDebit:\n Maturity Amount - TDS Amount: {} TDS Amount: {}".format(str(flt(frappe.db.get_value("Treasury", self.treasury_id, "principal_amount"),2)), str(flt(self.total_interest_amount,2)), str(flt(self.maturity_amount-self.tds_amount,2)), str(flt(self.tds_amount,2))))
 
 		je.insert()
+		jemi = frappe.new_doc("Journal Entry")
+		jemi.update({
+			"voucher_type": voucher_type,
+			"naming_series": voucher_series,
+			"title": f"Treasury Interest Accrual - {self.name}",
+			"user_remark": f"Note: Treasury Interest Accrual - {self.name}",
+			"posting_date": self.posting_date,
+			"company": self.company,
+			"total_amount_in_words": money_in_words(self.interest_amount),
+			"branch": self.branch,
+			"business_activity": "Common"
+		})
+		
+		jemi.append("accounts", {
+			"account": icredit_account[0][0],
+			"credit_in_account_currency": self.interest_amount,
+			"cost_center": self.cost_center,
+			"reference_type": "Treasury",
+			"reference_name": self.treasury_id,
+			"business_activity": "Common"
+		})
+		
+		jemi.append("accounts", {
+			"account": idebit_account[0][0],
+			"debit_in_account_currency": self.interest_amount,
+			"cost_center": self.cost_center,
+			"reference_type": "Treasury",
+			"reference_name": self.treasury_id,
+			"party_type": party_type,
+			"party": party,
+			"business_activity": "Common"
+		})
 
+		jemi.insert()
 		# Set a reference to the claim journal entry
-		self.db_set("journal_entry", je.name)
+		self.db_set("journal_entry", jemi.name+", "+je.name)
 		frappe.msgprint("Journal Entry created. {}".format(frappe.get_desk_link("Journal Entry", je.name)))
 
 	def calculate_interest_amount(self):
@@ -172,7 +232,7 @@ class Maturity(Document):
 		# d3 = datetime.strptime(str(frappe.db.get_value("Treasury", self.treasury_id, "issue_date")).split("-")[0]+"-01-01","%Y-%m-%d").date()
 		# days = ((d2-d3).days)+1
 		# self.days = days
-		# treasury = frappe.get_doc("Treasury", self.treasury_id)
+		treasury = frappe.get_doc("Treasury", self.treasury_id)
 		# days = treasury.day
 		# days_paid = frappe.db.sql("""
         #                     select sum(days) as days from `tabInterest Accrual` where treasury_id = '{}'
@@ -189,13 +249,18 @@ class Maturity(Document):
 		# if days > days_in_month:
 		# 	days = days_in_month
 		# self.days = days
-		# d2 = datetime.strptime(str(self.posting_date).split("-")[0]+"-12-31","%Y-%m-%d").date()
-		# d3 = datetime.strptime(str(self.posting_date).split("-")[0]+"-01-01","%Y-%m-%d").date()
-		# days_in_year = (d2-d3).days
-		# self.interest_amount = (flt(self.interest_rate)*0.01) *(flt(days)/flt(days_in_year))
+		d2 = datetime.strptime(str(self.posting_date).split("-")[0]+"-12-31","%Y-%m-%d").date()
+		d3 = datetime.strptime(str(self.posting_date).split("-")[0]+"-01-01","%Y-%m-%d").date()
+		days_in_year = date_diff(d2, d3)+1
+		if treasury.type_of_instrument in ("CP", "T-Bill"):
+			if not treasury.maturity_amount:
+				frappe.throw("Please set maturity amount in Treasury Master Data for {}".format(treasury.name))
+			self.interest_amount = flt(((flt(treasury.maturity_amount)-flt(treasury.principal_amount))/treasury.day)*self.days,2)
+		else:
+			self.interest_amount = (flt(treasury.principal_amount)*flt(self.interest_rate*0.01)*flt(self.days))/flt(days_in_year)
 		total_interest = frappe.db.sql("""
-										select sum(interest_amount) as total_interest from `tabInterest Accrual` where docstatus = 1 and treasury_id = '{}'
-										""".format(self.name),as_dict=1)
+										select sum(ifnull(interest_amount,0)) as total_interest from `tabInterest Accrual` where docstatus = 1 and treasury_id = '{}'
+										""".format(self.treasury_id),as_dict=1)
 		if total_interest:
 			total_interest = flt(total_interest[0].total_interest,2)
 		else:
@@ -204,15 +269,24 @@ class Maturity(Document):
 			total_interest += flt(frappe.db.get_value("Treasury", self.treasury_id, "opening_accrued_interest"),2)
 		self.total_interest_amount = total_interest
 		self.total_interest_amount += self.interest_amount
+		if treasury.type_of_instrument != "CP":
+			self.tds_amount = flt(self.total_interest_amount * 0.05,2)
+		else:
+			self.tds_amount = 0
+		# self.total_interest_amount -= self.tds_amount
 		self.maturity_amount = flt(flt(frappe.db.get_value("Treasury", self.treasury_id, "principal_amount"),2) + self.total_interest_amount,2)
 	@frappe.whitelist()
 	def get_days(self):
 		if not self.treasury_id:
 			frappe.throw('Please select Treasury ID to calculate interest')
-		d2 = datetime.strptime(str(self.posting_date).split("-")[0]+"-12-31","%Y-%m-%d").date()
-		d3 = datetime.strptime(str(frappe.db.get_value("Treasury", self.treasury_id, "issue_date")).split("-")[0]+"-01-01","%Y-%m-%d").date()
-		days = ((d2-d3).days)+1
+		# d2 = datetime.strptime(str(self.posting_date).split("-")[0]+"-12-31","%Y-%m-%d").date()
+		d2 = datetime.strptime(str(self.posting_date),"%Y-%m-%d").date()
+		# d3 = datetime.strptime(str(frappe.db.get_value("Treasury", self.treasury_id, "issue_date")).split("-")[0]+"-01-01","%Y-%m-%d").date()
+		d3 = datetime.strptime(str(self.posting_date).split("-")[0]+"-"+str(self.posting_date).split("-")[1]+"-01","%Y-%m-%d").date()
+		# days = ((d2-d3).days)+1
+		days = date_diff(d2, d3)
 		self.days = days
+		return days
 	@frappe.whitelist()
 	def get_month(self, posting_date):
 		month = flt(str(self.posting_date).split("-")[1])

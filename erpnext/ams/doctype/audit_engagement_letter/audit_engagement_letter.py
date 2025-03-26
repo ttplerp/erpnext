@@ -21,13 +21,14 @@ class AuditEngagementLetter(Document):
 		self.update_engagement_letter_no(1)
  
 	def update_engagement_letter_no(self, cancel=0):
-		pap_doc = frappe.get_doc("Prepare Audit Plan", self.prepare_audit_plan_no)
-		if not cancel:
-			pap_doc.db_set("audit_engagement_letter", self.name)
-			pap_doc.db_set("status", 'Engagement Letter')
-		else:
-			pap_doc.db_set("audit_engagement_letter", '')
-			pap_doc.db_set("status", 'Pending')
+		if self.prepare_audit_plan_no:
+			pap_doc = frappe.get_doc("Prepare Audit Plan", self.prepare_audit_plan_no)
+			if not cancel:
+				pap_doc.db_set("audit_engagement_letter", self.name)
+				pap_doc.db_set("status", 'Engagement Letter')
+			else:
+				pap_doc.db_set("audit_engagement_letter", '')
+				pap_doc.db_set("status", 'Pending')
 
 	def get_auditors(self):
 		receipients = []

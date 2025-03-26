@@ -9,7 +9,7 @@ from erpnext.custom_workflow import validate_workflow_states, notify_workflow_st
 
 class AssetMovement(Document):
 	def validate(self):
-		validate_workflow_states(self)
+		#validate_workflow_states(self)
 		self.validate_cost_center()
 		self.validate_employee()
 		self.validate_asset()

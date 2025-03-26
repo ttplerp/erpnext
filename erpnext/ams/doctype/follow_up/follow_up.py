@@ -25,28 +25,29 @@ class FollowUp(Document):
 		self.notify_audit_and_auditee()
 
 	def update_execute_audit_status(self, cancel=0):
-		pap_doc = frappe.get_doc("Prepare Audit Plan", self.prepare_audit_plan_no)
-		eu_doc = frappe.get_doc("Execute Audit", self.execute_audit_no)
-		
-		if not cancel:
-			pap_doc.db_set("status",'Follow Up')
-			eu_doc.db_set("status", 'Follow Up')
-		else:
-			initial_doc = frappe.get_doc("Audit Report", {"execute_audit_no": self.execute_audit_no})
-			if initial_doc.docstatus == 1:
-				pap_doc.db_set("status", 'Initial Report')
-				eu_doc.db_set("status", 'Initial Report')
+		if frappe.db.exists("Prepare Audit Plan", self.prepare_audit_plan_no) and frappe.db.exists("Execute Audit", self.execute_audit_no):
+			pap_doc = frappe.get_doc("Prepare Audit Plan", self.prepare_audit_plan_no)
+			eu_doc = frappe.get_doc("Execute Audit", self.execute_audit_no)
+			
+			if not cancel:
+				pap_doc.db_set("status",'Follow Up')
+				eu_doc.db_set("status", 'Follow Up')
 			else:
-				if eu_doc.docstatus == 1:
-					pap_doc.db_set("status", 'Audit Execution')
-					eu_doc.db_set("status", 'Exit Meeting')
+				initial_doc = frappe.get_doc("Audit Report", {"execute_audit_no": self.execute_audit_no})
+				if initial_doc.docstatus == 1:
+					pap_doc.db_set("status", 'Initial Report')
+					eu_doc.db_set("status", 'Initial Report')
 				else:
-					ael_doc = frappe.get_doc("Audit Engagement Letter", self.audit_engagement_letter)
-					if ael_doc.docstatus == 1:
-						pap_doc.db_set("status", 'Engagement Letter')
+					if eu_doc.docstatus == 1:
+						pap_doc.db_set("status", 'Audit Execution')
+						eu_doc.db_set("status", 'Exit Meeting')
 					else:
-						pap_doc.db_set("status", 'Pending')
-					eu_doc.db_set("status", 'Pending')
+						ael_doc = frappe.get_doc("Audit Engagement Letter", self.audit_engagement_letter)
+						if ael_doc.docstatus == 1:
+							pap_doc.db_set("status", 'Engagement Letter')
+						else:
+							pap_doc.db_set("status", 'Pending')
+						eu_doc.db_set("status", 'Pending')
   
 	def on_update_checklist_item(self):
 		ea = frappe.get_doc("Execute Audit", self.execute_audit_no)

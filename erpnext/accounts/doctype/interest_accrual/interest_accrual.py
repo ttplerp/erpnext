@@ -17,7 +17,7 @@ class InterestAccrual(Document):
 	def on_submit(self):
 		self.post_journal_entry()
 
-	def before_cancel(self):
+	def on_cancel(self):
 		if self.journal_entry:
 			doc = frappe.get_doc("Journal Entry", self.journal_entry)
 			self.journal_entry = None
@@ -101,8 +101,8 @@ class InterestAccrual(Document):
 			"account": credit_account[0][0],
 			"credit_in_account_currency": self.interest_amount,
 			"cost_center": self.cost_center,
-			"reference_type": "Interest Accrual",
-			"reference_name": self.name,
+			"reference_type": "Treasury",
+			"reference_name": self.treasury_id,
 			"business_activity": "Common"
 		})
 		
@@ -110,8 +110,8 @@ class InterestAccrual(Document):
 			"account": debit_account[0][0],
 			"debit_in_account_currency": self.interest_amount,
 			"cost_center": self.cost_center,
-			"reference_type": "Interest Accrual",
-			"reference_name": self.name,
+			"reference_type": "Treasury",
+			"reference_name": self.treasury_id,
 			"party_type": party_type,
 			"party": party,
 			"business_activity": "Common"
@@ -128,53 +128,81 @@ class InterestAccrual(Document):
 			frappe.throw('Please select Treasury ID to calculate interest')
 		treasury = frappe.get_doc("Treasury", self.treasury_id)
 		days = treasury.day
-		days_paid = frappe.db.sql("""
-                            select sum(days) as days from `tabInterest Accrual` where treasury_id = '{}'
-                            and name != '{}' and docstatus = 1
-                            """.format(self.treasury_id, self.name),as_dict=1)
-		if days_paid:
-			days_paid = flt(days_paid[0].days)
+		if treasury.type_of_instrument not in ("CP", "T-Bill"):
+			days_paid = frappe.db.sql("""
+								select sum(days) as days from `tabInterest Accrual` where treasury_id = '{}'
+								and name != '{}' and docstatus = 1
+								""".format(self.treasury_id, self.name),as_dict=1)
+			if days_paid:
+				days_paid = flt(days_paid[0].days)
+			else:
+				days_paid = 0
+			days -= days_paid
+			month = flt(str(self.posting_date).split("-")[1])
+			# days_in_month = flt(calendar.monthrange(int(2024), month)[1])
+			if str(treasury.issue_date).split("-")[0] == str(self.posting_date).split("-")[0] and str(treasury.issue_date).split("-")[1] == str(self.posting_date).split("-")[1]:
+				days_in_month = no_of_days_in_month = get_date_diff(treasury.issue_date, get_last_day(getdate(self.posting_date)))
+			else:
+				days_in_month = no_of_days_in_month = get_date_diff(get_first_day(getdate(self.posting_date)), get_last_day(getdate(self.posting_date)))
+			if days > days_in_month:
+				days = days_in_month
+			self.days = days
+			d2 = datetime.strptime(str(self.posting_date).split("-")[0]+"-12-31","%Y-%m-%d").date()
+			d3 = datetime.strptime(str(self.posting_date).split("-")[0]+"-01-01","%Y-%m-%d").date()
+			days_in_year = ((d2-d3).days)+1
+			self.interest_amount = flt(flt(treasury.principal_amount) * (flt(self.interest_rate)*0.01) *(flt(days)/flt(days_in_year)),2)
 		else:
-			days_paid = 0
-		days -= days_paid
-		month = flt(str(self.posting_date).split("-")[1])
-		# days_in_month = flt(calendar.monthrange(int(2024), month)[1])
-		if str(treasury.issue_date).split("-")[0] == str(self.posting_date).split("-")[0] and str(treasury.issue_date).split("-")[1] == str(self.posting_date).split("-")[1]:
-			days_in_month = no_of_days_in_month = get_date_diff(treasury.issue_date, get_last_day(getdate(self.posting_date)))
-		else:
-			days_in_month = no_of_days_in_month = get_date_diff(get_first_day(getdate(self.posting_date)), get_last_day(getdate(self.posting_date)))
-		if days > days_in_month:
-			days = days_in_month
-		self.days = days
-		d2 = datetime.strptime(str(self.posting_date).split("-")[0]+"-12-31","%Y-%m-%d").date()
-		d3 = datetime.strptime(str(self.posting_date).split("-")[0]+"-01-01","%Y-%m-%d").date()
-		days_in_year = ((d2-d3).days)+1
-		self.interest_amount = flt(flt(treasury.principal_amount) * (flt(self.interest_rate)*0.01) *(flt(days)/flt(days_in_year)),2)
+			days_paid = frappe.db.sql("""
+								select sum(days) as days from `tabInterest Accrual` where treasury_id = '{}'
+								and name != '{}' and docstatus = 1
+								""".format(self.treasury_id, self.name),as_dict=1)
+			if days_paid:
+				days_paid = flt(days_paid[0].days)
+			else:
+				days_paid = 0
+			days -= days_paid
+			month = flt(str(self.posting_date).split("-")[1])
+			# days_in_month = flt(calendar.monthrange(int(2024), month)[1])
+			if str(treasury.issue_date).split("-")[0] == str(self.posting_date).split("-")[0] and str(treasury.issue_date).split("-")[1] == str(self.posting_date).split("-")[1]:
+				days_in_month = no_of_days_in_month = get_date_diff(treasury.issue_date, get_last_day(getdate(self.posting_date)))
+			else:
+				days_in_month = no_of_days_in_month = get_date_diff(get_first_day(getdate(self.posting_date)), get_last_day(getdate(self.posting_date)))
+			if days > days_in_month:
+				days = days_in_month
+			self.days = days
+			if str(treasury.issue_date).split("-")[0] == str(self.posting_date).split("-")[0] and str(treasury.issue_date).split("-")[1] == str(self.posting_date).split("-")[1]:
+				days_in_month = no_of_days_in_month = get_date_diff(treasury.issue_date, get_last_day(getdate(self.posting_date)))
+			else:
+				days_in_month = no_of_days_in_month = get_date_diff(get_first_day(getdate(self.posting_date)), get_last_day(getdate(self.posting_date)))
+			if not treasury.maturity_amount:
+				frappe.throw("Please set maturity amount in Treasury Master Data for {}".format(treasury.name))
+			self.interest_amount = flt(((flt(treasury.maturity_amount)-flt(treasury.principal_amount))/treasury.day)*days_in_month,2)
 
 	@frappe.whitelist()
 	def get_month(self, posting_date):
 		month = flt(str(posting_date).split("-")[1])
 		if month == 1:
-			return "Jan"
+			month =  "Jan"
 		elif month == 2:
-			return "Feb"
+			month = "Feb"
 		elif month == 3:
-			return "Mar"
+			month = "Mar"
 		elif month == 4:
-			return "Apr"
+			month = "Apr"
 		elif month == 5:
-			return "May"
+			month = "May"
 		elif month == 6:
-			return "Jun"
+			month = "Jun"
 		elif month == 7:
-			return "Jul"
+			month = "Jul"
 		elif month == 8:
-			return "Aug"
+			month = "Aug"
 		elif month == 9:
-			return "Sep"
+			month = "Sep"
 		elif month == 10:
-			return "Oct"
+			moonth = "Oct"
 		elif month == 11:
-			return "Nov"
+			month = "Nov"
 		elif month == 12:
-			return "Dec"
+			month = "Dec"
+		return month, str(posting_date).split("-")[0]
