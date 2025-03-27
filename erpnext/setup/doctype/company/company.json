@@ -39,6 +39,8 @@
   "existing_company",
   "column_break_26",
   "chart_of_accounts",
+  "general_settings_section",
+  "prorate_daily",
   "charts_section",
   "sales_settings",
   "default_buying_terms",
@@ -1029,6 +1031,17 @@
    "fieldtype": "Link",
    "label": "Arrear Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "general_settings_section",
+   "fieldtype": "Section Break",
+   "label": "General Settings"
+  },
+  {
+   "default": "0",
+   "fieldname": "prorate_daily",
+   "fieldtype": "Check",
+   "label": "Pro_rate Daily"
   }
  ],
  "icon": "fa fa-building",
@@ -1036,7 +1049,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2025-01-27 16:46:47.564130",
+ "modified": "2025-03-27 12:05:04.431331",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",

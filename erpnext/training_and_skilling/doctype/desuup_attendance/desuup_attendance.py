@@ -25,8 +25,9 @@ class DesuupAttendance(Document):
 		pass
 	
 	def validate_attendance_date(self):
-		if getdate(self.attendance_date) > getdate(nowdate()):
-			frappe.throw(_("Attendance can not be marked for future dates"))
+		pass
+		# if getdate(self.attendance_date) > getdate(nowdate()):
+		# 	frappe.throw(_("Attendance can not be marked for future dates"))
 
 		# today = getdate(nowdate())
 
@@ -35,7 +36,7 @@ class DesuupAttendance(Document):
 		# last_day_of_month = get_last_day(today)
 
 		# # Calculate the date two days before the end of the month
-		# two_days_before_end_of_month = add_days(last_day_of_month, -2)
+		# two_days_before_end_of_month = add_days(last_day_of_month, -6)
 
 		# # Check if the attendance date is within the allowed range
 		# attendance_date = getdate(self.attendance_date)

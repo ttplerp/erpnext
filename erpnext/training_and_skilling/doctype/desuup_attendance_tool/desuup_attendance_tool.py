@@ -50,7 +50,7 @@ def get_desuups(date, attendance_for, cost_center=None, training_management=None
 						from `tabTraining Management` t1, `tabTrainee Details` t2
 						where t1.name = t2.parent
 						and t1.status = 'On Going' 
-						and t2.status = 'Reported'
+						# and t2.status = 'Reported'
 						and '{}' between t1.training_start_date and t1.training_end_date {} 
 						order by t2.desuup_name
 						""".format(getdate(date), cond), as_dict=True)
@@ -70,7 +70,7 @@ def get_desuups(date, attendance_for, cost_center=None, training_management=None
 	
 	marked_desuup = {}
 	for dsp in frappe.get_list(
-		"Desuup Attendance", fields=["desuup", "status"], filters={"attendance_date": date}
+		"Desuup Attendance", fields=["desuup", "status"], filters={"attendance_date": date, "docstatus": 1}
 	):
 		marked_desuup[dsp["desuup"]] = dsp["status"]
 

@@ -317,8 +317,6 @@ class DesuupMessAdvance(Document):
 			filtered_desuup_list.append(desuup)
 
 		return filtered_desuup_list
-
-
 	
 	@frappe.whitelist()
 	def get_desuup_details(self):

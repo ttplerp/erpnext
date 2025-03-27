@@ -450,27 +450,21 @@ class POL(StockController):
 		data = []
 		data = frappe.db.sql("""
 				SELECT 
-					a.name, a.amount,a.balance_amount, a.journal_entry
+					a.name, 
+					a.amount,
+					a.balance_amount, 
+					a.journal_entry
 				FROM `tabPol Advance` a
-				WHERE docstatus = 1 
-				AND fuelbook = '{}'
-				AND fuelbook_branch = '{}'
-				AND balance_amount > 0
-				AND equipment_number = '{}' AND company = '{}'
-				ORDER BY entry_date""".format(self.fuelbook,self.equipment_branch,self.equipment_number, self.company),as_dict=True)
-		self.set('advances',[])
+				WHERE 
+					a.docstatus = 1 
+					AND a.fuelbook = '{}'
+					AND a.balance_amount > 0
+					AND a.equipment_number = '{}'
+					AND a.company = '{}'
+				ORDER BY a.entry_date
+			""".format(self.fuelbook, self.equipment_number, self.company), as_dict=True)
+		self.set('advances', [])
 
-		if not data:
-			data = frappe.db.sql("""
-						SELECT 
-							a.name, a.amount,a.balance_amount, a.journal_entry
-						FROM `tabPol Advance` a
-						WHERE docstatus = 1 
-						AND fuelbook = '{}'
-						AND fuelbook_branch = '{}'
-						AND balance_amount = 0
-						AND equipment_number = '{}' AND company = '{}'
-						ORDER BY entry_date desc limit 1""".format(self.fuelbook,self.equipment_branch,self.equipment_number, self.company),as_dict=True)
 		allocated_amount = self.total_amount
 		total_amount_adjusted = 0
 

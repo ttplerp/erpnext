@@ -74,6 +74,52 @@ class DesuupPayoutEntry(Document):
 		month_end_date   = get_last_day(month_start_date)
 		days_in_month = calendar.monthrange(month_end_date.year, month_end_date.month)[1]
 
+		'''
+		for item in self.get("items"):
+			total_days = self.get_desuup_attendance(item.desuup, item.reference_doctype, item.reference_name)
+			item.days_in_month = days_in_month
+			item.total_days_present = total_days
+
+			monthly_stipend_amt, monthly_mess_amt = self.get_stipend_amount()
+			if self.payment_for == "Trainee":
+				item.monthly_stipend_amount = monthly_stipend_amt
+				item.monthly_mess_amount = monthly_mess_amt if item.is_mess_member else 0.0
+			mess_adv_amt, adv_party = self.get_advance_amount(item.desuup, item.reference_doctype, item.reference_name)
+			if item.is_mess_member and mess_adv_amt > 0:
+				item.mess_advance_party = adv_party
+				item.mess_advance_amount = mess_adv_amt
+
+				if item.days_in_month == item.total_days_present:
+					stipend = flt(item.monthly_stipend_amount - item.monthly_mess_amount)
+					adv_amt = flt(item.monthly_mess_amount)
+
+					item.stipend_amount = flt(stipend, 2)
+					item.mess_advance_used = flt(adv_amt, 2)	
+				else:
+					stipend = flt(item.monthly_stipend_amount - item.monthly_mess_amount)/flt(item.days_in_month)
+					adv_amt = flt(item.monthly_mess_amount)/flt(item.days_in_month)
+
+					item.stipend_amount = flt(stipend * total_days, 2)
+					item.mess_advance_used = flt(adv_amt * total_days, 2)
+			else:
+				if item.days_in_month == item.total_days_present:
+					stipend = flt(item.monthly_stipend_amount)
+
+					item.stipend_amount = flt(stipend, 2)
+				else:
+					stipend = flt(item.monthly_stipend_amount)/flt(item.days_in_month)
+
+					item.stipend_amount = flt(stipend * total_days, 2)
+			
+			# check is desuup terminated or not
+			is_terminated = self.check_desuup_status(item.desuup, item.reference_doctype, item.reference_name)
+			if is_terminated:
+				item.stipend_amount = 0
+
+			item.refundable_amount = flt(item.mess_advance_amount, 2) - flt(item.mess_advance_used)
+
+			item.net_amount = flt(flt(item.stipend_amount) + flt(item.total_arrear_amount)) - flt(item.total_deduction_amount)
+		'''
 		for item in self.get("items"):
 			total_days = self.get_desuup_attendance(item.desuup, item.reference_doctype, item.reference_name)
 			item.days_in_month = days_in_month
@@ -420,17 +466,18 @@ class DesuupPayoutEntry(Document):
 	@frappe.whitelist()
 	def make_accounting_entry(self):
 		# Retrieve accounts from settings
-		adv_account = frappe.db.get_single_value("Desuup Settings", "mess_advance_account")
-		deduction_account = frappe.db.get_single_value("Desuup Settings", "deduction_account")
-		arrear_account = frappe.db.get_single_value("Desuup Settings", "arrear_account")
-		refundable_account = frappe.db.get_single_value("Desuup Settings", "refundable_mess_account")
+		adv_account = frappe.db.get_value("Company", self.company, "mess_advance_account")
+		deduction_account = frappe.db.get_value("Company", self.company, "desuup_deduction_account")
+		arrear_account = frappe.db.get_value("Company", self.company, "arrear_account")
+		refundable_account = frappe.db.get_value("Company", self.company, "refundable_mess_account")
 
 		if self.payment_for == "Trainee":
-			payable_account = frappe.db.get_single_value("Desuup Settings", "stipend_payable_account")
-			expense_account = frappe.db.get_single_value("Desuup Settings", "stipend_expense_account")
+			payable_account = frappe.db.get_value("Company", self.company, "stipend_payable_account")
+			expense_account = frappe.db.get_value("Company", self.company, "stipend_expense_account")
+			
 		elif self.payment_for == "OJT" or self.payment_for == "Production":
-			payable_account = frappe.db.get_single_value("Desuup Settings", "ojt_payable_account")
-			expense_account = frappe.db.get_single_value("Desuup Settings", "ojt_expense_account")
+			payable_account = frappe.db.get_value("Company", self.company, "ojt_payable_account")
+			expense_account = frappe.db.get_value("Company", self.company, "ojt_expense_account")
 
 		bank_account = frappe.db.get_value("Company", self.company, "default_bank_account")
 		if not bank_account:
