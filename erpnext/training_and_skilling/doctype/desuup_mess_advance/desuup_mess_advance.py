@@ -28,6 +28,12 @@ class DesuupMessAdvance(Document):
 		total_adv = 0
 		days_in_month = calendar.monthrange(month_end_date.year, month_end_date.month)[1]
 
+		is_daily_pro_rate = frappe.db.get_value("Company", self.company, "prorate_daily")
+		if is_daily_pro_rate:
+			days_to_pro_rate = days_in_month
+		else:
+			days_to_pro_rate = 30
+
 		for adv in self.items:
 			if self.advance_for in ("OJT", "Production"):
 				query = frappe.db.sql("select mess_amount from `tabDesuup Deployment Entry Item` where parent=%s and desuup=%s", 
@@ -38,7 +44,7 @@ class DesuupMessAdvance(Document):
 					mess_amt = 0
 		
 			days = (getdate(adv.to_date) - getdate(adv.from_date)).days + 1
-			mess_adv_amt = flt(mess_amt)/30
+			mess_adv_amt = flt(mess_amt)/days_to_pro_rate
 
 			# Fetch previous advances for the desuup
 			prev_adv = frappe.db.sql("""

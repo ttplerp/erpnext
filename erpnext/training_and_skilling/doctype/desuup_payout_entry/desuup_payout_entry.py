@@ -74,7 +74,14 @@ class DesuupPayoutEntry(Document):
 		month_end_date   = get_last_day(month_start_date)
 		days_in_month = calendar.monthrange(month_end_date.year, month_end_date.month)[1]
 
-		'''
+		days_to_pro_rate = 0
+
+		is_daily_pro_rate = frappe.db.get_value("Company", self.company, "prorate_daily")
+		if is_daily_pro_rate:
+			days_to_pro_rate = days_in_month
+		else:
+			days_to_pro_rate = 30
+
 		for item in self.get("items"):
 			total_days = self.get_desuup_attendance(item.desuup, item.reference_doctype, item.reference_name)
 			item.days_in_month = days_in_month
@@ -96,8 +103,8 @@ class DesuupPayoutEntry(Document):
 					item.stipend_amount = flt(stipend, 2)
 					item.mess_advance_used = flt(adv_amt, 2)	
 				else:
-					stipend = flt(item.monthly_stipend_amount - item.monthly_mess_amount)/flt(item.days_in_month)
-					adv_amt = flt(item.monthly_mess_amount)/flt(item.days_in_month)
+					stipend = flt(item.monthly_stipend_amount - item.monthly_mess_amount)/flt(days_to_pro_rate)
+					adv_amt = flt(item.monthly_mess_amount)/flt(days_to_pro_rate)
 
 					item.stipend_amount = flt(stipend * total_days, 2)
 					item.mess_advance_used = flt(adv_amt * total_days, 2)
@@ -107,7 +114,7 @@ class DesuupPayoutEntry(Document):
 
 					item.stipend_amount = flt(stipend, 2)
 				else:
-					stipend = flt(item.monthly_stipend_amount)/flt(item.days_in_month)
+					stipend = flt(item.monthly_stipend_amount)/flt(days_to_pro_rate)
 
 					item.stipend_amount = flt(stipend * total_days, 2)
 			
@@ -119,6 +126,8 @@ class DesuupPayoutEntry(Document):
 			item.refundable_amount = flt(item.mess_advance_amount, 2) - flt(item.mess_advance_used)
 
 			item.net_amount = flt(flt(item.stipend_amount) + flt(item.total_arrear_amount)) - flt(item.total_deduction_amount)
+		
+
 		'''
 		for item in self.get("items"):
 			total_days = self.get_desuup_attendance(item.desuup, item.reference_doctype, item.reference_name)
@@ -176,6 +185,7 @@ class DesuupPayoutEntry(Document):
 			item.refundable_amount = flt(item.mess_advance_amount, 2) - flt(item.mess_advance_used)
 
 			item.net_amount = flt(flt(item.stipend_amount) + flt(item.total_arrear_amount)) - flt(item.total_deduction_amount)
+		'''
 
 	def get_advance_amount(self, desuup, ref_doctype, ref_name):
 		adv_list = frappe.db.sql("""
