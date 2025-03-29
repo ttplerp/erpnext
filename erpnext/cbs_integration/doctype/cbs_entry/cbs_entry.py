@@ -101,12 +101,14 @@ class CBSEntry(Document):
 				frappe.throw(_("From Date is mandatory"))
 			elif not self.to_date:
 				frappe.throw(_("To Date is mandatory"))
+			'''
 			elif str(self.from_date) > str(getdate()):
 				frappe.throw(_("From Date cannot be a future date"))
 			elif str(self.to_date) > str(getdate()):
 				frappe.throw(_("To Date cannot be a future date"))
 			elif self.to_date < self.from_date:
 					frappe.throw(_("To Date cannot be before From Date"))
+			'''
 
 	def validate_data(self):
 		pass
