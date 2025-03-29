@@ -90,8 +90,10 @@ class CBSEntry(Document):
 			self.from_date = None
 			if not self.to_date:
 				frappe.throw(_("To Date is mandatory"))
+			'''
 			elif str(self.to_date) > str(getdate()):
 				frappe.throw(_("To Date cannot be a future date"))
+			'''
 			for i in frappe.db.get_all('CBS Entry', filters={'name': ('!=', self.name), 'entry_type': self.entry_type,'to_date': ('>',self.to_date), 'docstatus':('!=',2)}, fields=["name", "to_date"], order_by="to_date desc"):
 				frappe.throw(_("Download not permitted as the GL balances are already pulled till {} via {}").format(i.to_date, frappe.get_desk_link('CBS Entry', i.name)))
 		elif self.entry_type == "Upload":
