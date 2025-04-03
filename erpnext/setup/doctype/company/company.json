@@ -121,17 +121,9 @@
   "overtime_allowance_account",
   "employer_contribution_to_pf",
   "leave_encashment_account",
-  "pbva_account",
-  "bonus_account",
+  "leave_encashment_payable",
   "column_break_98",
-  "ltc_account",
   "employee_payable_account",
-  "travel_in_country_account",
-  "travel_out_country_account",
-  "training_in_country_account",
-  "training_out_country_account",
-  "meeting_and_seminars_incountry_account",
-  "meeting_and_seminars_outcountry_account",
   "travel_advance_account",
   "salary_advance_account",
   "employee_loan_account",
@@ -140,7 +132,7 @@
   "foreign_worker_advance_account",
   "column_break_7v1n9",
   "national_worker_advance_account",
-  "other_settings_tab",
+  "other_settings_ta",
   "budget_detail",
   "exception_budget_approver_role",
   "registration_info",
@@ -168,11 +160,6 @@
   "project_invoice_acc_supplier",
   "mobilization_advance_account",
   "equipment_advance_account",
-  "coal_raising_settings_section",
-  "coal_raising_credit_account",
-  "coal_raising_expense_account",
-  "column_break_131",
-  "coal_raising_penalty_account",
   "fine_and_penalty_account"
  ],
  "fields": [
@@ -819,62 +806,8 @@
    "options": "Account"
   },
   {
-   "fieldname": "pbva_account",
-   "fieldtype": "Link",
-   "label": "PBVA Account",
-   "options": "Account"
-  },
-  {
-   "fieldname": "bonus_account",
-   "fieldtype": "Link",
-   "label": "Bonus Account",
-   "options": "Account"
-  },
-  {
-   "fieldname": "ltc_account",
-   "fieldtype": "Link",
-   "label": "LTC Account",
-   "options": "Account"
-  },
-  {
-   "fieldname": "travel_in_country_account",
-   "fieldtype": "Link",
-   "label": "Travel In-Country Account",
-   "options": "Account"
-  },
-  {
-   "fieldname": "travel_out_country_account",
-   "fieldtype": "Link",
-   "label": "Travel Out-Country Account",
-   "options": "Account"
-  },
-  {
    "fieldname": "column_break_98",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "training_in_country_account",
-   "fieldtype": "Link",
-   "label": "Training In-Country Account",
-   "options": "Account"
-  },
-  {
-   "fieldname": "training_out_country_account",
-   "fieldtype": "Link",
-   "label": "Training Out Country Account",
-   "options": "Account"
-  },
-  {
-   "fieldname": "meeting_and_seminars_incountry_account",
-   "fieldtype": "Link",
-   "label": "Meeting & Seminars Account (In Country)",
-   "options": "Account"
-  },
-  {
-   "fieldname": "meeting_and_seminars_outcountry_account",
-   "fieldtype": "Link",
-   "label": "Meeting & Seminars Account (Out Country)",
-   "options": "Account"
   },
   {
    "fieldname": "travel_advance_account",
@@ -943,11 +876,6 @@
    "options": "Account"
   },
   {
-   "fieldname": "other_settings_tab",
-   "fieldtype": "Tab Break",
-   "label": "Other Settings"
-  },
-  {
    "fieldname": "production_account_settings_section",
    "fieldtype": "Section Break",
    "label": "Production Account Settings"
@@ -1001,33 +929,6 @@
   {
    "fieldname": "tds_accounts_section",
    "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "coal_raising_settings_section",
-   "fieldtype": "Section Break",
-   "label": "Coal Raising Settings"
-  },
-  {
-   "fieldname": "coal_raising_credit_account",
-   "fieldtype": "Link",
-   "label": "Coal Raising Credit Account",
-   "options": "Account"
-  },
-  {
-   "fieldname": "coal_raising_expense_account",
-   "fieldtype": "Link",
-   "label": "Coal Raising Expense Account",
-   "options": "Account"
-  },
-  {
-   "fieldname": "coal_raising_penalty_account",
-   "fieldtype": "Link",
-   "label": "Coal Raising Penalty Account",
-   "options": "Account"
-  },
-  {
-   "fieldname": "column_break_131",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "imprest_advance_account",
@@ -1216,6 +1117,17 @@
    "fieldtype": "Data",
    "label": "Authorizer Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "leave_encashment_payable",
+   "fieldtype": "Link",
+   "label": "Leave Encashment Payable",
+   "options": "Account"
+  },
+  {
+   "fieldname": "other_settings_ta",
+   "fieldtype": "Tab Break",
+   "label": "Other Settings"
   }
  ],
  "icon": "fa fa-building",
@@ -1223,7 +1135,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2025-01-17 18:40:46.006286",
+ "modified": "2025-04-03 18:11:34.330464",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",
