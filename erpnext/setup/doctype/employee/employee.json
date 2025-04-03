@@ -138,6 +138,11 @@
   "date_of_issue",
   "place_of_issue",
   "profile_tab",
+  "desuup_detail_section",
+  "desuup_id",
+  "column_break_rm6ra",
+  "batch_number",
+  "section_break_8oxyq",
   "bio",
   "educational_qualification",
   "education",
@@ -1133,13 +1138,36 @@
    "fieldtype": "Link",
    "label": "Employee Level",
    "options": "Employee Level"
+  },
+  {
+   "fieldname": "desuup_detail_section",
+   "fieldtype": "Section Break",
+   "label": "Desuup Detail"
+  },
+  {
+   "fieldname": "desuup_id",
+   "fieldtype": "Data",
+   "label": "Desuup ID"
+  },
+  {
+   "fieldname": "column_break_rm6ra",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "batch_number",
+   "fieldtype": "Data",
+   "label": "Batch Number"
+  },
+  {
+   "fieldname": "section_break_8oxyq",
+   "fieldtype": "Section Break"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2025-01-25 16:24:00.892980",
+ "modified": "2025-03-24 10:27:53.644623",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
