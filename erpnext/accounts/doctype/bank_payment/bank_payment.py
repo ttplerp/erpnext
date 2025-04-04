@@ -541,6 +541,8 @@ class BankPayment(Document):
             data = self.get_pbva()
         elif self.transaction_type == "Bulk Leave Encashment":
             data = self.get_bulk_leave_encashment()
+        elif self.transaction_type == "Bulk Payment":
+            data = self.get_bulk_payment()
         data = merge_similar_entries(data)
         return data
 
@@ -1062,6 +1064,43 @@ class BankPayment(Document):
                             AND bpi.status NOT IN ('Cancelled', 'Failed')
                         )
                         """.format(fiscal_year=self.fiscal_year, bank_payment = self.name, cond = cond), as_dict=True)
+    
+    
+    def get_bulk_payment(self):
+        cond = ''
+
+        if self.transaction_no:
+            cond = "and t1.name = '{}'".format(self.transaction_no)
+        
+        return frappe.db.sql("""
+                           SELECT "Bulk Payment" transaction_type, t1.name transaction_id, 
+                            t1.name transaction_reference, t1.modified transaction_date,
+                            t2.employee, t2.employee_name beneficiary_name, 
+                            e.bank_name bank_name, 
+                            e.bank_branch bank_branch, fib.financial_system_code,
+                            e.bank_account_type,
+                            e.bank_ac_no bank_account_no, 
+                            round(t2.net_amount,2) amount,
+                            'Bulk Encashment' remarks, "Draft" status						
+                        FROM `tabBulk Payment` t1 JOIN `tabBulk Payment Item` t2
+                            ON t1.name = t2.parent
+                            JOIN `tabEmployee` e ON t2.employee = e.name
+                            LEFT JOIN `tabFinancial Institution Branch` fib ON fib.name =  e.bank_branch
+                        WHERE t1.docstatus = 1
+                        AND e.salary_mode = 'Bank'
+                        {cond}
+                        AND IFNULL(t2.net_amount,0) > 0
+                        AND NOT EXISTS(select 1
+                            FROM `tabBank Payment Item` bpi, `tabBank Payment` bp
+                            WHERE bpi.transaction_type = 'Bulk Payment'
+                            AND bp.name=bpi.parent
+                           
+                            AND bpi.transaction_id = t1.name
+                            AND bpi.parent != '{bank_payment}'
+                            AND bpi.docstatus != 2
+                            AND bpi.status NOT IN ('Cancelled', 'Failed')
+                        )
+                        """.format(bank_payment = self.name, cond = cond), as_dict=True)
 
 
 def process_one_to_one_payment(doc, publish_progress=True):

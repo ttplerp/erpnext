@@ -64,7 +64,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Transaction Type",
-   "options": "\nSalary\nJournal Entry\nPayment Entry\nEmployee Loan Payment\nBonus\nImprest Recoup\nLTC\nPBVA\nProcess MR Payment\nBulk Leave Encashment",
+   "options": "\nSalary\nJournal Entry\nPayment Entry\nEmployee Loan Payment\nBulk Leave Encashment\nBulk Payment",
    "reqd": 1
   },
   {
@@ -338,7 +338,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-03-07 12:44:13.369652",
+ "modified": "2025-04-04 12:51:14.042273",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Bank Payment",
