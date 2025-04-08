@@ -139,6 +139,7 @@
   "place_of_issue",
   "profile_tab",
   "desuup_detail_section",
+  "is_desuup",
   "desuup_id",
   "column_break_rm6ra",
   "batch_number",
@@ -1142,32 +1143,42 @@
   {
    "fieldname": "desuup_detail_section",
    "fieldtype": "Section Break",
-   "label": "Desuup Detail"
+   "label": "De-suup Detail"
   },
   {
+   "depends_on": "eval:doc.is_desuup == 'Yes';",
    "fieldname": "desuup_id",
    "fieldtype": "Data",
-   "label": "Desuup ID"
+   "label": "Desuup ID",
+   "mandatory_depends_on": "eval:doc.is_desuup == 'Yes';"
   },
   {
    "fieldname": "column_break_rm6ra",
    "fieldtype": "Column Break"
   },
   {
+   "depends_on": "eval:doc.is_desuup == 'Yes';",
    "fieldname": "batch_number",
    "fieldtype": "Data",
-   "label": "Batch Number"
+   "label": "Batch Number",
+   "mandatory_depends_on": "eval:doc.is_desuup == 'Yes';"
   },
   {
    "fieldname": "section_break_8oxyq",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "is_desuup",
+   "fieldtype": "Select",
+   "label": "Is De-suup",
+   "options": "\nYes\nNo"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2025-03-24 10:27:53.644623",
+ "modified": "2025-04-08 07:33:28.140488",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
