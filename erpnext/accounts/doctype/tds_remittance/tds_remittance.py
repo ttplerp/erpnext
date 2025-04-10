@@ -29,7 +29,7 @@ class TDSRemittance(AccountsController):
 			return total_tds_amount, total_bill_amount
 
 		entries = get_tds_invoices(self.tax_withholding_category, self.from_date, self.to_date, \
-			self.name, filter_existing=True, branch=self.branch)
+			self.name, filter_existing=True, cost_center=self.cost_center)
 		if not entries:
 			frappe.msgprint(_("No Records Found"))
 
@@ -92,7 +92,7 @@ class TDSRemittance(AccountsController):
 			frappe.throw("Total TDS Amount is Zero.")
 
 
-def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_existing = False, party_type = None, branch = None):
+def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_existing = False, party_type = None, cost_center = None):
 	cond = accounts_cond = existing_cond = party_cond = "" 
 	entries = pi_entries = pe_entries = je_entries = []
 
@@ -124,8 +124,8 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 	if filter_existing:
 		existing_cond = _get_existing_cond()
 	
-	cost_center_for = frappe.db.get_value("Branch", branch, "cost_center_for")
-	existing_cond += " and t.branch in (select name as branch from tabBranch where disabled != 1 and cost_center_for = '{}')".format(cost_center_for) 
+	# cost_center_for = frappe.db.get_value("Branch", branch, "cost_center_for")
+	# existing_cond += " and t.branch in (select name as branch from tabBranch where disabled != 1 and cost_center_for = '{}')".format(cost_center_for) 
 
 	# Purchase Invoice
 	if not party_type or party_type == "Supplier":
@@ -142,9 +142,10 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 			where t.posting_date between '{from_date}' and '{to_date}'
 			{accounts_cond}
 			and t.docstatus = 1 
+			and t.cost_center = '{cost_center}'
 			{existing_cond}
 			{cond}""".format(accounts_cond = accounts_cond, cond = cond, existing_cond = existing_cond,\
-				from_date=from_date, to_date=to_date), as_dict=True)
+				from_date=from_date, to_date=to_date, cost_center=cost_center), as_dict=True)
 
 	# Payment Entry
 	if party_type:
@@ -165,10 +166,11 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 		where t.posting_date between '{from_date}' and '{to_date}'
 		{accounts_cond}
 		and t.docstatus = 1
+		and t.cost_center = '{cost_center}'
 		{existing_cond}
 		{party_cond}
 		{cond}""".format(accounts_cond = accounts_cond, cond = cond, existing_cond = existing_cond,\
-			party_cond = party_cond, from_date=from_date, to_date=to_date), as_dict=True)
+			party_cond = party_cond, from_date=from_date, to_date=to_date, cost_center=cost_center), as_dict=True)
 
 	# Journal Entry
 	if len(accounts) == 1:
@@ -205,10 +207,11 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 		where t.posting_date between '{from_date}' and '{to_date}'
 		{accounts_cond}
 		and t.docstatus = 1
+		and t1.cost_center = '{cost_center}'
 		{existing_cond}
 		{party_cond}
 		{cond}""".format(accounts_cond = accounts_cond, cond = cond, existing_cond = existing_cond,\
-			party_cond = party_cond, from_date=from_date, to_date=to_date), as_dict=True)
+			party_cond = party_cond, from_date=from_date, to_date=to_date, cost_center=cost_center), as_dict=True)
 		
 	entries = pi_entries + pe_entries + je_entries
 	entries = sorted(entries, key=lambda d: (d['posting_date'], d['invoice_no']))
