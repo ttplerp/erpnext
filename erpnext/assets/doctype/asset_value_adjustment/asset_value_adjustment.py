@@ -182,4 +182,4 @@ def get_current_asset_value(asset, finance_book=None):
 	if finance_book:
 		cond.update({"finance_book": finance_book})
 
-		return frappe.db.get_value("Asset Finance Book", cond, "value_after_depreciation")
+	return frappe.db.get_value("Asset Finance Book", cond, "value_after_depreciation")
