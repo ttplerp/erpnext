@@ -6,19 +6,18 @@ frappe.ui.form.on('Desuup Payout Entry', {
 	onload: function (frm) {
 		frm.set_query('training_management', function(doc) {
 			return {
-				filters: {
-					"status": "On Going",
-					"training_center": doc.training_center,
-
-				}
+				filters: [
+					["status", "in", ["On Going","Completed"]],
+					["training_center", "=", doc.training_center],
+				]
 			};
 		});
 		frm.set_query('desuup_deployment', function(doc) {
 			return {
-				filters: {
-					"status": "On Going",
-					"deployment_type": frm.doc.payment_for
-				}
+				filters: [
+					["status", "in", ["On Going","Completed"]],
+					["deployment_type", "=", frm.doc.payment_for]
+				]
 			};
 		});
 		frm.set_query('branch', function(doc) {

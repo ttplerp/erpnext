@@ -28,6 +28,16 @@ class DesuupPayoutEntry(Document):
 		self.total_refundable_amount = refund_amount
 
 	def validate_data(self):
+		cond = ""
+		if self.payment_for in ('Proudction', 'OJT'):
+			cond = {"docstatus": ("!=", 2), "name": ("!=", self.name), "payment_for": self.payment_for, "desuup_deployment": self.desuup_deployment}
+		else:
+			cond = {"docstatus": ("!=", 2), "name": ("!=", self.name), "payment_for": self.payment_for, "training_management": self.training_management}
+		
+		for d in frappe.db.get_all("Desuup Payout Entry", cond):
+			frappe.throw("There is another {} with this Deployment/Training Ref: {}.".format( 
+				frappe.get_desk_link("Desuup Payout Entry", d.name), self.training_management if self.payment_for == 'Trainee' else self.desuup_deployment))
+		
 		for i in self.get("items"):
 			if flt(i.mess_advance_amount) < flt(i.mess_advance_used):
 				frappe.throw("In Row #{}: The used advance amount ({}) exceeds the total claimed advance ({}). Please adjust the values.".format(
