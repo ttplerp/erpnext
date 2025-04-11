@@ -30,9 +30,9 @@ class DesuupPayoutEntry(Document):
 	def validate_data(self):
 		cond = ""
 		if self.payment_for in ('Proudction', 'OJT'):
-			cond = {"docstatus": ("!=", 2), "name": ("!=", self.name), "payment_for": self.payment_for, "desuup_deployment": self.desuup_deployment}
+			cond = {"docstatus": ("!=", 2), "month_name": ("!=", self.month_name), "name": ("!=", self.name), "payment_for": self.payment_for, "desuup_deployment": self.desuup_deployment}
 		else:
-			cond = {"docstatus": ("!=", 2), "name": ("!=", self.name), "payment_for": self.payment_for, "training_management": self.training_management}
+			cond = {"docstatus": ("!=", 2), "month_name": ("!=", self.month_name), "name": ("!=", self.name), "payment_for": self.payment_for, "training_management": self.training_management}
 		
 		for d in frappe.db.get_all("Desuup Payout Entry", cond):
 			frappe.throw("There is another {} with this Deployment/Training Ref: {}.".format( 
