@@ -29,7 +29,7 @@ class TDSRemittance(AccountsController):
 			return total_tds_amount, total_bill_amount
 
 		entries = get_tds_invoices(self.tax_withholding_category, self.from_date, self.to_date, \
-			self.name, filter_existing=True, cost_center=self.cost_center)
+			self.name, filter_existing=True, branch=self.branch, company=self.company)
 		if not entries:
 			frappe.msgprint(_("No Records Found"))
 
@@ -92,7 +92,7 @@ class TDSRemittance(AccountsController):
 			frappe.throw("Total TDS Amount is Zero.")
 
 
-def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_existing = False, party_type = None, cost_center = None):
+def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_existing = False, party_type = None, branch = None, company=None):
 	cond = accounts_cond = existing_cond = party_cond = "" 
 	entries = pi_entries = pe_entries = je_entries = []
 
@@ -112,7 +112,7 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 				where re.invoice_no = t.name)""".format(name=name)
 
 	accounts = [i.account for i in frappe.db.get_all("Tax Withholding Account", \
-		{"parent": tax_withholding_category}, "account")]
+		{"parent": tax_withholding_category, "company": company}, "account")]
 
 	if not len(accounts):
 		return entries
@@ -142,10 +142,10 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 			where t.posting_date between '{from_date}' and '{to_date}'
 			{accounts_cond}
 			and t.docstatus = 1 
-			and t.cost_center = '{cost_center}'
+			and t.company = '{company}'
 			{existing_cond}
 			{cond}""".format(accounts_cond = accounts_cond, cond = cond, existing_cond = existing_cond,\
-				from_date=from_date, to_date=to_date, cost_center=cost_center), as_dict=True)
+				from_date=from_date, to_date=to_date, company=company), as_dict=True)
 
 	# Payment Entry
 	if party_type:
@@ -166,11 +166,11 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 		where t.posting_date between '{from_date}' and '{to_date}'
 		{accounts_cond}
 		and t.docstatus = 1
-		and t.cost_center = '{cost_center}'
+		and t.company = '{company}'
 		{existing_cond}
 		{party_cond}
 		{cond}""".format(accounts_cond = accounts_cond, cond = cond, existing_cond = existing_cond,\
-			party_cond = party_cond, from_date=from_date, to_date=to_date, cost_center=cost_center), as_dict=True)
+			party_cond = party_cond, from_date=from_date, to_date=to_date, company=company), as_dict=True)
 
 	# Journal Entry
 	if len(accounts) == 1:
@@ -207,11 +207,11 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 		where t.posting_date between '{from_date}' and '{to_date}'
 		{accounts_cond}
 		and t.docstatus = 1
-		and t1.cost_center = '{cost_center}'
+		and t.company = '{company}'
 		{existing_cond}
 		{party_cond}
 		{cond}""".format(accounts_cond = accounts_cond, cond = cond, existing_cond = existing_cond,\
-			party_cond = party_cond, from_date=from_date, to_date=to_date, cost_center=cost_center), as_dict=True)
+			party_cond = party_cond, from_date=from_date, to_date=to_date, company=company), as_dict=True)
 		
 	entries = pi_entries + pe_entries + je_entries
 	entries = sorted(entries, key=lambda d: (d['posting_date'], d['invoice_no']))
