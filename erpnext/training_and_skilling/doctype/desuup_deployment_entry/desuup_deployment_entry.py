@@ -34,7 +34,7 @@ class DesuupDeploymentEntry(Document):
 					t2.desuup, t1.name, t1.end_date
 				FROM `tabDesuup Deployment Entry` t1 inner join `tabDesuup Deployment Entry Item` t2 
 				ON t1.name=t2.parent 
-				WHERE t1.status in ('On Going', 'Created')
+				WHERE t1.status in ('On Going', 'Created') and t2.status = 'Reported'
 			""", as_dict=True)
 				
 		for td in self.items:
