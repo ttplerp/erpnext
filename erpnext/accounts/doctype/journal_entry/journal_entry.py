@@ -402,6 +402,11 @@ class JournalEntry(AccountsController):
                 if a.reference_type == "MR Employee Invoice" and a.reference_name:
                     doc = frappe.get_doc("MR Employee Invoice", a.reference_name)
                     doc.db_set("payment_status", "Unpaid")
+
+                # Update Employee Advance
+                if a.reference_type == "Employee Advance" and a.reference_name:
+                    doc = frappe.get_doc("Employee Advance", a.reference_name)
+                    doc.db_set("je_reference", "")
         else:
             for a in self.get("accounts"):
                 # Updating status for MR Invoice Entry
@@ -426,6 +431,12 @@ class JournalEntry(AccountsController):
                 if a.reference_type == "MR Employee Invoice" and a.reference_name:
                     doc = frappe.get_doc("MR Employee Invoice", a.reference_name)
                     doc.db_set("payment_status", "Paid")
+
+                # Update Employee Advance
+                if a.reference_type == "Employee Advance" and a.reference_name:
+                    doc = frappe.get_doc("Employee Advance", a.reference_name)
+                    if doc.advance_type == "Salary Advance":
+                        doc.update_salary_structure()
 
                 if frappe.db.exists(
                     "Purchase Taxes and Charges",
