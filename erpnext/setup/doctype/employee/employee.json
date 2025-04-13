@@ -119,8 +119,8 @@
   "advance_approver_name",
   "personal_details",
   "cid_no",
-  "village",
   "dzongkhag",
+  "village",
   "house_number",
   "family_background",
   "column_break6",
@@ -1075,18 +1075,21 @@
   },
   {
    "fieldname": "village",
-   "fieldtype": "Data",
-   "label": "Village"
+   "fieldtype": "Link",
+   "label": "Village",
+   "options": "Village"
   },
   {
    "fieldname": "dzongkhag",
-   "fieldtype": "Data",
-   "label": "Dzongkhag"
+   "fieldtype": "Link",
+   "label": "Dzongkhag",
+   "options": "Dzongkhag"
   },
   {
    "fieldname": "gewog",
-   "fieldtype": "Data",
-   "label": "Gewog"
+   "fieldtype": "Link",
+   "label": "Gewog",
+   "options": "Gewog"
   },
   {
    "fieldname": "country",
@@ -1178,7 +1181,7 @@
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2025-04-08 07:33:28.140488",
+ "modified": "2025-04-13 14:15:17.095600",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
@@ -1217,7 +1220,8 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "Employee"
+   "role": "Employee",
+   "write": 1
   }
  ],
  "search_fields": "employee_name, gender, designation, employment_type",
