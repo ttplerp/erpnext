@@ -228,10 +228,22 @@ class JournalEntry(AccountsController):
             ad_doc.db_set('journal_entry_status', "Paid on {0}".format(now_datetime().strftime("%Y-%m-%d %H:%M:%S")))
             supplier_doc.save(ignore_permissions=True)
 
+     def before_cancel(self):
+        assets = [d for d in self.get("accounts") if d.reference_type == "Asset" and d.reference_name]
+        
+        for d in assets:
+            frappe.db.set_value(
+                "Depreciation Schedule", 
+                {"parent": d.reference_name, "journal_entry": self.name}, 
+                "journal_entry", 
+                ""
+            )
+
     def on_cancel(self):
         from erpnext.accounts.utils import unlink_ref_doc_from_payment_entries
 
         unlink_ref_doc_from_payment_entries(self)
+
         self.ignore_linked_doctypes = (
             "GL Entry",
             "Stock Ledger Entry",
@@ -249,10 +261,18 @@ class JournalEntry(AccountsController):
         self.update_reference_document(cancel=True)
         self.update_hire_charge_advance(cancel=self.docstatus == 2)
         self.update_mr_employee_advance(cancel=self.docstatus == 2)
+
         if self.reference_type == "Repair And Service Invoice":
             self.update_repair_and_service_status(status="Unpaid")
-        if self.reference_type == "Advance":
+        elif self.reference_type == "Advance":
             self.update_supplier_advance(cancel=True)
+
+        for d in self.get("accounts"):
+            if d.reference_type or d.reference_name:
+                frappe.db.set_value(d.doctype, d.name, {
+                    "reference_type": "",
+                    "reference_name": ""
+                })
 
     def update_hire_charge_advance(self, cancel=False):
         hire_charge_advance = frappe._dict()
