@@ -2853,6 +2853,8 @@ class CustomWorkflow:
                 frappe.throw("Only {} can Cancel this request".format(self.doc.approver_name))
     
     def supplier_advance(self):
+        if not self.old_state:
+            return
         if self.new_state.lower() == "Draft".lower():
             if self.doc.owner != frappe.session.user:
                 frappe.throw("Only the document owner can Apply this material request.")
