@@ -564,9 +564,9 @@
   },
   {
    "fieldname": "blood_group",
-   "fieldtype": "Select",
+   "fieldtype": "Link",
    "label": "Blood Group",
-   "options": "\nA+\nA-\nB+\nB-\nAB+\nAB-\nO+\nO-"
+   "options": "Blood Group"
   },
   {
    "description": "Here you can maintain family details like name and occupation of parent, spouse and children",
@@ -1181,7 +1181,7 @@
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2025-04-13 14:15:17.095600",
+ "modified": "2025-04-13 15:52:00.134037",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
