@@ -37,7 +37,6 @@
   "column_break_22",
   "employee_qualification",
   "employee_level",
-  "education_level",
   "employment_status",
   "probation_end_date",
   "temporary_end_date",
@@ -1024,12 +1023,6 @@
    "mandatory_depends_on": "eval:doc.employment_status==\"Temporary\";"
   },
   {
-   "fieldname": "education_level",
-   "fieldtype": "Link",
-   "label": "Education Level",
-   "options": "Education Level"
-  },
-  {
    "fieldname": "family_details_tab",
    "fieldtype": "Tab Break",
    "label": "Family Details"
@@ -1181,7 +1174,7 @@
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2025-04-13 15:52:00.134037",
+ "modified": "2025-04-13 15:57:58.875193",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
