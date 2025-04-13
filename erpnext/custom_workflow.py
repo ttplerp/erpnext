@@ -2446,8 +2446,11 @@ class CustomWorkflow:
                         self.doc.leave_approver_name
                     )
                 )
-            if not self.doc.approver_remarks:
-                frappe.throw("Please write remarks for your rejection")
+            if not self.doc.approver_remarks and self.doc.workflow_state == "Recommended By Supervisor":
+                frappe.throw("Rejection requires remarks from the approver. Please provide your comments.")
+            elif not self.doc.supervisor_remarks and self.doc.workflow_state == "Waiting Supervisor Approval":
+                frappe.throw("Rejection requires remarks from the supervisor. Please provide your comments.")
+
 
         elif self.new_state.lower() == "Cancelled".lower():
             if "HR User" not in frappe.get_roles(frappe.session.user):
@@ -2456,9 +2459,6 @@ class CustomWorkflow:
                         self.doc.leave_approver_name
                     )
                 )
-
-        # else:
-        # 	frappe.throw(_("Invalid Workflow State {}").format(self.doc.workflow_state))
 
         # if self.new_state.lower() in ("Draft".lower(),"Waiting Supervisor Approval".lower()):
         # 	if "HR User" in frappe.get_roles(frappe.session.user):
