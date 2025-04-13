@@ -1,0 +1,76 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2025-04-10 00:40:39.510829",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "date",
+  "account",
+  "voucher_type",
+  "voucher_no",
+  "amount",
+  "remarks",
+  "gl_entry"
+ ],
+ "fields": [
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date"
+  },
+  {
+   "fieldname": "account",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Account"
+  },
+  {
+   "fieldname": "voucher_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Voucher Type"
+  },
+  {
+   "fieldname": "voucher_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Voucher No"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "gl_entry",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "GL Entry",
+   "options": "GL Entry",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-04-13 17:20:50.355586",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Cash Register Item",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

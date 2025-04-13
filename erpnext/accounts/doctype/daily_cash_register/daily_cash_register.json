@@ -1,0 +1,298 @@
+{
+ "actions": [],
+ "autoname": "naming_series:",
+ "creation": "2025-04-09 23:19:37.850259",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "company",
+  "abbrcom",
+  "branch",
+  "brabbr",
+  "cost_center",
+  "cash_account",
+  "cb1",
+  "date",
+  "department",
+  "user",
+  "cb2",
+  "last_closed_on",
+  "this_closing",
+  "time_log",
+  "cash_summary_for_the_day_section",
+  "opening_balance",
+  "closing_balance",
+  "net_amount",
+  "cb3",
+  "custody",
+  "returns",
+  "over_short",
+  "amended_from",
+  "section_break_24",
+  "memo",
+  "day_cash_in_section",
+  "fetch_cash_in_entries",
+  "cash_in_entries",
+  "total_cash_in",
+  "day_cash_payout_tab",
+  "fetch_cash_out_entries",
+  "cash_out_entries",
+  "total_cash_out"
+ ],
+ "fields": [
+  {
+   "default": "POS-CLO-",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "in_filter": 1,
+   "in_global_search": 1,
+   "in_standard_filter": 1,
+   "label": "Series",
+   "options": "POS-CLO-",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "cash_account.company",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fetch_from": "company.abbr",
+   "fieldname": "abbrcom",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Company Abbr"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch"
+  },
+  {
+   "fetch_from": "branch.abbr",
+   "fieldname": "brabbr",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Branch Abbr"
+  },
+  {
+   "fieldname": "cash_account",
+   "fieldtype": "Link",
+   "label": "Cash Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "cb1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "in_filter": 1,
+   "in_standard_filter": 1,
+   "label": "Date"
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department"
+  },
+  {
+   "default": "User",
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "User",
+   "options": "User",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "last_closed_on",
+   "fieldtype": "Datetime",
+   "in_filter": 1,
+   "in_standard_filter": 1,
+   "label": "Last Closed on "
+  },
+  {
+   "default": "Now",
+   "fieldname": "this_closing",
+   "fieldtype": "Datetime",
+   "in_filter": 1,
+   "in_standard_filter": 1,
+   "label": "This closing ",
+   "reqd": 1
+  },
+  {
+   "default": "Now",
+   "fieldname": "time_log",
+   "fieldtype": "Datetime",
+   "label": "current Time",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "cash_summary_for_the_day_section",
+   "fieldtype": "Section Break",
+   "label": "Cash Summary for the day"
+  },
+  {
+   "default": "0.00",
+   "fieldname": "opening_balance",
+   "fieldtype": "Currency",
+   "in_filter": 1,
+   "label": "Opening Balance"
+  },
+  {
+   "default": "0.00",
+   "fieldname": "closing_balance",
+   "fieldtype": "Currency",
+   "label": "Total Closing Balance for Day",
+   "read_only": 1
+  },
+  {
+   "fieldname": "net_amount",
+   "fieldtype": "Currency",
+   "in_filter": 1,
+   "in_standard_filter": 1,
+   "label": "Total Cash Counted and Verified"
+  },
+  {
+   "fieldname": "cb3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0.00",
+   "fieldname": "custody",
+   "fieldtype": "Currency",
+   "in_filter": 1,
+   "label": "Total Cash IN"
+  },
+  {
+   "default": "0.00",
+   "fieldname": "returns",
+   "fieldtype": "Currency",
+   "in_filter": 1,
+   "label": "Total Cash Out",
+   "precision": "2"
+  },
+  {
+   "fieldname": "over_short",
+   "fieldtype": "Currency",
+   "label": "Over/Short Amount",
+   "precision": "2"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Daily Cash Register",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_24",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "memo",
+   "fieldtype": "Small Text",
+   "label": "Memo"
+  },
+  {
+   "fieldname": "day_cash_in_section",
+   "fieldtype": "Tab Break",
+   "label": "Day Cash IN"
+  },
+  {
+   "fieldname": "fetch_cash_in_entries",
+   "fieldtype": "Button",
+   "label": "Fetch Cash In Entries"
+  },
+  {
+   "fieldname": "cash_in_entries",
+   "fieldtype": "Table",
+   "label": "Cash IN Entries ",
+   "options": "Cash Register Item"
+  },
+  {
+   "fieldname": "total_cash_in",
+   "fieldtype": "Currency",
+   "label": "Total Cash IN",
+   "read_only": 1
+  },
+  {
+   "fieldname": "day_cash_payout_tab",
+   "fieldtype": "Tab Break",
+   "label": "Day Cash Payout"
+  },
+  {
+   "fieldname": "fetch_cash_out_entries",
+   "fieldtype": "Button",
+   "label": "Fetch Cash Out entries"
+  },
+  {
+   "default": "0.0",
+   "fieldname": "cash_out_entries",
+   "fieldtype": "Table",
+   "in_filter": 1,
+   "label": "Cash Out Entries ",
+   "options": "Cash Register Item"
+  },
+  {
+   "fieldname": "total_cash_out",
+   "fieldtype": "Currency",
+   "label": "Total Cash Out",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "branch.cost_center",
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
+  }
+ ],
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-04-13 14:12:18.034275",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "Daily Cash Register",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
