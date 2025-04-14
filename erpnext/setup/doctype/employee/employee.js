@@ -54,6 +54,13 @@ frappe.ui.form.on("Employee", {
 				}
 			};
 		});
+		frm.set_query('designation_classification', function(doc) {
+			return {
+				filters: {
+					designation: doc.designation
+				}
+			};
+		});
 		frm.set_query("division", function() {
 			return {
 				"filters": {
