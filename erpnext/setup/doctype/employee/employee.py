@@ -37,6 +37,7 @@ class Employee(NestedSet):
 		self.validate_status()
 		self.validate_reports_to()
 		self.validate_preferred_email()
+		self.update_evaluators()
 		if self.status == "Left":
 			self.unmap_pms_evaluator()
 
@@ -351,6 +352,19 @@ class Employee(NestedSet):
 			frappe.cache().hdel("employees_with_number", cell_number)
 			frappe.cache().hdel("employees_with_number", prev_number)
 
+	def update_evaluators(self):
+		if not self.include_in_performance_evaluation:
+			return
+
+		if self.evaluators:
+			self.evaluators.sort(key=lambda x: (x.evaluator_name or "").lower())
+
+			for idx, evaluator in enumerate(self.evaluators, start=1):
+				evaluator.idx = idx
+			
+			for d in list(self.evaluators):
+				if not d.evaluator:
+					frappe.db.delete("Performance Evaluator", {"name": d.name})
 
 def validate_employee_role(doc, method):
 	# called via User hook
