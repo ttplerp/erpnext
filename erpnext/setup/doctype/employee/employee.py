@@ -360,11 +360,13 @@ class Employee(NestedSet):
 			for d in list(self.evaluators):
 				if not d.evaluator:
 					frappe.db.delete("Performance Evaluator", {"name": d.name})
-					
+					self.evaluators.remove(d)
+
 			self.evaluators.sort(key=lambda x: (x.evaluator_name or "").lower())
 
 			for idx, evaluator in enumerate(self.evaluators, start=1):
 				evaluator.idx = idx
+
 
 def validate_employee_role(doc, method):
 	# called via User hook
