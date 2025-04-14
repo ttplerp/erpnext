@@ -805,6 +805,7 @@ def get_permission_query_conditions(user):
         user == "Administrator"
         or "System Manager" in user_roles
         or "Purchase Master" in user_roles
+        or "Purchase Manager" in user_roles
     ):
         return
 
