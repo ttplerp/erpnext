@@ -51,7 +51,7 @@ frappe.ui.form.on('POL Receive', {
 		frm.refresh_fields("items")
 	},
 	direct_consumption:function(frm){
-		set_equipment_filter(frm)
+		set_equipment_filter(frm);
 	},
 	rate: function(frm) {
 		frm.events.reset_items()
@@ -62,6 +62,7 @@ frappe.ui.form.on('POL Receive', {
 		populate_child_table(frm)
 	},
 	settle_imprest_advance: function(frm){
+		set_equipment_filter(frm);
 		if(frm.doc.settle_imprest_advance==0 || frm.doc.settle_imprest_advance == undefined){
 			frm.set_value("party",null);
 			frm.refresh_field("party");
@@ -143,6 +144,15 @@ var set_equipment_filter=function(frm){
 				}
 			};
 		});
+	}
+	if (frm.doc.direct_consumption == 0 && frm.doc.settle_imprest_advance == 1) {
+		frm.set_query("equipment", function(){
+			return {
+				filters: {
+					is_tanker: 1,
+				}
+			}
+		})
 	}
 }
 
