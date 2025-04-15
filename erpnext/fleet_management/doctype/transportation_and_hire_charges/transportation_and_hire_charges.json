@@ -345,7 +345,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Payment Status",
-   "options": "\nPaid\nUnpaid\nCancelled",
+   "options": "\nPaid\nUnpaid\nPartly Paid\nCancelled",
    "read_only": 1
   },
   {
@@ -360,7 +360,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-28 01:04:30.143089",
+ "modified": "2025-04-15 17:31:04.349953",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Transportation and Hire Charges",
