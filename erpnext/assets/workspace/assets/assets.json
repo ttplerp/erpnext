@@ -126,7 +126,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Reports",
-   "link_count": 7,
+   "link_count": 6,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -143,9 +143,9 @@
   {
    "hidden": 0,
    "is_query_report": 1,
-   "label": "Asset Issue Report",
+   "label": "Asset Register",
    "link_count": 0,
-   "link_to": "Asset Issue Report",
+   "link_to": "Asset Register",
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
@@ -153,9 +153,9 @@
   {
    "hidden": 0,
    "is_query_report": 1,
-   "label": "Asset Register",
+   "label": "Non Capitalized Asset Register",
    "link_count": 0,
-   "link_to": "Asset Register",
+   "link_to": "Non Capitalized Asset Register",
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
@@ -189,19 +189,9 @@
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Non Capitalized Asset Register",
-   "link_count": 0,
-   "link_to": "Non Capitalized Asset Register",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
   }
  ],
- "modified": "2025-04-15 14:54:21.022874",
+ "modified": "2025-04-15 17:00:55.148883",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Assets",
