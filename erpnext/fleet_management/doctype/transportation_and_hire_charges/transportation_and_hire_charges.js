@@ -41,7 +41,7 @@ frappe.ui.form.on('Transportation and Hire Charges', {
 			}, __("View"));
 		}
 
-		if (frm.doc.docstatus == 1 && frm.doc.status != "Paid" && frm.doc.settle_imprest_advance == 0 ){
+		if (frm.doc.docstatus == 1 && frm.doc.payment_status != "Paid" && frm.doc.settle_imprest_advance == 0 ){
 			cur_frm.add_custom_button(__('Pay'), function(doc) {
 				frm.events.make_payment_entry(frm)
 			})
