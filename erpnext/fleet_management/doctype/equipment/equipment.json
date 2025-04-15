@@ -17,6 +17,7 @@
   "asset_issue_details",
   "column_break_2",
   "enabled",
+  "is_tanker",
   "hired_equipment",
   "status",
   "rate_per_hour",
@@ -371,11 +372,17 @@
    "label": "Cost Center",
    "options": "Cost Center",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_tanker",
+   "fieldtype": "Check",
+   "label": "Is Tanker"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-23 17:44:21.878166",
+ "modified": "2025-04-15 17:52:45.803604",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment",
