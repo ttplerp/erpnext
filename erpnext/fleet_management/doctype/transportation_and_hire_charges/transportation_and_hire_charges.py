@@ -36,6 +36,7 @@ class TransportationandHireCharges(AccountsController):
 			frappe.throw(_("Abbreviation not found for Charge Type: {0}").format(self.invoice_type), title="Missing Abbreviation")
 
 	def validate(self):
+		self.set_status()
 		validate_workflow_states(self)
 		check_future_date(self.posting_date)		
 		self.calculate_totals()
@@ -48,6 +49,15 @@ class TransportationandHireCharges(AccountsController):
 	def on_cancel(self):
 		self.update_reference_document()
 		self.make_gl_entry(cancel=True)
+
+	def set_status(self):
+		if self.docstatus == 0:
+			self.payment_status = ""
+		else:
+			if self.settle_imprest_advance:
+				self.payment_status = "Paid"
+			else:
+				self.payment_status = "Unpaid"
 
 	def validate_amount(self):
 		for d in self.material_issue_details:
@@ -290,6 +300,9 @@ class TransportationandHireCharges(AccountsController):
 			if self.settle_imprest_advance:
 				party_type = "Employee"
 				party = self.imprest_party
+			else:
+				party_type = self.party_type
+				party = self.party
 			add_gl_entry(payable_account, 0, flt(self.outstanding_amount), party_type=party_type, party=party)
 			
 		else:

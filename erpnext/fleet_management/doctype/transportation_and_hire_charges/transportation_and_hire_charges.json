@@ -17,6 +17,7 @@
   "posting_date",
   "settle_imprest_advance",
   "imprest_party",
+  "payment_status",
   "party_details_section",
   "party_type",
   "column_break_11",
@@ -52,7 +53,8 @@
   "section_break_19",
   "company",
   "column_break_32",
-  "currency"
+  "currency",
+  "amended_from"
  ],
  "fields": [
   {
@@ -335,11 +337,30 @@
   {
    "fieldname": "column_break_lzwmc",
    "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "payment_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Payment Status",
+   "options": "\nPaid\nUnpaid\nCancelled",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Transportation and Hire Charges",
+   "print_hide": 1,
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-27 23:20:31.544190",
+ "modified": "2025-01-28 01:04:30.143089",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Transportation and Hire Charges",
