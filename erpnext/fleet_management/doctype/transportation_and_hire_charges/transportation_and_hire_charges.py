@@ -37,7 +37,7 @@ class TransportationandHireCharges(AccountsController):
 
 	def validate(self):
 		self.set_status()
-		validate_workflow_states(self)
+		# validate_workflow_states(self)
 		check_future_date(self.posting_date)		
 		self.calculate_totals()
 		self.validate_amount()
@@ -54,7 +54,7 @@ class TransportationandHireCharges(AccountsController):
 		if self.docstatus == 0:
 			self.payment_status = ""
 		else:
-			if self.settle_imprest_advance:
+			if self.outstanding_amount == 0:
 				self.payment_status = "Paid"
 			else:
 				self.payment_status = "Unpaid"
