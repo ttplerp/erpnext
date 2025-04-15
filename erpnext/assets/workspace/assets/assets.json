@@ -67,7 +67,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Transaction",
-   "link_count": 4,
+   "link_count": 5,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -105,9 +105,19 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Unvalued Asset",
+   "label": "Non Capitalized Asset",
    "link_count": 0,
-   "link_to": "Unvalued Asset",
+   "link_to": "Non Capitalized Asset",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Non Capitalized Asset Movement",
+   "link_count": 0,
+   "link_to": "Non Capitalized Asset Movement",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -182,16 +192,16 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 1,
-   "label": "Unvalued Asset Report",
+   "is_query_report": 0,
+   "label": "Non Capitalized Asset Register",
    "link_count": 0,
-   "link_to": "Unvalued Asset Report",
+   "link_to": "Non Capitalized Asset Register",
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
   }
  ],
- "modified": "2025-01-09 11:02:12.669945",
+ "modified": "2025-04-15 14:54:21.022874",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Assets",

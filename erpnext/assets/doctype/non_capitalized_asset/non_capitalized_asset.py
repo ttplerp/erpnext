@@ -4,10 +4,10 @@
 import frappe
 from frappe.model.document import Document
 
-class UnvaluedAsset(Document):
+class NonCapitalizedAsset(Document):
 	def validate(self):
 		self.validate_issued_to()
 
 	def validate_issued_to(self):
-		if not self.custodian and not self.asset_station:
-			frappe.throw("Set either {} or {}.".format(frappe.bold("Custodian"), frappe.bold("Asset Station")))
+		if not self.custodian and not self.location:
+			frappe.throw("Set either {} or {}.".format(frappe.bold("Custodian"), frappe.bold("Location")))

@@ -1,0 +1,218 @@
+{
+ "actions": [],
+ "autoname": "field:asset_identification_code",
+ "creation": "2024-03-13 14:30:32.377393",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "is_self_manufactured",
+  "asset_identification_code",
+  "asset_name",
+  "status",
+  "location",
+  "column_break_guu1m",
+  "posting_date",
+  "branch",
+  "cost_center",
+  "amount",
+  "section_break_fiupq",
+  "custodian",
+  "asset_station",
+  "column_break_wocou",
+  "custodian_name",
+  "section_break_iy7uh",
+  "asset_history",
+  "addition_informattion_section",
+  "company",
+  "column_break_tph8i",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "asset_identification_code",
+   "fieldtype": "Data",
+   "label": "Asset Identification Code",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "asset_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Asset Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_guu1m",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "branch.cost_center",
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_fiupq",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "custodian",
+   "fieldtype": "Link",
+   "label": "Custodian",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "asset_station",
+   "fieldtype": "Link",
+   "label": "Asset Station",
+   "options": "Asset Station"
+  },
+  {
+   "fieldname": "column_break_wocou",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "custodian.employee_name",
+   "fieldname": "custodian_name",
+   "fieldtype": "Data",
+   "label": "Custodian Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Usable\nUnusable\nRepairable\nAllocated\nMarked for Auction\nAuctioned",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_iy7uh",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "asset_history",
+   "fieldtype": "Table",
+   "label": "Asset Movement History",
+   "options": "Non Capitalized Asset History",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Non Capitalized Asset",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "location",
+   "fieldtype": "Link",
+   "label": "Location",
+   "options": "Location",
+   "reqd": 1
+  },
+  {
+   "fieldname": "addition_informattion_section",
+   "fieldtype": "Section Break",
+   "label": "Addition Informattion"
+  },
+  {
+   "fieldname": "column_break_tph8i",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_self_manufactured",
+   "fieldtype": "Check",
+   "label": " Is Self Manufactured Asset"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-04-15 12:43:10.212608",
+ "modified_by": "Administrator",
+ "module": "Assets",
+ "name": "Non Capitalized Asset",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Asset Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Asset User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "asset_name",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
