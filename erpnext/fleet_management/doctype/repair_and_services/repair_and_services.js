@@ -10,6 +10,16 @@ frappe.ui.form.on('Repair And Services', {
 				}
 			}
 		});
+
+		frm.set_query("item_code", "items", function(){
+			return {
+				filters: {
+					is_fixed_asset: 0,
+					is_pol_item: 0,
+				}
+			}
+		});
+
 		if(frm.doc.docstatus == 1) {
 			frm.add_custom_button("Request Material", function() {
 				frappe.model.open_mapped_doc({
