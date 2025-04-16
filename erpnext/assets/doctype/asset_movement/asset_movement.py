@@ -111,7 +111,7 @@ class AssetMovement(Document):
 		# notify_workflow_states(self)
 
 	def set_latest_cost_center_in_asset(self):
-		current_cost_center, current_employee = "", ""
+		current_cost_center, current_employee, current_employee_name, current_location = "", "", "", ""
 		cond = "1=1"
 
 		for d in self.assets:
@@ -137,11 +137,16 @@ class AssetMovement(Document):
 			)
 			if latest_movement_entry:
 				current_location = latest_movement_entry[0][0]
+				current_cost_center = latest_movement_entry[0][0]
 				current_employee = latest_movement_entry[0][1]
 				current_employee_name = latest_movement_entry[0][2]
+			branch = frappe.get_value("Branch", {"cost_center":current_cost_center}, "name")
+			frappe.db.set_value("Asset", d.asset, "branch", branch, update_modified=False)
+			frappe.db.set_value("Asset", d.asset, "cost_center", current_cost_center, update_modified=False)
 			frappe.db.set_value("Asset", d.asset, "location", current_location)
 			frappe.db.set_value("Asset", d.asset, "custodian", current_employee)
 			frappe.db.set_value("Asset", d.asset, "custodian_name", current_employee_name)
+
 			
 	@frappe.whitelist()
 	def get_asset_list(self):
