@@ -120,12 +120,12 @@ class PerformanceEvaluation(Document):
 			quality_rating, quantity_rating, timeline_rating= 0, 0, 0
 			if cint(item.reverse_formula) == 0:
 				item.accept_zero_qtyquality = 0
-			if item.timeline_achieved <= 0:
+			if item.timeline_achieved < 0:
 				frappe.throw('Timeline Achieved for target <b>{}</b> must be greater than 0'.format(item.performance_target))
 			if item.qty_quality == 'Quality':
-				if item.quality_achieved <= 0:
+				if item.quality_achieved < 0:
 					if self.workflow_state in ['Waiting Supervisor Approval','Waiting Approval']:
-						frappe.throw('Quality Achieved for target <b>{}</b> must be greater than 0'.format(item.performance_target))
+						frappe.throw('Quality Achieved for target <b>{}</b> must be greater than or equal to 0'.format(item.performance_target))
 				if item.quality_achieved > item.quality and not item.reverse_formula:
 					item.quality_rating = flt(item.weightage)
 					quality_rating = flt(item.weightage)
@@ -144,7 +144,7 @@ class PerformanceEvaluation(Document):
 
 			elif item.qty_quality == 'Quantity':
 
-				if item.quantity_achieved <= 0:
+				if item.quantity_achieved < 0:
 					if self.workflow_state in ['Waiting Supervisor Approval','Waiting Approval']:
 						frappe.throw('Quantity Achieved for target <b>{}</b> must be greater than 0'.format(item.performance_target))
 
