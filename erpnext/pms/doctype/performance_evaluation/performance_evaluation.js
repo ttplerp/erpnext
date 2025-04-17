@@ -7,16 +7,12 @@ frappe.ui.form.on('Performance Evaluation', {
 	onload:(frm)=> {
 		apply_filter(frm)
 	},
-	
 	refresh: (frm)=>{
-		
 		if (frappe.user.has_role(['HR Manager'])){
 			
 			frm.set_df_property('set_approver_manually', 'read_only', 0);
 		}else{
 			frm.set_df_property('set_approver_manually', 'read_only', 1);
-		
-		
 		}
 		
 		if (frm.doc.docstatus === 1) {
@@ -26,6 +22,17 @@ frappe.ui.form.on('Performance Evaluation', {
 					frm: cur_frm
 				});
 			});
+			if(frm.doc.overall_rating == "Outstanding Performance"){
+				cur_frm.add_custom_button('Moderate', function() {
+					frappe.call({
+						method: "moderation",	
+						doc: frm.doc,
+						callback: function(r){
+							window.location.reload();
+						}
+					});
+				});
+			}
 		}
 	},
 

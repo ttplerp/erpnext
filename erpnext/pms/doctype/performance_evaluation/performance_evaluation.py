@@ -13,7 +13,6 @@ from erpnext.custom_workflow import validate_workflow_states, notify_workflow_st
 
 class PerformanceEvaluation(Document):
 	def validate(self):
-		
 		if self.upload_old_data:
 			return
 		# if self.eval_workflow_state != frappe.db.get_value('Performance Evaluation',self.name,'eval_workflow_state'):
@@ -326,6 +325,22 @@ class PerformanceEvaluation(Document):
 			return
 		employee = frappe.db.get_value("Employee",{'user_id':frappe.session.user},"name")
 		self.employee = employee
+
+	@frappe.whitelist()
+	def moderation(self):
+		user_roles = frappe.get_roles(frappe.session.user)
+		if "HR Moderator" not in user_roles:
+			frappe.throw("You are not allowed to moderate the evaluation.")
+		#Updating workflow state
+		frappe.db.sql("update `tabPerformance Evaluation` set workflow_state = 'Moderating', docstatus = 0 where name = '{}'".format(self.name))
+		#Updating child table docstatus
+		frappe.db.sql("update `tabEvaluate Target Item` set docstatus = 0 where parent = '{}'".format(self.name))
+		frappe.db.sql("update `tabEvaluate Additional Achievements` set docstatus = 0 where parent = '{}'".format(self.name))
+		frappe.db.sql("update `tabEvaluate Competency` set docstatus = 0 where parent = '{}'".format(self.name))
+		frappe.db.sql("update `tabLeadership Competency` set docstatus = 0 where parent = '{}'".format(self.name))
+		frappe.db.sql("update `tabPerformance Evaluation Negative Target` set docstatus = 0 where parent = '{}'".format(self.name))
+		frappe.db.sql("update `tabSupervisor Declaration` set docstatus = 0 where parent = '{}'".format(self.name))
+
 
 	def set_approver_designation(self):
 		desig = frappe.db.get_value('Employee', {'user_id': self.approver}, 'designation')

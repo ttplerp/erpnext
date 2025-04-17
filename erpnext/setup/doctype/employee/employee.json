@@ -26,6 +26,7 @@
   "date_of_joining",
   "image",
   "old_id",
+  "pbvi_percent",
   "scan_sign",
   "employment_details_section",
   "employment_type",
@@ -1035,13 +1036,20 @@
    "fieldname": "salary_advance_account",
    "fieldtype": "Data",
    "label": "Salary Advance Account"
+  },
+  {
+   "default": "0",
+   "description": "<b>Note: This setting will overwrite the PBVI percent in the PBVI doctype for this particular Employee</b> ",
+   "fieldname": "pbvi_percent",
+   "fieldtype": "Data",
+   "label": "PBVI Percent"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2025-03-10 16:15:36.631519",
+ "modified": "2025-04-15 15:55:40.310278",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",

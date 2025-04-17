@@ -23,6 +23,7 @@
   "approver",
   "approver_name",
   "approver_level",
+  "unit_rating",
   "vehicle_request_approver_section",
   "v_approver",
   "v_approver_name",
@@ -168,13 +169,20 @@
   {
    "fieldname": "column_break_20",
    "fieldtype": "Column Break"
+  },
+  {
+   "description": "*For PBVI",
+   "fieldname": "unit_rating",
+   "fieldtype": "Float",
+   "label": "Unit Rating",
+   "precision": "2"
   }
  ],
  "icon": "fa fa-sitemap",
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2023-08-15 14:57:23.633028",
+ "modified": "2025-04-15 15:29:52.365586",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Department",
