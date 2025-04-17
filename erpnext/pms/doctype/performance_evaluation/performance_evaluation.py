@@ -197,14 +197,14 @@ class PerformanceEvaluation(Document):
 			item.score = (flt(item.average_rating ) / flt(item.weightage))
 
 			total_score += flt(item.average_rating)
-
+		self.form_i_total_rating_100 = flt(total_score,2)
 		if not self.form_i:
 			score = 0
 		else:
 			score =flt(total_score)/100 * flt(target_rating)
 
 		total_score = score
-		self.form_i_total_rating = total_score
+		self.form_i_total_rating = flt(total_score,2)
 		self.db_set('form_i_total_rating', self.form_i_total_rating)
 
 	#calculate negative score
@@ -242,7 +242,8 @@ class PerformanceEvaluation(Document):
 		competency_rating = frappe.db.get_value("PMS Group",self.pms_group,"weightage_for_competency")
 		for item in self.evaluate_competency_item:
 			total = item.average + total
-		self.form_ii_total_rating = flt(competency_rating)/100 * flt(total)
+		self.form_ii_total_rating_100 = flt(competency_rating,2)
+		self.form_ii_total_rating = flt(flt(competency_rating)/100 * flt(total),2)
 		self.db_set('form_ii_total_rating', self.form_ii_total_rating)
 
 	def calculate_leadership_competency_score(self):
@@ -265,16 +266,17 @@ class PerformanceEvaluation(Document):
 		leadership_competency_rating = frappe.db.get_value("PMS Group",self.pms_group,"weightage_for_form_three")
 		for item in self.evaluate_leadership_competency:
 			total = item.average + total
-		self.negative_rating = flt(leadership_competency_rating)/100 * flt(total)
+		self.negative_rating_100 = flt(leadership_competency_rating,2)
+		self.negative_rating = flt(flt(leadership_competency_rating)/100 * flt(total),2)
 		self.db_set('negative_rating', self.negative_rating)
 
 	def calculate_final_score(self):
-		self.target_total_weightage, self.competency_total_weightage = frappe.db.get_value('PMS Group', {'name':self.pms_group}, ['weightage_for_target', 'weightage_for_competency'])
-		self.db_set('form_i_score', flt(self.form_i_total_rating))
-		self.db_set('form_ii_score', flt(self.form_ii_total_rating))
-		self.db_set('form_iii_score',flt(self.negative_rating))
-		self.db_set('final_score', (flt(self.form_i_score) + flt(self.form_ii_score)+ flt(self.form_iii_score)))
-		self.db_set('final_score_percent', flt(self.final_score))
+		self.target_total_weightage, self.competency_total_weightage, self.l_competence_total_weightage = frappe.db.get_value('PMS Group', {'name':self.pms_group}, ['weightage_for_target', 'weightage_for_competency', 'weightage_for_form_three'])
+		self.db_set('form_i_score', flt(self.form_i_total_rating,2))
+		self.db_set('form_ii_score', flt(self.form_ii_total_rating,2))
+		self.db_set('form_iii_score',flt(self.negative_rating,2))
+		self.db_set('final_score', flt((flt(self.form_i_score,2) + flt(self.form_ii_score,2)+ flt(self.form_iii_score,2)),2))
+		self.db_set('final_score_percent', flt(self.final_score,2))
 		# frappe.throw(str(self.final_score_percent))
 		overall_rating = frappe.db.sql('''select name from `tabOverall Rating` where  upper_range_percent >= {0} and lower_range_percent <= {0}'''.format(self.final_score_percent))
 		if len(overall_rating) > 0:

@@ -50,6 +50,7 @@
   "get_target",
   "evaluate_target_item",
   "form_i_total_rating",
+  "form_i_total_rating_100",
   "get_achievements",
   "achievements_items",
   "part_b_section",
@@ -57,11 +58,13 @@
   "rating_des",
   "evaluate_competency_item",
   "form_ii_total_rating",
+  "form_ii_total_rating_100",
   "section_break_18",
   "get_leadership_competency",
   "evaluate_leadership_competency",
   "business_target",
   "negative_rating",
+  "negative_rating_100",
   "final_score_calculation_section",
   "form_i_score",
   "target_total_weightage",
@@ -73,6 +76,7 @@
   "column_break_35",
   "no_of_months_served",
   "form_iii_score",
+  "l_competence_total_weightage",
   "overall_rating",
   "column_break_46",
   "final_score",
@@ -305,7 +309,7 @@
    "fieldname": "final_score",
    "fieldtype": "Float",
    "label": "Final Score",
-   "precision": "5",
+   "precision": "2",
    "read_only": 1
   },
   {
@@ -339,7 +343,7 @@
    "ignore_user_permissions": 1,
    "label": "Approver",
    "options": "User",
-   "read_only_depends_on": "eval:doc.set_manual_approver == 0;"
+   "read_only_depends_on": "eval:doc.set_approver_manually == 0;"
   },
   {
    "fieldname": "column_break_17",
@@ -639,7 +643,7 @@
    "fieldname": "final_score_percent",
    "fieldtype": "Percent",
    "label": "Final Score(%)",
-   "precision": "5",
+   "precision": "2",
    "read_only": 1
   },
   {
@@ -849,14 +853,38 @@
    "read_only": 1
   },
   {
+   "default": "0",
    "fieldname": "set_approver_manually",
-   "fieldtype": "Data",
+   "fieldtype": "Check",
    "label": "Set Approver Manually"
+  },
+  {
+   "fieldname": "form_i_total_rating_100",
+   "fieldtype": "Float",
+   "label": "Form I Total Rating(100%)",
+   "precision": "2"
+  },
+  {
+   "fieldname": "form_ii_total_rating_100",
+   "fieldtype": "Float",
+   "label": "Form II Total Rating(100%)",
+   "precision": "2"
+  },
+  {
+   "fieldname": "negative_rating_100",
+   "fieldtype": "Float",
+   "label": "Form III Total Rating(100)",
+   "precision": "2"
+  },
+  {
+   "fieldname": "l_competence_total_weightage",
+   "fieldtype": "Percent",
+   "label": "Leadership Compentency Total Weightage(%)"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2025-02-15 12:58:33.214747",
+ "modified": "2025-04-17 14:55:46.466575",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Performance Evaluation",
