@@ -430,6 +430,8 @@ class CustomWorkflow:
             self.target_set_up_and_review()
         elif self.doc.doctype == "Performance Evaluation":
             self.performance_evaluation()
+        elif self.doc.doctype == "PMS Appeal":
+            self.pms_appeal()
         elif self.doc.doctype == "Employee Transfer":
             self.employee_transfer()
         elif self.doc.doctype == "POL Expense":
@@ -649,6 +651,30 @@ class CustomWorkflow:
         elif self.new_state.lower() == ("Rejected".lower()) and self.old_state.lower() != self.new_state.lower():
             if self.doc.approver != frappe.session.user:
                 frappe.throw("Only {} can Reject this Application".format(self.doc.approver_name))
+        '''
+        else:
+            frappe.throw(_("Invalid Workflow State {}").format(self.doc.workflow_state))
+        '''
+
+    def pms_appeal(self):
+        if self.new_state.lower() in ("Draft".lower()):
+            if frappe.session.user != self.doc.owner:
+                frappe.throw("Only {} can apply this leave".format(self.doc.owner))
+        elif self.new_state.lower() == ("Waiting Approval".lower()):
+            self.set_approver("HR")
+        # elif self.new_state.lower() == ("Waiting Approval".lower()):
+        #     self.set_approver("Supervisor")
+        #     '''
+        #     if self.doc.approver != frappe.session.user:
+        #         frappe.throw("Only {} can Forward this Application".format(self.doc.approver_name))
+        #     self.set_approver("Supervisors Supervisor")
+        #     '''
+        # elif self.new_state.lower() == ("Approved".lower()):
+        #     if self.doc.approver != frappe.session.user and self.old_state.lower() != "Moderating".lower():
+        #         frappe.throw("Only {} can Approve this Application".format(self.doc.approver_name))
+        # elif self.new_state.lower() == ("Rejected".lower()) and self.old_state.lower() != self.new_state.lower():
+        #     if self.doc.approver != frappe.session.user:
+        #         frappe.throw("Only {} can Reject this Application".format(self.doc.approver_name))
         '''
         else:
             frappe.throw(_("Invalid Workflow State {}").format(self.doc.workflow_state))
@@ -1162,6 +1188,8 @@ class NotifyCustomWorkflow:
                 return
         elif self.doc.doctype == "Performance Evaluation":
             template = "Performance Evaluation"
+        elif self.doc.doctype == "PMS Appeal":
+            template = "PMS Appeal"
         else:
             template = ""
 
@@ -1465,6 +1493,7 @@ def get_field_map():
         "Target Set Up": ["approver","approver_name","approver_designation"],
         "Review": ["approver","approver_name","approver_designation"],
         "Performance Evaluation": ["approver","approver_name","approver_designation"],
+        "PMS Appeal": ["approver","approver_name","approver_designation"],
         "Employee Separation": ["approver","approver_name","approver_designation"],
         "POL": ["approver","approver_name","approver_designation"],
         "Asset Issue Details": [],

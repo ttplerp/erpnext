@@ -21,9 +21,9 @@ class PMSAppeal(Document):
 		self.set_perc_approver()
 		# self.calculate_negative_score()
 		self.calculate_final_score()
-		# validate_workflow_states(self)
-		# if self.workflow_state != "Approved":
-		# 	notify_workflow_states(self)
+		validate_workflow_states(self)
+		if self.workflow_state != "Approved":
+			notify_workflow_states(self)
 	def on_submit(self):
 		self.employee_pms_record()
 	def on_cancel(self):
