@@ -644,7 +644,7 @@ class CustomWorkflow:
             self.set_approver("Supervisors Supervisor")
             '''
         elif self.new_state.lower() == ("Approved".lower()):
-            if self.doc.approver != frappe.session.user:
+            if self.doc.approver != frappe.session.user and self.old_state.lower() != "Moderating".lower():
                 frappe.throw("Only {} can Approve this Application".format(self.doc.approver_name))
         elif self.new_state.lower() == ("Rejected".lower()) and self.old_state.lower() != self.new_state.lower():
             if self.doc.approver != frappe.session.user:
