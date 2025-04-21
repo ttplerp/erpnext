@@ -105,7 +105,7 @@
   "approver_designation",
   "approver_fl_designation",
   "supervisors_manager_designation",
-  "eval_workflow_state",
+  "workflow_state",
   "other_details_section",
   "upload_old_data",
   "other_information_section",
@@ -355,13 +355,6 @@
    "fieldname": "comment_section_section",
    "fieldtype": "Section Break",
    "label": "Comment Section"
-  },
-  {
-   "fieldname": "eval_workflow_state",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "Workflow State",
-   "read_only": 1
   },
   {
    "fieldname": "get_achievements",
@@ -828,11 +821,18 @@
    "fieldname": "employee_appeal_record",
    "fieldtype": "Table",
    "options": "Appeal Details"
+  },
+  {
+   "fieldname": "workflow_state",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Workflow State",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-16 14:39:43.099993",
+ "modified": "2025-04-21 16:50:40.591015",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "PMS Appeal",
