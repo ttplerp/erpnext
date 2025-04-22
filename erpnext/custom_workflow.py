@@ -986,6 +986,30 @@ class CustomWorkflow:
             vars(self.doc)[self.doc_approver[2]] = (
                 officiating[2] if officiating else self.pol_approver[2]
             )
+        elif approver_type == "Mechanical Head":
+            self.center_store = frappe.db.get_value(
+                "Employee",
+                {
+                    "name": frappe.db.get_single_value("HR Settings","center_store_approver")
+                },
+                    self.field_list,
+                )
+            if not self.center_store:
+                frappe.throw("set center store approver in HR setting")
+            officiating = get_officiating_employee(self.center_store[3])
+            if officiating:
+                officiating = frappe.db.get_value(
+                    "Employee", officiating[0].officiate, self.field_list
+                )
+            vars(self.doc)[self.doc_approver[0]] = (
+                officiating[0] if officiating else self.center_store[0]
+            )
+            vars(self.doc)[self.doc_approver[1]] = (
+                officiating[1] if officiating else self.center_store[1]
+            )
+            vars(self.doc)[self.doc_approver[2]] = (
+                officiating[2] if officiating else self.center_store[2]
+            )
         elif approver_type == "QHSE":
             officiating = get_officiating_employee(self.qhse[3])
             if officiating:
@@ -2792,9 +2816,15 @@ class CustomWorkflow:
     def pol_receive(self):
         if not self.old_state:
             return
-        elif self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
+        
+        elif self.new_state.lower() in ("Center Store Approval".lower()):
             if self.doc.owner != frappe.session.user:
                 frappe.throw("Only {} can Apply this request".format(self.doc.owner))
+            self.set_approver("Mechanical Head")
+
+        elif self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
+            if self.doc.approver != frappe.session.user:
+                frappe.throw("Only {} can forward  this request".format(self.doc.owner))
             self.set_approver("Supervisor")
 
         elif self.new_state.lower() == "Waiting Approval".lower():
