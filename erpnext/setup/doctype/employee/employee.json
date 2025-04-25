@@ -20,6 +20,7 @@
   "employee_name",
   "user_id",
   "location_code",
+  "nationality",
   "column_break_9",
   "status",
   "gender",
@@ -1069,9 +1070,8 @@
   },
   {
    "fieldname": "village",
-   "fieldtype": "Link",
-   "label": "Village",
-   "options": "Village"
+   "fieldtype": "Data",
+   "label": "Village"
   },
   {
    "fieldname": "dzongkhag",
@@ -1175,13 +1175,19 @@
    "fieldtype": "Link",
    "label": "Designation Classification",
    "options": "Designation Classification"
+  },
+  {
+   "fieldname": "nationality",
+   "fieldtype": "Select",
+   "label": "Nationality",
+   "options": "\nNational\nNon-National"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2025-04-14 10:17:48.685450",
+ "modified": "2025-04-23 14:29:42.759887",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
