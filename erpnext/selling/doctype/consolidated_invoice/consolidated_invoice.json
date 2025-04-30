@@ -14,6 +14,8 @@
   "customer",
   "column_break_3",
   "item_code",
+  "item_group",
+  "item_sub_group",
   "col_break_name",
   "item_price",
   "item_price_details",
@@ -231,12 +233,28 @@
    "fieldname": "sales_order_header_text",
    "fieldtype": "Text Editor",
    "label": "Sales Order Header Text"
+  },
+  {
+   "fetch_from": "item_code.item_group",
+   "fieldname": "item_group",
+   "fieldtype": "Link",
+   "label": "Item Group",
+   "options": "Item Group",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "item_code.item_sub_group",
+   "fieldname": "item_sub_group",
+   "fieldtype": "Link",
+   "label": "Item Sub Group",
+   "options": "Item Sub Group",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-08-03 11:46:46.278756",
+ "modified": "2025-04-30 15:05:44.063376",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Consolidated Invoice",
