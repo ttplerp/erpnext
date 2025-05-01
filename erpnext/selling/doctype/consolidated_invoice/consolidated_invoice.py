@@ -5,7 +5,13 @@ import frappe
 from frappe.model.document import Document
 
 class ConsolidatedInvoice(Document):
-	pass
+	def validate(self):
+		self.validate_item_detail()
+
+	def validate_item_detail(self):
+		if self.item_code:
+			self.item_group = frappe.db.get_value("Item", self.item_code, "item_group")
+			self.item_sub_group = frappe.db.get_value("Item", self.item_code, "item_sub_group")
 
 @frappe.whitelist()
 def get_invoices(from_date, to_date, item_code, customer, cost_center):

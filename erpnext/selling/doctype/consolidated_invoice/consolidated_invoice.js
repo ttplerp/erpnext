@@ -6,10 +6,25 @@ frappe.ui.form.on('Consolidated Invoice', {
 		if(!frm.doc.posting_date) {
 			frm.set_value("posting_date", get_today())
 		}
+		frm.fields_dict['item_sub_group'].get_query = function(doc) {
+			return {
+				filters: {
+					"is_sub_group": 1
+				}
+			}
+		}
+		frm.fields_dict['item_group'].get_query = function(doc) {
+			return {
+				filters: {
+					"is_sub_group": 0,
+					"is_group": 1
+				}
+			}
+		}
 	},
 	to_date: function(frm) {
 		if(frm.doc.from_date && frm.doc.from_date < frm.doc.to_date) {
-			get_invoices(frm.doc.from_date, frm.doc.to_date, frm.doc.item_code, frm.doc.customer, frm.doc.cost_center)
+			get_invoices(frm.doc.from_date, frm.doc.to_date, ßfrm.doc.item_code, frm.doc.customer, frm.doc.cost_center)
 		}
 		else if(frm.doc.from_date && frm.doc.from_date > frm.doc.to_date) {
 			msgprint("To Date should be smaller than From Date")
@@ -35,6 +50,32 @@ frappe.ui.form.on('Consolidated Invoice', {
 		}
 		if(frm.doc.item_code && frm.doc.to_date && frm.doc.from_date < frm.doc.to_date) {
 			get_invoices(frm.doc.from_date, frm.doc.to_date, frm.doc.item_code, frm.doc.customer, frm.doc.cost_center)
+		}
+	},
+	item_group: function(frm) {
+		frm.fields_dict['item_sub_group'].get_query = function(doc) {
+			return {
+				filters: {
+					"parent_item_group": frm.doc.item_group,
+					"is_sub_group": 1
+				}
+			}
+		}
+		frm.fields_dict['item_code'].get_query = function(doc) {
+			return {
+				filters: {
+					"item_group": frm.doc.item_group
+				}
+			}
+		}
+	},
+	item_sub_group: function(frm) {
+		frm.fields_dict['item_code'].get_query = function(doc) {
+			return {
+				filters: {
+					"item_sub_group": frm.doc.item_sub_group
+				}
+			}
 		}
 	},
 	item_price: function(frm){

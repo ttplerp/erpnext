@@ -239,22 +239,20 @@
    "fieldname": "item_group",
    "fieldtype": "Link",
    "label": "Item Group",
-   "options": "Item Group",
-   "read_only": 1
+   "options": "Item Group"
   },
   {
    "fetch_from": "item_code.item_sub_group",
    "fieldname": "item_sub_group",
    "fieldtype": "Link",
    "label": "Item Sub Group",
-   "options": "Item Sub Group",
-   "read_only": 1
+   "options": "Item Group"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-04-30 15:05:44.063376",
+ "modified": "2025-05-01 12:00:19.764591",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Consolidated Invoice",
