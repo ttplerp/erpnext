@@ -36,11 +36,18 @@ def get_columns(filters):
 		{"fieldname":"current_km","label":_("Current KM"),"fieldtype":"Float","width":120},
 		{"fieldname":"km_difference","label":_("KM Diff"),"fieldtype":"Float","width":120},
 		{"fieldname":"memo_number","label":_("Cash Memo Number"),"fieldtype":"Data","width":120},
-		# {"fieldname":"pol_slip_no","label":_("POL Slip No."),"fieldtype":"Data","width":120}
+		{"fieldname":"pol_slip_no","label":_("POL Slip No."),"fieldtype":"Data","width":120}
 	]
 
 def get_data(filters):
 	conditions = get_conditions(filters)
+	hire_table, hire_cond = "", ""
+	if filters.get("equipment_hire"):
+		hire_table = ", `tabEquipment` e "
+		if filters.get("equipment_hire") == "Yes":
+			hire_cond = " and p.equipment=e.name and e.hired_equipment=1 "
+		else:
+			hire_cond = " and p.equipment=e.name and e.hired_equipment=0 "
 	if filters.aggregate:
 		query = frappe.db.sql("""select 
 									p.equipment,
@@ -51,9 +58,9 @@ def get_data(filters):
 									ROUND(AVG(p.mileage), 2) as actual_mileage,
 									ROUND(SUM(p.km_difference)/SUM(p.qty), 2) as mileage
 								from 
-									`tabPOL Entry` p 
-								where docstatus = 1 {} 
-								group by p.equipment""".format(conditions), as_dict=True)
+									`tabPOL Entry` p {}
+								where p.docstatus = 1 {} {}
+								group by p.equipment""".format(hire_table, hire_cond, conditions), as_dict=True)
 	else:
 		query = frappe.db.sql("""select distinct 
 						p.reference_type,
@@ -74,11 +81,11 @@ def get_data(filters):
 						p.current_km,
 						p.km_difference,
 						p.memo_number,
-						p.pol_slip_no
+						pr.pol_slip_no
 					from 
-						`tabPOL Entry` p, `tabPOL Receive` pr
-					where pr.name = p.reference and pr.docstatus = 1 {} 
-					ORDER BY p.posting_date DESC""".format(conditions),as_dict=True)
+						`tabPOL Entry` p, `tabPOL Receive` pr {}
+					where pr.name = p.reference and pr.docstatus = 1 {} {}
+					ORDER BY p.posting_date DESC""".format(hire_table, hire_cond, conditions),as_dict=True)
 	return query
 
 def get_conditions(filters):

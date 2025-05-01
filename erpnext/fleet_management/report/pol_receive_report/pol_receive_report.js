@@ -40,6 +40,13 @@ frappe.query_reports["POL Receive Report"] = {
 			"width": "80",
 		},
 		{
+			"fieldname":"equipment_hire",
+			"label": __("Equipment Hire"),
+			"fieldtype": "Select",
+			"options": ["","Yes","No"],
+			"width": "80",
+		},
+		{
 			"fieldname":"aggregate",
 			"label": __("Aggregate Data"),
 			"fieldtype":"Check",
