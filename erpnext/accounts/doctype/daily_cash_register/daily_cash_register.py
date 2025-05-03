@@ -1,91 +1,95 @@
-# Copyright (c) 2025, Frappe Technologies Pvt. Ltd. and contributors
+# Copyright (c) 2025, Frappe Technologies Pvt. Ltd.
 # For license information, please see license.txt
 
 import frappe
+from frappe import _
+from frappe.utils import flt, get_datetime
 from frappe.model.document import Document
-from frappe.utils import cint, flt, nowdate, add_days, getdate, fmt_money, add_to_date, DATE_FORMAT, date_diff, get_last_day
 
 class DailyCashRegister(Document):
-	def validate(self):
-		self.validate_duplicate()
-		self.fetch_opening_balance()
-		self.calculate_closing()
+    pass
 
-	def validate_duplicate(self):
-		closing_dtl = frappe.db.sql("""
-							select name from `tabDaily Cash Register`
-							where company='{0}' and cash_account='{1}'
-							and date='{2}'
-							and docstatus != 2
-							and name != '{3}'
-					""".format(self.company, self.cash_account, self.date, self.name), as_dict=True)
-		if closing_dtl:
-			frappe.throw("Daily Cash Closing for {}, {} and {} is already done with \
-						<b>{}</b>".format(self.cash_account, self.company, self.date, closing_dtl[0].name))
+@frappe.whitelist()
+def get_last_transaction_date(cash_account):
+    """
+    Retrieves the last transaction date and sets transaction_count = 1
+    if a transaction exists for the given cash account in the Daily Cash Register.
+    """
+    last_entry = frappe.db.sql("""
+        SELECT date
+        FROM `tabDaily Cash Register`
+        WHERE cash_account = %s AND docstatus = 1
+        ORDER BY date DESC
+        LIMIT 1
+    """, (cash_account,), as_dict=True)
+    
+    last_date = last_entry[0].date if last_entry else None
+    return {
+        'message': last_date,
+    }
 
-	def fetch_opening_balance(self):
-		if self.date:
-			closing_date = getdate(add_days(self.date, -1))
-			dtl = frappe.db.sql("""
-							select closing_balance, this_closing from `tabDaily Cash Register`
-							where company='{0}' and cash_account='{1}'
-							and date='{2}'
-							and docstatus=1
-					""".format(self.company, self.cash_account, closing_date), as_dict=True)
-			if dtl:
-				self.opening_balance = dtl[0].closing_balance
-				self.last_closed_on = dtl[0].this_closing
-			else:
-				frappe.msgprint("No Daily Cash Register for <b>{}</b>".format(closing_date))
-	
-	def calculate_closing(self):
-		self.custody = self.total_cash_in
-		self.returns = self.total_cash_out
-		if not self.custody or not self.returns:
-			self.closing_balance = flt(self.opening_balance + self.custody - self.returns,2)
 
-		self.over_short =flt(self.closing_balance-self.net_amount,2)
+@frappe.whitelist()
+def is_cash_closed(cash_account, last_closed_on, date):
+    """
+    Checks if the cash has already been closed for the given date and cash account.
+    """
+    exists = frappe.db.exists('Daily Cash Register', {
+        'cash_account': cash_account,
+        'date': date,
+        'docstatus': 1
+    })
+    return bool(exists)
 
-	@frappe.whitelist()
-	def get_gl_entries(self, cash_in_out=None):
-		cond = ""
-		col = ""
-		total_cash = closing_balance = 0.00
-		if cash_in_out == "In":
-			cond = " and (debit > 0 or debit_in_account_currency > 0) "
-			col = " debit as amount "
-			self.set('cash_in_entries', [])
-		else:
-			cond = " and (credit > 0 or credit_in_account_currency > 0) "
-			col = " credit as amount "
-			self.set('cash_out_entries', [])
-	
-		dtl=frappe.db.sql("""
-					select name as gl_entry, account, voucher_type, 
-					voucher_no, remarks, posting_date as date, {4}
-					from `tabGL Entry`
-					where account='{0}'
-					and company='{1}' and posting_date='{2}'
-					and docstatus != 2
-					and is_cancelled != 1
-					{3}
-				""".format(self.cash_account, self.company, self.date, cond, col), as_dict=True)
-		if dtl:
-			for a in dtl:
-				total_cash += flt(a.amount)
-				if cash_in_out=="In":
-					row = self.append('cash_in_entries', {})
-				else:
-					row = self.append('cash_out_entries', {})
-				row.update(a)
-		#else:
-		#	frappe.msgprint("Transaction not available")
-			
-		if cash_in_out=="In":
-			self.db_set("total_cash_in",total_cash)
-			self.db_set("custody",total_cash)
-		else:
-			self.db_set("total_cash_out", total_cash)
-			self.db_set("returns", total_cash)
-		closing = flt(self.opening_balance + self.custody - self.returns, 2)
-		self.db_set("closing_balance", closing_balance)
+@frappe.whitelist()
+def fetch_gl_entries(cash_account = None, last_closed_on = None, date = None):
+    """
+    Fetches GL entries between the last closed date and the selected date for the given cash account.
+    Returns separate lists for cash in and cash out entries, along with a summary.
+    """
+    if not (cash_account and last_closed_on and date):
+        frappe.throw(_("Missing required parameters: Cash Account or Last Colsed On or Date"))
+
+    entries = frappe.db.sql("""
+        SELECT posting_date, voucher_type, voucher_no, debit, credit, remarks
+        FROM `tabGL Entry`
+        WHERE account = %s
+          AND posting_date > %s
+          AND posting_date <= %s
+          AND docstatus = 1
+        ORDER BY posting_date ASC
+    """, (cash_account, last_closed_on, date), as_dict=True)
+
+    cash_in_entries = []
+    cash_out_entries = []
+    total_cash_in = 0.0
+    total_cash_out = 0.0
+
+    for entry in entries:
+        if flt(entry.debit) > 0:
+            cash_in_entries.append(entry)
+            total_cash_in += flt(entry.debit)
+        elif flt(entry.credit) > 0:
+            cash_out_entries.append(entry)
+            total_cash_out += flt(entry.credit)
+
+    # Calculate the opening balance as of the last closed date
+    opening_balance = frappe.db.sql("""
+        SELECT SUM(debit) - SUM(credit) AS balance
+        FROM `tabGL Entry`
+        WHERE account = %s
+          AND posting_date <= %s
+          AND docstatus = 1
+    """, (cash_account, last_closed_on), as_dict=True)
+
+    closing_balance = flt(opening_balance[0].balance) + total_cash_in - total_cash_out if opening_balance else 0.0
+
+    return {
+        'cash_in_entries': cash_in_entries,
+        'cash_out_entries': cash_out_entries,
+        'summary': {
+            'total_cash_in': total_cash_in,
+            'total_cash_out': total_cash_out,
+            'closing_balance': closing_balance
+        }
+    }

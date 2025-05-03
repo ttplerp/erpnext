@@ -8,84 +8,63 @@
  "field_order": [
   "naming_series",
   "company",
-  "abbrcom",
-  "branch",
-  "brabbr",
-  "cost_center",
+  "company_abbr",
   "cash_account",
   "cb1",
   "date",
-  "department",
-  "user",
+  "branch",
+  "branch_abbr",
   "cb2",
   "last_closed_on",
   "this_closing",
   "time_log",
+  "day_cash_in_section",
+  "cash_in_entries",
+  "day_cash_payout_tab",
+  "cash_out_entries",
+  "total_cash_out",
+  "section_break_24",
   "cash_summary_for_the_day_section",
+  "fetch_gl_entries",
+  "memo",
+  "user",
+  "cb4",
   "opening_balance",
   "closing_balance",
-  "net_amount",
+  "total_cash_counted_and_verified",
   "cb3",
   "custody",
   "returns",
   "over_short",
   "amended_from",
-  "section_break_24",
-  "memo",
-  "day_cash_in_section",
-  "fetch_cash_in_entries",
-  "cash_in_entries",
-  "total_cash_in",
-  "day_cash_payout_tab",
-  "fetch_cash_out_entries",
-  "cash_out_entries",
-  "total_cash_out"
+  "transaction_count"
  ],
  "fields": [
   {
-   "default": "POS-CLO-",
    "fieldname": "naming_series",
    "fieldtype": "Select",
-   "hidden": 1,
-   "in_filter": 1,
    "in_global_search": 1,
-   "in_standard_filter": 1,
    "label": "Series",
-   "options": "POS-CLO-",
-   "read_only": 1
+   "options": "\nPOS-CLO-"
   },
   {
    "fetch_from": "cash_account.company",
    "fieldname": "company",
    "fieldtype": "Link",
+   "in_filter": 1,
+   "in_standard_filter": 1,
    "label": "Company",
    "options": "Company"
   },
   {
-   "fetch_from": "company.abbr",
-   "fieldname": "abbrcom",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "Company Abbr"
-  },
-  {
-   "fieldname": "branch",
-   "fieldtype": "Link",
-   "label": "Branch",
-   "options": "Branch"
-  },
-  {
-   "fetch_from": "branch.abbr",
-   "fieldname": "brabbr",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "Branch Abbr"
-  },
-  {
    "fieldname": "cash_account",
    "fieldtype": "Link",
+   "in_filter": 1,
+   "in_standard_filter": 1,
    "label": "Cash Account",
-   "options": "Account"
+   "options": "Account",
+   "reqd": 1,
+   "search_index": 1
   },
   {
    "fieldname": "cb1",
@@ -100,12 +79,6 @@
    "label": "Date"
   },
   {
-   "fieldname": "department",
-   "fieldtype": "Link",
-   "label": "Department",
-   "options": "Department"
-  },
-  {
    "default": "User",
    "fieldname": "user",
    "fieldtype": "Link",
@@ -115,27 +88,30 @@
    "label": "User",
    "options": "User",
    "read_only": 1,
-   "reqd": 1
+   "reqd": 1,
+   "search_index": 1
   },
   {
    "fieldname": "cb2",
    "fieldtype": "Column Break"
   },
   {
+   "default": "Today",
    "fieldname": "last_closed_on",
-   "fieldtype": "Datetime",
+   "fieldtype": "Date",
    "in_filter": 1,
    "in_standard_filter": 1,
-   "label": "Last Closed on "
+   "label": "Last Closed on ",
+   "reqd": 1,
+   "search_index": 1
   },
   {
    "default": "Now",
    "fieldname": "this_closing",
    "fieldtype": "Datetime",
-   "in_filter": 1,
-   "in_standard_filter": 1,
    "label": "This closing ",
-   "reqd": 1
+   "reqd": 1,
+   "search_index": 1
   },
   {
    "default": "Now",
@@ -148,7 +124,7 @@
   {
    "fieldname": "cash_summary_for_the_day_section",
    "fieldtype": "Section Break",
-   "label": "Cash Summary for the day"
+   "label": "Abstract Summary of the day"
   },
   {
    "default": "0.00",
@@ -163,13 +139,6 @@
    "fieldtype": "Currency",
    "label": "Total Closing Balance for Day",
    "read_only": 1
-  },
-  {
-   "fieldname": "net_amount",
-   "fieldtype": "Currency",
-   "in_filter": 1,
-   "in_standard_filter": 1,
-   "label": "Total Cash Counted and Verified"
   },
   {
    "fieldname": "cb3",
@@ -197,54 +166,26 @@
    "precision": "2"
   },
   {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Daily Cash Register",
-   "print_hide": 1,
-   "read_only": 1
-  },
-  {
    "fieldname": "section_break_24",
    "fieldtype": "Section Break"
   },
   {
    "fieldname": "memo",
    "fieldtype": "Small Text",
-   "label": "Memo"
+   "label": "Memo",
+   "reqd": 1
   },
   {
+   "collapsible": 1,
    "fieldname": "day_cash_in_section",
-   "fieldtype": "Tab Break",
+   "fieldtype": "Section Break",
    "label": "Day Cash IN"
   },
   {
-   "fieldname": "fetch_cash_in_entries",
-   "fieldtype": "Button",
-   "label": "Fetch Cash In Entries"
-  },
-  {
-   "fieldname": "cash_in_entries",
-   "fieldtype": "Table",
-   "label": "Cash IN Entries ",
-   "options": "Cash Register Item"
-  },
-  {
-   "fieldname": "total_cash_in",
-   "fieldtype": "Currency",
-   "label": "Total Cash IN",
-   "read_only": 1
-  },
-  {
+   "collapsible": 1,
    "fieldname": "day_cash_payout_tab",
-   "fieldtype": "Tab Break",
+   "fieldtype": "Section Break",
    "label": "Day Cash Payout"
-  },
-  {
-   "fieldname": "fetch_cash_out_entries",
-   "fieldtype": "Button",
-   "label": "Fetch Cash Out entries"
   },
   {
    "default": "0.0",
@@ -261,17 +202,72 @@
    "read_only": 1
   },
   {
-   "fetch_from": "branch.cost_center",
-   "fieldname": "cost_center",
-   "fieldtype": "Link",
-   "label": "Cost Center",
-   "options": "Cost Center",
+   "fieldname": "cb4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "fetch_gl_entries",
+   "fieldtype": "Button",
+   "label": "Fetch GL Entries",
    "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Daily Cash Register",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "cash_in_entries",
+   "fieldtype": "Table",
+   "label": "Cash In Entries",
+   "options": "Cash Register Item"
+  },
+  {
+   "fieldname": "transaction_count",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Transaction Count",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "company.abbr",
+   "fieldname": "company_abbr",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Company Abbr"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "branch.abbr",
+   "fieldname": "branch_abbr",
+   "fieldtype": "Data",
+   "label": "Branch Abbr"
+  },
+  {
+   "fieldname": "total_cash_counted_and_verified",
+   "fieldtype": "Currency",
+   "label": "Total Cash Counted and Verified",
+   "reqd": 1
   }
  ],
  "is_submittable": 1,
- "links": [],
- "modified": "2025-04-13 14:12:18.034275",
+ "links": [
+  {
+   "link_doctype": "Account",
+   "link_fieldname": "account_number"
+  }
+ ],
+ "modified": "2025-05-03 16:43:33.684289",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Daily Cash Register",
@@ -279,6 +275,8 @@
  "owner": "Administrator",
  "permissions": [
   {
+   "amend": 1,
+   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
@@ -290,9 +288,68 @@
    "share": 1,
    "submit": 1,
    "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Administrator",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Master",
+   "select": 1,
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "select": 1,
+   "share": 1,
+   "submit": 1,
+   "write": 1
   }
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }
