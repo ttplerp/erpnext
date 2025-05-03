@@ -7,7 +7,6 @@
  "engine": "InnoDB",
  "field_order": [
   "date",
-  "account",
   "voucher_type",
   "voucher_no",
   "amount",
@@ -22,22 +21,18 @@
    "label": "Date"
   },
   {
-   "fieldname": "account",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Account"
-  },
-  {
    "fieldname": "voucher_type",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Voucher Type"
+   "label": "Voucher Type",
+   "options": "DocType"
   },
   {
    "fieldname": "voucher_no",
-   "fieldtype": "Data",
+   "fieldtype": "Dynamic Link",
    "in_list_view": 1,
-   "label": "Voucher No"
+   "label": "Voucher No",
+   "options": "voucher_type"
   },
   {
    "fieldname": "amount",
@@ -47,9 +42,10 @@
   },
   {
    "fieldname": "remarks",
-   "fieldtype": "Small Text",
+   "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Remarks"
+   "label": "Remarks",
+   "read_only": 1
   },
   {
    "fieldname": "gl_entry",
@@ -63,7 +59,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-04-13 17:20:50.355586",
+ "modified": "2025-05-03 18:47:39.818537",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Cash Register Item",
