@@ -57,6 +57,7 @@ def fetch_gl_entries(cash_account = None, last_closed_on = None, date = None):
           AND posting_date > %s
           AND posting_date <= %s
           AND docstatus = 1
+          AND is_cancelled = 0
         ORDER BY posting_date ASC
     """, (cash_account, last_closed_on, date), as_dict=True)
 
@@ -80,6 +81,7 @@ def fetch_gl_entries(cash_account = None, last_closed_on = None, date = None):
         WHERE account = %s
           AND posting_date <= %s
           AND docstatus = 1
+          and is_cancelled = 0
     """, (cash_account, last_closed_on), as_dict=True)
 
     closing_balance = flt(opening_balance[0].balance) + total_cash_in - total_cash_out if opening_balance else 0.0
