@@ -3,11 +3,19 @@
 
 frappe.ui.form.on('Production Target', {
 	refresh: function(frm) {
-		cur_frm.set_query("location", function() {
+		// cur_frm.set_query("location", function() {
+		// 	return {
+		// 		"filters": {
+		// 			"branch": frm.doc.branch,
+		// 			"disabled": 0
+		// 		}
+		// 	};
+		// });
+		cur_frm.set_query("item_code", function() {
 			return {
-				"filters": {
-					"branch": frm.doc.branch,
-					"disabled": 0
+				filters: {
+					"disabled": 0,
+					"is_production_item": 1,
 				}
 			};
 		});

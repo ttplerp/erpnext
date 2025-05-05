@@ -27,7 +27,7 @@ def get_data(filters):
 	abbr = " - " + str(frappe.db.get_value("Company", filters.company, "abbr"))
 
 	query = """select pe.cost_center, 
-				pe.branch, pe.location, 
+				pe.branch, pe.item_code, 
 				cc.parent_cost_center as region 
 			from `tabProduction Target` pe, 
 			`tabCost Center` cc 
@@ -35,9 +35,9 @@ def get_data(filters):
 			and pe.fiscal_year = {0} {1} {2} {3}""".format(filters.fiscal_year, cc_condition, group_by, order_by)
 	for a in frappe.db.sql(query, as_dict=1):
 		if filters.branch:
-			target = get_target_value("Production", a.location, filters.production_group, filters.fiscal_year, filters.from_date, filters.to_date, True)
-			row = [a.location, target]
-			cond = " and location = '{0}'".format(a.location)
+			target = get_target_value("Production", a.cost_center, filters.production_group, filters.fiscal_year, filters.from_date, filters.to_date, True)
+			row = [a.cost_center, target]
+			cond = " and cost_center = '{0}'".format(a.cost_center)
 		else:
 			if filters.is_company:
 				target = get_target_value("Production", a.region, filters.production_group, filters.fiscal_year, filters.from_date, filters.to_date)
@@ -66,7 +66,7 @@ def get_data(filters):
 
 def get_group_by(filters):
 	if filters.branch:
-		group_by = " group by branch, location"
+		group_by = " group by branch, item_code"
 	else:
 		if filters.is_company:
 			group_by = " group by region"
@@ -76,7 +76,7 @@ def get_group_by(filters):
 	return group_by
 
 def get_order_by(filters):
-	return " order by branch, location"
+	return " order by branch, item_code"
 
 def get_cc_conditions(filters):
 	if not filters.cost_center:
@@ -90,8 +90,8 @@ def get_cc_conditions(filters):
 
 def get_filter_conditions(filters):
 	condition = ""
-	if filters.location:
-		condition += " and pe.location = '{0}'".format(filters.location)
+	if filters.item:
+		condition += " and pe.item = '{0}'".format(filters.item)
 
 	if filters.from_date and filters.to_date:
 		condition += " and DATE(pe.posting_date) between '{0}' and '{1}'".format(filters.from_date, filters.to_date)
@@ -100,7 +100,7 @@ def get_filter_conditions(filters):
 
 def get_columns(filters):
 	if filters.branch:
-		columns = ["Location:Link/Location:150", "Target Qty:Float:120", "Achieved Qty:Float:120", "Ach. Percent:Percent:100"]
+		columns = ["Item Code:Link/Item:150", "Target Qty:Float:120", "Achieved Qty:Float:120", "Ach. Percent:Percent:100"]
 	else:
 		if filters.is_company:
 			columns = ["Region:150", "Target Qty:Float:120", "Achieved Qty:Float:120", "Ach. Percent:Percent:100"]

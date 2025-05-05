@@ -14,7 +14,7 @@ class ProductionTarget(Document):
 		self.check_duplicate()
 
 	def check_duplicate(self):
-		dups = frappe.db.sql("select name from `tabProduction Target` where branch = %s and location = %s and fiscal_year = %s and name != %s", (self.branch, self.location, self.fiscal_year, self.name), as_dict=True)
+		dups = frappe.db.sql("select name from `tabProduction Target` where branch = %s and item_code = %s and fiscal_year = %s and name != %s", (self.branch, self.item_code, self.fiscal_year, self.name), as_dict=True)
 		for a in dups:
 			frappe.throw("Update {0} to set your targets".format(frappe.get_desk_link("Production Target", a.name)))
 
@@ -44,11 +44,11 @@ def get_target_value(which, cost_center, production_group, fiscal_year, from_dat
 	if not cost_center or not production_group or not fiscal_year:
 		frappe.throw("Value Missing")
 
-	if is_location:
-		cond = " a.location = '{0}'".format(cost_center)
-	else:
-		all_ccs = get_child_cost_centers(cost_center)
-		cond = " a.cost_center in {0}".format(tuple(all_ccs))
+	# if is_location:
+	# 	cond = " a.location = '{0}'".format(cost_center)
+	# else:
+	all_ccs = get_child_cost_centers(cost_center)
+	cond = " a.cost_center in {0}".format(tuple(all_ccs))
 
 	query = "select sum(quantity) as total, sum(jan) as q1, sum(feb) as q2, sum(march) as q3, sum(april) as q4, sum(may) as q5, sum(june) as q6, sum(july) as q7, sum(august) as q8, sum(september) as q9,  sum(october) as q10, sum(november) as q11, sum(december) as q12  from `tabProduction Target` a, `tab{0} Target Item` b where a.name = b.parent and {1} and a.fiscal_year = '{2}' and b.production_group = '{3}'".format(which, cond, fiscal_year, production_group)
 

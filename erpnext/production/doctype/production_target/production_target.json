@@ -12,7 +12,8 @@
   "branch",
   "cost_center",
   "cb1",
-  "location",
+  "item_code",
+  "item_name",
   "fiscal_year",
   "sb1",
   "items",
@@ -54,14 +55,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "location",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Location",
-   "options": "Location",
-   "reqd": 1
-  },
-  {
    "fieldname": "fiscal_year",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -90,11 +83,26 @@
    "fieldname": "disposal",
    "fieldtype": "Table",
    "options": "Disposal Target Item"
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item Code",
+   "options": "Item",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "item_code.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-11-16 13:20:22.313955",
+ "modified": "2025-04-29 14:37:01.704236",
  "modified_by": "Administrator",
  "module": "Production",
  "name": "Production Target",
