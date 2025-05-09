@@ -3,7 +3,7 @@
 
 frappe.ui.form.on('TDS Receipt Update', {
 	refresh:function(frm){
-		if (frm.doc.docstatus == 0 && in_list(["Other Invoice","Leave Encashment","Overtime"], frm.doc.purpose)){
+		if (frm.doc.docstatus == 0 && in_list(["Other Invoice","Leave Encashment","Overtime","MPI"], frm.doc.purpose)){
 			frm.add_custom_button(__('Get Invoices'),(doc)=>{
 				get_invoices(frm);
 			}).addClass("btn-primary")
@@ -44,7 +44,7 @@ frappe.ui.form.on('TDS Remittance Item', {
 })
 
 var get_invoices = function(frm){
-	if(in_list(["Other Invoice","Leave Encashment","Overtime"], frm.doc.purpose)){
+	if(in_list(["Other Invoice","Leave Encashment","Overtime","MPI"], frm.doc.purpose)){
 		frm.clear_table("items");
 		frm.refresh_field("items");
 		frm.set_value('total_bill_amount', 0);

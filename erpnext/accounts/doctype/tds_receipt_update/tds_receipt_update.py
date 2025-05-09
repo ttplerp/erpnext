@@ -118,8 +118,8 @@ class TDSReceiptUpdate(Document):
 			accounts_cond = 'and t1.tax_account = "{}"'.format(accounts[0])
 		else:
 			accounts_cond = 'and t1.tax_account in ({})'.format('"' + '","'.join(accounts) + '"')
-
-		if self.purpose in ["Leave Encashment","Other Invoice","Overtime"]:
+		
+		if self.purpose in ["Leave Encashment","Other Invoice","Overtime","MPI"]:
 			if self.purpose == 'Leave Encashment':
 				query = """
 					SELECT 
@@ -161,6 +161,30 @@ class TDSReceiptUpdate(Document):
 					FROM `tabTDS Receipt Entry` AS b 
 						WHERE b.invoice_no = t.name)
 						""".format(self.from_date, self.to_date)
+				entries = frappe.db.sql(query,as_dict=1)
+
+			elif self.purpose in ["MPI"]:
+				query = """
+						select "MPI Transaction" as invoice_type, 
+						m.name as invoice_no,m.posting_date,
+						mpi.mpi_amount as bill_amount,
+						mpi.tax_amount as tds_amount,
+						mpi.employee as party,
+						'Employee' as party_type, 
+						mpi.employee_name as party_name,
+						m.cost_center from 
+						`tabMPI Transaction` m inner join `tabMPI Item` mpi on m.name=mpi.parent 
+						where m.docstatus=1
+						and m.posting_date between '{0}' and '{1}'
+						and mpi.tax_amount >0
+						and not exists (
+							select 1 from 
+							`tabTDS Receipt Entry` AS b 
+    						WHERE b.invoice_no = m.name
+						)
+						;
+
+							""".format(self.from_date, self.to_date)
 				entries = frappe.db.sql(query,as_dict=1)
 			else:
 				if not self.branch:
