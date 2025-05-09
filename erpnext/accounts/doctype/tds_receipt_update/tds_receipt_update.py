@@ -112,7 +112,8 @@ class TDSReceiptUpdate(Document):
 		accounts = [i.account for i in frappe.db.get_all("Tax Withholding Account", \
 			{"parent": self.tax_withholding_category}, "account")]
 
-		if not len(accounts) and self.purpose != "Leave Encashment":
+		if not len(accounts) and self.purpose not in ["Leave Encashment","MPI"]:
+		# if not len(accounts) and self.purpose != "Leave Encashment":
 			return total_tds_amount, total_bill_amount
 		elif len(accounts) == 1:
 			accounts_cond = 'and t1.tax_account = "{}"'.format(accounts[0])
