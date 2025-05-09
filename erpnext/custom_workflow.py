@@ -58,6 +58,7 @@ class CustomWorkflow:
 					{"parent": division, "parentfield": "leave_approvers", "idx": 1},
 					"approver",
 				)},self.field_list)
+			self.reports_to = frappe.db.get_value("Employee", {"name":frappe.db.get_value("Employee", self.doc.employee, "reports_to")}, self.field_list)
 		if self.doc.doctype == "Performance Evaluation":
 			self.employee		= frappe.db.get_value("Employee", self.doc.employee, self.field_list)
 			self.reports_to		= frappe.db.get_value("Employee", frappe.db.get_value("Employee", self.doc.employee, "reports_to"), self.field_list)
