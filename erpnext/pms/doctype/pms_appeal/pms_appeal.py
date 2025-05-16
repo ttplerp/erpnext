@@ -102,6 +102,9 @@ class PMSAppeal(Document):
 			frappe.throw('Competency cannot be empty please use <b>Get Competency Button</b>')
 		total = 0
 		for item in self.evaluate_competency_item:
+			overall_rating = frappe.db.sql('''select name from `tabOverall Rating` where  upper_range_percent >= {0} and lower_range_percent <= {0}'''.format(item.weightage_percent))
+			if len(overall_rating) > 0:
+				item.achievement = overall_rating[0][0]
 			if not item.achievement:
 				frappe.throw('You need to rate competency at row <b>{}</b>'.format(item.idx))
 
