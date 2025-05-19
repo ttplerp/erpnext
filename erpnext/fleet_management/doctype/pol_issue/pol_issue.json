@@ -11,20 +11,19 @@
   "branch",
   "cost_center",
   "project",
+  "pol_type",
   "column_break_2",
   "posting_date",
   "posting_time",
   "hired_equipment",
-  "section_break_2",
-  "pol_type",
   "item_name",
   "stock_uom",
-  "column_break_10",
   "receive_in_barrel",
   "warehouse",
   "tanker",
   "total_quantity",
   "section_break_3",
+  "expense_branch",
   "items",
   "hired_equipment_details_section",
   "fuel_policy",
@@ -62,10 +61,6 @@
    "label": "Remarks"
   },
   {
-   "fieldname": "section_break_2",
-   "fieldtype": "Section Break"
-  },
-  {
    "default": "Today",
    "fieldname": "posting_date",
    "fieldtype": "Date",
@@ -98,10 +93,6 @@
    "fieldname": "stock_uom",
    "fieldtype": "Read Only",
    "label": "Stock UOM"
-  },
-  {
-   "fieldname": "column_break_10",
-   "fieldtype": "Column Break"
   },
   {
    "depends_on": "eval:doc.receive_in_barrel == 0;",
@@ -217,12 +208,18 @@
    "fieldtype": "Link",
    "label": "Project",
    "options": "Project"
+  },
+  {
+   "fieldname": "expense_branch",
+   "fieldtype": "Link",
+   "label": "Expense Branch",
+   "options": "Branch"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-03-20 16:31:00.449991",
+ "modified": "2025-05-05 10:15:11.472007",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Issue",

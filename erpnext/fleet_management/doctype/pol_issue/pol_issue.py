@@ -343,7 +343,7 @@ class POLIssue(StockController):
 						"account": debit_account,
 						"debit_in_account_currency": flt(a.qty * a.rate, 2),
 						"debit": flt(a.qty * a.rate, 2),
-						"cost_center": self.cost_center,
+						"cost_center": frappe.get_value("Branch", self.expense_branch, "cost_center") if self.expense_branch else self.cost_center,
 						"party_type": "Supplier",
 						"party": a.supplier,
 						"business_activity": get_default_ba,
@@ -363,7 +363,7 @@ class POLIssue(StockController):
 						"account": debit_account,
 						"debit_in_account_currency": flt(a.qty * a.rate, 2),
 						"debit": flt(a.qty * a.rate, 2),
-						"cost_center": self.cost_center,
+						"cost_center": frappe.get_value("Branch", self.expense_branch, "cost_center") if self.expense_branch else self.cost_center,
 						"business_activity": get_default_ba,
 					}
 				)
