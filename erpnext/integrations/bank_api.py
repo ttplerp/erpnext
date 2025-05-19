@@ -335,65 +335,131 @@ def generate_payload(cbs_entry=None, doctype=None, doc_name=None):
 
 def generate_footer(doctype=None, doc_name=None):
     doc = frappe.get_doc("API Detail","MULTI LEDGER")
-    # return """
-    #         </XferTrnDetail>
-    #         </XferTrnAddRq>
-    #         </XferTrnAddRequest>
-    #         </Body>
-    #         </FIXML
-    #     """
     return str(doc.footer)
 
 def generate_header(cbs_entry=None, doctype=None, doc_name=None, posting_date=None, count=1):
     doc = frappe.get_doc("API Detail","MULTI LEDGER")
-    # return """
-    #         <FIXML xmlns="http://www.finacle.com/fixml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.finacle.com/fixml XferTrnAdd.xsd">
-    #         <Header>
-    #         <RequestHeader>
-    #         <MessageKey>
-    #         <RequestUUID>{uuid}</RequestUUID>
-    #         <ServiceRequestId>XferTrnAdd</ServiceRequestId>
-    #         <ServiceRequestVersion>10.2</ServiceRequestVersion>
-    #         <ChannelId>COR</ChannelId>
-    #         <LanguageId/>
-    #         </MessageKey>
-    #         <RequestMessageInfo>
-    #         <BankId>{bankid}</BankId>
-    #         <TimeZone/>
-    #         <EntityId/>
-    #         <EntityType/>
-    #         <ArmCorrelationId/>
-    #         <MessageDateTime>{msgdatetime}</MessageDateTime>
-    #         </RequestMessageInfo>
-    #         <Security>
-    #         <Token>
-    #         <PasswordToken>
-    #         <UserId/>
-    #         <Password/>
-    #         </PasswordToken>
-    #         </Token>
-    #         <FICertToken/>
-    #         <RealUserLoginSessionId/>
-    #         <RealUser/>
-    #         <RealUserPwd/>
-    #         <SSOTransferToken/>
-    #         </Security>
-    #         </RequestHeader>
-    #         </Header>
-    #         <Body>
-    #         <XferTrnAddRequest>
-    #         <XferTrnAddRq>
-    #         <XferTrnHdr>
-    #         <TrnType>T</TrnType>
-    #         <TrnSubType>CI</TrnSubType>
-    #         </XferTrnHdr>©
-    #         <XferTrnDetail>
-    #     """.format(uuid="161945234234", bankid="01", msgdatetime="2021-03-13T11:15:08.528")
     pd = str(posting_date).split(" ")[0]+"T"+str(posting_date).split(" ")[1]+".000"
     return(str(doc.header).format(uuid=cbs_entry.name, bankid="01", msgdatetime=pd))
 
+@frappe.whitelist()
+def activate_dormant_account(uuid=None, posting_date=None, account_no=None):
+    import pycurl
+    buffer = BytesIO()
+    #url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
+    url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
+    # Initialize a pycurl object
+    print(ssl.OPENSSL_VERSION)
+    print(pycurl.version)
+    c = pycurl.Curl()
+    c.setopt(c.URL, url)
+    c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
+    # Optionally set a timeout
+    c.setopt(c.TIMEOUT, 500)
+    # Set SSL version to use TLS (if required)
+    c.setopt(c.SSLVERSION, pycurl.SSLVERSION_TLSv1)
+    # Set the write data buffer
+    c.setopt(c.WRITEDATA, buffer)
+    # Follow redirects if needed
+    c.setopt(c.FOLLOWLOCATION, True)
+    c.setopt(c.SSL_VERIFYHOST, 0)
+    c.setopt(c.SSL_VERIFYPEER, 0)
+    pd = str(posting_date).split(" ")[0]+"T"+str(posting_date).split(" ")[1]+".000"
+    payload = """<?xml version="1.0" encoding="UTF-8"?>
+<FIXML xsi:schemaLocation="http://www.finacle.com/fixml SBAcctMod.xsd" xmlns="http://www.finacle.com/fixml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Header>
+        <RequestHeader>
+            <MessageKey>
+                <RequestUUID>{0}</RequestUUID>
+                <ServiceRequestId>SBAcctMod</ServiceRequestId>
+                <ServiceRequestVersion>10.2</ServiceRequestVersion>
+                <ChannelId>COR</ChannelId>
+                <LanguageId></LanguageId>
+            </MessageKey>
+            <RequestMessageInfo>
+                <BankId>01</BankId>
+                <TimeZone></TimeZone>
+                <EntityId></EntityId>
+                <EntityType></EntityType>
+                <ArmCorrelationId></ArmCorrelationId>
+                <MessageDateTime>{1}</MessageDateTime>
+            </RequestMessageInfo>
+            <Security>
+                <Token>
+                    <PasswordToken>
+                        <UserId></UserId>
+                        <Password></Password>
+                    </PasswordToken>
+                </Token>
+                <FICertToken></FICertToken>
+                <RealUserLoginSessionId></RealUserLoginSessionId>
+                <RealUser></RealUser>
+                <RealUserPwd></RealUserPwd>
+                <SSOTransferToken></SSOTransferToken>
+            </Security>
+        </RequestHeader>
+    </Header>
+    <Body>
+        <SBAcctModRequest>
+            <SBAcctModRq>
+                <DespatchMode>N</DespatchMode>
+                <SBAcctId>
+                    <AcctId>{2}</AcctId>
+                </SBAcctId>
+                <SBAcctMod_CustomData>
+                    <acctStatus>A</acctStatus>
+                </SBAcctMod_CustomData>              
+           </SBAcctModRq>
+        </SBAcctModRequest>
+    </Body>
+</FIXML>""".format(uuid, pd, account_no)
 
+    headers = {
+    'Content-Type': 'application/'
+    'xml'
+    }
 
+    c.setopt(c.HTTPHEADER, [
+        'Content-Type: application/xml; charset=utf-8'
+    ])
+    # Set the POST fields (SOAP body)
+    c.setopt(c.POSTFIELDS, payload)
+    # Set the write data buffer
+    c.setopt(c.WRITEDATA, buffer)
+    # Perform the request
+    try:
+        c.perform()
+        # Get HTTP response code
+        http_code = c.getinfo(c.RESPONSE_CODE)
+        # Get the response body
+        body = buffer.getvalue()
+        result = str(body.decode('utf-8'))
+        if result:
+            root = ET.fromstring(result)
+            # Define the namespace
+            namespace = {'ns': 'http://www.finacle.com/fixml'}
+            response = root.find('.//ns:HostTransaction/ns:Status', namespaces=namespace).text
+        return response
+    except pycurl.error as e:
+        # frappe.throw(traceback.format_exc())
+        frappe.throw(f"An error occurred: {e}")
+    finally:
+        # Close the curl object
+        c.close()
+    c.close
+
+@frappe.whitelist()
+def print_result():
+    result="<FIXML xsi:schemaLocation=\"http://www.finacle.com/fixml SBAcctMod.xsd\" xmlns=\"http://www.finacle.com/fixml\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n<Header>\n<ResponseHeader>\n<RequestMessageKey>\n<RequestUUID>12341234</RequestUUID>\n<ServiceRequestId>SBAcctMod</ServiceRequestId>\n<ServiceRequestVersion>10.2</ServiceRequestVersion>\n<ChannelId>COR</ChannelId>\n</RequestMessageKey>\n<ResponseMessageInfo>\n<BankId>01</BankId>\n<TimeZone></TimeZone>\n<MessageDateTime>2025-04-23T10:42:53.503</MessageDateTime>\n</ResponseMessageInfo><UBUSTransaction>\n<Id/>\n<Status/>\n</UBUSTransaction>\n<HostTransaction>\n<Id/>\n<Status>SUCCESS</Status>\n</HostTransaction>\n<HostParentTransaction>\n<Id/>\n<Status/>\n</HostParentTransaction>\n<CustomInfo/>\n</ResponseHeader>\n</Header>\n<Body>\n<SBAcctModResponse>\n<SBAcctModRs>\n<SBAcctId>\n<AcctId>001715160147</AcctId>\n<AcctType>\n<SchmCode></SchmCode>\n<SchmType></SchmType>\n</AcctType>\n<AcctCurr></AcctCurr>\n<BankInfo>\n<BankId></BankId>\n<Name></Name>\n<BranchId></BranchId>\n<BranchName></BranchName>\n<PostAddr>\n<Addr1></Addr1>\n<Addr2></Addr2>\n<Addr3></Addr3>\n<City></City>\n<StateProv></StateProv>\n<PostalCode></PostalCode>\n<Country></Country>\n<AddrType></AddrType>\n</PostAddr>\n</BankInfo>\n</SBAcctId>\n</SBAcctModRs><SBAcctMod_CustomData/>\n</SBAcctModResponse></Body></FIXML>\n"
+    if result:
+        root = ET.fromstring(result)
+        # Define the namespace
+        namespace = {'ns': 'http://www.finacle.com/fixml'}
+        cbs_status = root.find('.//ns:HostTransaction/ns:Status', namespaces=namespace).text
+        if cbs_status == "SUCCESS":
+            print("SUCCESS")
+        else:
+            print("FAILED")
 
 @frappe.whitelist()
 def encrypt_credential(api):
