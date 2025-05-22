@@ -782,18 +782,23 @@ class CustomWorkflow:
             verifier_auth=frappe.db.get_value("Employee", frappe.db.get_single_value("HR Settings", "hr_verifier"), "user_id")
             if verifier_auth != frappe.session.user:
                 frappe.throw("Only {} can Forward this request".format(verifier_auth))
-            self.set_approver("HR")
+            if self.hr_approver[3]==self.doc.employee:
+                self.set_approver("HRGM")
+            else:
+                self.set_approver("HR")
             
         elif self.new_state.lower() == "Approved".lower():
-            # self.doc.check_date()
             if self.doc.travel_type=="Training" or self.doc.travel_type == "Meeting and Seminars":
                 hr_approver = self.hr_approver
+                hrgm = self.hrgm
                 officiating = get_officiating_employee(self.hr_approver[3])
                 if officiating:
                     officiating = frappe.db.get_value("Employee", officiating[0].officiate, self.field_list)
                     hr_approver = officiating
-                if frappe.session.user!=hr_approver[0]:
+                if frappe.session.user!=hr_approver[0] and self.hr_approver[3]!=self.doc.employee:
                     frappe.throw("Only {} can Approve this request".format(hr_approver))
+                if frappe.session.user!=hrgm[0] and self.hr_approver[3]==self.doc.employee:
+                    frappe.throw("Only {} can Approve this request".format(hrgm))
             elif self.doc.supervisor != frappe.session.user:
                 frappe.throw("Only {} can Approve this request".format(self.doc.supervisor_name))
             self.doc.document_status = "Approved"
