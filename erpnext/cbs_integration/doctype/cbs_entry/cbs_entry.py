@@ -8,6 +8,7 @@ import json
 import os
 from frappe.model.naming import make_autoname
 from frappe.utils import getdate, get_datetime, now, cint, flt
+from datetime import datetime
 from erpnext.integrations.bank_api import post_transaction
 from erpnext.cbs_integration.doctype.cbs import get_data, upload, show_progress
 
@@ -144,7 +145,7 @@ class CBSEntry(Document):
 		else:
 			self.submit_upload_entries()
 			# frappe.enqueue(upload, timeout=1500, cbs_entry=self, publish_progress=True)
-			if self.for_payroll == 0 and self.asset_depreciation == 0:
+			if self.for_payroll == 0 and self.asset_depreciation == 0 and self.for_pbvi == 0:
 				upload(cbs_entry=self, publish_progress=True)
 			else:
 				depreciation_data = {}
@@ -162,7 +163,7 @@ class CBSEntry(Document):
 									for pe in payroll_entry:
 										payroll_entry = pe.reference_name
 									file_name = str(self.name)+"-"+str(r)+".txt"
-									file_path = os.path.join("/home/frappe/erp/sites/erp.bdb.bt/public/files/", file_name)
+									file_path = os.path.join("/home/frappe/erp/sites/dev.bdbl.bt/public/files/", file_name)
 									file_url = "/files/"+file_name
 									# Open the file in write mode ('w'). This will create the file if it doesn't exist.
 									line_number = 1
@@ -249,6 +250,78 @@ class CBSEntry(Document):
 									file_count += 1
 								elif self.asset_depreciation == 1:
 									pass
+							elif frappe.db.get_value(ref, r, "voucher_type") == "Bank Entry":
+								if self.for_pbvi == 1:
+									pbvi_entry = frappe.db.sql("select distinct reference_name from `tabJournal Entry Account`  where parent = '{}' and reference_type = 'PBVI' limit 1".format(r),as_dict=1)
+									for pe in pbvi_entry:
+										pbvi_entry = pe.reference_name
+									file_name = str(self.name)+"-"+str(r)+".txt"
+									file_path = os.path.join("/home/frappe/erp/sites/dev.bdbl.bt/public/files/", file_name)
+									file_url = "/files/"+file_name
+									# Open the file in write mode ('w'). This will create the file if it doesn't exist.
+									line_number = 1
+									posting_date = frappe.get_value("PBVI", pbvi_entry, "posting_date")
+									date_obj = datetime.strptime(str(posting_date), '%Y-%m-%d')
+									formatted_ddyy = date_obj.strftime('%b%Y')
+									""" Party Payout """
+									for fd in frappe.db.sql("""
+											select employee as party, employee_name, bank_ac_no, cost_center, amount, balance_amount
+											from `tabPBVI Details` where 1 = 1
+											and parent = '{}' and docstatus = 1 and amount > 0
+										""".format(pbvi_entry),as_dict=1):
+										try:
+											credit_remarks = ("PBVI"+"/"+str(fd["party"])+"/"+str(formatted_ddyy))
+											# acc_no = frappe.get_value("Employee", fd.party, bank_ac_no)
+											if line_number == 1:
+												with open(file_path, 'w') as file:
+													# Write some text to the file,
+													file.write(str(fd.bank_ac_no)+f"{' '*(16-len(str(fd.bank_ac_no)))}BTN000     C"+f"""{' '*(17-len(str(format(flt(fd["balance_amount"],2),'.2f'))))}{str(format(flt(fd["balance_amount"],2),'.2f'))}"""+credit_remarks)
+											else:
+												with open(file_path, 'a') as file:
+													# Write some text to the file
+													file.write("\n"+str(fd.bank_ac_no)+f"{' '*(16-len(str(fd.bank_ac_no)))}BTN000     C"+f"""{' '*(17-len(str(format(flt(fd["balance_amount"],2),".2f"))))}{str(format(flt(fd["balance_amount"],2),'.2f'))}"""+credit_remarks)
+											t_credit += flt(fd["balance_amount"],2)
+										except Exception as e:
+											frappe.throw(f"Error writing to file: {e}")
+										line_number += 1
+									""" CC wise Dr Payout """
+									for dr_d in frappe.db.sql("""
+											select account, cost_center, round(sum(debit),2) as debit, round(sum(credit),2) as credit
+											from `tabJournal Entry Account` where 1 = 1
+											and parent = '{}' and debit > 0
+										""".format(r),as_dict=1):
+										d_branch_code = frappe.db.get_value("Branch", {"cost_center":dr_d.cost_center}, "branch_code")
+										d_remark = str(dr_d.account).split("-")[1].strip()+str(formatted_ddyy)
+										d_account_no = str(d_branch_code)+str(frappe.db.get_value("Account", dr_d.account, "account_number"))
+										try:
+											# if dr_d.account == "500010001 - Manpower Expenses - BDBL":
+											# 	manpower += flt(dr_d.debit,2)
+											with open(file_path, 'a') as file:
+												# Write some text to the file
+												file.write("\n"+d_account_no+f"{' '*(16-len(str(d_account_no)))}BTN000     D"+f"""{' '*(17-len(str(format(flt(dr_d.debit,2),'.2f'))))}{str(format(dr_d.debit,'.2f'))}"""+str(d_remark)[:30])
+										except Exception as e:
+											frappe.throw(f"Error writing to file: {e}")
+										t_debit += flt(dr_d.debit,2)
+									""" Tax Payout """
+									tac_amount = frappe.get_value("PBVI", pbvi_entry, "tax_amount")
+									tax_acc = frappe.get_value("Company", "Bhutan Development Bank Limited", "salary_tax_account")
+									d_branch_code = frappe.db.get_value("Branch", "Office of CEO", "branch_code")
+									d_remark = str(formatted_ddyy)
+									tax_account_no = str(d_branch_code)+str(frappe.db.get_value("Account", tax_acc, "account_number"))
+									try:
+										with open(file_path, 'a') as file:
+											# Write some text to the file
+											file.write("\n"+tax_account_no+f"{' '*(16-len(str(tax_account_no)))}BTN000     C"+f"""{' '*(17-len(str(format(flt(tac_amount,2),'.2f'))))}{str(format(tac_amount,'.2f'))}"""+str(d_remark)[:30])
+									except Exception as e:
+										frappe.throw(f"Error writing to file: {e}")
+									t_credit += flt(tac_amount,2)
+
+									if file_count == 1:
+										self.file_details = str(file_url)
+									else:
+										self.file_details = self.file_details+",||"+str(file_url)
+									file_count += 1
+
 
 		frappe.db.sql("""
                 update `tabCBS Entry` set file_details = '{}' where
@@ -627,7 +700,7 @@ class CBSEntry(Document):
 def make_cbs_entry(entry_title, from_date, to_date, transaction_list):
 	transaction_list = json.loads(transaction_list)
 	final_list = frappe._dict()
-	is_payroll = 0
+	is_payroll = is_pbvi = 0
 	is_asset_depreciation = 0
 	count = 1
 	list_transactions = []
@@ -642,6 +715,10 @@ def make_cbs_entry(entry_title, from_date, to_date, transaction_list):
 			payroll = frappe.db.sql("""
 							select 1 from `tabJournal Entry Account` jea, `tabJournal Entry` je where je.name = '{}' and jea.parent = je.name
 							and jea.reference_type = 'Payroll Entry' and je.voucher_type = 'Journal Entry' and je.naming_series = 'Journal Voucher' group by jea.parent
+							""".format(voucher_no))
+			pbvi = frappe.db.sql("""
+							select 1 from `tabJournal Entry Account` jea, `tabJournal Entry` je where je.name = '{}' and jea.parent = je.name
+							and jea.reference_type = 'PBVI' and je.voucher_type = 'Bank Entry' group by jea.parent
 							""".format(voucher_no))
 			if frappe.db.get_value(voucher_type, voucher_no, "voucher_type") == "Depreciation Entry":
 				asset_depreciation = 1
@@ -658,6 +735,13 @@ def make_cbs_entry(entry_title, from_date, to_date, transaction_list):
 		else:
 			if is_payroll == 1:
 				frappe.throw("Payroll Entry Journal Entries cannot be passed to CBS with non Payroll Journal Entries")
+		if len(pbvi) > 0:
+			if count > 1 and is_pbvi == 0:
+				frappe.throw("PBVI Journal Entries cannot be passed to CBS with non PBVI Journal Entries")
+			is_pbvi = 1
+		else:
+			if is_pbvi == 1:
+				frappe.throw("PBVI Journal Entries cannot be passed to CBS with non PBVI Journal Entries")
 		if asset_depreciation == 1:
 			if count > 1 and is_asset_depreciation == 0:
 				frappe.throw("Depreciation Journal Entries cannot be passed to CBS with non Depreciation Journal Entries")
@@ -672,6 +756,7 @@ def make_cbs_entry(entry_title, from_date, to_date, transaction_list):
 		doc = frappe.new_doc("CBS Entry")
 		doc.entry_type = "Upload"
 		doc.for_payroll = is_payroll
+		doc.for_pbvi = is_pbvi
 		doc.asset_depreciation = is_asset_depreciation
 		doc.entry_title = entry_title
 		doc.from_date = from_date

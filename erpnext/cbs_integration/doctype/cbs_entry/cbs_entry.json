@@ -1,253 +1,261 @@
 {
-    "actions": [],
-    "allow_rename": 1,
-    "autoname": "OB.YYYY.MM.DD.######",
-    "creation": "2024-08-13 11:39:42.858498",
-    "default_view": "List",
-    "doctype": "DocType",
-    "editable_grid": 1,
-    "engine": "InnoDB",
-    "field_order": [
-     "entry_type",
-     "process_type",
-     "for_payroll",
-     "asset_depreciation",
-     "entry_title",
-     "company",
-     "status",
-     "cbs_status",
-     "column_break_rddmy",
-     "from_date",
-     "to_date",
-     "total_debit",
-     "total_credit",
-     "sb_response",
-     "error",
-     "logs",
-     "file_details",
-     "section_break_xnwal",
-     "entry_time",
-     "column_break_sl8xy",
-     "reference_list",
-     "reference_type",
-     "reference_name",
-     "soap_api_detail_section",
-     "header",
-     "footer",
-     "column_break_4jnyo",
-     "body",
-     "partylist_json",
-     "amended_from"
-    ],
-    "fields": [
-     {
-      "fieldname": "entry_type",
-      "fieldtype": "Select",
-      "in_list_view": 1,
-      "in_standard_filter": 1,
-      "label": "Entry Type",
-      "options": "\nUpload\nDownload"
-     },
-     {
-      "fieldname": "process_type",
-      "fieldtype": "Select",
-      "label": "Process Type",
-      "options": "\nAuto\nManual"
-     },
-     {
-      "fieldname": "entry_title",
-      "fieldtype": "Data",
-      "label": "Title"
-     },
-     {
-      "fieldname": "column_break_rddmy",
-      "fieldtype": "Column Break"
-     },
-     {
-      "allow_on_submit": 1,
-      "default": "Pending",
-      "fieldname": "status",
-      "fieldtype": "Select",
-      "in_list_view": 1,
-      "in_standard_filter": 1,
-      "label": "Status",
-      "options": "Pending\nSubmitted\nCancelled",
-      "read_only": 1
-     },
-     {
-      "fieldname": "from_date",
-      "fieldtype": "Data",
-      "label": "From Date"
-     },
-     {
-      "fieldname": "to_date",
-      "fieldtype": "Data",
-      "label": "To Date"
-     },
-     {
-      "fieldname": "section_break_xnwal",
-      "fieldtype": "Section Break"
-     },
-     {
-      "fieldname": "total_debit",
-      "fieldtype": "Data",
-      "label": "Total Debit"
-     },
-     {
-      "fieldname": "company",
-      "fieldtype": "Link",
-      "label": "Company",
-      "options": "Company"
-     },
-     {
-      "fieldname": "column_break_sl8xy",
-      "fieldtype": "Column Break"
-     },
-     {
-      "fieldname": "total_credit",
-      "fieldtype": "Data",
-      "label": "Total Credit"
-     },
-     {
-      "fieldname": "entry_time",
-      "fieldtype": "Datetime",
-      "label": "Entry Time"
-     },
-     {
-      "fieldname": "amended_from",
-      "fieldtype": "Link",
-      "label": "Amended From",
-      "no_copy": 1,
-      "options": "CBS Entry",
-      "print_hide": 1,
-      "read_only": 1,
-      "search_index": 1
-     },
-     {
-      "fieldname": "reference_list",
-      "fieldtype": "Code",
-      "label": "Reference List"
-     },
-     {
-      "fieldname": "soap_api_detail_section",
-      "fieldtype": "Section Break",
-      "label": "SOAP API Detail"
-     },
-     {
-      "fieldname": "header",
-      "fieldtype": "Code",
-      "label": "Header"
-     },
-     {
-      "fieldname": "footer",
-      "fieldtype": "Code",
-      "label": "Footer"
-     },
-     {
-      "fieldname": "column_break_4jnyo",
-      "fieldtype": "Column Break"
-     },
-     {
-      "fieldname": "body",
-      "fieldtype": "Code",
-      "label": "Body"
-     },
-     {
-      "depends_on": "eval:doc.entry_type === \"Upload\"",
-      "fieldname": "reference_type",
-      "fieldtype": "Link",
-      "in_standard_filter": 1,
-      "label": "Reference Type",
-      "options": "DocType"
-     },
-     {
-      "depends_on": "eval:doc.entry_type === \"Upload\"",
-      "fieldname": "reference_name",
-      "fieldtype": "Dynamic Link",
-      "label": "Reference Name",
-      "options": "reference_type"
-     },
-     {
-      "fieldname": "error",
-      "fieldtype": "Text",
-      "hidden": 1,
-      "no_copy": 1,
-      "read_only": 1
-     },
-     {
-      "fieldname": "sb_response",
-      "fieldtype": "Section Break",
-      "label": "LOGS"
-     },
-     {
-      "allow_on_submit": 1,
-      "fieldname": "logs",
-      "fieldtype": "Table",
-      "no_copy": 1,
-      "options": "CBS Entry Log",
-      "read_only": 1
-     },
-     {
-      "allow_on_submit": 1,
-      "fieldname": "cbs_status",
-      "fieldtype": "Data",
-      "in_list_view": 1,
-      "label": "CBS Status",
-      "read_only": 1
-     },
-     {
-      "fieldname": "partylist_json",
-      "fieldtype": "Code",
-      "label": "PartyList JSON",
-      "read_only": 1
-     },
-     {
-      "default": "0",
-      "fieldname": "for_payroll",
-      "fieldtype": "Check",
-      "label": "For Payroll",
-      "read_only": 1
-     },
-     {
-      "allow_on_submit": 1,
-      "fieldname": "file_details",
-      "fieldtype": "Text",
-      "label": "File Details",
-      "read_only": 1
-     },
-     {
-      "default": "0",
-      "fieldname": "asset_depreciation",
-      "fieldtype": "Check",
-      "label": "For Asset Depreciation",
-      "read_only": 1
-     }
-    ],
-    "index_web_pages_for_search": 1,
-    "is_submittable": 1,
-    "links": [],
-    "modified": "2024-10-22 14:26:57.957027",
-    "modified_by": "Administrator",
-    "module": "CBS Integration",
-    "name": "CBS Entry",
-    "naming_rule": "Expression (old style)",
-    "owner": "Administrator",
-    "permissions": [
-     {
-      "create": 1,
-      "delete": 1,
-      "email": 1,
-      "export": 1,
-      "print": 1,
-      "read": 1,
-      "report": 1,
-      "role": "System Manager",
-      "share": 1,
-      "write": 1
-     }
-    ],
-    "sort_field": "modified",
-    "sort_order": "DESC",
-    "states": [],
-    "track_changes": 1
-   }
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "OB.YYYY.MM.DD.######",
+ "creation": "2024-08-13 11:39:42.858498",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "entry_type",
+  "process_type",
+  "for_payroll",
+  "for_pbvi",
+  "asset_depreciation",
+  "entry_title",
+  "company",
+  "status",
+  "cbs_status",
+  "column_break_rddmy",
+  "from_date",
+  "to_date",
+  "total_debit",
+  "total_credit",
+  "sb_response",
+  "error",
+  "logs",
+  "file_details",
+  "section_break_xnwal",
+  "entry_time",
+  "column_break_sl8xy",
+  "reference_list",
+  "reference_type",
+  "reference_name",
+  "soap_api_detail_section",
+  "header",
+  "footer",
+  "column_break_4jnyo",
+  "body",
+  "partylist_json",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "entry_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Entry Type",
+   "options": "\nUpload\nDownload"
+  },
+  {
+   "fieldname": "process_type",
+   "fieldtype": "Select",
+   "label": "Process Type",
+   "options": "\nAuto\nManual"
+  },
+  {
+   "fieldname": "entry_title",
+   "fieldtype": "Data",
+   "label": "Title"
+  },
+  {
+   "fieldname": "column_break_rddmy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "Pending",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Pending\nSubmitted\nCancelled",
+   "read_only": 1
+  },
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Data",
+   "label": "From Date"
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Data",
+   "label": "To Date"
+  },
+  {
+   "fieldname": "section_break_xnwal",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "total_debit",
+   "fieldtype": "Data",
+   "label": "Total Debit"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "column_break_sl8xy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_credit",
+   "fieldtype": "Data",
+   "label": "Total Credit"
+  },
+  {
+   "fieldname": "entry_time",
+   "fieldtype": "Datetime",
+   "label": "Entry Time"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "CBS Entry",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "reference_list",
+   "fieldtype": "Code",
+   "label": "Reference List"
+  },
+  {
+   "fieldname": "soap_api_detail_section",
+   "fieldtype": "Section Break",
+   "label": "SOAP API Detail"
+  },
+  {
+   "fieldname": "header",
+   "fieldtype": "Code",
+   "label": "Header"
+  },
+  {
+   "fieldname": "footer",
+   "fieldtype": "Code",
+   "label": "Footer"
+  },
+  {
+   "fieldname": "column_break_4jnyo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "body",
+   "fieldtype": "Code",
+   "label": "Body"
+  },
+  {
+   "depends_on": "eval:doc.entry_type === \"Upload\"",
+   "fieldname": "reference_type",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Reference Type",
+   "options": "DocType"
+  },
+  {
+   "depends_on": "eval:doc.entry_type === \"Upload\"",
+   "fieldname": "reference_name",
+   "fieldtype": "Dynamic Link",
+   "label": "Reference Name",
+   "options": "reference_type"
+  },
+  {
+   "fieldname": "error",
+   "fieldtype": "Text",
+   "hidden": 1,
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_response",
+   "fieldtype": "Section Break",
+   "label": "LOGS"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "logs",
+   "fieldtype": "Table",
+   "no_copy": 1,
+   "options": "CBS Entry Log",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "cbs_status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "CBS Status",
+   "read_only": 1
+  },
+  {
+   "fieldname": "partylist_json",
+   "fieldtype": "Code",
+   "label": "PartyList JSON",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "for_payroll",
+   "fieldtype": "Check",
+   "label": "For Payroll",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "file_details",
+   "fieldtype": "Text",
+   "label": "File Details",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "asset_depreciation",
+   "fieldtype": "Check",
+   "label": "For Asset Depreciation",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "for_pbvi",
+   "fieldtype": "Check",
+   "label": "For PBVI",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-05-22 16:55:11.793423",
+ "modified_by": "Administrator",
+ "module": "CBS Integration",
+ "name": "CBS Entry",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
