@@ -55,6 +55,20 @@ frappe.ui.form.on('Court Tracking System', {
             			{"parent_product": frm.doc.loan_sub_category } : {"parent_product": frm.doc.loan_category}
 			};
 		});
+
+		frm.set_query("case_description", "case_status", function (frm, cdt, cdn) {
+			var row = locals[cdt][cdn];
+			
+			return {
+				// filters: [
+				// 	["Case Description", "name", "in", frappe.get_value("Case Status Item", {"case_status": row.case_status}, "parent") ]
+				// ]
+				query: "erpnext.ccts.doctype.court_tracking_system.court_tracking_system.get_case_description_options",
+                filters: {
+                    case_status: row.case_status
+                }
+			};
+		});
 	},
 	case_type: function (frm) { 
 		if (frm.doc.case_type == "Counter Litigation") {

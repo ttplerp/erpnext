@@ -17,6 +17,7 @@
   "npl_clients_section",
   "borrower_filed_by",
   "loan_account_no",
+  "account_type",
   "column_break_25",
   "cid_license_number",
   "guarantor",
@@ -34,6 +35,7 @@
   "loan_sub_category",
   "loan_tenure",
   "loan_outstanding",
+  "recovered_amount",
   "collateral_description",
   "section_break_19",
   "hearing_details",
@@ -261,11 +263,24 @@
    "fieldtype": "Link",
    "label": "Loan Sub Category",
    "options": "Loan Products"
+  },
+  {
+   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
+   "fieldname": "recovered_amount",
+   "fieldtype": "Float",
+   "label": "Recovered Amount"
+  },
+  {
+   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
+   "fieldname": "account_type",
+   "fieldtype": "Select",
+   "label": "Account Type",
+   "options": "\nActive\nOBS\nAPF\nBG Revoke"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-23 15:29:48.788897",
+ "modified": "2025-05-26 17:06:15.963297",
  "modified_by": "Administrator",
  "module": "CCTS",
  "name": "Court Tracking System",

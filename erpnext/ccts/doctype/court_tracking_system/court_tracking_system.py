@@ -85,3 +85,22 @@ def get_loan_product(doctype, txt, searchfield, start, page_len, filters):
 		WHERE parent_product = '{0}' and is_sub_group = '0'
 	""".format(filters.get('parent_product'))
 	return frappe.db.sql(query)
+
+@frappe.whitelist()
+def get_case_description_options(doctype, txt, searchfield, start, page_len, filters):
+	case_status = filters.get("case_status")
+
+	if not case_status:
+		return []
+
+	return frappe.db.sql("""
+		SELECT name, name
+		FROM `tabCase Description`
+		WHERE name IN (
+			SELECT parent
+			FROM `tabCase Status Item`
+			WHERE case_status = %s
+		)
+		AND name LIKE %s
+		LIMIT %s OFFSET %s
+	""", (case_status, f"%{txt}%", page_len, start))
