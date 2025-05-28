@@ -260,9 +260,7 @@ class CBSEntry(Document):
 									file_url = "/files/"+file_name
 									# Open the file in write mode ('w'). This will create the file if it doesn't exist.
 									line_number = 1
-									posting_date = frappe.get_value("PBVI", pbvi_entry, "posting_date")
-									date_obj = datetime.strptime(str(posting_date), '%Y-%m-%d')
-									formatted_ddyy = date_obj.strftime('%b%Y')
+									
 									""" Party Payout """
 									for fd in frappe.db.sql("""
 											select employee as party, employee_name, bank_ac_no, cost_center, amount, balance_amount
@@ -270,7 +268,7 @@ class CBSEntry(Document):
 											and parent = '{}' and docstatus = 1 and amount > 0
 										""".format(pbvi_entry),as_dict=1):
 										try:
-											credit_remarks = ("PBVI"+"/"+str(fd["party"])+"/"+str(formatted_ddyy))
+											credit_remarks = ("PBVI"+"/"+str(fd["party"])+"/"+str(frappe.get_value("PBVI", pbvi_entry, "fiscal_year")))
 											# acc_no = frappe.get_value("Employee", fd.party, bank_ac_no)
 											if line_number == 1:
 												with open(file_path, 'w') as file:
@@ -291,7 +289,7 @@ class CBSEntry(Document):
 											and parent = '{}' and debit > 0
 										""".format(r),as_dict=1):
 										d_branch_code = frappe.db.get_value("Branch", {"cost_center":dr_d.cost_center}, "branch_code")
-										d_remark = str(dr_d.account).split("-")[1].strip()+str(formatted_ddyy)
+										d_remark = str(dr_d.account).split("-")[1].strip()+str(frappe.get_value("PBVI", pbvi_entry, "fiscal_year"))
 										d_account_no = str(d_branch_code)+str(frappe.db.get_value("Account", dr_d.account, "account_number"))
 										try:
 											# if dr_d.account == "500010001 - Manpower Expenses - BDBL":
@@ -306,7 +304,7 @@ class CBSEntry(Document):
 									tac_amount = frappe.get_value("PBVI", pbvi_entry, "tax_amount")
 									tax_acc = frappe.get_value("Company", "Bhutan Development Bank Limited", "salary_tax_account")
 									d_branch_code = frappe.db.get_value("Branch", "Office of CEO", "branch_code")
-									d_remark = str(formatted_ddyy)
+									d_remark = str(frappe.get_value("PBVI", pbvi_entry, "fiscal_year"))
 									tax_account_no = str(d_branch_code)+str(frappe.db.get_value("Account", tax_acc, "account_number"))
 									try:
 										with open(file_path, 'a') as file:
@@ -726,6 +724,7 @@ def make_cbs_entry(entry_title, from_date, to_date, transaction_list):
 				asset_depreciation = 0
 		else:
 			payroll = []
+			pbvi = []
 			asset_depreciation = 0
 		# linked_transactions = frappe.db.sql("select parent from")
 		if len(payroll) > 0:
