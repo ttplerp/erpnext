@@ -567,9 +567,17 @@ class update_entries_after(object):
 				if self.valuation_method == "Moving Average":
 					self.get_moving_average_values(sle)
 					self.wh_data.qty_after_transaction += flt(sle.actual_qty)
-					self.wh_data.stock_value = flt(self.wh_data.qty_after_transaction) * flt(
-						self.wh_data.valuation_rate
-					)
+					# self.wh_data.stock_value = flt(self.wh_data.qty_after_transaction) * flt(
+					# 	self.wh_data.valuation_rate
+					# )
+					if flt(sle.actual_qty) < 0:
+						self.wh_data.stock_value += flt(sle.actual_qty) * flt(
+							self.wh_data.valuation_rate
+						)
+					else:
+						self.wh_data.stock_value += flt(sle.actual_qty) * flt(
+							sle.incoming_rate
+						)
 				else:
 					self.update_queue_values(sle)
 
