@@ -186,42 +186,43 @@ class Maturity(Document):
 		# frappe.throw("Credit:\nPrinciple Amount: {} Total Interest: {}\nDebit:\n Maturity Amount - TDS Amount: {} TDS Amount: {}".format(str(flt(frappe.db.get_value("Treasury", self.treasury_id, "principal_amount"),2)), str(flt(self.total_interest_amount,2)), str(flt(self.maturity_amount-self.tds_amount,2)), str(flt(self.tds_amount,2))))
 
 		je.insert()
-		jemi = frappe.new_doc("Journal Entry")
-		jemi.update({
-			"voucher_type": voucher_type,
-			"naming_series": voucher_series,
-			"title": f"Treasury Interest Accrual - {self.name}",
-			"user_remark": f"Note: Treasury Interest Accrual - {self.name}",
-			"posting_date": self.posting_date,
-			"company": self.company,
-			"total_amount_in_words": money_in_words(self.interest_amount),
-			"branch": self.branch,
-			"business_activity": "Common"
-		})
-		
-		jemi.append("accounts", {
-			"account": icredit_account[0][0],
-			"credit_in_account_currency": self.interest_amount,
-			"cost_center": self.cost_center,
-			"reference_type": "Treasury",
-			"reference_name": self.treasury_id,
-			"business_activity": "Common"
-		})
-		
-		jemi.append("accounts", {
-			"account": idebit_account[0][0],
-			"debit_in_account_currency": self.interest_amount,
-			"cost_center": self.cost_center,
-			"reference_type": "Treasury",
-			"reference_name": self.treasury_id,
-			"party_type": party_type,
-			"party": party,
-			"business_activity": "Common"
-		})
+		if flt(self.interest_amount) > 0:
+			jemi = frappe.new_doc("Journal Entry")
+			jemi.update({
+				"voucher_type": voucher_type,
+				"naming_series": voucher_series,
+				"title": f"Treasury Interest Accrual - {self.name}",
+				"user_remark": f"Note: Treasury Interest Accrual - {self.name}",
+				"posting_date": self.posting_date,
+				"company": self.company,
+				"total_amount_in_words": money_in_words(self.interest_amount),
+				"branch": self.branch,
+				"business_activity": "Common"
+			})
+			
+			jemi.append("accounts", {
+				"account": icredit_account[0][0],
+				"credit_in_account_currency": self.interest_amount,
+				"cost_center": self.cost_center,
+				"reference_type": "Treasury",
+				"reference_name": self.treasury_id,
+				"business_activity": "Common"
+			})
+			
+			jemi.append("accounts", {
+				"account": idebit_account[0][0],
+				"debit_in_account_currency": self.interest_amount,
+				"cost_center": self.cost_center,
+				"reference_type": "Treasury",
+				"reference_name": self.treasury_id,
+				"party_type": party_type,
+				"party": party,
+				"business_activity": "Common"
+			})
 
-		jemi.insert()
-		# Set a reference to the claim journal entry
-		self.db_set("journal_entry", jemi.name+", "+je.name)
+			jemi.insert()
+			# Set a reference to the claim journal entry
+			self.db_set("journal_entry", jemi.name+", "+je.name)
 		frappe.msgprint("Journal Entry created. {}".format(frappe.get_desk_link("Journal Entry", je.name)))
 
 	def calculate_interest_amount(self):
