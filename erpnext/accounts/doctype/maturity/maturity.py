@@ -223,6 +223,8 @@ class Maturity(Document):
 			jemi.insert()
 			# Set a reference to the claim journal entry
 			self.db_set("journal_entry", jemi.name+", "+je.name)
+		else:
+			self.db_set("journal_entry", je.name)
 		frappe.msgprint("Journal Entry created. {}".format(frappe.get_desk_link("Journal Entry", je.name)))
 
 	def calculate_interest_amount(self):
