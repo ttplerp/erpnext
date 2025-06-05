@@ -261,14 +261,16 @@ erpnext.stock.PurchaseReceiptController = class PurchaseReceiptController extend
 		dialog.fields_dict.make_asset_issue_entry.$input.click(function() {
 			var args = dialog.get_values();
 			var item_details = String(args.item_name).split(" ")
-			console.log(item_details[1])
+			// console.log(item_details[item_details.length - 1])
+			let itemname = String(args.item_name).split(" ").slice(0, -1).join(" ");
+			// console.log(itemname)
 			frappe.call({
 				method:'frappe.client.get_value',
 				args:{
 					'doctype':'Item',
 					fieldname:"is_fixed_asset",
 					filters: {
-						"item_name": item_details[0],
+						"item_name": itemname.trim(),
 						"is_fixed_asset":1
 					}
 				},
@@ -287,7 +289,7 @@ erpnext.stock.PurchaseReceiptController = class PurchaseReceiptController extend
 						let item_code = ''
 						let asset_rate = ''
 						cur_frm.doc.items.map(d => {
-							if (d.item_name == item_details[0] && d.valuation_rate == item_details[1]){
+							if (d.item_name == itemname.trim() && d.valuation_rate == item_details[item_details.length - 1]){
 								business_activity = d.business_activity;
 								item_code = d.item_code;
 								asset_rate = d.valuation_rate;
@@ -298,7 +300,7 @@ erpnext.stock.PurchaseReceiptController = class PurchaseReceiptController extend
 						var new_doc = frappe.model.get_new_doc('Asset Issue Details');
 						new_doc.branch = cur_frm.doc.branch;
 						new_doc.business_activity = business_activity;
-						new_doc.entry_date = new Date().toJSON().slice(0,10).replace(/-/g,'-');
+						new_doc.entry_date = new Date().toISOString().slice(0, 10);
 						new_doc.item_code = item_code;
 						new_doc.purchase_receipt = cur_frm.docname;
 						new_doc.asset_rate = asset_rate
