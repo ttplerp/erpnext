@@ -32,6 +32,8 @@ class Production(StockController):
 		# make_auto_production(self)
 		self.make_production_entry()
 		frappe.enqueue(make_auto_production(self), queue="long")
+		self.repost_future_sle_and_gle()
+
 
 	def on_cancel(self):
 		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
@@ -39,6 +41,8 @@ class Production(StockController):
 		self.delete_production_entry()
 		self.update_stock_ledger()
 		self.make_gl_entries_on_cancel()
+		self.repost_future_sle_and_gle()
+
 	
 	def update_stock_ledger(self):
 		sl_entries = []

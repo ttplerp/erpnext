@@ -302,7 +302,6 @@ def get_items_to_be_repost(voucher_type=None, voucher_no=None, doc=None):
 			order_by="creation asc",
 			group_by="item_code, warehouse",
 		)
-
 	return items_to_be_repost or []
 
 
@@ -427,8 +426,8 @@ class update_entries_after(object):
 
 	def build(self):
 		from erpnext.controllers.stock_controller import future_sle_exists
-
 		if self.args.get("sle_id"):
+			# frappe.throw(str(self.args))
 			self.process_sle_against_current_timestamp()
 			if not future_sle_exists(self.args):
 				self.update_bin()
