@@ -8,6 +8,8 @@
  "field_order": [
   "equipment",
   "column_break_vdjdh",
+  "equipment_name",
+  "column_break_h9csf",
   "hours",
   "column_break_ftnay",
   "rate",
@@ -56,12 +58,24 @@
    "in_list_view": 1,
    "label": "Hours",
    "reqd": 1
+  },
+  {
+   "fieldname": "column_break_h9csf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "equipment.equipment_name",
+   "fieldname": "equipment_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Equipment_name",
+   "options": "Equipment"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-11-29 17:04:46.729035",
+ "modified": "2025-06-05 14:54:09.406196",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Project Equipment Engagement Item",
