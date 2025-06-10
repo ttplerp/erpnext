@@ -1,0 +1,42 @@
+{
+ "creation": "2024-11-09 23:37:27.295307",
+ "docstatus": 0,
+ "doctype": "Form Tour",
+ "first_document": 0,
+ "idx": 0,
+ "include_name_field": 0,
+ "is_standard": 1,
+ "list_name": "List",
+ "modified": "2024-11-10 09:34:56.046805",
+ "modified_by": "Administrator",
+ "module": "eNote",
+ "name": "eNote",
+ "new_document_form": 0,
+ "owner": "Administrator",
+ "reference_doctype": "eNote",
+ "report_name": "",
+ "save_on_complete": 1,
+ "steps": [
+  {
+   "description": "Check this if you require review from more than 1 person",
+   "fieldname": "reviewer_required",
+   "fieldtype": "Check",
+   "has_next_condition": 1,
+   "hide_buttons": 0,
+   "is_table_field": 0,
+   "label": "Reviewer Required",
+   "modal_trigger": 0,
+   "next_on_click": 0,
+   "offset_x": 0,
+   "offset_y": 0,
+   "popover_element": 0,
+   "position": "Bottom",
+   "title": "Reviewer Required",
+   "ui_tour": 0
+  }
+ ],
+ "title": "eNote",
+ "track_steps": 0,
+ "ui_tour": 0,
+ "view_name": "Workspaces"
+}
