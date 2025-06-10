@@ -1,7 +1,7 @@
 // Copyright (c) 2024, Frappe Technologies Pvt. Ltd. and contributors
 // For license information, please see license.txt
 
-frappe.ui.form.on('Case Status', {
+frappe.ui.form.on('Audit Details', {
 	// refresh: function(frm) {
 
 	// }
