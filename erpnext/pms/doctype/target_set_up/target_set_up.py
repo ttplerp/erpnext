@@ -214,7 +214,8 @@ def create_evaluation(source_name, target_doc=None):
 		"Target Set Up": {
 			"doctype": "Performance Evaluation",
 			"field_map":{
-					"target_set_up":"name"
+					"target_set_up":"name",
+					"name":"reference"
 				},
 		},
 		"Performance Target Evaluation":{
