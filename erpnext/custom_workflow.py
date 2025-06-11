@@ -35,6 +35,7 @@ class CustomWorkflow:
                 else:
                     frappe.throw('Expense Approver not set for employee {}'.format(self.doc.employee))
             self.supervisors_supervisor = frappe.db.get_value("Employee", frappe.db.get_value("Employee", frappe.db.get_value("Employee", self.doc.employee, "reports_to"), "reports_to"), self.field_list)
+            self.pms_verifier	= frappe.db.get_value("Employee", frappe.db.get_single_value("HR Settings", "pms_verifier"), self.field_list)
             self.hr_approver	= frappe.db.get_value("Employee", frappe.db.get_single_value("HR Settings", "hr_approver"), self.field_list)
             self.hrgm = frappe.db.get_value("Employee",frappe.db.get_single_value("HR Settings","hrgm"), self.field_list)
             self.sa_approver = frappe.db.get_value("Employee",frappe.db.get_single_value("HR Settings","sa_approver"), self.field_list)
@@ -390,6 +391,14 @@ class CustomWorkflow:
             vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.budget_reappropiation_approver[0]
             vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.budget_reappropiation_approver[1]
             vars(self.doc)[self.doc_approver[2]] = officiating[2] if officiating else self.budget_reappropiation_approver[2]
+        
+        elif approver_type == "PMS Verifier":
+            officiating = get_officiating_employee(self.pms_verifier[3])
+            if officiating:
+                officiating = frappe.db.get_value("Employee", officiating[0].officiate, self.field_list)
+            vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.pms_verifier[0]
+            vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.pms_verifier[1]
+            vars(self.doc)[self.doc_approver[2]] = officiating[2] if officiating else self.pms_verifier[2]
         else:
             frappe.throw(_("Invalid approver type for Workflow"))
 
@@ -618,6 +627,12 @@ class CustomWorkflow:
             if frappe.session.user != self.doc.owner:
                 frappe.throw("Only {} can apply this leave".format(self.doc.owner))
 
+        elif self.new_state.lower() == ("Waiting for Verification".lower()):
+            self.set_approver("PMS Verifier")
+
+        elif self.old_state.lower() == ("Waiting for Verification".lower()) and self.doc.approver != frappe.session.user:
+            frappe.throw("Only {} can Verify/Reject this Application".format(self.doc.approver_name))
+        
         elif self.new_state.lower() == ("Waiting Supervisor Approval".lower()):
             self.set_approver("Supervisor")
 
