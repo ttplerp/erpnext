@@ -203,6 +203,7 @@
    "fieldtype": "Link",
    "ignore_user_permissions": 1,
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "PMS Calendar",
    "options": "PMS Calendar",
    "reqd": 1
@@ -492,7 +493,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2025-02-03 14:51:57.389016",
+ "modified": "2025-06-12 10:28:11.980560",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Target Set Up",
