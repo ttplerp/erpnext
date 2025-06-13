@@ -226,7 +226,8 @@
    "label": "Company",
    "options": "Company",
    "print_hide": 1,
-   "remember_last_selected_value": 1
+   "remember_last_selected_value": 1,
+   "reqd": 1
   },
   {
    "default": "Active",
@@ -370,7 +371,8 @@
    "label": "Department",
    "oldfieldname": "department",
    "oldfieldtype": "Link",
-   "options": "Department"
+   "options": "Department",
+   "reqd": 1
   },
   {
    "fieldname": "designation",
@@ -400,7 +402,8 @@
    "label": "Branch",
    "oldfieldname": "branch",
    "oldfieldtype": "Link",
-   "options": "Branch"
+   "options": "Branch",
+   "reqd": 1
   },
   {
    "description": "Applicable Holiday List",
@@ -917,7 +920,8 @@
    "fieldtype": "Link",
    "label": "Cost Center",
    "options": "Cost Center",
-   "read_only": 1
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "fieldname": "cb_50",
@@ -1180,14 +1184,15 @@
    "fieldname": "nationality",
    "fieldtype": "Select",
    "label": "Nationality",
-   "options": "\nNational\nNon-National"
+   "options": "\nNational\nNon-National",
+   "reqd": 1
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2025-05-15 14:19:52.506994",
+ "modified": "2025-06-13 16:03:54.957433",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
