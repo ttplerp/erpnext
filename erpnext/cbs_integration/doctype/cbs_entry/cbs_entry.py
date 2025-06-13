@@ -372,9 +372,9 @@ class CBSEntry(Document):
 						elif party_type == "Supplier":
 							account_number = frappe.db.get_value("Supplier Bank Account", {"parent": party, "default": 1}, "account_number")
 						else:
-							account_number = frappe.db.get_valiue("Account", i.account, "bank_account_no")
+							account_number = frappe.db.get_value("Account", i.account, "bank_account_no")
 						if not account_number and frappe.db.get_value("Account", i.account, "gl_type") == "CASA":
-							account_number = frappe.db.get_valiue("Account", i.account, "bank_account_no")
+							account_number = frappe.db.get_value("Account", i.account, "bank_account_no")
 						else:
 							account_number = i.account_number
 
