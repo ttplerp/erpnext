@@ -625,7 +625,7 @@ class CustomWorkflow:
     def target_set_up_and_review(self):
         if self.new_state.lower() in ("Draft".lower()):
             if frappe.session.user != self.doc.owner:
-                frappe.throw("Only {} can apply this leave".format(self.doc.owner))
+                frappe.throw("Only {} can apply".format(self.doc.owner))
 
         elif self.new_state.lower() == ("Waiting for Verification".lower()):
             self.set_approver("PMS Verifier")
