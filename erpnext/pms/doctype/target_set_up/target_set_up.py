@@ -39,6 +39,7 @@ class TargetSetUp(Document):
 		self.min_no_of_target = doc.min_no_of_target
 
 	def on_update_after_submit(self):
+		self.validate_calendar()
 		self.check_target()
 		review = frappe.db.get_value('Review',{'target':self.name,'docstatus':('!=',2)},['name'])
 		if not review:
