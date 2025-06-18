@@ -31,6 +31,7 @@
   "employment_details_section",
   "employment_type",
   "employee_group",
+  "cadre",
   "pms_group",
   "designation",
   "region",
@@ -1043,13 +1044,18 @@
    "fieldname": "pbvi_percent",
    "fieldtype": "Data",
    "label": "PBVI Percent"
+  },
+  {
+   "fieldname": "cadre",
+   "fieldtype": "Data",
+   "label": "Cadre"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2025-04-15 15:55:40.310278",
+ "modified": "2025-06-10 09:27:44.693078",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
