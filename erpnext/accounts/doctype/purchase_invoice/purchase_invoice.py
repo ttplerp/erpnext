@@ -916,6 +916,8 @@ class PurchaseInvoice(BuyingController):
 		gl_entries = []
 
 		self.make_supplier_gl_entry(gl_entries)
+		# frappe.throw(frappe.as_json(gl_entries))
+		
 		self.make_item_gl_entries(gl_entries)
 		# if self.check_asset_cwip_enabled():
 		self.get_asset_gl_entry(gl_entries)
@@ -2217,10 +2219,13 @@ class PurchaseInvoice(BuyingController):
 	def make_filters(self):
 		if not self.supplier or not self.advance_type:
 			frappe.throw("Party and Advance Type filters are required.")
-			
+		po = None
+		for a in self.items:
+			po = a.po
 		filters = frappe._dict(
 			party = self.supplier,
-			advance_type = self.advance_type
+			advance_type = self.advance_type,
+			purchase_order = po
 		)
 		return filters
 
@@ -2246,26 +2251,34 @@ def get_advance_list(
 	filters,
 	as_dict=True,
 ) -> list:
-	Supplier = frappe.qb.DocType("Supplier")
-	AdvanceItem = frappe.qb.DocType("Advance Item")
+	# Supplier = frappe.qb.DocType("Supplier")
+	# AdvanceItem = frappe.qb.DocType("Advance Item")
 
-	query = (
-		frappe.qb.from_(Supplier)
-		.join(AdvanceItem)
-		.on(Supplier.name == AdvanceItem.parent)
-		.where(
-			(Supplier.name == filters.party)
-			& (AdvanceItem.advance_type == filters.advance_type)
-			& (AdvanceItem.balance_amount > 0)
-		)
-		.select(
-			AdvanceItem.balance_amount.as_("total_amount"),
-			AdvanceItem.advance_type,
-			AdvanceItem.balance_amount.as_("allocated_amount"),
-			AdvanceItem.advance_account
-		)
-	)
-	return query.run(as_dict=as_dict)
+	# query = (
+	# 	frappe.qb.from_(Supplier)
+	# 	.join(AdvanceItem)
+	# 	.on(Supplier.name == AdvanceItem.parent)
+	# 	.where(
+	# 		(Supplier.name == filters.party)
+	# 		& (AdvanceItem.advance_type == filters.advance_type)
+	# 		& (AdvanceItem.balance_amount > 0)
+	# 	)
+	# 	.select(
+	# 		AdvanceItem.balance_amount.as_("total_amount"),
+	# 		AdvanceItem.advance_type,
+	# 		AdvanceItem.balance_amount.as_("allocated_amount"),
+	# 		AdvanceItem.advance_account
+	# 	)
+	# )
+	# return query.run(as_dict=as_dict)
+
+	Supplier = frappe.qb.DocType("Purchase Order")
+	AdvanceItem = frappe.qb.DocType("Advance")
+	frappe.db.sql("""
+				select a.advance_amount as total_amount, a.advance_amount as allocated_amount,
+			   a.advance_type, a.advance_account from `tabAdvance` a, `tabPurchase Order` po
+			   where a.advance_type = '{}' and a.party = '{}' and po.name = '{}'
+			   """.format(filters.advance_type, filters.party, filters.purchase_order),as_dict=1)
 
 
 # to get details of purchase invoice/receipt from which this doc was created for exchange rate difference handling
