@@ -271,7 +271,7 @@ class Maturity(Document):
 		if frappe.db.get_value("Treasury", self.treasury_id, "is_existing") == 1:
 			total_interest += flt(frappe.db.get_value("Treasury", self.treasury_id, "opening_accrued_interest"),2)
 		self.total_interest_amount = total_interest
-		self.total_interest_amount += self.interest_amount
+		self.total_interest_amount = flt(self.total_interest_amount + self.interest_amount, 2)
 		if treasury.type_of_instrument != "CP":
 			self.tds_amount = flt(self.total_interest_amount * 0.05,2)
 		else:
