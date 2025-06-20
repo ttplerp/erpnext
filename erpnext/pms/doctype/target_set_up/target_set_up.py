@@ -68,6 +68,8 @@ class TargetSetUp(Document):
 		eval_doc.save(ignore_permissions = True)
 		
 	def validate_calendar(self):
+		prev_wf_status = frappe.get_value("Target Set Up", self.name, "workflow_state")
+		
 		if frappe.db.exists("Target Set Up", {"employee": self.employee, "docstatus":2, "pms_calendar": self.pms_calendar}):
 			doc = frappe.get_doc('Target Set Up', self.amended_from)
 			if self.pms_calendar == doc.pms_calendar:
@@ -75,11 +77,11 @@ class TargetSetUp(Document):
 			else:
 				frappe.throw(_("PMS Calendar doesnot match with the cancelled Target"))
 
-		elif self.workflow_state == 'Draft' or self.workflow_state == 'Rejected':
-			return   
+		# elif self.workflow_state == 'Draft' or self.workflow_state == 'Rejected':
+		# 	return   
 		# check whether pms is active for target setup       
-		elif not frappe.db.exists("PMS Calendar",{"name": self.pms_calendar, "docstatus": 1,
-					"target_start_date":("<=",nowdate()),"target_end_date":(">=",nowdate())}):
+		if not frappe.db.exists("PMS Calendar",{"name": self.pms_calendar, "docstatus": 1,
+					"target_start_date":("<=",nowdate()),"target_end_date":(">=",nowdate())}) and prev_wf_status in ['Draft']:
 			frappe.throw(_('Target Set Up for PMS Calendar <b>{}</b> is not open').format(self.pms_calendar))
 
 	def check_duplicate_entry(self):
