@@ -5,10 +5,10 @@
 frappe.query_reports["Audit Observation Report"] = {
 	"filters": [
 		{
-			"fieldname": "execute_audit",
-			"label": __("Execute Audit"),
+			"fieldname": "iain_no",
+			"label": __("IAIN No."),
 			"fieldtype": "Link",
-			"options": "Execute Audit"
+			"options": "Audit Observation"
 		},
 		{
 			"fieldname":"from_date",

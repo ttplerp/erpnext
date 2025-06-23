@@ -10,9 +10,15 @@ def execute(filters=None):
 	columns = get_columns(filters)
 	data = get_data(filters)
 	return columns, data
-
 def get_columns(filters=None):
 	columns = [
+		{
+			"fieldname": "iain_no",
+			"label": "IAIN No.",
+			"fieldtype": "Link",
+			"options": "Audit Observation",
+			"width": 150
+		},
 		{
 			"fieldname": "auditee_branch",
 			"label": "Auditee Branch",
@@ -45,19 +51,13 @@ def get_columns(filters=None):
 		},
 		{
 			"fieldname": "audit_checklist",
-			"label": "Audit Checklist",
+			"label": "Observation No.",
 			"fieldtype": "Data",
 			"width": 150
 		},
 		{
 			"fieldname": "observation_title",
 			"label": "Observation Title",
-			"fieldtype": "Data",
-			"width": 150
-		},
-		{
-			"fieldname": "nature_of_irregularity",
-			"label": "Nature of Irregularity",
 			"fieldtype": "Data",
 			"width": 150
 		},
@@ -73,12 +73,12 @@ def get_columns(filters=None):
 			"fieldtype": "Data",
 			"width": 150
 		},
-		{
-			"fieldname": "execute_audit_id",
-			"label": "Execute Audit ID",
-			"fieldtype": "Data",
-			"width": 150
-		}
+		# {
+		# 	"fieldname": "direct_accountability_employee_name",
+		# 	"label": "Direct Accountability Employee",
+		# 	"fieldtype": "Data",
+		# 	"width": 150
+		# }
 	]
 	return columns
 
@@ -89,41 +89,41 @@ def get_data(filters=None):
 
 	query1 = """
 		select 
-			ea.branch as auditee_branch, ea.supervisor_name as supervisor, ea.posting_date, ea.type as audit_type, 
-			eati.employee_name as auditor, eaci.audit_area_checklist as audit_checklist, eaci.observation_title as observation_title, 
-			eaci.nature_of_irregularity, eaci.status, ea.name as execute_audit_id
+			ea.branch as auditee_branch, dai.supervisor_name as supervisor, dai.employee as direct_accountability_employee, ea.posting_date, ea.type as audit_type, 
+			eati.employee_name as auditor, dai.checklist as audit_checklist, dai.observation_title as observation_title	, 
+			eaci.nature_of_irregularity, dai.status, ea.name
 		from 
-			`tabExecute Audit` ea 
-			inner join `tabExecute Audit Team Item` eati on ea.name=eati.parent
-			inner join `tabExecute Audit Checklist Item` eaci on ea.name=eaci.parent
-		where 
+			`tabAudit Observation` ea 
+			left join `tabExecute Audit Team Item I` eati on ea.name=eati.parent
+			left join `tabExecute Audit Checklist Item I` eaci on ea.name=eaci.parent
+			left join `tabDirect Accountability Item I` dai on dai.parent = ea.name
+			where 
 			ea.docstatus=1 and ea.status != 'Closed' {cond1} {cond2}
-		group by eaci.observation_title
-		order by eaci.audit_area_checklist
+		 ORDER BY 
+        ea.name
 	""".format(cond1=conditions, cond2=noi_condition)
-
-	data1 = frappe.db.sql(query1, as_dict=True)
-
-	query2 = """
-		select 
-			dai.observation_title, dai.employee_name as direct_accountability_employee
-		from 
-			`tabExecute Audit` ea inner join `tabDirect Accountability Item` dai
-		where 
-			dai.parent = ea.name and ea.docstatus=1 and ea.status != 'Closed' {cond}
-		group by dai.observation_title
-		order by dai.checklist
-	""".format(cond=conditions)
 	
-	data2 = frappe.db.sql(query2, as_dict=True)
+	data1 = frappe.db.sql(query1, as_dict=True)
+	# query2 = """
+	# 	select 
+	# 		dai.observation_title, dai.employee as direct_accountability_employee
+	# 	from 
+	# 		`tabAudit Observation` ea 
+	# 	where 
+	# 		dai.parent = ea.name and ea.docstatus=1 and ea.status != 'Closed' {cond}
+	# 	order by dai.checklist
+	# """.format(cond=conditions)
+	
+	# data2 = frappe.db.sql(query2, as_dict=True)
 
 	for d in data1:
 		emp = ""
-		for dd in data2:
-			if d.observation_title == dd.observation_title and d.nature_of_irregularity not in ('For Information','Found in order','Resolved'):
-				emp = dd.direct_accountability_employee
+		# for dd in data2:
+			# if d.observation_title == dd.observation_title and d.nature_of_irregularity not in ('For Information','Found in order','Resolved'):
+			# 	emp = dd.direct_accountability_employee
 
 		row = {
+			"iain_no": d.name,
 			"auditee_branch": d.auditee_branch,
 			"supervisor": d.supervisor,
 			"posting_date": d.posting_date,
@@ -133,14 +133,13 @@ def get_data(filters=None):
 			"observation_title": d.observation_title,
 			"nature_of_irregularity": d.nature_of_irregularity,
 			"status": d.status,
-			"direct_accountability_employee": emp if emp else '',
-			"execute_audit_id": d.execute_audit_id,
+			"direct_accountability_employee": d.direct_accountability_employee,
+			# "direct_accountability_employee": emp if emp else '',
 		}
 
 		data.append(row)
 
 	return data
-		
 
 def get_conditions(filters=None):
 	conditions = ""
@@ -154,8 +153,8 @@ def get_conditions(filters=None):
 	if filters.get("from_date") and filters.get("to_date"):
 		conditions += " and ea.posting_date between '{}' and '{}'".format(filters.get("from_date"),filters.get("to_date"))
 
-	if filters.get("execute_audit"):
-		conditions += " and ea.name = '{}'".format(filters.get("execute_audit"))
+	if filters.get("iain_no"):
+		conditions += " and ea.name = '{}'".format(filters.get("iain_no"))
 
 	if filters.get("audit_type"):
 		conditions += " and ea.type = '{}'".format(filters.get("audit_type"))
