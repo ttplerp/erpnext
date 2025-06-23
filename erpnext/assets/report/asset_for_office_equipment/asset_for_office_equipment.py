@@ -160,6 +160,7 @@ def get_data(filters):
             OR
             (a.status in ('Scrapped', 'Sold') AND a.disposal_date >= '{from_date}')
         )
+        AND a.asset_category IN ('Office Equipment', 'Office  Furniture')
         """.format(from_date=filters.from_date, to_date=filters.to_date)
 
     query = """
@@ -237,6 +238,7 @@ def get_data(filters):
             OR
             (a.status in ('Scrapped', 'Sold') AND a.disposal_date >= '{from_date}')
         )
+        AND a.asset_category IN ('Office Equipment', 'Office  Furniture')
         """.format(from_date=filters.from_date, to_date=filters.to_date)
                 
     if filters.cost_center:
