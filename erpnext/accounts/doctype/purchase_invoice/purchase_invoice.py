@@ -652,42 +652,54 @@ class PurchaseInvoice(BuyingController):
 		self.update_tds_receipt_entry()
 
 	def update_supplier_advance(self, cancel=False):
-		if self.advances:
-			query = """
-				SELECT 
-					name, 
-					advance_type,
-					advance_account, 
-					advance_amount,
-					adjusted_amount,
-					balance_amount,
-					advance_date
-				FROM 
-					`tabAdvance Item` 
-				WHERE 
-					advance_type = %s AND 
-					parent = %s
-			"""
-			supplier_advances = frappe.db.sql(query, (self.advance_type, self.party), as_dict=True)
+		po = None
+		for a in self.items:
+			po = a.purchase_order
+		if self.supplier_advances and po:
+			if not cancel:
+				frappe.db.sql("""
+				update `tabAdvance` set reference_doctype = "Purchase Invoice", reference_name = '{}'
+				where reference_name = '{}' 
+				and advance_type = '{}'
+				""".format(self.name, po, self.advance_type))
+			else:
+				frappe.db.sql("""
+				update `tabAdvance` set reference_doctype = "Purchase Order", reference_name = '{}'
+				where reference_name = '{}'
+				and advance_type = '{}'
+				""".format(po, self.name, self.advance_type))
 
-			if supplier_advances:
-				allocated_amount = -1 * flt(self.total_advance) if cancel else flt(self.total_advance)
+			# query = """
+			# 	SELECT 
+			# 		name, 
+			# 		adjusted_amount,
+			# 		balance_amount
+			# 	FROM 
+			# 		`tabAdvance Item` 
+			# 	WHERE 
+			# 		advance_type = %s AND 
+			# 		parent = %s
+			# """
+			# advances = frappe.db.sql(query, (self.advance_type, self.supplier), as_dict=True)
+
+			# if advances:
+			# 	allocated_amount = -1 * flt(self.total_advance) if cancel else flt(self.total_advance)
 				
-				adjusted_amount = flt(supplier_advances[0].adjusted_amount + allocated_amount)
-				balance_amount = flt(supplier_advances[0].advance_amount - allocated_amount)
+			# 	adjusted_amount = flt(advances[0].adjusted_amount + allocated_amount)
+			# 	balance_amount = flt(advances[0].balance_amount - allocated_amount)
 
-				frappe.db.sql(
-					"""
-					UPDATE
-						`tabAdvance Item` 
-					SET
-						balance_amount = %s,
-						adjusted_amount = %s
-					WHERE 
-						name = %s
-					""",
-					(balance_amount, adjusted_amount, supplier_advances[0].name),
-				)
+			# 	frappe.db.sql(
+			# 		"""
+			# 		UPDATE
+			# 			`tabAdvance Item` 
+			# 		SET
+			# 			balance_amount = %s,
+			# 			adjusted_amount = %s
+			# 		WHERE 
+			# 			name = %s
+			# 		""",
+			# 		(balance_amount, adjusted_amount, advances[0].name),
+			# 	)
 
 	def update_tds_receipt_entry(self):
 		if self.amended_from:
@@ -916,8 +928,6 @@ class PurchaseInvoice(BuyingController):
 		gl_entries = []
 
 		self.make_supplier_gl_entry(gl_entries)
-		# frappe.throw(frappe.as_json(gl_entries))
-		
 		self.make_item_gl_entries(gl_entries)
 		# if self.check_asset_cwip_enabled():
 		self.get_asset_gl_entry(gl_entries)
@@ -1910,7 +1920,7 @@ class PurchaseInvoice(BuyingController):
 			self.update_billing_status_for_zero_amount_refdoc("Purchase Receipt")
 			self.update_billing_status_for_zero_amount_refdoc("Purchase Order")
 
-		self.update_billing_status_in_pr()
+		# self.update_billing_status_in_pr()
 
 		# Updating stock ledger should always be called after updating prevdoc status,
 		# because updating ordered qty in bin depends upon updated ordered qty in PO
@@ -2221,7 +2231,7 @@ class PurchaseInvoice(BuyingController):
 			frappe.throw("Party and Advance Type filters are required.")
 		po = None
 		for a in self.items:
-			po = a.po
+			po = a.purchase_order
 		filters = frappe._dict(
 			party = self.supplier,
 			advance_type = self.advance_type,
@@ -2239,13 +2249,38 @@ class PurchaseInvoice(BuyingController):
 			error_msg = _(
 				"No advances found for the mentioned criteria:<br>Party: {0}"
 			).format(
-				frappe.bold(self.party),
+				frappe.bold(self.supplier),
 			)
 			if self.advance_type:
 				error_msg += "<br>" + _("Advance Type: {0}").format(frappe.bold(self.advance_type))
 			frappe.throw(error_msg, title=_("No advances found"))
 
 		self.set("supplier_advances", advances)
+
+# def get_advance_list(
+# 	filters,
+# 	as_dict=True,
+# ) -> list:
+# 	Supplier = frappe.qb.DocType("Supplier")
+# 	AdvanceItem = frappe.qb.DocType("Advance Item")
+
+# 	query = (
+# 		frappe.qb.from_(Supplier)
+# 		.join(AdvanceItem)
+# 		.on(Supplier.name == AdvanceItem.parent)
+# 		.where(
+# 			(Supplier.name == filters.party)
+# 			& (AdvanceItem.advance_type == filters.advance_type)
+# 			& (AdvanceItem.balance_amount > 0)
+# 		)
+# 		.select(
+# 			AdvanceItem.balance_amount.as_("total_amount"),
+# 			AdvanceItem.advance_type,
+# 			AdvanceItem.balance_amount.as_("allocated_amount"),
+# 			AdvanceItem.advance_account
+# 		)
+# 	)
+# 	return query.run(as_dict=as_dict)
 
 def get_advance_list(
 	filters,
@@ -2274,11 +2309,11 @@ def get_advance_list(
 
 	Supplier = frappe.qb.DocType("Purchase Order")
 	AdvanceItem = frappe.qb.DocType("Advance")
-	frappe.db.sql("""
+	return frappe.db.sql("""
 				select a.advance_amount as total_amount, a.advance_amount as allocated_amount,
 			   a.advance_type, a.advance_account from `tabAdvance` a, `tabPurchase Order` po
-			   where a.advance_type = '{}' and a.party = '{}' and po.name = '{}'
-			   """.format(filters.advance_type, filters.party, filters.purchase_order),as_dict=1)
+			   where a.advance_type = '{}' and a.party = '{}' and po.name = '{}' and a.reference_name = '{}'
+			   """.format(filters.advance_type, filters.party, filters.purchase_order, filters.purchase_order),as_dict=1)
 
 
 # to get details of purchase invoice/receipt from which this doc was created for exchange rate difference handling
