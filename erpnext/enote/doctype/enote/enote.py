@@ -80,6 +80,7 @@ class eNote(Document):
 		
 		if action in ("Approve","Reject"):
 			if action == "Reject":
+				self.forward_to = frappe.get_value("eNote", self.name, "forward_to") #on reject. forward_to should remain same if in case they have changed
 				#check if forward_to field is valid
 				if self.forward_to == frappe.session.user or not self.forward_to:
 					self.forward_to = self.owner
