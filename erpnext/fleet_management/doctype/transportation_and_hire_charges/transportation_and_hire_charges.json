@@ -10,6 +10,7 @@
   "invoice_type",
   "branch",
   "cost_center",
+  "expense_branch",
   "column_break_2",
   "bill_no",
   "bill_date",
@@ -357,11 +358,17 @@
    "options": "Transportation and Hire Charges",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "expense_branch",
+   "fieldtype": "Link",
+   "label": "Expense Branch",
+   "options": "Branch"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2025-04-15 17:34:24.176451",
+ "modified": "2025-06-23 11:10:26.334632",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Transportation and Hire Charges",
