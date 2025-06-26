@@ -601,7 +601,7 @@ class CustomWorkflow:
 
     def leave_application(self):
         if self.new_state.lower() == ("Waiting Approval".lower()):
-            self.set_approver("Supervisor")
+            self.set_approver("HR")
         elif self.new_state.lower() == ("Approved".lower()):
             if self.doc.supervisor != frappe.session.user:
                 frappe.throw("Only {} can Approve this Leave Application".format(self.doc.supervisor))
