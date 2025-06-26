@@ -626,7 +626,8 @@ class CustomWorkflow:
         if self.new_state.lower() in ("Draft".lower()):
             if frappe.session.user != self.doc.owner:
                 frappe.throw("Only {} can apply".format(self.doc.owner))
-
+        elif self.new_state and self.old_state and self.new_state.lower() == self.old_state.lower():
+            return
         elif self.new_state.lower() == ("Waiting for Verification".lower()):
             self.set_approver("PMS Verifier")
 
