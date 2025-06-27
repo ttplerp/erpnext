@@ -1,0 +1,464 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "format:{id_card}",
+ "creation": "2024-10-08 15:44:44.695374",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "personal_details_section",
+  "person_name",
+  "designation",
+  "id_card",
+  "status",
+  "qualification",
+  "column_break_qxdm",
+  "gender",
+  "mr_type",
+  "mobile_number",
+  "column_break_yhwd",
+  "list_in_job_card",
+  "mess_deduction",
+  "amount",
+  "section_break_bjhj",
+  "work_status_column",
+  "project",
+  "column_break_idmt",
+  "cost_center",
+  "column_break_wlay",
+  "branch",
+  "column_break_gegn",
+  "unit",
+  "section_break_xdjd",
+  "joining_date",
+  "column_break_xarx",
+  "separation_date",
+  "column_break_ddzo",
+  "blood_group",
+  "nationality",
+  "wage_detail",
+  "bank_name",
+  "bank_branch",
+  "column_break_kaug",
+  "bank_account_type",
+  "bank_ac_no",
+  "sb1234",
+  "rate_per_hour_normal",
+  "musterroll",
+  "update_wage_history",
+  "sb_wh",
+  "wage_history",
+  "section_break_cmlx",
+  "salary",
+  "rate_per_day",
+  "column_break_hqgd",
+  "rate_per_hour_overtime",
+  "section_break_ezva",
+  "internal_work_history",
+  "section_break_vbkp",
+  "user_id",
+  "column_break_jrut",
+  "company",
+  "date_of_transfer",
+  "sb_additional_info",
+  "reference_doctype",
+  "column_break_eunw",
+  "reference_docname",
+  "temp_doctype",
+  "temp_docname"
+ ],
+ "fields": [
+  {
+   "fieldname": "personal_details_section",
+   "fieldtype": "Section Break",
+   "label": "Personal Details"
+  },
+  {
+   "fieldname": "person_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Person Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "designation",
+   "fieldtype": "Data",
+   "label": "Designation"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Active\nLeft",
+   "reqd": 1
+  },
+  {
+   "fieldname": "qualification",
+   "fieldtype": "Data",
+   "label": "Qualification"
+  },
+  {
+   "fieldname": "column_break_qxdm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Select",
+   "label": "Gender",
+   "options": "Male\nFemale\nOther"
+  },
+  {
+   "fieldname": "mr_type",
+   "fieldtype": "Select",
+   "label": "MR Type",
+   "options": "Under CDCL\nUnder Labour Contract"
+  },
+  {
+   "fieldname": "column_break_yhwd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "list_in_job_card",
+   "fieldtype": "Check",
+   "label": "List in Job Card"
+  },
+  {
+   "fieldname": "section_break_bjhj",
+   "fieldtype": "Section Break",
+   "label": "Work Status"
+  },
+  {
+   "fieldname": "work_status_column",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project"
+  },
+  {
+   "fieldname": "column_break_idmt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "project.cost_center",
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_wlay",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "project.branch",
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_xdjd",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "joining_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Joining Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_xarx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "separation_date",
+   "fieldtype": "Date",
+   "label": "Separation Date"
+  },
+  {
+   "fieldname": "column_break_ddzo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "blood_group",
+   "fieldtype": "Link",
+   "label": "Blood Group",
+   "options": "Blood Group"
+  },
+  {
+   "fieldname": "bank_name",
+   "fieldtype": "Link",
+   "label": "Bank Name",
+   "options": "Financial Institution"
+  },
+  {
+   "fieldname": "bank_branch",
+   "fieldtype": "Link",
+   "label": "Bank Branch",
+   "options": "Financial Institution Branch"
+  },
+  {
+   "fieldname": "column_break_kaug",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "bank_account_type",
+   "fieldtype": "Link",
+   "label": "Bank Account Type",
+   "options": "Bank Account Type"
+  },
+  {
+   "fieldname": "bank_ac_no",
+   "fieldtype": "Data",
+   "label": "Bank A/C No."
+  },
+  {
+   "default": "0",
+   "fieldname": "update_wage_history",
+   "fieldtype": "Check",
+   "label": "Update Wage History?"
+  },
+  {
+   "fieldname": "section_break_cmlx",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "salary",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Salary Per Month"
+  },
+  {
+   "fieldname": "rate_per_day",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Rate Per Day"
+  },
+  {
+   "fieldname": "column_break_hqgd",
+   "fieldtype": "Column Break",
+   "hidden": 1
+  },
+  {
+   "fieldname": "rate_per_hour_overtime",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Rate Per Hour (Overtime)(Daily Rate * 1.5 / 8)"
+  },
+  {
+   "fieldname": "section_break_ezva",
+   "fieldtype": "Section Break",
+   "label": "INTERNAL WORK HISTORY"
+  },
+  {
+   "fieldname": "section_break_vbkp",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "user_id",
+   "fieldtype": "Link",
+   "label": "User ID",
+   "options": "User"
+  },
+  {
+   "fieldname": "column_break_jrut",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "date_of_transfer",
+   "fieldtype": "Date",
+   "label": "Date Of Transfer"
+  },
+  {
+   "fieldname": "sb_additional_info",
+   "fieldtype": "Section Break",
+   "label": "ADDITIONAL INFO"
+  },
+  {
+   "fieldname": "reference_doctype",
+   "fieldtype": "Data",
+   "label": "Reference Doctype"
+  },
+  {
+   "fieldname": "column_break_eunw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reference_docname",
+   "fieldtype": "Data",
+   "label": "Reference Docname"
+  },
+  {
+   "fieldname": "temp_doctype",
+   "fieldtype": "Data",
+   "label": "Temp Doctype"
+  },
+  {
+   "fieldname": "temp_docname",
+   "fieldtype": "Data",
+   "label": "Temp Docname"
+  },
+  {
+   "fieldname": "wage_detail",
+   "fieldtype": "Section Break",
+   "label": "Wage Detail"
+  },
+  {
+   "fieldname": "sb1234",
+   "fieldtype": "Section Break",
+   "label": "Wages"
+  },
+  {
+   "fieldname": "rate_per_hour_normal",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Rate Per Hour (Normal) (Rate/ 8)"
+  },
+  {
+   "fieldname": "sb_wh",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Wage History"
+  },
+  {
+   "fieldname": "id_card",
+   "fieldtype": "Data",
+   "label": "Citizenship ID Card",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "internal_work_history",
+   "fieldtype": "Table",
+   "options": "Employee Internal Work History"
+  },
+  {
+   "fieldname": "musterroll",
+   "fieldtype": "Table",
+   "options": "Musterroll"
+  },
+  {
+   "fieldname": "wage_history",
+   "fieldtype": "Table",
+   "options": "Wages History"
+  },
+  {
+   "fieldname": "column_break_gegn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "unit",
+   "fieldtype": "Link",
+   "label": "Unit",
+   "options": "Department"
+  },
+  {
+   "default": "0",
+   "fieldname": "mess_deduction",
+   "fieldtype": "Check",
+   "label": "Mess Deduction"
+  },
+  {
+   "depends_on": "eval:doc.mess_deduction==1",
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount"
+  },
+  {
+   "fieldname": "nationality",
+   "fieldtype": "Data",
+   "label": "Nationality",
+   "read_only": 1
+  },
+  {
+   "fieldname": "mobile_number",
+   "fieldtype": "Data",
+   "label": "Mobile Number"
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-12-05 18:53:56.335487",
+ "modified_by": "Administrator",
+ "module": "Projects",
+ "name": "Muster Roll Employee",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "import": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Approver",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR User",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "person_name,id_card",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "person_name"
+}
