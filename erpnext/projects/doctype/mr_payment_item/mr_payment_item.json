@@ -1,0 +1,288 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "hash",
+ "creation": "2024-10-18 18:07:37.715438",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_1",
+  "employee_type",
+  "employee",
+  "person_name",
+  "id_card",
+  "column_break_3",
+  "designation",
+  "qualification",
+  "cb_0",
+  "fiscal_year",
+  "month",
+  "section_break_7",
+  "number_of_days",
+  "daily_rate",
+  "total_wage",
+  "total_ot_amount",
+  "health",
+  "mess_deduction",
+  "wage_payable",
+  "net_pay",
+  "column_break_11",
+  "number_of_hours",
+  "hourly_rate_normal",
+  "amount_regular",
+  "number_of_hours_special",
+  "hourly_rate",
+  "amount_special",
+  "section_break_15",
+  "total_amount",
+  "total_payable",
+  "ot_section",
+  "bank",
+  "cb_acc",
+  "account_no",
+  "bank_payment",
+  "payment_status"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_1",
+   "fieldtype": "Section Break",
+   "label": "Employee Detail",
+   "search_index": 1
+  },
+  {
+   "fieldname": "employee_type",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Employee Type",
+   "options": "\nMuster Roll Employee\nGEP Employee",
+   "search_index": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "employee",
+   "fieldtype": "Dynamic Link",
+   "label": "Employee",
+   "length": 25,
+   "options": "employee_type",
+   "read_only": 1,
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "person_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Name",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "id_card",
+   "fieldtype": "Data",
+   "label": "CID",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "designation",
+   "fieldtype": "Read Only",
+   "label": "Designation"
+  },
+  {
+   "fieldname": "qualification",
+   "fieldtype": "Read Only",
+   "label": "Qualification"
+  },
+  {
+   "fieldname": "cb_0",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "fiscal_year",
+   "fieldtype": "Link",
+   "label": "Fiscal Year",
+   "options": "Fiscal Year",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "default": "Jan",
+   "fieldname": "month",
+   "fieldtype": "Select",
+   "label": "Month",
+   "options": "Jan\nFeb\nMar\nApr\nMay\nJun\nJul\nAug\nSep\nOct\nNov\nDec",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "section_break_7",
+   "fieldtype": "Section Break",
+   "label": "Wage Details"
+  },
+  {
+   "fieldname": "number_of_days",
+   "fieldtype": "Float",
+   "label": "Number of Days",
+   "precision": "1",
+   "read_only": 1
+  },
+  {
+   "fieldname": "daily_rate",
+   "fieldtype": "Currency",
+   "label": "Daily Rate",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "total_wage",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total Wage",
+   "read_only": 1
+  },
+  {
+   "fieldname": "health",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Health Contribution",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fieldname": "wage_payable",
+   "fieldtype": "Currency",
+   "label": "Wage Payable Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "number_of_hours",
+   "fieldtype": "Float",
+   "label": "Number of Hours(Regular)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hourly_rate_normal",
+   "fieldtype": "Currency",
+   "label": "Hourly Rate(Normal)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "number_of_hours_special",
+   "fieldtype": "Float",
+   "label": "Number of Hours(Special/Holiday)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hourly_rate",
+   "fieldtype": "Currency",
+   "label": "Hourly Rate(Special/Holiday)",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fieldname": "total_ot_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total OT Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_15",
+   "fieldtype": "Section Break"
+  },
+  {
+   "columns": 2,
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "label": "Total Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "ot_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "bank",
+   "fieldtype": "Read Only",
+   "label": "Bank",
+   "options": "employee.bank"
+  },
+  {
+   "fieldname": "cb_acc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "account_no",
+   "fieldtype": "Read Only",
+   "label": "Account No",
+   "options": "employee.account_no"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "bank_payment",
+   "fieldtype": "Data",
+   "label": "Bank Payment",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "payment_status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nPayment Under Process\nPayment Successful\nPayment Failed\nPartial Payment\nPayment Cancelled",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amount_regular",
+   "fieldtype": "Currency",
+   "label": "Amount Regular"
+  },
+  {
+   "fieldname": "amount_special",
+   "fieldtype": "Currency",
+   "label": "Amount Special"
+  },
+  {
+   "columns": 2,
+   "fieldname": "mess_deduction",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Deduction"
+  },
+  {
+   "fieldname": "total_payable",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Total Payable"
+  },
+  {
+   "fieldname": "net_pay",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Net Payable Amount"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-03-17 16:45:44.048180",
+ "modified_by": "Administrator",
+ "module": "Projects",
+ "name": "MR Payment Item",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
