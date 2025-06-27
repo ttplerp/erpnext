@@ -675,7 +675,7 @@ class JournalEntry(AccountsController):
 						party_dr_list = []
 						party_dr_amount, party_dr_count = 0, 0
 						if c.salary_component in ("Net Pay", "Financial Institution Loan", "Security Deposit", 
-													"PBVI", "Leave Travel Concession", "Bonus", "Salary Advance Deductions", "FI Loan Own", "Financial Institution Loan(Others)", "Salary Saving Scheme", "SWS", "GIS", "Salary Tax", "Semso", "PF", "SWL", "Health Contribution", "Annuity Policy", "Excess Salary Recovery", "Salary Arrears") and self.voucher_type == "Journal Entry":
+													"PBVI", "Leave Travel Concession", "Bonus", "Salary Advance Deductions", "FI Loan Own", "Financial Institution Loan(Others)", "Salary Saving Scheme", "SWS", "GIS", "Salary Tax", "Semso", "PF", "SWL", "Health Contribution", "Annuity Policy", "Excess Salary Recovery") and self.voucher_type == "Journal Entry":
 							''' get employee wise net pay details '''
 							details = None
 							if c.salary_component == "PBVA":
@@ -728,7 +728,7 @@ class JournalEntry(AccountsController):
 								details = get_emp_component_amount(
 									payroll_entry=reference_name, salary_component=c.salary_component, party=c.party)
 	
-							if not details and c.amount and c.salary_component not in ("GIS", "PF", "SWS", "Salary Saving Scheme", "Annuity Policy", "Salary Advance Deductions", "Net Pay", "Financial Institution Loan(Others)", "FI Loan Own", "Salary Tax", "Semso", "Health Contribution", "SWL", "Excess Salary Recovery", "Salary Arrears"):
+							if not details and c.amount and c.salary_component not in ("GIS", "PF", "SWS", "Salary Saving Scheme", "Annuity Policy", "Salary Advance Deductions", "Net Pay", "Financial Institution Loan(Others)", "FI Loan Own", "Salary Tax", "Semso", "Health Contribution", "SWL", "Excess Salary Recovery"):
 								frappe.throw(_("Could not find Net Pay details for {}").format(
 									frappe.get_desk_link(reference_type, reference_name)))
 							if details:
@@ -748,7 +748,7 @@ class JournalEntry(AccountsController):
 										
 										party_dr_amount += flt(d.amount,2)
 										party_dr_count += 1
-								if c.salary_component not in ("GIS", "SWS", "PF", "Salary Saving Scheme", "Annuity Policy", "Financial Institution Loan(Others)", "Salary Advance Deductions", "Salary Tax", "SWL", "Semso", "Health Contribution", "FI Loan Own", "Excess Salary Recovery", "Salary Arrears"):
+								if c.salary_component not in ("GIS", "SWS", "PF", "Salary Saving Scheme", "Annuity Policy", "Financial Institution Loan(Others)", "Salary Advance Deductions", "Salary Tax", "SWL", "Semso", "Health Contribution", "FI Loan Own", "Excess Salary Recovery"):
 									if flt(party_dr_amount, 2) != flt(c.amount,2):
 										frappe.throw(_("Total <b>{}({})</b> does not match with Total Credit Amount({}) {}").format(
 											c.salary_component, party_dr_amount, flt(c.amount,2), frappe.get_desk_link(reference_type, reference_name)))
