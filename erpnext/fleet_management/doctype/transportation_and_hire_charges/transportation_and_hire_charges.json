@@ -364,12 +364,13 @@
    "fieldname": "expense_branch",
    "fieldtype": "Link",
    "label": "Expense Branch",
+   "mandatory_depends_on": "eval:doc.settle_imprest_advance",
    "options": "Branch"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-27 11:22:37.472533",
+ "modified": "2025-06-27 11:49:18.694559",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Transportation and Hire Charges",
