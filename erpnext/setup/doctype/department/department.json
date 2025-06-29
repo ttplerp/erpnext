@@ -21,13 +21,17 @@
   "rgt",
   "old_parent",
   "approver",
+  "unit_rating",
   "approver_name",
   "approver_level",
   "vehicle_request_approver_section",
   "v_approver",
   "v_approver_name",
   "column_break_20",
-  "approver_id"
+  "approver_id",
+  "pol_approver_section",
+  "pol_approver",
+  "pol_approver_name"
  ],
  "fields": [
   {
@@ -168,13 +172,36 @@
   {
    "fieldname": "column_break_20",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pol_approver_section",
+   "fieldtype": "Section Break",
+   "label": "POL Approver"
+  },
+  {
+   "fieldname": "pol_approver",
+   "fieldtype": "Link",
+   "label": "POL Approver",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "pol_approver.employee_name",
+   "fieldname": "pol_approver_name",
+   "fieldtype": "Data",
+   "label": "POL Approver Name"
+  },
+  {
+   "description": "Enter Department % in this field to be used in PBVA Payout",
+   "fieldname": "unit_rating",
+   "fieldtype": "Percent",
+   "label": "Department Rating (for PBVA)"
   }
  ],
  "icon": "fa fa-sitemap",
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2023-08-15 14:57:23.633028",
+ "modified": "2025-06-23 15:07:40.206243",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Department",

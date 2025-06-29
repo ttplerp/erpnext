@@ -46,6 +46,7 @@
   "total_monthly_sales",
   "advance_received_from_customer",
   "advance_paid_to_supplier",
+  "sales_seal_sign",
   "column_break_goals",
   "default_selling_terms",
   "default_warehouse_for_sales_return",
@@ -78,7 +79,6 @@
   "company_cost_center",
   "default_finance_book",
   "clearing_account",
-  "re_valued_asset_account",
   "tds_accounts_section",
   "tds_account_item",
   "auto_accounting_for_stock_settings",
@@ -107,9 +107,6 @@
   "asset_received_but_not_billed",
   "hr_accounts_setting_section",
   "salary_payable_account",
-  "muster_roll_payable_account",
-  "mr_wages_account",
-  "mr_overtime_account",
   "salary_tax_account",
   "overtime_allowance_account",
   "employer_contribution_to_pf",
@@ -150,9 +147,12 @@
   "coal_raising_expense_account",
   "column_break_131",
   "coal_raising_penalty_account",
-  "pol_approval_section",
-  "pol_approver",
-  "pol_approver_name"
+  "tb_muster_roll",
+  "mr_expense_account",
+  "mr_overtime_account",
+  "mr_deduction_account",
+  "cb_mr_01",
+  "mr_payable_account"
  ],
  "fields": [
   {
@@ -1039,46 +1039,42 @@
    "reqd": 1
   },
   {
-   "fieldname": "re_valued_asset_account",
-   "fieldtype": "Link",
-   "label": "Revalued Asset Account",
-   "options": "Account"
+   "fieldname": "sales_seal_sign",
+   "fieldtype": "Attach",
+   "label": "Sales Invoice Seal And Sign"
   },
   {
-   "fieldname": "muster_roll_payable_account",
-   "fieldtype": "Link",
-   "label": "Muster Roll Payable Account",
-   "options": "Account",
-   "reqd": 1
+   "fieldname": "tb_muster_roll",
+   "fieldtype": "Tab Break",
+   "label": "Muster Roll Settings"
   },
   {
-   "fieldname": "mr_wages_account",
+   "fieldname": "mr_expense_account",
    "fieldtype": "Link",
-   "label": "MR Wages Account",
+   "label": "Muster Roll Expense Account",
    "options": "Account"
   },
   {
    "fieldname": "mr_overtime_account",
    "fieldtype": "Link",
-   "label": "MR Overtime Account",
+   "label": "Muster Roll Overtime Accoutn",
    "options": "Account"
   },
   {
-   "fieldname": "pol_approval_section",
-   "fieldtype": "Section Break",
-   "label": "POL Approval"
-  },
-  {
-   "fieldname": "pol_approver",
+   "fieldname": "mr_deduction_account",
    "fieldtype": "Link",
-   "label": "POL Approver",
-   "options": "Employee"
+   "label": "Muster Roll Deduction Account",
+   "options": "Account"
   },
   {
-   "fetch_from": "pol_approver.employee_name",
-   "fieldname": "pol_approver_name",
-   "fieldtype": "Data",
-   "label": "POL Approver Name"
+   "fieldname": "cb_mr_01",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mr_payable_account",
+   "fieldtype": "Link",
+   "label": "Muster Roll Payable Account",
+   "options": "Account"
   }
  ],
  "icon": "fa fa-building",
@@ -1086,7 +1082,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2025-01-31 16:28:55.355219",
+ "modified": "2025-03-17 15:48:03.680240",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",

@@ -26,10 +26,12 @@
   "date_of_joining",
   "image",
   "old_id",
+  "pbva_percent",
   "employment_details_section",
   "employment_type",
   "employee_group",
   "designation",
+  "pms_group",
   "region",
   "reports_to",
   "reports_to_name",
@@ -122,6 +124,8 @@
   "external_work_history",
   "history_in_company",
   "internal_work_history",
+  "sb_pms_record",
+  "employee_pms",
   "exit",
   "resignation_letter_date",
   "relieving_date",
@@ -983,13 +987,35 @@
    "fieldtype": "Data",
    "label": "Selected Doc",
    "read_only": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "pms_group",
+   "fieldtype": "Link",
+   "label": "PMS Group",
+   "options": "PMS Group"
+  },
+  {
+   "fieldname": "sb_pms_record",
+   "fieldtype": "Section Break",
+   "label": "PMS Record"
+  },
+  {
+   "fieldname": "employee_pms",
+   "fieldtype": "Table",
+   "options": "Employee PMS Rating"
+  },
+  {
+   "fieldname": "pbva_percent",
+   "fieldtype": "Data",
+   "label": "PBVA Percent"
   }
  ],
  "icon": "fa fa-user",
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2024-08-27 09:14:43.381757",
+ "modified": "2025-06-23 15:21:47.929891",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
