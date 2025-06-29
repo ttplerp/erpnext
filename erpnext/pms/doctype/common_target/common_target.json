@@ -1,0 +1,121 @@
+{
+ "autoname": "field:pms_calendar",
+ "creation": "2021-11-23 12:41:50.190749",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "pms_calendar",
+  "amended_from",
+  "prerequisite_section",
+  "max_weightage_for_target",
+  "column_break_6",
+  "min_weightage_for_target",
+  "common_targets_section",
+  "targets"
+ ],
+ "fields": [
+  {
+   "fieldname": "common_targets_section",
+   "fieldtype": "Section Break",
+   "label": "Common Targets"
+  },
+  {
+   "fieldname": "targets",
+   "fieldtype": "Table",
+   "label": "Targets",
+   "options": "Common Target Details",
+   "reqd": 1
+  },
+  {
+   "fieldname": "pms_calendar",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Fiscal Year",
+   "options": "PMS Calendar",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Common Target",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "prerequisite_section",
+   "fieldtype": "Section Break",
+   "label": "Prerequisite"
+  },
+  {
+   "fieldname": "max_weightage_for_target",
+   "fieldtype": "Float",
+   "label": "Max Weightage For Target",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "min_weightage_for_target",
+   "fieldtype": "Float",
+   "label": "Min Weightage For Target",
+   "read_only": 1
+  }
+ ],
+ "is_submittable": 1,
+ "modified": "2021-12-30 15:53:34.845906",
+ "modified_by": "deepa.darlami@bt.bt",
+ "module": "PMS",
+ "name": "Common Target",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "pms_calendar",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "pms_calendar",
+ "track_changes": 1
+}

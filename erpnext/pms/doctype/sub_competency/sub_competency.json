@@ -1,0 +1,42 @@
+{
+ "creation": "2021-08-16 09:41:19.042857",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sub_competency",
+  "column_break_2",
+  "weightage"
+ ],
+ "fields": [
+  {
+   "fieldname": "sub_competency",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Sub Competency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 2,
+   "fieldname": "weightage",
+   "fieldtype": "Percent",
+   "hidden": 1,
+   "label": "Weightage(%)"
+  }
+ ],
+ "istable": 1,
+ "modified": "2021-08-17 17:58:59.332044",
+ "modified_by": "Administrator",
+ "module": "PMS",
+ "name": "Sub Competency",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

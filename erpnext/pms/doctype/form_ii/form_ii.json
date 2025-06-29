@@ -1,0 +1,80 @@
+{
+ "allow_rename": 1,
+ "creation": "2021-11-30 11:42:33.104026",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "competency_details_section",
+  "sub_competency",
+  "column_break_3",
+  "current_achievement",
+  "expected_achievement",
+  "reason_for_appeal_section",
+  "reason",
+  "column_break_8",
+  "perc_reasons"
+ ],
+ "fields": [
+  {
+   "fieldname": "competency_details_section",
+   "fieldtype": "Section Break",
+   "label": "Sub Competency Details"
+  },
+  {
+   "fieldname": "sub_competency",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Sub Competency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "current_achievement",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Current Achievement",
+   "options": "Overall Rating"
+  },
+  {
+   "fieldname": "expected_achievement",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Expected Achievement",
+   "options": "Overall Rating"
+  },
+  {
+   "fieldname": "reason_for_appeal_section",
+   "fieldtype": "Section Break",
+   "label": "Reason(s) for Appeal"
+  },
+  {
+   "fieldname": "reason",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Employee Reason(s)"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "perc_reasons",
+   "fieldtype": "Small Text",
+   "label": "PERC Reason(s)"
+  }
+ ],
+ "istable": 1,
+ "modified": "2021-12-28 13:17:39.976503",
+ "modified_by": "Administrator",
+ "module": "PMS",
+ "name": "Form II",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

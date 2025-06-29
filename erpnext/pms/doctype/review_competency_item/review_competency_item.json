@@ -1,0 +1,109 @@
+{
+ "creation": "2021-03-09 16:43:00.631488",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "competency_details_section",
+  "competency",
+  "sub_competency",
+  "column_break_3",
+  "weightage",
+  "column_break_5",
+  "is_parent",
+  "section_break_7",
+  "appraisees_remark",
+  "column_break_9",
+  "appraisers_remark",
+  "top_level"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "depends_on": "eval: !doc.is_parent ",
+   "fieldname": "appraisees_remark",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Appraisee's Remark"
+  },
+  {
+   "columns": 1,
+   "depends_on": "eval: !doc.is_parent ",
+   "fieldname": "appraisers_remark",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Appraiser's Remark"
+  },
+  {
+   "bold": 1,
+   "columns": 2,
+   "fieldname": "competency",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Work Competency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "weightage",
+   "fieldtype": "Data",
+   "label": "Weightage",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 2,
+   "fieldname": "sub_competency",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Sub Competency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_parent",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Is Parent",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_7",
+   "fieldtype": "Section Break",
+   "label": "Give Your Review"
+  },
+  {
+   "fieldname": "column_break_9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "competency_details_section",
+   "fieldtype": "Section Break",
+   "label": "Competency Details"
+  },
+  {
+   "fieldname": "top_level",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Top Level",
+   "read_only": 1
+  }
+ ],
+ "istable": 1,
+ "modified": "2021-10-05 16:23:22.444858",
+ "modified_by": "Administrator",
+ "module": "PMS",
+ "name": "Review Competency Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

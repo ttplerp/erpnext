@@ -1,0 +1,373 @@
+{
+ "autoname": "PMS.DD.MM.YY.###",
+ "creation": "2021-08-20 19:16:06.271562",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "employee_name",
+  "gender",
+  "column_break_2",
+  "department",
+  "cost_center",
+  "column_break_4",
+  "branch",
+  "designation",
+  "region",
+  "division",
+  "column_break_7",
+  "unit",
+  "pms_group",
+  "section",
+  "section_break_6",
+  "pms_calendar",
+  "company",
+  "column_break_14",
+  "posting_date",
+  "date_of_joining",
+  "performance_evaluation_summary_section",
+  "form_i_total_rating",
+  "form_i_score",
+  "form_i_weightage",
+  "column_break_26",
+  "form_ii_total_rating",
+  "form_ii_score",
+  "form_ii_weightage",
+  "column_break_18",
+  "final_score",
+  "final_score_percent",
+  "star_obtained",
+  "column_break_28",
+  "overall_rating",
+  "max_rating_limit",
+  "approver_details_section",
+  "approver",
+  "column_break_39",
+  "approver_name",
+  "column_break_41",
+  "approver_designation",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee ID",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "PMS Summary",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "performance_evaluation_summary_section",
+   "fieldtype": "Section Break",
+   "label": "PERFORMANCE EVALUATION SUMMARY"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pms_calendar",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "PMS Calendar",
+   "options": "PMS Calendar",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_6",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "employee.pms_group",
+   "fieldname": "pms_group",
+   "fieldtype": "Link",
+   "label": "PMS Group",
+   "options": "PMS Group",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_18",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "employee.gender",
+   "fieldname": "gender",
+   "fieldtype": "Data",
+   "label": "Gender",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_14",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "fetch_from": "employee.branch",
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.region",
+   "fieldname": "region",
+   "fieldtype": "Link",
+   "label": "Region",
+   "options": "Region",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.division",
+   "fieldname": "division",
+   "fieldtype": "Link",
+   "label": "Division",
+   "options": "Division",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.unit",
+   "fieldname": "unit",
+   "fieldtype": "Link",
+   "label": "Unit",
+   "options": "Unit",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section",
+   "fieldtype": "Link",
+   "label": "Section",
+   "options": "Section",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_28",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "max_rating_limit",
+   "fieldtype": "Float",
+   "label": "Max Rating Limit",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_26",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "form_i_score",
+   "fieldtype": "Float",
+   "label": "Form I Score",
+   "read_only": 1
+  },
+  {
+   "fieldname": "form_ii_score",
+   "fieldtype": "Float",
+   "label": "Form II Score",
+   "read_only": 1
+  },
+  {
+   "fieldname": "form_i_weightage",
+   "fieldtype": "Percent",
+   "label": "Form I Weightage(%)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "approver",
+   "fieldtype": "Link",
+   "label": "Approver",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "approver.full_name",
+   "fieldname": "approver_name",
+   "fieldtype": "Data",
+   "label": "Approver Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.department",
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department",
+   "read_only": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1
+  },
+  {
+   "fieldname": "form_i_total_rating",
+   "fieldtype": "Float",
+   "label": "Form I Total Rating",
+   "read_only": 1
+  },
+  {
+   "fieldname": "form_ii_total_rating",
+   "fieldtype": "Float",
+   "label": "Form II Total Rating",
+   "read_only": 1
+  },
+  {
+   "fieldname": "form_ii_weightage",
+   "fieldtype": "Percent",
+   "label": "Form II  Weightage(%)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "star_obtained",
+   "fieldtype": "Rating",
+   "label": "Star Obtained",
+   "read_only": 1
+  },
+  {
+   "fieldname": "final_score_percent",
+   "fieldtype": "Percent",
+   "label": "Final Score(%)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "overall_rating",
+   "fieldtype": "Link",
+   "label": "Overall Rating",
+   "options": "Overall Rating",
+   "read_only": 1
+  },
+  {
+   "fieldname": "final_score",
+   "fieldtype": "Float",
+   "label": "Final Score",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.date_of_joining",
+   "fieldname": "date_of_joining",
+   "fieldtype": "Data",
+   "label": "Date of Joining",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.cost_center",
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "approver_details_section",
+   "fieldtype": "Section Break",
+   "label": "APPROVER DETAILS"
+  },
+  {
+   "fieldname": "column_break_39",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_41",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "approver_designation",
+   "fieldtype": "Data",
+   "label": "Approver Designation",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.designation",
+   "fieldname": "designation",
+   "fieldtype": "Link",
+   "label": "Designation",
+   "options": "Designation",
+   "read_only": 1
+  }
+ ],
+ "is_submittable": 1,
+ "modified": "2022-03-18 18:02:52.965948",
+ "modified_by": "Administrator",
+ "module": "PMS",
+ "name": "PMS Summary",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Employee",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "employee_name",
+ "track_changes": 1,
+ "track_seen": 1
+}
