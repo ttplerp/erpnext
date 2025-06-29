@@ -8,6 +8,7 @@ from frappe.model.document import Document
 from frappe.utils import flt, cint, datetime, get_last_day
 from calendar import monthrange
 from erpnext.custom_utils import check_budget_available, get_branch_cc
+from erpnext.custom_workflow import validate_workflow_states, notify_workflow_states
 
 class ProcessMRPayment(Document):
 	# begin: auto-generated types
@@ -40,6 +41,10 @@ class ProcessMRPayment(Document):
 		wages_amount: DF.Currency
 	# end: auto-generated types
 	def validate(self):
+		validate_workflow_states(self)
+		if self.workflow_state != "Approved":
+			notify_workflow_states(self)
+
 		month = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].index(self.month) + 1
 		month = str(month) if cint(month) > 9 else str("0" + str(month))
 		self.monthyear = str(self.fiscal_year)+str(month)
@@ -47,6 +52,7 @@ class ProcessMRPayment(Document):
 
 	def on_submit(self):
 		# self.check_budget()
+		notify_workflow_states(self)
 		self.post_journal_entry()
 		self.bank_journal_entry()
 
