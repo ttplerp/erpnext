@@ -824,7 +824,9 @@ class CustomWorkflow:
                 frappe.throw("Only {} can Reject this request".format(self.doc.supervisor_name))
             self.doc.document_status = "Rejected"
         elif self.new_state.lower() == "Cancelled".lower():
-            if "HR User" not in frappe.get_roles(frappe.session.user):
+            if "HR User" in frappe.get_roles(frappe.session.user) or "Accounts User" in frappe.get_roles(frappe.session.user):
+                pass
+            else:
                 frappe.throw(_("Only {} can Cancel this Travel Claim").format(self.doc.supervisor_name))
             self.doc.document_status = "Cancelled"
 
