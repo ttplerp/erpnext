@@ -55,7 +55,7 @@
   }
  ],
  "links": [],
- "modified": "2025-06-30 09:59:39.271247",
+ "modified": "2025-06-30 10:10:57.978530",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "PMS Group",
@@ -109,6 +109,15 @@
    "role": "HR User",
    "share": 1,
    "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Employee",
+   "share": 1
   }
  ],
  "quick_entry": 1,
