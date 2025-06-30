@@ -48,7 +48,8 @@ class CustomWorkflow:
 					{"parent": "Administration Section - SMCL", "parentfield": "expense_approvers", "idx": 1},
 					"approver",
 				)},self.field_list)
-		# if self.doc.doctype == "Asset Movement":
+				
+		if self.doc.doctype == "Asset Movement":
 			department = frappe.db.get_value("Employee",self.doc.from_employee, "department")
 			if not department:
 				frappe.throw("Department not set for {}".format(self.doc.from_employee))
