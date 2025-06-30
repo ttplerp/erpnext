@@ -1,4 +1,5 @@
 {
+ "actions": [],
  "allow_rename": 1,
  "autoname": "field:group_name",
  "creation": "2021-03-04 16:56:15.115542",
@@ -53,10 +54,12 @@
    "label": "Description"
   }
  ],
- "modified": "2021-08-20 14:31:17.907421",
+ "links": [],
+ "modified": "2025-06-30 09:59:39.271247",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "PMS Group",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
@@ -111,5 +114,6 @@
  "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "ASC",
+ "states": [],
  "track_changes": 1
 }
