@@ -134,7 +134,7 @@ function calculate_total(frm) {
 	}
 }	
 
-var set_equipment_filter=function(frm){
+var set_equipment_filter = function(frm){
 	if ( cint(frm.doc.direct_consumption) == 0){
 		frm.set_query("equipment", function() {
 			return {
@@ -145,7 +145,7 @@ var set_equipment_filter=function(frm){
 			};
 		});
 	}
-	if (frm.doc.direct_consumption == 0 && frm.doc.settle_imprest_advance == 1) {
+	if (cint(frm.doc.direct_consumption) == 0 && cint(frm.doc.settle_imprest_advance) == 1) {
 		frm.set_query("equipment", function(){
 			return {
 				filters: {
