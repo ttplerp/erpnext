@@ -851,7 +851,6 @@ class CustomWorkflow:
 		if self.new_state.lower() in ("Draft".lower()):
 			if self.doc.owner != frappe.session.user:
 				frappe.throw("Only the document owner can Apply this material request")
-			self.set_approver("Asset Verifier")
 
 		if self.new_state.lower() in ("Waiting for Verification".lower()):
 			if self.doc.owner != frappe.session.user:
