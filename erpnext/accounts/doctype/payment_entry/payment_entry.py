@@ -66,6 +66,7 @@ class PaymentEntry(AccountsController):
 	def validate(self):
 		self.setup_party_account_field()
 		self.set_missing_values()
+		self.calculate_totals()  # Ensure amounts are updated before saving
 		self.validate_payment_type()
 		self.validate_party_details()
 		self.validate_bank_accounts()
@@ -1845,35 +1846,75 @@ class PaymentEntry(AccountsController):
 		)
 
 	@frappe.whitelist()
+	# def get_advance(self):
+	# 	if not self.advance_type and not self.project and self.party_type == "Customer" and self.advance_type !='Hired Equipment Outward' :
+	# 		frappe.throw("Advance Type is required to pull the advance.")
+
+	# 	row_data = self.get_advance_data()
+	# 	self.set("advances", [])
+
+	# 	if row_data:
+	# 		total_advance_amount = 0  
+	# 		for a in row_data:
+	# 			advance_entry = {
+	# 				'reference_doctype': a.reference_doctype if a.reference_doctype else '',
+	# 				'reference_name': a.reference_name if  a.reference_name else '',
+	# 				'advance_type': a.advance_type,
+	# 				'advance_account': a.advance_account,
+	# 				'advance_date': a.advance_date,
+	# 				'total_amount': a.balance_amount,
+	# 				'allocated_amount': a.balance_amount if a.balance_amount <= self.total_allocated_amount else self.total_allocated_amount,
+	# 				'outstanding_amount': 0 if a.balance_amount <= self.total_allocated_amount else a.balance_amount - self.total_allocated_amount
+	# 			}
+	# 			self.append("advances", advance_entry)
+
+	# 		for item in self.advances:
+	# 			total_advance_amount += item.allocated_amount 
+	# 		self.set("total_advance_amount", total_advance_amount)
+	# 	else:
+	# 		frappe.msgprint(
+	# 			str("There is no advance for {0} {1}".format(self.party, self.party_type))
+	# 		)
 	def get_advance(self):
-		if not self.advance_type and not self.project and self.party_type == "Customer" and self.advance_type !='Hired Equipment Outward' :
+		if not self.advance_type and not self.project and self.party_type == "Customer" and self.advance_type != 'Hired Equipment Outward':
 			frappe.throw("Advance Type is required to pull the advance.")
 
 		row_data = self.get_advance_data()
 		self.set("advances", [])
 
 		if row_data:
-			total_advance_amount = 0  
 			for a in row_data:
+				allocated_amount = flt(a.allocated_amount) if a.allocated_amount else 0
+				balance_amount = flt(a.balance_amount) if a.balance_amount else 0
+
 				advance_entry = {
-					'reference_doctype': a.reference_doctype if a.reference_doctype else '',
-					'reference_name': a.reference_name if  a.reference_name else '',
+					'reference_doctype': a.reference_doctype or '',
+					'reference_name': a.reference_name or '',
 					'advance_type': a.advance_type,
 					'advance_account': a.advance_account,
 					'advance_date': a.advance_date,
-					'total_amount': a.balance_amount,
-					'allocated_amount': a.balance_amount if a.balance_amount <= self.total_allocated_amount else self.total_allocated_amount,
-					'outstanding_amount': 0 if a.balance_amount <= self.total_allocated_amount else a.balance_amount - self.total_allocated_amount
+					'total_amount': balance_amount,
+					'allocated_amount': allocated_amount,
+					'outstanding_amount': balance_amount - allocated_amount,  # Direct subtraction
 				}
 				self.append("advances", advance_entry)
 
-			for item in self.advances:
-				total_advance_amount += item.allocated_amount 
-			self.set("total_advance_amount", total_advance_amount)
+			self.calculate_totals()  # Recompute total_advance_amount and unallocated_amount
 		else:
-			frappe.msgprint(
-				str("There is no advance for {0} {1}".format(self.party, self.party_type))
-			)
+			frappe.msgprint(f"No advances found for {self.party_type}: {self.party}")
+	def calculate_totals(self):
+		"""Update total_advance_amount, unallocated_amount, and outstanding_amounts."""
+		total_allocated = flt(self.total_allocated_amount or 0)
+		total_advance = 0
+
+		for advance in self.advances:
+			advance.allocated_amount = flt(advance.allocated_amount or 0)
+			advance.total_amount = flt(advance.total_amount or 0)
+			advance.outstanding_amount = advance.total_amount - advance.allocated_amount
+			total_advance += advance.allocated_amount
+
+		self.total_advance_amount = total_advance
+		self.unallocated_amount = self.total_advance_amount - total_allocated
 
 	def get_advance_data(self):
 		if self.project:
