@@ -348,6 +348,7 @@
   },
   {
    "depends_on": "eval:cint(erpnext.is_perpetual_inventory_enabled(parent.company))",
+   "fetch_from": "item_code.deferred_expense_account",
    "fieldname": "expense_account",
    "fieldtype": "Link",
    "label": "Expense Account",
@@ -732,10 +733,10 @@
    "options": "Employee"
   },
   {
-   "depends_on": "eval:parent.stock_entry_type == \"Material Issue\" ",
    "fieldname": "issue_to_equipment",
    "fieldtype": "Link",
    "ignore_user_permissions": 1,
+   "in_list_view": 1,
    "label": "Issue To Equipment",
    "mandatory_depends_on": "eval:parent.item_group == \"Spare Parts- Plants & Equipment\" || parent.item_group == \"Spare parts - Heavy Earth movers\" || parent.item_group ==\"Spare parts- Heavy Vehicle\" || parent.item_group == \"Spare parts- Light Vehicle\"",
    "options": "Equipment"
@@ -770,7 +771,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-04-15 17:11:41.876225",
+ "modified": "2025-07-04 14:54:13.927357",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Entry Detail",
