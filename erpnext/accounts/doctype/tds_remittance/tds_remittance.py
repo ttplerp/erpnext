@@ -150,7 +150,7 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 			and t.taxes_and_charges = '{taxes_and_charges}'
 			and t.docstatus = 1 
 			{existing_cond}
-			{cond}""".format(accounts_cond = accounts_cond, cond = cond, taxes_and_charges = tax_withholding_category, existing_cond = existing_cond,\
+			{cond}""".format(accounts_cond = accounts_cond, cond = cond, taxes_and_charges = tax_withholding_category+" - BDBL", existing_cond = existing_cond,\
 				from_date=from_date, to_date=to_date), as_dict=True)
 
 	# Payment Entry
@@ -175,7 +175,7 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 		and t.docstatus = 1
 		{existing_cond}
 		{party_cond}
-		{cond}""".format(taxes_and_charges = tax_withholding_category, accounts_cond = accounts_cond, cond = cond, existing_cond = existing_cond,\
+		{cond}""".format(taxes_and_charges = tax_withholding_category+" - BDBL", accounts_cond = accounts_cond, cond = cond, existing_cond = existing_cond,\
 			party_cond = party_cond, from_date=from_date, to_date=to_date), as_dict=True)
 
 	# Journal Entry
@@ -206,13 +206,14 @@ def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_
 			else t1.account end) as tax_account, tre.tds_remittance, tre.tds_receipt_update, t.bill_no, t.bill_date,
 		(case when tre.tds_receipt_update is not null then 'Paid' else 'Unpaid' end) remittance_status
 		from `tabJournal Entry` as t
-			inner join `tabJournal Entry Account` t1 on t.name = t1.parent
+			left join `tabJournal Entry Account` t1 on t.name = t1.parent
 			left join `tabCustomer` c on t1.party_type = 'Customer' and c.name = t1.party
 			left join `tabSupplier` s on t1.party_type = 'Supplier' and s.name = t1.party
 			left join `tabTDS Receipt Entry` tre on tre.invoice_no = t.name 
 		where t.posting_date between '{from_date}' and '{to_date}'
 		{accounts_cond}
 		and t.docstatus = 1 and t.apply_tds = 1 
+		and t1.apply_tds = 1
 		{existing_cond}	
 		and t.tax_withholding_category = '{tax_category}'
 		{party_cond}
