@@ -14,6 +14,8 @@ from frappe.model.mapper import get_mapped_doc
 class TDSRemittance(AccountsController):
 	def validate(self):
 		self.calculate_total()
+		if self.branch:
+			self.cost_center = frappe.get_value("Branch", self.branch, "cost_center")
 
 	def on_submit(self):
 		self.make_gl_entries()
