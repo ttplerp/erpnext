@@ -18,6 +18,8 @@ class TDSRemittance(AccountsController):
 			self.cost_center = frappe.get_value("Branch", self.branch, "cost_center")
 
 	def on_submit(self):
+		if not self.cost_center:
+			frappe.throw(f"Missing Cost Center.")
 		self.make_gl_entries()
 
 	def on_cancel(self):
