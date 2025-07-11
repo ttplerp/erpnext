@@ -1737,7 +1737,6 @@ class PaymentEntry(AccountsController):
 				if tax.charge_type == "Actual"
 			]
 		)
-
 		for i, tax in enumerate(self.get("taxes")):
 			current_tax_amount = self.get_current_tax_amount(tax)
 
