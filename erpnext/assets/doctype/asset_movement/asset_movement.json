@@ -14,6 +14,7 @@
   "transaction_date",
   "to_single",
   "to_employee",
+  "to_cost_center",
   "section_break_10",
   "get_asset",
   "assets",
@@ -111,15 +112,15 @@
    "fieldtype": "Select",
    "label": "Transfer Type",
    "mandatory_depends_on": "eval:doc.purpose == 'Transfer'",
-   "options": "\nEmployee To Employee"
+   "options": "\nEmployee To Employee\nCost Center"
   },
   {
    "fieldname": "from_employee",
    "fieldtype": "Link",
    "ignore_user_permissions": 1,
    "label": "From Employee",
-   "options": "Employee",
-   "reqd": 1
+   "mandatory_depends_on": "eval: doc.transfer_type == 'Employee To Employee'",
+   "options": "Employee"
   },
   {
    "default": "0",
@@ -180,12 +181,19 @@
    "fieldname": "attachment",
    "fieldtype": "Attach",
    "label": "attachment"
+  },
+  {
+   "depends_on": "eval: doc.to_single == 0 && doc.transfer_type == 'Cost Center'",
+   "fieldname": "to_cost_center",
+   "fieldtype": "Link",
+   "label": "To Cost Center",
+   "options": "Cost Center"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-03-11 16:52:16.779025",
+ "modified": "2025-06-19 11:07:49.835000",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset Movement",

@@ -48,28 +48,39 @@ frappe.ui.form.on('Asset Movement', {
 		frm.trigger('set_required_fields');
 	},
 
+	transfer_type: (frm) => {
+		frm.trigger('set_required_fields');
+	},
+
+	to_single: (frm) => {
+		if (frm.doc.to_single && frm.doc.to_cost_center) {
+			frm.set_value("to_cost_center","");
+			frm.refresh_field('to_cost_center');
+		}
+	},
+
 	set_required_fields: (frm, cdt, cdn) => {
 		let fieldnames_to_be_altered;
 		if (frm.doc.purpose === 'Transfer') {
 			fieldnames_to_be_altered = {
-				target_location: { read_only: 0, reqd: 1 },
-				source_location: { read_only: 1, reqd: 1 },
+				target_cost_center: { read_only: 0, reqd: 1 },
+				source_cost_center: { read_only: 1, reqd: 1 },
 				from_employee: { read_only: 1, reqd: 0 },
 				to_employee: { read_only: 1, reqd: 0 }
 			};
 		}
 		else if (frm.doc.purpose === 'Receipt') {
 			fieldnames_to_be_altered = {
-				target_location: { read_only: 0, reqd: 1 },
-				source_location: { read_only: 1, reqd: 0 },
+				target_cost_center: { read_only: 0, reqd: 1 },
+				source_cost_center: { read_only: 1, reqd: 0 },
 				from_employee: { read_only: 0, reqd: 1 },
 				to_employee: { read_only: 1, reqd: 0 }
 			};
 		}
 		else if (frm.doc.purpose === 'Issue') {
 			fieldnames_to_be_altered = {
-				target_location: { read_only: 1, reqd: 0 },
-				source_location: { read_only: 1, reqd: 1 },
+				target_cost_center: { read_only: 1, reqd: 0 },
+				source_cost_center: { read_only: 1, reqd: 1 },
 				from_employee: { read_only: 1, reqd: 0 },
 				to_employee: { read_only: 0, reqd: 1 }
 			};
@@ -90,6 +101,14 @@ frappe.ui.form.on('Asset Movement', {
 		if(cint(frm.doc.to_single) == 1){
 			frm.doc.assets.map(v=>{
 				v.to_employee = frm.doc.to_employee
+			})
+			frm.refresh_field("assets")
+		}
+	},
+	to_cost_center:function(frm){
+		if(cint(frm.doc.to_single) == 0){
+			frm.doc.assets.map(v=>{
+				v.target_cost_center = frm.doc.to_cost_center
 			})
 			frm.refresh_field("assets")
 		}

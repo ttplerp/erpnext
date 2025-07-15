@@ -10,11 +10,17 @@ from erpnext.custom_workflow import validate_workflow_states, notify_workflow_st
 class AssetMovement(Document):
 	def validate(self):
 		#validate_workflow_states(self)
+		self.validate_transaction()
 		self.validate_cost_center()
 		self.validate_employee()
 		self.validate_asset()
 		# if self.workflow_state != "Approved":
 		# 	notify_workflow_states(self)
+
+	def validate_transaction(self):
+		if self.to_single:
+			self.to_cost_center = ""
+	
 	def validate_asset(self):
 		for d in self.assets:
 			status, company = frappe.db.get_value("Asset", d.asset, ["status", "company"])
@@ -121,7 +127,7 @@ class AssetMovement(Document):
 			# In case of cancellation it corresponds to previous latest document's Cost Center, employee
 			latest_movement_entry = frappe.db.sql(
 				"""
-				SELECT asm_item.target_cost_center, asm_item.to_employee, asm_item.to_employee_name
+				SELECT asm_item.target_cost_center, IFNULL(asm_item.to_employee,''), IFNULL(asm_item.to_employee_name,'')
 				FROM `tabAsset Movement Item` asm_item, `tabAsset Movement` asm
 				WHERE
 					asm_item.parent=asm.name and
@@ -135,13 +141,19 @@ class AssetMovement(Document):
 				),
 				args,
 			)
+			
 			if latest_movement_entry:
-				current_location = latest_movement_entry[0][0]
+				current_cost_center = latest_movement_entry[0][0]
 				current_employee = latest_movement_entry[0][1]
 				current_employee_name = latest_movement_entry[0][2]
-			frappe.db.set_value("Asset", d.asset, "location", current_location)
-			frappe.db.set_value("Asset", d.asset, "custodian", current_employee)
-			frappe.db.set_value("Asset", d.asset, "custodian_name", current_employee_name)
+
+			branch = frappe.get_value("Branch", {"cost_center":current_cost_center}, "name")
+			frappe.db.set_value("Asset", d.asset, {
+					"branch": branch,
+					"cost_center": current_cost_center,
+					"custodian": current_employee,
+					"custodian_name": current_employee_name
+				}, update_modified=True)
 			
 	@frappe.whitelist()
 	def get_asset_list(self):
