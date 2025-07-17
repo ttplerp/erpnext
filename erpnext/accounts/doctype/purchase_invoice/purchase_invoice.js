@@ -160,6 +160,18 @@ erpnext.accounts.PurchaseInvoice = class PurchaseInvoice extends erpnext.buying.
 		this.frm.set_df_property("tax_withholding_category", "hidden", doc.apply_tds ? 0 : 1);
 	}
 
+	delay_by(frm) {
+		console.log("here "+String(cur_frm.doc.delay_by))
+		if(cur_frm.doc.delay_by && flt(cur_frm.doc.delay_by) > 0){
+			if(flt(cur_frm.doc.delay_by) <= 90){
+				cur_frm.set_value("write_off_amount", flt((flt(cur_frm.doc.delay_by)/100)*0.1 * flt(cur_frm.doc.grand_total),2))
+			}
+			else{
+				cur_frm.set_value("write_off_amount", flt((0.1) * flt(cur_frm.doc.grand_total),2))
+			}
+		}
+	}
+
 	unblock_invoice() {
 		const me = this;
 		frappe.call({

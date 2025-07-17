@@ -932,6 +932,14 @@ def make_purchase_invoice(source_name, target_doc=None):
 		)
 		doc.run_method("onload")
 		doc.run_method("set_missing_values")
+		""" LD Calc. """
+		if source.delay_by:
+			ld_days = source.delay_by
+			if flt(ld_days) <= 90:
+				target.write_off_amount = flt((flt(ld_days)/100)*0.1 * flt(source.grand_total),2)
+			else:
+				target.write_off_amount = flt((0.1) * flt(source.grand_total),2)
+			target.write_off_account = frappe.db.get_value("Company", source.company, "write_off_account")
 		doc.run_method("calculate_taxes_and_totals")
 		doc.set_payment_schedule()
 
