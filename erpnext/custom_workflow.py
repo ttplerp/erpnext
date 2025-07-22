@@ -71,6 +71,8 @@ class CustomWorkflow:
 				self.cost_center_head = frappe.db.get_value("Employee",{"name":frappe.db.get_value("Department", doc_creator_cost_center, "approver")}, self.field_list)
 				self.hr_approver	= frappe.db.get_value("Employee", frappe.db.get_single_value("HR Settings", "hr_approver"), self.field_list)
 				self.hrgm = frappe.db.get_value("Employee",frappe.db.get_single_value("HR Settings","hrgm"), self.field_list)
+
+				self.reports_to = frappe.db.get_value("Employee", {"name":frappe.db.get_value("Employee", {"user_id":self.doc.owner}, "reports_to")}, self.field_list)
 				
 		if self.doc.doctype in ("POL Expense"):
 			department = frappe.db.get_value("Employee", {"user_id":self.doc.owner},"department")
@@ -674,7 +676,8 @@ class CustomWorkflow:
 				frappe.throw("Only {} can apply this Application".format(self.doc.owner))
 
 		elif self.new_state.lower() == ("Waiting Supervisor Approval".lower()):
-			self.set_approver("Department Head")
+			# self.set_approver("Department Head")
+			self.set_approver("Supervisor")
 
 		elif self.new_state.lower() in ("Waiting HR Approval".lower()):
 			if self.doc.approver != frappe.session.user:
