@@ -129,7 +129,7 @@ class PurchaseReceipt(BuyingController):
 		self.reset_default_field_value("set_from_warehouse", "items", "from_warehouse")
 	def calculate_delay_days(self):
 		if self.actual_receipt_date and self.schedule_date < self.actual_receipt_date:
-			self.delay_by = flt(date_diff(self.actual_receipt_date,self.schedule_date)) -1
+			self.delay_by = flt(date_diff(self.actual_receipt_date,self.schedule_date))
 		else:
 			self.delay_by = 0
 	def validate_cwip_accounts(self):
