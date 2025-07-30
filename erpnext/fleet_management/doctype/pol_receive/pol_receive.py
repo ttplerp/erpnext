@@ -33,7 +33,6 @@ class POLReceive(StockController):
 		check_future_date(self.posting_date)
 		# self.calculate_km_diff()
 		self.validate_data()
-		validate_workflow_states(self)
 		# if self.workflow_state != "Approved":
 		#     notify_workflow_states(self)
 		# self.balance_check()
@@ -301,7 +300,7 @@ class POLReceive(StockController):
 					"account": credit_account,
 					"credit_in_account_currency": flt(self.total_amount, 2),
 					"credit": flt(self.total_amount, 2),
-					"cost_center": self.cost_center,
+					"cost_center": frappe.get_value("Branch", self.expense_branch, "cost_center") if self.expense_branch else self.cost_center,
 					"reference_type": "POL Receive",
 					"reference_name": self.name,
 					"party_type": "Employee",
