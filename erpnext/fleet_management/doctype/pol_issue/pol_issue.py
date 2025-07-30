@@ -38,7 +38,7 @@ class POLIssue(StockController):
 		if not self.receive_in_barrel:
 			self.check_balance()
 		self.validate_data()
-		self.validate_posting_date_time()
+		# self.validate_posting_date_time()
 		self.validate_barrel_or_tanker()
 
 	def validate_barrel_or_tanker(self):
