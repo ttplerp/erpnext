@@ -112,8 +112,9 @@
   {
    "fieldname": "mr_type",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "MR Type",
-   "options": "Under CDCL\nUnder Labour Contract"
+   "options": "Under SMCL\nUnder Labour Contract"
   },
   {
    "fieldname": "column_break_yhwd",
@@ -397,7 +398,7 @@
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-04 16:40:13.946415",
+ "modified": "2025-08-04 17:07:48.530685",
  "modified_by": "Administrator",
  "module": "Projects",
  "name": "Muster Roll Employee",
