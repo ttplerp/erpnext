@@ -348,7 +348,6 @@
   },
   {
    "depends_on": "eval:cint(erpnext.is_perpetual_inventory_enabled(parent.company))",
-   "fetch_from": "item_code.deferred_expense_account",
    "fieldname": "expense_account",
    "fieldtype": "Link",
    "label": "Expense Account",
@@ -771,7 +770,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-07-04 14:54:13.927357",
+ "modified": "2025-08-04 10:26:57.847701",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Entry Detail",
