@@ -1130,6 +1130,12 @@ class NotifyCustomWorkflow:
 			if not template:
 				frappe.msgprint(_("Please set default template for Asset Status Notification in Asset Settings."))
 				return
+		elif self.doc.doctype in ("Process MR Payment", "Bulk Upload Tool"):
+			# template = frappe.db.get_single_value('HR Settings', 'pmrp_status_notification_template')
+			# if not template:
+			# 	frappe.msgprint(_("Please set default template for Process MR Payment Status Notification in HR Settings."))
+			# 	return
+			return
 		else:
 			template = ""
 
@@ -1223,6 +1229,11 @@ class NotifyCustomWorkflow:
 				template = frappe.db.get_single_value('Asset Settings', 'asset_approval_notification_template')
 				if not template:
 					frappe.msgprint(_("Please set default template for Asset Approval Notification in Asset Settings."))
+					return
+			elif self.doc.doctype in ("Process MR Payment", "Bulk Upload Tool"):
+				# template = frappe.db.get_single_value('HR Settings', 'pmrp_approval_notification_template')
+				# if not template:
+				# 	frappe.msgprint(_("Please set default template for Process MR Payment Approval Notification in HR Settings."))
 					return
 			else:
 				template = ""
