@@ -130,7 +130,7 @@ class AssetMovement(Document):
 			equipment = frappe.db.get_value(
 				"Equipment", {"asset_code": ass.asset}, "name")
 			if equipment:
-				self.save_equipment(equipment, branch, self.posting_date,
+				self.save_equipment(self,equipment, branch, self.posting_date,
 							self.name, purpose)
 
 	def save_equipment(equipment, branch, posting_date, ref_doc, purpose):
