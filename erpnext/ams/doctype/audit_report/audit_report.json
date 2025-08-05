@@ -10,7 +10,6 @@
  "field_order": [
   "plan_details_section",
   "branch",
-  "execute_audit_no",
   "iain_number",
   "supervisor_id",
   "supervisor_email",
@@ -18,11 +17,10 @@
   "execute_audit_date",
   "type",
   "supervisor_name",
-  "from_date",
   "column_break_24",
   "creation_date",
-  "report_status",
   "supervisor_designation",
+  "from_date",
   "to_date",
   "section_break_15",
   "scope_of_audit",
@@ -62,14 +60,6 @@
    "fieldtype": "Link",
    "label": "Auditee Branch",
    "options": "Branch",
-   "read_only": 1,
-   "reqd": 1
-  },
-  {
-   "fieldname": "execute_audit_no",
-   "fieldtype": "Link",
-   "label": "Execute Audit No.",
-   "options": "Execute Audit",
    "read_only": 1,
    "reqd": 1
   },
@@ -194,10 +184,9 @@
   {
    "fetch_from": "execute_audit_plan_no.audit_engagement_letter",
    "fieldname": "audit_engagement_letter",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "label": "Audit Engagement Letter",
-   "options": "Audit Engagement Letter",
-   "read_only": 1
+   "options": "Audit Engagement Letter"
   },
   {
    "fieldname": "column_break_27",
@@ -208,7 +197,7 @@
    "fieldtype": "Link",
    "label": "Amended From",
    "no_copy": 1,
-   "options": "Audit Initial Report",
+   "options": "Audit Report",
    "print_hide": 1,
    "read_only": 1
   },
@@ -217,7 +206,7 @@
    "fieldtype": "Link",
    "label": "Amended From",
    "no_copy": 1,
-   "options": "Audit Initial Report",
+   "options": "Audit Report",
    "print_hide": 1,
    "read_only": 1
   },
@@ -236,21 +225,11 @@
    "read_only": 1
   },
   {
-   "default": "Initial Report",
-   "fieldname": "report_status",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Report Status",
-   "options": "\nPending\nInitial Report\nFollow Up\nCompleted",
-   "read_only": 1
-  },
-  {
    "fetch_from": "execute_audit_no.prepare_audit_plan_no",
    "fieldname": "prepare_audit_plan_no",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "label": "Prepare Audit Plan No",
-   "options": "Prepare Audit Plan",
-   "read_only": 1
+   "options": "Prepare Audit Plan"
   },
   {
    "fieldname": "column_break_26",
@@ -274,6 +253,7 @@
   {
    "fieldname": "get_audit_checklist",
    "fieldtype": "Button",
+   "hidden": 1,
    "label": "Get Audit Checklist"
   },
   {
@@ -344,7 +324,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-26 16:38:14.243612",
+ "modified": "2025-08-05 11:46:28.528896",
  "modified_by": "Administrator",
  "module": "AMS",
  "name": "Audit Report",
