@@ -8,7 +8,6 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "audit_criteria",
   "type_of_audit",
   "audit_checklist",
   "is_for_ho",
@@ -17,14 +16,6 @@
   "amended_from"
  ],
  "fields": [
-  {
-   "fieldname": "audit_criteria",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Audit Criteria",
-   "options": "Audit Criteria",
-   "reqd": 1
-  },
   {
    "fieldname": "audit_checklist",
    "fieldtype": "Data",
@@ -36,10 +27,10 @@
   {
    "fetch_from": "audit_criteria.type_of_audit",
    "fieldname": "type_of_audit",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Type of Audit",
-   "read_only": 1,
+   "options": "Audit Type",
    "reqd": 1
   },
   {
@@ -74,7 +65,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-19 12:10:09.278971",
+ "modified": "2025-08-05 11:07:20.994281",
  "modified_by": "Administrator",
  "module": "AMS",
  "name": "Audit Checklist",
