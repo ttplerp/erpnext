@@ -1058,7 +1058,7 @@ class NotifyCustomWorkflow:
 			self.employee = frappe.db.get_value("Employee", {"user_id":self.doc.owner}, self.field_list)
 
 	def notify_employee(self):
-		if self.doc.doctype not in ("Material Request","Asset Issue Details","Repair And Services","Project Capitalization","POL Expense"):
+		if self.doc.doctype not in ("Material Request","Asset Issue Details","Repair And Services","Project Capitalization","POL Expense", "Bulk Upload Tool", "Process MR Payment"):
 			employee = frappe.get_doc("Employee", self.doc.employee)
 		else:
 			employee = frappe.get_doc("Employee", frappe.db.get_value("Employee",{"user_id":self.doc.owner},"name"))
