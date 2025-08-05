@@ -10,6 +10,7 @@
   "transaction_date",
   "transaction_reference",
   "column_break_0",
+  "employee_type",
   "employee",
   "supplier",
   "beneficiary_name",
@@ -69,10 +70,10 @@
   },
   {
    "fieldname": "employee",
-   "fieldtype": "Link",
+   "fieldtype": "Dynamic Link",
    "ignore_user_permissions": 1,
    "label": "Employee",
-   "options": "Employee",
+   "options": "employee_type",
    "read_only": 1
   },
   {
@@ -208,11 +209,19 @@
    "fieldname": "vehicle_no",
    "fieldtype": "Data",
    "label": "Vehicle No."
+  },
+  {
+   "default": "Employee",
+   "fieldname": "employee_type",
+   "fieldtype": "Select",
+   "label": "Employee Type",
+   "options": "Employee\nMuster Roll Employee",
+   "read_only": 1
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2023-01-04 16:18:53.440186",
+ "modified": "2025-08-05 11:56:43.761565",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Bank Payment Item",
