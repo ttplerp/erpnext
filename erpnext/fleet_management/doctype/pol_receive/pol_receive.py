@@ -37,6 +37,7 @@ class POLReceive(StockController):
 		#     notify_workflow_states(self)
 		# self.balance_check()
 		self.validate_posting_date_time()
+		validate_workflow_states(self)
 
 	def on_submit(self):
 		if self.direct_consumption == 0 and self.receive_in_barrel == 1:
