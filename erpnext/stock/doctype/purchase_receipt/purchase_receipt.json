@@ -1169,15 +1169,14 @@
   {
    "fieldname": "schedule_date",
    "fieldtype": "Date",
-   "hidden": 1,
-   "read_only": 1
+   "label": "Required By"
   }
  ],
  "icon": "fa fa-truck",
  "idx": 261,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-11-14 17:03:36.529382",
+ "modified": "2025-08-07 16:43:27.867104",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Purchase Receipt",
