@@ -6,6 +6,7 @@ from frappe.model.document import Document
 from frappe import _
 from frappe.model.naming import make_autoname
 from frappe.utils import nowdate, cint
+from hrms.hr.hr_custom_functions import get_officiating_employee
 
 class eNote(Document):
 	def on_submit(self):
@@ -43,6 +44,9 @@ class eNote(Document):
 				doc = frappe.get_doc("Employee", {"user_id":frappe.session.user})
 				if doc.reports_to:
 					self.forward_to = frappe.db.get_value("Employee", doc.reports_to, "user_id")
+					officiating = get_officiating_employee(doc.reports_to)
+					if officiating:
+						self.forward_to = frappe.db.get_value("Employee", officiating[0].officiate, "user_id")
 		
 		self.forward_to = frappe.session.user if not self.forward_to else self.forward_to
 	def before_update_after_submit(self):
