@@ -38,17 +38,18 @@ class AssetValueAdjustment(Document):
 
 	def on_submit(self):
 		self.make_depreciation_entry()
-		self.reschedule_depreciations(self.new_asset_value)
-
+		self.reschedule_depreciations(self.new_asset_value, cancel=0)
+	
 	def on_cancel(self):
 		doc = frappe.get_doc("Journal Entry", self.journal_entry)
 		doc.cancel()
-		self.reschedule_depreciations(self.current_asset_value)
+		self.reschedule_depreciations(self.current_asset_value, cancel=1)
 		self.remove_adjustment_value()
 	
 	def remove_adjustment_value(self):
 		doc = frappe.get_doc("Asset", self.asset)
-		doc.db_set("additional_value", doc.additional_value - self.difference_amount)
+		# doc.db_set("additional_value", doc.additional_value - self.difference_amount)
+		frappe.db.set_value(doc.doctype, doc.name, "additional_value", flt(doc.additional_value - self.difference_amount))
 
 	def validate_date(self):
 		asset_purchase_date = frappe.db.get_value("Asset", self.asset, "purchase_date")
@@ -127,20 +128,27 @@ class AssetValueAdjustment(Document):
 
 		self.db_set("journal_entry", je.name)
 		doc = frappe.get_doc("Asset", self.asset)
-		doc.db_set("additional_value", self.difference_amount)
+		# doc.db_set("additional_value", self.difference_amount)
+		frappe.db.set_value(doc.doctype, doc.name, "additional_value", flt(self.difference_amount))
 
-	def reschedule_depreciations(self, asset_value):
+	def reschedule_depreciations(self, asset_value, cancel=None):
 		depreciation_start_date = get_last_day(add_days(self.date, -20))
 		asset = frappe.get_doc("Asset", self.asset)
 		country = frappe.get_value("Company", self.company, "country")
+		
+		new_gross_value = asset.gross_purchase_amount + self.difference_amount
+		if cancel:
+			new_gross_value = asset.gross_purchase_amount - self.difference_amount
 
 		for d in asset.finance_books:
 			d.value_after_depreciation = asset_value
 
 			if d.depreciation_method in ("Straight Line", "Manual"):
-				end_date = max(s.schedule_date for s in asset.schedules if cint(s.finance_book_id) == d.idx)
+				end_date = max(s.schedule_date for s in asset.schedules if cint(s.finance_book_id) == d.idx and s.depreciation_amount > 0)
 				total_days = date_diff(end_date, depreciation_start_date)
-				rate_per_day = flt(d.value_after_depreciation) / flt(total_days)
+				rate_per_day = 0
+				if total_days:
+					rate_per_day = flt(d.value_after_depreciation) / flt(total_days)
 				from_date = depreciation_start_date
 			else:
 				no_of_depreciations = len(
@@ -150,10 +158,23 @@ class AssetValueAdjustment(Document):
 				)
 
 			value_after_depreciation = d.value_after_depreciation
+			
+			# Calculate income_accumulated_depreciation
+			income_accumulated_depreciation = 0
+			remaining_booked_schedules = [s for s in asset.schedules if cint(s.finance_book_id) == d.idx and not s.journal_entry and s.income_depreciation_amount > 0]
+			booked_schedules = [s for s in asset.schedules if cint(s.finance_book_id) == d.idx and s.journal_entry]
+			if booked_schedules:
+				income_accumulated_depreciation = max(s.income_accumulated_depreciation for s in booked_schedules)
+			remaining_dep_amount = flt(asset.gross_purchase_amount - income_accumulated_depreciation) + self.difference_amount
+			if cancel:
+				remaining_dep_amount = asset.gross_purchase_amount - self.difference_amount
+			
 			for data in asset.schedules:
 				if getdate(data.schedule_date) <= getdate(depreciation_start_date) and not data.journal_entry:
 						frappe.throw("Monthly depreciation on <b>{}</b> for <b>{}</b> is <b>Pending</b>. Run the depreciation before Asset Value Adjustment".format(getdate(data.schedule_date),self.asset))
 				if cint(data.finance_book_id) == d.idx:
+					# Calculate days
+					days = 0
 					if d.depreciation_method in ("Straight Line", "Manual"):
 						days = date_diff(data.schedule_date, from_date) 
 						depreciation_amount = days * rate_per_day
@@ -161,15 +182,43 @@ class AssetValueAdjustment(Document):
 					else:
 						depreciation_amount = get_depreciation_amount(asset, value_after_depreciation, d)
 
-					if depreciation_amount:
+					if depreciation_amount and data.depreciation_amount:
 						value_after_depreciation -= flt(depreciation_amount)
 						data.depreciation_amount = depreciation_amount
+
+					# Only calculate income depreciation if the schedule hasn't been booked yet
+					if not data.journal_entry:
+						income_depreciation_amount = self._get_income_tax_depreciation_amount(d, data.schedule_date, days, income_accumulated_depreciation, new_gross_value, remaining_dep_amount, remaining_booked_schedules)
+						income_accumulated_depreciation += flt(income_depreciation_amount)
+						data.income_depreciation_amount = income_depreciation_amount
+						data.income_accumulated_depreciation = income_accumulated_depreciation
+
 			d.db_update()
 
 		asset.set_accumulated_depreciation(ignore_booked_entry=True)
 		for asset_data in asset.schedules:
 			if not asset_data.journal_entry:
 				asset_data.db_update()
+
+	def _get_income_tax_depreciation_amount(self,finance_book, schedule_date,no_of_days,income_accumulated_depreciation, new_gross_value, remaining_dep_amount, remaining_booked_schedules):
+		#new work
+		# convert_to_year = len(remaining_booked_schedules) / 12
+		dep_per_year = (flt(remaining_dep_amount) - flt(finance_book.expected_value_after_useful_life)) / (len(remaining_booked_schedules)/12)
+		
+		# Use the adjusted asset value instead of the original gross_purchase_amount
+		# frappe.throw(f"{new_gross_value}")
+		# dep_per_year = (flt(gross_amount) - flt(finance_book.expected_value_after_useful_life)) * (flt(finance_book.income_depreciation_percent)/100)
+		days_in_year = date_diff(get_year_ending(getdate(schedule_date)),get_year_start(getdate(schedule_date))) + 1
+		income_depreciation_amount = (flt(dep_per_year) / cint(days_in_year)) * cint(no_of_days)
+		
+		if (flt(new_gross_value) - flt(finance_book.expected_value_after_useful_life)) >= (flt(income_accumulated_depreciation)+income_depreciation_amount):
+			return income_depreciation_amount
+		elif (flt(new_gross_value) - flt(finance_book.expected_value_after_useful_life)) - (flt(income_accumulated_depreciation)) > 1:
+			income_depreciation_amount = flt(income_depreciation_amount - ((income_accumulated_depreciation+income_depreciation_amount) - (flt(new_gross_value) - flt(finance_book.expected_value_after_useful_life))),2)
+			# frappe.throw(str(income_depreciation_amount))
+			return income_depreciation_amount
+		else:
+			return 0.0
 
 @frappe.whitelist()
 def get_current_asset_value(asset, finance_book=None):

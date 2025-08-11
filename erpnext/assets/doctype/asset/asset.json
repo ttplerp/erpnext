@@ -350,6 +350,7 @@
   },
   {
    "allow_bulk_edit": 1,
+   "allow_on_submit": 1,
    "fieldname": "schedules",
    "fieldtype": "Table",
    "label": "Depreciation Schedule",
@@ -733,7 +734,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2025-01-25 10:35:56.976977",
+ "modified": "2025-07-10 14:48:46.580449",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",
