@@ -1520,7 +1520,7 @@ def get_depreciation_amount(asset, depreciable_value, row, schedule_date, no_of_
 		# above code commented as it doesnot fultill the formula =========>
 		days_in_year = date_diff(get_year_ending(getdate(schedule_date)),get_year_start(getdate(schedule_date))) + 1
 		if has_pro_rata == 1:
-			depreciation_amount = (flt(row.value_after_depreciation) - flt(row.expected_value_after_useful_life)) / (flt(row.total_number_of_depreciations-asset.number_of_depreciations_booked)/12)
+			depreciation_amount = (flt(row.value_after_depreciation) - flt(row.expected_value_after_useful_life)) / (flt(row.total_number_of_depreciations-asset.number_of_income_depreciations_booked)/12)
 			# frappe.throw(str(depreciation_amount)+" "+str(schedule_date))
 		else:
 			#frappe.throw("testing sdfsdf a: {} b: {}  c:{}".format(asset.gross_purchase_amount, row.expected_value_after_useful_life, row.total_number_of_depreciations))
