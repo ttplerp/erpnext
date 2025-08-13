@@ -119,6 +119,7 @@ def make_depreciation_entry(asset_name, date=None):
 			idx = cint(d.finance_book_id)
 			finance_books = asset.get("finance_books")[idx - 1]
 			finance_books.value_after_depreciation -= d.depreciation_amount
+			finance_books.income_tax_value_after_depreciation -= d.income_depreciation_amount
 			finance_books.db_update()
 
 	asset.set_status()

@@ -119,14 +119,14 @@ class Asset(AccountsController):
 			self.set_accumulated_depreciation(date_of_sale, date_of_return)
 		else:
 			self.finance_books = []
-			'''
+			
 			self.value_after_depreciation = flt(self.gross_purchase_amount) - flt(
 				self.opening_accumulated_depreciation
 			)
-			'''
-			self.value_after_depreciation = flt(self.gross_purchase_amount) - flt(
-				self.income_tax_opening_depreciation_amount
-			)
+			
+			# self.value_after_depreciation = flt(self.gross_purchase_amount) - flt(
+			# 	self.income_tax_opening_depreciation_amount
+			# )
 
 	def validate_item(self):
 		item = frappe.get_cached_value(
@@ -463,8 +463,9 @@ class Asset(AccountsController):
 		""" End of logic """
 		self.validate_asset_finance_books(finance_book)
 
-		value_after_depreciation = self._get_value_after_depreciation(finance_book)
+		value_after_depreciation, income_tax_value_after_depreciation = self._get_value_after_depreciation(finance_book)
 		finance_book.value_after_depreciation = value_after_depreciation
+		finance_book.income_tax_value_after_depreciation = income_tax_value_after_depreciation
 		#for income depreciation, comment by Jai
 		# if cint(finance_book.income_depreciation_percent) < 1:
 		# 	total_number_of_depreciations=0
@@ -564,6 +565,8 @@ class Asset(AccountsController):
 				)
 				if should_get_last_day:
 					schedule_date = get_last_day(schedule_date)
+				from_date = get_first_day(schedule_date)
+				days = cint(date_diff(schedule_date, from_date))+1
 				# if frappe.session.user == "Administrator":
 				# 	frappe.errprint("here "+str(schedule_date)+" ")
 				# schedule date will be a year later from start date
@@ -646,10 +649,13 @@ class Asset(AccountsController):
 		else:
 		'''
 		value_after_depreciation = flt(self.gross_purchase_amount) - flt(
+				self.opening_accumulated_depreciation
+			)
+		oncome_tax_value_after_depreciation = flt(self.gross_purchase_amount) - flt(
 				self.income_tax_opening_depreciation_amount
 			)
 
-		return value_after_depreciation
+		return value_after_depreciation, oncome_tax_value_after_depreciation
 	def _get_income_tax_depreciation_amount(self,finance_book, schedule_date,no_of_days,income_accumulated_depreciation):
 		dep_per_year = (flt(self.gross_purchase_amount) - flt(finance_book.expected_value_after_useful_life)) * (flt(finance_book.income_depreciation_percent)/100)
 		days_in_year = date_diff(get_year_ending(getdate(schedule_date)),get_year_start(getdate(schedule_date))) + 1
@@ -988,11 +994,17 @@ class Asset(AccountsController):
 				idx = self.get_default_finance_book_idx() or 0
 
 				expected_value_after_useful_life = self.finance_books[idx].expected_value_after_useful_life
-				value_after_depreciation = self.finance_books[idx].value_after_depreciation
+				# value_after_depreciation = self.finance_books[idx].value_after_depreciation
 
-				if flt(value_after_depreciation) <= expected_value_after_useful_life:
+				# if flt(value_after_depreciation) <= expected_value_after_useful_life:
+				# 	status = "Fully Depreciated"
+				# elif flt(value_after_depreciation) < flt(self.gross_purchase_amount):
+				# 	status = "Partially Depreciated"
+				income_tax_value_after_depreciation = self.finance_books[idx].income_tax_value_after_depreciation
+
+				if flt(income_tax_value_after_depreciation) <= expected_value_after_useful_life:
 					status = "Fully Depreciated"
-				elif flt(value_after_depreciation) < flt(self.gross_purchase_amount):
+				elif flt(income_tax_value_after_depreciation) < flt(self.gross_purchase_amount) + flt(self.additional_value):
 					status = "Partially Depreciated"
 		elif self.docstatus == 2:
 			status = "Cancelled"
