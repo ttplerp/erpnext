@@ -53,7 +53,7 @@ class Employee(NestedSet):
 
 		if self.applicant_id and self.selected_doc:
 			from hrms.hr.doctype.selected_candidate.selected_candidate import update_status # type: ignore
-			update_status(self.applicant_id, 'S')
+			update_status(self.applicant_id, 'ACCEPTED')
 			self.update_selected_list_doctype()
 
 	def update_selected_list_doctype(self):
