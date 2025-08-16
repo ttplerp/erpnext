@@ -460,6 +460,10 @@ class Asset(AccountsController):
 		if self.number_of_income_depreciations_booked:
 			total_number_of_ppe_depreciations = flt(total_number_of_ppe_depreciations) - self.number_of_income_depreciations_booked
 		# frappe.throw(f"{total_number_of_ppe_depreciations}, {total_number_of_income_depreciations}, {total_number_of_depreciations}")
+		flag_completed_ppe_depreciation = False
+		if self.number_of_income_depreciations_booked == finance_book.total_number_of_depreciations:
+			flag_completed_ppe_depreciation = True
+		
 		""" End of logic """
 		self.validate_asset_finance_books(finance_book)
 
@@ -522,12 +526,13 @@ class Asset(AccountsController):
 				break
 
 			# # For first row
-			if n == 0 and total_number_of_ppe_depreciations > self.number_of_income_depreciations_booked:
+			# if n == 0 and total_number_of_ppe_depreciations > self.number_of_income_depreciations_booked:
+			if n == 0:
 				from_date = add_days(
 					self.available_for_use_date, -1
 				)  
 				days = date_diff(finance_book.depreciation_start_date, from_date)
-				if schedule_date:
+				if schedule_date and not flag_completed_ppe_depreciation:
 					depreciation_amount = get_depreciation_amount(self, value_after_depreciation, finance_book, schedule_date, days, has_pro_rata)
 				# if str(schedule_date) == '2024-02-29':
 				# frappe.throw("here "+str(schedule_date)+" "+str(depreciation_amount))
@@ -550,7 +555,8 @@ class Asset(AccountsController):
 				from_date = get_first_day(schedule_date)
 				days = cint(date_diff(schedule_date, from_date))+1
 				# frappe.throw(str(days))
-				depreciation_amount = get_depreciation_amount(self, value_after_depreciation, finance_book, schedule_date, days, has_pro_rata)
+				if not flag_completed_ppe_depreciation:
+					depreciation_amount = get_depreciation_amount(self, value_after_depreciation, finance_book, schedule_date, days, has_pro_rata)
 
 				monthly_schedule_date = add_months(schedule_date, 1)
 				# if frappe.session.user == "Administrator":
@@ -1518,6 +1524,7 @@ def get_depreciation_amount(asset, depreciable_value, row, schedule_date, no_of_
 		# 		flt(row.value_after_depreciation) - flt(row.expected_value_after_useful_life)
 		# 	) / (date_diff(asset.to_date, asset.available_for_use_date) / 365)
 		# above code commented as it doesnot fultill the formula =========>
+		# frappe.throw(f"{row.value_after_depreciation} - {row.expected_value_after_useful_life} - {row.total_number_of_depreciations} - {asset.number_of_income_depreciations_booked}")
 		days_in_year = date_diff(get_year_ending(getdate(schedule_date)),get_year_start(getdate(schedule_date))) + 1
 		if has_pro_rata == 1:
 			depreciation_amount = (flt(row.value_after_depreciation) - flt(row.expected_value_after_useful_life)) / (flt(row.total_number_of_depreciations-asset.number_of_income_depreciations_booked)/12)
