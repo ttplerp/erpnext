@@ -190,7 +190,16 @@ class CustomWorkflow:
                     self.reports_to=self.hr_approver
                 officiating = get_officiating_employee(self.reports_to[3])
                 if officiating:
-                    officiating = frappe.db.get_value("Employee", officiating[0].officiate, self.field_list)
+                    # jai updated to pick supervisors supervisor if officiating is employee themself
+                    if officiating[0].officiate == self.doc.employee and self.doc.doctype in ("Travel Authorization", "Travel Claim"):
+                        sup_officiating = get_officiating_employee(self.supervisors_supervisor[3])
+                        if sup_officiating:
+                            officiating = frappe.db.get_value("Employee", sup_officiating[0].officiate, self.field_list)
+                        else:
+                            officiating = frappe.db.get_value("Employee", self.supervisors_supervisor[3], self.field_list)
+                    else:
+                        officiating = frappe.db.get_value("Employee", officiating[0].officiate, self.field_list)
+                    # officiating = frappe.db.get_value("Employee", officiating[0].officiate, self.field_list)
                 vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.reports_to[0]
                 vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.reports_to[1]
                 
@@ -201,7 +210,16 @@ class CustomWorkflow:
                     frappe.throw("Reports To not set for Employee {}".format(self.doc.employee if self.doc.employee else frappe.db.get_value("Employee",{"user_id",self.doc.owner},"name")))
                 officiating = get_officiating_employee(self.reports_to[3])
                 if officiating:
-                    officiating = frappe.db.get_value("Employee", officiating[0].officiate, self.field_list)
+                    # jai updated to pick supervisors supervisor if officiating is employee themself
+                    if officiating[0].officiate == self.doc.employee and self.doc.doctype in ("Leave Application"):
+                        sup_officiating = get_officiating_employee(self.supervisors_supervisor[3])
+                        if sup_officiating:
+                            officiating = frappe.db.get_value("Employee", sup_officiating[0].officiate, self.field_list)
+                        else:
+                            officiating = frappe.db.get_value("Employee", self.supervisors_supervisor[3], self.field_list)
+                    else:
+                        officiating = frappe.db.get_value("Employee", officiating[0].officiate, self.field_list)
+                    # officiating = frappe.db.get_value("Employee", officiating[0].officiate, self.field_list)
                 vars(self.doc)[self.doc_approver[0]] = officiating[0] if officiating else self.reports_to[0]
                 vars(self.doc)[self.doc_approver[1]] = officiating[1] if officiating else self.reports_to[1]
                 vars(self.doc)[self.doc_approver[2]] = officiating[2] if officiating else self.reports_to[2]
