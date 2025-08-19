@@ -191,7 +191,7 @@ class AssetValueAdjustment(Document):
 						income_depreciation_amount = self._get_income_tax_depreciation_amount(d, data.schedule_date, days, income_accumulated_depreciation, new_gross_value, remaining_dep_amount, remaining_booked_schedules)
 						income_accumulated_depreciation += flt(income_depreciation_amount)
 						data.income_depreciation_amount = income_depreciation_amount
-						data.income_accumulated_depreciation = income_accumulated_depreciation
+						data.income_accumulated_depreciation = income_accumulated_depreciation if income_depreciation_amount else 0.0
 
 			d.db_update()
 
