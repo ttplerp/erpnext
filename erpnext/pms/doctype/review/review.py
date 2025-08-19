@@ -14,7 +14,7 @@ from erpnext.custom_workflow import validate_workflow_states, notify_workflow_st
 class Review(Document):
 	def validate(self):
 		self.check_duplicate_entry()
-		# validate_workflow_states(self)
+		validate_workflow_states(self)
 		self.check_target()
 
 	def on_submit(self):
@@ -68,7 +68,7 @@ def get_permission_query_conditions(user):
 				where `tabEmployee`.name = `tabReview`.employee
 				and `tabEmployee`.user_id = '{user}')
 		or
-		(`tabReview`.approver = '{user}' and `tabReview`.rev_workflow_state not in ('Draft', 'Rejected'))
+		(`tabReview`.approver = '{user}' and `tabReview`.workflow_state not in ('Draft', 'Rejected'))
 	)""".format(user=user)
  
 @frappe.whitelist()

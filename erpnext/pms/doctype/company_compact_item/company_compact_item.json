@@ -1,0 +1,88 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2025-08-12 16:23:55.898421",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "key_performance_indicator",
+  "weight",
+  "achievement",
+  "cb_01",
+  "target",
+  "weight_awarded",
+  "cb_02",
+  "deadline",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "key_performance_indicator",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Key Performance Indicator",
+   "options": "Key Performance Indicator",
+   "reqd": 1
+  },
+  {
+   "fieldname": "weight",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Weight",
+   "reqd": 1
+  },
+  {
+   "fieldname": "achievement",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Achievement"
+  },
+  {
+   "fieldname": "cb_01",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "target",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Target",
+   "reqd": 1
+  },
+  {
+   "fieldname": "weight_awarded",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Weight Awarded"
+  },
+  {
+   "fieldname": "cb_02",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "deadline",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Deadline",
+   "reqd": 1
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-08-12 17:00:32.283559",
+ "modified_by": "Administrator",
+ "module": "PMS",
+ "name": "Company Compact Item",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

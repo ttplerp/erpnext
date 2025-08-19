@@ -73,7 +73,6 @@
   "column_break_56",
   "supervisor_manager_comment",
   "review_by_supervisors_manager_section",
-  "supervisor_declaration",
   "perc_community_intervention_section",
   "perc_required",
   "perc_approver",
@@ -81,7 +80,6 @@
   "agreed_by_perc",
   "perc_name",
   "section_break_57",
-  "perc_community",
   "approver_detail_section",
   "approver",
   "set_manual_approver",
@@ -467,14 +465,6 @@
    "label": "Review By Supervisor's Manager"
   },
   {
-   "bold": 1,
-   "fieldname": "supervisor_declaration",
-   "fieldtype": "Table",
-   "label": "Supervisor's Manager Declaration",
-   "options": "Supervisor Declaration",
-   "read_only": 1
-  },
-  {
    "fieldname": "supervisor_manager",
    "fieldtype": "Link",
    "ignore_user_permissions": 1,
@@ -505,14 +495,6 @@
    "fieldtype": "Select",
    "label": "Recommend To PERC?",
    "options": "\nYes\nNo"
-  },
-  {
-   "depends_on": "eval:doc.perc_required == 'Yes'",
-   "fieldname": "perc_community",
-   "fieldtype": "Table",
-   "label": "PERC Members",
-   "options": "PERC Community",
-   "read_only": 1
   },
   {
    "depends_on": "eval:doc.perc_required == 'Yes'",
@@ -687,6 +669,8 @@
   },
   {
    "allow_on_submit": 1,
+   "depends_on": "eval:doc.overall_rating",
+   "fetch_from": "overall_rating.star",
    "fieldname": "star_obtained",
    "fieldtype": "Rating",
    "label": "Star Obtained",
@@ -750,7 +734,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-02 15:49:06.326659",
+ "modified": "2025-08-18 14:49:31.618542",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Performance Evaluation",

@@ -9,7 +9,7 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.utils import flt,nowdate
 from frappe.model.mapper import get_mapped_doc
-# from erpnext.custom_workflow import validate_workflow_states, notify_workflow_states
+from erpnext.custom_workflow import validate_workflow_states, notify_workflow_states
 
 class TargetSetUp(Document):
 	def validate(self):
@@ -18,17 +18,21 @@ class TargetSetUp(Document):
 		self.check_target()
 		self.check_duplicate_entry() 
 		# if flt(self.manual_upload) != 1:
-		# 	validate_workflow_states(self) 
+		validate_workflow_states(self) 
 		if self.reference and self.reason:
 			return
 		else:
 			self.validate_calendar()
+		if self.docstatus != 1:
+			notify_workflow_states(self)
 			
 	def on_submit(self):
 		if self.reference and self.reason:
 			return
 		else:
 			self.validate_calendar()
+		if self.workflow_state:
+			notify_workflow_states(self)
 
 	def load_pre_requirement(self):
 		doc = frappe.get_doc("PMS Setting")
@@ -218,6 +222,7 @@ def create_review(source_name, target_doc=None):
 		frappe.throw(
 			title='Error',
 			msg="You have already created Review for this Target")
+
 	doclist = get_mapped_doc("Target Set Up", source_name, {
 		"Target Set Up": {
 			"doctype": "Review",
@@ -232,7 +237,6 @@ def create_review(source_name, target_doc=None):
 				"doctype":"Review Target Item"
 			},
 	}, target_doc)
-
 	return doclist
 
 @frappe.whitelist()

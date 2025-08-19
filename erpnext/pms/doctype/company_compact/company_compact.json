@@ -1,0 +1,132 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "COM.YY.MM.####",
+ "creation": "2025-08-12 12:04:44.194743",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "fiscal_year",
+  "type",
+  "department",
+  "company",
+  "amended_from",
+  "sb_01",
+  "financial",
+  "sb_02",
+  "non_financial_one",
+  "non_financial_two",
+  "non_financial_three",
+  "sb_03",
+  "business_as_usual"
+ ],
+ "fields": [
+  {
+   "fieldname": "fiscal_year",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Fiscal Year",
+   "options": "Fiscal Year",
+   "reqd": 1
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Type",
+   "options": "Company\nDepartment",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.type == \"Department\";",
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Department",
+   "mandatory_depends_on": "eval:doc.type == \"Department\";",
+   "options": "Department"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Company Compact",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_01",
+   "fieldtype": "Section Break",
+   "label": "1. Financial"
+  },
+  {
+   "fieldname": "financial",
+   "fieldtype": "Table",
+   "options": "Company Compact Item"
+  },
+  {
+   "fieldname": "sb_02",
+   "fieldtype": "Section Break",
+   "label": "2. Non Financial"
+  },
+  {
+   "fieldname": "non_financial_one",
+   "fieldtype": "Table",
+   "options": "Company Compact Item"
+  },
+  {
+   "fieldname": "sb_03",
+   "fieldtype": "Section Break",
+   "label": "3. Business As Usual"
+  },
+  {
+   "fieldname": "business_as_usual",
+   "fieldtype": "Table",
+   "options": "Company Compact Item"
+  },
+  {
+   "fieldname": "non_financial_two",
+   "fieldtype": "Table",
+   "options": "Company Compact Item"
+  },
+  {
+   "fieldname": "non_financial_three",
+   "fieldtype": "Table",
+   "options": "Company Compact Item"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-08-14 15:26:28.884676",
+ "modified_by": "Administrator",
+ "module": "PMS",
+ "name": "Company Compact",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,198 @@
+{
+ "charts": [],
+ "content": "[{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">PMS</span>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Master Data\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"PMS Transaction\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"PMS Setting\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Report\",\"col\":4}}]",
+ "creation": "2025-07-24 20:20:38.264828",
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "color-review-points",
+ "idx": 0,
+ "label": "PMS",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "PMS Setting",
+   "link_count": 1,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "PMS Setting",
+   "link_count": 0,
+   "link_to": "PMS Setting",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Report",
+   "link_count": 1,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "PMS Summary",
+   "link_count": 0,
+   "link_to": "PMS Summary",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Master Data",
+   "link_count": 5,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "PMS Calendar",
+   "link_count": 0,
+   "link_to": "PMS Calendar",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "PMS Group",
+   "link_count": 0,
+   "link_to": "PMS Group",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Work Competency",
+   "link_count": 0,
+   "link_to": "Work Competency",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "PMS Overall Rating",
+   "link_count": 0,
+   "link_to": "Overall Rating",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Kay Performance Indicator",
+   "link_count": 0,
+   "link_to": "Key Performance Indicator",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "PMS Transaction",
+   "link_count": 7,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Performance Evaluation",
+   "link_count": 0,
+   "link_to": "Performance Evaluation",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "PMS Appeal",
+   "link_count": 0,
+   "link_to": "PMS Appeal",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Change In Performance Evaluation",
+   "link_count": 0,
+   "link_to": "Change In Performance Evaluation",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "PMS Extension",
+   "link_count": 0,
+   "link_to": "PMS Extension",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Target Set Up",
+   "link_count": 0,
+   "link_to": "Target Set Up",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "PMS Review",
+   "link_count": 0,
+   "link_to": "Review",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Company Compact",
+   "link_count": 0,
+   "link_to": "Company Compact",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2025-08-14 20:42:49.956758",
+ "modified_by": "Administrator",
+ "module": "PMS",
+ "name": "PMS",
+ "owner": "pralad.rai@thimphutechpark.bt",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 24.0,
+ "shortcuts": [],
+ "title": "PMS"
+}

@@ -115,14 +115,14 @@ var get_target = (frm) =>{
 	}
 }
 
-frappe.ui.form.on('Review Target Item',{
-	form_render:(frm,cdt,cdn)=>{
-		var row = locals[cdt][cdn]
-		frappe.meta.get_docfield("Review Target Item","qty_quality",cur_frm.doc.name).read_only = frm.doc.docstatus
-		frappe.meta.get_docfield("Review Target Item","timeline_base_on",cur_frm.doc.name).read_only = frm.doc.docstatus
-		// frm.refresh_field('items')
-	},
-})
+// frappe.ui.form.on('Review Target Item',{
+// 	form_render:(frm,cdt,cdn)=>{
+// 		var row = locals[cdt][cdn]
+// 		frappe.meta.get_docfield("Review Target Item","qty_quality",cur_frm.doc.name).read_only = frm.doc.docstatus
+// 		frappe.meta.get_docfield("Review Target Item","timeline_base_on",cur_frm.doc.name).read_only = frm.doc.docstatus
+// 		// frm.refresh_field('items')
+// 	},
+// })
 
 frappe.form.link_formatters['Employee'] = function(value, doc) {
 	return value

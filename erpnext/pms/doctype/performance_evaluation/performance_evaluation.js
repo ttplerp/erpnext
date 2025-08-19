@@ -18,6 +18,27 @@ frappe.ui.form.on('Performance Evaluation', {
 	onload:(frm)=> {
 		apply_filter(frm)
 		set_default_value(frm)
+		if(frm.doc.docstatus == 1){
+			frappe.call({
+				method: "check_perc_role",
+				doc: frm.doc,
+				callback: (r)=> {
+					if (r.message == 1){
+						frm.add_custom_button(__('Moderate'), () => {
+							frappe.call({
+								method: "moderate_performance_evaluation",
+								doc: frm.doc,
+								callback: (r) => {
+									window.location.reload()
+								}
+
+							})
+						});
+					}
+				}
+			})
+	
+		}
 	},
 	
 	refresh: (frm)=>{

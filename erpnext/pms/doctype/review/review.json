@@ -192,8 +192,7 @@
    "fieldname": "review_competency_item",
    "fieldtype": "Table",
    "label": "Review competency",
-   "options": "Review Competency Item",
-   "read_only": 1
+   "options": "Review Competency Item"
   },
   {
    "depends_on": "eval:doc.pms_calendar",
@@ -230,8 +229,7 @@
    "fieldtype": "Link",
    "label": "Approver",
    "options": "User",
-   "read_only": 1,
-   "reqd": 1
+   "read_only": 1
   },
   {
    "fieldname": "column_break_17",
@@ -392,7 +390,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-02 14:42:56.936131",
+ "modified": "2025-08-07 10:56:53.683517",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Review",

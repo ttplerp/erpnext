@@ -502,6 +502,12 @@ class CustomWorkflow:
 			self.compile_budget()
 		elif self.doc.doctype == "Asset Movement":
 			self.asset_movement()
+		elif self.doc.doctype == "Target Set Up":
+			self.target_set_up()
+		elif self.doc.doctype == "Review":
+			self.review()
+		elif self.doc.doctype == "Performance Evaluation":
+			self.performance_evaluation()
 		else:
 			frappe.throw(_("Workflow not defined for {}").format(self.doc.doctype))
 	
@@ -859,6 +865,47 @@ class CustomWorkflow:
 			if self.doc.owner != frappe.session.user:
 				frappe.throw("Only {} can Apply this request".format(self.doc.owner))
 			self.set_approver("Asset Verifier")
+
+	def target_set_up(self):
+		if self.new_state.lower() in ("Waiting Approval".lower()) and self.old_state.lower() != self.new_state.lower():
+			if frappe.db.get_value("Employee", self.doc.employee, "user_id") != frappe.session.user:
+				frappe.throw("Only {} can Apply this Target Set Up document".format(frappe.db.get_value("Employee", self.doc.employee, "user_id")))
+			self.set_approver("Supervisor")
+		
+		if self.new_state.lower() in ("Approved".lower()):
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Approve/Edit this Target Set Up  document".format(self.doc.approver))
+		
+		if self.new_state.lower() in ("Rejected".lower()) and self.old_state.lower() != self.new_state.lower():
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Reject this Target Set Up document".format(self.doc.approver))
+
+	def review(self):
+		if self.new_state.lower() in ("Waiting Approval".lower()) and self.old_state.lower() != self.new_state.lower():
+			if frappe.db.get_value("Employee", self.doc.employee, "user_id") != frappe.session.user:
+				frappe.throw("Only {} can Apply this Review document".format(frappe.db.get_value("Employee", self.doc.employee, "user_id")))
+			self.set_approver("Supervisor")
+		
+		if self.new_state.lower() in ("Approved".lower()):
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Approve/Edit this Review document".format(self.doc.approver))
+
+		if self.new_state.lower() in ("Rejected".lower()) and self.old_state.lower() != self.new_state.lower():
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Reject this Review document".format(self.doc.approver))
+
+	def performance_evaluation(self):
+		if self.new_state.lower() in ("Waiting Supervisor Approval".lower()) and self.old_state.lower() != self.new_state.lower():
+			if frappe.db.get_value("Employee", self.doc.employee, "user_id") != frappe.session.user:
+				frappe.throw("Only {} can Apply this Performance Evaluation document".format(frappe.db.get_value("Employee", self.doc.employee, "user_id")))
+			self.set_approver("Supervisor")
+		if self.new_state.lower() in ("Approved".lower()):
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Approve/Edit this Performance Evaluation document".format(self.doc.approver))
+		if self.new_state.lower() in ("Rejected".lower()) and self.old_state.lower() != self.new_state.lower():
+			if self.doc.approver != frappe.session.user:
+				frappe.throw("Only {} can Reject this Performance Evaluation document".format(self.doc.approver))
+			
 			
 	def budget_reappropiation(self):
 		user_roles = frappe.get_roles(frappe.session.user)
@@ -1471,7 +1518,10 @@ def get_field_map():
 		"Compile Budget": ["approver","approver_name"],
 		"Employee Separation": ["approver","approver_name","approver_designation"],
 		"POL": ["approver","approver_name","approver_designation"],
-		"Asset Issue Details": [],
+		"Target Set Up": ["approver", "approver_name", "approver_designation"],
+		"Review": ["approver", "approver_name", "approver_designation"],
+		"Performance Evaluation": ["approver", "approver_name", "approver_designation"],
+
 	}
 
 def validate_workflow_states(doc):

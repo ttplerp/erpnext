@@ -88,7 +88,37 @@ class PerformanceEvaluation(Document):
 				d.final_score_percent = self.final_score_percent
 				d.overall_rating = self.overall_rating
 		doc.save(ignore_permissions=True)
-			
+
+	@frappe.whitelist()
+	def check_perc_role(self):
+		perc = 0
+		if frappe.session.user == "Administrator":
+			perc = 1
+		else:
+			user_roles = frappe.get_roles(frappe.session.user)
+			if "PMS Moderator" in user_roles:
+				perc = 1
+		return perc
+
+	@frappe.whitelist()
+	def moderate_performance_evaluation(self):
+		frappe.db.sql("""
+			update `tabPerformance Evaluation` set workflow_state = 'Moderating', docstatus = 0 where name = '{}'
+		""".format(self.name))
+		frappe.db.sql("""
+			update `tabEvaluate Target Item` set docstatus = 0 where parent = '{}'
+		""".format(self.name))
+		frappe.db.sql("""
+			update `tabEvaluate Additional Achievements` set docstatus = 0 where parent = '{}'
+		""".format(self.name))
+		frappe.db.sql("""
+			update `tabEvaluate Competency Item` set docstatus = 0 where parent = '{}'
+		""".format(self.name))
+		frappe.db.sql("""
+			delete from `tabEmployee PMS Rating` where fiscal_year = '{}' and parent = '{}'
+		""".format(self.pms_calendar, self.employee))
+		
+
 	# calculate score and average of target
 	def calculate_target_score(self):
 		# if self.eval_workflow_state == 'Draft':
@@ -200,6 +230,7 @@ class PerformanceEvaluation(Document):
 		self.overall_rating = frappe.db.sql('''select name from `tabOverall Rating` where  upper_range_percent >= {0} and lower_range_percent <= {0} and disabled=0'''.format(self.final_score_percent))[0][0]
 		self.db_set('overall_rating', self.overall_rating)
 		self.star_obtained = frappe.db.get_value('Overall Rating',self.overall_rating,'weightage')
+		# frappe.throw(str(self.star_obtained))
 		self.db_set('star_obtained', self.star_obtained)
 
 	def validate_no_months_served(self):
@@ -327,6 +358,6 @@ def get_permission_query_conditions(user):
 				where `tabEmployee`.name = `tabPerformance Evaluation`.employee
 				and `tabEmployee`.user_id = '{user}')
 		or
-		(`tabPerformance Evaluation`.approver = '{user}' and `tabPerformance Evaluation`.eval_workflow_state not in ('Draft', 'Rejected'))
+		(`tabPerformance Evaluation`.approver = '{user}' and `tabPerformance Evaluation`.workflow_state not in ('Draft', 'Rejected'))
 		)""".format(user=user)
 
