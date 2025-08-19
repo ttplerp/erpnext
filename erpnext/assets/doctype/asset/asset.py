@@ -461,7 +461,7 @@ class Asset(AccountsController):
 			total_number_of_ppe_depreciations = flt(total_number_of_ppe_depreciations) - self.number_of_income_depreciations_booked
 		# frappe.throw(f"{total_number_of_ppe_depreciations}, {total_number_of_income_depreciations}, {total_number_of_depreciations}")
 		flag_completed_ppe_depreciation = False
-		if self.number_of_income_depreciations_booked == finance_book.total_number_of_depreciations:
+		if self.number_of_income_depreciations_booked >= finance_book.total_number_of_depreciations:
 			flag_completed_ppe_depreciation = True
 		
 		""" End of logic """
