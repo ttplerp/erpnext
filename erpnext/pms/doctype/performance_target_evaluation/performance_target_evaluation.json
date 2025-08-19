@@ -1,4 +1,5 @@
 {
+ "actions": [],
  "allow_rename": 1,
  "creation": "2021-03-08 11:44:14.720090",
  "doctype": "DocType",
@@ -90,7 +91,7 @@
   },
   {
    "default": "0",
-   "description": "<b>Please tick this if your target is to be evaluated on saving(e.g Network Failure, OPEX, Resolving Customer Issues)</b>",
+   "description": "<b>Please tick this if your target is to be evaluated on saving(e.g Network Failure, OPEX, Resolving Customer Issues)</b><br><b>*Note: Less is better</b>",
    "fieldname": "reverse_formula",
    "fieldtype": "Check",
    "label": "Apply (&lt;=) Operator"
@@ -127,7 +128,8 @@
   }
  ],
  "istable": 1,
- "modified": "2022-04-06 17:09:59.560406",
+ "links": [],
+ "modified": "2025-08-19 16:20:19.152693",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Performance Target Evaluation",
@@ -136,5 +138,6 @@
  "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }
