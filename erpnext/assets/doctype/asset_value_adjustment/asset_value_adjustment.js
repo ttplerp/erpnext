@@ -70,5 +70,21 @@ frappe.ui.form.on('Asset Value Adjustment', {
 		if (frm.doc.current_asset_value && frm.doc.difference_amount) {
 			frm.set_value('new_asset_value', frm.doc.current_asset_value+frm.doc.difference_amount);
 		}
-	}
+	},
+	"re_valued": function(frm) {
+		update_def_account(frm)
+	},
 });
+function update_def_account(frm) {
+	frappe.call({
+		method: "update_def_account",
+		doc:frm.doc,
+		callback: function(r) {
+			if(r.message) {
+				console.log(r.message)
+				frm.set_value("credit_account", (r.message))
+				frm.refresh_fields()
+			}
+		}
+	})
+}
