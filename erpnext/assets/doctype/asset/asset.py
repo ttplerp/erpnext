@@ -874,7 +874,8 @@ class Asset(AccountsController):
 				#Change made by Thukten for Asset Value Adjustment
 				if not self.additional_value:
 					self.additional_value = 0
-				accumulated_depreciation = flt(self.gross_purchase_amount + self.additional_value - value_after_depreciation,2)
+				# accumulated_depreciation = flt(self.gross_purchase_amount + self.additional_value - value_after_depreciation,2)
+				accumulated_depreciation = flt(self.asset_rate + self.additional_value - value_after_depreciation,2)
 				finance_books.append(int(d.finance_book_id))
 			depreciation_amount = flt(d.depreciation_amount, d.precision("depreciation_amount"))
 			value_after_depreciation -= flt(depreciation_amount)

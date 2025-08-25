@@ -39,17 +39,25 @@ class AssetValueAdjustment(Document):
 	def on_submit(self):
 		self.make_depreciation_entry()
 		self.reschedule_depreciations(self.new_asset_value, cancel=0)
+		# update asset gross purchase amount
+		doc = frappe.get_doc("Asset", self.asset)
+		frappe.db.set_value(doc.doctype, doc.name, "gross_purchase_amount", flt(self.difference_amount) + flt(doc.gross_purchase_amount, 2))
 	
 	def on_cancel(self):
 		doc = frappe.get_doc("Journal Entry", self.journal_entry)
 		doc.cancel()
+		self.update_additional_value()
 		self.reschedule_depreciations(self.current_asset_value, cancel=1)
 		self.remove_adjustment_value()
+	
+	def update_additional_value(self):
+		doc = frappe.get_doc("Asset", self.asset)
+		frappe.db.set_value(doc.doctype, doc.name, "additional_value", flt(doc.additional_value - self.difference_amount))
 	
 	def remove_adjustment_value(self):
 		doc = frappe.get_doc("Asset", self.asset)
 		# doc.db_set("additional_value", doc.additional_value - self.difference_amount)
-		frappe.db.set_value(doc.doctype, doc.name, "additional_value", flt(doc.additional_value - self.difference_amount))
+		frappe.db.set_value(doc.doctype, doc.name, "gross_purchase_amount", flt(doc.gross_purchase_amount - self.difference_amount))
 
 	def validate_date(self):
 		asset_purchase_date = frappe.db.get_value("Asset", self.asset, "purchase_date")
@@ -129,7 +137,7 @@ class AssetValueAdjustment(Document):
 		self.db_set("journal_entry", je.name)
 		doc = frappe.get_doc("Asset", self.asset)
 		# doc.db_set("additional_value", self.difference_amount)
-		frappe.db.set_value(doc.doctype, doc.name, "additional_value", flt(self.difference_amount))
+		frappe.db.set_value(doc.doctype, doc.name, "additional_value", flt(self.difference_amount) + flt(doc.additional_value, 2))
 
 	def reschedule_depreciations(self, asset_value, cancel=None):
 		depreciation_start_date = get_last_day(add_days(self.date, -20))
@@ -141,7 +149,8 @@ class AssetValueAdjustment(Document):
 			new_gross_value = asset.gross_purchase_amount - self.difference_amount
 
 		for d in asset.finance_books:
-			d.value_after_depreciation = asset_value
+			d.value_after_depreciation = d.value_after_depreciation + self.difference_amount if not cancel else d.value_after_depreciation - self.difference_amount
+			d.income_tax_value_after_depreciation = asset_value
 
 			if d.depreciation_method in ("Straight Line", "Manual"):
 				end_date = max(s.schedule_date for s in asset.schedules if cint(s.finance_book_id) == d.idx and s.depreciation_amount > 0)
@@ -165,13 +174,16 @@ class AssetValueAdjustment(Document):
 			booked_schedules = [s for s in asset.schedules if cint(s.finance_book_id) == d.idx and s.journal_entry]
 			if booked_schedules:
 				income_accumulated_depreciation = max(s.income_accumulated_depreciation for s in booked_schedules)
-			remaining_dep_amount = flt(asset.gross_purchase_amount - income_accumulated_depreciation) + self.difference_amount
-			if cancel:
-				remaining_dep_amount = asset.gross_purchase_amount - self.difference_amount
+			remaining_dep_amount = flt(d.income_tax_value_after_depreciation, 2)
+			# remaining_dep_amount = flt(asset.gross_purchase_amount - income_accumulated_depreciation) + self.difference_amount
+			# if cancel:
+			# 	remaining_dep_amount = asset.gross_purchase_amount - self.difference_amount
 			
 			for data in asset.schedules:
 				if getdate(data.schedule_date) <= getdate(depreciation_start_date) and not data.journal_entry:
 						frappe.throw("Monthly depreciation on <b>{}</b> for <b>{}</b> is <b>Pending</b>. Run the depreciation before Asset Value Adjustment".format(getdate(data.schedule_date),self.asset))
+				if getdate(data.schedule_date) >= getdate(self.date) and data.journal_entry:
+						frappe.throw("Monthly depreciation on <b>{}</b> for <b>{}</b> is <b>Posted</b>. Cannot make Asset Value Adjustment on {}".format(getdate(data.schedule_date),self.asset,getdate(self.date)))
 				if cint(data.finance_book_id) == d.idx:
 					# Calculate days
 					days = 0
@@ -226,4 +238,5 @@ def get_current_asset_value(asset, finance_book=None):
 	if finance_book:
 		cond.update({"finance_book": finance_book})
 
-	return frappe.db.get_value("Asset Finance Book", cond, "value_after_depreciation")
+	# return frappe.db.get_value("Asset Finance Book", cond, "value_after_depreciation")
+	return frappe.db.get_value("Asset Finance Book", cond, "income_tax_value_after_depreciation")
