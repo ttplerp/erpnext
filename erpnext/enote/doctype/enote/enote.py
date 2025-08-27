@@ -47,6 +47,10 @@ class eNote(Document):
 					officiating = get_officiating_employee(doc.reports_to)
 					if officiating:
 						self.forward_to = frappe.db.get_value("Employee", officiating[0].officiate, "user_id")
+		else:
+			officiating = get_officiating_employee(frappe.db.get_value("Employee", {"user_id":self.forward_to, "status": "Active"}, "name"))
+			if officiating:
+				self.forward_to = frappe.db.get_value("Employee", officiating[0].officiate, "user_id")
 		
 		self.forward_to = frappe.session.user if not self.forward_to else self.forward_to
 	def before_update_after_submit(self):
