@@ -23,7 +23,14 @@ frappe.ui.form.on('Stock Entry', {
 			}
 		});
 
-
+		frm.set_query('from_branch', function () {
+			return {
+				query:"erpnext.stock.doctype.stock_entry.stock_entry.get_warehouse_branch",
+				filters: {
+					warehouse:frm.doc.from_warehouse
+				}
+			}
+		});
 
 
 		frm.set_query('work_order', function () {
@@ -130,8 +137,6 @@ frappe.ui.form.on('Stock Entry', {
 			});
 		attach_bom_items(frm.doc.bom_no);
 	},
-
-
 
 	item_group: function(frm){
 		frm.fields_dict["items"].grid.get_field("item_code").get_query = function (doc) {

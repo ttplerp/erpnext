@@ -2821,3 +2821,20 @@ def has_warehouse_permission(warehouse):
 			""".format(warehouse=warehouse, user=frappe.session.user))
 	
 	return res[0][0] if res else 0
+
+# Jai updated, since centralized warehouse is maintained.
+# stock out from purchased branch, and book expenses to issued branch
+@frappe.whitelist()
+def get_warehouse_branch(doctype, txt, searchfield, start, page_len, filters):
+	from_warehouse = filters.get("warehouse")
+
+	if not from_warehouse:
+		return []
+
+	return frappe.db.sql("""
+		SELECT branch
+			FROM `tabWarehouse Branch`
+			WHERE parent = %s
+		AND name LIKE %s
+		LIMIT %s OFFSET %s
+	""", (from_warehouse, f"%{txt}%", page_len, start))

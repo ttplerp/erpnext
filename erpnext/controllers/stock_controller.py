@@ -138,6 +138,11 @@ class StockController(AccountsController):
 		gl_list = []
 		warehouse_with_no_account = []
 		precision = self.get_debit_field_precision()
+		""" Jai Added, 6 June 2025 """
+		from_cost_center = ''
+		if self.purpose == 'Material Issue' and self.from_branch:
+			from_cost_center = self.from_cost_center
+
 		for item_row in voucher_details:
 			sle_list = sle_map.get(item_row.name)
 			if sle_list:
@@ -159,7 +164,7 @@ class StockController(AccountsController):
 								{
 									"account": warehouse_account[sle.warehouse]["account"],
 									"against": expense_account,
-									"cost_center": item_row.cost_center,
+									"cost_center": self.from_cost_center if from_cost_center else item_row.cost_center,
 									"project": item_row.project or self.get("project"),
 									"remarks": self.get("remarks") or _("Accounting Entry for Stock"),
 									"debit": flt(sle.stock_value_difference, precision),

@@ -46,6 +46,8 @@
   "target_warehouse_address",
   "target_address_display",
   "received_by",
+  "from_branch",
+  "from_cost_center",
   "sb0",
   "scan_barcode",
   "items",
@@ -673,6 +675,22 @@
    "fieldtype": "Float",
    "label": "Total Qty(Transfer/Receipt/Issued)",
    "read_only": 1
+  },
+  {
+   "depends_on": "eval: doc.stock_entry_type == 'Material Issue'",
+   "fieldname": "from_branch",
+   "fieldtype": "Link",
+   "label": "Source Branch",
+   "options": "Branch"
+  },
+  {
+   "fetch_from": "from_branch.cost_center",
+   "fieldname": "from_cost_center",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Source Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-file-text",
@@ -680,7 +698,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-16 14:40:26.304993",
+ "modified": "2025-06-06 09:39:19.867849",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Entry",
