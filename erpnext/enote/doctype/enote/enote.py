@@ -22,7 +22,7 @@ class eNote(Document):
 		# if we allow from here, workflow state is still stays in pending which is wrong.  
 		# again while reloading the doc, after saving remarks has impact as well. it should run
 		# only in below action.
-		if frappe.request.form.get('action') in ("Forward","Apply","Reject","Forward to Reviewer"):
+		if frappe.request.form.get('action') in ("Forward","Apply","Reject","Forward to Reviewer","Reapply"):
 			self.send_notification()
 			# notify_workflow_states(self) 
 		self.validate_reviewers()
@@ -73,7 +73,7 @@ class eNote(Document):
 			frappe.throw(" Only <b>{}</b> is allowed to make changes and perform actions to this Note".format(self.permitted_user))
 		
 		message = None
-		if action in ("Forward","Apply"):
+		if action in ("Forward","Apply","Reapply"):
 			if not self.forward_to:
 				frappe.throw("<b>Forward To</b> value is missing. Please select a user to Forward")
 			#check if forward_to field is valid
