@@ -31,7 +31,7 @@ class CustomWorkflow:
 			self.hrgm 			= frappe.db.get_value("Employee",frappe.db.get_single_value("HR Settings","hrgm"), self.field_list)
 			self.ceo			= frappe.db.get_value("Employee", frappe.db.get_value("Employee", {"designation": "Chief Executive Officer", "status": "Active"},"name"), self.field_list)
 			self.cs_approver	= frappe.db.get_value("Employee", frappe.db.get_value("Employee", {"designation": "Coy. Secretary", "status": "Active"},"name"), self.field_list)
-			self.gmcsd			= frappe.db.get_value("Employee", frappe.db.get_value("Department", {"department_name": "Corporate Service Department - BBS"},"approver"), self.field_list)
+			self.gmcsd			= frappe.db.get_value("Employee", frappe.db.get_value("Department", {"department_name": "Corporate Services Department"},"approver"), self.field_list)
 			self.department_approver = frappe.db.get_value("Employee", frappe.db.get_value("Department",frappe.db.get_value("Employee",self.doc.employee,"department"),"approver"), self.field_list)
 			self.mcm_approver = frappe.db.get_value("Employee", frappe.db.get_single_value("HR Settings", "mcm_approver"), self.field_list)
 			self.finance_approver = frappe.db.get_value("Employee", frappe.db.get_single_value("HR Settings", "finance_approver"), self.field_list)
@@ -40,10 +40,11 @@ class CustomWorkflow:
 			if self.doc.doctype in ["Employee Separation Clearance","Leave Encashment","Leave Application"]:
 				self.adm_section_manager = frappe.db.get_value("Employee",{"user_id":frappe.db.get_value(
 					"Department Approver",
-					{"parent": "Administration Section - SMCL", "parentfield": "expense_approvers", "idx": 1},
+					{"parent": "department", "parentfield": "expense_approvers", "idx": 1},
 					"approver",
 				)},self.field_list)
 			self.appeal_approver = frappe.db.get_value("Employee", {"name":frappe.db.get_single_value("PMS Setting","approver")}, self.field_list)
+			self.department_approver = frappe.db.get_value("Employee", frappe.db.get_value("Department",frappe.db.get_value("Employee",self.doc.employee,"department"),"approver"), self.field_list)
 			
 
 		if self.doc.doctype in ("Travel Request","Leave Application","Employee Separation","Overtime Application"):
@@ -571,6 +572,7 @@ class CustomWorkflow:
 		elif self.new_state.lower() == ("Waiting Approval".lower()) or self.new_state.lower() == ("Waiting Department Head Approval".lower()):
 			if self.doc.leave_approver != frappe.session.user:
 				frappe.throw("Only {} can Approve or Forward this Leave Application".format(self.doc.leave_approver_name))
+			# self.approver_type("Department Approver")
 			if department:
 				self.set_approver("Department Approver")
 			else:
