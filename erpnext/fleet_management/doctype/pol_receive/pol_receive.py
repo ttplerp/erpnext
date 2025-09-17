@@ -22,6 +22,7 @@ class POLReceive(StockController):
 		self.calculate_km_diff()
 		self.validate_data()
 		self.balance_check()
+		self.set_items_balance()
 
 	def on_submit(self):
 		self.update_pol_advance()
@@ -61,6 +62,11 @@ class POLReceive(StockController):
 		if total_balance < self.total_amount :
 			frappe.throw("<b>Payable Amount</b> cannot be greater than <b>Total Advance Balance</b>")
 	
+	def set_items_balance(self):
+		if self.items:
+			for row in self.items:
+				row.balance = flt(row.balance_amount,2) - flt(row.allocated_amount,2)
+
 	def make_gl_entries(self):
 		gl_entries = []
 		self.make_expense_gl_entry(gl_entries)
@@ -150,9 +156,10 @@ class POLReceive(StockController):
 		else:
 			pv_km = previous_km_reading[0][0]
 
-		self.previous_km = pv_km
+		if not self.previous_km:
+			self.previous_km = pv_km
 
-		if flt(pv_km) >= flt(self.cur_km_reading):
+		if flt(self.previous_km) >= flt(self.cur_km_reading):
 			frappe.throw("Current KM/Hr Reading cannot be less than Previous KM/Hr Reading({}) for Equipment Number <b>{}</b>".format(pv_km, self.equipment))
 
 		self.km_difference = flt(self.cur_km_reading) - flt(pv_km)
