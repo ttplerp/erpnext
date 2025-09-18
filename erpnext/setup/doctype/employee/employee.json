@@ -1015,7 +1015,7 @@
  "idx": 24,
  "image_field": "image",
  "links": [],
- "modified": "2025-09-18 14:30:01.338384",
+ "modified": "2025-09-18 15:01:32.772401",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Employee",
@@ -1062,5 +1062,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
+ "title_field": "employee_name",
  "track_changes": 1
 }
