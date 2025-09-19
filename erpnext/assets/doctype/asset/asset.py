@@ -479,8 +479,16 @@ class Asset(AccountsController):
 			self.number_of_income_depreciations_booked
 		)
 
+		#for existing asset with purchase date in the mid of the month
+		adjust_date = False
+		if self.is_existing_asset:
+			pdate = str(self.purchase_date)
+			day = int(pdate.split("-")[2])
+			if day != 1 and day != 31:
+				adjust_date = True
+
 		has_pro_rata = self.check_is_pro_rata(finance_book)
-		if has_pro_rata:
+		if has_pro_rata or adjust_date:
 			number_of_pending_depreciations = number_of_pending_depreciations + 1
 			total_number_of_ppe_depreciations = total_number_of_ppe_depreciations + 1
 		skip_row = False
