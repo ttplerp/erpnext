@@ -45,6 +45,14 @@ erpnext.accounts.PurchaseInvoice = class PurchaseInvoice extends erpnext.buying.
 		if (this.frm.doc.supplier && this.frm.doc.__islocal) {
 			this.frm.trigger('supplier');
 		}
+		
+		if(this.frm.doc.supplier_type == "International Vendor"){
+			me.frm.set_df_property("btfn_no", "hidden", 0)
+			me.frm.set_df_property("btfn_no", "reqd", 1)
+		}else{
+			me.frm.set_df_property("btfn_no", "hidden", 1)
+			me.frm.set_df_property("btfn_no", "reqd", 0)
+		}
 	}
 
 	refresh(doc) {
@@ -306,6 +314,16 @@ erpnext.accounts.PurchaseInvoice = class PurchaseInvoice extends erpnext.buying.
 		} else {
 			me.frm.set_value("tax_withholding_category", me.frm.supplier_tds);
 			me.frm.set_df_property("tax_withholding_category", "hidden", 0);
+		}
+	}
+	supplier_type() {
+		var me = this;
+		if(this.frm.doc.supplier_type == "International Vendor"){
+			me.frm.set_df_property("btfn_no", "hidden", 0)
+			me.frm.set_df_property("btfn_no", "reqd", 1)
+		}else{
+			me.frm.set_df_property("btfn_no", "hidden", 1)
+			me.frm.set_df_property("btfn_no", "reqd", 0)
 		}
 	}
 

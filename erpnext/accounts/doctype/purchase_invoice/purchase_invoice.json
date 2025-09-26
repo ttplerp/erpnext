@@ -11,6 +11,8 @@
   "branch",
   "supplier",
   "supplier_name",
+  "supplier_type",
+  "btfn_no",
   "bill_no",
   "tax_id",
   "tax_withholding_category",
@@ -205,6 +207,18 @@
    "in_global_search": 1,
    "label": "Supplier Name",
    "oldfieldname": "supplier_name",
+   "oldfieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "bold": 1,
+   "depends_on": "supplier",
+   "fetch_from": "supplier.supplier_type",
+   "fieldname": "supplier_type",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "label": "Supplier Type",
+   "oldfieldname": "supplier_type",
    "oldfieldtype": "Data",
    "read_only": 1
   },
@@ -1443,13 +1457,19 @@
    "fieldname": "write_off_description",
    "fieldtype": "Text",
    "label": "Write Off Description"
+  },
+  {
+   "depends_on": "supplier",
+   "fieldname": "btfn_no",
+   "fieldtype": "Data",
+   "label": "BTFN No"
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 204,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-11-29 11:48:32.062913",
+ "modified": "2025-09-26 12:37:45.632330",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Purchase Invoice",
