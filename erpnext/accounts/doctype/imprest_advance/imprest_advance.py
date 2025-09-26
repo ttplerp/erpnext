@@ -22,6 +22,7 @@ class ImprestAdvance(Document):
 		import datetime
 
 		date_obj = datetime.datetime.strptime(str(self.posting_date), "%Y-%m-%d")
+		transaction_month = date_obj.month
 		year = date_obj.year
 
 		filters = {
@@ -35,12 +36,14 @@ class ImprestAdvance(Document):
 			filters["project"] = self.project
 
 		for d in frappe.db.get_list("Imprest Advance", filters=filters, fields=["posting_date"]):
-			date_obj = datetime.datetime.strptime(str(d.posting_date), "%Y-%m-%d")
+			date_obj = datetime.datetime.strptime(str(nowdate()), "%Y-%m-%d")
+			current_month =date_obj.month
 			year_old = date_obj.year
-			if str(year) == str(year_old):
-				frappe.throw("Imprest Advance already taken for branch <b>{}</b>, imprest type <b>{}</b>{}".format(
+			if str(transaction_month) == str(current_month):
+				frappe.throw("Imprest Advance already taken for branch <b>{}</b>, imprest type <b>{}</b> for month <b>{}</b>".format(
 					self.branch,
 					self.imprest_type,
+					current_month,
 					", and project <b>{}</b>".format(self.project) if self.project else ""
 				))
 
@@ -75,7 +78,7 @@ class ImprestAdvance(Document):
 		message = "Amount requested cannot be greater than Imprest Limit <b>{}</b> for branch <b>{}</b> and imprest type <b>{}</b>".format(imprest_limit, self.branch, self.imprest_type)
 		if self.project:
 			message += " and project <b>{}</b>".format(self.project)
-
+		
 		if self.amount > imprest_limit:
 			frappe.throw(message)
 
