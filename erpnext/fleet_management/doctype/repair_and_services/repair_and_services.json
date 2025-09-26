@@ -23,6 +23,7 @@
   "column_break_4",
   "equipment",
   "hired_equipment",
+  "bill_received",
   "column_break_0axci",
   "equipment_type",
   "column_break_11",
@@ -392,12 +393,19 @@
    "label": "Expense_Branch",
    "mandatory_depends_on": "eval:doc.imprest_settlement",
    "options": "Branch"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "bill_received",
+   "fieldtype": "Check",
+   "label": "Bill Received"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-03 15:05:31.828331",
+ "modified": "2025-09-25 16:23:17.370824",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Repair And Services",
