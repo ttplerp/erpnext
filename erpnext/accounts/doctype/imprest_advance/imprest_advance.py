@@ -28,10 +28,12 @@ class ImprestAdvance(Document):
 		filters = {
 			"branch": self.branch,
 			"imprest_type": self.imprest_type,
-			"docstatus": 1,
-			"party": self.party
+			"docstatus": 1
 		}
+		start_date = frappe.utils.get_first_day(self.posting_date)
+		end_date = frappe.utils.get_last_day(self.posting_date)
 
+		filters["posting_date"] = ["between", [start_date, end_date]]
 		if self.project:
 			filters["project"] = self.project
 

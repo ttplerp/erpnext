@@ -61,6 +61,7 @@
    "fieldtype": "Date",
    "in_list_view": 1,
    "label": "Posting Date ",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -233,7 +234,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-09-07 17:15:48.830435",
+ "modified": "2025-09-26 15:20:11.515630",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Imprest Advance",
