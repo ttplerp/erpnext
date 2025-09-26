@@ -12,6 +12,13 @@ def execute(filters=None):
 	return columns, data
 def get_columns():
 	columns = [
+        {
+            'fieldname': 'name',
+            'label': 'ID',
+            'fieldtype': 'Data',
+            
+			
+        },
 		  {
             'fieldname': 'application_date_time',
             'label': 'Application Date & Time',
@@ -19,6 +26,7 @@ def get_columns():
             'options': 'Application Date & Time',
 			
         },
+         
      {
             'fieldname': 'applicant_name',
             'label':'Application Name',

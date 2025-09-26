@@ -13,14 +13,18 @@ class HousingApplication(Document):
 	def validate(self):
 		self.check_agree()
 		self.check_status()
-		self.check_employee_type()
-		# self.check_salary()
+		self.check_salary()
+		
+		
 		# if self.application_status == None or self.application_status== 'Pending':
-		# 	self.validate_detail()
+		creation_time = frappe.utils.get_datetime(self.get('creation'))
+		if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2:
+			self.validate_detail()
+		self.check_employee_type()
 		self.validate_duplicate()
 		
 		# self.check_app_limit()
-		creation_time = frappe.utils.get_datetime(self.get('creation'))
+	
 		if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2:
 			self.generate_rank()
 		# self.check_spouse_gross()
@@ -50,13 +54,45 @@ class HousingApplication(Document):
 		if action and action in ("Submit"):
 			if self.application_status=="Pending":
 				frappe.throw("Cannot submit while the application status is still pending")
+	# def check_employee_type(self):
+	# 	creation_time = frappe.utils.get_datetime(self.get('creation'))
+	# 	if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2 and not self.employment_type == "Civil Servant":
+	# 		# frappe.throw("New applications for civil servants are temporarily suspended, due to a substantial backlog")
+	# 		frappe.throw("Applications are currently only allowed for Civil Servants")
+   
+	# 	if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2 and self.work_station not in ("Samdrup Jongkhar","Phuentsholing")  :
+	# 		frappe.throw("Applications are currently only allowed for Samdrup Jongkhar and Phuentsholing")
+   
 	def check_employee_type(self):
 		creation_time = frappe.utils.get_datetime(self.get('creation'))
-		if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2 and not self.employment_type == "Civil Servant":
-			# frappe.throw("New applications for civil servants are temporarily suspended, due to a substantial backlog")
-			frappe.throw("Applications are currently only allowed for Civil Servants")
+		# if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2 and not self.employment_type == "Civil Servant":
+		# 	# frappe.throw("New applications for civil servants are temporarily suspended, due to a substantial backlog")
+		# 	frappe.throw("Applications are currently only allowed for Civil Servants")
+		if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2:
+			gross_sal = 0.0
+			spouse_gross = 0.0
+
+		# Assign values if they exist
+			if self.gross_salary:
+				gross_sal = self.gross_salary
+			if self.spouse_gross_salary:
+				spouse_gross = self.spouse_gross_salary
+			self.total_gross_salary = flt(gross_sal, 2) + flt(spouse_gross, 2)
+			if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2 and self.work_station in ("Thimphu"):
+				if self.employment_type == "Civil Servant":
+					# frappe.throw(str(self.gross_salary))
+					# if self.total_gross_salary < 80001:
+					# frappe.throw("Only total gross salary above Nu.800001 are open for civil servant ")
+					frappe.throw("Currently not open")
+				elif self.employment_type == "Corporation, Private and etc":
+					frappe.throw("Not Eligible Right row")
+					if self.total_gross_salary > 16000:
+						frappe.throw("only total gross salary Nu.16000 and below is open for Private and Corporate")
+			if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2:
+				if self.employment_type == "Corporation, Private and etc":
+					frappe.throw("Not Eligible right now")
    
-		if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2 and self.work_station not in ("Samdrup Jongkhar","Phuentsholing")  :
+		if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2 and self.work_station not in ("Samdrup Jongkhar","Phuentsholing","Thimphu")  :
 			frappe.throw("Applications are currently only allowed for Samdrup Jongkhar and Phuentsholing")
    
    
@@ -92,8 +128,8 @@ class HousingApplication(Document):
 		
 		grade = self.grade
 		
-		if self.is_new() and total_salary >= 80000 and grade not in  ('ES3','EX3','ES2','EX2','ES1','EX1') :
-			frappe.throw("Since the total gross salary exceeds Nu.80000, you are not applicable")
+		if self.is_new() and total_salary >= 80000 and grade not in  ('ES3','EX3','ES2','EX2','ES1','EX1') and self.work_station not in ("Thimphu"):
+			frappe.throw("Since the total gross salary exceeds Nu.80000, you are not applicable. These criteria is only applicable in Thimphu for now")
 		# if self.is_new() and total_salary > 16000:
 		# 	frappe.throw("Private applicants of gross houshold income below Nu.16,000 is accepted for now")
 

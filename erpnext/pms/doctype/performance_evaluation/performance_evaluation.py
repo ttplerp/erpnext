@@ -15,8 +15,8 @@ class PerformanceEvaluation(Document):
 	def validate(self):
 		if self.upload_old_data:
 			return 
-		if self.eval_workflow_state != frappe.db.get_value('Performance Evaluation',self.name,'eval_workflow_state'): 
-			validate_workflow_states(self)  
+		# if self.eval_workflow_state != frappe.db.get_value('Performance Evaluation',self.name,'eval_workflow_state'): 
+		# 	validate_workflow_states(self)  
 		self.set_dafault_values() 
 		self.check_duplicate_entry()
 		self.calculate_target_score()
@@ -25,8 +25,8 @@ class PerformanceEvaluation(Document):
 		self.calculate_final_score()
 		self.check_target()
 		self.validate_no_months_served()
-		if self.workflow_state != "Approved":
-			notify_workflow_states(self)
+		# if self.workflow_state != "Approved":
+		# 	notify_workflow_states(self)
 
 		# to record the approver details when it is manually set to be used if the pms gets Rejected
 		if self.eval_workflow_state == "Waiting Supervisor Approval":
@@ -48,17 +48,17 @@ class PerformanceEvaluation(Document):
 		#Added by Kinley Dorji for creating pms record in employee master
 		self.create_employee_pms_record()
 	def record_self_rating(self):
-		if self.workflow_state == "Draft":
-			for i in self.evaluate_target_item:
-				if i.quantity_achieved:
-					i.quantityquality_achieved = i.quantity_achieved
-				if i.quality_achieved:
-					i.quantityquality_achieved = i.quality_achieved
-				if i.timeline_achieved:
-					i.self_rating_timeline_achieved = i.timeline_achieved
-			for y in self.evaluate_competency_item:
-				if y.achievement:
-					y.self_rating_competency=y.achievement
+		# if self.workflow_state == "Draft":
+		for i in self.evaluate_target_item:
+			if i.quantity_achieved:
+				i.quantityquality_achieved = i.quantity_achieved
+			if i.quality_achieved:
+				i.quantityquality_achieved = i.quality_achieved
+			if i.timeline_achieved:
+				i.self_rating_timeline_achieved = i.timeline_achieved
+		for y in self.evaluate_competency_item:
+			if y.achievement:
+				y.self_rating_competency=y.achievement
 	def on_update_after_submit(self):
 		if self.upload_old_data:
 			return
@@ -106,6 +106,7 @@ class PerformanceEvaluation(Document):
 	# calculate score and average of target
 	def calculate_target_score(self):
 		total_score = 0
+		target_rating = 1
 		for item in self.evaluate_target_item :
 			quality_rating, quantity_rating, timeline_rating= 0, 0, 0
 			if cint(item.reverse_formula) == 0:
@@ -163,6 +164,7 @@ class PerformanceEvaluation(Document):
 						item.score= 0
 						
 			total_score += flt(item.average_rating)
+			
 		score =flt(total_score)/100 * flt(target_rating)
 		total_score = score
 		self.form_i_total_rating = total_score

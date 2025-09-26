@@ -406,7 +406,7 @@ def check_account_frozen(posting_date):
 				and not frozen_accounts_modifier in frappe.get_roles():
 			frappe.throw(_("You are not authorized to add or update entries before {0}").format(formatdate(acc_frozen_upto)))
 
-       
+	   
 def sendmail(recipent, subject, message, sender=None):
 	try:
 		frappe.sendmail(recipients=recipent, sender=None, subject=subject, message=message)
@@ -427,7 +427,7 @@ def get_production_groups(group):
 	for a in frappe.db.sql("select item_code from `tabProduction Group Item` where parent = %s", group, as_dict=1):
 		groups.append(str(a.item_code))
 	return groups
-                   
+				   
 # Following code added by SHIV on 2021/05/13
 def has_record_permission(doc, user):
 	if not user: user = frappe.session.user
@@ -440,11 +440,11 @@ def has_record_permission(doc, user):
 		return True
 	elif frappe.db.sql("""select count(*)
    				from `tabEmployee` e, `tabAssign Branch` ab, `tabBranch Item` bi
-       			where e.user_id = '{user}'
-          		and ab.employee = e.name
-            	and bi.parent = ab.name
-             	and bi.branch = "{branch}"
-            """.format(user=user, branch=doc.branch))[0][0]:
+	   			where e.user_id = '{user}'
+		  		and ab.employee = e.name
+				and bi.parent = ab.name
+			 	and bi.branch = "{branch}"
+			""".format(user=user, branch=doc.branch))[0][0]:
 		return True
 	else:
 		return False 
@@ -517,8 +517,8 @@ def send_bulk_email_nhdcl_housing_applicant():
 			sql_query = """
 
 			UPDATE `tabHousing Application`
-        SET mail_send = 1
-        WHERE email_id IS NOT NULL AND name = %s;
+		SET mail_send = 1
+		WHERE email_id IS NOT NULL AND name = %s;
 	
 		"""
 			try: 
@@ -550,9 +550,9 @@ def update_date():
 				expected_format = "%Y-%m-%d %H:%M:%S"  # Adjust based on column definition
 				correct_datetime = datetime.datetime.strptime(itemx.get('application_date_and_time'), "%d-%m-%Y %H:%M:%S").strftime(expected_format)
 				update_query = """
-    					UPDATE `tabHousing Application`
-    					SET application_date_time = %s
-    					WHERE cid = %s;
+						UPDATE `tabHousing Application`
+						SET application_date_time = %s
+						WHERE cid = %s;
 							"""
 				frappe.db.sql(update_query, (correct_datetime, itemy.get('cid')))
 		
@@ -560,19 +560,43 @@ def update_date():
 
 # update the grosssalary for every applicants
 from erpnext.rental_management.doctype.api_setting.api_setting import get_cid_detail, get_civil_servant_detail
-
+ 
 def update_gross_sal():
-    applicant_list = frappe.get_all("Housing Application", filters={}, fields=["name", "cid"])
+	data1, data2 = {}, {}
+	applicant_list = frappe.get_all("Housing Application", filters={}, fields=["name", "cid",'spouse_cid','employment_type','spouse_employment_type'])
 
-    for item in applicant_list:
-        try:
-            data1 = get_civil_servant_detail(item.get('cid'))
-            if data1 and 'GrossPay' in data1:
-                frappe.db.set_value("Housing Application", item.get('name'), "gross_salary", data1['GrossPay'])
-                print(f"{item.get('cid')} {data1['GrossPay']}  {item.get('name')}")
-        except KeyError as e:
-            print(f"Error updating {item.get('name')}: {e}")
-    frappe.msgprint("salaries for applicants updated successfully")
+	for item in applicant_list:
+		try:
+		
+			if item.get('employment_type') == 'Civil Servant':
+				data1 = get_civil_servant_detail(item.get('cid'))
+				if data1 and 'GrossPay' in data1:
+					
+					frappe.db.set_value("Housing Application", item.get('name'), "gross_salary", data1['GrossPay'])
+					# print(f"{item.get('cid')} {data1['GrossPay']}  {item.get('name')}")
+				else:
+					frappe.db.set_value("Housing Application", item.get('name'), "gross_salary", 0)
+			if item.get('spouse_employment_type') == 'Civil Servant':
+				# print('hi')
+				if item.get('spouse_cid'):
+					data2 = get_civil_servant_detail(item.get('spouse_cid'))
+				
+
+				if data2 and data2.get("GrossPay") is not None and item.get('spouse_cid') is not None:
+					frappe.db.set_value("Housing Application", item.get('name'), "spouse_gross_salary", data2['GrossPay'])
+				else:
+					frappe.db.set_value("Housing Application", item.get('name'), "spouse_gross_salary", 0)
+			print(	
+					f"{item.get('name')} "
+					f"applicant {item.get('cid')} "
+					f"gross-> {data1.get('GrossPay', 'N/A')}  "
+					f"Spouse {item.get('spouse_cid')} "
+					f"gross--> {data2.get('GrossPay', 'N/A')}"
+				)
+		except KeyError as e:
+			print(f"Error updating {item.get('name')}: {e}")
+		data1, data2 = {}, {}
+	frappe.msgprint("salaries for applicants updated successfully")
 
 
 
@@ -591,17 +615,17 @@ def update_ranking():
 		select maximum_income from `tabBuilding Classification` where name = "Class IB"
 									""")
 		max_income_value = class_ib_maxincome[0][0]
-		if total_gross_salary >= max_income_value:
-			# print(f"{application.get('name')} is not eligible")
-			update_query = """
-    					UPDATE `tabHousing Application`
-    					SET application_status = 'Not Eligible',
-        				applicant_rank = 0
-    					WHERE name = %s;
-							"""
+		# if total_gross_salary >= max_income_value:
+		# 	# print(f"{application.get('name')} is not eligible")
+		# 	update_query = """
+		# 				UPDATE `tabHousing Application`
+		# 				SET application_status = 'Not Eligible',
+		# 				applicant_rank = 0
+		# 				WHERE name = %s;
+		# 					"""
 
-			frappe.db.sql(update_query, (application.name,))
-			print(f"{application.name}")
+		# 	frappe.db.sql(update_query, (application.name,))
+		# 	print(f"{application.name}")
 		frappe.msgprint("Rankings for 80K plus updated successfully")
 			
 
@@ -611,240 +635,240 @@ def update_ranking():
 #setting the ranks again for 
 #This is outdated
 def update_ranks():
-    # Fetch the applicant list sorted by application_date_time
-    applicant_list = frappe.get_all(
-        "Housing Application",
-        filters={"application_status":"Pending"},
-        fields=["name", "application_date_time", "building_classification","work_station","employment_type"],
-        order_by="application_date_time ASC",
-    )
+	# Fetch the applicant list sorted by application_date_time
+	applicant_list = frappe.get_all(
+		"Housing Application",
+		filters={"application_status":"Pending"},
+		fields=["name", "application_date_time", "building_classification","work_station","employment_type"],
+		order_by="application_date_time ASC",
+	)
 
-    # Initialize rank counters for different building classifications
-    class1A_rank = 1
-    class1B_rank = 1
-    class2_rank = 1
-    class3_rank = 1
-    class4_rank = 1
-    class5_rank = 1
-    # Add more classes as needed
+	# Initialize rank counters for different building classifications
+	class1A_rank = 1
+	class1B_rank = 1
+	class2_rank = 1
+	class3_rank = 1
+	class4_rank = 1
+	class5_rank = 1
+	# Add more classes as needed
 
-    for applicant in applicant_list:
-        # Assuming you have a function to determine building classification
-        building_classification = applicant.get("building_classification")
+	for applicant in applicant_list:
+		# Assuming you have a function to determine building classification
+		building_classification = applicant.get("building_classification")
 
-        # Assign ranks based on building classification
-        if building_classification == "Class IA":
-            frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class1A_rank)
-            class1A_rank += 1
-        elif building_classification == "Class IB":
-            frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class1B_rank)
-            class1B_rank += 1
-        elif building_classification == "Class II":
-            frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class2_rank)
-            class2_rank += 1
-        elif building_classification == "Class III":
-            frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class3_rank)
-            class3_rank += 1
-        elif building_classification == "Class IV":
-            frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class4_rank)
-            class4_rank += 1
-        elif building_classification == "Class V":
-            frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class5_rank)
-            class5_rank += 1
-        # Add more conditions for other building classifications
+		# Assign ranks based on building classification
+		if building_classification == "Class IA":
+			frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class1A_rank)
+			class1A_rank += 1
+		elif building_classification == "Class IB":
+			frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class1B_rank)
+			class1B_rank += 1
+		elif building_classification == "Class II":
+			frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class2_rank)
+			class2_rank += 1
+		elif building_classification == "Class III":
+			frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class3_rank)
+			class3_rank += 1
+		elif building_classification == "Class IV":
+			frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class4_rank)
+			class4_rank += 1
+		elif building_classification == "Class V":
+			frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", class5_rank)
+			class5_rank += 1
+		# Add more conditions for other building classifications
 
-        # Print the updated record (optional)
-        print(f"Updated {applicant.get('name')} - Rank: {frappe.get_value('Housing Application', applicant.get('name'), 'applicant_rank')}")
+		# Print the updated record (optional)
+		print(f"Updated {applicant.get('name')} - Rank: {frappe.get_value('Housing Application', applicant.get('name'), 'applicant_rank')}")
 
 
 
 
 #update the building category
 def update_builCate():
-    applicant_list = frappe.get_all("Housing Application", filters={}, fields=["name", "cid", "gross_salary", "spouse_gross_salary"])
-    for applicant in applicant_list:
-        gross_income = flt(applicant.get('gross_salary'), 2) + flt(applicant.get('spouse_gross_salary'), 2)
-        building_class_result = frappe.db.sql("""
-            select name from `tabBuilding Classification`
-            where %s between minimum_income and maximum_income
-        """, (gross_income,))
-        
-        if building_class_result:
-            building_class = building_class_result[0][0]
-            print(f"{building_class} for {applicant.get('cid')} {gross_income}")
-            frappe.db.set_value("Housing Application", applicant.get('name'), "building_classification", building_class)
-        else:
-            print(f"No building classification found for {applicant.get('cid')} with gross income {gross_income}")
-            
-    frappe.msgprint("Category updated successfully")
+	applicant_list = frappe.get_all("Housing Application", filters={}, fields=["name", "cid", "gross_salary", "spouse_gross_salary"])
+	for applicant in applicant_list:
+		gross_income = flt(applicant.get('gross_salary'), 2) + flt(applicant.get('spouse_gross_salary'), 2)
+		building_class_result = frappe.db.sql("""
+			select name from `tabBuilding Classification`
+			where %s between minimum_income and maximum_income
+		""", (gross_income,))
+		
+		if building_class_result:
+			building_class = building_class_result[0][0]
+			print(f"{building_class} for {applicant.get('cid')} {gross_income}")
+			frappe.db.set_value("Housing Application", applicant.get('name'), "building_classification", building_class)
+		else:
+			print(f"No building classification found for {applicant.get('cid')} with gross income {gross_income}")
+			
+	frappe.msgprint("Category updated successfully")
 
 
 
 
 # housing application ranking
 def update_ranking_3pa():
-    # Fetch the applicant list sorted by application_date_time
-    applicant_list = frappe.get_all(
-        "Housing Application",
-        filters={"application_status": "Pending"},
-        fields=["name", "application_date_time", "building_classification", "work_station", "employment_type"],
-        order_by="application_date_time ASC",
-    )
+	# Fetch the applicant list sorted by application_date_time
+	applicant_list = frappe.get_all(
+		"Housing Application",
+		filters={"application_status": "Pending"},
+		fields=["name", "application_date_time", "building_classification", "work_station", "employment_type"],
+		order_by="application_date_time ASC",
+	)
 
-    # Initialize a nested dictionary to hold rank counters
-    rank_counters = {}
+	# Initialize a nested dictionary to hold rank counters
+	rank_counters = {}
 
-    for applicant in applicant_list:
-        building_classification = applicant.get("building_classification")
-        work_station = applicant.get("work_station")
-        employment_type = applicant.get("employment_type")
+	for applicant in applicant_list:
+		building_classification = applicant.get("building_classification")
+		work_station = applicant.get("work_station")
+		employment_type = applicant.get("employment_type")
 
-        # Create a unique key for the combination of building_classification, work_station, and employment_type
-        key = (building_classification, work_station, employment_type)
+		# Create a unique key for the combination of building_classification, work_station, and employment_type
+		key = (building_classification, work_station, employment_type)
 
-        # Initialize the rank counter for the combination if it doesn't exist
-        if key not in rank_counters:
-            rank_counters[key] = 1
+		# Initialize the rank counter for the combination if it doesn't exist
+		if key not in rank_counters:
+			rank_counters[key] = 1
 
-        # Get the current rank for this combination
-        current_rank = rank_counters[key]
+		# Get the current rank for this combination
+		current_rank = rank_counters[key]
 
-        # Update the applicant's rank
-        frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", current_rank)
+		# Update the applicant's rank
+		frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", current_rank)
 
-        # Increment the rank counter for this combination
-        rank_counters[key] += 1
+		# Increment the rank counter for this combination
+		rank_counters[key] += 1
 
-        # Print the updated record (optional)
-        print(f"Updated {applicant.get('name')} - Rank: {frappe.get_value('Housing Application', applicant.get('name'), 'applicant_rank')}")
-        frappe.msgprint("Ranking updated suucess")
+		# Print the updated record (optional)
+		print(f"Updated {applicant.get('name')} - Rank: {frappe.get_value('Housing Application', applicant.get('name'), 'applicant_rank')}")
+		frappe.msgprint("Ranking updated suucess")
 
 
 def updateNotEligibleRanking():
-    applicant_list = frappe.get_all(
-        "Housing Application",
-        filters={"application_status": "Not Eligible"},
-        fields=["name", "application_date_time","work_station", "employment_type"],
-        order_by="application_date_time ASC",
-    )
+	applicant_list = frappe.get_all(
+		"Housing Application",
+		filters={"application_status": "Not Eligible"},
+		fields=["name", "application_date_time","work_station", "employment_type"],
+		order_by="application_date_time ASC",
+	)
 
-    # Initialize a nested dictionary to hold rank counters
-    rank_counters = {}
+	# Initialize a nested dictionary to hold rank counters
+	rank_counters = {}
 
-    for applicant in applicant_list:
-        work_station = applicant.get("work_station")
-        employment_type = applicant.get("employment_type")
+	for applicant in applicant_list:
+		work_station = applicant.get("work_station")
+		employment_type = applicant.get("employment_type")
 
-        # Create a unique key for the combination of building_classification, work_station, and employment_type
-        key = (work_station, employment_type)
+		# Create a unique key for the combination of building_classification, work_station, and employment_type
+		key = (work_station, employment_type)
 
-        # Initialize the rank counter for the combination if it doesn't exist
-        if key not in rank_counters:
-            rank_counters[key] = 1
+		# Initialize the rank counter for the combination if it doesn't exist
+		if key not in rank_counters:
+			rank_counters[key] = 1
 
-        # Get the current rank for this combination
-        current_rank = rank_counters[key]
+		# Get the current rank for this combination
+		current_rank = rank_counters[key]
 
-        # Update the applicant's rank
-        frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", current_rank)
+		# Update the applicant's rank
+		frappe.db.set_value("Housing Application", applicant.get("name"), "applicant_rank", current_rank)
 
-        # Increment the rank counter for this combination
-        rank_counters[key] += 1
+		# Increment the rank counter for this combination
+		rank_counters[key] += 1
 
-        # Print the updated record (optional)
-        print(f"Updated {applicant.get('name')} - Rank: {frappe.get_value('Housing Application', applicant.get('name'), 'applicant_rank')}")
-        frappe.msgprint("Noteligible ranking updated")
+		# Print the updated record (optional)
+		print(f"Updated {applicant.get('name')} - Rank: {frappe.get_value('Housing Application', applicant.get('name'), 'applicant_rank')}")
+		frappe.msgprint("Noteligible ranking updated")
 
 
 def test():
-    frappe.throw('test')
-    
+	frappe.throw('test')
+	
 def updateHousingApplicantsdata():
-    update_gross_sal()
-    update_ranking()
-    update_builCate()
-    update_ranking_3pa()
-    updateNotEligibleRanking()
-    
+	update_gross_sal()
+	update_ranking()
+	update_builCate()
+	update_ranking_3pa()
+	updateNotEligibleRanking()
+	
 
 import csv
 import frappe
 import os
 
 def create_csv_in_erpnext_path():
-    try:
-        # Data to be written to the CSV file
-        data = [
-            ["Name", "Email", "Phone"],
-            ["John Doe", "john@example.com", "1234567890"],
-            ["Jane Doe", "jane@example.com", "0987654321"]
-        ]
+	try:
+		# Data to be written to the CSV file
+		data = [
+			["Name", "Email", "Phone"],
+			["John Doe", "john@example.com", "1234567890"],
+			["Jane Doe", "jane@example.com", "0987654321"]
+		]
 
-        # Define the full path to the desired directory
-        custom_path = os.path.expanduser('~/erp/apps/erpnext')
+		# Define the full path to the desired directory
+		custom_path = os.path.expanduser('~/erp/apps/erpnext')
 
-        # Check if the directory exists, if not, print an error
-        if not os.path.exists(custom_path):
-            print(f"Directory does not exist: {custom_path}")
-            return
+		# Check if the directory exists, if not, print an error
+		if not os.path.exists(custom_path):
+			print(f"Directory does not exist: {custom_path}")
+			return
 
-        # Define the file path for the CSV file
-        file_path = os.path.join(custom_path, 'contacts2.csv')
+		# Define the file path for the CSV file
+		file_path = os.path.join(custom_path, 'contacts2.csv')
 
-        # Create the CSV file in the specified directory
-        with open(file_path, mode='w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerows(data)
+		# Create the CSV file in the specified directory
+		with open(file_path, mode='w', newline='') as file:
+			writer = csv.writer(file)
+			writer.writerows(data)
 
-        print(f"CSV file successfully created at: {file_path}")
+		print(f"CSV file successfully created at: {file_path}")
 
-    except Exception as e:
-        # Log any errors that occur
-        frappe.msgprint(f"An error occurred: {str(e)}")
+	except Exception as e:
+		# Log any errors that occur
+		frappe.msgprint(f"An error occurred: {str(e)}")
 
 from erpnext.rental_management.doctype.api_setting.api_setting import get_cid_detail, get_civil_servant_detail
 def tenant_info():
-                
-    # Fetch tenant_cid for tenants in 'Thimphu' with status 'Allocated'
-    data = frappe.db.sql('''
-        SELECT name, tenant_cid, tenant_name,block_no,flat_no,initial_allotment_date,locations,total_floor_area,building_classification
-        FROM `tabTenant Information` 
-        WHERE dzongkhag = "Thimphu" AND status = "Allocated";
-    ''', as_dict=True)
+				
+	# Fetch tenant_cid for tenants in 'Thimphu' with status 'Allocated'
+	data = frappe.db.sql('''
+		SELECT name, tenant_cid, tenant_name,block_no,flat_no,initial_allotment_date,locations,total_floor_area,building_classification
+		FROM `tabTenant Information` 
+		WHERE dzongkhag = "Thimphu" AND status = "Allocated";
+	''', as_dict=True)
 
-    # Define the custom path for CSV (change this path if needed)
-    custom_path = os.path.expanduser('~/erp/apps/erpnext')  # Adjust path as needed
-    file_path = os.path.join(custom_path, 'tenant_info_11_26.csv')
+	# Define the custom path for CSV (change this path if needed)
+	custom_path = os.path.expanduser('~/erp/apps/erpnext')  # Adjust path as needed
+	file_path = os.path.join(custom_path, 'tenant_info_aug_1.csv')
 
-    # Prepare CSV headers
-    headers = ['Tenant Name', 'Cid', 'Designation','Grade','salary','old flat no','block no id','flat no id','current rent','initial allotment date','location','total_floor_area','classification','department','Ministry_agency']
+	# Prepare CSV headers
+	headers = ['Tenant Name', 'Cid', 'Designation','Grade','salary','old flat no','block no id','flat no id','current rent','initial allotment date','location','total_floor_area','classification','department','Ministry_agency']
 
-    # Create CSV file
-    with open(file_path, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(headers)  # Write headers to CSV
+	# Create CSV file
+	with open(file_path, mode='w', newline='') as file:
+		writer = csv.writer(file)
+		writer.writerow(headers)  # Write headers to CSV
 
-        # Loop through tenants, fetch civil servant details, and write to CSV
-        for i in data:
-            latest_rent = frappe.db.sql('''
-                                        select rental_amount from `tabTenant Rental Charges` where parent='{name}' and '2024-09-18' between from_date and to_date
-                                        '''.format(name=i['name']))
-            if not latest_rent:
-                latest_rent = '0'
-            old_flat_no = frappe.db.sql('''
-                                        select old_flat_no from `tabFlat No` where name = '{name}'
-                                        '''.format(name=i['flat_no']))
-            if not old_flat_no:
-                old_flat_no = 'None'
-            data1 = get_civil_servant_detail(cid=i['tenant_cid'])
-            first_name = data1.get('firstName', '')  # Fetch first name or default to empty if not found
-            designation = data1.get('Designation', '')
-            grade = data1.get('positionLevel', '')
-            salary = data1.get('GrossPay', '')
-            dept= data1.get('DeptName','')
-            ministry_agency= data1.get('FullWorkingAgency','')
-            writer.writerow([i['tenant_name'],i['tenant_cid'], designation,grade,salary,old_flat_no[0][0],i['block_no'],i['flat_no'],latest_rent[0][0],i['initial_allotment_date'],i['locations'],i['total_floor_area'],i['building_classification'],dept,ministry_agency])  # Write tenant CID and first name to CSV
-            print(i['name'])
+		# Loop through tenants, fetch civil servant details, and write to CSV
+		for i in data:
+			latest_rent = frappe.db.sql('''
+										select rental_amount from `tabTenant Rental Charges` where parent='{name}' and '2024-09-18' between from_date and to_date
+										'''.format(name=i['name']))
+			if not latest_rent:
+				latest_rent = '0'
+			old_flat_no = frappe.db.sql('''
+										select old_flat_no from `tabFlat No` where name = '{name}'
+										'''.format(name=i['flat_no']))
+			if not old_flat_no:
+				old_flat_no = 'None'
+			data1 = get_civil_servant_detail(cid=i['tenant_cid'])
+			first_name = data1.get('firstName', '')  # Fetch first name or default to empty if not found
+			designation = data1.get('Designation', '')
+			grade = data1.get('positionLevel', '')
+			salary = data1.get('GrossPay', '')
+			dept= data1.get('DeptName','')
+			ministry_agency= data1.get('FullWorkingAgency','')
+			writer.writerow([i['tenant_name'],i['tenant_cid'], designation,grade,salary,old_flat_no[0][0],i['block_no'],i['flat_no'],latest_rent[0][0],i['initial_allotment_date'],i['locations'],i['total_floor_area'],i['building_classification'],dept,ministry_agency])  # Write tenant CID and first name to CSV
+			print(i['name'])
 
-    frappe.msgprint(f"CSV file created at: {file_path}")
-        
+	frappe.msgprint(f"CSV file created at: {file_path}")
+		

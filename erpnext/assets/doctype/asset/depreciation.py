@@ -197,15 +197,15 @@ def reset_asset_value_for_scrap_sales(asset_name, posting_date):
 
 		reverse_start_date = posting_date
 
-	if getdate(posting_date) < getdate(frappe.defaults.get_user_default("year_start_date")):
-		frappe.throw(_("Asset Sales and Scrap date should be within the current fiscal year"))
+	# if getdate(posting_date) < getdate(frappe.defaults.get_user_default("year_start_date")):
+	# 	frappe.throw(_("Asset Sales and Scrap date should be within the current fiscal year"))
 	
 	schedules = frappe.db.sql('''SELECT name, journal_entry, depreciation_amount 
 								FROM `tabDepreciation Schedule` 
 								WHERE parent = %s 
 								AND schedule_date BETWEEN %s AND %s 
 								AND (journal_entry !='' or journal_entry is NOT NULL)''',
-									( asset_name, reverse_start_date, today()), as_dict=True)
+									( asset_name, reverse_start_date, posting_date), as_dict=True)
 	accounts = frappe.db.sql("""
 					SELECT 
 						depreciation_expense_account, 
@@ -260,7 +260,7 @@ def reset_asset_value_for_scrap_sales(asset_name, posting_date):
 	if cint(frappe.db.get_value("Company", asset.company, "pro_rate_asset_value")) == 1 and cint(frappe.db.get_value("Company", asset.company, "reset_asset_value")) == 0:
 		pro_rate_days, no_of_days_in_month = 0, 0
 		if posting_date != get_first_day(posting_date):
-			pro_rate_days = date_diff(posting_date, get_first_day(posting_date))
+			pro_rate_days = date_diff(posting_date, get_first_day(posting_date)) + 1
 			no_of_days_in_month = date_diff(get_last_day(getdate(posting_date)),get_first_day(getdate(posting_date)))
 		if pro_rate_days > 1:
 			dtl = frappe.db.sql("""select name, journal_entry, depreciation_amount, income_depreciation_amount, 

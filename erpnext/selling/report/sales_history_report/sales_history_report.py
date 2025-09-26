@@ -61,6 +61,8 @@ def get_columns(data):
 	return columns
 
 def get_data(filters):
+	from frappe.query_builder import functions as fn
+
 	cu = frappe.qb.DocType('Customer')
 	so = frappe.qb.DocType('Sales Order')
 	so_item = frappe.qb.DocType('Sales Order Item')
@@ -70,12 +72,41 @@ def get_data(filters):
 	si_item = frappe.qb.DocType('Sales Invoice Item')
 	equip = frappe.qb.DocType('Equipment')
 
+	# query = (
+	# 	frappe.qb.from_(so)
+	# 	.inner_join(so_item)
+	# 	.on(so.name == so_item.parent)
+	# 	.left_join(dn_item)
+	# 	.on(dn_item.against_sales_order == so.name)
+	# 	.left_join(dn)
+	# 	.on(dn_item.parent == dn.name)
+	# 	.left_join(si_item)
+	# 	.on(si_item.delivery_note == dn.name)
+	# 	.left_join(si)
+	# 	.on(si_item.parent == si.name)
+	# 	.left_join(equip)
+	# 	.on(equip.name == dn_item.equipment)
+	# 	.left_join(cu)
+	# 	.on(si.customer == cu.name)
+	# 	.select(
+	# 		so.name, so.transaction_date, so.customer, cu.territory, cu.country, so.dispatch, so_item.qty, (so_item.rate.as_("so_rate")), (so_item.base_net_amount).as_("so_amount"), so_item.item_code, so_item.item_name, dn_item.item_type, so_item.uom, so_item.warehouse, (dn.name).as_("dn_name"), (dn.posting_date.as_("dn_date")), (dn_item.qty).as_("delivered_qty"), dn_item.others_equipment, dn_item.vehicle_number, dn_item.equipment, equip.supplier, dn_item.location, (si.name).as_("si_no"), (si.posting_date).as_("si_date"), (si.reference_date_for_payment).as_("ref_date"), si.due_date, si.total_advance, (si_item.accepted_qty).as_("accepted_qty"), (si_item.base_net_amount).as_("si_amount"), si_item.normal_loss, si_item.normal_loss_amt, si_item.abnormal_loss, si_item.abnormal_loss_amt, si_item.excess_qty, si_item.excess_amt, si.total_charges, si.grand_total
+	# 	)
+	# 	.where((so.docstatus == 1) & (dn.docstatus == 1) & (si.docstatus == 1))
+	# )
+
+	# if filters.get("customer"):
+	# 	query = (query.where(so.customer == filters.customer)) 
+	# if filters.get("from_date") and filters.get("to_date"):
+	# 	if filters.get("from_date") > filters.get("to_date"):
+	# 		frappe.throw('Enter From Date less than To Date')
+	# 	query = (query.where((dn.posting_date >= filters.from_date) &(dn.posting_date <=  filters.to_date)))
+
 	query = (
 		frappe.qb.from_(so)
 		.inner_join(so_item)
 		.on(so.name == so_item.parent)
 		.left_join(dn_item)
-		.on(dn_item.against_sales_order == so.name)
+		.on(dn_item.so_detail == so_item.name)
 		.left_join(dn)
 		.on(dn_item.parent == dn.name)
 		.left_join(si_item)
@@ -87,9 +118,37 @@ def get_data(filters):
 		.left_join(cu)
 		.on(si.customer == cu.name)
 		.select(
-			so.name, so.transaction_date, so.customer, cu.territory, cu.country, so.dispatch, so_item.qty, (so_item.rate.as_("so_rate")), (so_item.base_net_amount).as_("so_amount"), so_item.item_code, so_item.item_name, dn_item.item_type, so_item.uom, so_item.warehouse, (dn.name).as_("dn_name"), (dn.posting_date.as_("dn_date")), (dn_item.qty).as_("delivered_qty"), dn_item.others_equipment, dn_item.vehicle_number, dn_item.equipment, equip.supplier, dn_item.location, (si.name).as_("si_no"), (si.posting_date).as_("si_date"), (si.reference_date_for_payment).as_("ref_date"), si.due_date, si.total_advance, (si_item.accepted_qty).as_("accepted_qty"), (si_item.base_net_amount).as_("si_amount"), si_item.normal_loss, si_item.normal_loss_amt, si_item.abnormal_loss, si_item.abnormal_loss_amt, si_item.excess_qty, si_item.excess_amt, si.total_charges, si.grand_total
+			so.name, 
+			so.transaction_date, 
+			so.customer, 
+			cu.territory, 
+			cu.country, 
+			so.dispatch, 
+			so_item.qty, 
+			(so_item.rate.as_("so_rate")), 
+			(so_item.base_net_amount).as_("so_amount"), 
+			so_item.item_code, so_item.item_name, 
+			dn_item.item_type, 
+			so_item.uom, 
+			so_item.warehouse, 
+			(dn.name).as_("dn_name"), 
+			(dn.posting_date.as_("dn_date")), 
+			(dn_item.qty).as_("delivered_qty"), 
+			dn_item.others_equipment, 
+			dn_item.vehicle_number, 
+			dn_item.equipment, 
+			equip.supplier, 
+			dn_item.location, 
+			(si.name).as_("si_no"), 
+			(si.posting_date).as_("si_date"), 
+			(si.reference_date_for_payment).as_("ref_date"), 
+			si.due_date, si.total_advance, 
+			(dn_item.qty).as_("accepted_qty"),
+			(si_item.base_net_amount).as_("si_amount"), 
+			si_item.normal_loss, si_item.normal_loss_amt, si_item.abnormal_loss, si_item.abnormal_loss_amt, si_item.excess_qty, si_item.excess_amt, si.total_charges, si.grand_total
 		)
 		.where((so.docstatus == 1) & (dn.docstatus == 1) & (si.docstatus == 1))
+		.groupby( dn_item.name)
 	)
 
 	if filters.get("customer"):

@@ -20,7 +20,7 @@ frappe.ready(function() {
 			frappe.web_form.set_value('gross_salary_info', 'Your gross salary will be fetched from EPEMS.');
 		}
 		else{
-			frappe.throw("New applications are allowed only for civil servants in Phuentsholing and Samdrup Jongkhar.")
+			frappe.throw("New applications are allowed only for civil servants in Thimphu, Phuentsholing and Samdrup Jongkhar.")
 		}
 	});
 

@@ -56,7 +56,8 @@ def get_cid_detail(cid=None):
 	}
 	response = requests.request("GET", url, headers=headers, data=payload)
 	data = response.json()
-	data = data['citizendetails']['citizendetail'][0] if data['citizendetails'] else data['citizendetails']
+	if data:
+		data = data['citizendetails']['citizendetail'][0] if data['citizendetails'] else data['citizendetails']
 	return data
 
 

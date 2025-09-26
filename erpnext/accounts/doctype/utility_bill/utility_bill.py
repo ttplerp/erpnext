@@ -241,7 +241,7 @@ class UtilityBill(Document):
         doc.posting_date = self.posting_date
         doc.entry_type = "Journal Entry"
         doc.naming_series = "Journal Entry"
-        doc.company = "State Mining Corporation Ltd"
+        doc.company = frappe.db.get_value("Branch", self.branch, "company")
         doc.utility_bill = str(self.name)
         doc.remarks = "Utility Bill Payment " + str(self.name)
         doc.status = "Completed"

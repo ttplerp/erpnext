@@ -30,20 +30,20 @@ frappe.ui.form.on('Utility Bill', {
 				}
 			}
 		 });
-		 if(!frm.doc.journal_entry && frm.doc.docstatus === 1 && (frm.doc.payment_status === "Payment Successful" || frm.doc.payment_status === "Partial Payment")){
-			frm.add_custom_button("Create Journal Entry", function() {
-				frappe.call({
-					"method": "make_journal_entry",
-					"doc": cur_frm.doc,
-					callback: function(r, rt) {
-						if(r.message){
-							frm.refresh_fields();
-							frappe.set_route("Form", "Journal Entry", r.message);
-						}
-					}
-				});
-			}).addClass("btn-primary");
-		 }
+		//  if(!frm.doc.journal_entry && frm.doc.docstatus === 1 && (frm.doc.payment_status === "Payment Successful" || frm.doc.payment_status === "Partial Payment")){
+		// 	frm.add_custom_button("Create Journal Entry", function() {
+		// 		frappe.call({
+		// 			"method": "make_journal_entry",
+		// 			"doc": cur_frm.doc,
+		// 			callback: function(r, rt) {
+		// 				if(r.message){
+		// 					frm.refresh_fields();
+		// 					frappe.set_route("Form", "Journal Entry", r.message);
+		// 				}
+		// 			}
+		// 		});
+		// 	}).addClass("btn-primary");
+		//  }
 	},
 	"tds_percent": function(frm) {
 		calculate_tds(frm);

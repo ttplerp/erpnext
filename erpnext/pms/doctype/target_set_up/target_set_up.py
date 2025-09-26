@@ -16,7 +16,7 @@ class TargetSetUp(Document):
 		self.load_pre_requirement()
 		self.check_target()
 		self.check_duplicate_entry() 
-		# validate_workflow_states(self) 
+		validate_workflow_states(self)
 		if self.workflow_state != "Approved":
 			notify_workflow_states(self)
 		if self.reference and self.reason:
@@ -226,16 +226,23 @@ def apply_target_filter(doctype, txt, searchfield, start, page_len, filters):
 def manual_approval_for_hr(name, employee, pms_calendar):
 	frappe.db.sql("update `tabTarget Set Up` set workflow_state = 'Approved', docstatus = 1 where employee = '{0}' and pms_calendar = '{1}' and name = '{2}' and workflow_state = 'Waiting Approval'".format(employee, pms_calendar, name))
 	frappe.msgprint("Document has been Approved")
-
+@frappe.whitelist()
 def get_permission_query_conditions(user):
 	# restrict user from accessing this doctype    
 	if not user: user = frappe.session.user     
 	user_roles = frappe.get_roles(user)
-
 	if user == "Administrator":      
 		return
 	if "HR User" in user_roles or "HR Manager" in user_roles:       
 		return
+	if "GM" in user_roles:
+		department = frappe.db.get_value("Employee", {"user_id": user}, "division")
+		return """(
+			`tabTarget Set Up`.owner = '{user}'
+			or
+			(`tabTarget Set Up`.division = '{department}' and `tabTarget Set Up`.workflow_state not in ('Draft', 'Rejected','Cancelled'))
+		)""".format(department=department, user=user)
+	
 	return """(
 		`tabTarget Set Up`.owner = '{user}'
 		or

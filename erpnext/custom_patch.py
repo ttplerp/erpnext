@@ -292,3 +292,48 @@ def update_salary_structure_company():
 		for a in name:
 			frappe.db.sql("""update `tabSalary Structure`set company ="National Housing Development Corporations Ltd." where name = '{}'""".format(a.name))
 			print(a.name)
+
+# def make_payment_gl():
+# 	doc = frappe.get_doc("Payment Entry", )
+
+def depreciation_entry():
+	doc = frappe.get_doc("Depreciation Entry", "DE24120001")
+	doc.on_submit()
+	
+def del_asset_depretiation():
+	id = frappe.db.sql("""Select name as name, journal_entry as journal_entry from `tabDepreciation Schedule` where parent ='' and schedule_date >= '2024-01-01' """,as_dict=1)
+	for a in id:
+		if a.journal_entry:
+			# frappe.db.sql("""delete from `tabDepreciation Schedule` where name='{}'""".format(a.name))
+			# frappe.db.sql("""delete from `tabJournal Entry` where name='{name}'""".format(name=a.journal_entry))
+			frappe.db.sql("""update `tabDepreciation Schedule` set journal_entry='' where name='{name}'""".format(name=a.name))
+			print(a.name)
+			# journal_item = frappe.db.sql("""select name from `tabJournal Entry Account` where parent='{voucher}'""".format(voucher=a.journal_entry), as_dict=True)
+			# for gl in journal_item:
+			# 	frappe.db.sql("""delete from `tabJournal Entry Account` where name='{name}'""".format(name=gl.name))
+			# 	print(gl.name)
+	
+def update_mr_cc():
+	with open("/home/frappe/erp/nhdcl_mr_list.csv") as f:
+		reader = csv.reader(f)
+		mylist = list(reader)
+		c = 0
+		for i in mylist:
+			c+=1
+			mr_doc = i[0]
+			cc = 'Thimphu Dzongkhag - NHDCL'
+			branch = 'Thimphu Dzongkhag'
+			# print(mr_doc)
+			frappe.db.sql("update `tabMaterial Request` set branch='{}', cost_center='{}' where name='{}' and branch='Real Estate Division'".format(branch, cc, mr_doc))
+			frappe.db.sql("update `tabMaterial Request Item` set cost_center='{}' where parent='{}' and cost_center='Real Estate Division - NHDCL'".format(cc, mr_doc))
+		print(c)
+
+def post_rental_bill_gl():
+	doc = frappe.get_doc("Rental Bill", "RBCHU/2502/0749")
+	doc.make_gl_entry()
+	
+
+def submit_boq_addition():
+	doc =frappe.get_doc("BOQ Addition", "BOQADD2025070005")
+	doc.submit()
+	print("done")

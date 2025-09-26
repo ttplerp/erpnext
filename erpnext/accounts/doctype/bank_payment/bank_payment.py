@@ -712,7 +712,70 @@ class BankPayment(Document):
             cond = 'AND pe.posting_date BETWEEN "{}" AND "{}"'.format(
                 str(self.from_date), str(self.to_date)
             )
+        
+        total= frappe.db.get_value("Payment Entry", self.transaction_no,'total_allocated_amount')
+        
+        tax= frappe.db.get_value("Payment Entry", self.transaction_no,'total_taxes_and_charges') or 0
+        
+        deduction = frappe.db.sql(
+            """
+            SELECT SUM(amount) AS amount 
+            FROM `tabPayment Entry Deduction` 
+            WHERE parent=%s
+            """,
+            (self.transaction_no,),
+            as_dict=True
+        )
+        # frappe.throw(str(deduction))
+        # Safely get amount from first result
+        d_amount = deduction[0].get("amount") or 0 if deduction else 0
+     
+        total_amount = total + tax - d_amount
+        total_amount = round(total_amount,2)
+        # frappe.throw(str(total_amount))
 
+        # return frappe.db.sql(
+        #     """
+        #         SELECT 
+        #             "Payment Entry" transaction_type, 
+        #             pe.name transaction_id, 
+		# 			pe.name transaction_reference, 
+        #             pe.posting_date transaction_date, 
+		# 			pe.party as supplier, 
+        #             pe.party as beneficiary_name, 
+		# 			s.bank_name as bank_name, 
+        #             s.bank_branch, 
+        #             fib.financial_system_code, 
+        #             s.bank_account_type, 
+        #             s.account_number as bank_account_no,
+		# 			round(( pe.paid_amount_after_tax + (select ifnull(sum(ped.amount),0)
+        #                 from `tabPayment Entry Deduction` ped
+        #                 where ped.parent = pe.name
+        #             )),2) amount,
+		# 			(CASE WHEN s.bank_name = "INR" THEN s.inr_bank_code ELSE NULL END) inr_bank_code,
+		# 			(CASE WHEN s.bank_name = "INR" THEN s.inr_purpose_code ELSE NULL END) inr_purpose_code,
+		# 			"Draft" status
+		# 		FROM `tabPayment Entry` pe
+		# 		JOIN `tabSupplier` s ON s.name = pe.party
+		# 		LEFT JOIN `tabFinancial Institution Branch` fib ON fib.name = s.bank_branch
+		# 		WHERE pe.branch = "{branch}" 
+		# 			{cond}
+		# 			AND pe.docstatus = 1
+		# 			AND pe.party_type = 'Supplier'
+		# 			AND pe.party IS NOT NULL
+		# 			AND IFNULL(pe.paid_amount,0) > 0
+		# 			AND NOT EXISTS(select 1
+		# 				FROM `tabBank Payment Item` bpi
+		# 				WHERE bpi.transaction_type = 'Payment Entry'
+		# 				AND bpi.transaction_id = pe.name
+		# 				AND bpi.parent != '{bank_payment}'
+		# 				AND bpi.docstatus != 2
+		# 				AND bpi.status NOT IN ('Cancelled', 'Failed')
+		# 			)
+		#         ORDER BY pe.posting_date, pe.name """.format(bank_payment=self.name, branch=self.branch, cond=cond
+        #         ),
+        #         as_dict=True,
+        #     )
         return frappe.db.sql(
             """
                 SELECT 
@@ -727,10 +790,7 @@ class BankPayment(Document):
                     fib.financial_system_code, 
                     s.bank_account_type, 
                     s.account_number as bank_account_no,
-					round(( pe.paid_amount_after_tax + (select ifnull(sum(ped.amount),0)
-                        from `tabPayment Entry Deduction` ped
-                        where ped.parent = pe.name
-                    )),2) amount,
+					{amount} as amount,
 					(CASE WHEN s.bank_name = "INR" THEN s.inr_bank_code ELSE NULL END) inr_bank_code,
 					(CASE WHEN s.bank_name = "INR" THEN s.inr_purpose_code ELSE NULL END) inr_purpose_code,
 					"Draft" status
@@ -751,7 +811,7 @@ class BankPayment(Document):
 						AND bpi.docstatus != 2
 						AND bpi.status NOT IN ('Cancelled', 'Failed')
 					)
-		        ORDER BY pe.posting_date, pe.name """.format(bank_payment=self.name, branch=self.branch, cond=cond
+		        ORDER BY pe.posting_date, pe.name """.format(amount=total_amount,bank_payment=self.name, branch=self.branch, cond=cond
                 ),
                 as_dict=True,
             )
@@ -969,7 +1029,7 @@ def process_one_to_one_payment(doc, publish_progress=True):
         bpi = frappe.get_doc("Bank Payment Item", i.name)
         if i.bank_name == "BOBL":
             from_acc = doc.bank_account_no
-            trans_amount = i.amount
+            trans_amount = round(i.amount,2)
             to_acc = i.bank_account_no
             result = intra_payment(from_acc, trans_amount, PromoCode, to_acc, PEMSRefNum)
         elif i.inr_bank_code:

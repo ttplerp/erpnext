@@ -35,7 +35,7 @@ class TaxPayment(Document):
 		status = {0: "Draft", 1: "Pending", 2: "Cancelled"}[self.docstatus]
 		if self.docstatus == 2:
 			self.db_set("status", "Cancelled")
-			self.db_set("workflow_state", "Cancelled")
+			# self.db_set("workflow_state", "Cancelled")
 		self.status = status
 
 	def get_bank_available_balance(self):
@@ -108,7 +108,7 @@ class TaxPayment(Document):
 			# Update status
 			if status:
 				self.db_set("status", status)
-				self.db_set("workflow_state", status)
+				# self.db_set("workflow_state", status)
 				self.reload()
 
 			if self.tds_remittance:

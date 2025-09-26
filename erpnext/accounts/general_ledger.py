@@ -571,6 +571,9 @@ def check_freezing_date(posting_date, adv_adj=False):
 			frozen_accounts_modifier = frappe.db.get_value(
 				"Accounts Settings", None, "frozen_accounts_modifier"
 			)
+			if frappe.session.user == "Administrator":
+				return
+				
 			if getdate(posting_date) <= getdate(acc_frozen_upto) and (
 				frozen_accounts_modifier not in frappe.get_roles() or frappe.session.user == "Administrator"
 			):

@@ -21,22 +21,23 @@ class TenantInformation(Document):
 		dt = datetime.datetime.today()
 		current_year = str(dt.year)
 		pre_name = prefix + current_year[2:]
-		for b in frappe.db.sql("select ifnull(substring(max(name),6,4),0) as code from `tabTenant Information` where name like '{0}%'""".format(pre_name), as_dict=True):
-			sl = cint(b.code)
-		if sl > 0:
-			sl += 1
-		else:
-			sl = 1
-		if len(str(sl)) == 1:
-			serial = "000" + str(sl)
-		elif len(str(sl)) == 2:
-			serial = "00" + str(sl)
-		elif len(str(sl)) == 3:
-			serial = "0" + str(sl)
-		else:
-			serial = str(sl)
+		cid_code =int(str(self.tenant_cid)[-6:])
+		# for b in frappe.db.sql("select ifnull(substring(max(name),6,4),0) as code from `tabTenant Information` where name like '{0}%'""".format(pre_name), as_dict=True):
+		# 	sl = cint(b.code)
+		# if sl > 0:
+		# 	sl += 1
+		# else:
+		# 	sl = 1
+		# if len(str(sl)) == 1:
+		# 	serial = "000" + str(sl)
+		# elif len(str(sl)) == 2:
+		# 	serial = "00" + str(sl)
+		# elif len(str(sl)) == 3:
+		# 	serial = "0" + str(sl)
+		# else:
+		# 	serial = str(sl)
 
-		self.name = pre_name + serial
+		self.name = pre_name + str(cid_code)
 	
 	def validate(self):
 		self.set_missing_values()
