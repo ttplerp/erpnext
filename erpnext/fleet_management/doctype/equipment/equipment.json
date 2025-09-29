@@ -57,7 +57,8 @@
   "gewog",
   "village",
   "equipment_history_tab",
-  "equipment_history"
+  "equipment_history",
+  "maintenance_history"
  ],
  "fields": [
   {
@@ -378,11 +379,17 @@
    "fieldname": "is_tanker",
    "fieldtype": "Check",
    "label": "Is Tanker"
+  },
+  {
+   "fieldname": "maintenance_history",
+   "fieldtype": "Table",
+   "label": "Maintenance History",
+   "options": "Equipment Maintenance History"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-15 17:52:45.803604",
+ "modified": "2025-09-29 16:12:15.337041",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Equipment",
