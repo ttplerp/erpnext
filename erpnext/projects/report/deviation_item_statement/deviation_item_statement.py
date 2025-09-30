@@ -148,15 +148,15 @@ def get_data(filters):
 			""".format(key, item.boq_code))
 			
 			item['executed_qty'] = executed_qty[0][0] if (executed_qty and executed_qty[0][0] is not None) else 0
-			item['qty_within'] = 1.2 * item['boq_qty'] if item['boq_qty'] else 0
-			item['qty_beyond'] = item['executed_qty'] - item['qty_within']
+			item['qty_within'] = 0.8 * item['boq_qty'] if item['executed_qty'] < item['boq_qty'] else 1.2 * item['boq_qty']
+			item['qty_beyond'] = 0 if item['executed_qty'] == item['qty_within'] else item['executed_qty'] - item['qty_within']
 			item['rate_within'] = item['boq_rate']
 			item['rate_beyond'] = item['boq_rate']
-			item['check_percent'] = item['boq_rate'] * item['qty_beyond'] / item['total_amount'] * 100
+			item['check_percent'] = (item['boq_rate'] * item['qty_beyond']) / (9892858.6 * 100)
 			item['boq_amount'] = item['boq_qty'] * item['boq_rate']
 			item['amount_within'] = item['qty_within'] * item['rate_within']
 			item['amount_beyond'] = item['qty_beyond'] * item['rate_beyond']
-			item['financial_implication'] = item['amount_beyond'] + item['amount_within'] - item['boq_amount']
+			item['financial_implication'] = (item['amount_beyond'] + item['amount_within']) - item['boq_amount']
 		
 		boq_row = frappe._dict()
 		boq_row = {'boq': key}

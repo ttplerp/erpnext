@@ -107,12 +107,10 @@
    "read_only": 1
   },
   {
-   "fetch_from": "block_no.building_classification",
    "fieldname": "building_classification",
    "fieldtype": "Link",
    "label": "Building Classification",
-   "options": "Building Classification",
-   "read_only": 1
+   "options": "Building Classification"
   },
   {
    "fieldname": "old_flat_no",
@@ -139,7 +137,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-10-05 11:47:32.749572",
+ "modified": "2025-09-30 12:25:40.478253",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Flat No",
