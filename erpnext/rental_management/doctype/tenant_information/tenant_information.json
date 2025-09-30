@@ -287,11 +287,13 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "phone_no",
    "fieldtype": "Phone",
    "label": "Phone No"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "email",
    "fieldtype": "Data",
    "label": "Email"
@@ -554,7 +556,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-10-14 13:44:18.189395",
+ "modified": "2025-09-30 12:40:26.996045",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Tenant Information",
