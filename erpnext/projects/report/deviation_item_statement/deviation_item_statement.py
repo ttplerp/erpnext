@@ -143,7 +143,7 @@ def get_data(filters):
 				select IFNULL(SUM(mbi.entry_quantity),0) as executed_qty
 				from `tabMB Entry` mb, `tabMB Entry BOQ` mbi
 				where mbi.parent = mb.name and mb.docstatus = 1 and mb.boq = '{0}'
-				and mbi.boq_code = '{1}'
+				and mbi.boq_code = '{1}' and mbi.is_selected = 1
 				group by mbi.boq_code, mb.boq
 			""".format(key, item.boq_code))
 			

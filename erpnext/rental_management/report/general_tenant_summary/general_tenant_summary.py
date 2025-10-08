@@ -248,7 +248,7 @@ def get_data(filters):
 		for rf_excess in refund_excess_amounts.get(key) or []:
 			filter_data['total_excess_amount'] 		= flt(filter_data['total_excess_amount'] - rf_excess.amount, 2)
 
-		filter_data['total_rent_received'] = flt(filter_data['total_received_amount'] + filter_data['total_pre_rent_amount'] + filter_data['total_excess_amount'] + filter_data['total_penalty_amount'] - filter_data['total_discount_amount'], 2)
+		filter_data['total_rent_received'] = flt(filter_data['total_received_amount'] + filter_data['total_pre_rent_amount'] + filter_data['total_excess_amount'] - filter_data['total_discount_amount'], 2)
 		# filter_data['outstanding_amount'] = flt(filter_data['total_rent_amount'] + filter_data['total_prop_mgt_amount'] - filter_data['total_received_amount'] - filter_data['total_adjusted_amount'] - filter_data['total_rent_write_off_amount'] - filter_data['total_tds_amount'], 2)
 		filter_data['outstanding_amount'] = flt(filter_data['total_receivable_amount'] - filter_data['total_received_amount'] - filter_data['total_adjusted_amount'] - filter_data['total_rent_write_off_amount'] - filter_data['total_tds_amount'], 2)
 		filter_data['pre_rent_balance'] = flt(filter_data['total_pre_rent_amount'] + filter_data['total_tds_on_pre_rent_amount'] - filter_data['total_adjusted_amount'], 2)
@@ -292,7 +292,7 @@ def get_all_bills(filters):
 				IFNULL(sum(rpd.discount_amount), 0) rpd_discount_amount,
 				IFNULL(sum(rpd.property_management_amount), 0) rpd_property_management_amount
 			from `tabRental Bill` rb
-			left join `tabRental Payment Details` rpd on rb.name=rpd.parent and rpd.payment_date <= '{to_date}'
+			left join `tabRental Payment Details` rpd on rb.name=rpd.parent and rpd.payment_date between '{from_date}' and '{to_date}'
 			where rb.docstatus=1 and rb.gl_entry = 1 {cond} group by name order by rb.name
 		""".format(from_date=filters.get("from_date"), to_date=filters.get("to_date"), cond=cond)
 	
