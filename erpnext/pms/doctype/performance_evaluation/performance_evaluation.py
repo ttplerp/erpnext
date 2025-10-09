@@ -197,7 +197,8 @@ class PerformanceEvaluation(Document):
 				frappe.throw('You need to rate competency at row <b>{}</b>'.format(i+1))
 
 			if not item.is_parent and item.top_level == self.evaluate_competency_item[indx].competency:
-				total += flt(item.rating)
+				item.rating = flt(item.rating)
+				total += flt(item.rating) * 5
 				count += 1
 				if i == len(self.evaluate_competency_item):
 					indx = i
@@ -229,7 +230,7 @@ class PerformanceEvaluation(Document):
 		
 		self.overall_rating = frappe.db.sql('''select name from `tabOverall Rating` where  upper_range_percent >= {0} and lower_range_percent <= {0} and disabled=0'''.format(self.final_score_percent))[0][0]
 		self.db_set('overall_rating', self.overall_rating)
-		self.star_obtained = frappe.db.get_value('Overall Rating',self.overall_rating,'weightage')
+		self.star_obtained = frappe.db.get_value('Overall Rating',self.overall_rating,'star')
 		# frappe.throw(str(self.star_obtained))
 		self.db_set('star_obtained', self.star_obtained)
 

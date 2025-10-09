@@ -670,11 +670,9 @@
   {
    "allow_on_submit": 1,
    "depends_on": "eval:doc.overall_rating",
-   "fetch_from": "overall_rating.star",
    "fieldname": "star_obtained",
    "fieldtype": "Rating",
-   "label": "Star Obtained",
-   "read_only": 1
+   "label": "Star Obtained"
   },
   {
    "fetch_from": "employee.user_id",
@@ -734,7 +732,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2025-08-18 14:49:31.618542",
+ "modified": "2025-10-09 12:11:08.139027",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Performance Evaluation",
