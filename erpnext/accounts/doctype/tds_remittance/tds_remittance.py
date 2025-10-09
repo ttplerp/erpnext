@@ -7,26 +7,141 @@ from frappe.utils import flt, cint
 from erpnext.accounts.general_ledger import make_gl_entries
 from frappe import _
 from erpnext.controllers.accounts_controller import AccountsController
-from erpnext.accounts.doctype.journal_entry.journal_entry import get_tds_account
+from erpnext.accounts.doctype.journal_entry.journal_entry import get_tds_account, get_default_bank_cash_account
 from erpnext.accounts.utils import get_account_currency, get_balance_on, get_outstanding_invoices,check_clearance_date
 from frappe.model.mapper import get_mapped_doc
+from collections import defaultdict
 
 class TDSRemittance(AccountsController):
 	def validate(self):
 		self.calculate_total()
-		if self.branch:
+		if self.branch and not self.cost_center:
 			self.cost_center = frappe.get_value("Branch", self.branch, "cost_center")
 
 	def on_submit(self):
 		if not self.cost_center:
-			frappe.throw(f"Missing Cost Center.")
-		self.make_gl_entries()
+			frappe.throw(f"Missing Cost Center. Required to post total credit amount")
+		self.make_bank_entry()
 
 	def on_cancel(self):
 		check_clearance_date(self.doctype, self.name)
 		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
-		self.make_gl_entries()
-		
+		if frappe.db.exists("Journal Entry", self.je_reference):
+			if frappe.get_value("Journal Entry", {"name": self.je_reference, "docstatus": 1}):
+				frappe.throw(f"Cancel the Journal Entry {self.je_reference} linked with this transaction.")
+		# self.make_gl_entries()
+	
+	def make_bank_entry(self):
+		from collections import defaultdict
+		months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
+		year = str(self.from_date).split("-")[0]
+		month = str(self.from_date).split("-")[1]
+		month_name = months[cint(month) - 1]
+
+		tds_account  = get_tds_account(self.tax_withholding_category)
+		default_business_activity = frappe.db.get_value("Business Activity", {"is_default": 1})
+
+		if flt(self.total_tds) > 0:
+			je = frappe.new_doc("Journal Entry")
+			je.posting_date = self.posting_date
+			je.voucher_type = "Bank Entry"
+			je.company = self.company
+			je.branch = frappe.get_value("Branch", {"cost_center": self.cost_center}, "name")
+			je.remark = f"RRCO {self.tax_withholding_category} {self.posting_date}"
+			je.title = f"RRCO {self.tax_withholding_category} for month {month_name} {year}"
+
+			# Group items by cost_center and sum tds_amount
+			cost_center_totals = defaultdict(float)
+			cost_center_accounts = {}
+
+			for item in self.items:
+				cost_center_totals[item.cost_center] += item.tds_amount
+				cost_center_accounts[item.cost_center] = item.tax_account  # store account for each cost center
+
+			# Add debit entries grouped by cost_center
+			for cc, total_debit in cost_center_totals.items():
+				je.append(
+					"accounts",
+					{
+						"account": cost_center_accounts[cc],
+						"cost_center": cc,
+						"account_currency": 'BTN',
+						"debit_in_account_currency": total_debit,
+						"reference_type": self.doctype,
+						"reference_name": self.name,
+						"business_activity": default_business_activity
+					},
+				)
+
+			# Add single credit entry
+			je.append(
+				"accounts",
+				{
+					"account": str(self.credit_account),
+					"cost_center": self.cost_center,
+					"account_currency": 'BTN',
+					"credit_in_account_currency": self.total_tds,
+					"reference_type": self.doctype,
+					"reference_name": self.name,
+					"business_activity": default_business_activity
+				},
+			)
+
+			je.flags.ignore_permissions = 1
+			je.save()
+			frappe.db.set_value(self.doctype, self.name, "je_reference", je.name)
+		else:
+			frappe.throw("Total TDS Amount is Zero.")
+
+	# def make_bank_entry(self):
+	# 	months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
+	# 	year = str(self.from_date).split("-")[0]
+	# 	month = str(self.from_date).split("-")[1]
+	# 	month_name = months[cint(month) - 1]
+
+	# 	tds_account  = get_tds_account(self.tax_withholding_category)
+	# 	default_business_activity = frappe.db.get_value("Business Activity", {"is_default": 1})
+
+	# 	if flt(self.total_tds) > 0:
+	# 		je = frappe.new_doc("Journal Entry")
+	# 		je.posting_date = self.posting_date
+	# 		je.voucher_type = "Bank Entry"
+	# 		je.company = self.company
+	# 		je.branch = frappe.get_value("Branch", {"cost_center": self.cost_center}, "name")
+	# 		je.remark = f"RRCO {self.tax_withholding_category} {self.posting_date}"
+	# 		je.title = f"RRCO {self.tax_withholding_category} for month {month_name} {year}"
+
+	# 		for item in self.items:
+	# 			je.append(
+	# 				"accounts",
+	# 				{
+	# 					"account": str(item.tax_account),
+	# 					"cost_center": item.cost_center,
+	# 					"account_currency": 'BTN',
+	# 					"debit_in_account_currency": item.tds_amount,
+	# 					"reference_type": self.doctype,
+	# 					"reference_name": self.name,
+	# 					"business_activity": default_business_activity
+	# 				},
+	# 			)
+	# 		je.append(
+	# 			"accounts",
+	# 			{
+	# 				"account": str(self.credit_account),
+	# 				"cost_center": self.cost_center,
+	# 				"account_currency": 'BTN',
+	# 				"credit_in_account_currency": self.total_tds,
+	# 				"reference_type": self.doctype,
+	# 				"reference_name": self.name,
+	# 				"business_activity": default_business_activity
+	# 			},
+	# 		)
+	# 		je.flags.ignore_permissions=1
+	# 		je.save()
+	# 		frappe.db.set_value(self.doctype, self.name, "je_reference", je.name)
+	# 	else:
+	# 		frappe.throw("Total TDS Amount is Zero.")
+	
 	def get_condition(self):
 		if self.branch:
 			return ' AND t.branch ="{}" '.format(self.branch)
@@ -59,44 +174,45 @@ class TDSRemittance(AccountsController):
 		for d in self.items:
 			self.total_tds 		+= flt(d.tds_amount)
 			self.total_amount 	+= flt(d.bill_amount)
+	
+	# Jai commanted it. as Pralad sir asked to make Draft JV
+	# def make_gl_entries(self):
+	# 	gl_entries   = []
+	# 	tds_account  = get_tds_account(self.tax_withholding_category)
+	# 	default_business_activity = frappe.db.get_value("Business Activity", {"is_default": 1})
 
-	def make_gl_entries(self):
-		gl_entries   = []
-		tds_account  = get_tds_account(self.tax_withholding_category)
-		default_business_activity = frappe.db.get_value("Business Activity", {"is_default": 1})
-
-		if flt(self.total_tds) > 0:
-			for item in self.items:
-				gl_entries.append(
-					self.get_gl_dict({
-						"account": str(item.tax_account),
-						"debit": item.tds_amount,
-						"debit_in_account_currency": item.tds_amount,
-						"voucher_type": self.doctype,
-						"voucher_no": self.name,
-						"cost_center": item.cost_center,
-						"business_activity": item.business_activity,
-						"against_voucher_type":	item.invoice_type,
-						"against_voucher": item.invoice_no
-					},
-					account_currency= "BTN"))
+	# 	if flt(self.total_tds) > 0:
+	# 		for item in self.items:
+	# 			gl_entries.append(
+	# 				self.get_gl_dict({
+	# 					"account": str(item.tax_account),
+	# 					"debit": item.tds_amount,
+	# 					"debit_in_account_currency": item.tds_amount,
+	# 					"voucher_type": self.doctype,
+	# 					"voucher_no": self.name,
+	# 					"cost_center": item.cost_center,
+	# 					"business_activity": item.business_activity,
+	# 					"against_voucher_type":	item.invoice_type,
+	# 					"against_voucher": item.invoice_no
+	# 				},
+	# 				account_currency= "BTN"))
 			
-			gl_entries.append(
-				self.get_gl_dict({
-					"account": str(self.credit_account),
-					"credit": self.total_tds,
-					"credit_in_account_currency": self.total_tds,
-					"voucher_type": self.doctype,					
-					"voucher_no": self.name,
-					"cost_center": self.cost_center,
-					"against_voucher_type":	self.doctype,
-					"against_voucher": self.name,
-					"business_activity": default_business_activity
-				},
-				account_currency="BTN"))
-			make_gl_entries(gl_entries, cancel=(self.docstatus == 2),update_outstanding="No", merge_entries=False)
-		else:
-			frappe.throw("Total TDS Amount is Zero.")
+	# 		gl_entries.append(
+	# 			self.get_gl_dict({
+	# 				"account": str(self.credit_account),
+	# 				"credit": self.total_tds,
+	# 				"credit_in_account_currency": self.total_tds,
+	# 				"voucher_type": self.doctype,					
+	# 				"voucher_no": self.name,
+	# 				"cost_center": self.cost_center,
+	# 				"against_voucher_type":	self.doctype,
+	# 				"against_voucher": self.name,
+	# 				"business_activity": default_business_activity
+	# 			},
+	# 			account_currency="BTN"))
+	# 		make_gl_entries(gl_entries, cancel=(self.docstatus == 2),update_outstanding="No", merge_entries=False)
+	# 	else:
+	# 		frappe.throw("Total TDS Amount is Zero.")
 
 
 def get_tds_invoices(tax_withholding_category, from_date, to_date, name, filter_existing = False, cond='', party_type = None):

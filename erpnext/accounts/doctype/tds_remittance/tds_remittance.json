@@ -41,7 +41,8 @@
   "cheque_no",
   "cheque_date",
   "section_break_34",
-  "amended_from"
+  "amended_from",
+  "je_reference"
  ],
  "fields": [
   {
@@ -77,6 +78,7 @@
    "reqd": 1
   },
   {
+   "description": "*from Cost Center to post total credit amount",
    "fieldname": "cost_center",
    "fieldtype": "Link",
    "ignore_user_permissions": 1,
@@ -97,6 +99,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "description": "*if selected, only Branch related data will be pulled.",
    "fieldname": "branch",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -259,12 +262,18 @@
   {
    "fieldname": "section_break_34",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "je_reference",
+   "fieldtype": "Data",
+   "label": "JE Reference",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-07 23:37:53.862313",
+ "modified": "2025-10-09 11:24:09.816787",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "TDS Remittance",
