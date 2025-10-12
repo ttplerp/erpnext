@@ -24,64 +24,63 @@ class CloseFollowUp(Document):
   
 		for fu in follow_up.get("audit_observations"):
 			for cfu in close_follow_up.get("audit_observations"):
-				if fu.audit_area_checklist == cfu.audit_area_checklist and fu.observation_title == cfu.observation_title:
+				if fu.audit_area_checklist == cfu.audit_area_checklist and fu.para_no == cfu.para_no:
+					# frappe.throw(f"{cfu.status} - {fu.observation_title} - {cfu.audit_area_checklist}")
 					if not cancel:
 						fu.db_set("status", cfu.status, commit=True)
 					else:
-						fu.db_set("status", "Replied", commit=True)
+						fu.db_set("status", "Follow Up", commit=True)
 
 	def update_execute_audit(self,cancel=0):
-		execute_audit = frappe.get_doc("Execute Audit", self.execute_audit_no)
+		execute_audit = frappe.get_doc("Audit Report", self.execute_audit_no)
 		close_follow_up = frappe.get_doc("Close Follow Up", self.name)
   
 		for ea in execute_audit.get("audit_checklist"):
 			for cfu in close_follow_up.get("audit_observations"):
-				if ea.audit_area_checklist == cfu.audit_area_checklist and ea.observation_title == cfu.observation_title:
+				if ea.audit_area_checklist == cfu.audit_area_checklist and ea.para_no == cfu.para_no:
 					if not cancel:
 						ea.db_set("status", cfu.status, commit=True)
-						ea.db_set("audit_remarks", cfu.audit_remarks, commit=True)
-						ea.db_set("auditee_remarks", cfu.auditee_remarks, commit=True)
 					else:
-						ea.db_set("status", "Replied", commit=True)
-						ea.db_set("audit_remarks", '', commit=True)
-						ea.db_set("auditee_remarks", '', commit=True)
-	
+						ea.db_set("status", "Follow Up", commit=True)
+		
 	def update_execute_audit_status(self, cancel=0):
-		if frappe.db.exists("Prepare Audit Plan", self.prepare_audit_plan_no):
-			pap_doc = frappe.get_doc("Prepare Audit Plan", self.prepare_audit_plan_no)
-			eu_doc = frappe.get_doc("Execute Audit", self.execute_audit_no)
-			fu_doc = frappe.get_doc("Follow Up", self.follow_up_no)
-			
-			if not cancel:
-				flag = 0
-				for fu in fu_doc.get("audit_observations"):
-					if fu.status != 'Closed':
-						flag = 1
+		# if frappe.db.exists("Prepare Audit Plan", self.prepare_audit_plan_no):
+			# pap_doc = frappe.get_doc("Prepare Audit Plan", self.prepare_audit_plan_no)
+		eu_doc = frappe.get_doc("Audit Report", self.execute_audit_no)
+		fu_doc = frappe.get_doc("Follow Up", self.follow_up_no)
+		
+		if not cancel:
+			flag = 0
+			for fu in eu_doc.get("audit_checklist"):
+				if fu.status not in ('Closed', 'Resolved'):
+					flag = 1
 
-				if flag == 0:
-					pap_doc.db_set("status",'Closed')
-					eu_doc.db_set("status", 'Closed')
-			else:
-				fu_doc = frappe.get_doc("Follow Up", self.follow_up_no)
-				if fu_doc.docstatus == 1:
-					pap_doc.db_set("status", 'Follow Up')
-					eu_doc.db_set("status", 'Follow Up')
-				else:
-					initial_doc = frappe.get_doc("Audit Report", {"execute_audit_no": self.execute_audit_no})
-					if initial_doc.docstatus == 1:
-						pap_doc.db_set("status", 'Initial Report')
-						eu_doc.db_set("status", 'Initial Report')
-					else:
-						if eu_doc.docstatus == 1:
-							pap_doc.db_set("status", 'Audit Execution')
-							eu_doc.db_set("status", 'Exit Meeting')
-						else:
-							ael_doc = frappe.get_doc("Audit Engagement Letter", self.audit_engagement_letter)
-							if ael_doc.docstatus == 1:
-								pap_doc.db_set("status", 'Engagement Letter')
-							else:
-								pap_doc.db_set("status", 'Pending')
-							eu_doc.db_set("status", 'Pending')
+			if flag == 0:
+				# pap_doc.db_set("status",'Closed')
+				eu_doc.db_set("status", 'Closed')
+		else:
+			eu_doc.db_set("status", 'Follow Up')
+
+			# fu_doc = frappe.get_doc("Follow Up", self.follow_up_no)
+			# if fu_doc.docstatus == 1:
+			# 	# pap_doc.db_set("status", 'Follow Up')
+			# 	eu_doc.db_set("status", 'Follow Up')
+			# else:
+			# 	initial_doc = frappe.get_doc("Audit Report", self.execute_audit_no)
+			# 	if initial_doc.docstatus == 1:
+			# 		# pap_doc.db_set("status", 'Initial Report')
+			# 		eu_doc.db_set("status", 'Initial Report')
+			# 	else:
+			# 		if eu_doc.docstatus == 1:
+			# 			# pap_doc.db_set("status", 'Audit Execution')
+			# 			eu_doc.db_set("status", 'Exit Meeting')
+			# 		else:
+			# 			# ael_doc = frappe.get_doc("Audit Engagement Letter", self.audit_engagement_letter)
+			# 			# if ael_doc.docstatus == 1:
+			# 			# 	pap_doc.db_set("status", 'Engagement Letter')
+			# 			# else:
+			# 			# 	pap_doc.db_set("status", 'Pending')
+			# 			eu_doc.db_set("status", 'Pending')
 
 	@frappe.whitelist()
 	def get_auditor_and_auditee(self):
@@ -105,7 +104,7 @@ class CloseFollowUp(Document):
 	def get_checklist(self):
 		data = frappe.db.sql("""
 			SELECT 
-				b.audit_area_checklist, b.observation_title, b.nature_of_irregularity, 'Closed' status, b.audit_remarks, b.auditee_remarks
+				b.audit_area_checklist, para_no, para_title, observation, 'Close' status
 			FROM 
 				`tabFollow Up` a
 			INNER JOIN

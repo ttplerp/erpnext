@@ -12,7 +12,7 @@ frappe.ui.form.on('Follow Up', {
 		}
 	},
 	refresh: function(frm) {
-		if (frm.doc.docstatus == 1 && frm.doc.cflg_follow_up == 0 && frm.doc.owner == frappe.session.user) {
+		if (frm.doc.docstatus == 1 && frm.doc.cflg_follow_up == 0) {
 			frm.add_custom_button(__('Close Follow Up'), ()=>{
 				frappe.model.open_mapped_doc({
 					method: "erpnext.ams.doctype.follow_up.follow_up.create_close_follow_up",	
@@ -78,10 +78,19 @@ frappe.ui.form.on("Follow Up Checklist Item", {
 		let user_id = frappe.session.user;
 		let supervisor_email = cur_frm.doc.supervisor_email;
 		let row = locals[cdt][cdn];
-		frappe.call({
-			method: "get_auditor_and_auditee",
-			doc: frm.doc,
-			callback: function(r){
+
+		if(['Closed', 'Resolved'].includes(row.status) && cur_frm.doc.docstatus == 1){
+			frm.fields_dict['audit_observations'].grid.grid_rows_by_docname[cdn].toggle_editable('status', false);
+			// frm.fields_dict['audit_observations'].grid.grid_rows_by_docname[cdn].toggle_editable('audit_remarks', false);
+			// frm.fields_dict['audit_observations'].grid.grid_rows_by_docname[cdn].toggle_editable('auditee_remarks', false);
+			// status.read_only = 1;
+			// audit_r.read_only = 1;
+			// auditee_r.read_only = 1;
+		}
+		// frappe.call({
+		// 	method: "get_auditor_and_auditee",
+		// 	doc: frm.doc,
+		// 	callback: function(r){
 				// if(user_id == frm.doc.owner && row.status != 'Closed'){
 				// 	status.read_only = 1;
 				// 	audit_r.read_only = 0;
@@ -95,21 +104,22 @@ frappe.ui.form.on("Follow Up Checklist Item", {
 				// 	audit_r.read_only = 1;
 				// 	auditee_r.read_only = 1;
 				// }
-				if(r.message[0] == 1 && row.status != 'Closed'){
-					status.read_only = 1;
-					audit_r.read_only = 0;
-					auditee_r.read_only = 1;
-				}else if(r.message[1] == 1 && row.status != 'Closed'){
-					status.read_only = 1;
-					audit_r.read_only = 1;
-					auditee_r.read_only = 0;
-				}else{
-					status.read_only = 1;
-					audit_r.read_only = 1;
-					auditee_r.read_only = 1;
-				}
-			}
-		})
+
+				// if(r.message[0] == 1 && row.status != 'Closed'){
+				// 	status.read_only = 1;
+				// 	audit_r.read_only = 0;
+				// 	auditee_r.read_only = 1;
+				// }else if(r.message[1] == 1 && row.status != 'Closed'){
+				// 	status.read_only = 1;
+				// 	audit_r.read_only = 1;
+				// 	auditee_r.read_only = 0;
+				// }else{
+				// 	status.read_only = 1;
+				// 	audit_r.read_only = 1;
+				// 	auditee_r.read_only = 1;
+				// }
+		// 	}
+		// })
 		frm.refresh_fields("audit_checklist");
 	}
 });

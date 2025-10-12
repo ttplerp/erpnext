@@ -7,9 +7,9 @@
  "engine": "InnoDB",
  "field_order": [
   "checklist",
+  "para_no",
   "col_break_001",
-  "observation_title",
-  "section_break_001",
+  "para_title",
   "observation",
   "section_break_002",
   "employee",
@@ -64,20 +64,8 @@
    "fieldtype": "Column Break"
   },
   {
-   "allow_on_submit": 1,
-   "fieldname": "observation_title",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Observation Title",
-   "read_only": 1
-  },
-  {
-   "fieldname": "section_break_001",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "observation",
-   "fieldtype": "Text Editor",
+   "fieldtype": "Data",
    "label": "Observation"
   },
   {
@@ -91,12 +79,25 @@
    "hidden": 1,
    "label": "Child Ref",
    "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "para_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Para No",
+   "read_only": 1
+  },
+  {
+   "fieldname": "para_title",
+   "fieldtype": "Data",
+   "label": "Para Title"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-08-19 12:59:56.703619",
+ "modified": "2025-08-27 10:33:01.176845",
  "modified_by": "Administrator",
  "module": "AMS",
  "name": "Follow Up DA Item",

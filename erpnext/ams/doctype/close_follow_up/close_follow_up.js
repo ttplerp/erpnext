@@ -51,16 +51,17 @@ frappe.ui.form.on("Follow Up Checklist Item", {
 				// 	audit_r.read_only = 1;
 				// 	auditee_r.read_only = 1;
 				// }
-				if(r.message[0] == 1){
-					audit_r.read_only = 0;
-					auditee_r.read_only = 1;
-				}else if(r.message[1] == 1){
-					audit_r.read_only = 1;
-					auditee_r.read_only = 0;
-				}else{
-					audit_r.read_only = 1;
-					auditee_r.read_only = 1;
-				}
+
+				// if(r.message[0] == 1){
+				// 	audit_r.read_only = 0;
+				// 	auditee_r.read_only = 1;
+				// }else if(r.message[1] == 1){
+				// 	audit_r.read_only = 1;
+				// 	auditee_r.read_only = 0;
+				// }else{
+				// 	audit_r.read_only = 1;
+				// 	auditee_r.read_only = 1;
+				// }
 			}
 		})
 		frm.refresh_fields("audit_checklist");

@@ -10,22 +10,21 @@
  "field_order": [
   "branch",
   "follow_up_no",
-  "iain_number",
   "from_date",
   "supervisor_id",
   "supervisor_email",
-  "supervisor_name",
-  "supervisor_designation",
   "column_break_23",
   "reference_date",
+  "iain_number",
   "type",
+  "supervisor_name",
+  "supervisor_designation",
   "to_date",
+  "column_break_24",
+  "creation_date",
   "follow_up_by",
   "auditor_name",
   "auditor_designation",
-  "column_break_24",
-  "creation_date",
-  "execute_audit_no",
   "section_break_15",
   "scope_of_audit",
   "sb_audit_team",
@@ -39,6 +38,7 @@
   "sb_supervisor_accountability",
   "supervisor_accountability",
   "reference_no_section",
+  "execute_audit_no",
   "audit_engagement_letter",
   "column_break_26",
   "prepare_audit_plan_no",
@@ -141,14 +141,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "follow_up_no.execute_audit_no",
-   "fieldname": "execute_audit_no",
-   "fieldtype": "Link",
-   "label": "Execute Audit No",
-   "options": "Execute Audit",
-   "read_only": 1
-  },
-  {
    "fieldname": "section_break_15",
    "fieldtype": "Section Break",
    "hidden": 1
@@ -190,9 +182,8 @@
   {
    "fetch_from": "follow_up_no.audit_engagement_letter",
    "fieldname": "audit_engagement_letter",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "label": "Audit Engagement Letter",
-   "options": "Audit Engagement Letter",
    "read_only": 1
   },
   {
@@ -202,9 +193,8 @@
   {
    "fetch_from": "follow_up_no.prepare_audit_plan_no",
    "fieldname": "prepare_audit_plan_no",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "label": "Prepare Audit Plan No.",
-   "options": "Prepare Audit Plan",
    "read_only": 1
   },
   {
@@ -294,12 +284,19 @@
    "fieldtype": "Data",
    "label": "IAIN Number",
    "read_only": 1
+  },
+  {
+   "fieldname": "execute_audit_no",
+   "fieldtype": "Link",
+   "label": "Execute Audit No.",
+   "options": "Audit Report",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-26 16:39:23.460486",
+ "modified": "2025-09-22 11:34:49.270613",
  "modified_by": "Administrator",
  "module": "AMS",
  "name": "Close Follow Up",

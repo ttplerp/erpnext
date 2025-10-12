@@ -14,7 +14,7 @@ class FollowUp(Document):
 	def on_submit(self):
 		self.update_execute_audit_status()
 		self.update_execute_checklist_item()
-		self.notify_audit_and_auditee()
+		# self.notify_audit_and_auditee()
   
 	def on_cancel(self):
 		self.update_execute_audit_status(1)
@@ -22,59 +22,56 @@ class FollowUp(Document):
  
 	def on_update_after_submit(self):
 		self.on_update_checklist_item()
-		self.notify_audit_and_auditee()
+		# self.notify_audit_and_auditee()
 
 	def update_execute_audit_status(self, cancel=0):
-		if frappe.db.exists("Prepare Audit Plan", self.prepare_audit_plan_no) and frappe.db.exists("Execute Audit", self.execute_audit_no):
-			pap_doc = frappe.get_doc("Prepare Audit Plan", self.prepare_audit_plan_no)
-			eu_doc = frappe.get_doc("Execute Audit", self.execute_audit_no)
-			
-			if not cancel:
-				pap_doc.db_set("status",'Follow Up')
+		# if frappe.db.exists("Prepare Audit Plan", self.prepare_audit_plan_no) and frappe.db.exists("Execute Audit", self.execute_audit_no):
+		# 	pap_doc = frappe.get_doc("Prepare Audit Plan", self.prepare_audit_plan_no)
+		eu_doc = frappe.get_doc("Audit Report", self.execute_audit_no)
+		
+		if not cancel:
+			# pap_doc.db_set("status",'Follow Up')
+			if eu_doc.status != 'Follow UP':
 				eu_doc.db_set("status", 'Follow Up')
-			else:
-				initial_doc = frappe.get_doc("Audit Report", {"execute_audit_no": self.execute_audit_no})
-				if initial_doc.docstatus == 1:
-					pap_doc.db_set("status", 'Initial Report')
-					eu_doc.db_set("status", 'Initial Report')
-				else:
-					if eu_doc.docstatus == 1:
-						pap_doc.db_set("status", 'Audit Execution')
-						eu_doc.db_set("status", 'Exit Meeting')
-					else:
-						ael_doc = frappe.get_doc("Audit Engagement Letter", self.audit_engagement_letter)
-						if ael_doc.docstatus == 1:
-							pap_doc.db_set("status", 'Engagement Letter')
-						else:
-							pap_doc.db_set("status", 'Pending')
-						eu_doc.db_set("status", 'Pending')
+		else:
+			if not frappe.db.exists("Follow Up", {"execute_audit_no": self.execute_audit_no, "docstatus": 1, "name": ["!=", self.name]}):
+				eu_doc.db_set("status", 'Pending')
+			# initial_doc = frappe.get_doc("Audit Report", {"execute_audit_no": self.execute_audit_no})
+			# if initial_doc.docstatus == 1:
+			# 	# pap_doc.db_set("status", 'Initial Report')
+			# 	eu_doc.db_set("status", 'Initial Report')
+			# else:
+			# 	if eu_doc.docstatus == 1:
+			# 		# pap_doc.db_set("status", 'Audit Execution')
+			# 		eu_doc.db_set("status", 'Exit Meeting')
+			# 	else:
+			# 		# ael_doc = frappe.get_doc("Audit Engagement Letter", self.audit_engagement_letter)
+			# 		# if ael_doc.docstatus == 1:
+			# 		# 	pap_doc.db_set("status", 'Engagement Letter')
+			# 		# else:
+			# 		# 	pap_doc.db_set("status", 'Pending')
+			# 		eu_doc.db_set("status", 'Pending')
   
 	def on_update_checklist_item(self):
-		ea = frappe.get_doc("Execute Audit", self.execute_audit_no)
+		ea = frappe.get_doc("Audit Report", self.execute_audit_no)
 		follow_up = frappe.get_doc("Follow Up", self.name)
   
 		for eaci in ea.get("audit_checklist"):
 			for cl in follow_up.get("audit_observations"):
-				if cl.audit_area_checklist == eaci.audit_area_checklist and cl.observation_title == eaci.observation_title:
-					if eaci.status == 'Follow Up':
-						eaci.db_set("status",'Replied')
-					if cl.status == "Reply":						
-						cl.db_set("status",'Replied')
+				if cl.audit_area_checklist == eaci.audit_area_checklist and cl.para_no == eaci.para_no:
+					eaci.db_set("status", cl.status)
 
 	def update_execute_checklist_item(self, cancel=0):
-		ea = frappe.get_doc("Execute Audit", self.execute_audit_no)
+		ea = frappe.get_doc("Audit Report", self.execute_audit_no)
 		follow_up = frappe.get_doc("Follow Up", self.name)
 
 		for eaci in ea.get("audit_checklist"):
 			for cl in follow_up.get("audit_observations"):
-				if cl.audit_area_checklist == eaci.audit_area_checklist and cl.observation_title == eaci.observation_title:		
+				if cl.audit_area_checklist == eaci.audit_area_checklist and cl.para_no == eaci.para_no:		
 					if not cancel:
-						if eaci.status == 'Open' and cl.audit_remarks:
-							eaci.db_set("status", 'Follow Up')
-							cl.db_set("status", 'Reply')						
+						eaci.db_set("status", cl.status)					
 					else:
 						eaci.db_set("status", 'Open')
-						cl.db_set("status", 'Follow Up')
 	
 	@frappe.whitelist()		
 	def notify_audit_and_auditee(self):
@@ -152,14 +149,14 @@ class FollowUp(Document):
 	def get_observations(self):
 		data = frappe.db.sql("""
 			SELECT 
-				eaci.audit_area_checklist, eaci.observation_title, eaci.nature_of_irregularity, 'Follow Up' status
+				eaci.audit_area_checklist, para_no, para_title, observation, 'Follow Up' status
 			FROM 
-				`tabExecute Audit` ea 
+				`tabAudit Report` ea 
 			INNER JOIN
-				`tabExecute Audit Checklist Item` eaci
+				`tabAudit Initial Report Checklist Item` eaci
 			ON
 				ea.name = eaci.parent
-				AND eaci.status != 'Closed'
+				AND eaci.status not in ('Closed', 'Resolved')
 			WHERE			
 				ea.name = '{}' 
 			AND
@@ -168,7 +165,7 @@ class FollowUp(Document):
 		""".format(self.execute_audit_no), as_dict=True)
 
 		if not data:
-			frappe.throw(_('There are no Audit Observation defined for Execute Audit No. <b>{}</b>'.format(self.execute_audit_no)))
+			frappe.throw(_('There are no Audit Observation defined for Audit Report No. <b>{}</b>'.format(self.execute_audit_no)))
 
 		self.set('audit_observations', [])
 		for d in data:
@@ -182,9 +179,9 @@ class FollowUp(Document):
 		for auditor in self.audit_team:
 			auditors.append(frappe.db.get_value("Employee", auditor.employee, "user_id"))
 		for auditee_emp in self.direct_accountability:
-			auditees.append(frappe.db.get_vlue("Employee", auditee_emp.employee, "user_id"))
+			auditees.append(frappe.db.get_value("Employee", auditee_emp.employee, "user_id"))
 		for auditee_sup in self.supervisor_accountability:
-				auditees.append(frappe.db.get_vlue("Employee", auditee_sup.employee, "user_id"))
+			auditees.append(frappe.db.get_value("Employee", auditee_sup.supervisor, "user_id"))
 		if frappe.session.user == "Administrator":
 			auditor_display = auditee_display = 1
 		if frappe.session.user in auditors:
@@ -195,30 +192,32 @@ class FollowUp(Document):
 
 	@frappe.whitelist()		
 	def get_direct_accountability(self):
-		old_doc = frappe.get_doc("Execute Audit", self.execute_audit_no)
+		old_doc = frappe.get_doc("Audit Report", self.execute_audit_no)
 		self.set('direct_accountability', [])
 		self.set('supervisor_accountability', [])
 		for a in old_doc.get("audit_checklist"):
 			for b in old_doc.get("direct_accountability"):
-				if a.audit_area_checklist == b.checklist and a.observation_title == b.observation_title:
+				if a.audit_area_checklist == b.checklist and a.para_no == b.para_no:
 					if a.status != "Closed":
 						row = self.append('direct_accountability',{})
 						row.checklist  = b.checklist
-						row.observation_title  = b.observation_title
+						row.para_no  = b.para_no
+						row.para_title  = b.para_title
 						row.observation  = b.observation
 						row.employee  = b.employee
 						row.employee_name  = b.employee_name
 						row.designation  = b.designation
 						row.child_ref = b.name
 			for c in old_doc.get("supervisor_accountability"):
-				if a.audit_area_checklist == c.checklist and a.observation_title == c.observation_title:
+				if a.audit_area_checklist == c.checklist and a.para_no == c.para_no:
 					if a.status != "Closed":
-						row = self.append('direct_accountability',{})
+						row = self.append('supervisor_accountability',{})
 						row.checklist  = c.checklist
-						row.observation_title  = c.observation_title
+						row.para_no  = c.para_no
+						row.para_title  = c.para_title
 						row.observation  = c.observation
-						row.employee  = c.supervisor
-						row.employee_name  = c.supervisor_name
+						row.supervisor  = c.supervisor
+						row.supervisor_name  = c.supervisor_name
 						row.designation  = c.designation
 						row.child_ref = c.name
 
@@ -230,6 +229,7 @@ def create_close_follow_up(source_name, target_doc=None):
 			"doctype": "Close Follow Up",
 			"field_map": {
 				"follow_up_no": "name",
+				"audit_team": "audit_team",
 			}
 
 		},

@@ -16,15 +16,15 @@
   "supervisor_email",
   "column_break_23",
   "posting_date",
-  "reference_date",
+  "execute_audit_date",
   "type",
   "to_date",
   "supervisor_name",
+  "supervisor_designation",
   "column_break_24",
   "follow_up_by",
   "auditor_name",
   "auditor_designation",
-  "supervisor_designation",
   "section_break_15",
   "scope_of_audit",
   "sb_audit_team",
@@ -54,7 +54,6 @@
    "reqd": 1
   },
   {
-   "fetch_from": "execute_audit_no.supervisor_id",
    "fieldname": "supervisor_id",
    "fieldtype": "Link",
    "label": "Supervisor ID",
@@ -62,7 +61,6 @@
    "read_only": 1
   },
   {
-   "fetch_from": "execute_audit_no.from_date",
    "fieldname": "from_date",
    "fieldtype": "Date",
    "hidden": 1,
@@ -75,14 +73,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "execute_audit_no.posting_date",
-   "fieldname": "reference_date",
-   "fieldtype": "Date",
-   "label": "Execute Audit Date",
-   "read_only": 1
-  },
-  {
-   "fetch_from": "execute_audit_no.type",
    "fieldname": "type",
    "fieldtype": "Data",
    "label": "Type",
@@ -97,7 +87,6 @@
    "read_only": 1
   },
   {
-   "fetch_from": "execute_audit_no.to_date",
    "fieldname": "to_date",
    "fieldtype": "Date",
    "hidden": 1,
@@ -110,7 +99,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "default": "Today",
    "fieldname": "posting_date",
    "fieldtype": "Date",
    "label": "Posting Date",
@@ -137,14 +125,12 @@
    "hidden": 1
   },
   {
-   "fetch_from": "execute_audit_no.scope_of_audit",
    "fieldname": "scope_of_audit",
    "fieldtype": "Small Text",
    "hidden": 1,
    "label": "Scope of the Audit"
   },
   {
-   "fetch_from": "execute_audit_no.objective_of_audit",
    "fieldname": "objective_of_audit",
    "fieldtype": "Small Text",
    "hidden": 1,
@@ -186,11 +172,9 @@
    "label": "Reference Details"
   },
   {
-   "fetch_from": "execute_audit_no.audit_engagement_letter",
    "fieldname": "audit_engagement_letter",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "label": "Audit Engagement Letter",
-   "options": "Audit Engagement Letter",
    "read_only": 1
   },
   {
@@ -198,11 +182,9 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "execute_audit_no.prepare_audit_plan_no",
    "fieldname": "prepare_audit_plan_no",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "label": "Prepare Audit Plan No.",
-   "options": "Prepare Audit Plan",
    "read_only": 1
   },
   {
@@ -258,7 +240,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Execute Audit No.",
-   "options": "Execute Audit",
+   "options": "Audit Report",
    "reqd": 1
   },
   {
@@ -294,12 +276,19 @@
    "fieldtype": "Data",
    "label": "IAIN Number",
    "read_only": 1
+  },
+  {
+   "fieldname": "execute_audit_date",
+   "fieldtype": "Date",
+   "label": "Execute Audit Date",
+   "read_only": 1
   }
  ],
+ "in_create": 1,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-26 16:39:40.262455",
+ "modified": "2025-08-27 17:38:58.063426",
  "modified_by": "Administrator",
  "module": "AMS",
  "name": "Follow Up",
