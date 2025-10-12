@@ -3,23 +3,51 @@
 
 from __future__ import unicode_literals
 import frappe
+from frappe.model.mapper import get_mapped_doc
 from frappe.model.document import Document
 from erpnext.custom_workflow import validate_workflow_states, notify_workflow_states
 
 class AuditReport(Document):
 	def validate(self):
-		pass
+		self.set_supervisor()
+		self.validate_assigned_accountability()
 		# validate_workflow_states(self)
 		# notify_workflow_states(self)
 
 	def on_submit(self):
-		self.update_audit_status()
-		self.update_execute_checklist_item()
+		pass
+		# self.update_audit_status()
+		# self.update_execute_checklist_item()
   
 	def on_cancel(self):
-		self.update_audit_status(1)
-		self.update_execute_checklist_item(1)
- 
+		pass
+		# self.update_audit_status(1)
+		# self.update_execute_checklist_item(1)
+
+	def validate_assigned_accountability(self):
+		if not self.direct_accountability and not self.supervisor_accountability:
+			return
+
+		for d in self.direct_accountability:
+			if not d.employee:
+				frappe.throw('Employee is mandatory in Direct Accountability for Para No: <b>{}</b>'.format(d.para_no))
+			# if not frappe.db.exists("Employee", d.employee):
+			# 	frappe.throw('Employee: <b>{}</b> does not exist in the system.'.format(d.employee))
+
+		for s in self.supervisor_accountability:
+			if not s.supervisor:
+				frappe.throw('Supervisor is mandatory in Supervisor Accountability for Para No: <b>{}</b>'.format(s.para_no))
+			# if not frappe.db.exists("Employee", s.supervisor):
+			# 	frappe.throw('Supervisor: <b>{}</b> does not exist in the system.'.format(s.supervisor))
+		
+	def set_supervisor(self):
+		if not self.supervisor_id:
+			if frappe.db.exists("Employee", {"user_id":frappe.session.user}):
+				doc = frappe.get_doc("Employee", {"user_id":frappe.session.user})
+				if doc.reports_to:
+					self.supervisor_id = frappe.db.get_value("Employee", doc.reports_to, "user_id")
+
+	# disabled func. for now.
 	def update_audit_status(self, cancel=0):
 		if frappe.db.exists("Prepare Audit Plan", self.prepare_audit_plan_no):
 			pap_doc = frappe.get_doc("Prepare Audit Plan", self.prepare_audit_plan_no)
@@ -103,6 +131,66 @@ class AuditReport(Document):
 			row = self.append('audit_checklist',{})
 			row.update(d)
 	
+	@frappe.whitelist()
+	def get_observation(self):
+		data = frappe.db.sql("""
+			select 
+				audit_area_checklist as checklist, para_no, para_title, observation
+			from 
+				`tabAudit Initial Report Checklist Item`
+			where 
+				parent = '{0}'
+			order by para_no
+		""".format(self.name), as_dict=True)
+
+		if not data:
+			frappe.throw('There are no Observation defined for Audit Report: <b>{}</b>'.format(self.name))
+
+		self.set('direct_accountability', [])
+		self.set('supervisor_accountability', [])
+		for d in data:
+			row = self.append('direct_accountability',{})
+			row2 = self.append('supervisor_accountability', {})
+			row2.update(d)
+			row.update(d)
+
+	#To display declaration field/create draft report button based on auditor logged in
+	@frappe.whitelist()
+	def check_auditor_and_audit_report(self):
+		display = audit_report = 0
+		for auditor in self.audit_team:
+			if frappe.session.user == frappe.db.get_value("Employee",auditor.employee,"user_id"):
+				display = 1
+		return display
+
+@frappe.whitelist()
+def create_follow_up(source_name, target_doc=None):
+	doclist = get_mapped_doc("Audit Report", source_name, {
+		"Audit Report": {
+			"doctype": "Follow Up",
+			"field_map": {
+				"name": "execute_audit_no",
+				# "execute_audit_date": "posting_date",
+				"audit_team": "audit_team",
+				# "audit_checklist": "audit_checklist",
+			}
+		},
+		"Audit Initial Report DA Item": {
+					"doctype": "Follow Up DA Item",
+					"field_map": [
+						["child_ref", "name"],
+					]
+				},
+		"Direct Accountability Supervisor Item": {
+					"doctype": "Direct Accountability Supervisor Item",
+					"field_map": [
+						["child_ref", "name"],
+					]
+				},
+	}, target_doc)
+
+	return doclist
+
 def get_permission_query_conditions(user):
 	if not user:
 		user = frappe.session.user

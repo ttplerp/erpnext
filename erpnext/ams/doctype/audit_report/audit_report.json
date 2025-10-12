@@ -11,26 +11,27 @@
   "plan_details_section",
   "branch",
   "iain_number",
-  "supervisor_id",
-  "supervisor_email",
+  "type",
+  "creation_date",
   "column_break_23",
   "execute_audit_date",
-  "type",
+  "supervisor_id",
   "supervisor_name",
-  "column_break_24",
-  "creation_date",
   "supervisor_designation",
+  "column_break_24",
+  "supervisor_email",
   "from_date",
   "to_date",
+  "status",
   "section_break_15",
   "scope_of_audit",
   "objective_of_audit",
   "section_break_14",
   "audit_team",
   "audit_area_checklist_section",
-  "get_audit_checklist",
   "audit_checklist",
   "direct_accountability_details",
+  "get_observation",
   "direct_accountability",
   "sb_supervisor_accountability",
   "supervisor_accountability",
@@ -40,7 +41,6 @@
   "audit_engagement_letter",
   "column_break_27",
   "workflow_state",
-  "status",
   "sb_approver",
   "approver",
   "col_break_001",
@@ -60,7 +60,6 @@
    "fieldtype": "Link",
    "label": "Auditee Branch",
    "options": "Branch",
-   "read_only": 1,
    "reqd": 1
   },
   {
@@ -68,9 +67,7 @@
    "fieldname": "supervisor_id",
    "fieldtype": "Link",
    "label": "Supervisor ID",
-   "options": "Employee",
-   "read_only": 1,
-   "reqd": 1
+   "options": "Employee"
   },
   {
    "fetch_from": "execute_audit_no.from_date",
@@ -78,7 +75,6 @@
    "fieldtype": "Date",
    "in_list_view": 1,
    "label": "From Date",
-   "read_only": 1,
    "reqd": 1
   },
   {
@@ -89,8 +85,7 @@
    "fetch_from": "reference_no.type",
    "fieldname": "type",
    "fieldtype": "Data",
-   "label": "Type",
-   "read_only": 1,
+   "label": "Audit Type",
    "reqd": 1
   },
   {
@@ -106,7 +101,6 @@
    "fieldtype": "Date",
    "in_list_view": 1,
    "label": "To Date",
-   "read_only": 1,
    "reqd": 1
   },
   {
@@ -172,8 +166,7 @@
   {
    "fieldname": "direct_accountability",
    "fieldtype": "Table",
-   "options": "Audit Initial Report DA Item",
-   "read_only": 1
+   "options": "Audit Initial Report DA Item"
   },
   {
    "collapsible": 1,
@@ -185,8 +178,7 @@
    "fetch_from": "execute_audit_plan_no.audit_engagement_letter",
    "fieldname": "audit_engagement_letter",
    "fieldtype": "Data",
-   "label": "Audit Engagement Letter",
-   "options": "Audit Engagement Letter"
+   "label": "Audit Engagement Letter"
   },
   {
    "fieldname": "column_break_27",
@@ -214,22 +206,19 @@
    "fetch_from": "execute_audit_no.posting_date",
    "fieldname": "execute_audit_date",
    "fieldtype": "Date",
-   "label": "Execute Audit Date",
-   "read_only": 1
+   "label": "Execute Audit Date"
   },
   {
    "default": "Today",
    "fieldname": "creation_date",
    "fieldtype": "Date",
-   "label": "Posting Date",
-   "read_only": 1
+   "label": "Posting Date"
   },
   {
    "fetch_from": "execute_audit_no.prepare_audit_plan_no",
    "fieldname": "prepare_audit_plan_no",
    "fieldtype": "Data",
-   "label": "Prepare Audit Plan No",
-   "options": "Prepare Audit Plan"
+   "label": "Prepare Audit Plan No"
   },
   {
    "fieldname": "column_break_26",
@@ -249,12 +238,6 @@
    "hidden": 1,
    "label": "Workflow State",
    "options": "Workflow State"
-  },
-  {
-   "fieldname": "get_audit_checklist",
-   "fieldtype": "Button",
-   "hidden": 1,
-   "label": "Get Audit Checklist"
   },
   {
    "fieldname": "sb_approver",
@@ -297,11 +280,10 @@
    "default": "Open",
    "fieldname": "status",
    "fieldtype": "Select",
-   "hidden": 1,
    "in_standard_filter": 1,
    "label": "Status",
    "no_copy": 1,
-   "options": "Open\nApproved\nRejected\nCancelled",
+   "options": "Open\nPending\nExit Meeting\nInitial Report\nFollow Up\nClosed",
    "read_only": 1
   },
   {
@@ -317,14 +299,18 @@
   {
    "fieldname": "iain_number",
    "fieldtype": "Data",
-   "label": "IAIN Number",
-   "read_only": 1
+   "label": "IAIN Number"
+  },
+  {
+   "fieldname": "get_observation",
+   "fieldtype": "Button",
+   "label": "Get Checklist/Observation"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-08-05 11:46:28.528896",
+ "modified": "2025-10-09 11:56:22.397442",
  "modified_by": "Administrator",
  "module": "AMS",
  "name": "Audit Report",
