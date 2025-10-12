@@ -111,10 +111,12 @@ class AssetMovement(Document):
 	def on_submit(self):
 		self.set_latest_cost_center_in_asset()
 		# notify_workflow_states(self)
+		self.update_ledger()
 
 	def on_cancel(self):
 		self.set_latest_cost_center_in_asset()
 		# notify_workflow_states(self)
+		self.update_ledger(1)
 
 	def set_latest_cost_center_in_asset(self):
 		current_cost_center, current_employee = "", ""
@@ -155,6 +157,21 @@ class AssetMovement(Document):
 					"custodian_name": current_employee_name
 				}, update_modified=True)
 			
+	# Update Cost Center in Depreciation Journal Entries and GL Entries, on backdated Asset Movement
+	def update_ledger(self, cancel=0):
+		if not cancel:
+			for d in self.assets:
+				for jea in frappe.db.sql("select distinct jea.parent from `tabJournal Entry Account` jea, `tabJournal Entry` je where je.name=jea.parent and je.voucher_type='Depreciation Entry' and\
+					reference_type='Asset' and reference_name=%s and je.posting_date > %s", (d.asset, self.transaction_date), as_dict=True):
+					frappe.db.sql("update `tabJournal Entry` set cost_center=%s where name=%s", (d.target_cost_center, jea.parent))
+					frappe.db.sql("update `tabGL Entry` set cost_center=%s where voucher_no=%s and voucher_type='Journal Entry'", (d.target_cost_center, jea.parent))
+		else:
+			for d in self.assets:
+				for jea in frappe.db.sql("select distinct jea.parent from `tabJournal Entry Account` jea, `tabJournal Entry` je where je.name=jea.parent and je.voucher_type='Depreciation Entry' and\
+					reference_type='Asset' and reference_name=%s and je.posting_date > %s", (d.asset, self.transaction_date), as_dict=True):
+					frappe.db.sql("update `tabJournal Entry` set cost_center=%s where name=%s", (d.source_cost_center, jea.parent))
+					frappe.db.sql("update `tabGL Entry` set cost_center=%s where voucher_no=%s and voucher_type='Journal Entry'", (d.source_cost_center, jea.parent))
+
 	@frappe.whitelist()
 	def get_asset_list(self):
 		if not self.from_employee:
