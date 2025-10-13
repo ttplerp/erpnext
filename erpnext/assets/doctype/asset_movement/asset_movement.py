@@ -39,6 +39,9 @@ class AssetMovement(Document):
 				if not d.source_cost_center:
 					d.source_cost_center = frappe.db.get_value("Asset", d.asset, "cost_center")
 
+				if not d.target_cost_center:
+					d.target_cost_center = frappe.db.get_value("Employee", d.to_employee, "cost_center")
+
 				if not d.source_cost_center:
 					frappe.throw(_("Source Cost Center is required for the Asset {0}").format(d.asset))
 
@@ -198,7 +201,7 @@ class AssetMovement(Document):
 					data = {"asset":x.name, 
 							"from_employee":self.from_employee, 
 							"to_employee":self.to_employee, 
-							"source_cost_center": frappe.db.get_value("Employee",self.from_employee,"cost_center"),
+							"source_cost_center": frappe.db.get_value("Asset", x.name, "cost_center"),
 							"target_cost_center": frappe.db.get_value("Employee",self.to_employee,"cost_center")
 							}
 					row.update(data)
