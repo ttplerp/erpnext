@@ -165,13 +165,13 @@ class AssetMovement(Document):
 		if not cancel:
 			for d in self.assets:
 				for jea in frappe.db.sql("select distinct jea.parent from `tabJournal Entry Account` jea, `tabJournal Entry` je where je.name=jea.parent and je.voucher_type='Depreciation Entry' and\
-					reference_type='Asset' and reference_name=%s and je.posting_date > %s", (d.asset, self.transaction_date), as_dict=True):
+					jea.reference_type='Asset' and jea.reference_name=%s and je.posting_date > %s", (d.asset, self.transaction_date), as_dict=True):
 					frappe.db.sql("update `tabJournal Entry` set cost_center=%s where name=%s", (d.target_cost_center, jea.parent))
 					frappe.db.sql("update `tabGL Entry` set cost_center=%s where voucher_no=%s and voucher_type='Journal Entry'", (d.target_cost_center, jea.parent))
 		else:
 			for d in self.assets:
 				for jea in frappe.db.sql("select distinct jea.parent from `tabJournal Entry Account` jea, `tabJournal Entry` je where je.name=jea.parent and je.voucher_type='Depreciation Entry' and\
-					reference_type='Asset' and reference_name=%s and je.posting_date > %s", (d.asset, self.transaction_date), as_dict=True):
+					jea.reference_type='Asset' and jea.reference_name=%s and je.posting_date > %s", (d.asset, self.transaction_date), as_dict=True):
 					frappe.db.sql("update `tabJournal Entry` set cost_center=%s where name=%s", (d.source_cost_center, jea.parent))
 					frappe.db.sql("update `tabGL Entry` set cost_center=%s where voucher_no=%s and voucher_type='Journal Entry'", (d.source_cost_center, jea.parent))
 
