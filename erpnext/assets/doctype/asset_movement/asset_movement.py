@@ -113,6 +113,9 @@ class AssetMovement(Document):
 		# notify_workflow_states(self)
 		self.update_ledger()
 
+	def on_update_after_submit(self):
+		self.update_ledger()
+
 	def on_cancel(self):
 		self.set_latest_cost_center_in_asset()
 		# notify_workflow_states(self)
