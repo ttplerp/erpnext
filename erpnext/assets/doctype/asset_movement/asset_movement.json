@@ -120,7 +120,6 @@
    "fieldtype": "Link",
    "ignore_user_permissions": 1,
    "label": "From Employee",
-   "mandatory_depends_on": "eval: doc.transfer_type == 'Employee To Employee'",
    "options": "Employee"
   },
   {
@@ -194,7 +193,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-10-13 09:31:44.118812",
+ "modified": "2025-10-14 14:40:04.862362",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset Movement",
