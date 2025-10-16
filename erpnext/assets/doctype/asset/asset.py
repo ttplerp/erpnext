@@ -454,7 +454,7 @@ class Asset(AccountsController):
 	def _make_income_depreciation_schedule(self, finance_book, start, date_of_sale):
 		""" number of PPE depreciation and Income depreciation login """
 		total_number_of_ppe_depreciations = finance_book.total_number_of_depreciations
-		total_number_of_income_depreciations = flt(flt(100/finance_book.income_depreciation_percent)*12,0)
+		total_number_of_income_depreciations = flt(flt(100/finance_book.income_depreciation_percent)*12,0) if finance_book.income_depreciation_percent else 0
 		total_number_of_depreciations = flt(total_number_of_ppe_depreciations) if flt(total_number_of_ppe_depreciations) > flt(total_number_of_income_depreciations) else flt(total_number_of_income_depreciations)
 
 		if self.number_of_income_depreciations_booked:
