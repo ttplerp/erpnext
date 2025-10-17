@@ -110,6 +110,7 @@
    "options": "ACC-ASS-.YYYY.-"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "asset_name",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -275,7 +276,6 @@
    "label": "Is Existing Asset"
   },
   {
-   "allow_on_submit": 1,
    "depends_on": "is_existing_asset",
    "fieldname": "opening_accumulated_depreciation",
    "fieldtype": "Currency",
@@ -637,6 +637,7 @@
    "mandatory_depends_on": "eval:doc.is_existing_asset"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "asset_status",
    "fieldtype": "Select",
    "label": "Asset Status",
@@ -734,7 +735,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2025-07-10 14:48:46.580449",
+ "modified": "2025-10-17 23:49:47.406729",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",
