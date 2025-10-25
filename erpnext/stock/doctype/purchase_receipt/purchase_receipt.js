@@ -290,11 +290,18 @@ erpnext.stock.PurchaseReceiptController = class PurchaseReceiptController extend
 						let business_activity = ''
 						let item_code = ''
 						let asset_rate = ''
+						let item_desc = ''
 						cur_frm.doc.items.map(d => {
 							if (d.item_name == itemname.trim() && d.valuation_rate == item_details[item_details.length - 1]){
 								business_activity = d.business_activity;
 								item_code = d.item_code;
 								asset_rate = d.valuation_rate;
+								// Strip any HTML tags from description to avoid inserting raw HTML
+								item_desc = (function(html){
+									var tmp = document.createElement('div');
+									tmp.innerHTML = html || '';
+									return tmp.textContent || tmp.innerText || '';
+								})(d.description);
 							}
 	
 						})
@@ -304,6 +311,7 @@ erpnext.stock.PurchaseReceiptController = class PurchaseReceiptController extend
 						new_doc.business_activity = business_activity;
 						new_doc.entry_date = new Date().toISOString().slice(0, 10);
 						new_doc.item_code = item_code;
+						new_doc.item_description = item_desc;
 						new_doc.purchase_receipt = cur_frm.docname;
 						new_doc.asset_rate = asset_rate
 						new_doc.qty = 1;

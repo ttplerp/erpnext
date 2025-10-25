@@ -78,7 +78,7 @@ class AssetIssueDetails(Document):
                 {
                     "doctype": "Asset",
                     "item_code": self.item_code,
-                    "asset_name": self.item_name,
+                    "asset_name": self.item_description,
                     "naming_series": item_data.get("asset_naming_series") or "AST",
                     "asset_category": item_data.get("asset_category"),
                     "asset_sub_category":item_data.get("asset_sub_category"),
@@ -108,7 +108,7 @@ class AssetIssueDetails(Document):
                 {
                     "doctype": "Asset",
                     "item_code": self.item_code,
-                    "asset_name": self.item_name,
+                    "asset_name": self.item_description,
                     "naming_series": item_data.get("asset_naming_series") or "AST",
                     "asset_category": item_data.get("asset_category"),
                     "asset_sub_category":item_data.get("asset_sub_category"),
