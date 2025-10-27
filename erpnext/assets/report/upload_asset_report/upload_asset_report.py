@@ -17,13 +17,20 @@ def get_data(filters):
 		to_date = get_last_day(from_date)
 
 	accounts = ""
+	'''
+	select 
+		fixed_asset_account, 
+		accumulated_depreciation_account, 
+		depreciation_expense_account, 
+		credit_account
+	from `tabAsset Category Account`
+	where parent="{}"
+	'''
 	if filters.get('asset_category'):
 		for row in frappe.db.sql("""
 					select 
-						fixed_asset_account, 
 						accumulated_depreciation_account, 
-						depreciation_expense_account, 
-						credit_account
+						depreciation_expense_account
 					from `tabAsset Category Account`
 					where parent="{}"
 					""".format(filters.get('asset_category')), as_dict=True):
