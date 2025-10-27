@@ -3,7 +3,9 @@
 
 import frappe
 from frappe import _
+import os
 from frappe.utils.data import get_first_day, get_last_day, add_years, date_diff, now, today, getdate
+from frappe.utils import getdate, get_datetime, now, cint, flt
 
 def execute(filters=None):
 	data = []
@@ -13,19 +15,13 @@ def execute(filters=None):
 
 def get_data(filters):
 	if filters.get('month') and filters.get('fiscal_year'):
-		from_date = filters.get('fiscal_year')+ "-" + filters.get('month') + "-" + "01"
+		if filters.get('month') == "01":
+			from_date = filters.get('fiscal_year')+ "-" + filters.get('month') + "-" + "02"
+		else:
+			from_date = filters.get('fiscal_year')+ "-" + filters.get('month') + "-" + "01"
 		to_date = get_last_day(from_date)
 
 	accounts = ""
-	'''
-	select 
-		fixed_asset_account, 
-		accumulated_depreciation_account, 
-		depreciation_expense_account, 
-		credit_account
-	from `tabAsset Category Account`
-	where parent="{}"
-	'''
 	if filters.get('asset_category'):
 		for row in frappe.db.sql("""
 					select 
@@ -109,3 +105,53 @@ def get_columns(filters):
 		},
 	]
 	return columns
+
+@frappe.whitelist()
+def generate_download_file(fiscal_year=None, month=None, asset_category=None):
+	filters = {}
+	filters["fiscal_year"] = str(fiscal_year)
+	filters["month"] = str(month)
+	filters['asset_category'] = str(asset_category)
+	data = get_data(filters)
+	file_name = "Dep-" + str(filters.get('asset_category'))+"-"+str(filters.get('month'))+"-"+str(filters.get('fiscal_year'))+".txt"
+	dep_dir = os.path.join(frappe.get_site_path("public", "files"), "dep")
+	os.makedirs(dep_dir, exist_ok=True)
+	file_path = os.path.join(dep_dir, file_name)
+	line_number=1
+	remarks = str(filters.get('asset_category'))+" "+str(filters.get('month'))+"-"+str(filters.get('fiscal_year'))
+	for fd in data:
+		if fd['credit'] > 0:
+			amount = flt(fd['credit'],2)
+			credit_debit = "C"
+		else:
+			amount = flt(fd['debit'],2)
+			credit_debit = "D"
+
+		if line_number == 1:
+			with open(file_path, 'w') as file:
+				#Write Mode
+				file.write(fd["account_number"]+f"{' '*(16-len(str(fd['account_number'])))}BTN000     " + credit_debit + f"""{' '*(17-len(str(format(flt(amount,2),'.2f'))))}{str(format(flt(amount,2),'.2f'))}"""+remarks)
+		else:
+			with open(file_path, 'a') as file:
+				# Append Mode to the file
+				file.write("\n"+fd["account_number"]+f"{' '*(16-len(str(fd['account_number'])))}BTN000     " + credit_debit + f"""{' '*(17-len(str(format(flt(amount,2),".2f"))))}{str(format(flt(amount,2),'.2f'))}"""+remarks)
+		line_number += 1
+	
+	with open(file_path, "rb") as f:
+		file_content = f.read()
+
+	frappe_file = frappe.get_doc({
+		"doctype": "File",
+		"file_name": file_name,
+		"is_private": 0, 
+		"content": file_content,
+	})
+	frappe_file.insert(ignore_permissions=True)
+
+	file_url = frappe_file.file_url
+
+	if os.path.exists(file_path):
+		os.remove(file_path)
+
+	return {"file_url": file_url}
+
