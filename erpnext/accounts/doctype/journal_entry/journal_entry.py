@@ -25,7 +25,7 @@ from erpnext.accounts.utils import (
 )
 from erpnext.controllers.accounts_controller import AccountsController
 from frappe.model.naming import make_autoname
-from hrms.payroll.doctype.payroll_entry.payroll_entry import get_emp_component_amount, get_gis_emp_details, get_sws_emp_details, get_pf_emp_details, get_sss_emp_details, get_loan_emp_details, get_semso_emp_details, get_tax_emp_details, get_swl_emp_details, get_hc_emp_details
+from hrms.payroll.doctype.payroll_entry.payroll_entry import get_emp_component_amount, get_gis_emp_details, get_sws_emp_details, get_pf_emp_details, get_sss_emp_details, get_loan_emp_details, get_semso_emp_details, get_tax_emp_details, get_swl_emp_details, get_hc_emp_details, get_commu_emp_details
 from frappe.model.mapper import get_mapped_doc
 
 
@@ -675,7 +675,9 @@ class JournalEntry(AccountsController):
 						party_dr_list = []
 						party_dr_amount, party_dr_count = 0, 0
 						if c.salary_component in ("Net Pay", "Financial Institution Loan", "Security Deposit", 
-													"PBVI", "Leave Travel Concession", "Bonus", "Salary Advance Deductions", "FI Loan Own", "Financial Institution Loan(Others)", "Salary Saving Scheme", "SWS", "GIS", "Salary Tax", "Semso", "PF", "SWL", "Health Contribution", "Annuity Policy", "Excess Salary Recovery") and self.voucher_type == "Journal Entry":
+													"PBVI", "Leave Travel Concession", "Bonus", "Salary Advance Deductions", "FI Loan Own", "Financial Institution Loan(Others)", 
+													"Salary Saving Scheme", "SWS", "GIS", "Salary Tax", "Semso", "PF", "SWL", "Health Contribution", "Annuity Policy", 
+													"Excess Salary Recovery", "Communication Allowance") and self.voucher_type == "Journal Entry":
 							''' get employee wise net pay details '''
 							details = None
 							if c.salary_component == "PBVA":
@@ -724,11 +726,15 @@ class JournalEntry(AccountsController):
 								if loan == 0:
 									details = get_loan_emp_details(payroll_entry=reference_name, salary_component=c.salary_component)
 									loan = 1
+							elif c.salary_component == "Communication Allowance":
+								if commu == 0:
+									details = get_commu_emp_details(payroll_entry=reference_name, salary_component=c.salary_component)
+									commu = 1
 							else:
 								details = get_emp_component_amount(
 									payroll_entry=reference_name, salary_component=c.salary_component, party=c.party)
 	
-							if not details and c.amount and c.salary_component not in ("GIS", "PF", "SWS", "Salary Saving Scheme", "Annuity Policy", "Salary Advance Deductions", "Net Pay", "Financial Institution Loan(Others)", "FI Loan Own", "Salary Tax", "Semso", "Health Contribution", "SWL", "Excess Salary Recovery"):
+							if not details and c.amount and c.salary_component not in ("GIS", "PF", "SWS", "Salary Saving Scheme", "Annuity Policy", "Salary Advance Deductions", "Net Pay", "Financial Institution Loan(Others)", "FI Loan Own", "Salary Tax", "Semso", "Health Contribution", "SWL", "Excess Salary Recovery", "Communication Allowance"):
 								frappe.throw(_("Could not find Net Pay details for {}").format(
 									frappe.get_desk_link(reference_type, reference_name)))
 							if details:
@@ -748,7 +754,7 @@ class JournalEntry(AccountsController):
 										
 										party_dr_amount += flt(d.amount,2)
 										party_dr_count += 1
-								if c.salary_component not in ("GIS", "SWS", "PF", "Salary Saving Scheme", "Annuity Policy", "Financial Institution Loan(Others)", "Salary Advance Deductions", "Salary Tax", "SWL", "Semso", "Health Contribution", "FI Loan Own", "Excess Salary Recovery"):
+								if c.salary_component not in ("GIS", "SWS", "PF", "Salary Saving Scheme", "Annuity Policy", "Financial Institution Loan(Others)", "Salary Advance Deductions", "Salary Tax", "SWL", "Semso", "Health Contribution", "FI Loan Own", "Excess Salary Recovery", "Communication Allowance"):
 									if flt(party_dr_amount, 2) != flt(c.amount,2):
 										frappe.throw(_("Total <b>{}({})</b> does not match with Total Credit Amount({}) {}").format(
 											c.salary_component, party_dr_amount, flt(c.amount,2), frappe.get_desk_link(reference_type, reference_name)))

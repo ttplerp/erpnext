@@ -191,7 +191,7 @@ class CBSEntry(Document):
 														credit_remarks = ("SalAdv"+"/"+str(fd["party"])+"/"+str(frappe.db.get_value("Payroll Entry", payroll_entry, "month_name"))[:3]+str(frappe.db.get_value("Payroll Entry", payroll_entry, "fiscal_year")))[:30]
 													elif fd["salary_component"] == "Financial Institution Loan(Others)":
 														credit_remarks = ("FILoan"+str(frappe.db.get_value("Payroll Entry", payroll_entry, "month_name"))[:3]+str(frappe.db.get_value("Payroll Entry", payroll_entry, "fiscal_year")))[:30]
-													elif fd["salary_component"] in ("SWS", "SWL", "PF", "Health Contribution", "GIS", "Salary Tax", "Salary Saving Scheme", "Semso", "Excess Salary Recovery"):
+													elif fd["salary_component"] in ("SWS", "SWL", "PF", "Health Contribution", "GIS", "Salary Tax", "Salary Saving Scheme", "Semso", "Excess Salary Recovery", "Communication Allowance"):
 														credit_remarks = (fd["salary_component"]+str(frappe.db.get_value("Payroll Entry", payroll_entry, "month_name"))[:3]+str(frappe.db.get_value("Payroll Entry", payroll_entry, "fiscal_year")))[:30]
 													else:
 														credit_remarks = (fd["salary_component"]+"/"+str(fd["party"])+"/"+str(frappe.db.get_value("Payroll Entry", payroll_entry, "month_name"))[:3]+str(frappe.db.get_value("Payroll Entry", payroll_entry, "fiscal_year")))[:30]
