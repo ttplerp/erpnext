@@ -163,7 +163,7 @@ class CBSEntry(Document):
 									for pe in payroll_entry:
 										payroll_entry = pe.reference_name
 									file_name = str(self.name)+"-"+str(r)+".txt"
-									file_path = os.path.join("/home/frappe/erp/sites/erp.bdb.bt/public/files/", file_name)
+									file_path = os.path.join("/home/frappe/erp/sites/dev.bdbl.bt/public/files/", file_name)
 									file_url = "/files/"+file_name
 									# Open the file in write mode ('w'). This will create the file if it doesn't exist.
 									line_number = 1
@@ -256,7 +256,7 @@ class CBSEntry(Document):
 									for pe in pbvi_entry:
 										pbvi_entry = pe.reference_name
 									file_name = str(self.name)+"-"+str(r)+".txt"
-									file_path = os.path.join("/home/frappe/erp/sites/erp.bdb.bt/public/files/", file_name)
+									file_path = os.path.join("/home/frappe/erp/sites/dev.bdbl.bt/public/files/", file_name)
 									file_url = "/files/"+file_name
 									# Open the file in write mode ('w'). This will create the file if it doesn't exist.
 									line_number = 1

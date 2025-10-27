@@ -292,7 +292,9 @@ def get_formatted_record(gl, gl_type_cd, dr_cr_list, dr_cr, party=None):
 							gl_type_cd = "03"
 					else:
 						error.append("Invalid Bank Details for Beneficiary {}".format(frappe.get_desk_link(party_type, party)))
-				amount = round(flt(gl.debit if dr_cr == 'DR' else gl.credit),2)
+			else:
+				gl_type = "CASA"
+			amount = round(flt(gl.debit if dr_cr == 'DR' else gl.credit),2)
 		elif gl.voucher_type == "Payment Entry" and cheque_payment == 0:
 			party_type = frappe.db.get_value(gl.voucher_type, gl.voucher_no, "party_type")
 			party = frappe.db.get_value(gl.voucher_type, gl.voucher_no, "party")
