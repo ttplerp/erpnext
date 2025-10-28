@@ -541,7 +541,6 @@
    "read_only": 1
   },
   {
-   "fetch_from": "custodian.branch",
    "fetch_if_empty": 1,
    "fieldname": "branch",
    "fieldtype": "Link",
@@ -735,7 +734,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2025-10-17 23:49:47.406729",
+ "modified": "2025-10-28 17:43:06.689444",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",
