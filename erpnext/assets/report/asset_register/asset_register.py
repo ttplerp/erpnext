@@ -111,7 +111,8 @@ def get_data(filters):
             a.gross_purchase_amount, f.expected_value_after_useful_life,
                         a.opening_accumulated_depreciation, f.value_after_depreciation,
                         a.income_tax_opening_depreciation_amount as iopening,
-            a.residual_value, a.remarks,
+            a.residual_value, a.remarks, 
+            (CASE WHEN a.is_existing_asset = 1 THEN 'Yes' ELSE 'No' END ) AS is_existing_asset,
             (
                 (CASE WHEN a.available_for_use_date < '{from_date}' THEN IFNULL(a.asset_rate,0)*IFNULL(a.asset_quantity,1)
                     ELSE 0 END)
@@ -253,7 +254,8 @@ def get_data(filters):
                 "status": a.status,
                 "project": a.project,
                 "dep_total_next_year": a.dep_total_next_year,
-                "remarks": a.remarks
+                "remarks": a.remarks,
+                "is_existing_asset": a.is_existing_asset,
             }
             data.append(row)
     return data
@@ -486,6 +488,12 @@ def get_columns():
         {
             "fieldname": "remarks",
             "label": _("Remarks"),
+            "fieldtype": "Data",
+            "width": 120
+        },
+        {
+            "fieldname": "is_existing_asset",
+            "label": _("Existing Asset"),
             "fieldtype": "data",
             "width": 120
         },
