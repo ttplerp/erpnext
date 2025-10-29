@@ -200,7 +200,7 @@ class InterestAccrual(Document):
 		elif month == 9:
 			month = "Sep"
 		elif month == 10:
-			moonth = "Oct"
+			month = "Oct"
 		elif month == 11:
 			month = "Nov"
 		elif month == 12:
