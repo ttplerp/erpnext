@@ -597,10 +597,10 @@ class CustomWorkflow:
 				frappe.throw("Only {} can Apply this document".format(self.doc.owner))
 			self.set_approver("HR")
 
-		elif self.new_state.lower() in ("Waiting CEO Approval".lower()):
+		elif self.new_state.lower() in ("Waiting Approval".lower()):
 			if self.doc.advance_approver != frappe.session.user:
 				frappe.throw("Only {} can Forward this document".format(self.doc.advance_approver_name))
-			self.set_approver("CEO")
+			self.set_approver("HRGM")
 
 		elif self.new_state.lower() == ("Approved".lower()):
 			if self.doc.advance_approver != frappe.session.user:
@@ -860,14 +860,15 @@ class NotifyCustomWorkflow:
 		email_template = frappe.get_doc("Email Template", template)
 		message = frappe.render_template(email_template.response, args)
 		if employee :
-			self.notify({
-				# for post in messages
-				"message": message,
-				"message_to": employee.user_id,
-				# for email
-				"subject": email_template.subject,
-				"notify": "employee"
-			})
+			if self.doc.doctype != "Review":
+				self.notify({
+					# for post in messages
+					"message": message,
+					"message_to": employee.user_id,
+					# for email
+					"subject": email_template.subject,
+					"notify": "employee"
+				})
 
 	def notify_approver(self):
 		if self.doc.get(self.doc_approver[0]):
@@ -963,13 +964,14 @@ class NotifyCustomWorkflow:
 				return
 			email_template = frappe.get_doc("Email Template", template)
 			message = frappe.render_template(email_template.response, args)
-			self.notify({
-				# for post in messages
-				"message": message,
-				"message_to": self.doc.get(self.doc_approver[0]),
-				# for email
-				"subject": email_template.subject
-			})
+			if self.doc.doctype != "Review":
+				self.notify({
+					# for post in messages
+					"message": message,
+					"message_to": self.doc.get(self.doc_approver[0]),
+					# for email
+					"subject": email_template.subject
+				})
 			
 	def notify(self, args):
 		args = frappe._dict(args)
