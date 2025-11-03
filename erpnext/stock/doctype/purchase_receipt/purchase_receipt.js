@@ -467,21 +467,9 @@ frappe.ui.form.on('Purchase Taxes and Charges', {
 		})
 	},
 
-	// item_code: function (frm, cdt, cdn) {
-	// 	var d = locals[cdt][cdn];
-	// 	frappe.db.get_value('Item', { name: d.item_code }, 'sample_quantity', (r) => {
-	// 		frappe.model.set_value(cdt, cdn, "sample_quantity", r.sample_quantity);
-	// 		validate_sample_quantity(frm, cdt, cdn);
-	// 	});
-	// },
 	payable_to_different_vendor: function (frm, cdt, cdn) {
 		let row = locals[cdt][cdn]
 		frappe.model.set_value(cdt, cdn, "amount_paid_to_different_vendors", row.tax_amount);
 	},
-	// sample_quantity: function (frm, cdt, cdn) {
-	// 	validate_sample_quantity(frm, cdt, cdn);
-	// },
-	// batch_no: function (frm, cdt, cdn) {
-	// 	validate_sample_quantity(frm, cdt, cdn);
-	// },
+
 });
