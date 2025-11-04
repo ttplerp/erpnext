@@ -39,6 +39,8 @@ def get_data(filters):
 		)
 
 		filters_data.append(["against_voucher", "in", assets])
+	
+	filters_data.append(["is_cancelled", "!=", 1])
 
 	if filters.get("finance_book"):
 		filters_data.append(["finance_book", "in", ["", filters.get("finance_book")]])
@@ -46,7 +48,7 @@ def get_data(filters):
 	gl_entries = frappe.get_all(
 		"GL Entry",
 		filters=filters_data,
-		fields=["against_voucher", "debit_in_account_currency as debit", "voucher_no", "posting_date"],
+		fields=["against_voucher", "debit_in_account_currency as debit", "voucher_no", "posting_date", "cost_center"],
 		order_by="against_voucher, posting_date",
 	)
 
@@ -73,6 +75,7 @@ def get_data(filters):
 						flt(row.gross_purchase_amount) - flt(row.accumulated_depreciation_amount)
 					),
 					"depreciation_entry": d.voucher_no,
+					"cost_center": d.cost_center,
 				}
 			)
 
@@ -106,6 +109,13 @@ def get_columns():
 			"fieldname": "asset",
 			"fieldtype": "Link",
 			"options": "Asset",
+			"width": 120,
+		},
+		{
+			"label": _("Cost Center"),
+			"fieldname": "cost_center",
+			"fieldtype": "Link",
+			"options": "Cost Center",
 			"width": 120,
 		},
 		{
