@@ -439,7 +439,8 @@ scheduler_events = {
 		"erpnext.loan_management.doctype.process_loan_interest_accrual.process_loan_interest_accrual.process_loan_interest_accrual_for_term_loans",
 		"erpnext.crm.utils.open_leads_opportunities_based_on_todays_event",
 		"erpnext.assets.doctype.asset.depreciation.post_depreciation_entries",
-        "erpnext.accounts.report.gcoa_wise_report.gcoa_wise_report.create_transaction",
+		"erpnext.assets.doctype.asset.depreciation.update_value_after_depreciation",
+		# "erpnext.accounts.report.gcoa_wise_report.gcoa_wise_report.create_transaction",
 	],
 	"monthly_long": [
 		"erpnext.accounts.deferred_revenue.process_deferred_accounting",
