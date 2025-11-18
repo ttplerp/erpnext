@@ -507,8 +507,9 @@ def update_value_after_depreciation():
 	for asset in assets:
 		doc = frappe.get_doc("Asset", asset.name)
 		schedules_idx = [d.idx for d in doc.get("schedules") if d.income_depreciation_amount == 0 and getdate(d.schedule_date) <= getdate(today())]
-		acc_dep_amount = frappe.get_value("Depreciation Schedule", {'parent': asset.name, 'idx': max(schedules_idx)}, 'accumulated_depreciation_amount')
-		finance_books = doc.get("finance_books")[0]
-		finance_books.value_after_depreciation = flt(doc.gross_purchase_amount) - flt(acc_dep_amount)
-		finance_books.db_update()
+		if len(schedules_idx) > 0:
+			acc_dep_amount = frappe.get_value("Depreciation Schedule", {'parent': asset.name, 'idx': max(schedules_idx)}, 'accumulated_depreciation_amount')
+			finance_books = doc.get("finance_books")[0]
+			finance_books.value_after_depreciation = flt(doc.gross_purchase_amount) - flt(acc_dep_amount)
+			finance_books.db_update()
 		
