@@ -145,7 +145,7 @@
  "icon": "fa fa-file-text",
  "is_submittable": 1,
  "links": [],
- "modified": "2023-12-04 14:22:07.681990",
+ "modified": "2025-11-20 15:29:52.257760",
  "modified_by": "Administrator",
  "module": "eNote",
  "name": "eNote",
@@ -162,6 +162,18 @@
    "role": "All",
    "share": 1,
    "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Employee",
+   "share": 1,
    "write": 1
   }
  ],
