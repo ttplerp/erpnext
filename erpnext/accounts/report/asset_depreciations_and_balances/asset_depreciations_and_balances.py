@@ -115,19 +115,19 @@ def get_assets(filters):
 			   sum(results.depreciation_amount_during_the_period) as depreciation_amount_during_the_period
 		from (SELECT a.asset_category,
 				   ifnull(sum(case when ds.schedule_date < %(from_date)s and (ifnull(a.disposal_date, 0) = 0 or a.disposal_date >= %(from_date)s) then
-								   ds.depreciation_amount
+								   ds.income_tax_opening_depreciation_amount
 							  else
 								   0
 							  end), 0) as accumulated_depreciation_as_on_from_date,
 				   ifnull(sum(case when ifnull(a.disposal_date, 0) != 0 and a.disposal_date >= %(from_date)s
 										and a.disposal_date <= %(to_date)s and ds.schedule_date <= a.disposal_date then
-								   ds.depreciation_amount
+								   ds.income_tax_opening_depreciation_amount
 							  else
 								   0
 							  end), 0) as depreciation_eliminated_during_the_period,
 				   ifnull(sum(case when ds.schedule_date >= %(from_date)s and ds.schedule_date <= %(to_date)s
 										and (ifnull(a.disposal_date, 0) = 0 or ds.schedule_date <= a.disposal_date) then
-								   ds.depreciation_amount
+								   ds.income_tax_opening_depreciation_amount
 							  else
 								   0
 							  end), 0) as depreciation_amount_during_the_period
@@ -139,10 +139,10 @@ def get_assets(filters):
 				   ifnull(sum(case when ifnull(a.disposal_date, 0) != 0 and (a.disposal_date < %(from_date)s or a.disposal_date > %(to_date)s) then
 									0
 							   else
-									a.opening_accumulated_depreciation
+									a.income_tax_opening_depreciation_amount
 							   end), 0) as accumulated_depreciation_as_on_from_date,
 				   ifnull(sum(case when a.disposal_date >= %(from_date)s and a.disposal_date <= %(to_date)s then
-								   a.opening_accumulated_depreciation
+								   a.income_tax_opening_depreciation_amount
 							  else
 								   0
 							  end), 0) as depreciation_eliminated_during_the_period,
