@@ -6,6 +6,7 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 from erpnext.custom_workflow import validate_workflow_states, notify_workflow_states
+from erpnext.accounts.utils import make_asset_transfer_gl
 
 class AssetMovement(Document):
 	def validate(self):
@@ -114,18 +115,19 @@ class AssetMovement(Document):
 	def on_submit(self):
 		self.set_latest_cost_center_in_asset()
 		# notify_workflow_states(self)
-		self.update_ledger()
+		# self.update_ledger()
 
-	def on_update_after_submit(self):
-		self.update_ledger()
+	# def on_update_after_submit(self):
+	# 	self.update_ledger()
 
 	def on_cancel(self):
-		self.set_latest_cost_center_in_asset()
+		self.ignore_linked_doctypes = ("GL Entry", "Payment Ledger Entry")
+		self.set_latest_cost_center_in_asset(1)
 		# notify_workflow_states(self)
-		self.update_ledger(1)
+		# self.update_ledger(1)
 
-	def set_latest_cost_center_in_asset(self):
-		current_cost_center, current_employee = "", ""
+	def set_latest_cost_center_in_asset(self, cancel=0):
+		current_cost_center, current_employee, current_employee_name = "", "", ""
 		cond = "1=1"
 
 		for d in self.assets:
@@ -154,6 +156,11 @@ class AssetMovement(Document):
 				current_cost_center = latest_movement_entry[0][0]
 				current_employee = latest_movement_entry[0][1]
 				current_employee_name = latest_movement_entry[0][2]
+			else:
+				# if no previous entry exists, fetch source cost center, from employee from current document in case of cancellation
+				current_cost_center = d.source_cost_center
+				current_employee = d.from_employee
+				current_employee_name = d.from_employee_name
 
 			branch = frappe.get_value("Branch", {"cost_center":current_cost_center}, "name")
 			frappe.db.set_value("Asset", d.asset, {
@@ -162,6 +169,12 @@ class AssetMovement(Document):
 					"custodian": current_employee,
 					"custodian_name": current_employee_name
 				}, update_modified=True)
+			
+			""" Asset transfer gl """
+			if d.source_cost_center != d.target_cost_center and self.purpose == "Transfer":
+				self.posting_date = self.transaction_date
+				self.remarks = self.doctype + ' - ' + self.name
+				make_asset_transfer_gl(self, d.asset, self.transaction_date, d.source_cost_center, d.target_cost_center, cancel)
 			
 	# Update Cost Center in Depreciation Journal Entries and GL Entries, on backdated Asset Movement
 	def update_ledger(self, cancel=0):

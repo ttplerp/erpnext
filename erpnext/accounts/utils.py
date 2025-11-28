@@ -1740,3 +1740,70 @@ class QueryPaymentLedger(object):
 		self.query_for_outstanding()
 
 		return self.voucher_outstandings
+
+def make_asset_transfer_gl(self, asset, date, from_cc, to_cc, cancel, not_legacy_data=True):
+	if from_cc == to_cc:
+		frappe.throw("From Cost Center and To Cost Center cannot be the same")
+	if getdate(date) > getdate(nowdate()):
+		frappe.throw("The transaction date cannot be future date")
+
+	dep_schedules = frappe.db.sql("select d.name from tabAsset a, `tabDepreciation Schedule` d where d.parent = a.name and a.name = %s and a.docstatus = 1 and d.schedule_date >= %s and d.journal_entry is not null", (asset, date), as_dict=True)
+	if dep_schedules:
+		frappe.throw("The asset has been depreciated beyond the transfer date. Please change the transfer date and try again")	
+
+	income_tax_value_after_depreciation = 0.0
+	asset = frappe.get_doc("Asset", asset)
+	for d in asset.finance_books:
+		income_tax_value_after_depreciation = d.income_tax_value_after_depreciation
+	
+	accumulated_dep = flt(asset.gross_purchase_amount) - flt(income_tax_value_after_depreciation)
+	
+	accumulated_dep_account = frappe.db.sql("select accumulated_depreciation_account from `tabAsset Category Account` where parent = %s", asset.asset_category, as_dict=True)[0].accumulated_depreciation_account
+	
+	from erpnext.accounts.general_ledger import make_gl_entries
+	from erpnext.custom_utils import prepare_gl
+
+	gl_entries = []
+	gl_entries.append(
+		prepare_gl(self, {
+		       "account":  asset.asset_account,
+		       "credit": asset.gross_purchase_amount,
+		       "credit_in_account_currency": asset.gross_purchase_amount,
+		       "against_voucher": asset.name,
+		       "against_voucher_type": "Asset",
+		       "cost_center": from_cc,
+		})
+	)
+	gl_entries.append(
+		prepare_gl(self, {
+		       "account":  asset.asset_account,
+		       "debit": asset.gross_purchase_amount,
+		       "debit_in_account_currency": asset.gross_purchase_amount,
+		       "against_voucher": asset.name,
+		       "against_voucher_type": "Asset",
+		       "cost_center": to_cc,
+		})
+	)
+	if flt(accumulated_dep) > 0:
+		gl_entries.append(
+			prepare_gl(self, {
+			       "account": accumulated_dep_account,
+			       "debit": accumulated_dep,
+			       "debit_in_account_currency": accumulated_dep,
+			       "against_voucher": asset.name,
+			       "against_voucher_type": "Asset",
+			       "cost_center": from_cc,
+			})
+		)
+		gl_entries.append(
+			prepare_gl(self, {
+			       "account": accumulated_dep_account,
+			       "credit": accumulated_dep,
+			       "credit_in_account_currency": accumulated_dep,
+			       "against_voucher": asset.name,
+			       "against_voucher_type": "Asset",
+			       "cost_center": to_cc,
+			})
+		)
+
+	make_gl_entries(gl_entries, cancel=cancel, update_outstanding="No", merge_entries=False)
