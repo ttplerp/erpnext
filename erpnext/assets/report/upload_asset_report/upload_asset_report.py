@@ -39,6 +39,7 @@ def get_data(filters):
 						from `tabGL Entry` 
 						where docstatus=1
 						and is_cancelled=0 
+						and voucher_type != "Asset Movement"
 						and account in {accounts}
 						and posting_date between "{from_date}" and "{to_date}" 
 						group by account, cost_center 
