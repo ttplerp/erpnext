@@ -1,0 +1,47 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2025-12-01 16:23:12.011271",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "site_inspector",
+  "site_inspector_name",
+  "column_break_2"
+ ],
+ "fields": [
+  {
+   "fieldname": "site_inspector",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Site Visitor",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "site_inspector.employee_name",
+   "fieldname": "site_inspector_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Site Visitor Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-12-01 16:31:27.237814",
+ "modified_by": "Administrator",
+ "module": "Rental Management",
+ "name": "Maintenance Application Form Supervisor List",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

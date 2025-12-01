@@ -29,6 +29,8 @@
   "region",
   "party_type",
   "party",
+  "section_break_23",
+  "site_supervisors",
   "sb_detail_measurement",
   "detail_measurement",
   "sb_abstract_cost",
@@ -150,13 +152,14 @@
    "in_list_view": 1,
    "label": "Site Supervisor",
    "options": "Employee",
-   "reqd": 1
+   "read_only": 1
   },
   {
    "fetch_from": "site_inspector.employee_name",
    "fieldname": "site_inspector_name",
    "fieldtype": "Data",
-   "label": "Site Supervisor Name"
+   "label": "Site Supervisor Name",
+   "read_only": 1
   },
   {
    "default": "0",
@@ -306,12 +309,24 @@
    "options": "Technical Sanction",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_23",
+   "fieldtype": "Section Break",
+   "label": "Site Supervisor(s)"
+  },
+  {
+   "fieldname": "site_supervisors",
+   "fieldtype": "Table",
+   "label": "Site Supervisor(s)",
+   "options": "Technical Sanction Supervisor List",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-04 16:15:53.888586",
+ "modified": "2025-12-01 17:04:40.580005",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Technical Sanction",

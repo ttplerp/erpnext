@@ -85,7 +85,10 @@ def make_technical_sanction(source_name, target_doc=None):
 			},
 			"validation": {
 				#    "docstatus": ["=", 1]
-			}
+			},
+		},
+		"Maintenance Application Form Supervisor List": {
+			"doctype": "Technical Sanction Supervisor List",
 		},
 	}, target_doc)
 

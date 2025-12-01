@@ -175,6 +175,9 @@ def prepare_bill(source_name, target_doc=None):
 				"postprocess": update_docs,
 				"validation": {"docstatus": ["=", 1]}
 			},
+			"Technical Sanction Supervisor List": {
+				"doctype": "Technical Sanction Bill Supervisor List",
+			},
 		}, target_doc)
 	return doc
 
