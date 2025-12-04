@@ -118,10 +118,18 @@ class PerformanceEvaluation(Document):
 					frappe.throw('Quality Achieved for target <b>{}</b> must be greater than or equal to 0'.format(item.performance_target))
 
 				if flt(item.quality_achieved) >= flt(item.quality):
-					quality_rating = item.weightage
+					if item.is_expense_target:
+						extra_amount = flt(item.quality) / flt(item.quality_achieved) * flt(item.weightage)
+						diff_amount = flt(item.weightage) - flt(extra_amount)
+						quality_rating = flt(item.weightage) - flt(diff_amount)
+					else:
+						quality_rating = item.weightage
 
 				else:
-					quality_rating = flt(item.quality_achieved) / flt(item.quality) * flt(item.weightage)
+					if item.is_expense_target:
+						quality_rating = item.weightage
+					else:
+						quality_rating = flt(item.quality_achieved) / flt(item.quality) * flt(item.weightage)
 				
 				item.quality_rating = quality_rating
 
@@ -130,16 +138,30 @@ class PerformanceEvaluation(Document):
 					frappe.throw('Quality Achieved for target <b>{}</b> must be greater than or equal to 0'.format(item.performance_target))
 				
 				if flt(item.quantity_achieved)>= flt(item.quantity):
-					quantity_rating = flt(item.weightage)
+					if item.is_expense_target:
+						extra_amount = flt(item.quantity) / flt(item.quantity_achieved) * flt(item.weightage)
+						diff_amount = flt(item.weightage) - flt(extra_amount)
+						quantity_rating = flt(item.weightage) - flt(diff_amount)
+					else:
+						quantity_rating = flt(item.weightage)
 				else:
-					quantity_rating = flt(item.quantity_achieved) / flt(item.quantity)  * flt(item.weightage)
+					if item.is_expense_target:
+						quantity_rating = item.weightage
+					else:
+						quantity_rating = flt(item.quantity_achieved) / flt(item.quantity)  * flt(item.weightage)
 				
 				item.quantity_rating = quantity_rating
 
 			if flt(item.timeline_achieved)<= flt(item.timeline):
-				timeline_rating = flt(item.weightage)
+				if item.is_expense_target:
+					timeline_rating = flt(item.timeline_achieved) / flt(item.timeline) *  flt(item.weightage)
+				else:
+					timeline_rating = flt(item.weightage)
 			else:
-				timeline_rating = flt(item.timeline) / flt(item.timeline_achieved) *  flt(item.weightage)
+				if item.is_expense_target:
+					timeline_rating = flt(item.weightage)
+				else:
+					timeline_rating = flt(item.timeline) / flt(item.timeline_achieved) *  flt(item.weightage)
 			item.timeline_rating = timeline_rating
 			
 			if item.qty_quality == 'Quality':
