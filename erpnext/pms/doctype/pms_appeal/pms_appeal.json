@@ -76,6 +76,7 @@
   "eval_workflow_state",
   "other_information_section",
   "column_break_73",
+  "appeal_based_on",
   "reference",
   "amended_from"
  ],
@@ -565,11 +566,16 @@
    "fieldtype": "Float",
    "label": "Form lll Score",
    "read_only": 1
+  },
+  {
+   "fieldname": "appeal_based_on",
+   "fieldtype": "Data",
+   "label": "Appeal based on"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-10-31 14:40:45.465033",
+ "modified": "2025-12-04 15:37:20.687475",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "PMS Appeal",
