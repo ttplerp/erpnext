@@ -222,7 +222,7 @@
    "fieldname": "reference_type",
    "fieldtype": "Select",
    "label": "Reference Type",
-   "options": "\nSales Invoice\nPurchase Invoice\nJournal Entry\nSales Order\nPurchase Order\nExpense Claim\nAsset\nAsset Value Adjustment\nLoan\nPayroll Entry\nEmployee Advance\nExchange Rate Revaluation\nInvoice Discounting\nHire Charge Invoice\nFees\nPBVA\nBonus\nLeave Travel Concession\nFull and Final Statement\nPOL Expense\nPOL Receive\nCoal Raising Invoice\nEmployee Benefit Claim\nInsurance and Registration\nTransporter Invoice\nEME Invoice\nCoal Raising Invoice\nEmployee Benefits\nMR Employee Invoice\nRepair And Service Invoice\nPurchase Receipt\nProject Advance\nMR Invoice Entry\nPOL Issue\nTransportation Charge\nHire Charge Advance\nMuster Roll Advance\nOvertime Application\nAdvance\nBulk Leave Encashment\nTransportation and Hire Charge Entry\nForeign Exchange\nEmployee Loan\nRepair And Services\nTDS Remittance\nBulk Payment\nSupplier Advance Settlement"
+   "options": "\nSales Invoice\nPurchase Invoice\nJournal Entry\nSales Order\nPurchase Order\nExpense Claim\nAsset\nAsset Value Adjustment\nLoan\nPayroll Entry\nEmployee Advance\nExchange Rate Revaluation\nInvoice Discounting\nHire Charge Invoice\nFees\nPBVA\nBonus\nLeave Travel Concession\nFull and Final Statement\nPOL Expense\nPOL Receive\nCoal Raising Invoice\nEmployee Benefit Claim\nInsurance and Registration\nTransporter Invoice\nEME Invoice\nCoal Raising Invoice\nEmployee Benefits\nMR Employee Invoice\nRepair And Service Invoice\nPurchase Receipt\nProject Advance\nMR Invoice Entry\nPOL Issue\nTransportation Charge\nHire Charge Advance\nMuster Roll Advance\nOvertime Application\nAdvance\nBulk Leave Encashment\nTransportation and Hire Charge Entry\nForeign Exchange\nEmployee Loan\nRepair And Services\nTDS Remittance\nBulk Payment\nSupplier Advance Settlement\nPurchase Taxes and Charges"
   },
   {
    "fieldname": "reference_name",
@@ -417,7 +417,7 @@
  "idx": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-10-14 15:49:43.485527",
+ "modified": "2025-12-02 12:12:44.829020",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry Account",

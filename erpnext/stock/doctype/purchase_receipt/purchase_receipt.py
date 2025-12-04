@@ -406,7 +406,7 @@ class PurchaseReceipt(BuyingController):
 
 	# Delete asset entries. Taken from old code base
 	def delete_asset_receive_entries(self):
-		frappe.db.sql("delete from `tabAsset Received Entries` where ref_doc = %s", self.name)
+		frappe.db.sql("delete from `tabAsset Received Entries` where ref_doc = %s and docstatus = 1", self.name)
 
 	def get_gl_entries(self, warehouse_account=None, via_landed_cost_voucher=False):
 		from erpnext.accounts.general_ledger import process_gl_map
@@ -897,71 +897,104 @@ class PurchaseReceipt(BuyingController):
 
 	@frappe.whitelist()
 	def make_journal_entry(self, args):
+		# Check if a Journal Entry already exists for this transaction
 		if args.journal_entry and frappe.db.exists("Journal Entry", args.journal_entry):
 			doc = frappe.get_doc("Journal Entry", args.journal_entry)
-			if doc.docstatus != 2:
-				frappe.throw(
-					"Journal Entry exists for this transaction {}".format(
+			if doc.docstatus != 2:  # Not cancelled
+				# Show message and return existing JE name
+				frappe.msgprint(
+					_("Journal Entry already exists and was submitted: {0}").format(
 						frappe.get_desk_link("Journal Entry", args.journal_entry)
 					)
 				)
-		# frappe.msgprint(str(self))
+				return args.journal_entry
+
+		# Prevent creating multiple JEs for the same employee & account
+		existing_je = frappe.db.get_value(
+			"Journal Entry Account",
+			{
+				"reference_type": "Purchase Taxes and Charges",
+				"reference_name": args.name,
+				"docstatus": 1  # Only submitted entries
+			},
+			"parent"
+		)
+	
+		if existing_je:
+			frappe.msgprint(
+				_("Journal Entry already submitted: {0}").format(
+					frappe.get_desk_link("Journal Entry", existing_je)
+				)
+			)
+			return existing_je
+
+		# Get imprest advance account
 		imprest_advance_account = frappe.db.get_value(
 			"Company", "VAJRA BUILDERS PRIVATE LIMITED", "imprest_advance_account"
 		)
-
 		if not imprest_advance_account:
-			frappe.throw("Please set imprest advance anccount in company setting.")
+			frappe.throw("Please set imprest advance account in Company Settings.")
+
+		# Create new Journal Entry
 		je = frappe.new_doc("Journal Entry")
-		je.flags.ignore_permissions = 1
-		je.update(
-			{
-				"doctype": "Journal Entry",
-				"voucher_type": "Journal Entry",
-				"naming_series": "Journal Voucher",
-				"title": "Imprest Settlement - " + args.account_head,
-				"user_remark": "Note: Imprest settlement against " + args.account_head,
-				"posting_date": self.posting_date,
-				"company": "VAJRA BUILDERS PRIVATE LIMITED",
-				"total_amount_in_words": money_in_words(args.tax_amount),
-				"branch": self.branch,
-				"total_debit": args.tax_amount,
-				"total_credit": args.tax_amount,
-			}
-		)
-		je.append(
-			"accounts",
-			{
-				"account": args.account_head,
-				"debit_in_account_currency": args.tax_amount,
-				"debit": args.tax_amount,
-				"cost_center": frappe.db.get_value("Branch", self.branch, "cost_center"),
-				"party_check": 0,
-				"party_type": "Supplier",
-				"party": args.party,
-				"reference_type": self.doctype,
-				"reference_name": self.name,
-			},
-		)
-		je.append(
-			"accounts",
-			{
-				"account": imprest_advance_account,
-				"party_type": "Employee",
-				"party": args.imprest_party,
-				"credit_in_account_currency": args.tax_amount,
-				"credit": args.tax_amount,
-				"cost_center": frappe.db.get_value("Branch", self.branch, "cost_center"),
-			},
-		)
+		je.flags.ignore_permissions = True
+		je.update({
+			"doctype": "Journal Entry",
+			"voucher_type": "Journal Entry",
+			"naming_series": "Journal Voucher",
+			"title": "Imprest Settlement - " + args.account_head,
+			"user_remark": "Note: Imprest settlement against " + args.account_head,
+			"posting_date": self.posting_date,
+			"company": "VAJRA BUILDERS PRIVATE LIMITED",
+			"total_amount_in_words": money_in_words(args.tax_amount),
+			"branch": self.branch,
+			"total_debit": args.tax_amount,
+			"total_credit": args.tax_amount,
+		})
+
+		# Debit entry
+		je.append("accounts", {
+			"account": args.account_head,
+			"debit_in_account_currency": args.tax_amount,
+			"debit": args.tax_amount,
+			"cost_center": frappe.db.get_value("Branch", self.branch, "cost_center"),
+			"party_check": 0,
+			"party_type": "Supplier",
+			"party": args.party,
+			"reference_type": "Purchase Taxes and Charges",
+			"reference_name": args.name,
+		})
+
+		# Credit entry
+		je.append("accounts", {
+			"account": imprest_advance_account,
+			"party_type": "Employee",
+			"party": args.imprest_party,
+			"credit_in_account_currency": args.tax_amount,
+			"credit": args.tax_amount,
+			"cost_center": frappe.db.get_value("Branch", self.branch, "cost_center"),
+		})
 
 		je.insert()
+		je.submit()  # Submit immediately
+
 		frappe.msgprint(
-			_("Journal Entry {0} posted to accounts").format(
+			_("Journal Entry created and submitted successfully: {0}").format(
 				frappe.get_desk_link("Journal Entry", je.name)
 			)
 		)
+
+		frappe.db.set_value(
+			"Purchase Taxes and Charges",
+			{"name": args.name},
+			"journal_entry",
+			je.name
+		)
+
+		
+
 		return je.name
+
 
 @erpnext.allow_regional
 def update_regional_gl_entries(gl_list, doc):
@@ -1239,7 +1272,6 @@ def make_stock_entry(source_name, target_doc=None):
 
 	return doclist
 
-
 @frappe.whitelist()
 def make_inter_company_delivery_note(source_name, target_doc=None):
 	return make_inter_company_transaction("Purchase Receipt", source_name, target_doc)
@@ -1269,6 +1301,8 @@ def make_charges_advance_payment(source_name, target_doc=None):
 	jeb.posting_date = nowdate()
 	jeb.branch = pr.branch
 	jeb_cost_center = pr.cost_center
+	jeb.reference_type = 'Purchase Receipt'
+	jeb.reference_doctype = pr.name
 	tax_tot = 0
 	for a in pr.taxes:
 		if a.payable_to_different_vendor and not a.reference_no:
@@ -1295,8 +1329,8 @@ def make_charges_advance_payment(source_name, target_doc=None):
 		{
 			"account": expense_bank_account,
 			"cost_center": pr.cost_center,
-			# "reference_type": "Purchase Receipt",
-			# "reference_name": pr.name,
+			"reference_type": "Purchase Receipt",
+			"reference_name": pr.name,
 			"credit_in_account_currency": tax_tot,
 			"credit": tax_tot,
 			"user_remark": "Tax Payment to Different Vendors for Purchase Receipt: " + pr.name,
@@ -1305,7 +1339,6 @@ def make_charges_advance_payment(source_name, target_doc=None):
 	)
 
 	return jeb
-
 
 def get_item_account_wise_additional_cost(purchase_document):
 	landed_cost_vouchers = frappe.get_all(

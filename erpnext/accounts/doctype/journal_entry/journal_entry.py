@@ -148,6 +148,36 @@ class JournalEntry(AccountsController):
 			self.update_repair_and_service_status(status="Paid")
 		if self.reference_type == "Advance":
 			self.update_supplier_advance()
+		self.update_purchase_receipt()
+
+	def update_purchase_receipt(self, cancel=False):
+		if self.reference_type == 'Purchase Receipt':
+			if not self.reference_doctype:
+				frappe.throw("Reference No Missing")
+			else:
+				taxes = frappe.db.sql("""
+					SELECT name 
+					FROM `tabPurchase Taxes and Charges` 
+					WHERE parent = %s
+				""", (self.reference_doctype,), as_dict=True)
+
+				for ptc in taxes:
+					if cancel:
+						frappe.db.set_value(
+							"Purchase Taxes and Charges",
+							ptc['name'],
+							{"reference_type": "", "reference_no": ""}
+						)
+					else:
+						frappe.db.set_value(
+							"Purchase Taxes and Charges",
+							ptc['name'],
+							{"reference_type": "Journal Entry", "reference_no": self.name}
+						)
+
+				frappe.db.commit()
+
+
 
 	def update_repair_and_service_status(self, status):
 		if self.reference_doctype:
@@ -273,6 +303,9 @@ class JournalEntry(AccountsController):
 					"reference_type": "",
 					"reference_name": ""
 				})
+		self.update_purchase_receipt(cancel=True)
+		
+
 
 	def update_hire_charge_advance(self, cancel=False):
 		hire_charge_advance = frappe._dict()
@@ -402,27 +435,27 @@ class JournalEntry(AccountsController):
 					doc = frappe.get_doc("Supplier Advance Settlement", a.reference_name)
 					doc.db_set('journal_entry_status', "Cancelled on {0}".format(now_datetime().strftime("%Y-%m-%d %H:%M:%S")))
 
-				if a.reference_type == "Purchase Receipt" and a.reference_name:
-					taxes_doc = frappe.get_doc(
-						"Purchase Taxes and Charges",
-						{
-							"parenttype": a.reference_type,
-							"parent": a.reference_name,
-							"account_head": a.account,
-						},
-					)
-					if taxes_doc:
-						if not taxes_doc.reference_type and not taxes_doc.reference_no:
-							taxes_doc.db_set("reference_type", self.doctype)
-							taxes_doc.db_set("reference_no", self.name)
-							if taxes_doc.party != a.party:
-								taxes_doc.party = a.party
-						else:
-							frappe.throw(
-								"References are already set under Taxes child table of Purchase Receipt with {} and {}".format(
-									taxes_doc.reference_type, taxes_doc.reference_no
-								)
-							)
+				# if a.reference_type == "Purchase Receipt" and a.reference_name:
+				# 	taxes_doc = frappe.get_doc(
+				# 		"Purchase Taxes and Charges",
+				# 		{
+				# 			# "parenttype": a.reference_type,
+				# 			"parent": a.reference_name,
+				# 			"account_head": a.account,
+				# 		},
+				# 	)
+				# 	if taxes_doc:
+				# 		if not taxes_doc.reference_type and not taxes_doc.reference_no:
+				# 			taxes_doc.db_set("reference_type", self.doctype)
+				# 			taxes_doc.db_set("reference_no", self.name)
+				# 			if taxes_doc.party != a.party:
+				# 				taxes_doc.party = a.party
+						# else:
+						# 	frappe.throw(
+						# 		"References are already set under Taxes child table of Purchase Receipt with {} and {}".format(
+						# 			taxes_doc.reference_type, taxes_doc.reference_no
+						# 		)
+						# 	)
 				if a.reference_type == "MR Employee Invoice" and a.reference_name:
 					doc = frappe.get_doc("MR Employee Invoice", a.reference_name)
 					doc.db_set("payment_status", "Unpaid")
