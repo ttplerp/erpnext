@@ -160,10 +160,21 @@ var calculate_timeline_rating = (frm,cdt,cdn)=>{
 	weightage =row.weightage
 	timeline = row.timeline
 	if (flt(timeline_achieved)<= flt(timeline)){
-		timeline_rating = weightage
+		if (row.is_expense_target){
+			timeline_rating = (flt(timeline_achieved) / flt(timeline)) * flt(weightage)
+		}
+		else{
+			timeline_rating = weightage
+		}
+		
 	}
 	else{
-		timeline_rating = (flt(timeline) / flt(timeline_achieved)) * flt(weightage)
+		if (row.is_expense_target){
+			timeline_rating = weightage
+		}
+		else{
+			timeline_rating = (flt(timeline) / flt(timeline_achieved)) * flt(weightage)
+		}
 	}
 	row.timeline_rating = timeline_rating
 	console.log('here',row.timeline_rating)
@@ -195,10 +206,20 @@ var calculate_qty_quality_rating = (frm,cdt,cdn)=>{
 		targeted = row.quantity
 	}
 	if (flt(achieved)>=flt(targeted)){
-		rating = weightage
+		if (row.is_expense_target){
+			rating = flt(targeted) / flt(achieved) * flt(weightage)
+		}
+		else{
+			rating = weightage
+		}	
 	}
 	else{
-		rating = flt(achieved) / flt(targeted) * flt(weightage)
+		if (row.is_expense_target){
+			rating = weightage
+		}
+		else{
+			rating = flt(achieved) / flt(targeted) * flt(weightage)
+		}
 	}
 	if (row.qty_quality == 'Quality') 
 		row.quality_rating = rating
