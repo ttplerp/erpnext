@@ -15,7 +15,7 @@ def get_data(filters):
 	schedule_date = filters.get("schedule_date")
 	conditions = get_conditions(filters)
 	
-	assets = frappe.db.sql("""Select a.* From tabAsset a, `tabDepreciation Schedule` ds Where a.name=ds.parent and a.docstatus=1 
+	assets = frappe.db.sql("""Select a.* From tabAsset a, `tabDepreciation Schedule` ds Where a.name=ds.parent and a.docstatus=1 and a.status!='Scrapped'
 					and ds.income_depreciation_amount > 0 and ds.schedule_date='{s_date}' {cond} order by a.asset_category""".format(s_date=schedule_date, cond=conditions), as_dict=1)
 	for d in assets:
 		row = frappe._dict()
