@@ -14,6 +14,9 @@ def execute(filters=None):
 	return columns, data
 
 def get_data(filters):
+	cond = ''
+	if filters.get('cost_center'):
+		cond = " and cost_center='{}'".format(filters.get('cost_center'))
 	if filters.get('month') and filters.get('fiscal_year'):
 		if filters.get('month') == "01":
 			from_date = filters.get('fiscal_year')+ "-" + filters.get('month') + "-" + "02"
@@ -41,10 +44,14 @@ def get_data(filters):
 						and is_cancelled=0 
 						and voucher_type != "Asset Movement"
 						and account in {accounts}
-						and posting_date between "{from_date}" and "{to_date}" 
+						and posting_date between "{from_date}" and "{to_date}"
+						{cond}
+						and voucher_no not in (
+							select journal_entry_for_scrap from tabAsset where disposal_date between "{from_date}" and "{to_date}"
+						) 
 						group by account, cost_center 
 						order by cost_center
-					""".format(accounts=accounts, from_date=from_date, to_date=to_date), as_dict=True):
+					""".format(accounts=accounts, from_date=from_date, to_date=to_date, cond=cond), as_dict=True):
 		cc_number = frappe.db.get_value("Cost Center",a.cost_center,"cost_center_number")
 		account_no = str(cc_number) + str(frappe.db.get_value("Account",a.account,"account_number"))
 		data.append({
