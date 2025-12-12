@@ -50,7 +50,6 @@
    "reqd": 1
   },
   {
-   "allow_on_submit": 1,
    "default": "Today",
    "fieldname": "transaction_date",
    "fieldtype": "Datetime",
@@ -193,7 +192,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-10-14 14:40:04.862362",
+ "modified": "2025-12-12 12:08:53.151228",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset Movement",
