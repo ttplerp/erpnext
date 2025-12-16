@@ -289,6 +289,10 @@ class Maturity(Document):
 		# d3 = datetime.strptime(str(frappe.db.get_value("Treasury", self.treasury_id, "issue_date")).split("-")[0]+"-01-01","%Y-%m-%d").date()
 		d3 = datetime.strptime(str(self.posting_date).split("-")[0]+"-"+str(self.posting_date).split("-")[1]+"-01","%Y-%m-%d").date()
 		# days = ((d2-d3).days)+1
+		# In case, if the Maturity and Issue date are in the same month And issue date if not the first day of the month
+		issue_date = datetime.strptime(str(frappe.db.get_value("Treasury", self.treasury_id, "issue_date")),"%Y-%m-%d").date()
+		if d2.month == issue_date.month and d2.year == issue_date.year and issue_date.day != 1:
+			d3 = issue_date
 		days = date_diff(d2, d3)
 		self.days = days
 		return days
