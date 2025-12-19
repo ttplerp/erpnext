@@ -463,9 +463,9 @@ def get_asset_details(asset, finance_book=None):
 				break
 
 	if flt(asset.gross_purchase_amount) == 1:
-		accumulated_depr_amount = 1
+		value_after_depreciation = 1
 	elif asset.finance_books[idx - 1].income_depreciation_percent == 0:
-		accumulated_depr_amount = asset.gross_purchase_amount
+		value_after_depreciation = asset.gross_purchase_amount
 	else:
 		value_after_depreciation = (
 			# asset.finance_books[idx - 1].value_after_depreciation
@@ -474,7 +474,7 @@ def get_asset_details(asset, finance_book=None):
 			if asset.calculate_depreciation
 			else asset.value_after_depreciation
 		)
-		accumulated_depr_amount = flt(asset.gross_purchase_amount) - flt(value_after_depreciation)
+	accumulated_depr_amount = flt(asset.gross_purchase_amount) - flt(value_after_depreciation)
 	return (
 		fixed_asset_account,
 		asset,
