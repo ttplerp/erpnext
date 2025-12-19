@@ -278,8 +278,10 @@ def reset_asset_value_for_scrap_sales(asset_name, posting_date):
 
 			pro_accumulated_depreciation_amount = flt(dtl[0].accumulated_depreciation_amount - dtl[0].depreciation_amount + pro_rate_depreciation_amount)
 			pro_accumulated_depreciation_income_tax = flt(dtl[0].income_accumulated_depreciation - dtl[0].income_depreciation_amount + pro_rate_depreciation_income_tax)
-			if pro_rate_depreciation_amount <= 0:
-				frappe.throw(_(" Pro Rate depreciation amount is {}, It should be greater than 0").format(pro_rate_depreciation_amount))
+			if not flt(dtl[0].income_depreciation_amount):
+				return
+			if pro_rate_depreciation_income_tax <= 0:
+				frappe.throw(_(" Pro Rate depreciation amount is {}, It should be greater than 0. {} ").format(pro_rate_depreciation_income_tax, asset_name))
 
 			je = frappe.new_doc("Journal Entry")
 			je.voucher_type = "Depreciation Entry"
@@ -307,11 +309,12 @@ def reset_asset_value_for_scrap_sales(asset_name, posting_date):
 
 			je.flags.ignore_permissions = True
 			je.submit()
-			value_after_depreciation, finance_book_name = frappe.db.get_value('Asset Finance Book',
+			value_after_depreciation, income_tax_value_after_depreciation, finance_book_name = frappe.db.get_value('Asset Finance Book',
 															{'finance_book':dtl[0].finance_book,
 															'asset_sub_category':asset.asset_sub_category,
-															'parent':asset.name},['value_after_depreciation','name'])
+															'parent':asset.name},['value_after_depreciation', 'income_tax_value_after_depreciation', 'name'])
 			value_after_depreciation = flt(value_after_depreciation) - flt(pro_rate_depreciation_amount)
+			income_tax_value_after_depreciation = flt(income_tax_value_after_depreciation) - flt(pro_rate_depreciation_income_tax)
 
 			#Update Depreciation Schedule table
 			frappe.db.set_value("Depreciation Schedule", dtl[0].name, "schedule_date", posting_date)
@@ -322,6 +325,7 @@ def reset_asset_value_for_scrap_sales(asset_name, posting_date):
 			frappe.db.set_value("Depreciation Schedule", dtl[0].name, "accumulated_depreciation_amount", flt(pro_accumulated_depreciation_amount))
 			frappe.db.set_value("Depreciation Schedule", dtl[0].name, "income_accumulated_depreciation", flt(pro_accumulated_depreciation_income_tax))
 			frappe.db.set_value("Asset Finance Book", finance_book_name, "value_after_depreciation", value_after_depreciation)
+			frappe.db.set_value("Asset Finance Book", finance_book_name, "income_tax_value_after_depreciation", income_tax_value_after_depreciation)
 
 @frappe.whitelist()
 def scrap_asset(asset_name,scrap_date=None):
@@ -423,14 +427,18 @@ def get_gl_entries_on_asset_disposal(asset, selling_amount=0, finance_book=None)
 			"credit_in_account_currency": asset.gross_purchase_amount,
 			"credit": asset.gross_purchase_amount,
 			"cost_center": depreciation_cost_center,
-		},
-		{
-			"account": accumulated_depr_account,
-			"debit_in_account_currency": accumulated_depr_amount,
-			"debit": accumulated_depr_amount,
-			"cost_center": depreciation_cost_center,
-		},
+		}
 	]
+
+	if accumulated_depr_amount:
+		gl_entries.append(
+			{
+				"account": accumulated_depr_account,
+				"debit_in_account_currency": accumulated_depr_amount,
+				"debit": accumulated_depr_amount,
+				"cost_center": depreciation_cost_center,
+			}
+		)
 	loss_disposal_account, gain_disposal_account, company_depreciation_cost_center = get_disposal_account_and_cost_center(asset.company)
 	
 	profit_amount = flt(selling_amount) - flt(value_after_depreciation)
@@ -454,14 +462,19 @@ def get_asset_details(asset, finance_book=None):
 				idx = d.idx
 				break
 
-	value_after_depreciation = (
-		# asset.finance_books[idx - 1].value_after_depreciation
-		# add by biren to include pro rated depreciated amount in value after depreciation
-		frappe.db.get_value("Asset Finance Book", asset.finance_books[idx - 1].name, "income_tax_value_after_depreciation")
-		if asset.calculate_depreciation
-		else asset.value_after_depreciation
-	)
-	accumulated_depr_amount = flt(asset.gross_purchase_amount) - flt(value_after_depreciation)
+	if flt(asset.gross_purchase_amount) == 1:
+		accumulated_depr_amount = 1
+	elif asset.finance_books[idx - 1].income_depreciation_percent == 0:
+		accumulated_depr_amount = asset.gross_purchase_amount
+	else:
+		value_after_depreciation = (
+			# asset.finance_books[idx - 1].value_after_depreciation
+			# add by biren to include pro rated depreciated amount in value after depreciation
+			frappe.db.get_value("Asset Finance Book", asset.finance_books[idx - 1].name, "income_tax_value_after_depreciation")
+			if asset.calculate_depreciation
+			else asset.value_after_depreciation
+		)
+		accumulated_depr_amount = flt(asset.gross_purchase_amount) - flt(value_after_depreciation)
 	return (
 		fixed_asset_account,
 		asset,
