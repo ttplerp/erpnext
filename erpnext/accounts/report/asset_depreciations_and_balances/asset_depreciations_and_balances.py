@@ -18,12 +18,24 @@ def get_data(filters):
 
 	asset_categories = get_asset_categories(filters)
 	assets = get_assets(filters)
+	asset_adjustment = get_value_adjustment(filters)
 
 	for asset_category in asset_categories:
 		row = frappe._dict()
 		# row.asset_category = asset_category
 		row.update(asset_category)
 
+		for adjustment in asset_adjustment:
+			if adjustment["asset_category"] == asset_category.get("asset_category", ""):
+				if row.cost_as_on_from_date:
+					row.cost_as_on_from_date = flt(row.cost_as_on_from_date) - flt(
+						adjustment.get("value_adjustment_amount", 0)
+					)
+
+					row.cost_of_new_purchase = flt(row.cost_of_new_purchase) + flt(
+						adjustment.get("value_adjustment_amount", 0)
+					)
+		
 		row.cost_as_on_to_date = (
 			flt(row.cost_as_on_from_date)
 			+ flt(row.cost_of_new_purchase)
@@ -61,7 +73,7 @@ def get_asset_categories(filters):
 	return frappe.db.sql(
 		"""
 		SELECT asset_category,
-			   ifnull(sum(case when purchase_date < %(from_date)s then
+			   ifnull(sum(case when posting_date < %(from_date)s then
 							   case when ifnull(disposal_date, 0) = 0 or disposal_date >= %(from_date)s then
 									gross_purchase_amount
 							   else
@@ -70,7 +82,7 @@ def get_asset_categories(filters):
 						   else
 								0
 						   end), 0) as cost_as_on_from_date,
-			   ifnull(sum(case when purchase_date >= %(from_date)s then
+			   ifnull(sum(case when posting_date >= %(from_date)s then
 			   						gross_purchase_amount
 			   				   else
 			   				   		0
@@ -98,7 +110,7 @@ def get_asset_categories(filters):
 								0
 						   end), 0) as cost_of_scrapped_asset
 		from `tabAsset`
-		where docstatus=1 and company=%(company)s and purchase_date <= %(to_date)s
+		where docstatus=1 and company=%(company)s and posting_date <= %(to_date)s
 		group by asset_category
 	""",
 		{"to_date": filters.to_date, "from_date": filters.from_date, "company": filters.company},
@@ -156,6 +168,18 @@ def get_assets(filters):
 		as_dict=1,
 	)
 
+def get_value_adjustment(filters):
+	return frappe.db.sql(
+		"""
+		SELECT asset_category,
+			   ifnull(sum(difference_amount), 0) as value_adjustment_amount
+		from `tabAsset Value Adjustment`
+		where docstatus=1 and company=%(company)s and date >= %(from_date)s and date <= %(to_date)s
+		group by asset_category
+		""",
+		{"to_date": filters.to_date, "from_date": filters.from_date, "company": filters.company},
+		as_dict=1,
+	)
 
 def get_columns(filters):
 	return [
