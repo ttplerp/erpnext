@@ -27,14 +27,13 @@ def get_data(filters):
 
 		for adjustment in asset_adjustment:
 			if adjustment["asset_category"] == asset_category.get("asset_category", ""):
-				if row.cost_as_on_from_date:
-					row.cost_as_on_from_date = flt(row.cost_as_on_from_date) - flt(
-						adjustment.get("value_adjustment_amount", 0)
-					)
+				row.cost_as_on_from_date = flt(row.cost_as_on_from_date) - flt(
+					adjustment.get("value_adjustment_amount", 0)
+				)
 
-					row.cost_of_new_purchase = flt(row.cost_of_new_purchase) + flt(
-						adjustment.get("value_adjustment_amount", 0)
-					)
+				row.cost_of_new_purchase = flt(row.cost_of_new_purchase) + flt(
+					adjustment.get("value_adjustment_amount", 0)
+				)
 		
 		row.cost_as_on_to_date = (
 			flt(row.cost_as_on_from_date)
@@ -171,11 +170,11 @@ def get_assets(filters):
 def get_value_adjustment(filters):
 	return frappe.db.sql(
 		"""
-		SELECT asset_category,
-			   ifnull(sum(difference_amount), 0) as value_adjustment_amount
-		from `tabAsset Value Adjustment`
-		where docstatus=1 and company=%(company)s and date >= %(from_date)s and date <= %(to_date)s
-		group by asset_category
+		SELECT ad.asset_category,
+			   ifnull(sum(ad.difference_amount), 0) as value_adjustment_amount
+		from `tabAsset Value Adjustment` ad inner join tabAsset a on a.name=ad.asset
+		where ad.docstatus=1 and ad.company=%(company)s and a.posting_date < %(from_date)s and ad.date >= %(from_date)s and ad.date <= %(to_date)s
+		group by ad.asset_category
 		""",
 		{"to_date": filters.to_date, "from_date": filters.from_date, "company": filters.company},
 		as_dict=1,
