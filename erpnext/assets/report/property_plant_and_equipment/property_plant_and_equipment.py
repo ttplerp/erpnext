@@ -73,6 +73,28 @@ def get_accounts(filters):
 												OR
 												(a.status in ('Scrapped', 'Sold') AND a.disposal_date >= '{1}')
 											)
+								 			and b.depreciation_amount != 0
+									""".format(a.name, filters.from_date), as_dict=True)
+		opening_it_dep_zero = frappe.db.sql("""select 
+												sum(a.opening_accumulated_depreciation) as it_opening
+							   			from `tabAsset` a, `tabDepreciation Schedule` b
+						 	 			where a.name = b.parent
+						  					and a.asset_category = '{0}'
+						  					and ('{1}' between b.schedule_start_date and b.schedule_date
+												or 
+												(b.schedule_date < {1} 
+													and 
+												b.schedule_date = (select max(c.schedule_date) 
+																	from `tabDepreciation Schedule` c
+																	where c.parent = a.name)
+												))
+											and a.docstatus = 1
+											and (
+												a.status not in ('Scrapped', 'Sold')
+												OR
+												(a.status in ('Scrapped', 'Sold') AND a.disposal_date >= '{1}')
+											)
+								 			and b.depreciation_amount = 0
 									""".format(a.name, filters.from_date), as_dict=True)
 
 		opening_dep = frappe.db.sql("""select  sum(a.opening_accumulated_depreciation) as it_opening
@@ -90,6 +112,7 @@ def get_accounts(filters):
 												where b.parent = a.name
 											)	
 								""".format(a.name, filters.from_date), as_dict=True)
+		acc_it_zero = opening_it_dep_zero[0].it_opening if opening_it_dep_zero[0].it_opening else 0.00
 		acc_it = opening_it_dep[0].acc_income_tax if opening_it_dep[0].acc_income_tax else 0.00
 		depreciation_it = opening_it_dep[0].depreciation_income_tax if opening_it_dep[0].depreciation_income_tax else 0.00
 		it_opening = opening_dep[0].it_opening if opening_dep[0].it_opening else 0.00
@@ -109,7 +132,7 @@ def get_accounts(filters):
 			#adj_adjust,
 			"dep_total":d_total,
 			"net_block":flt(g_total) - flt(d_total),
-			"opening_income_tax":acc_it - depreciation_it + it_opening,
+			"opening_income_tax":acc_it - depreciation_it + it_opening + acc_it_zero,
 			"it_dep_addition":income_tax[0].total_income_tax
 		})
 
