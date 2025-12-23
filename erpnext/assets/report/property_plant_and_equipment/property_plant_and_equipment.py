@@ -73,7 +73,7 @@ def get_accounts(filters):
 												OR
 												(a.status in ('Scrapped', 'Sold') AND a.disposal_date >= '{1}')
 											)
-								 			and b.depreciation_amount != 0
+								 			and b.depreciation_amount > 0
 									""".format(a.name, filters.from_date), as_dict=True)
 		opening_it_dep_zero = frappe.db.sql("""select 
 												sum(a.opening_accumulated_depreciation) as it_opening
@@ -94,7 +94,7 @@ def get_accounts(filters):
 												OR
 												(a.status in ('Scrapped', 'Sold') AND a.disposal_date >= '{1}')
 											)
-								 			and b.depreciation_amount = 0
+								 			and b.depreciation_amount <= 0
 									""".format(a.name, filters.from_date), as_dict=True)
 
 		opening_dep = frappe.db.sql("""select  sum(a.opening_accumulated_depreciation) as it_opening
