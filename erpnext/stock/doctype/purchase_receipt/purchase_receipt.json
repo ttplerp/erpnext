@@ -711,7 +711,6 @@
    "collapsible_depends_on": "discount_amount",
    "fieldname": "section_break_42",
    "fieldtype": "Section Break",
-   "hidden": 1,
    "label": "Additional Discount"
   },
   {
@@ -1193,7 +1192,7 @@
  "idx": 261,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-04 10:26:07.994421",
+ "modified": "2025-12-27 10:34:58.257798",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Purchase Receipt",
