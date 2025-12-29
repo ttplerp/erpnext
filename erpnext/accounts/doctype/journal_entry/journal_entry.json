@@ -70,6 +70,7 @@
   "column_break3",
   "is_opening",
   "stock_entry",
+  "reverse_jv",
   "subscription_section",
   "auto_repeat",
   "bank_payment",
@@ -614,6 +615,14 @@
    "fieldtype": "Check",
    "label": "CBS Enabled",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "description": "Added to manually update value from backend. and exclude this jv from Upload Asset Report",
+   "fieldname": "reverse_jv",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Reverse JV"
   }
  ],
  "icon": "fa fa-file-text",
@@ -625,7 +634,7 @@
    "link_fieldname": "journal_entry"
   }
  ],
- "modified": "2024-08-18 23:23:13.946237",
+ "modified": "2025-12-29 17:41:55.359026",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",
