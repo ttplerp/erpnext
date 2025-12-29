@@ -452,6 +452,8 @@ class Asset(AccountsController):
 			# <--------------modified code ends here ---------------->
 
 	def _make_income_depreciation_schedule(self, finance_book, start, date_of_sale):
+		self.validate_asset_finance_books(finance_book)
+
 		""" number of PPE depreciation and Income depreciation login """
 		total_number_of_ppe_depreciations = finance_book.total_number_of_depreciations
 		total_number_of_income_depreciations = flt(flt(100/finance_book.income_depreciation_percent)*12,0) if finance_book.income_depreciation_percent else 0
@@ -465,7 +467,6 @@ class Asset(AccountsController):
 			flag_completed_ppe_depreciation = True
 		
 		""" End of logic """
-		self.validate_asset_finance_books(finance_book)
 
 		value_after_depreciation, income_tax_value_after_depreciation = self._get_value_after_depreciation(finance_book)
 		finance_book.value_after_depreciation = value_after_depreciation
@@ -480,17 +481,19 @@ class Asset(AccountsController):
 		)
 
 		#for existing asset with purchase date in the mid of the month
-		adjust_date = False
-		if self.is_existing_asset:
-			pdate = str(self.purchase_date)
-			day = int(pdate.split("-")[2])
-			if day != 1 and day != 31:
-				adjust_date = True
+		# adjust_date = False
+		# if self.is_existing_asset:
+		# 	pdate = str(self.purchase_date)
+		# 	day = int(pdate.split("-")[2])
+		# 	if day != 1 and day != 31:
+		# 		adjust_date = True
 
 		has_pro_rata = self.check_is_pro_rata(finance_book)
-		if has_pro_rata or adjust_date:
+		# if has_pro_rata or adjust_date:
+		if has_pro_rata:
 			number_of_pending_depreciations = number_of_pending_depreciations + 1
 			total_number_of_ppe_depreciations = total_number_of_ppe_depreciations + 1
+		
 		skip_row = False
 		should_get_last_day = is_last_day_of_the_month(finance_book.depreciation_start_date)
 		income_accumulated_depreciation = 0
@@ -499,6 +502,9 @@ class Asset(AccountsController):
 			income_accumulated_depreciation = self.income_tax_opening_depreciation_amount
 		count = 1
 		# for n in range(start[finance_book.idx - 1], number_of_pending_depreciations):
+		# to avoid dep. calculation for non-straight line method
+		if finance_book.depreciation_method != "Straight Line":
+			return
 		for n in range(start[finance_book.idx - 1], number_of_pending_depreciations):
 			# frappe.throw(f"{number_of_pending_depreciations}")
 			count += 1
@@ -665,11 +671,11 @@ class Asset(AccountsController):
 		value_after_depreciation = flt(self.gross_purchase_amount) - flt(
 				self.opening_accumulated_depreciation
 			)
-		oncome_tax_value_after_depreciation = flt(self.gross_purchase_amount) - flt(
+		income_tax_value_after_depreciation = flt(self.gross_purchase_amount) - flt(
 				self.income_tax_opening_depreciation_amount
 			)
 
-		return value_after_depreciation, oncome_tax_value_after_depreciation
+		return value_after_depreciation, income_tax_value_after_depreciation
 	def _get_income_tax_depreciation_amount(self,finance_book, schedule_date,no_of_days,income_accumulated_depreciation):
 		dep_per_year = (flt(self.gross_purchase_amount) - flt(finance_book.expected_value_after_useful_life)) * (flt(finance_book.income_depreciation_percent)/100)
 		days_in_year = date_diff(get_year_ending(getdate(schedule_date)),get_year_start(getdate(schedule_date))) + 1
@@ -920,7 +926,7 @@ class Asset(AccountsController):
 				if cint(d.finance_book_id) == row.idx and d.depreciation_amount > 0
 			]
 
-			if accumulated_depreciation_after_full_schedule:
+			if accumulated_depreciation_after_full_schedule and row.depreciation_method == "Straight Line":
 				accumulated_depreciation_after_full_schedule = max(
 					accumulated_depreciation_after_full_schedule
 				)
@@ -1016,11 +1022,11 @@ class Asset(AccountsController):
 				# elif flt(value_after_depreciation) < flt(self.gross_purchase_amount):
 				# 	status = "Partially Depreciated"
 				income_tax_value_after_depreciation = self.finance_books[idx].income_tax_value_after_depreciation
-
-				if flt(income_tax_value_after_depreciation) <= expected_value_after_useful_life:
-					status = "Fully Depreciated"
-				elif flt(income_tax_value_after_depreciation) < flt(self.gross_purchase_amount) + flt(self.additional_value):
-					status = "Partially Depreciated"
+				if flt(income_tax_value_after_depreciation) != 0.0:
+					if flt(income_tax_value_after_depreciation, 2) <= expected_value_after_useful_life:
+						status = "Fully Depreciated"
+					elif flt(income_tax_value_after_depreciation) < flt(self.gross_purchase_amount) + flt(self.additional_value):
+						status = "Partially Depreciated"
 		elif self.docstatus == 2:
 			status = "Cancelled"
 		return status
@@ -1106,14 +1112,15 @@ class Asset(AccountsController):
 
 	def make_asset_je_entry(self):
 		clearing_account = frappe.db.get_value("Company", self.company, "clearing_account")
+		references = self.purchase_receipt if self.is_existing_asset == 0 else self.asset_name
 		if self.gross_purchase_amount:
 			je = frappe.new_doc("Journal Entry")
 			je.flags.ignore_permissions = 1 
 			je.update({
 				"voucher_type": "Journal Entry",
 				"company": self.company,
-				"remark": self.name + " (" + self.asset_name + ") Asset Issued",
-				"user_remark": self.name + " (" + self.asset_name + ") Asset Issued",
+				"remark": references + " (" + self.name + ") Asset Issued",
+				"user_remark": references + " (" + self.name + ") Asset Issued",
 				"posting_date": self.posting_date if self.posting_date else self.purchase_date,
 				"branch": self.branch
 				})
@@ -1297,7 +1304,7 @@ def make_sales_invoice(asset, item_code, company, serial_no=None,cost_center=Non
 	if not cost_center:
 		frappe.throw("Please select Cost Center.")
 	asset_doc = frappe.get_doc("Asset", asset)
-	value_after_depreciation = frappe.db.get_value("Asset Finance Book", {"parent": asset}, "value_after_depreciation")
+	value_after_depreciation = frappe.db.get_value("Asset Finance Book", {"parent": asset}, "income_tax_value_after_depreciation")
 	si.append(
 		"items",
 		{
