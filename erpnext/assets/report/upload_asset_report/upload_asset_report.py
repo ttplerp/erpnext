@@ -48,7 +48,8 @@ def get_data(filters):
 						{cond}
 						and voucher_no not in (
 							select journal_entry_for_scrap from tabAsset where disposal_date between "{from_date}" and "{to_date}"
-						) 
+						)
+						and gl.voucher_no not in ( select name from `tabJournal Entry` where docstatus=1 and reverse_jv = 1 ) 
 						group by account, cost_center 
 						order by cost_center
 					""".format(accounts=accounts, from_date=from_date, to_date=to_date, cond=cond), as_dict=True):
