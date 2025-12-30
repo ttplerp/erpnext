@@ -98,6 +98,7 @@ function get_invoices(from_date, to_date, item_code, customer, cost_center) {
 		callback: function(r) {
 			if(r.message) {
 				var total_amount = 0;
+				var total_gst = 0;
 				var total_loading = 0;
 				var total_qty = 0;
 				var a_rate=0;
@@ -113,11 +114,13 @@ function get_invoices(from_date, to_date, item_code, customer, cost_center) {
 					row.qty = invoice['qty']
 					var amount1 = parseFloat(invoice['outstanding_amount']) + parseFloat(invoice['excess_amount']) - parseFloat(invoice['normal_loss_amount']) - parseFloat(invoice['abnormal_loss_amount']) 
 					row.amount = amount1
+					row.gst_amount = invoice['gst_amount']
 					row.loading_charges = invoice['total_charges']
 					row.date = invoice['posting_date']
 					row.delivery_note = invoice['delivery_note']
 					row.sales_order = invoice['sales_order']
 					total_amount += amount1 
+					total_gst += row.gst_amount
 					total_loading += invoice['total_charges']
 					total_qty += invoice['qty']
 					a_rate +=invoice['rate']
@@ -126,9 +129,10 @@ function get_invoices(from_date, to_date, item_code, customer, cost_center) {
 				avarage_rate = flt(a_rate)/ count
 				cur_frm.set_value("total_amount", total_amount)
 				cur_frm.set_value("loading_amount", total_loading)
-				cur_frm.set_value("grand_total", flt(total_amount) + flt(total_loading))
+				cur_frm.set_value("grand_total", flt(total_amount) + flt(total_loading) + flt(total_gst))
 				cur_frm.set_value("quantity", total_qty)
 				cur_frm.set_value("total_amount", total_amount)
+				cur_frm.set_value("total_gst_amount", total_gst)
 				cur_frm.set_value("rate", avarage_rate)
 				cur_frm.refresh_field("items");
 			}

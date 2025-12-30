@@ -80,6 +80,12 @@
   "default_finance_book",
   "clearing_account",
   "tds_accounts_section",
+  "gst_accounts_section",
+  "default_input_gst_template",
+  "default_output_gst_template",
+  "gst_clearing_account",
+  "gst_refundable_account",
+  "gst_payable_account",
   "tds_account_item",
   "auto_accounting_for_stock_settings",
   "enable_perpetual_inventory",
@@ -1075,6 +1081,43 @@
    "fieldtype": "Link",
    "label": "Muster Roll Payable Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "gst_accounts_section",
+   "fieldtype": "Section Break",
+   "label": "GST Accounts",
+   "options": "sb_gst_accounts"
+  },
+  {
+   "fieldname": "default_input_gst_template",
+   "fieldtype": "Link",
+   "label": "Default Input GST Template",
+   "options": "Purchase Taxes and Charges Template"
+  },
+  {
+   "fieldname": "default_output_gst_template",
+   "fieldtype": "Link",
+   "label": "Default Output GST Template",
+   "options": "Sales Taxes and Charges Template"
+  },
+  {
+   "fieldname": "gst_clearing_account",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "GST Clearing Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "gst_refundable_account",
+   "fieldtype": "Link",
+   "label": "GST Refundable Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "gst_payable_account",
+   "fieldtype": "Link",
+   "label": "GST Payable Account",
+   "options": "Account"
   }
  ],
  "icon": "fa fa-building",
@@ -1082,7 +1125,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2025-03-17 15:48:03.680240",
+ "modified": "2025-12-25 14:53:06.794762",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",

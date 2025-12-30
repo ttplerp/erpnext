@@ -76,6 +76,7 @@
   "column_break_24",
   "base_net_rate",
   "base_net_amount",
+  "gst_amount",
   "drop_ship",
   "delivered_by_supplier",
   "accounting",
@@ -1105,12 +1106,19 @@
    "fieldname": "vehicle_number",
    "fieldtype": "Data",
    "label": "Vehicle No"
+  },
+  {
+   "fieldname": "gst_amount",
+   "fieldtype": "Currency",
+   "label": "GST Amount",
+   "options": "Company:company:default_currency",
+   "read_only": 1
   }
  ],
  "idx": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-01-03 12:43:34.113906",
+ "modified": "2025-12-22 22:09:53.703769",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Sales Invoice Item",

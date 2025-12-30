@@ -71,9 +71,13 @@
   "update_stock",
   "scan_barcode",
   "items",
+  "taxes_and_charges",
+  "gst_template",
   "total",
   "other_charges_section",
   "other_charges",
+  "section_break_69",
+  "taxes",
   "pricing_rule_details",
   "pricing_rules",
   "packing_list",
@@ -91,7 +95,6 @@
   "total_net_weight",
   "net_total",
   "taxes_section",
-  "taxes_and_charges",
   "column_break_38",
   "shipping_rule",
   "tax_category",
@@ -118,6 +121,7 @@
   "additional_discount_percentage",
   "discount_amount",
   "totals",
+  "total_gst_amount",
   "base_grand_total",
   "total_charges",
   "base_rounding_adjustment",
@@ -164,8 +168,6 @@
   "terms_section_break",
   "tc_name",
   "terms",
-  "section_break_40",
-  "taxes",
   "edit_printing_settings",
   "letter_head",
   "group_same_items",
@@ -682,7 +684,6 @@
    "default": "0",
    "fieldname": "update_stock",
    "fieldtype": "Check",
-   "hidden": 1,
    "hide_days": 1,
    "hide_seconds": 1,
    "label": "Update Stock",
@@ -799,8 +800,7 @@
    "hidden": 1,
    "hide_days": 1,
    "hide_seconds": 1,
-   "label": "Total Quantity",
-   "read_only": 1
+   "label": "Total Quantity"
   },
   {
    "fieldname": "base_total",
@@ -871,7 +871,6 @@
   {
    "fieldname": "taxes_and_charges",
    "fieldtype": "Link",
-   "hidden": 1,
    "hide_days": 1,
    "hide_seconds": 1,
    "label": "Sales Taxes and Charges Template",
@@ -906,14 +905,6 @@
    "label": "Tax Category",
    "options": "Tax Category",
    "print_hide": 1
-  },
-  {
-   "collapsible": 1,
-   "fieldname": "section_break_40",
-   "fieldtype": "Section Break",
-   "hide_days": 1,
-   "hide_seconds": 1,
-   "label": "Taxes and charges"
   },
   {
    "fieldname": "taxes",
@@ -2101,6 +2092,29 @@
    "fieldtype": "Currency",
    "label": "Total Excess Amount",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_69",
+   "fieldtype": "Section Break",
+   "hide_days": 1,
+   "hide_seconds": 1,
+   "label": "Taxes and charges"
+  },
+  {
+   "fetch_from": "company.default_output_gst_template",
+   "fieldname": "gst_template",
+   "fieldtype": "Link",
+   "label": "Output GST Template",
+   "options": "Sales Taxes and Charges Template",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_gst_amount",
+   "fieldtype": "Currency",
+   "label": "Total GST Amount",
+   "options": "Company:company:default_currency",
+   "precision": "2",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-file-text",
@@ -2113,7 +2127,7 @@
    "link_fieldname": "consolidated_invoice"
   }
  ],
- "modified": "2023-02-24 15:30:34.710806",
+ "modified": "2025-12-29 22:38:11.636005",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Sales Invoice",

@@ -25,7 +25,7 @@ def get_invoices(from_date, to_date, item_code, customer, cost_center):
 							sii.normal_loss_amt as normal_loss_amount, 
 							sii.abnormal_loss_amt as abnormal_loss_amount, 
 							si.total_charges, sii.delivery_note, sii.sales_order, 
-							sii.accepted_qty 
+							sii.accepted_qty, ifnull(sii.gst_amount, 0)
 						from `tabSales Invoice` si, `tabSales Invoice Item` sii 
 						where si.docstatus = 1 and si.outstanding_amount >= 0 
 						and si.customer = %s and sii.cost_center = %s 

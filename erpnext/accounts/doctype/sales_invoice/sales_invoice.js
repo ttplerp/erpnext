@@ -44,7 +44,31 @@ erpnext.accounts.SalesInvoiceController = class SalesInvoiceController extends e
 		erpnext.queries.setup_queries(this.frm, "Warehouse", function() {
 			return erpnext.queries.warehouse(me.frm.doc);
 		});
+		if(cur_frm.doc.gst_template && cur_frm.doc.__islocal) {
+			return this.frm.call({
+				method: "erpnext.controllers.accounts_controller.get_taxes_and_charges",
+				args: {
+					"master_doctype": frappe.meta.get_docfield(cur_frm.doc.doctype, "taxes_and_charges",
+						cur_frm.doc.name).options,
+					"master_name": cur_frm.doc.gst_template
+				},
+				callback: function(r) {
+					if(!r.exc) {
+						if(cur_frm.doc.shipping_rule && cur_frm.doc.taxes) {
+							for (let tax of r.message) {
+								menubar.frm.add_child("taxes", tax);
+							}
 
+							refresh_field("taxes");
+						} else {
+							cur_frm.set_value("taxes", r.message);
+							refresh_field("taxes");
+
+						}
+					}
+				}
+			});
+		}
 		if(this.frm.doc.__islocal && this.frm.doc.is_pos) {
 			//Load pos profile data on the invoice if the default value of Is POS is 1
 

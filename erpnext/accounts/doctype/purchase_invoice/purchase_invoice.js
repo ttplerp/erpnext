@@ -45,7 +45,43 @@ erpnext.accounts.PurchaseInvoice = class PurchaseInvoice extends erpnext.buying.
 		if (this.frm.doc.supplier && this.frm.doc.__islocal) {
 			this.frm.trigger('supplier');
 		}
-		
+			//GST Changes ----------------------
+			if(cur_frm.doc.gst_template && cur_frm.doc.__islocal) {
+				return this.frm.call({
+					method: "erpnext.controllers.accounts_controller.get_taxes_and_charges",
+					args: {
+						"master_doctype": frappe.meta.get_docfield(cur_frm.doc.doctype, "taxes_and_charges",
+							cur_frm.doc.name).options,
+						"master_name": cur_frm.doc.gst_template
+					},
+					callback: function(r) {
+						if(!r.exc) {
+							if(cur_frm.doc.shipping_rule && cur_frm.doc.taxes) {
+								for (let tax of r.message) {
+									menubar.frm.add_child("taxes", tax);
+								}
+	
+								refresh_field("taxes");
+							} else {
+								cur_frm.set_value("taxes", r.message);
+								refresh_field("taxes");
+	
+							}
+						}
+					}
+				});
+			}
+		if(cur_frm.doc.supplier && cur_frm.doc.docstatus == 1){
+			frappe.db.get_value("Supplier", cur_frm.doc.supplier, "country", (r)=>{
+				if(r.country != "Bhutan" && !cur_frm.doc.gst_payment_jv){
+					cur_frm.add_custom_button(
+						__("GST Payment Journal"),
+						this.make_gst_payment,
+						__("Create")
+					);
+				}
+			})
+		}
 		if(this.frm.doc.supplier_type == "International Vendor"){
 			me.frm.set_df_property("btfn_no", "hidden", 0)
 			me.frm.set_df_property("btfn_no", "reqd", 1)
@@ -54,7 +90,12 @@ erpnext.accounts.PurchaseInvoice = class PurchaseInvoice extends erpnext.buying.
 			me.frm.set_df_property("btfn_no", "reqd", 0)
 		}
 	}
-
+	make_gst_payment() {
+		frappe.model.open_mapped_doc({
+			method: "erpnext.accounts.doctype.purchase_invoice.purchase_invoice.make_gst_payment",
+			frm: cur_frm,
+		});
+	}
 	refresh(doc) {
 		const me = this;
 		super.refresh();
@@ -554,6 +595,17 @@ frappe.ui.form.on("Purchase Invoice", {
 
 	refresh: function(frm) {
 		frm.events.add_custom_buttons(frm);
+		if(cur_frm.doc.supplier && frm.doc.docstatus == 1){
+			frappe.db.get_value("Supplier", frm.doc.supplier, "country", (r)=>{
+				if(r.country != "Bhutan" && !cur_frm.doc.gst_payment_jv){
+					cur_frm.add_custom_button(
+						__("GST Payment Journal"),
+						this.make_gst_payment,
+						__("Create")
+					);
+				}
+			})
+		}
 	},
 
 	add_custom_buttons: function(frm) {

@@ -68,6 +68,10 @@
   "update_stock",
   "scan_barcode",
   "items",
+  "taxes_section",
+  "taxes_and_charges",
+  "gst_template",
+  "taxes",
   "pricing_rule_details",
   "pricing_rules",
   "raw_materials_supplied",
@@ -80,13 +84,10 @@
   "total_net_weight",
   "total",
   "net_total",
-  "taxes_section",
   "tax_category",
   "column_break_49",
   "shipping_rule",
   "section_break_51",
-  "taxes_and_charges",
-  "taxes",
   "sec_tax_breakup",
   "other_charges_calculation",
   "totals",
@@ -175,7 +176,9 @@
   "auto_repeat",
   "update_auto_repeat_reference",
   "per_received",
-  "is_old_subcontracting_flow"
+  "is_old_subcontracting_flow",
+  "sb_gst",
+  "gst_payment_jv"
  ],
  "fields": [
   {
@@ -1463,13 +1466,31 @@
    "fieldname": "btfn_no",
    "fieldtype": "Data",
    "label": "BTFN No"
+  },
+  {
+   "fetch_from": "company.default_input_gst_template",
+   "fieldname": "gst_template",
+   "fieldtype": "Link",
+   "label": "Input GST Template",
+   "options": "Purchase Taxes and Charges Template",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_gst",
+   "fieldtype": "Section Break",
+   "label": "GST Payment Reference"
+  },
+  {
+   "fieldname": "gst_payment_jv",
+   "fieldtype": "Link",
+   "options": "Journal Entry"
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 204,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-26 12:37:45.632330",
+ "modified": "2025-12-25 15:22:17.855728",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Purchase Invoice",

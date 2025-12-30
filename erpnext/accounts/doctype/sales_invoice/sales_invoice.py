@@ -180,12 +180,19 @@ class SalesInvoice(SellingController):
 	def calculate_charges(self):
 		total_charges = 0
 		total_qty = 0
+		total_gst = 0
+		for tax in self.taxes:
+			if tax.is_gst == 1:
+				total_gst += flt(tax.tax_amount)
 		for i in self.items:
 			total_qty += i.qty
 		for d in self.other_charges:
 			d.amount = flt(flt(d.rate) * flt(total_qty),2)
+			d.gst_amount = flt(d.amount)*0.05
+			total_gst += flt(d.gst_amount)
 			total_charges += flt(d.amount)
 		self.total_charges = total_charges
+		self.total_gst_amount = flt(total_gst,2)
 		self.grand_total = flt(self.total + self.total_charges,2)
 	def validate_fixed_asset(self):
 		for d in self.get("items"):

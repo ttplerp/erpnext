@@ -866,13 +866,17 @@ class PurchaseInvoice(BuyingController):
 							)
 
 					else:
+						gst_amount = 0
+						for t in self.taxes:
+							if t.included_in_print_rate == 1 and t.is_gst == 1:
+								gst_amount += t.base_tax_amount_after_discount_amount
 						if not self.is_internal_transfer():
 							gl_entries.append(
 								self.get_gl_dict(
 									{
 										"account": item.expense_account,
 										"against": self.supplier,
-										"debit": warehouse_debit_amount,
+										"debit": warehouse_debit_amount - gst_amount,
 										"remarks": self.get("remarks") or _("Accounting Entry for Stock"),
 										"cost_center": item.cost_center,
 										"project": item.project or self.project,
@@ -1284,12 +1288,33 @@ class PurchaseInvoice(BuyingController):
 	def make_tax_gl_entries(self, gl_entries):
 		# tax table gl entries
 		valuation_tax = {}
+		gst_payable_account = frappe.db.get_value("Company", self.company, "gst_payable_account")
 		enable_discount_accounting = cint(
 			frappe.db.get_single_value("Buying Settings", "enable_discount_accounting")
 		)
 
 		for tax in self.get("taxes"):
 			amount, base_amount = self.get_tax_amounts(tax, None)
+			#/GST Changes -----------------
+			if tax.is_gst == 1 and gst_payable_account and frappe.db.get_value("Supplier", self.supplier, "country") != "Bhutan":
+					account_currency = get_account_currency(gst_payable_account)
+					gl_entries.append(
+					self.get_gl_dict(
+						{
+							"account": gst_payable_account,
+							"against": tax.party if tax.party else self.supplier,
+							"credit": base_amount,
+							"credit_in_account_currency": base_amount
+							if account_currency == self.company_currency
+							else amount,
+							"cost_center": tax.cost_center,
+							"party_type": tax.party_type if tax.party_type else "Supplier",
+							"party": tax.party if tax.party else self.supplier
+						},
+						account_currency,
+						item=tax,
+					)
+				)
 			if tax.category in ("Total", "Valuation and Total") and flt(base_amount):
 				account_currency = get_account_currency(tax.account_head)
 
@@ -1549,6 +1574,7 @@ class PurchaseInvoice(BuyingController):
 
 		unlink_inter_company_doc(self.doctype, self.name, self.inter_company_invoice_reference)
 		self.ignore_linked_doctypes = (
+			"Journal Entry",
 			"GL Entry",
 			"Stock Ledger Entry",
 			"Repost Item Valuation",
@@ -1818,7 +1844,74 @@ def get_list_context(context=None):
 def make_regional_gl_entries(gl_entries, doc):
 	return gl_entries
 
+@frappe.whitelist()
+def make_gst_payment(source_name, target_doc=None, args=None):
+	# if args is None:
+	# 	args = {}
+	# if isinstance(args, str):
+	# 	args = json.loads(args)
 
+	# from erpnext.accounts.party import get_payment_terms_template
+
+	# doc = frappe.get_doc("Purchase Receipt", source_name)
+	# returned_qty_map = get_returned_qty_map(source_name)
+	# invoiced_qty_map = get_invoiced_qty_map(source_name)
+
+	def set_missing_values(source, target):
+		# if len(target.get("items")) == 0:
+		# 	frappe.throw(_("All items have already been Invoiced/Returned"))
+
+		# doc = frappe.get_doc(target)
+		# doc.payment_terms_template = get_payment_terms_template(source.supplier, "Supplier", source.company)
+		# doc.run_method("onload")
+		# doc.run_method("set_missing_values")
+		gst_payable_account = frappe.db.get_value("Company", source.company, "gst_payable_account")
+		bank_account = frappe.db.get_value("Company", source.company, "default_bank_account")
+		gst_amount = 0
+		post_gst_jv = 0
+		party_type = "Supplier"
+		party = source.supplier
+		target.gst_payment_jv = 1
+		target.purchase_invoice = source.name
+		target.voucher_type = 'Bank Entry'
+		target.naming_series = 'Bank Payment Voucher'
+		for t in source.taxes:
+			if t.is_gst == 1:
+				gst_amount += t.base_tax_amount_after_discount_amount
+				cost_center = t.cost_center if t.cost_center else cost_center
+				party_type = t.party_type if t.party_type else party_type
+				party = t.party if t.party else party
+				post_gst_jv = 1
+		if post_gst_jv == 1:
+			gst_row = target.append("accounts")
+			gst_row.account = gst_payable_account
+			gst_row.party_type = party_type
+			gst_row.party = party
+			gst_row.debit = flt(gst_amount,2)
+			gst_row.debit_in_account_currency = flt(gst_amount,2)
+			gst_row.cost_center = cost_center
+			bank_row = target.append("accounts")
+			bank_row.account = bank_account
+			bank_row.credit = flt(gst_amount,2)
+			bank_row.credit_in_account_currency = flt(gst_amount,2)
+			bank_row.cost_center = cost_center
+
+	doclist = get_mapped_doc(
+		"Purchase Invoice",
+		source_name,
+		{
+			"Purchase Invoice": {
+				"doctype": "Journal Entry",
+				"validation": {
+					"docstatus": ["=", 1],
+				},
+			},
+		},
+		target_doc,
+		set_missing_values,
+	)
+
+	return doclist
 @frappe.whitelist()
 def make_debit_note(source_name, target_doc=None):
 	from erpnext.controllers.sales_and_purchase_return import make_return_doc

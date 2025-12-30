@@ -34,6 +34,7 @@
   "column_break_6",
   "loading_amount",
   "column_break002",
+  "total_gst_amount",
   "grand_total",
   "column_break001",
   "posting_date",
@@ -190,6 +191,7 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Grand Total",
+   "precision": "2",
    "read_only": 1
   },
   {
@@ -247,12 +249,19 @@
    "fieldtype": "Link",
    "label": "Item Sub Group",
    "options": "Item Group"
+  },
+  {
+   "fieldname": "total_gst_amount",
+   "fieldtype": "Currency",
+   "label": "Total GST Amount",
+   "precision": "2",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-05-01 12:00:19.764591",
+ "modified": "2025-12-29 22:54:10.395160",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Consolidated Invoice",
