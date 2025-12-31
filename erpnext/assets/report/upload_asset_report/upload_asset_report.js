@@ -10,7 +10,8 @@ frappe.query_reports["Upload Asset Report"] = {
 					args: {
 						'fiscal_year': frappe.query_report.get_filter_value('fiscal_year'),
 						'month': frappe.query_report.get_filter_value('month'),
-						'asset_category': frappe.query_report.get_filter_value('asset_category')
+						'asset_category': frappe.query_report.get_filter_value('asset_category'),
+						'cost_center': frappe.query_report.get_filter_value('cost_center')
 					},
 					callback: function(r){
 						if (r.message && r.message.file_url) {

@@ -116,11 +116,12 @@ def get_columns(filters):
 	return columns
 
 @frappe.whitelist()
-def generate_download_file(fiscal_year=None, month=None, asset_category=None):
+def generate_download_file(fiscal_year=None, month=None, asset_category=None, cost_center=None):
 	filters = {}
 	filters["fiscal_year"] = str(fiscal_year)
 	filters["month"] = str(month)
 	filters['asset_category'] = str(asset_category)
+	filters['cost_center'] = str(cost_center)
 	data = get_data(filters)
 	file_name = "Dep-" + str(filters.get('asset_category'))+"-"+str(filters.get('month'))+"-"+str(filters.get('fiscal_year'))+".txt"
 	dep_dir = os.path.join(frappe.get_site_path("public", "files"), "dep")
