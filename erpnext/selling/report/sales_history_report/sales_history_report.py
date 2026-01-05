@@ -43,7 +43,7 @@ def get_columns(data):
 		{ "label": _("Due Date"), "fieldtype": "Date", "fieldname": "due_date", "width": 120, },
 		{ "label": _("Accepted Qty"), "fieldtype": "Data", "fieldname": "accepted_qty", "width": 120, },
 		{ "label": _("Bill Amount"), "fieldtype": "Currency", "fieldname": "si_amount", "width": 180, },
-		{ "label": _("GST Amount"), "fieldtype": "Currency", "fieldname": "gst_amount", "width": 180, },
+		{ "label": _("GST@5%"), "fieldtype": "Currency", "fieldname": "gst_amount", "width": 180, },
 		{ "label": _("Other Charges"), "fieldtype": "Currency", "fieldname": "other_charges", "width": 180, },
 		{ "label": _("NL Qty"), "fieldtype": "Data", "fieldname": "nl_qty", "width": 80, },
 		{ "label": _("NL Amount"), "fieldtype": "Currency", "fieldname": "nl_amt", "width": 120, },
@@ -85,32 +85,127 @@ def get_data(filters):
 		.on(si_item.delivery_note == dn.name)
 		.left_join(si)
 		.on(si_item.parent == si.name)
-		.left_join(ote)
-		.on(ote.parent == si.name)
 		.left_join(equip)
 		.on(equip.name == dn_item.equipment)
 		.left_join(cu)
 		.on(si.customer == cu.name)
 		.select(
-			so.name, so.transaction_date, so.customer, cu.territory, cu.country, so.dispatch, so_item.qty, (so_item.rate.as_("so_rate")), (so_item.base_net_amount).as_("so_amount"), so_item.item_code, so_item.item_name, dn_item.item_type, so_item.uom, so_item.warehouse, (dn.name).as_("dn_name"), (dn.posting_date.as_("dn_date")), (dn_item.qty).as_("delivered_qty"), dn_item.others_equipment, dn_item.vehicle_number, dn_item.equipment, equip.supplier, dn_item.location, (si.name).as_("si_no"), (si.posting_date).as_("si_date"), (si.status).as_("status"), (si.reference_date_for_payment).as_("ref_date"), si.due_date, si.total_advance, (si_item.accepted_qty).as_("accepted_qty"), (si_item.base_net_amount).as_("si_amount"), (si_item.gst_amount).as_("gst_amount"), si_item.normal_loss, si_item.normal_loss_amt, si_item.abnormal_loss, si_item.abnormal_loss_amt, si_item.excess_qty, si_item.excess_amt, si.total_charges, si.grand_total, ote.remarks
+			so.name,
+   			so.transaction_date,
+      		so.customer,
+        	cu.territory,
+        	cu.country,
+         	so.dispatch,
+          	so_item.qty,
+           	(so_item.rate.as_("so_rate")),
+            (so_item.base_net_amount).as_("so_amount"),
+            so_item.item_code,
+            so_item.item_name,
+            dn_item.item_type,
+            so_item.uom,
+            so_item.warehouse,
+            (dn.name).as_("dn_name"),
+			(dn.posting_date.as_("dn_date")),
+   			(dn_item.qty).as_("delivered_qty"),
+      		dn_item.others_equipment,
+        	dn_item.vehicle_number,
+         	dn_item.equipment,
+          	equip.supplier,
+           	dn_item.location,
+            (si.name).as_("si_no"),
+            (si.posting_date).as_("si_date"),
+            (si.status).as_("status"),
+            (si.reference_date_for_payment).as_("ref_date"),
+            si.due_date,
+            si.total_advance,
+            (si_item.accepted_qty).as_("accepted_qty"),
+            (si_item.base_net_amount).as_("si_amount"),
+            (si_item.gst_amount).as_("gst_amount"),
+            si_item.normal_loss,
+            si_item.normal_loss_amt,
+            si_item.abnormal_loss,
+            si_item.abnormal_loss_amt,
+            si_item.excess_qty,
+            si_item.excess_amt,
+            si.total_charges,
+            si.grand_total,
 		)
 		.where((so.docstatus == 1) & (dn.docstatus == 1) & (si.docstatus == 1))
 	)
-
 	if filters.get("customer"):
 		query = (query.where(so.customer == filters.customer)) 
+	if filters.get("cost_center"):
+		query = (query.where(so.cost_center == filters.cost_center)) 
 	if filters.get("from_date") and filters.get("to_date"):
 		if filters.get("from_date") > filters.get("to_date"):
 			frappe.throw('Enter From Date less than To Date')
 		query = (query.where((dn.posting_date >= filters.from_date) &(dn.posting_date <=  filters.to_date)))
 
 	query = query.run(as_dict=True)
+	# cond = ""
+	# if filters.get("customer"):
+	# 	cond += " and so.customer = '{}'".format(str(filters.get("customer")).replace("'","''"))
+	# if filters.get("from_date") and filters.get("to_date"):
+	# 	if filters.get("from_date") > filters.get("to_date"):
+	# 		frappe.throw('Enter From Date less than To Date')
+	# 	cond += " and dn.posting_date >= '{}' and dn.posting_date <= '{}'".format(filters.get("from_date"), filters.get("to_date"))
+	# query = frappe.db.sql("""
+    #                    select
+    #                    so.name,
+    #                    so.transaction_date,
+    #                    so.customer,
+    #                    cu.territory,
+    #                    cu.country,
+    #                    so.dispatch,
+    #                    so_item.qty,
+    #                    so_item.rate as so_rate,
+    #                    so_item.base_net_amount as so_amount,
+    #                    so_item.item_code,
+    #                    so_item.item_name,
+    #                    dn_item.item_type,
+    #                    so_item.uom,
+    #                    so_item.warehouse,
+    #                    dn.name as dn_name,
+    #                    dn.posting_date as dn_date,
+    #                    dn_item.qty as delivered_qty,
+    #                    dn_item.others_equipment,
+    #                    dn_item.vehicle_number,
+    #                    dn_item.equipment,
+    #                    equip.supplier,
+    #                    dn_item.location,
+    #                    si.name as si_no,
+    #                    si.posting_date as si_date,
+    #                    si.status as status,
+    #                    si.reference_date_for_payment as ref_date,
+    #                    si.due_date,
+    #                    si.total_advance,
+    #                    si_item.accepted_qty as accepted_qty,
+    #                    si_item.base_net_amount as si_amount,
+    #                    si_item.normal_loss,
+    #                    si_item.normal_loss_amt,
+    #                    si_item.abnormal_loss,
+    #                    si_item.abnormal_loss_amt,
+    #                    si_item.excess_qty,
+    #                    si_item.excess_amt,
+    #                    si.total_charges,
+    #                    si.grand_total
+    #                    from `tabSales Order` so, `tabDelivery Note Item` dn_item, `tabDelivery Note` dn, `tabSales Order Item` so_item,
+    #                    `tabSales Invoice` si, `tabSales Invoice Item` si_item, `tabCustomer` cu, `tabEquipment` equip
+    #                    where so.name = so_item.parent and dn_item.against_sales_order = so.name
+    #                    and dn_item.parent = dn.name and si_item.delivery_note = dn.name
+    #                    and si_item.parent = si.name
+    #                    and equip.name = dn_item.equipment and si.customer = cu.name
+    #                    and so.docstatus = 1 and dn.docstatus = 1 and si.docstatus = 1
+    #                    {}
+    #                    """.format(cond), as_dict=1)
+
+
 
 	data = []
 
 	if query:
 		for a in query:
-			total_biiled_amt = flt(a.si_amount) + flt(a.total_charges) + flt(a.excess_amt) - flt(a.normal_loss_amt) - flt(a.abnormal_loss_amt)
+			total_biiled_amt = flt(a.si_amount) + flt(a.gst_amount) + flt(a.total_charges) + flt(a.excess_amt) - flt(a.normal_loss_amt) - flt(a.abnormal_loss_amt)
 
 			row = {
 				"sales_no": a.name,
@@ -147,7 +242,7 @@ def get_data(filters):
 				"excess_amt": a.excess_amt,
 				"transporter_name": a.supplier,
 				"equipment_no": a.vehicle_number if flt(a.others_equipment) == 1 else a.equipment,
-				"bill_amount": a.si_amount,
+				"bill_amount": a.si_amount+a.gst_amount,
 				"total_biiled_amt": total_biiled_amt,
 				"location": a.location,
 				"remarks": a.remarks,
