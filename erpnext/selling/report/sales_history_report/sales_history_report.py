@@ -43,6 +43,7 @@ def get_columns(data):
 		{ "label": _("Due Date"), "fieldtype": "Date", "fieldname": "due_date", "width": 120, },
 		{ "label": _("Accepted Qty"), "fieldtype": "Data", "fieldname": "accepted_qty", "width": 120, },
 		{ "label": _("Bill Amount"), "fieldtype": "Currency", "fieldname": "si_amount", "width": 180, },
+		{ "label": _("GST Amount"), "fieldtype": "Currency", "fieldname": "gst_amount", "width": 180, },
 		{ "label": _("Other Charges"), "fieldtype": "Currency", "fieldname": "other_charges", "width": 180, },
 		{ "label": _("NL Qty"), "fieldtype": "Data", "fieldname": "nl_qty", "width": 80, },
 		{ "label": _("NL Amount"), "fieldtype": "Currency", "fieldname": "nl_amt", "width": 120, },
@@ -91,7 +92,7 @@ def get_data(filters):
 		.left_join(cu)
 		.on(si.customer == cu.name)
 		.select(
-			so.name, so.transaction_date, so.customer, cu.territory, cu.country, so.dispatch, so_item.qty, (so_item.rate.as_("so_rate")), (so_item.base_net_amount).as_("so_amount"), so_item.item_code, so_item.item_name, dn_item.item_type, so_item.uom, so_item.warehouse, (dn.name).as_("dn_name"), (dn.posting_date.as_("dn_date")), (dn_item.qty).as_("delivered_qty"), dn_item.others_equipment, dn_item.vehicle_number, dn_item.equipment, equip.supplier, dn_item.location, (si.name).as_("si_no"), (si.posting_date).as_("si_date"), (si.reference_date_for_payment).as_("ref_date"), si.due_date, si.total_advance, (si_item.accepted_qty).as_("accepted_qty"), (si_item.base_net_amount).as_("si_amount"), si_item.normal_loss, si_item.normal_loss_amt, si_item.abnormal_loss, si_item.abnormal_loss_amt, si_item.excess_qty, si_item.excess_amt, si.total_charges, si.grand_total, ote.remarks
+			so.name, so.transaction_date, so.customer, cu.territory, cu.country, so.dispatch, so_item.qty, (so_item.rate.as_("so_rate")), (so_item.base_net_amount).as_("so_amount"), so_item.item_code, so_item.item_name, dn_item.item_type, so_item.uom, so_item.warehouse, (dn.name).as_("dn_name"), (dn.posting_date.as_("dn_date")), (dn_item.qty).as_("delivered_qty"), dn_item.others_equipment, dn_item.vehicle_number, dn_item.equipment, equip.supplier, dn_item.location, (si.name).as_("si_no"), (si.posting_date).as_("si_date"), (si.status).as_("status"), (si.reference_date_for_payment).as_("ref_date"), si.due_date, si.total_advance, (si_item.accepted_qty).as_("accepted_qty"), (si_item.base_net_amount).as_("si_amount"), (si_item.gst_amount).as_("gst_amount"), si_item.normal_loss, si_item.normal_loss_amt, si_item.abnormal_loss, si_item.abnormal_loss_amt, si_item.excess_qty, si_item.excess_amt, si.total_charges, si.grand_total, ote.remarks
 		)
 		.where((so.docstatus == 1) & (dn.docstatus == 1) & (si.docstatus == 1))
 	)
@@ -129,13 +130,14 @@ def get_data(filters):
 				"total_advance": a.total_advance,
 				"dn_name": a.dn_name,
 				"dn_date": a.dn_date,
-				"delivered_qty": a.delivered_qty,
+				"delivered_qty": a.delivered_qty if a.status != "Return" else -1 * a.delivered_qty,
 				"si_no": a.si_no,
 				"si_date": a.si_date,
 				"ref_date": a.ref_date,
 				"due_date": a.due_date,
-				"accepted_qty": a.accepted_qty,
+				"accepted_qty": a.accepted_qty if a.status != "Return" else -1 * a.delivered_qty,
 				"si_amount": a.si_amount,
+				"gst_amount": a.gst_amount,
 				"other_charges": a.total_charges,
 				"nl_qty": a.normal_loss,
 				"nl_amt": a.normal_loss_amt,
