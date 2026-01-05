@@ -86,6 +86,7 @@
   "gst_clearing_account",
   "gst_refundable_account",
   "gst_payable_account",
+  "gstin_number",
   "tds_account_item",
   "auto_accounting_for_stock_settings",
   "enable_perpetual_inventory",
@@ -1118,6 +1119,11 @@
    "fieldtype": "Link",
    "label": "GST Payable Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "gstin_number",
+   "fieldtype": "Data",
+   "label": "GSTIN Number"
   }
  ],
  "icon": "fa fa-building",
@@ -1125,7 +1131,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2025-12-25 14:53:06.794762",
+ "modified": "2026-01-05 10:28:43.196935",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",
