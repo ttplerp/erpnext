@@ -8,7 +8,7 @@ frappe.query_reports["CBS Trial Balance Check"] = {
 			"fieldname":"report_date",
 			"label": __("Date"),
 			"fieldtype": "Date",
-			"default": frappe.datetime.add_months(frappe.datetime.get_today(), -1),
+			"default": frappe.datetime.get_today(),
 			"reqd": 1,
 			"width": "100px"
 		},
