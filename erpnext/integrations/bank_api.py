@@ -124,33 +124,6 @@ def post_transaction(cbs_entry=None, posting_date = None, doctype=None, doc_name
         # Close the curl object
         c.close()
     c.close
-    #-----CBS Posting Code Block End -----------------------------------------------------------------------------------
-
-    #-----Commented below code block incase CBS TLS and OPENSSL Version gets upgraded in future--------------------
-    # context = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-    # context.options |= ssl.OP_NO_TLSv1_1  # Disable TLSv1 and TLSv1.1
-    # context.options |= ssl.OP_NO_TLSv1_2  # Disable TLSv1 and TLSv1.1
-    # context.set_ciphers = ('AES128-SHA256')
-    # session = requests.Session()
-    # session.mount('http://', SSLAdapter(ssl_context=context))
-    # try:
-    #     response = session.post(
-    #         url,
-    #         headers={"Content-Type": "application/xml"},
-    #         data=api_body,
-    #         verify='/etc/ssl/certs/server-cert.pem',
-    #         # proxies=proxies# Mimics rejectUnauthorized: false,
-    #     )
-
-    #     response.raise_for_status()  # Raise an error for bad responses
-    #     # Parse the XML response
-    #     # parsed_response = xmltodict.parse(response.content)
-    #     frappe.throw(str(response.content))
-    # except requests.exceptions.RequestException as e:
-    #     frappe.throw(f"Error: {e}")
-    #     frappe.throw({"error": str(e)}), 500
-    # response = requests.request("POST", url, headers=headers, data=api_body)
-    #--------------------------------------------------------------------------------------------------------=
     if status_from_cbs == "Success":
          message = "Posting Complete...."
     else:
@@ -169,75 +142,22 @@ def generate_payload(cbs_entry=None, doctype=None, doc_name=None):
     payload = ""
     if not doctype and not doc_name:
         if cbs_entry:
-            # if len(frappe.db.sql("""
-            #                         select * from `tabCBS Entry Upload` where cbs_entry = '{}' 
-            #                 """.format(cbs_entry.name), as_dict=True)) > 200:
             for a in frappe.db.sql("""
                                     select * from `tabCBS Entry Upload` where cbs_entry = '{}' 
-                            """.format(cbs_entry.name), as_dict=True):
+                                """.format(cbs_entry.name), as_dict=True):
                 creditdebit = "D" if flt(a.debit) > 0 else "C"
-
-                # gl_entry = frappe.get_doc("GL Entry", a.gl_entry)
                 gl_entry = ""
                 amount = flt(a.debit,2) if flt(a.debit) > 0 else flt(a.credit,2)
                 if amount < 0:
                     amount = -1 * amount
                 acc_doc = frappe.get_doc("Account", a.account)
                 d += flt(a.debit,2)
-                c += flt(a.credit,2)
-
-  
-                        
+                c += flt(a.credit,2)                        
                 pd = str(today())+"T00:00:00.000"
-                #pd = "2024-10-31T00:00:00.000"
-                # if gl_entry.partylist_json:
-                #     # Parse the JSON string into a Python dictionary
-                #     party_data = json.loads(gl_entry.partylist_json)
-                #     for ptype in party_data:
-                #         for party_detail in party_data[ptype]:
-                #             payload += doc.body.format(acctid=party_detail['account_number'],creditdebit=creditdebit,\
-                #                 amount=party_detail['amount'],trnparticular=gl_entry.remarks+" "+party_detail["remarks"],trnrmks=gl_entry.remarks+" "+party_detail["remarks"],\
-                #                 valuedate=pd,serialnumber=serialnumber)
-                #             serialnumber += 1
-                # else:
                 payload += doc.body.format(acctid=a.account_number,creditdebit=creditdebit,\
                     amount=amount,trnparticular=str(cbs_entry.entry_title)[:30],trnrmks="",\
                     valuedate=pd,serialnumber=serialnumber)
-                # if serialnumber < 201:
                 serialnumber += 1
-                # if serialnumber == 201:
-                #     payload_list.append(str(payload))
-                #     serialnumber = 1
-        # else:
-        #     for a in frappe.db.sql("""
-        #                             select * from `tabCBS Entry Upload` where cbs_entry = '{}' 
-        #                     """.format(cbs_entry.name), as_dict=True):
-        #             creditdebit = "D" if flt(a.debit) > 0 else "C"
-        #             gl_entry = frappe.get_doc("GL Entry", a.gl_entry)
-        #             amount = flt(a.debit,2) if flt(a.debit) > 0 else flt(a.credit,2)
-        #             if amount < 0:
-        #                 amount = -1 * amount
-        #             acc_doc = frappe.get_doc("Account", a.account)
-        #             d += flt(a.debit,2)
-        #             c += flt(a.credit,2)
-
-                                
-                            
-        #             pd = str(gl_entry.posting_date)+"T00:00:00.000"
-        #             # if gl_entry.partylist_json:
-        #             #     # Parse the JSON string into a Python dictionary
-        #             #     party_data = json.loads(gl_entry.partylist_json)
-        #             #     for ptype in party_data:
-        #             #         for party_detail in party_data[ptype]:
-        #             #             payload += doc.body.format(acctid=party_detail['account_number'],creditdebit=creditdebit,\
-        #             #                 amount=party_detail['amount'],trnparticular=gl_entry.remarks+" "+party_detail["remarks"],trnrmks=gl_entry.remarks+" "+party_detail["remarks"],\
-        #             #                 valuedate=pd,serialnumber=serialnumber)
-        #             #             serialnumber += 1
-        #             # else:
-        #             payload += doc.body.format(acctid=a.account_number,creditdebit=creditdebit,\
-        #                 amount=amount,trnparticular=a.account_number,trnrmks=a.account_number,\
-        #                 valuedate=pd,serialnumber=serialnumber)
-        #             serialnumber += 1
         else:
             for a in frappe.db.sql("""
                                     select * from `tabCBS Entry Upload`
@@ -246,25 +166,6 @@ def generate_payload(cbs_entry=None, doctype=None, doc_name=None):
                     amount = flt(a.debit,2) if flt(a.debit) > 0 else flt(a.credit,2)
                     d += flt(a.debit,2)
                     c += flt(a.credit,2)
-                    # acc_doc = frappe.get_doc("Account", a.account)
-                    # payload += """
-                    #         <PartTrnRec>
-                    #         <AcctId>
-                    #         <AcctId>{acctid}</AcctId>
-                    #         </AcctId>
-                    #         <CreditDebitFlg>{creditdebit}</CreditDebitFlg>
-                    #         <TrnAmt>
-                    #         <amountValue>{amount}</amountValue>
-                    #         <currencyCode>BTN</currencyCode>
-                    #         </TrnAmt>
-                    #         <TrnParticulars>{trnparticular}</TrnParticulars>
-                    #         <PartTrnRmks>{trnrmks}</PartTrnRmks>
-                    #         <ValueDt>{valuedate}</ValueDt>
-                    #         <SerialNum>{serialnumber}</SerialNum>
-                    #         </PartTrnRec>
-                    #     """.format(acctid=acc_doc.account_number,creditdebit=creditdebit,\
-                    #     amount=amount,trnparticular=a.account_number,trnrmks=a.account_number,\
-                    #     valuedate=a.creation,serialnumber=serialnumber)
                     pd = str(a.creation)[:-3].split(" ")[0]+"T"+str(a.creation)[:-3].split(" ")[1]
                     payload += doc.body.format(acctid=a.account_number,creditdebit=creditdebit,\
                         amount=amount,trnparticular=a.remarks,trnrmks=a.remarks,\
@@ -281,57 +182,125 @@ def generate_payload(cbs_entry=None, doctype=None, doc_name=None):
             d += flt(a.debit,2)
             c += flt(a.credit,2)
             acc_doc = frappe.get_doc("Account", a.account)
-            # payload += """
-            #         <PartTrnRec>
-            #         <AcctId>
-            #         <AcctId>{acctid}</AcctId>
-            #         </AcctId>
-            #         <CreditDebitFlg>{creditdebit}</CreditDebitFlg>
-            #         <TrnAmt>
-            #         <amountValue>{amount}</amountValue>
-            #         <currencyCode>BTN</currencyCode>
-            #         </TrnAmt>
-            #         <TrnParticulars>{trnparticular}</TrnParticulars>
-            #         <PartTrnRmks>{trnrmks}</PartTrnRmks>
-            #         <ValueDt>{valuedate}</ValueDt>
-            #         <SerialNum>{serialnumber}</SerialNum>
-            #         </PartTrnRec>
-            #     """.format(acctid=acc_doc.account_number,creditdebit=creditdebit,\
-            #     amount=amount,trnparticular=a.account_number,trnrmks=a.account_number,\
-            #     valuedate=a.creation,serialnumber=serialnumber)
             pd = str(a.creation)[:-3].split(" ")[0]+"T"+str(a.creation)[:-3].split(" ")[1]
             payload += doc.body.format(acctid=acc_doc.account_number,creditdebit=creditdebit,\
             amount=amount,trnparticular=a.account_number,trnrmks=a.account_number,\
             valuedate=pd,serialnumber=serialnumber)
             serialnumber += 1
-    # for a in frappe.db.sql("""
-    #                     select * from `tabGL Entry`
-    #                     where voucher_type="{0}"
-    #                     and voucher_no="{1}"
-    #             """.format(doctype, doc_name), as_dict=True):
-    #     creditdebit = "D" if a.debit > 0 else "C"
-    #     amount = flt(a.debit,2) if a.debit >0 else flt(a.credit,2)
-    #     acc_doc = frappe.get_doc("Account", a.account)
-    #     payload += """
-    #             <PartTrnRec>
-    #             <AcctId>
-    #             <AcctId>{acctid}</AcctId>
-    #             </AcctId>
-    #             <CreditDebitFlg>{creditdebit}</CreditDebitFlg>
-    #             <TrnAmt>
-    #             <amountValue>{amount}</amountValue>
-    #             <currencyCode>BTN</currencyCode>
-    #             </TrnAmt>
-    #             <TrnParticulars>{trnparticular}</TrnParticulars>
-    #             <PartTrnRmks>{trnrmks}</PartTrnRmks>
-    #             <ValueDt>{valuedate}</ValueDt>
-    #             <SerialNum>{serialnumber}</SerialNum>
-    #             </PartTrnRec>
-    #         """.format(acctid=acc_doc.account_number,creditdebit=creditdebit,\
-    #         amount=amount,trnparticular=a.account_number,trnrmks=a.account_number,\
-    #         valuedate=a.creation,serialnumber=serialnumber)
-    #     serialnumber += 1
-    return payload, d, c 
+    return payload, d, c
+
+@frappe.whitelist()
+def bill_payment():
+    import pycurl
+    buffer = BytesIO()
+    url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
+    #url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
+    # Initialize a pycurl object
+    print(ssl.OPENSSL_VERSION)
+    print(pycurl.version)
+    c = pycurl.Curl()
+    c.setopt(c.URL, url)
+    c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
+    # Optionally set a timeout
+    c.setopt(c.TIMEOUT, 500)
+    # Set SSL version to use TLS (if required)
+    c.setopt(c.SSLVERSION, pycurl.SSLVERSION_TLSv1)
+    # Set the write data buffer
+    c.setopt(c.WRITEDATA, buffer)
+    # Follow redirects if needed
+    c.setopt(c.FOLLOWLOCATION, True)
+    c.setopt(c.SSL_VERIFYHOST, 0)
+    c.setopt(c.SSL_VERIFYPEER, 0)
+    posting_date ="2025-06-05 00:00:00"
+    pd = str(posting_date).split(" ")[0]+"T"+str(posting_date).split(" ")[1]+".000"
+    # Define the XML body as a string
+    rfid = "1232423422"
+    amount = "2200.00"
+    frm_acid = "101028916201"
+    frm_branch_id = "0230"
+
+    payload = """<FIXML xsi:schemaLocation="http://www.finacle.com/fixml doFundsTransfer.xsd"
+        xmlns="http://www.finacle.com/fixml"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <Header>
+            <RequestHeader>
+                <MessageKey>
+                    <RequestUUID>{rfid}</RequestUUID>
+                    <ServiceRequestId>doFundsTransfer</ServiceRequestId>
+                    <ServiceRequestVersion>10.2</ServiceRequestVersion>
+                    <ChannelId>CRM</ChannelId>
+                </MessageKey>
+                <RequestMessageInfo>
+                    <BankId />
+                    <TimeZone />
+                    <EntityId />
+                    <EntityType />
+                    <ArmCorrelationId />
+                    <MessageDateTime>{pd}</MessageDateTime>
+                </RequestMessageInfo>
+                <Security>
+                    <Token>
+                        <PasswordToken>
+                            <UserId />
+                            <Password />
+                        </PasswordToken>
+                    </Token>
+                    <FICertToken />
+                    <RealUserLoginSessionId />
+                    <RealUser />
+                    <RealUserPwd />
+                    <SSOTransferToken />
+                </Security>
+            </RequestHeader>
+        </Header>
+        <Body>
+            <doFundsTransferRequest>
+                <ProcessFTInputVO>
+                    <frAcid>{frm_acid}</frAcid>
+                    <frBrchId>{frm_branch_id}</frBrchId>
+                    <toAcid>0000220010014</toAcid>
+                    <toBrchId>0010</toBrchId>
+                    <txnAmt>
+                        <amountValue>{amount}</amountValue>
+                        <currencyCode>BTN</currencyCode>
+                    </txnAmt>
+                    <txnCrn>BTN</txnCrn>
+                    <valuedate>2024-10-19T18:47:56.749</valuedate>
+                    <tranRmks>04293184756686/BT Leaseline/</tranRmks>
+                </ProcessFTInputVO>
+            </doFundsTransferRequest>
+        </Body>
+    </FIXML>""".format(rfid = rfid, frm_acid = frm_acid, frm_branch_id = frm_branch_id, amount = amount, pd=pd)
+    
+    c.setopt(c.HTTPHEADER, [
+        'Content-Type: application/xml; charset=utf-8'
+    ])
+    # Set the POST fields (SOAP body)
+    c.setopt(c.POSTFIELDS, payload)
+    # Set the write data buffer
+    c.setopt(c.WRITEDATA, buffer)
+    # Perform the request
+    try:
+        c.perform()
+        # Get HTTP response code
+        http_code = c.getinfo(c.RESPONSE_CODE)
+        # Get the response body
+        body = buffer.getvalue()
+        result = str(body.decode('utf-8'))
+        print(result)
+        if result:
+            root = ET.fromstring(result)
+            # Define the namespace
+            namespace = {'ns': 'http://www.finacle.com/fixml'}
+            response = root.find('.//ns:HostTransaction/ns:Status', namespaces=namespace).text
+        return response
+    except pycurl.error as e:
+        # frappe.throw(traceback.format_exc())
+        frappe.throw(f"An error occurred: {e}")
+    finally:
+        # Close the curl object
+        c.close()
+    c.close
 
 def generate_footer(doctype=None, doc_name=None):
     doc = frappe.get_doc("API Detail","MULTI LEDGER")
@@ -342,12 +311,162 @@ def generate_header(cbs_entry=None, doctype=None, doc_name=None, posting_date=No
     pd = str(posting_date).split(" ")[0]+"T"+str(posting_date).split(" ")[1]+".000"
     return(str(doc.header).format(uuid=cbs_entry.name, bankid="01", msgdatetime=pd))
 
-@frappe.whitelist()
-def activate_dormant_account(uuid=None, posting_date=None, account_no=None):
+def gst_api_header():
+    pd = str(today())+"T00:00:00.000"
+    import random
+    uuid = random.randint(100_000_000, 999_999_999)
+    return """<?xml version="1.0" encoding="UTF-8"?>
+        <FIXML xsi:schemaLocation="http://www.finacle.com/fixml XferTrnAdd.xsd" xmlns="http://www.finacle.com/fixml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <Header>
+        <RequestHeader>
+        <MessageKey>
+        <RequestUUID>{uuid}</RequestUUID>
+        <ServiceRequestId>XferTrnAdd</ServiceRequestId>
+        <ServiceRequestVersion>10.2</ServiceRequestVersion>
+        <ChannelId>COR</ChannelId>
+        <LanguageId/>
+        </MessageKey>
+        <RequestMessageInfo>
+        <BankId>01</BankId>
+        <TimeZone/>
+        <EntityId/>
+        <EntityType/>
+        <ArmCorrelationId/>
+        <MessageDateTime>{pd}</MessageDateTime>
+        </RequestMessageInfo>
+        <Security>
+        <Token>
+        <PasswordToken>
+        <UserId/>
+        <Password/>
+        </PasswordToken>
+        </Token>
+        <FICertToken/>
+        <RealUserLoginSessionId/>
+        <RealUser/>
+        <RealUserPwd/>
+        <SSOTransferToken/>
+        </Security>
+        </RequestHeader>
+        </Header>
+        <Body>
+        <XferTrnAddRequest>
+        <XferTrnAddRq>
+        <XferTrnHdr>
+        <TrnType>T</TrnType>
+        <TrnSubType>CI</TrnSubType>
+        </XferTrnHdr>
+        <XferTrnDetail> """.format(uuid=uuid, pd=pd)
+
+def gst_api_footer():
+    return """</XferTrnDetail>
+        </XferTrnAddRq>
+        </XferTrnAddRequest>
+        </Body>
+        </FIXML>"""
+
+def gst_entry_adjustment(docname=None):
+    body=""
+    if docname:
+        doc = frappe.get_doc("GST Invoice", docname)
+        pd = str(today())+"T00:00:00.000"
+        for a in doc.get("item"):
+            service_acc = str(doc.branch_code)+str(a.service_gl_account)
+            gst_acc = str(doc.branch_code)+str(a.gst_gl_account)
+
+            sl = 0
+            if a.require_adjustment == 1:
+                sl += 1
+                body += """
+                    <PartTrnRec>
+                    <AcctId>
+                    <AcctId>{service_acc}</AcctId>
+                    </AcctId>
+                    <CreditDebitFlg>D</CreditDebitFlg>
+                    <TrnAmt>
+                    <amountValue>{amt}</amountValue>
+                    <currencyCode>BTN</currencyCode>
+                    </TrnAmt>
+                    <TrnParticulars>{particular}</TrnParticulars>
+                    <PartTrnRmks>{rmks}</PartTrnRmks>
+                    <ValueDt>{pd}</ValueDt>
+                    <SerialNum>{sl}</SerialNum>
+                    </PartTrnRec>
+
+                    <PartTrnRec>
+                    <AcctId>
+                    <AcctId>{gst_acc}</AcctId>
+                    </AcctId>
+                    <CreditDebitFlg>C</CreditDebitFlg>
+                    <TrnAmt>
+                    <amountValue>{amt}</amountValue>
+                    <currencyCode>BTN</currencyCode>
+                    </TrnAmt>
+                    <TrnParticulars>{particular}</TrnParticulars>
+                    <PartTrnRmks>{rmks}</PartTrnRmks>
+                    <ValueDt>{pd}</ValueDt>
+                    <SerialNum>{sl}</SerialNum>
+                    </PartTrnRec>
+                """.format(service_acc=service_acc,gst_acc=gst_acc,amt=a.gst,particular=a.service_type,rmks=a.service_type,pd=pd,sl=sl)
+    payload = str(gst_api_header()) + str(body) + str(gst_api_footer())
     import pycurl
     buffer = BytesIO()
     #url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
     url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
+    c = pycurl.Curl()
+    c.setopt(c.URL, url)
+    c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
+    # Optionally set a timeout
+    c.setopt(c.TIMEOUT, 500)
+    # Set SSL version to use TLS (if required)
+    c.setopt(c.SSLVERSION, pycurl.SSLVERSION_TLSv1)
+    # Set the write data buffer
+    c.setopt(c.WRITEDATA, buffer)
+    # Follow redirects if needed
+    c.setopt(c.FOLLOWLOCATION, True)
+    c.setopt(c.SSL_VERIFYHOST, 0)
+    c.setopt(c.SSL_VERIFYPEER, 0)
+
+    headers = {
+    'Content-Type': 'application/'
+    'xml'
+    }
+
+    c.setopt(c.HTTPHEADER, [
+        'Content-Type: application/xml; charset=utf-8'
+    ])
+    c.setopt(c.POSTFIELDS, payload)
+    c.setopt(c.WRITEDATA, buffer)
+    # Perform the request
+    try:
+        c.perform()
+        # Get HTTP response code
+        http_code = c.getinfo(c.RESPONSE_CODE)
+        # Get the response body
+        body = buffer.getvalue()
+        result = str(body.decode('utf-8'))
+        response = msg = ""
+        if result:
+            root = ET.fromstring(result)
+            # Define the namespace
+            namespace = {'ns': 'http://www.finacle.com/fixml'}
+            response = root.find('.//ns:HostTransaction/ns:Status', namespaces=namespace).text
+            if response == "SUCCESS":
+                msg = root.find('.//ns:TrnIdentifier/ns:TrnId', namespaces=namespace).text
+            elif response == "FAILURE":
+                msg = root.find('.//ns:ErrorDetail/ns:ErrorDesc', namespaces=namespace).text
+        return response, msg
+    except pycurl.error as e:
+        frappe.throw(f"An error occurred: {e}")
+    finally:
+        c.close()
+
+@frappe.whitelist()
+def activate_dormant_account(uuid=None, posting_date=None, account_no=None):
+    import pycurl
+    buffer = BytesIO()
+    url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
+    #url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
     # Initialize a pycurl object
     print(ssl.OPENSSL_VERSION)
     print(pycurl.version)
@@ -439,12 +558,121 @@ def activate_dormant_account(uuid=None, posting_date=None, account_no=None):
             # Define the namespace
             namespace = {'ns': 'http://www.finacle.com/fixml'}
             response = root.find('.//ns:HostTransaction/ns:Status', namespaces=namespace).text
-        return response
+            if response == "FAILURE":
+                error_desc = root.find(".//ns:ErrorDesc", namespaces=namespace).text +" "+ root.find(".//ns:ErrorSource", namespaces=namespace).text
+                return response, error_desc
+            else:
+                message = "Successful"
+                return response, message
     except pycurl.error as e:
         # frappe.throw(traceback.format_exc())
         frappe.throw(f"An error occurred: {e}")
     finally:
         # Close the curl object
+        c.close()
+    c.close
+
+@frappe.whitelist()
+def request_freeze_account(account_no=None):
+    print(account_no)
+    import pycurl
+    buffer = BytesIO()
+    url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
+    #url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
+    # Initialize a pycurl object
+    print(ssl.OPENSSL_VERSION)
+    print(pycurl.version)
+    c = pycurl.Curl()
+    c.setopt(c.URL, url)
+    c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
+    # Optionally set a timeout
+    c.setopt(c.TIMEOUT, 500)
+    # Set SSL version to use TLS (if required)
+    c.setopt(c.SSLVERSION, pycurl.SSLVERSION_TLSv1)
+    # Set the write data buffer
+    c.setopt(c.WRITEDATA, buffer)
+    # Follow redirects if needed
+    c.setopt(c.FOLLOWLOCATION, True)
+    c.setopt(c.SSL_VERIFYHOST, 0)
+    c.setopt(c.SSL_VERIFYPEER, 0)
+    payload = """
+        <?xml version="1.0" encoding="UTF-8"?>
+            <FIXML xsi:schemaLocation="http://www.finacle.com/fixml executeFinacleScript.xsd" xmlns="http://www.finacle.com/fixml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><Header>
+            <RequestHeader>
+            <MessageKey>
+            <RequestUUID>Req45453899999</RequestUUID>
+            <ServiceRequestId>executeFinacleScript</ServiceRequestId>
+            <ServiceRequestVersion>10.2</ServiceRequestVersion>
+            <ChannelId>COR</ChannelId>
+            <LanguageId></LanguageId>
+            </MessageKey>
+            <RequestMessageInfo>
+            <BankId>01</BankId>
+            <TimeZone></TimeZone>
+            <EntityId></EntityId>
+            <EntityType></EntityType>
+            <ArmCorrelationId></ArmCorrelationId>
+            <MessageDateTime>2023-00-20T10:54:27.198</MessageDateTime>
+            </RequestMessageInfo>
+            <Security>
+            <Token>
+            <PasswordToken>
+            <UserId></UserId>
+            <Password></Password>
+            </PasswordToken>
+            </Token>
+            <FICertToken></FICertToken>
+            <RealUserLoginSessionId></RealUserLoginSessionId>
+            <RealUser></RealUser>
+            <RealUserPwd></RealUserPwd>
+            <SSOTransferToken></SSOTransferToken>
+            </Security>
+            </RequestHeader>
+            </Header>
+            <Body>
+            <executeFinacleScriptRequest>
+            <ExecuteFinacleScriptInputVO>
+            <requestId>FreezeUpdate.scr</requestId>
+            </ExecuteFinacleScriptInputVO>
+            <executeFinacleScript_CustomData>
+            <AcctId>{0}</AcctId>
+            <FreezeCode>T</FreezeCode>
+            </executeFinacleScript_CustomData>
+            </executeFinacleScriptRequest>
+            </Body>
+            </FIXML>
+    """.format(account_no)
+
+    headers = {
+    'Content-Type': 'application/'
+    'xml'
+    }
+
+    c.setopt(c.HTTPHEADER, [
+        'Content-Type: application/xml; charset=utf-8'
+    ])
+    # Set the POST fields (SOAP body)
+    c.setopt(c.POSTFIELDS, payload)
+    # Set the write data buffer
+    c.setopt(c.WRITEDATA, buffer)
+    # Perform the request
+    try:
+        c.perform()
+        # Get HTTP response code
+        http_code = c.getinfo(c.RESPONSE_CODE)
+        # Get the response body
+        body = buffer.getvalue()
+        result = str(body.decode('utf-8'))
+        if result:
+            root = ET.fromstring(result)
+            # Define the namespace
+            namespace = {'ns': 'http://www.finacle.com/fixml'}
+            response = root.find('.//ns:HostTransaction/ns:Status', namespaces=namespace).text
+            print(response)
+        return response
+    except pycurl.error as e:
+        frappe.throw(f"An error occurred: {e}")
+    finally:
         c.close()
     c.close
 
@@ -462,632 +690,361 @@ def print_result():
             print("FAILED")
 
 @frappe.whitelist()
-def encrypt_credential(api):
-    doc = frappe.get_doc("API Detail", str(api))
-    url = doc.api_link
-    user_id = password = ""
-    for a in doc.item:
-        if a.param == "user_id":
-            user_id = a.defined_value
-        elif a.param == "password":
-            password = a.defined_value
-    header_string = str(user_id)+":"+str(password)
-    header_bytes = header_string.encode("utf-8")
-    return header_bytes, url
-
-@frappe.whitelist()
-def intra_payment(from_acc, trans_amount, promo_no, to_acc, unique_transaction_no):
-    if not frappe.db.get_value('Bank Payment Settings', "BOBL", 'enable_one_to_one'):
-        return
-    '''
-    doc = frappe.get_doc("API Detail", "ONE TO ONE - INTRA BANK")
-    url = doc.api_link
-    for a in doc.item:
-        if a.param == "user_id":
-            user_id = a.defined_value
-        elif a.param == "password":
-            password = a.defined_value
-    '''
-    header_credential, url = encrypt_credential(api="ONE TO ONE - INTRA BANK")
-
-    payload="""
-        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://BaNCS.TCS.com/webservice/TransferDepositAccountFundSecuredInterface/v1" xmlns:ban="http://TCS.BANCS.Adapter/BANCSSchema">			
-        <soapenv:Header/>			
-        <soapenv:Body>			
-            <v1:transferDepositAccountFundSecured>			
-                <DepAcctFundXferRq>			
-                    <ban:RqHeader>			
-                    <!--Optional:-->			
-                    <ban:Filler1></ban:Filler1>			
-                    <!--Optional:-->			
-                    <ban:MsgLen></ban:MsgLen>			
-                    <!--Optional:-->			
-                    <ban:Filler2></ban:Filler2>			
-                    <!--Optional:-->			
-                    <ban:MsgTyp></ban:MsgTyp>			
-                    <!--Optional:-->			
-                    <ban:Filler3></ban:Filler3>			
-                    <!--Optional:-->			
-                    <ban:CycNum></ban:CycNum>			
-                    <!--Optional:-->			
-                    <ban:MsgNum></ban:MsgNum>			
-                    <!--Optional:-->			
-                    <ban:SegNum></ban:SegNum>			
-                    <!--Optional:-->			
-                    <ban:SegNum2></ban:SegNum2>			
-                    <!--Optional:-->			
-                    <ban:FrontEndNum></ban:FrontEndNum>			
-                    <!--Optional:-->			
-                    <ban:TermlNum></ban:TermlNum>			
-                    <!--Optional:-->			
-                        <ban:InstNum>003</ban:InstNum>			
-                    <ban:BrchNum>00010</ban:BrchNum>			
-                    <!--Optional:-->			
-                    <ban:WorkstationNum></ban:WorkstationNum>			
-                    <!--Optional:-->			
-                    <ban:TellerNum>8885</ban:TellerNum>			
-                    <!--Optional:-->			
-                    <ban:TranNum></ban:TranNum>			
-                    <!--Optional:-->			
-                    <ban:JrnlNum></ban:JrnlNum>			
-                    <!--Optional:-->			
-                    <ban:HdrDt></ban:HdrDt>			
-                    <!--Optional:-->			
-                    <ban:Filler4></ban:Filler4>			
-                    <!--Optional:-->			
-                    <ban:Filler5></ban:Filler5>			
-                    <!--Optional:-->			
-                    <ban:Filler6></ban:Filler6>			
-                    <!--Optional:-->			
-                    <ban:Flag1></ban:Flag1>			
-                    <!--Optional:-->			
-                    <ban:Flag2></ban:Flag2>			
-                    <!--Optional:-->			
-                    <ban:Flag3></ban:Flag3>			
-                    <!--Optional:-->			
-                    <ban:Flag4>W</ban:Flag4>			
-                    <ban:Flag5>Y</ban:Flag5>			
-                    <!--Optional:-->			
-                    <ban:Flag6></ban:Flag6>			
-                    <!--Optional:-->			
-                    <ban:Flag7></ban:Flag7>			
-                    <!--Optional:-->			
-                    <ban:SprvsrID></ban:SprvsrID>			
-                    <!--Optional:-->			
-                    <ban:SupDate></ban:SupDate>			
-                    <!--Optional:-->			
-                    <ban:CheckerID1></ban:CheckerID1>			
-                    <!--Optional:-->			
-                    <ban:ParentBlinkJrnlNum></ban:ParentBlinkJrnlNum>			
-                    <!--Optional:-->			
-                    <ban:CheckerID2></ban:CheckerID2>			
-                    <!--Optional:-->			
-                    <ban:BlinkJrnlNum></ban:BlinkJrnlNum>			
-                    <ban:UUIDSource></ban:UUIDSource>			
-                    <ban:UUIDNUM></ban:UUIDNUM>			
-                    <!--Optional:-->			
-                    <ban:UUIDSeqNo></ban:UUIDSeqNo>			
-                    </ban:RqHeader>			
-                    <ban:Data>			
-                    <ban:FrmAcctNum>{0}</ban:FrmAcctNum>			
-                    <ban:Amt>{1}</ban:Amt>			
-                    <ban:PromoNum>{2}</ban:PromoNum>			
-                    <ban:ToAcctNum>{3}</ban:ToAcctNum>
-                            
-                    <!--Optional:-->			
-                    <ban:TrnAmt>{1}</ban:TrnAmt>			
-                            
-                    <!--Optional:-->			
-                    <ban:StmtNarr>{4}</ban:StmtNarr>			
-                            
-                    </ban:Data>			
-                </DepAcctFundXferRq>			
-            </v1:transferDepositAccountFundSecured>			
-        </soapenv:Body>			
-        </soapenv:Envelope>""".format(from_acc, trans_amount, promo_no, to_acc, unique_transaction_no)
-    '''
-    headers = {
-    'Authorization': 'Basic %s' % base64.b64encode(header_credential),
-    'Content-Type': 'application/xml'
-    }
-    '''
-    headers = {
-    'Authorization': 'Basic RVBBWVRUUDpwYXNzd29yZDEyMyQ=',
-    'Content-Type': 'application/xml'
-    }
-    
-    response = requests.request("POST", url, headers=headers, data=payload)
-    
-    namespaces = {
-        'soap': 'http://schemas.xmlsoap.org/soap/envelope/',
-        'ns2': 'http://TCS.BANCS.Adapter/BANCSSchema',
-        'ns3': 'http://BaNCS.TCS.com/webservice/TransferDepositAccountFundSecuredInterface/v1'
-    }
-
-    JrnlNum=""
-    errorMessage=""
-    successMessage= ""
-    message = ""
-    status = ""
-    dom = ElementTree.fromstring(response.text)
-    for name in dom.findall('./soap:Body/ns3:transferDepositAccountFundSecuredResponse/DepAcctFundXferRs/ns2:RsHeader/ns2:JrnlNum', namespaces):
-        JrnlNum = name.text
-    for name in dom.findall('./soap:Body/ns3:transferDepositAccountFundSecuredResponse/DepAcctFundXferRs/ns2:Stat/ns2:ErrorMessage/ns2:ErrorMessage', namespaces):
-        errorMessage = name.text
-    for name in dom.findall('./soap:Body/ns3:transferDepositAccountFundSecuredResponse/DepAcctFundXferRs/ns2:Stat/ns2:OkMessage/ns2:RcptData', namespaces):
-        successMessage = name.text 
-    if successMessage:
-        message = successMessage
-        status = "Success"
-    else:
-        message = errorMessage
-        status = "Failed"
-
-    return {"jrnl_no":JrnlNum, "status":status, "message":message}
-
-@frappe.whitelist()
-def inter_payment(Amt, PayeeAcctNum, BnfcryAcct, BnfcryName, BnfcryAcctTyp, BnfcryRmrk, RemitterName, BfscCode, RemitterAcctType, PEMSRefNum):
-    if not frappe.db.get_value('Bank Payment Settings', "BOBL", 'enable_one_to_one'):
-        return
-    '''
-    doc = frappe.get_doc("API Detail", "ONE TO ONE - INTER BANK")
-    url = doc.api_link
-    for a in doc.item:
-        if a.param == "user_id":
-            user_id = a.defined_value
-        elif a.param == "password":
-            password = a.defined_value
-    '''
-    header_credential, url = encrypt_credential(api="ONE TO ONE - INTER BANK")
-
-    if Amt > 1000000:
-        ModeOfPmt = str("01")
-    else:
-        ModeOfPmt = str("02")   
-    #url = "http://10.30.30.195:8888/OutwardDebit/OutwardDebitInterfaceHttpService"
-    payload="""
-        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://BaNCS.TCS.com/webservice/OutwardDebitInterface/v1" xmlns:ban="http://TCS.BANCS.Adapter/BANCSSchema">
-            <soapenv:Header/>
-            <soapenv:Body>
-                <v1:outwardDebit>
-                    <OutwardDrRq>
-                        <ban:RqHeader>
-                        <!--Optional:-->
-                        <ban:Filler1></ban:Filler1>
-                        <!--Optional:-->
-                        <ban:MsgLen></ban:MsgLen>
-                        <!--Optional:-->
-                        <ban:Filler2></ban:Filler2>
-                        <!--Optional:-->
-                        <ban:MsgTyp></ban:MsgTyp>
-                        <!--Optional:-->
-                        <ban:Filler3></ban:Filler3>
-                        <!--Optional:-->
-                        <ban:CycNum></ban:CycNum>
-                        <!--Optional:-->
-                        <ban:MsgNum></ban:MsgNum>
-                        <!--Optional:-->
-                        <ban:SegNum></ban:SegNum>
-                        <!--Optional:-->
-                        <ban:SegNum2></ban:SegNum2>
-                        <!--Optional:-->
-                        <ban:FrontEndNum></ban:FrontEndNum>
-                        <!--Optional:-->
-                        <ban:TermlNum></ban:TermlNum>
-                        <!--Optional:-->
-                        <ban:InstNum>003</ban:InstNum>
-                        <ban:BrchNum>00010</ban:BrchNum>
-                        <!--Optional:-->
-                        <ban:WorkstationNum></ban:WorkstationNum>
-                        <!--Optional:-->
-                        <ban:TellerNum>8885</ban:TellerNum>
-                        <!--Optional:-->
-                        <ban:TranNum></ban:TranNum>
-                        <!--Optional:-->
-                        <ban:JrnlNum></ban:JrnlNum>
-                        <!--Optional:-->
-                        <ban:HdrDt></ban:HdrDt>
-                        <!--Optional:-->
-                        <ban:Filler4></ban:Filler4>
-                        <!--Optional:-->
-                        <ban:Filler5></ban:Filler5>
-                        <!--Optional:-->
-                        <ban:Filler6></ban:Filler6>
-                        <!--Optional:-->
-                        <ban:Flag1></ban:Flag1>
-                        <!--Optional:-->
-                        <ban:Flag2></ban:Flag2>
-                        <!--Optional:-->
-                        <ban:Flag3></ban:Flag3>
-                        <!--Optional:-->
-                        <ban:Flag4>W</ban:Flag4>
-                        <ban:Flag5>Y</ban:Flag5>
-                        <!--Optional:-->
-                        <ban:Flag6></ban:Flag6>
-                        <!--Optional:-->
-                        <ban:Flag7></ban:Flag7>
-                        <!--Optional:-->
-                        <ban:SprvsrID></ban:SprvsrID>
-                        <!--Optional:-->
-                        <ban:SupDate></ban:SupDate>
-                        <!--Optional:-->
-                        <ban:CheckerID1></ban:CheckerID1>
-                        <!--Optional:-->
-                        <ban:ParentBlinkJrnlNum></ban:ParentBlinkJrnlNum>
-                        <!--Optional:-->
-                        <ban:CheckerID2></ban:CheckerID2>
-                        <!--Optional:-->
-                        <ban:BlinkJrnlNum></ban:BlinkJrnlNum>
-                        <ban:UUIDSource></ban:UUIDSource>
-                        <ban:UUIDNUM></ban:UUIDNUM>
-                        <!--Optional:-->
-                        <ban:UUIDSeqNo></ban:UUIDSeqNo>
-                        </ban:RqHeader>
-                        <ban:Data>
-                        <ban:ModeOfPmt>{0}</ban:ModeOfPmt>
-                        <ban:Amt>{1}</ban:Amt>
-                        <ban:PayeeAcctNum>{2}</ban:PayeeAcctNum>
-                        <ban:BnfcryAcct>{3}</ban:BnfcryAcct>
-                        <ban:BnfcryName>{4}</ban:BnfcryName>
-                        <ban:BnfcryAcctTyp>{5}</ban:BnfcryAcctTyp>
-                        <!--Optional:-->
-                        <ban:BnfcryRmrk>{6}</ban:BnfcryRmrk>
-                        <!--Optional:-->
-                        <ban:RemitterRmrk>{6}</ban:RemitterRmrk>
-                        <ban:RemitterName>{7}</ban:RemitterName>
-                        <ban:BfscCode>{8}</ban:BfscCode>
-                        <ban:BnfcryAmt>{1}</ban:BnfcryAmt>
-                        <ban:RemitterAcctTyp>{9}</ban:RemitterAcctTyp>
-                        <ban:SndToRcvrInfo>{6}</ban:SndToRcvrInfo>
-                        <!--Optional:-->
-                        <ban:SndToRcvrInfo1></ban:SndToRcvrInfo1>
-                        <!--Optional:-->
-                        <ban:SndToRcvrInfo2></ban:SndToRcvrInfo2>
-                        <ban:Comsn>0</ban:Comsn>
-                        <ban:TtlAmt>{1}</ban:TtlAmt>
-                        <ban:TxnCurrCode1>BTN</ban:TxnCurrCode1>
-                        <!--Optional:-->
-                        <ban:Amount3></ban:Amount3>
-                        <!--Optional:-->
-                        <ban:EmailID></ban:EmailID>
-                        <ban:RemitterAcctNum>{2}</ban:RemitterAcctNum>
-                        <ban:PEMSRefNum>{10}</ban:PEMSRefNum>
-                        </ban:Data>
-                    </OutwardDrRq>
-                </v1:outwardDebit>
-            </soapenv:Body>
-        </soapenv:Envelope>""".format(ModeOfPmt, Amt, PayeeAcctNum, BnfcryAcct, BnfcryName, BnfcryAcctTyp, BnfcryRmrk, RemitterName, BfscCode, RemitterAcctType, PEMSRefNum)
-    headers = {
-    'Authorization': 'Basic RVBBWVRUUDpwYXNzd29yZDEyMyQ=',
-    'Content-Type': 'application/xml'
-    }
-    response = requests.request("POST", url, headers=headers, data=payload)
-    from xml.etree import ElementTree
-
-    namespaces = {
-        'soap': 'http://schemas.xmlsoap.org/soap/envelope/',
-        'ns2': 'http://TCS.BANCS.Adapter/BANCSSchema',
-        'ns3': 'http://BaNCS.TCS.com/webservice/OutwardDebitInterface/v1'
-    }
-
-    JrnlNum=""
-    errorMessage=""
-    successMessage= ""
-    dom = ElementTree.fromstring(response.text)
-    for name in dom.findall('./soap:Body/ns3:outwardDebitResponse/OutwardDrRs/ns2:RsHeader/ns2:JrnlNum', namespaces):
-        JrnlNum = name.text
-    for name in dom.findall('./soap:Body/ns3:outwardDebitResponse/OutwardDrRs/ns2:Stat/ns2:ErrorMessage/ns2:ErrorMessage', namespaces):
-        errorMessage = name.text
-    for name in dom.findall('./soap:Body/ns3:outwardDebitResponse/OutwardDrRs/ns2:Stat/ns2:OkMessage/ns2:RcptData', namespaces):
-        successMessage = name.text
-
-    if successMessage:
-        message = successMessage
-        status = "Success"
-    else:
-        message = errorMessage
-        status = "Failed"
-
-    return {"jrnl_no":JrnlNum, "status":status, "message":message}
-
-@frappe.whitelist()
-def inr_remittance(AcctNum, Amt, BnfcryAcct, BnfcryName, BnfcryAddr1, IFSC, BankCode, PurpCode, RemittersName, RemittersAddr1, ComsnOpt, PromoCode, PemsRefNum):
-    if not frappe.db.get_value('Bank Payment Settings', "BOBL", 'enable_one_to_one'):
-        return
-    
-    header_credential, url = encrypt_credential(api="ONE TO ONE - INR Remmittance")
-    '''
-    doc = frappe.get_doc("API Detail", "ONE TO ONE - INR Remmittance")
-    url = doc.api_link
-    for a in doc.item:
-        if a.param == "user_id":
-            user_id = a.defined_value
-        elif a.param == "password":
-            password = a.defined_value
-    '''
-    #url = "http://10.30.30.195:8088/INRRemittanceByTransferSecured/INRRemittanceByTransferSecuredInterfaceHttpService"
-    payload = """
-    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" 
-    xmlns:v1="http://BaNCS.TCS.com/webservice/INRRemittanceByTransferSecuredInterface/v1" 
-    xmlns:ban="http://TCS.BANCS.Adapter/BANCSSchema">
-    <soapenv:Header/>
-    <soapenv:Body>
-        <v1:iNRRemittanceByTransferSecured>
-            <INRRemittanceByXferRq>
-                <ban:RqHeader>
-                <!--Optional:-->
-                <ban:Filler1></ban:Filler1>
-                <!--Optional:-->
-                <ban:MsgLen></ban:MsgLen>
-                <!--Optional:-->
-                <ban:Filler2></ban:Filler2>
-                <!--Optional:-->
-                <ban:MsgTyp></ban:MsgTyp>
-                <!--Optional:-->
-                <ban:Filler3></ban:Filler3>
-                <!--Optional:-->
-                <ban:CycNum></ban:CycNum>
-                <!--Optional:-->
-                <ban:MsgNum></ban:MsgNum>
-                <!--Optional:-->
-                <ban:SegNum></ban:SegNum>
-                <!--Optional:-->
-                <ban:SegNum2></ban:SegNum2>
-                <!--Optional:-->
-                <ban:FrontEndNum></ban:FrontEndNum>
-                <!--Optional:-->
-                <ban:TermlNum></ban:TermlNum>
-                <!--Optional:-->
-                    <ban:InstNum>03</ban:InstNum>
-                <ban:BrchNum>00010</ban:BrchNum>
-                <!--Optional:-->
-                <ban:WorkstationNum></ban:WorkstationNum>
-                <!--Optional:-->
-                <ban:TellerNum>8882</ban:TellerNum>
-                <!--Optional:-->
-                <ban:TranNum></ban:TranNum>
-                <!--Optional:-->
-                <ban:JrnlNum></ban:JrnlNum>
-                <!--Optional:-->
-                <ban:HdrDt></ban:HdrDt>
-                <!--Optional:-->
-                <ban:Filler4></ban:Filler4>
-                <!--Optional:-->
-                <ban:Filler5></ban:Filler5>
-                <!--Optional:-->
-                <ban:Filler6></ban:Filler6>
-                <!--Optional:-->
-                <ban:Flag1></ban:Flag1>
-                <!--Optional:-->
-                <ban:Flag2></ban:Flag2>
-                <!--Optional:-->
-                <ban:Flag3></ban:Flag3>
-                <!--Optional:-->
-                <ban:Flag4>W</ban:Flag4>
-                <ban:Flag5>Y</ban:Flag5>
-                <!--Optional:-->
-                <ban:Flag6></ban:Flag6>
-                <!--Optional:-->
-                <ban:Flag7></ban:Flag7>
-                <!--Optional:-->
-                <ban:SprvsrID></ban:SprvsrID>
-                <!--Optional:-->
-                <ban:SupDate></ban:SupDate>
-                <!--Optional:-->
-                <ban:CheckerID1></ban:CheckerID1>
-                <!--Optional:-->
-                <ban:ParentBlinkJrnlNum></ban:ParentBlinkJrnlNum>
-                <!--Optional:-->
-                <ban:CheckerID2></ban:CheckerID2>
-                <!--Optional:-->
-                <ban:BlinkJrnlNum></ban:BlinkJrnlNum>
-                <ban:UUIDSource></ban:UUIDSource>
-                <ban:UUIDNUM></ban:UUIDNUM>
-                <!--Optional:-->
-                <ban:UUIDSeqNo></ban:UUIDSeqNo>
-                </ban:RqHeader>
-            <ban:Data>
-                <ban:AcctNum>{0}</ban:AcctNum>
-                <!--Optional:-->
-                <ban:CustName></ban:CustName>
-                <!--Optional:-->
-                <ban:Bal></ban:Bal>
-                <!--Optional:-->
-                <ban:ModeOfPay></ban:ModeOfPay>
-                <ban:Amt>{1}</ban:Amt>
-                <!--Optional:-->
-                <ban:AmtCur></ban:AmtCur>
-                <!--Optional:-->
-                <ban:Comsn>2</ban:Comsn>
-                <!--Optional:-->
-                <ban:TtlAmt></ban:TtlAmt>
-                <!--Optional:-->
-                <ban:TtlAmtCur>BTN</ban:TtlAmtCur>
-                <ban:BnfcryAcct>{2}</ban:BnfcryAcct>
-                <ban:BnfcryName>{3}</ban:BnfcryName>
-                <ban:BnfcryAddr1>{4}</ban:BnfcryAddr1>
-                <!--Optional:-->
-                <ban:BnfcryAddr2></ban:BnfcryAddr2>
-                <!--Optional:-->
-                <ban:BnfcryAddr3></ban:BnfcryAddr3>
-                <ban:IFSC>{5}</ban:IFSC>
-                <ban:BankCode>{6}</ban:BankCode>
-                <ban:PurpCode>{7}</ban:PurpCode>
-                <ban:RemittersName>{8}</ban:RemittersName>
-                <ban:RemittersAddr1>{9}</ban:RemittersAddr1>
-                <!--Optional:-->
-                <ban:RemittersAddr2></ban:RemittersAddr2>
-                <!-- Optional:-->
-                <ban:RemittersAddr3></ban:RemittersAddr3>
-                <ban:MailIdMobile></ban:MailIdMobile>
-                <!--Optional:-->
-                <ban:ComsnOpt>{10}</ban:ComsnOpt>
-                <!--Optional:-->
-                <ban:PromoCode>{11}</ban:PromoCode>
-                <!--Optional:-->
-                <ban:PemsRefNum>{12}</ban:PemsRefNum>
-                </ban:Data>
-            </INRRemittanceByXferRq>
-        </v1:iNRRemittanceByTransferSecured>
-    </soapenv:Body>""".format(AcctNum, Amt, BnfcryAcct, BnfcryName, BnfcryAddr1, IFSC, BankCode, PurpCode, RemittersName, RemittersAddr1, ComsnOpt, PromoCode, PemsRefNum)
+def loan_account_inq(account_no=None):
+    buffer = BytesIO()
+    #url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
+    url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
+    c = pycurl.Curl()
+    c.setopt(c.URL, url)
+    c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
+    c.setopt(c.TIMEOUT, 500)
+    c.setopt(c.SSLVERSION, pycurl.SSLVERSION_TLSv1)
+    c.setopt(c.WRITEDATA, buffer)
+    c.setopt(c.FOLLOWLOCATION, True)
+    c.setopt(c.SSL_VERIFYHOST, 0)
+    c.setopt(c.SSL_VERIFYPEER, 0)
+    payload="""<?xml version="1.0" encoding="UTF-8"?>
+<FIXML xsi:schemaLocation="http://www.finacle.com/fixml executeFinacleScript.xsd" xmlns="http://www.finacle.com/fixml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><Header>
+<RequestHeader>
+<MessageKey>
+<RequestUUID>545317899999</RequestUUID>
+<ServiceRequestId>executeFinacleScript</ServiceRequestId>
+<ServiceRequestVersion>10.2</ServiceRequestVersion>
+<ChannelId>COR</ChannelId>
+<LanguageId></LanguageId>
+</MessageKey>
+<RequestMessageInfo>
+<BankId>01</BankId>
+<TimeZone></TimeZone>
+<EntityId></EntityId>
+<EntityType></EntityType>
+<ArmCorrelationId></ArmCorrelationId>
+<MessageDateTime>2023-00-20T10:54:27.198</MessageDateTime>
+</RequestMessageInfo>
+<Security>
+<Token>
+<PasswordToken>
+<UserId></UserId>
+<Password></Password>
+</PasswordToken>
+</Token>
+<FICertToken></FICertToken>
+<RealUserLoginSessionId></RealUserLoginSessionId>
+<RealUser></RealUser>
+<RealUserPwd></RealUserPwd>
+<SSOTransferToken></SSOTransferToken>
+</Security>
+</RequestHeader>
+</Header>
+<Body>
+<executeFinacleScriptRequest>
+<ExecuteFinacleScriptInputVO>
+<requestId>loan.scr</requestId>
+</ExecuteFinacleScriptInputVO>
+<executeFinacleScript_CustomData>
+<AcctId>{0}</AcctId>
+</executeFinacleScript_CustomData>
+</executeFinacleScriptRequest>
+</Body>
+</FIXML>""".format(account_no)
 
     headers = {
-    'Authorization': 'Basic RVBBWVRUUDpwYXNzd29yZDEyMyQ=',
-    'Content-Type': 'application/xml'
-    }
-    response = requests.request("POST", url, headers=headers, data=payload)
-    namespaces = {
-        'soap': 'http://schemas.xmlsoap.org/soap/envelope/',
-        'ns2': 'http://TCS.BANCS.Adapter/BANCSSchema',
-        'ns3': 'http://BaNCS.TCS.com/webservice/INRRemittanceByTransferSecuredInterface/v1'
+    'Content-Type': 'application/'
+    'xml'
     }
 
-    JrnlNum=""
-    errorMessage=""
-    successMessage= ""
-    dom = ElementTree.fromstring(response.text)
-    for name in dom.findall('./soap:Body/ns3:iNRRemittanceByTransferSecuredResponse/INRRemittanceByXferRs/ns2:RsHeader/ns2:JrnlNum', namespaces):
-        JrnlNum = name.text
-    for name in dom.findall('./soap:Body/ns3:iNRRemittanceByTransferSecuredResponse/INRRemittanceByXferRs/ns2:Stat/ns2:ErrorMessage/ns2:ErrorMessage', namespaces):
-        errorMessage = name.text
-    for name in dom.findall('./soap:Body/ns3:iNRRemittanceByTransferSecuredResponse/INRRemittanceByXferRs/ns2:Stat/ns2:OkMessage/ns2:RcptData', namespaces):
-        successMessage = name.text
-
-    if successMessage:
-        message = successMessage
-        status = "Success"
-    else:
-        message = errorMessage
-        status = "Failed"
-
-    return {"jrnl_no":JrnlNum, "status":status, "message":message}
-    
-@frappe.whitelist()
-def fetch_balance(account_no):
-    if not account_no:
-        return {"message":"Please provide account no"}
-    if not frappe.db.get_value('Bank Payment Settings', "BOBL", 'enable_one_to_one'):
-        return
-    header_credential, url = encrypt_credential(api="BOB Customer Balance Enquiry")
-    '''
-    doc = frappe.get_doc("API Detail", "BOB Customer Balance Enquiry")
-    url = doc.api_link
-    for a in doc.item:
-        if a.param == "user_id":
-            user_id = a.defined_value
-        elif a.param == "password":
-            password = a.defined_value
-    '''
-
-    #url = "http://10.30.30.195:8088/EnquireShort/EnquireShortInterfaceHttpService"
-    payload="""<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://BaNCS.TCS.com/webservice/EnquireShortInterface/v1" xmlns:ban="http://TCS.BANCS.Adapter/BANCSSchema">
-                <soapenv:Header/>
-                <soapenv:Body>
-                    <v1:enquireShort>
-                        <ShrtInqRq>
-                            <ban:RqHeader>
-                            <!--Optional:-->
-                            <ban:Filler1></ban:Filler1>
-                            <!--Optional:-->
-                            <ban:MsgLen></ban:MsgLen>
-                            <!--Optional:-->
-                            <ban:Filler2></ban:Filler2>
-                            <!--Optional:-->
-                            <ban:MsgTyp></ban:MsgTyp>
-                            <!--Optional:-->
-                            <ban:Filler3></ban:Filler3>
-                            <!--Optional:-->
-                            <ban:CycNum></ban:CycNum>
-                            <!--Optional:-->
-                            <ban:MsgNum></ban:MsgNum>
-                            <!--Optional:-->
-                            <ban:SegNum></ban:SegNum>
-                            <!--Optional:-->
-                            <ban:SegNum2></ban:SegNum2>
-                            <!--Optional:-->
-                            <ban:FrontEndNum></ban:FrontEndNum>
-                            <!--Optional:-->
-                            <ban:TermlNum></ban:TermlNum>
-                            <!--Optional:-->
-                            <ban:InstNum>003</ban:InstNum>
-                            <ban:BrchNum>00010</ban:BrchNum>
-                            <!--Optional:-->
-                            <ban:WorkstationNum></ban:WorkstationNum>
-                            <!--Optional:-->
-                            <ban:TellerNum>8885</ban:TellerNum>
-                            <!--Optional:-->
-                            <ban:TranNum></ban:TranNum>
-                            <!--Optional:-->
-                            <ban:JrnlNum></ban:JrnlNum>
-                            <!--Optional:-->
-                            <ban:HdrDt></ban:HdrDt>
-                            <!--Optional:-->
-                            <ban:Filler4></ban:Filler4>
-                            <!--Optional:-->
-                            <ban:Filler5></ban:Filler5>
-                            <!--Optional:-->
-                            <ban:Filler6></ban:Filler6>
-                            <!--Optional:-->
-                            <ban:Flag1></ban:Flag1>
-                            <!--Optional:-->
-                            <ban:Flag2></ban:Flag2>
-                            <!--Optional:-->
-                            <ban:Flag3></ban:Flag3>
-                            <!--Optional:-->
-                            <ban:Flag4>W</ban:Flag4>
-                            <ban:Flag5>Y</ban:Flag5>
-                            <!--Optional:-->
-                            <ban:Flag6></ban:Flag6>
-                            <!--Optional:-->
-                            <ban:Flag7></ban:Flag7>
-                            <!--Optional:-->
-                            <ban:SprvsrID></ban:SprvsrID>
-                            <!--Optional:-->
-                            <ban:SupDate></ban:SupDate>
-                            <!--Optional:-->
-                            <ban:CheckerID1></ban:CheckerID1>
-                            <!--Optional:-->
-                            <ban:ParentBlinkJrnlNum></ban:ParentBlinkJrnlNum>
-                            <!--Optional:-->
-                            <ban:CheckerID2></ban:CheckerID2>
-                            <!--Optional:-->
-                            <ban:BlinkJrnlNum></ban:BlinkJrnlNum>
-                            <ban:UUIDSource></ban:UUIDSource>
-                            <ban:UUIDNUM></ban:UUIDNUM>
-                            <!--Optional:-->
-                            <ban:UUIDSeqNo></ban:UUIDSeqNo>
-                            </ban:RqHeader>
-                            <ban:Data>
-                            <ban:AcctNum>{}</ban:AcctNum>
-                            </ban:Data>
-                        </ShrtInqRq>
-                    </v1:enquireShort>
-                </soapenv:Body>
-                </soapenv:Envelope>""".format(account_no)
-
-    headers = {
-    'Authorization': 'Basic RVBBWVRUUDpwYXNzd29yZDEyMyQ=',
-    'Content-Type': 'application/xml'
-    }
-
+    c.setopt(c.HTTPHEADER, [
+        'Content-Type: application/xml; charset=utf-8'
+    ])
+    c.setopt(c.POSTFIELDS, payload)
+    c.setopt(c.WRITEDATA, buffer)
+    c.perform()
+    http_code = c.getinfo(c.RESPONSE_CODE)
+    body = buffer.getvalue()
+    result = str(body.decode('utf-8'))
     try:
-        response = requests.request("POST", url, headers=headers, data=payload, timeout=5)
-        from xml.etree import ElementTree
-        namespaces = {
-            'soap': 'http://schemas.xmlsoap.org/soap/envelope/',
-            'ns2': 'http://TCS.BANCS.Adapter/BANCSSchema',
-            'ns3': 'http://BaNCS.TCS.com/webservice/EnquireShortInterface/v1'
+        root = ET.fromstring(result)
+        namespace = {'ns': 'http://www.finacle.com/fixml'}
+        account_no = root.find('.//ns:AccountNumber', namespaces=namespace).text
+        sanction_date = root.find('.//ns:sanction_date', namespaces=namespace).text
+        acc_status = root.find('.//ns:ACCT_STATUS', namespaces=namespace).text
+        interest_rate = root.find('.//ns:interest_rate', namespaces=namespace).text
+        principal_os = root.find('.//ns:principal_OS', namespaces=namespace).text
+        overdue_amt = root.find('.//ns:Overdue_Amt', namespaces=namespace).text
+        outstanding_amt = root.find('.//ns:Total_Outstanding', namespaces=namespace).text
+        next_payment_date = root.find('.//ns:NEXT_DMD_DATE', namespaces=namespace).text 
+        emi_amt = root.find('.//ns:installment_Amount', namespaces=namespace).text
+        
+        dt = datetime.strptime(sanction_date, "%Y-%m-%dT%H:%M:%S.%f")
+        sanction_date = dt.strftime("%d-%m-%Y")
+
+        dt = datetime.strptime(next_payment_date, "%Y-%m-%dT%H:%M:%S.%f")
+        next_payment_date = dt.strftime("%d-%m-%Y")
+         
+        acc_dtl = {
+            "account_no": account_no,
+            "sanction_date": sanction_date,
+            "account_status": acc_status,
+            "interest_rate": interest_rate,
+            "principal_os": principal_os,
+            "overdue_amt": overdue_amt,
+            "outstanding_amt": outstanding_amt,
+            "next_payment_date": next_payment_date,
+            "emi_amt": emi_amt
         }
+        return acc_dtl
+    except:
+        return {"msg":"No Account Found"}
+    c.close
 
-        dom = ElementTree.fromstring(response.text)
+@frappe.whitelist()
+def account_inq(account_no=None, uuid=None, posting_date=None):
+    buffer = BytesIO()
+    #url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
+    url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
+    c = pycurl.Curl()
+    c.setopt(c.URL, url)
+    c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
+    # Optionally set a timeout
+    c.setopt(c.TIMEOUT, 500)
+    # Set SSL version to use TLS (if required)
+    c.setopt(c.SSLVERSION, pycurl.SSLVERSION_TLSv1)
+    # Set the write data buffer
+    c.setopt(c.WRITEDATA, buffer)
+    # Follow redirects if needed
+    c.setopt(c.FOLLOWLOCATION, True)
+    c.setopt(c.SSL_VERIFYHOST, 0)
+    c.setopt(c.SSL_VERIFYPEER, 0)
+    payload = """<FIXML xsi:schemaLocation="http://www.finacle.com/fixml AcctInq.xsd" xmlns="http://www.finacle.com/fixml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Header>
+		<RequestHeader>
+			<MessageKey>
+				<RequestUUID>7779100066</RequestUUID>
+				<ServiceRequestId>AcctInq</ServiceRequestId>
+				<ServiceRequestVersion>10.2</ServiceRequestVersion>
+				<ChannelId>COR</ChannelId>
+				<LanguageId/>
+			</MessageKey>
+			<RequestMessageInfo>
+				<BankId>01</BankId>
+				<TimeZone/>
+				<EntityId/>
+				<EntityType/>
+				<ArmCorrelationId/>
+				<MessageDateTime>2025-01-09T05:56:07.000</MessageDateTime>
+			</RequestMessageInfo>
+			<Security>
+				<Token>
+					<PasswordToken>
+						<UserId/>
+						<Password/>
+					</PasswordToken>
+				</Token>
+				<FICertToken/>
+				<RealUserLoginSessionId/>
+				<RealUser/>
+				<RealUserPwd/>
+				<SSOTransferToken/>
+			</Security>
+		</RequestHeader>
+	</Header>
+	<Body>
+		<AcctInqRequest>
+			<AcctInqRq>
+				<AcctId>
+					<AcctId>{account_no}</AcctId>
+				</AcctId>
+			</AcctInqRq>
+		</AcctInqRequest>
+	</Body>
+</FIXML>""".format(account_no=account_no)
 
-        for name in dom.findall('./soap:Body/ns3:enquireShortResponse/ShrtInqRs/ns2:ShrtInqData/ns2:AcctName', namespaces):
-            account_holder = name.text
+    headers = {
+    'Content-Type': 'application/'
+    'xml'
+    }
 
-        for name in dom.findall('./soap:Body/ns3:enquireShortResponse/ShrtInqRs/ns2:ShrtInqData/ns2:AvailBal', namespaces):
-            avail_bal = name.text
+    c.setopt(c.HTTPHEADER, [
+        'Content-Type: application/xml; charset=utf-8'
+    ])
+    # Set the POST fields (SOAP body)
+    c.setopt(c.POSTFIELDS, payload)
+    # Set the write data buffer
+    c.setopt(c.WRITEDATA, buffer)
+    # Perform the request
+    try:
+        c.perform()
+        # Get HTTP response code
+        http_code = c.getinfo(c.RESPONSE_CODE)
+        # Get the response body
+        body = buffer.getvalue()
+        result = str(body.decode('utf-8'))
+        #print(result)
+        
+        if result:
+            root = ET.fromstring(result)
+            # Define the namespace
+            namespace = {'ns': 'http://www.finacle.com/fixml'}
+            status = root.find('.//ns:HostTransaction/ns:Status', namespaces=namespace).text
+            if status == "SUCCESS":
+                schm_type = root.find(".//ns:SchmType", namespaces=namespace).text
+                cust_id = root.find(".//ns:CustId/ns:CustId", namespaces=namespace).text
+                account_no = root.find(".//ns:AcctId/ns:AcctId", namespaces=namespace).text
+                acc_holder = root.find(".//ns:CustId/ns:PersonName/ns:Name", namespaces=namespace).text
+                prefix = root.find(".//ns:CustId/ns:PersonName/ns:TitlePrefix", namespaces=namespace).text
+                acc_opening_date = root.find(".//ns:AcctOpenDt", namespaces=namespace).text
+                account_status = root.find(".//ns:BankAcctStatusCode", namespaces=namespace).text
+                contact_no = root.find(".//ns:AcctInq_CustomData/ns:PreMobile_No", namespaces=namespace).text
+                operation_mode = root.find(".//ns:AcctInq_CustomData/ns:MODE_OF_OPER_CODE", namespaces=namespace).text
 
-        balance_amt = avail_bal.replace(" CR","")
-        return {'status':'0','account_holder':account_holder, "balance_amount":balance_amt, "message": "Success"}
-    except requests.exceptions.RequestException as err:
-        return {'status':'1', 'message':'Respomnse time out', 'error': err}
+                dt = datetime.strptime(acc_opening_date, "%Y-%m-%dT%H:%M:%S.%f")
+                acc_opening_date = dt.strftime("%d-%m-%Y")
+                
+                for acct_bal in root.findall(".//ns:AcctBal", namespace):
+                    bal_type = acct_bal.find("ns:BalType", namespaces=namespace).text
+                    amount = acct_bal.find("ns:BalAmt/ns:amountValue", namespaces=namespace).text
+                    if bal_type == "AVAIL":
+                        bal_amt = amount
+                if operation_mode == "SELF":
+                    account_holder = str(prefix) + " " + str(acc_holder)
+                else:
+                    account_holder = str(acc_holder)
+
+                acc_dtl={
+                    "status": status,
+                    "schm_type": schm_type, 
+                    "cust_id": cust_id,
+                    "account_no": account_no, 
+                    "acc_holder": account_holder, 
+                    "acc_opening_date": acc_opening_date, 
+                    "bal_amt": bal_amt,
+                    "contact_no": contact_no, 
+                    "operation_mode": operation_mode,
+                    "account_status": account_status
+                }
+                return acc_dtl
+            else:
+                return {"msg":status}
+    except pycurl.error as e:
+        frappe.throw(f"An error occurred: {e}")
+    finally:
+        c.close()
+    c.close
+
+@frappe.whitelist()
+def td_account_inq(account_no=None, uuid=None, posting_date=None):
+    buffer = BytesIO()
+    #url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
+    url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
+    c = pycurl.Curl()
+    c.setopt(c.URL, url)
+    c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
+    # Optionally set a timeout
+    c.setopt(c.TIMEOUT, 500)
+    # Set SSL version to use TLS (if required)
+    c.setopt(c.SSLVERSION, pycurl.SSLVERSION_TLSv1)
+    # Set the write data buffer
+    c.setopt(c.WRITEDATA, buffer)
+    # Follow redirects if needed
+    c.setopt(c.FOLLOWLOCATION, True)
+    c.setopt(c.SSL_VERIFYHOST, 0)
+    c.setopt(c.SSL_VERIFYPEER, 0)
+    payload = """<?xml version="1.0" encoding="UTF-8"?>
+            <FIXML xsi:schemaLocation="http://www.finacle.com/fixml TDAcctInq.xsd" xmlns="http://www.finacle.com/fixml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><Header>
+            <RequestHeader>
+            <MessageKey>
+            <RequestUUID>9063f3f7-49c8-0c4b-2c99a75dce77</RequestUUID>
+            <ServiceRequestId>TDAcctInq</ServiceRequestId>
+            <ServiceRequestVersion>10.2</ServiceRequestVersion>
+            <ChannelId>COR</ChannelId>
+            <LanguageId></LanguageId>
+            </MessageKey>
+            <RequestMessageInfo>
+            <BankId>01</BankId>
+            <TimeZone></TimeZone>
+            <EntityId></EntityId>
+            <EntityType></EntityType>
+            <ArmCorrelationId></ArmCorrelationId>
+            <MessageDateTime>2025-07-15T12:08:34.122</MessageDateTime>
+            </RequestMessageInfo>
+            <Security>
+            <Token>
+            <PasswordToken>
+            <UserId></UserId>
+            <Password></Password>
+            </PasswordToken>
+            </Token>
+            <FICertToken></FICertToken>
+            <RealUserLoginSessionId></RealUserLoginSessionId>
+            <RealUser></RealUser>
+            <RealUserPwd></RealUserPwd>
+            <SSOTransferToken></SSOTransferToken>
+            </Security>
+            </RequestHeader>
+            </Header>
+            <Body>
+            <TDAcctInqRequest>
+            <TDAcctInqRq>
+            <TDAcctId>
+            <AcctId>{account_no}</AcctId>
+            </TDAcctId>
+            </TDAcctInqRq>
+            </TDAcctInqRequest>
+            </Body>
+            </FIXML>""".format(account_no=account_no)
+
+    headers = {
+    'Content-Type': 'application/'
+    'xml'
+    }
+
+    c.setopt(c.HTTPHEADER, [
+        'Content-Type: application/xml; charset=utf-8'
+    ])
+    # Set the POST fields (SOAP body)
+    c.setopt(c.POSTFIELDS, payload)
+    # Set the write data buffer
+    c.setopt(c.WRITEDATA, buffer)
+    # Perform the request
+    c.perform()
+    # Get HTTP response code
+    http_code = c.getinfo(c.RESPONSE_CODE)
+    # Get the response body
+    body = buffer.getvalue()
+    result = str(body.decode('utf-8'))
+    root = ET.fromstring(result)
+    namespace = {'ns': 'http://www.finacle.com/fixml'}
+    try:
+        account_no = root.find('.//ns:AcctId', namespaces=namespace).text
+        acc_holder = root.find(".//ns:CustId/ns:PersonName/ns:Name", namespaces=namespace).text
+        acc_open_date = root.find('.//ns:AcctOpnDt', namespaces=namespace).text
+        interest_rate = root.find('.//ns:NetIntRate/ns:value', namespaces=namespace).text
+        installation = root.find('.//ns:CurrDeposit/ns:amountValue', namespaces=namespace).text
+        current_balance = root.find('.//ns:AcctBalAmt/ns:amountValue', namespaces=namespace).text
+        maturity_amount = root.find('.//ns:MaturityAmt/ns:amountValue', namespaces=namespace).text
+        deposit_term = root.find('.//ns:DepositTerm/ns:Months', namespaces=namespace).text
+        maturity_date = root.find('.//ns:MaturityDt', namespaces=namespace).text
+        account_status = root.find('.//ns:BankAcctStatusCode', namespaces=namespace).text
+
+        dt = datetime.strptime(acc_open_date, "%Y-%m-%dT%H:%M:%S.%f")
+        acc_open_date = dt.strftime("%d-%m-%Y")
+ 
+        
+        dt = datetime.strptime(maturity_date, "%Y-%m-%dT%H:%M:%S.%f")
+        maturity_date = dt.strftime("%d-%m-%Y")
+        
+        acc_dtl = {
+            "account_no": account_no,
+            "acc_holder": acc_holder,
+            "acc_open_date": acc_open_date,
+            "current_balance": current_balance,
+            "interest_rate": interest_rate,
+            "installation": installation,
+            "maturity_amount": maturity_amount,
+            "deposit_term": str(deposit_term) + " " + str("Months"),
+            "maturity_date": maturity_date,
+        }
+        return acc_dtl
+    except:
+        return {"msg":"No Account Found"}
+    c.close
