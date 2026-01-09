@@ -465,8 +465,8 @@ def gst_entry_adjustment(docname=None):
 def activate_dormant_account(uuid=None, posting_date=None, account_no=None):
     import pycurl
     buffer = BytesIO()
-    url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
-    #url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
+    # url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
+    url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
     # Initialize a pycurl object
     print(ssl.OPENSSL_VERSION)
     print(pycurl.version)
