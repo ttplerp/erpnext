@@ -407,7 +407,7 @@ def gst_entry_adjustment(docname=None):
                     <ValueDt>{pd}</ValueDt>
                     <SerialNum>{sl}</SerialNum>
                     </PartTrnRec>
-                """.format(service_acc=service_acc,gst_acc=gst_acc,amt=a.gst,particular=a.service_type,rmks=a.service_type,pd=pd,sl=sl)
+                """.format(service_acc=service_acc,gst_acc=gst_acc,amt=a.gst,particular=a.service_type,rmks=str(docname) + ' ' + str(a.service_type),pd=pd,sl=sl)
     payload = str(gst_api_header()) + str(body) + str(gst_api_footer())
     import pycurl
     buffer = BytesIO()
