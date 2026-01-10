@@ -274,6 +274,8 @@ class Maturity(Document):
 		self.total_interest_amount = flt(self.total_interest_amount + self.interest_amount, 2)
 		if treasury.type_of_instrument == "T-Bill":
 			self.tds_amount = flt((flt(treasury.maturity_amount)-flt(treasury.principal_amount)) * 0.05,2)
+		elif treasury.type_of_instrument == "FDR":
+			self.tds_amount = flt(self.total_interest_amount * 0.1,2)
 		elif treasury.type_of_instrument != "CP":
 			self.tds_amount = flt(self.total_interest_amount * 0.05,2)
 		else:
