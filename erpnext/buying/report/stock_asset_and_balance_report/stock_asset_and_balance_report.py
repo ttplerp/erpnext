@@ -16,33 +16,42 @@ def get_data(filters):
 	data = []
 
 	result = frappe.db.sql("""
-					select pri.item_code, pri.item_name, sum(pri.qty), pri.net_rate, pri.cost_center, pr.status, pr.name purchase_receipt, (pri.base_rate * sum(pri.qty)) as amount, pri.base_rate,
-						a.name asset, a.asset_rate, a.asset_name, a.status asset_status, a.purchase_receipt asset_pr,
+			select x.item_code,x.item_name, x.qty, x.net_rate, x.cost_center, x.status status, x.purchase_receipt, x.amount, x.base_rate, x.issued_amount, x.issued_qty,
+				a.name asset, a.asset_rate, a.asset_name, a.status asset_status, a.purchase_receipt asset_pr
+			from
+				(
+					select pri.item_code, pri.item_name, sum(pri.qty) qty, pri.net_rate, pri.cost_center, pr.status, pr.name purchase_receipt, (pri.net_rate * sum(pri.qty)) as amount, pri.base_rate,
 						(
 							select sum(asset_rate) from tabAsset a2
 							where a2.purchase_receipt = pr.name and a2.docstatus = 1 and a2.asset_rate = pri.net_rate and a2.item_code = pri.item_code
-						) as issued_amount
+						) as issued_amount,
+						(
+							select count(a2.name) from tabAsset a2
+							where a2.purchase_receipt = pr.name and a2.docstatus = 1 and a2.asset_rate = pri.net_rate and a2.item_code = pri.item_code
+						) as issued_qty
 					from `tabPurchase Receipt` pr join `tabPurchase Receipt Item` pri on pri.parent=pr.name
-					left join tabAsset a on a.purchase_receipt = pr.name and a.asset_rate=pri.base_rate
-					where pr.name = pri.parent and pr.docstatus=1
+					where pr.docstatus=1
 						and pri.is_fixed_asset = 1
-						and pr.posting_date between '{from_date}' and '{to_date}'
-					group by pri.item_code, pri.base_rate
-					order by pr.status, pr.name, pri.item_code """.format(from_date=filters.get('from_date'), to_date=filters.get('to_date')), as_dict=True)
+						and pr.posting_date between '{from_date}' and '{to_date}' 					
+						group by pr.name, pri.item_code, pri.base_rate
+						order by pr.status, pr.name, pri.item_code
+				) as x
+				left join tabAsset a on a.purchase_receipt = x.purchase_receipt and a.asset_rate=x.net_rate and a.item_code = x.item_code 
+			order by x.purchase_receipt, x.item_code, x.base_rate
+		""".format(from_date=filters.get('from_date'), to_date=filters.get('to_date')), as_dict=True)
 	
 	grouped_data = {}
 	for r in result:
-		emp_key = (r.item_code, r.purchase_receipt)
+		emp_key = (r.item_code, r.purchase_receipt, r.base_rate)
 		grouped_data.setdefault(emp_key, []).append(r)
-	# frappe.throw("<pre>{}</pre>".format(frappe.as_json(grouped_data))) #this is not working as expected
 	# frappe.throw(str(grouped_data))
-	for (item_code, purchase_receipt), items in grouped_data.items():
+	for (item_code, purchase_receipt, base_rate), items in grouped_data.items():
 		first = items[0]
 		data.append({
 			"purchase_receipt": first.purchase_receipt,
 			"item_code": first.item_code,
 			"item_name": first.item_name,
-			"base_rate": first.base_rate,
+			"base_rate": first.net_rate,
 			"qty": first.qty,
 			"amount": first.amount,
 			"cost_center": first.cost_center,
@@ -52,7 +61,8 @@ def get_data(filters):
 			"asset_status": first.asset_status,
 			"asset_pr": first.asset_pr,
 			"asset_rate": first.asset_rate,
-			"balance_amount": flt(first.amount) - flt(first.issued_amount)
+			"balance_amount": flt(first.amount) - flt(first.issued_amount),
+			"bal_qty": flt(first.qty) - flt(first.issued_qty)
 		})
 
 		for itm in items[1:]:
@@ -70,7 +80,8 @@ def get_data(filters):
 				"asset_status": itm.asset_status,
 				"asset_pr": first.asset_pr,
 				"asset_rate": first.asset_rate,
-				"balance_amount": ""
+				"balance_amount": "",
+				"bal_qty": ""
 			})
 
 	return data
@@ -116,6 +127,12 @@ def get_columns():
 			"label": "Amount",
 			"fieldtype": "Float",
 			"width": 150
+		},
+		{
+			"fieldname": "bal_qty",
+			"label": "Balance Qty",
+			"fieldtype": "Float",
+			"width": 120
 		},
 		{
 			"fieldname": "balance_amount",
