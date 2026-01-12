@@ -155,7 +155,8 @@ def get_columns():
 		{
 			"fieldname": "asset_code",
 			"label": "Asset Code",
-			"fieldtype": "Data",
+			"fieldtype": "Link",
+			"options": "Asset",
 			"width": 150
 		},
 		{
