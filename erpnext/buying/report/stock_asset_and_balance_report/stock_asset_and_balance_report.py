@@ -16,24 +16,27 @@ def get_data(filters):
 	data = []
 
 	result = frappe.db.sql("""
-					select pri.item_code, pri.item_name, pri.qty, pri.base_rate, pri.cost_center, pr.status, pr.name purchase_receipt, (pri.base_rate * pri.qty) as amount, pri.name 'pri_name',
+					select pri.item_code, pri.item_name, sum(pri.qty), pri.net_rate, pri.cost_center, pr.status, pr.name purchase_receipt, (pri.base_rate * sum(pri.qty)) as amount, pri.base_rate,
 						a.name asset, a.asset_rate, a.asset_name, a.status asset_status, a.purchase_receipt asset_pr,
 						(
 							select sum(asset_rate) from tabAsset a2
-							where a2.purchase_receipt = pr.name and a2.docstatus = 1 and a2.asset_rate = pri.base_rate and a2.item_code = pri.item_code
+							where a2.purchase_receipt = pr.name and a2.docstatus = 1 and a2.asset_rate = pri.net_rate and a2.item_code = pri.item_code
 						) as issued_amount
 					from `tabPurchase Receipt` pr join `tabPurchase Receipt Item` pri on pri.parent=pr.name
 					left join tabAsset a on a.purchase_receipt = pr.name and a.asset_rate=pri.base_rate
 					where pr.name = pri.parent and pr.docstatus=1
 						and pri.is_fixed_asset = 1
 						and pr.posting_date between '{from_date}' and '{to_date}'
-					order by pr.status, pr.name, pri.item_code, pri.name """.format(from_date=filters.get('from_date'), to_date=filters.get('to_date')), as_dict=True)
+					group by pri.item_code, pri.base_rate
+					order by pr.status, pr.name, pri.item_code """.format(from_date=filters.get('from_date'), to_date=filters.get('to_date')), as_dict=True)
 	
 	grouped_data = {}
 	for r in result:
-		emp_key = (r.pri_name)
+		emp_key = (r.item_code, r.purchase_receipt)
 		grouped_data.setdefault(emp_key, []).append(r)
-	for key, items in grouped_data.items():
+	# frappe.throw("<pre>{}</pre>".format(frappe.as_json(grouped_data))) #this is not working as expected
+	# frappe.throw(str(grouped_data))
+	for (item_code, purchase_receipt), items in grouped_data.items():
 		first = items[0]
 		data.append({
 			"purchase_receipt": first.purchase_receipt,
@@ -137,12 +140,6 @@ def get_columns():
 			"label": "Asset Code",
 			"fieldtype": "Data",
 			"width": 150
-		},
-		{
-			"fieldname": "asset_name",
-			"label": "Asset Name",
-			"fieldtype": "Data",
-			"width": 200
 		},
 		{
 			"fieldname": "asset_rate",
