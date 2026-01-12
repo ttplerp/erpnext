@@ -173,7 +173,9 @@ class TDSReceiptUpdate(Document):
 					{accounts_cond}
 					AND t1.cost_center = '{cost_center}'
 					AND t1.parenttype = 'TDS Remittance'
-					
+					AND NOT EXISTS(SELECT 1
+						FROM `tabTDS Receipt Entry` t2
+						WHERE t2.invoice_no = t1.invoice_no)
 					AND NOT EXISTS(SELECT 1
 						FROM `tabTDS Remittance Item` t3
 						WHERE t3.invoice_no = t1.invoice_no
