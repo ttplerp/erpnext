@@ -59,13 +59,13 @@ def get_accounts(filters):
 							   			from `tabAsset` a, `tabDepreciation Schedule` b
 						 	 			where a.name = b.parent
 						  					and a.asset_category = '{0}'
-						  					and ('{1}' between b.schedule_start_date and b.schedule_date
+						  					and ('{1}' between b.schedule_start_date and b.schedule_date and b.depreciation_amount > 0
 												or 
 												(b.schedule_date < {1} 
 													and 
 												b.schedule_date = (select max(c.schedule_date) 
 																	from `tabDepreciation Schedule` c
-																	where c.parent = a.name)
+																	where c.parent = a.name and c.depreciation_amount > 0)
 												))
 											and a.docstatus = 1
 											and (
@@ -112,6 +112,35 @@ def get_accounts(filters):
 												where b.parent = a.name
 											)	
 								""".format(a.name, filters.from_date), as_dict=True)
+		eliminated_dep = frappe.db.sql(
+								"""
+								SELECT 
+									sum(results.depreciation_eliminated_during_the_period) as depreciation_eliminated_during_the_period
+								from (SELECT 
+										ifnull(sum(case when ifnull(a.disposal_date, 0) != 0 and a.disposal_date >= %(from_date)s
+																and a.disposal_date <= %(to_date)s and ds.schedule_date <= a.disposal_date then
+														ROUND(ds.depreciation_amount, 2)
+													else
+														0
+													end), 0) as depreciation_eliminated_during_the_period
+									from `tabAsset` a, `tabDepreciation Schedule` ds
+									where a.docstatus=1 and a.company=%(company)s and a.purchase_date <= %(to_date)s and a.name = ds.parent and ifnull(ds.journal_entry, '') != ''
+										and a.asset_category=%(asset_category)s
+									union
+									SELECT 
+										ifnull(sum(case when a.disposal_date >= %(from_date)s and a.disposal_date <= %(to_date)s then
+														ROUND(a.opening_accumulated_depreciation, 2)
+													else
+														0
+													end), 0) as depreciation_eliminated_during_the_period
+									from `tabAsset` a
+									where a.docstatus=1 and a.company=%(company)s and a.purchase_date <= %(to_date)s
+										and a.asset_category=%(asset_category)s) as results
+								""",
+								{"to_date": filters.to_date, "from_date": filters.from_date, "company": filters.company, "asset_category": a.name},
+								as_dict=1,
+							)
+		
 		acc_it_zero = opening_it_dep_zero[0].it_opening if opening_it_dep_zero[0].it_opening else 0.00
 		acc_it = opening_it_dep[0].acc_income_tax if opening_it_dep[0].acc_income_tax else 0.00
 		depreciation_it = opening_it_dep[0].depreciation_income_tax if opening_it_dep[0].depreciation_income_tax else 0.00
@@ -133,7 +162,8 @@ def get_accounts(filters):
 			"dep_total":d_total,
 			"net_block":flt(g_total) - flt(d_total),
 			"opening_income_tax":acc_it - depreciation_it + it_opening + acc_it_zero,
-			"it_dep_addition":income_tax[0].total_income_tax
+			"it_dep_addition":income_tax[0].total_income_tax,
+			"it_dep_eliminated":eliminated_dep[0].depreciation_eliminated_during_the_period
 		})
 
 	#For CWIP Account
@@ -294,6 +324,12 @@ def get_columns():
 		{
 			"fieldname": "it_dep_addition",
 			"label": _("Dep. During the Year"),
+			"fieldtype": "Currency",
+			"width": 150
+		},
+		{
+			"fieldname": "it_dep_eliminated",
+			"label": _("Dep. Eliminated During the Year"),
 			"fieldtype": "Currency",
 			"width": 150
 		},
