@@ -116,6 +116,7 @@ class PerformanceEvaluation(Document):
 	# calculate score and average of target
 	def calculate_target_score(self):
 		total_score = 0
+		row = 1
 		for item in self.evaluate_target_item :
 			quality_rating, quantity_rating, timeline_rating= 0, 0, 0
 			if cint(item.reverse_formula) == 0:
@@ -182,6 +183,10 @@ class PerformanceEvaluation(Document):
 			else:
 				item.timeline_rating = flt(item.weightage)
 				timeline_rating = flt(item.weightage)
+			
+			if item.quality_rating == 0 or item.quantity_rating ==0:
+				item.timeline_rating = 0
+				timeline_rating = 0
 
 			# frappe.throw(str(item.timeline_rating))
 
@@ -197,6 +202,7 @@ class PerformanceEvaluation(Document):
 			item.score = (flt(item.average_rating ) / flt(item.weightage))
 
 			total_score += flt(item.average_rating)
+			row += 1
 		self.form_i_total_rating_100 = flt(total_score,2)
 		if not self.form_i:
 			score = 0
@@ -376,6 +382,29 @@ class PerformanceEvaluation(Document):
 		self.set('evaluate_competency_item', [])
 		for d in data:
 			row = self.append('evaluate_competency_item', {})
+			row.update(d)
+
+	@frappe.whitelist()
+	def get_target(self):
+		if self.docstatus == 1:
+			return
+		# get competency applicable to particular category
+		data = frappe.db.sql("""
+			SELECT
+				*
+			FROM
+				`tabPerformance Target Evaluation`
+			WHERE parent = '{}'
+			ORDER BY
+				idx
+		""".format(self.reference), as_dict=True)
+		if not data:
+			frappe.throw(_('There are no data'))
+
+		# set competency item values
+		self.set('evaluate_target_item', [])
+		for d in data:
+			row = self.append('evaluate_target_item', {})
 			row.update(d)
 
 	@frappe.whitelist()

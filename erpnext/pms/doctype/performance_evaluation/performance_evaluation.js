@@ -71,6 +71,11 @@ frappe.ui.form.on('Performance Evaluation', {
 			get_competency(frm)
 		}
 	},
+	get_target: function(frm) {
+		if(frm.doc.docstatus != 1){
+			get_target(frm)
+		}
+	},
 	get_leadership_competency: function(frm) {
 		if(frm.doc.docstatus != 1){
 			get_leadership_competency(frm)
@@ -192,6 +197,11 @@ var calculate_timeline_rating = (frm,cdt,cdn)=>{
 	else{
 		timeline_rating = (flt(timeline) / flt(timeline_achieved)) * flt(weightage)
 	}
+
+	if (row.quality_achieved == 0 || row.quantity_achieved ==0){
+		timeline_rating = 0
+	}
+	
 	row.timeline_rating = timeline_rating
 	console.log('here',row.timeline_rating)
 	frm.refresh_field('evaluate_target_item')
@@ -278,6 +288,15 @@ var apply_filter=(frm)=> {
 			}
 		};
 	});
+}
+function get_target(frm) {
+	frappe.call({
+		method: "get_target",
+		doc: frm.doc,
+		callback:  (r) =>{
+			frm.refresh_fields()
+		}
+	})
 }
 function get_competency(frm) {
 	frappe.call({
