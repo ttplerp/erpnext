@@ -239,6 +239,7 @@ def get_values(account, to_date, from_date, cost_center=None, opening=False, cwi
 		query += " and cost_center = \'" + str(cost_center) + "\'"
 
 	query += " and voucher_type not in ('Period Closing Voucher', 'Asset Movement', 'Bulk Asset Transfer')"
+	query += " and voucher_no not in ( select name from `tabJournal Entry` where docstatus=1 and reverse_jv = 1 )"
 	#query += " and voucher_type not in ('Period Closing Voucher')"
 	#if account == "Machinery & Equipment(10 Years) - CDCL":
 	#	frappe.msgprint(" Query : {}".format(query))
