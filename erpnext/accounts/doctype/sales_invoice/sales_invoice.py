@@ -92,6 +92,8 @@ class SalesInvoice(SellingController):
 			self.indicator_title = _("Paid")
 
 	def validate(self):
+		if not self.taxes_and_charges:
+			self.taxes_and_charges = frappe.db.get_value("Company", self.company, "output_gst_template")
 		super(SalesInvoice, self).validate()
 		self.validate_auto_set_posting_time()
 
@@ -715,6 +717,11 @@ class SalesInvoice(SellingController):
 			self.validate_rate_with_reference_doc(
 				[["Sales Order", "sales_order", "so_detail"], ["Delivery Note", "delivery_note", "dn_detail"]]
 			)
+
+	@frappe.whitelist()
+	def get_gst_template(self):
+		gst_template = frappe.db.get_value("Company", self.company, "output_gst_template")
+		return gst_template		
 
 	def set_against_income_account(self):
 		"""Set against account for debit to account"""

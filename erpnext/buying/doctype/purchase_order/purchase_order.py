@@ -81,6 +81,14 @@ class PurchaseOrder(BuyingController):
 		)
 		self.reset_default_field_value("set_warehouse", "items", "warehouse")
 
+	@frappe.whitelist()
+	def get_gst_template(self):
+		if frappe.db.get_value("Supplier", self.supplier, "country") != "Bhutan" or self.supplier == None:
+			gst_template = frappe.db.get_value("Company", self.company, "international_input_gst_template")
+		else:
+			gst_template = frappe.db.get_value("Company", self.company, "domestic_input_gst_template")
+		return gst_template	
+
 	def validate_with_previous_doc(self):
 		super(PurchaseOrder, self).validate_with_previous_doc(
 			{
@@ -633,6 +641,89 @@ def get_list_context(context=None):
 		}
 	)
 	return list_context
+
+@frappe.whitelist()
+def make_tax_payment(source_name, target_doc=None, args=None):
+	# if args is None:
+	# 	args = {}
+	# if isinstance(args, str):
+	# 	args = json.loads(args)
+
+	# from erpnext.accounts.party import get_payment_terms_template
+
+	# doc = frappe.get_doc("Purchase Receipt", source_name)
+	# returned_qty_map = get_returned_qty_map(source_name)
+	# invoiced_qty_map = get_invoiced_qty_map(source_name)
+
+	def set_missing_values(source, target):
+		# if len(target.get("items")) == 0:
+		# 	frappe.throw(_("All items have already been Invoiced/Returned"))
+
+		# doc = frappe.get_doc(target)
+		# doc.payment_terms_template = get_payment_terms_template(source.supplier, "Supplier", source.company)
+		# doc.run_method("onload")
+		# doc.run_method("set_missing_values")
+		gst_input_account = None
+		for tax in source.taxes:
+			if int(tax.is_gst) == 1:
+				gst_input_account = tax.account_head
+		bank_account = frappe.db.get_value("Company", source.company, "default_bank_account")
+		gst_amount = total_charges = 0
+		post_gst_jv = 0
+		party_type = "Supplier"
+		party = source.supplier
+		target.tax_payment_jv = 1
+		target.purchase_invoice = source.name
+		target.voucher_type = 'Bank Entry'
+		target.naming_series = 'Bank Payment Voucher'
+		for tax in source.taxes:
+			if tax.is_gst == 0 and tax.is_custom_charges == 1:
+				custom_row = target.append("accounts")
+				custom_row.account = tax.account_head
+				custom_row.debit = flt(tax.base_tax_amount_after_discount_amount,2)
+				custom_row.debit_in_account_currency = flt(tax.base_tax_amount_after_discount_amount,2)
+				custom_row.cost_center = tax.cost_center if tax.cost_center else frappe.db.get_value("Branch", source.branch, "cost_center")
+				custom_row.reference_type = "Purchase Order"
+				custom_row.reference_name = source.name
+				total_charges += tax.base_tax_amount_after_discount_amount
+			else:
+				gst_amount += tax.base_tax_amount_after_discount_amount
+				cost_center = tax.cost_center if tax.cost_center else frappe.db.get_value("Branch", source.branch, "cost_center")
+				total_charges += tax.base_tax_amount_after_discount_amount
+		gst_row = target.append("accounts")
+		gst_row.account = gst_input_account
+		gst_row.party_type = party_type
+		gst_row.debit = flt(gst_amount,2)
+		gst_row.debit_in_account_currency = flt(gst_amount,2)
+		gst_row.cost_center = frappe.db.get_value("Branch", source.branch, "cost_center")
+		gst_row.reference_type = "Purchase Order"
+		gst_row.reference_name = source.name
+		bank_row = target.append("accounts")
+		bank_row.account = bank_account
+		bank_row.credit = flt(total_charges,2)
+		bank_row.credit_in_account_currency = flt(total_charges,2)
+		bank_row.cost_center = frappe.db.get_value("Branch", source.branch, "cost_center")
+		bank_row.reference_type = "Purchase Order"
+		bank_row.reference_name = source.name
+
+
+
+	doclist = get_mapped_doc(
+		"Purchase Order",
+		source_name,
+		{
+			"Purchase Order": {
+				"doctype": "Journal Entry",
+				"validation": {
+					"docstatus": ["=", 1],
+				},
+			},
+		},
+		target_doc,
+		set_missing_values,
+	)
+
+	return doclist	
 
 
 @frappe.whitelist()

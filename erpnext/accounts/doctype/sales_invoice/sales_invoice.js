@@ -52,6 +52,19 @@ erpnext.accounts.SalesInvoiceController = class SalesInvoiceController extends e
 			me.frm.refresh_fields();
 		}
 		erpnext.queries.setup_warehouse_query(this.frm);
+		if(frm.doc.__islocal) {
+			frappe.call({
+				method:"get_gst_template",
+				doc: frm.doc,
+				callback: function(r){
+					if(r.message){
+						frm.set_value("taxes_and_charges", r.message);
+						frm.refresh_field("taxes_and_charges");
+					}
+				}
+			})
+		}
+		frm.redemption_conversion_factor = null;
 	}
 
 	refresh(doc, dt, dn) {

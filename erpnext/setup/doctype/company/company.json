@@ -20,6 +20,7 @@
   "company_cost_center",
   "default_letter_head",
   "tax_id",
+  "gstin",
   "domain",
   "date_of_establishment",
   "parent_company",
@@ -66,6 +67,11 @@
   "unrealized_exchange_gain_loss_account",
   "unrealized_profit_loss_account",
   "default_expense_claim_payable_account",
+  "sb_gst_accounts",
+  "international_input_gst_template",
+  "domestic_input_gst_template",
+  "output_gst_template",
+  "gst_clearing_account",
   "column_break0",
   "allow_account_creation_against_child_company",
   "default_payable_account",
@@ -1042,7 +1048,41 @@
    "fieldname": "prorate_daily",
    "fieldtype": "Check",
    "label": "Pro_rate Daily"
-  }
+  },
+  {
+    "fieldname": "sb_gst_accounts",
+    "fieldtype": "Section Break",
+    "label": "GST Accounts"
+   },
+   {
+    "fieldname": "international_input_gst_template",
+    "fieldtype": "Link",
+    "label": "International Input GST Template",
+    "options": "Purchase Taxes and Charges Template"
+   },
+   {
+    "fieldname": "domestic_input_gst_template",
+    "fieldtype": "Link",
+    "label": "Domestic Input GST Template",
+    "options": "Purchase Taxes and Charges Template"
+   },
+   {
+    "fieldname": "output_gst_template",
+    "fieldtype": "Link",
+    "label": "Output GST Template",
+    "options": "Sales Taxes and Charges Template"
+   },
+   {
+    "fieldname": "gst_clearing_account",
+    "fieldtype": "Link",
+    "label": "GST Clearing Account",
+    "options": "Account"
+   },
+   {
+    "fieldname": "gstin",
+    "fieldtype": "Data",
+    "label": "GSTIN"
+   }
  ],
  "icon": "fa fa-building",
  "idx": 1,
@@ -1105,7 +1145,18 @@
    "role": "Accounts Manager",
    "share": 1,
    "write": 1
-  }
+  },
+  {
+    "create": 1,
+    "email": 1,
+    "export": 1,
+    "print": 1,
+    "read": 1,
+    "report": 1,
+    "role": "POL User",
+    "share": 1,
+    "write": 1
+   }
  ],
  "show_name_in_global_search": 1,
  "sort_field": "modified",

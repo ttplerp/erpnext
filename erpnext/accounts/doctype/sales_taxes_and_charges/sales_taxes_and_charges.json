@@ -12,6 +12,7 @@
   "col_break_1",
   "description",
   "included_in_print_rate",
+  "is_gst",
   "included_in_paid_amount",
   "accounting_dimensions_section",
   "cost_center",
@@ -210,7 +211,13 @@
    "label": "Account Currency",
    "options": "Currency",
    "read_only": 1
-  }
+  },
+  {
+    "default": "0",
+    "fieldname": "is_gst",
+    "fieldtype": "Check",
+    "label": "Is GST?"
+   }
  ],
  "idx": 1,
  "index_web_pages_for_search": 1,

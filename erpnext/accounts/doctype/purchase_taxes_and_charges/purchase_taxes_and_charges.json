@@ -13,6 +13,8 @@
   "charge_type",
   "row_id",
   "included_in_print_rate",
+  "is_gst",
+  "is_custom_charges",
   "included_in_paid_amount",
   "col_break1",
   "account_head",
@@ -230,7 +232,19 @@
    "in_list_view": 1,
    "label": "Title",
    "reqd": 1
-  }
+  },
+  {
+    "default": "0",
+    "fieldname": "is_gst",
+    "fieldtype": "Check",
+    "label": "Is GST?"
+   },
+   {
+    "default": "0",
+    "fieldname": "is_custom_charges",
+    "fieldtype": "Check",
+    "label": "Is Custom Charges?"
+   }
  ],
  "idx": 1,
  "istable": 1,

@@ -39,6 +39,18 @@ frappe.ui.form.on("Purchase Order", {
 			}
 		});
 	},
+	supplier: function (frm, cdt, cdn){
+		frappe.call({
+			method:"get_gst_template",
+			doc: frm.doc,
+			callback: function(r){
+				if(r.message){
+					frm.set_value("taxes_and_charges", r.message);
+					frm.refresh_field("taxes_and_charges");
+				}
+			}
+		})
+	},
 
 	company: function(frm) {
 		erpnext.accounts.dimensions.update_dimension(frm, frm.doctype);
@@ -101,6 +113,19 @@ frappe.ui.form.on("Purchase Order", {
 		set_schedule_date(frm);
 		if (!frm.doc.transaction_date){
 			frm.set_value('transaction_date', frappe.datetime.get_today())
+		}
+
+		if(frm.doc.__islocal) {
+			frappe.call({
+				method:"get_gst_template",
+				doc: frm.doc,
+				callback: function(r){
+					if(r.message){
+						frm.set_value("taxes_and_charges", r.message);
+						frm.refresh_field("taxes_and_charges");
+					}
+				}
+			})
 		}
 
 		erpnext.queries.setup_queries(frm, "Warehouse", function() {

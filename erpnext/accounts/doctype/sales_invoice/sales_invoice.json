@@ -194,7 +194,10 @@
   "column_break_140",
   "auto_repeat",
   "update_auto_repeat_reference",
-  "against_income_account"
+  "against_income_account",
+  "total_normal_loss",
+  "total_abnormal_loss",
+  "total_excess_amount"
  ],
  "fields": [
   {
@@ -2026,6 +2029,21 @@
    "hidden": 1,
    "label": "Business Activity",
    "options": "Business Activity"
+  },
+  {
+   "fieldname": "total_normal_loss",
+   "fieldtype": "Float",
+   "label": "Normal Loss"
+  },
+  {
+   "fieldname": "total_abnormal_loss",
+   "fieldtype": "Float",
+   "label": "Abnormal Loss"
+  },
+  {
+   "fieldname": "total_excess_amount",
+   "fieldtype": "Float",
+   "label": "Excess Amount"
   }
  ],
  "icon": "fa fa-file-text",
@@ -2038,7 +2056,7 @@
    "link_fieldname": "consolidated_invoice"
   }
  ],
- "modified": "2022-09-21 00:25:08.779635",
+ "modified": "2025-11-03 15:07:47.041483",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Sales Invoice",
