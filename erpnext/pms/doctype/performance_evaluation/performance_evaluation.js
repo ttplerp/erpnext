@@ -198,7 +198,7 @@ var calculate_timeline_rating = (frm,cdt,cdn)=>{
 		timeline_rating = (flt(timeline) / flt(timeline_achieved)) * flt(weightage)
 	}
 
-	if (row.quality_achieved == 0 || row.quantity_achieved ==0){
+	if (row.quality_achieved == 0 && row.quantity_achieved ==0){
 		timeline_rating = 0
 	}
 	

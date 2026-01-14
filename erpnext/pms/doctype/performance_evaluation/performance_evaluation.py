@@ -184,7 +184,7 @@ class PerformanceEvaluation(Document):
 				item.timeline_rating = flt(item.weightage)
 				timeline_rating = flt(item.weightage)
 			
-			if item.quality_rating == 0 or item.quantity_rating ==0:
+			if item.quality_rating == 0 and item.quantity_rating ==0:
 				item.timeline_rating = 0
 				timeline_rating = 0
 
