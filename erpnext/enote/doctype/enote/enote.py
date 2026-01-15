@@ -26,14 +26,32 @@ class eNote(Document):
 			self.send_notification()
 			# notify_workflow_states(self) 
 		self.validate_reviewers()
-		
+		self.reset_reviewers_check()
 
+	def reset_reviewers_check(self):
+		if frappe.request.form.get('action') == "Forward to Reviewer" and frappe.get_value("eNote", self.name, "workflow_state") == "Rejected" and self.reviewer_required:
+			self.db_set('review_complete', 0)
+			for a in self.reviewers:
+				a.db_set('reviewed', 0)
+				
 	def validate_reviewers(self):
 		if self.reviewer_required and frappe.db.get_value("eNote", self.name, "workflow_state") == "Waiting For Reviewer":
 			reviewed = 1
 			for a in self.reviewers:
 				if not a.reviewed:
 					reviewed = 0
+				elif a.user_id == frappe.session.user and self.review_complete == 0:
+					# add remark for reviewer
+					self.append("remark",{
+						"employee":a.employee,
+						"employee_name": a.employee_name,
+						"user": a.user_id,
+						"designation": a.designation,
+						"action": 'Review',
+						"forward_to": '',
+						"remark": a.review,
+						"remark_date": nowdate(),
+					})
 			if reviewed:
 				self.db_set('review_complete', 1)
 				self.review_completion_notify()
