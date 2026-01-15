@@ -368,6 +368,7 @@ def gst_api_footer():
 def gst_entry_adjustment(docname=None):
     body=""
     if docname:
+        body_flag = 0
         doc = frappe.get_doc("GST Invoice", docname)
         pd = str(today())+"T00:00:00.000"
         for a in doc.get("item"):
@@ -376,6 +377,7 @@ def gst_entry_adjustment(docname=None):
 
             sl = 0
             if a.require_adjustment == 1:
+                body_flag = 1
                 sl += 1
                 body += """
                     <PartTrnRec>
@@ -408,6 +410,9 @@ def gst_entry_adjustment(docname=None):
                     <SerialNum>{sl}</SerialNum>
                     </PartTrnRec>
                 """.format(service_acc=service_acc,gst_acc=gst_acc,amt=a.gst,particular=a.service_type,rmks=str(docname) + ' ' + str(a.service_type),pd=pd,sl=sl)
+    if body_flag == 0:
+        return "Not Required", ""
+
     payload = str(gst_api_header()) + str(body) + str(gst_api_footer())
     import pycurl
     buffer = BytesIO()
