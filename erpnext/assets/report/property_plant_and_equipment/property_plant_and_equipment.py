@@ -44,14 +44,14 @@ def get_accounts(filters):
 										from `tabAsset` a, `tabDepreciation Schedule` b
 										where a.name = b.parent
 											and a.asset_category = '{0}'
-											and b.schedule_date between {1} and CURDATE()
+											and b.schedule_date between {1} and {2}
 											and a.docstatus = 1
 											and (
 												a.status not in ('Scrapped', 'Sold')
 												OR
 												(a.status in ('Scrapped', 'Sold') AND a.disposal_date >= '{1}')
 											)
-									""".format(a.name, filters.from_date), as_dict=True)
+									""".format(a.name, filters.from_date, filters.to_date), as_dict=True)
 
 		opening_it_dep = frappe.db.sql("""select 
 												sum(b.accumulated_depreciation_amount) as acc_income_tax,
