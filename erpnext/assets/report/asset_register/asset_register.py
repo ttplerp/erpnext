@@ -188,7 +188,7 @@ def get_data(filters):
         query +=" and a.name in %(asset_code)s "
 
     asset_data = frappe.db.sql(query, filters, as_dict=True)
-    depreciation_details, depreciation_details_two = get_depreciation_details(filters)
+    depreciation_details, depreciation_details_two, depreciation_details_three = get_depreciation_details(filters)
     data = []
 
     if asset_data:
@@ -206,10 +206,13 @@ def get_data(filters):
             # depreciation entry
             depreciation_entry = depreciation_details.get(a.name)
             depreciation_entry_two = depreciation_details_two.get(a.name)
+            depreciation_entry_three = depreciation_details_three.get(a.name)
             if depreciation_entry:
                 a.update(depreciation_entry)
             if depreciation_entry_two:
                 a.update(depreciation_entry_two)
+            if depreciation_entry_three:
+                a.update(depreciation_entry_three)
 
             dep_opening 	= flt(a.iopening) + flt(a.opening_income)
             dep_addition	= flt(a.dep_addition,2)
@@ -261,17 +264,9 @@ def get_data(filters):
     return data
 
 def get_depreciation_details(filters):
-    query= """
+    query_three= """
         SELECT
             ds.parent AS asset,
-            SUM(CASE
-                WHEN ds.schedule_date < '{from_date}' THEN ROUND(ds.income_depreciation_amount, 2)
-                ELSE 0
-            END) AS dep_opening,
-            SUM(CASE
-                WHEN ds.schedule_date BETWEEN '{from_date}' AND '{to_date}' THEN ROUND(ds.income_depreciation_amount, 2)
-                ELSE 0
-            END) AS dep_addition,
             SUM(CASE
                 WHEN ds.schedule_date < '{from_date}' THEN ds.depreciation_amount
                 ELSE 0
@@ -282,7 +277,24 @@ def get_depreciation_details(filters):
             END) AS depreciation_income_tax
         FROM `tabDepreciation Schedule` as ds
         WHERE ds.schedule_date <= '{to_date}'
-        AND (IFNULL(ds.journal_entry,'') != '' OR IFNULL(ds.depreciation_entry,'') != '')
+        AND ds.docstatus = 1
+        GROUP BY ds.parent
+    """.format(from_date=filters.from_date, to_date=filters.to_date, fiscal_year = filters.fiscal_year)
+    
+    query= """
+        SELECT
+            ds.parent AS asset,
+            SUM(CASE
+                WHEN ds.schedule_date < '{from_date}' THEN ROUND(ds.income_depreciation_amount, 2)
+                ELSE 0
+            END) AS dep_opening,
+            SUM(CASE
+                WHEN ds.schedule_date BETWEEN '{from_date}' AND '{to_date}' THEN ROUND(ds.income_depreciation_amount, 2)
+                ELSE 0
+            END) AS dep_addition
+        FROM `tabDepreciation Schedule` as ds
+        WHERE ds.schedule_date <= '{to_date}'
+        AND (IFNULL(ds.journal_entry,'') != '' OR IFNULL(ds.depreciation_entry,'') != '') AND ds.docstatus = 1
         GROUP BY ds.parent
     """.format(from_date=filters.from_date, to_date=filters.to_date, fiscal_year = filters.fiscal_year)
 
@@ -297,11 +309,14 @@ def get_depreciation_details(filters):
 
     depreciation_details = frappe._dict()
     depreciation_details_two = frappe._dict()
+    depreciation_details_three = frappe._dict()
     for row in frappe.db.sql(query, as_dict=True):
         depreciation_details.setdefault(row.asset, row)
     for row in frappe.db.sql(query_two, as_dict=True):
         depreciation_details_two.setdefault(row.asset, row)
-    return depreciation_details, depreciation_details_two
+    for row in frappe.db.sql(query_three, as_dict=True):
+        depreciation_details_three.setdefault(row.asset, row)
+    return depreciation_details, depreciation_details_two, depreciation_details_three
 
 def get_columns():
     return [
