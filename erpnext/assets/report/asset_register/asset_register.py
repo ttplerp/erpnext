@@ -265,11 +265,11 @@ def get_depreciation_details(filters):
         SELECT
             ds.parent AS asset,
             SUM(CASE
-                WHEN ds.schedule_date < '{from_date}' THEN ds.income_depreciation_amount
+                WHEN ds.schedule_date < '{from_date}' THEN ROUND(ds.income_depreciation_amount, 2)
                 ELSE 0
             END) AS dep_opening,
             SUM(CASE
-                WHEN ds.schedule_date BETWEEN '{from_date}' AND '{to_date}' THEN ds.income_depreciation_amount
+                WHEN ds.schedule_date BETWEEN '{from_date}' AND '{to_date}' THEN ROUND(ds.income_depreciation_amount, 2)
                 ELSE 0
             END) AS dep_addition,
             SUM(CASE
@@ -289,7 +289,7 @@ def get_depreciation_details(filters):
     query_two= """
         SELECT
             ds.parent AS asset,
-            SUM(ds.income_depreciation_amount) AS dep_total_next_year
+            SUM(ROUND(ds.income_depreciation_amount, 2)) AS dep_total_next_year
         FROM `tabDepreciation Schedule` AS ds
         WHERE YEAR(ds.schedule_date) = '{fiscal_year}' AND (SELECT status FROM `tabAsset` WHERE name = ds.parent) IN ('Submitted','Partially Depreciated')
         GROUP BY ds.parent
