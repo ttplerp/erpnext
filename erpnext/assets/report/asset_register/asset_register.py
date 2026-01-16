@@ -150,6 +150,10 @@ def get_data(filters):
                 THEN IFNULL(a.gross_purchase_amount,0)-IFNULL(f.income_tax_value_after_depreciation,0)
                 ELSE 0
             END) AS dep_adjustment,
+            (CASE WHEN a.status in ('Scrapped', 'Sold') AND a.disposal_date BETWEEN '{from_date}' AND '{to_date}'
+                THEN IFNULL(a.gross_purchase_amount,0)-IFNULL(f.value_after_depreciation,0)
+                ELSE 0
+            END) AS ifrs_dep_adjustment,
             0 AS opening_income,
             (select 
                        round(total_number_of_depreciations/12,2)
@@ -200,6 +204,7 @@ def get_data(filters):
             dep_opening	= 0
             dep_addition	= 0
             dep_adjustment	= 0
+            ifrs_dep_adjustment	= 0
             dep_total	= 0
             dep_total_next_year = 0
 
@@ -217,6 +222,7 @@ def get_data(filters):
             dep_opening 	= flt(a.iopening) + flt(a.opening_income)
             dep_addition	= flt(a.dep_addition,2)
             dep_adjustment 	= flt(a.dep_adjustment,2) if (dep_opening+dep_addition) else 0
+            # ifrs_dep_adjustment 	= flt(a.ifrs_dep_adjustment,2) 
             dep_total_next_year = flt(a.dep_total_next_year) if dep_total_next_year else 0
             dep_total	= dep_opening + dep_addition - dep_adjustment
 
@@ -259,6 +265,7 @@ def get_data(filters):
                 "dep_total_next_year": a.dep_total_next_year,
                 "remarks": a.remarks,
                 "is_existing_asset": a.is_existing_asset,
+                "ifrs_dep_adjustment": a.ifrs_dep_adjustment,
             }
             data.append(row)
     return data
@@ -460,6 +467,12 @@ def get_columns():
         {
             "fieldname": "dep_income_tax",
             "label": _("Dep. During the Year"),
+            "fieldtype": "Currency",
+            "width": 120
+        },
+        {
+            "fieldname": "ifrs_dep_adjustment",
+            "label": _("Dep. Elimination"),
             "fieldtype": "Currency",
             "width": 120
         },
