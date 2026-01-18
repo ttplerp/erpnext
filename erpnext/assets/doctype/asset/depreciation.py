@@ -191,7 +191,7 @@ def reset_asset_value_for_scrap_sales(asset_name, posting_date):
 	if frappe.db.get_value("Company", asset.company, "reset_asset_value"):
 		reverse_start_date = frappe.defaults.get_user_default("year_start_date")
 	else:
-		if date_diff(posting_date, nowdate()) > 1 and not frappe.db.get_value("Company", asset.company, "allow_back_date_scrapping"):
+		if date_diff(posting_date, nowdate()) > 1 and not frappe.db.get_value("Company", asset.company, "allow_back_date_scrap"):
 			frappe.throw(_("Asset scrapping and sales is not allowed for back dates {0}. Scrapping date should be {1}").format(posting_date, getdate(now())))
 
 		reverse_start_date = posting_date
@@ -278,37 +278,36 @@ def reset_asset_value_for_scrap_sales(asset_name, posting_date):
 
 			pro_accumulated_depreciation_amount = flt(dtl[0].accumulated_depreciation_amount - dtl[0].depreciation_amount + pro_rate_depreciation_amount)
 			pro_accumulated_depreciation_income_tax = flt(dtl[0].income_accumulated_depreciation - dtl[0].income_depreciation_amount + pro_rate_depreciation_income_tax)
-			if not flt(dtl[0].income_depreciation_amount):
-				return
-			if pro_rate_depreciation_income_tax <= 0:
-				frappe.throw(_(" Pro Rate depreciation amount is {}, It should be greater than 0. {} ").format(pro_rate_depreciation_income_tax, asset_name))
+			if flt(dtl[0].income_depreciation_amount):
+				if pro_rate_depreciation_income_tax <= 0:
+					frappe.throw(_(" Pro Rate depreciation amount is {}, It should be greater than 0. {} ").format(pro_rate_depreciation_income_tax, asset_name))
 
-			je = frappe.new_doc("Journal Entry")
-			je.voucher_type = "Depreciation Entry"
-			je.posting_date = posting_date 
-			je.company = asset.company
-			je.branch = asset.branch  
-			je.remark = "Depreciation Entry against {0} worth {1}".format(asset_name, pro_rate_depreciation_amount)
+				je = frappe.new_doc("Journal Entry")
+				je.voucher_type = "Depreciation Entry"
+				je.posting_date = posting_date 
+				je.company = asset.company
+				je.branch = asset.branch  
+				je.remark = "Depreciation Entry against {0} worth {1}".format(asset_name, pro_rate_depreciation_amount)
 
-			je.append("accounts", {
-				"account": accounts[0].accumulated_depreciation_account,
-				"credit_in_account_currency": flt(pro_rate_depreciation_income_tax),
-				"reference_type": "Asset",
-				"reference_name": asset.name,
-				# "business_activity": asset.business_activity, 
-				"cost_center": asset.cost_center
-			})
-			je.append("accounts", {
-				"account": accounts[0].depreciation_expense_account,
-				"debit_in_account_currency": flt(pro_rate_depreciation_income_tax),
-				"reference_type": "Asset",
-				"reference_name": asset_name,
-				# "business_activity": asset.business_activity, 
-				"cost_center": asset.cost_center
-			})
+				je.append("accounts", {
+					"account": accounts[0].accumulated_depreciation_account,
+					"credit_in_account_currency": flt(pro_rate_depreciation_income_tax),
+					"reference_type": "Asset",
+					"reference_name": asset.name,
+					# "business_activity": asset.business_activity, 
+					"cost_center": asset.cost_center
+				})
+				je.append("accounts", {
+					"account": accounts[0].depreciation_expense_account,
+					"debit_in_account_currency": flt(pro_rate_depreciation_income_tax),
+					"reference_type": "Asset",
+					"reference_name": asset_name,
+					# "business_activity": asset.business_activity, 
+					"cost_center": asset.cost_center
+				})
 
-			je.flags.ignore_permissions = True
-			je.submit()
+				je.flags.ignore_permissions = True
+				je.submit()
 			value_after_depreciation, income_tax_value_after_depreciation, finance_book_name = frappe.db.get_value('Asset Finance Book',
 															{'finance_book':dtl[0].finance_book,
 															'asset_sub_category':asset.asset_sub_category,
