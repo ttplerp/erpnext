@@ -219,7 +219,7 @@ def get_data(filters):
             if depreciation_entry_three:
                 a.update(depreciation_entry_three)
 
-            dep_opening 	= flt(a.iopening) + flt(a.opening_income)
+            dep_opening 	= flt(a.iopening) + flt(a.dep_opening)
             dep_addition	= flt(a.dep_addition,2)
             dep_adjustment 	= flt(a.dep_adjustment,2) if (dep_opening+dep_addition) else 0
             # ifrs_dep_adjustment 	= flt(a.ifrs_dep_adjustment,2) 
@@ -227,7 +227,7 @@ def get_data(filters):
             dep_total	= dep_opening + dep_addition - dep_adjustment
 
             net_useful_life = gross_total - dep_total
-            net_income_tax = flt(a.gross_purchase_amount) - flt(a.iopening) - flt(a.depreciation_income_tax) - flt(a.opening_income)
+            net_income_tax = flt(a.gross_purchase_amount) - flt(a.opening_accumulated_depreciation) - flt(a.depreciation_income_tax) - flt(a.opening_income)
 
            
             row = {
@@ -251,7 +251,7 @@ def get_data(filters):
                 "dep_adjustment": dep_adjustment,
                 "dep_total": dep_total,
                 "dep_income_tax": a.depreciation_income_tax,
-                "iopening": flt(a.opening_accumulated_depreciation,2) + flt(a.dep_opening,2),
+                "iopening": flt(a.opening_accumulated_depreciation,2) + flt(a.opening_income,2),
                 "net_useful_life": net_useful_life,
                 "net_income_tax": net_income_tax,
                 "total_number_of_depreciations": a.total_number_of_depreciations,
@@ -266,6 +266,7 @@ def get_data(filters):
                 "remarks": a.remarks,
                 "is_existing_asset": a.is_existing_asset,
                 "ifrs_dep_adjustment": a.ifrs_dep_adjustment,
+                "disposal_date": a.disposal_date,
             }
             data.append(row)
     return data
@@ -511,6 +512,12 @@ def get_columns():
             "fieldname": "status",
             "label": _("Status"),
             "fieldtype": "data",
+            "width": 120
+        },
+        {
+            "fieldname": "disposal_date",
+            "label": _("Disposal Date"),
+            "fieldtype": "Date",
             "width": 120
         },
         {
