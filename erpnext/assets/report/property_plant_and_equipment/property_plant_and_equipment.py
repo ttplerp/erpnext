@@ -44,7 +44,7 @@ def get_accounts(filters):
 										from `tabAsset` a, `tabDepreciation Schedule` b
 										where a.name = b.parent
 											and a.asset_category = '{0}'
-											and b.schedule_date between {1} and {2}
+											and b.schedule_date between '{1}' and '{2}'
 											and a.docstatus = 1
 											and (
 												a.status not in ('Scrapped', 'Sold')
@@ -61,7 +61,7 @@ def get_accounts(filters):
 						  					and a.asset_category = '{0}'
 						  					and ('{1}' between b.schedule_start_date and b.schedule_date and b.depreciation_amount > 0
 												or 
-												(b.schedule_date < {1} 
+												(b.schedule_date < '{1}' 
 													and 
 												b.schedule_date = (select max(c.schedule_date) 
 																	from `tabDepreciation Schedule` c
@@ -82,7 +82,7 @@ def get_accounts(filters):
 						  					and a.asset_category = '{0}'
 						  					and ('{1}' between b.schedule_start_date and b.schedule_date
 												or 
-												(b.schedule_date < {1} 
+												(b.schedule_date < '{1}' 
 													and 
 												b.schedule_date = (select max(c.schedule_date) 
 																	from `tabDepreciation Schedule` c
@@ -124,7 +124,7 @@ def get_accounts(filters):
 														0
 													end), 0) as depreciation_eliminated_during_the_period
 									from `tabAsset` a, `tabDepreciation Schedule` ds
-									where a.docstatus=1 and a.company=%(company)s and a.purchase_date <= %(to_date)s and a.name = ds.parent and ifnull(ds.journal_entry, '') != ''
+									where a.docstatus=1 and a.company=%(company)s and a.purchase_date <= %(to_date)s and a.name = ds.parent
 										and a.asset_category=%(asset_category)s
 									union
 									SELECT 
