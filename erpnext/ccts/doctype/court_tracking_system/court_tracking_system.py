@@ -22,6 +22,8 @@ class CourtTrackingSystem(Document):
 			type = "CASE/CL/"
 		elif self.case_type == "Criminal & ACC Cases":
 			type = "CASE/CC/"
+		elif self.case_type == "Staff Related Case":
+			type = "CASE/SC/"
 		self.name = make_autoname(str(type)+".YYYY./.#####")
 
 	def notify_users(self):

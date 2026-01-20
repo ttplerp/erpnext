@@ -10,10 +10,15 @@
   "court_venue",
   "investigation",
   "court_case",
+  "bank_name",
+  "deferred",
   "column_break_2",
   "date",
   "branch",
+  "employee",
+  "employee_name",
   "current_status",
+  "teams",
   "npl_clients_section",
   "borrower_filed_by",
   "loan_account_no",
@@ -21,6 +26,7 @@
   "column_break_25",
   "cid_license_number",
   "guarantor",
+  "contact_no",
   "section_break_15",
   "case_status",
   "loan_details_section",
@@ -60,7 +66,7 @@
   {
    "fieldname": "date",
    "fieldtype": "Date",
-   "label": "Date of Registration/Filing/Complaint",
+   "label": "Case File Received Date",
    "reqd": 1
   },
   {
@@ -71,13 +77,11 @@
    "options": "\nBumthang\nChukha\nDagana\nGasa\nHaa\nLhuentse\nMongar\nParo\nPemagatshel\nPunakha\nSamtse\nSarpang\nThimphu\nTrashigang\nTrashiyangtse\nTrongsa\nTsirang\nWangdue Phodrang\nZhemgang\nSamdrup Jongkhar\nPhuentsholing\nLhamoi Zingkha\nNganglam\nJomotshangkha\nSamdrup Choling\nDorokha\nTashi Choling\nGelephu\nLingzhi\nSakteng\nThrimshing\nWamrong\nPangbang\nWeringla\nSombekha\nSupreme Court\nHigh Court\nTime Bound Bench\nSupreme Court\nOffice of Gyalpoi Zimpoen"
   },
   {
-   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
    "fieldname": "loan_account_no",
    "fieldtype": "Data",
    "label": "Loan Account No"
   },
   {
-   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
    "fieldname": "guarantor",
    "fieldtype": "Data",
    "label": "Guarantor"
@@ -97,13 +101,11 @@
    "reqd": 1
   },
   {
-   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
    "fieldname": "sanction_date",
    "fieldtype": "Date",
    "label": "Sanction Date"
   },
   {
-   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
    "fieldname": "sanction_amount",
    "fieldtype": "Float",
    "label": "Sanction Amount"
@@ -112,6 +114,7 @@
    "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
    "fieldname": "loan_product",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Loan Product",
    "options": "Loan Products"
   },
@@ -119,22 +122,20 @@
    "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
    "fieldname": "overdue_amount",
    "fieldtype": "Float",
+   "hidden": 1,
    "label": "Overdue Amount"
   },
   {
-   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
    "fieldname": "loan_outstanding",
    "fieldtype": "Float",
    "label": "Loan Outstanding"
   },
   {
-   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
    "fieldname": "exposure",
    "fieldtype": "Data",
    "label": "Exposure"
   },
   {
-   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
    "fieldname": "collateral_type",
    "fieldtype": "Select",
    "label": "Collateral Type",
@@ -166,7 +167,6 @@
    "label": "Hearing/Judgement Details"
   },
   {
-   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\" ",
    "fieldname": "loan_tenure",
    "fieldtype": "Date",
    "label": "Loan Tenure (end date)"
@@ -187,6 +187,7 @@
    "depends_on": "eval:doc.case_type == \"Criminal & ACC Cases\"",
    "fieldname": "current_status",
    "fieldtype": "Small Text",
+   "hidden": 1,
    "label": "Current Status"
   },
   {
@@ -202,7 +203,6 @@
   },
   {
    "bold": 1,
-   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
    "fieldname": "loan_details_section",
    "fieldtype": "Section Break",
    "label": "Loan Details"
@@ -222,7 +222,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Case Type",
-   "options": "\nNPL Recovery Cases\nCounter Litigation\nCriminal & ACC Cases",
+   "options": "\nNPL Recovery Cases\nCounter Litigation\nCriminal & ACC Cases\nStaff Related Case",
    "reqd": 1
   },
   {
@@ -233,7 +233,6 @@
    "options": "Court Status"
   },
   {
-   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\" || doc.case_type ==\"Counter Litigation\"\n",
    "fieldname": "section_break_15",
    "fieldtype": "Section Break"
   },
@@ -242,6 +241,7 @@
    "depends_on": "eval:doc.case_type ==\"Counter Litigation\" || doc.case_type == \"Criminal & ACC Cases\"",
    "fieldname": "issue_details",
    "fieldtype": "Small Text",
+   "hidden": 1,
    "label": "Issue/Case Details"
   },
   {
@@ -254,33 +254,68 @@
    "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
    "fieldname": "loan_category",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Loan Category",
    "options": "Loan Products"
   },
   {
-   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
    "fieldname": "loan_sub_category",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Loan Sub Category",
    "options": "Loan Products"
   },
   {
-   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
    "fieldname": "recovered_amount",
    "fieldtype": "Float",
    "label": "Recovered Amount"
   },
   {
-   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
    "fieldname": "account_type",
    "fieldtype": "Select",
    "label": "Account Type",
    "options": "\nActive\nOBS\nAPF\nBG Revoke"
+  },
+  {
+   "fieldname": "bank_name",
+   "fieldtype": "Select",
+   "label": "Bank Name",
+   "options": "\nBDB\nNCSI\nESP\nNCGS"
+  },
+  {
+   "fieldname": "deferred",
+   "fieldtype": "Select",
+   "label": "Deferred",
+   "options": "\nDeferred\nNot Deferred"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "teams",
+   "fieldtype": "Select",
+   "label": "Teams",
+   "options": "\nDRM - Legal\nLegal Team\nOut Source - NCGS\nOut Source - NCSI\nTo Be Out Source - BDB"
+  },
+  {
+   "fieldname": "contact_no",
+   "fieldtype": "Data",
+   "label": "Contact No"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2025-05-26 17:06:15.963297",
+ "modified": "2026-01-20 16:42:28.922133",
  "modified_by": "Administrator",
  "module": "CCTS",
  "name": "Court Tracking System",

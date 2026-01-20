@@ -1,31 +1,31 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:case_status",
- "creation": "2025-05-26 11:45:10.203779",
+ "autoname": "field:sub_status",
+ "creation": "2026-01-20 15:55:41.342284",
  "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "case_status"
+  "sub_status"
  ],
  "fields": [
   {
-   "fieldname": "case_status",
+   "fieldname": "sub_status",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Case Status",
+   "label": "Sub Status",
    "reqd": 1,
    "unique": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-01-20 15:56:33.252193",
+ "modified": "2026-01-20 15:56:13.870400",
  "modified_by": "Administrator",
  "module": "CCTS",
- "name": "Case Status",
+ "name": "Sub Status",
  "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [

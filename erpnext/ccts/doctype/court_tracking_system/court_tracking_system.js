@@ -56,19 +56,20 @@ frappe.ui.form.on('Court Tracking System', {
 			};
 		});
 
-		frm.set_query("case_description", "case_status", function (frm, cdt, cdn) {
-			var row = locals[cdt][cdn];
+		// jairaj
+		// frm.set_query("case_description", "case_status", function (frm, cdt, cdn) {
+		// 	var row = locals[cdt][cdn];
 			
-			return {
-				// filters: [
-				// 	["Case Description", "name", "in", frappe.get_value("Case Status Item", {"case_status": row.case_status}, "parent") ]
-				// ]
-				query: "erpnext.ccts.doctype.court_tracking_system.court_tracking_system.get_case_description_options",
-                filters: {
-                    case_status: row.case_status
-                }
-			};
-		});
+		// 	return {
+		// 		// filters: [
+		// 		// 	["Case Description", "name", "in", frappe.get_value("Case Status Item", {"case_status": row.case_status}, "parent") ]
+		// 		// ]
+		// 		query: "erpnext.ccts.doctype.court_tracking_system.court_tracking_system.get_case_description_options",
+        //         filters: {
+        //             case_status: row.case_status
+        //         }
+		// 	};
+		// });
 	},
 	case_type: function (frm) { 
 		if (frm.doc.case_type == "Counter Litigation") {
@@ -77,7 +78,7 @@ frappe.ui.form.on('Court Tracking System', {
 				"loan_account_no", "guarantor", "sanction_date", "sanction_amount",
 				"loan_product", "loan_category","loan_tenure", "overdue_date", "loan_outstanding",
 				"collateral_type", "exposure", "hearing_details"], 0);
-			frm.toggle_reqd(["cid_license_number", "borrower_filed_by", "issue_details"], 1);
+			frm.toggle_reqd(["cid_license_number", "borrower_filed_by", "issue_details"], 0);
 		} else if (frm.doc.case_type == "NPL Recovery Cases") {
 			frm.toggle_reqd(["cid_license_number", "borrower_filed_by", "issue_details"], 0);
 			frm.toggle_reqd(["current_status", "investigation", "issue_details", "hearing_details"], 0);
@@ -93,7 +94,7 @@ frappe.ui.form.on('Court Tracking System', {
 				"loan_account_no", "guarantor", "sanction_date", "sanction_amount",
 				"loan_product", "loan_category", "loan_tenure", "overdue_date", "loan_outstanding",
 				"collateral_type", "exposure", "hearing_details"], 0);
-			frm.toggle_reqd(["current_status", "investigation", "issue_details", "hearing_details"], 1);
+			frm.toggle_reqd(["current_status", "investigation", "issue_details", "hearing_details"], 0);
 		}
 	}
 });
