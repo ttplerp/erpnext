@@ -377,6 +377,7 @@ def gst_entry_adjustment(docname=None):
 
             sl = 0
             if a.require_adjustment == 1:
+                remarks = str(docname) + ' ' + str(a.service_type)
                 body_flag = 1
                 sl += 1
                 body += """
@@ -409,7 +410,7 @@ def gst_entry_adjustment(docname=None):
                     <ValueDt>{pd}</ValueDt>
                     <SerialNum>{sl}</SerialNum>
                     </PartTrnRec>
-                """.format(service_acc=service_acc,gst_acc=gst_acc,amt=a.gst,particular=a.service_type,rmks=str(docname) + ' ' + str(a.service_type),pd=pd,sl=sl)
+                """.format(service_acc=service_acc,gst_acc=gst_acc,amt=a.gst,particular=a.service_type,rmks=remarks[:30],pd=pd,sl=sl)
     if body_flag == 0:
         return "Not Required", ""
 
