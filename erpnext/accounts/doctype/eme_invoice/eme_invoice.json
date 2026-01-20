@@ -33,6 +33,12 @@
   "tds_amount",
   "column_break_22",
   "tds_account",
+  "gst_details_section",
+  "apply_gst",
+  "gst_amount",
+  "column_break_19",
+  "gst_account",
+  "payable_amount_after_gst",
   "section_break_32",
   "deduct_items",
   "section_break_20",
@@ -291,11 +297,45 @@
    "fieldname": "bill_date",
    "fieldtype": "Date",
    "label": "Bill Date"
+  },
+  {
+   "fieldname": "gst_details_section",
+   "fieldtype": "Section Break",
+   "label": "GST Details"
+  },
+  {
+   "default": "0",
+   "fieldname": "apply_gst",
+   "fieldtype": "Check",
+   "label": "Apply GST"
+  },
+  {
+   "fieldname": "gst_amount",
+   "fieldtype": "Currency",
+   "label": "GST Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_19",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "gst_account",
+   "fieldtype": "Link",
+   "label": "GST Account",
+   "options": "Account",
+   "read_only": 1
+  },
+  {
+   "fieldname": "payable_amount_after_gst",
+   "fieldtype": "Currency",
+   "label": "Grand Total (After GST)",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-26 11:28:23.559759",
+ "modified": "2026-01-20 14:17:45.429992",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "EME Invoice",

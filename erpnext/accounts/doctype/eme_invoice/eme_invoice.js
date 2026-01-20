@@ -107,6 +107,21 @@ frappe.ui.form.on('EME Invoice', {
 	tds_percent:function(frm){
 		frm.events.calculate_totals(frm)
 	},
+	apply_gst: function(frm){
+		if(frm.doc.apply_gst == 1){
+			frm.set_value("gst_account", "5% GST Inward - SMCL");
+			frm.refresh_fields("gst_account");
+			calculate_totals(frm);
+		}else{
+			frm.set_value("gst_account", "");
+			frm.refresh_fields("gst_account");
+			frm.set_value("gst_amount", "");
+			frm.refresh_fields("gst_amount");
+			frm.set_value("payable_amount_after_gst", "");
+			frm.refresh_fields("payable_amount_after_gst");
+		}
+	},
+
 	calculate_totals:function(frm){
 		cur_frm.call({
 			method: "calculate_totals",

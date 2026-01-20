@@ -75,6 +75,19 @@ frappe.ui.form.on('EME Invoice Entry', {
 			});
 		}
 	},
+	apply_gst: function(frm){
+		if(frm.doc.apply_gst == 1){
+			frm.set_value("gst_account", "5% GST Inward - SMCL");
+			frm.refresh_fields("gst_account");
+		}else{
+			frm.set_value("gst_account", "");
+			frm.refresh_fields("gst_account");
+			frm.set_value("gst_amount", "");
+			frm.refresh_fields("gst_amount");
+			frm.set_value("payable_amount_after_gst", "");
+			frm.refresh_fields("payable_amount_after_gst");
+		}
+	},
 	apply_eme_invice:function(frm){
 		frappe.call({
 			method:"apply_eme_invice",

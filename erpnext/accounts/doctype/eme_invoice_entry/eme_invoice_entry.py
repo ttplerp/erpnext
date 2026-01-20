@@ -32,6 +32,8 @@ class EMEInvoiceEntry(Document):
 				"to_date":self.to_date,
 				"tds_percent":self.tds_percent,
 				"tds_account":self.tds_account,
+				"apply_gst":self.apply_gst,
+				"gst_account":self.gst_account,
 				"company":self.company,
 				"currency":self.currency,
 				"status":"Draft"

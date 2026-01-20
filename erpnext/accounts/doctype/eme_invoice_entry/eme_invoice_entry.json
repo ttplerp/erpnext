@@ -22,6 +22,12 @@
   "column_break_10",
   "tds_account",
   "payable_amount",
+  "gst_details_section",
+  "apply_gst",
+  "gst_amount",
+  "column_break_19",
+  "gst_account",
+  "payable_amount_after_gst",
   "section_break_10",
   "items",
   "deductions",
@@ -239,12 +245,46 @@
    "fieldtype": "Float",
    "label": "Total Hours",
    "read_only": 1
+  },
+  {
+   "fieldname": "gst_details_section",
+   "fieldtype": "Section Break",
+   "label": "GST Details"
+  },
+  {
+   "default": "0",
+   "fieldname": "apply_gst",
+   "fieldtype": "Check",
+   "label": "Apply GST"
+  },
+  {
+   "fieldname": "gst_amount",
+   "fieldtype": "Currency",
+   "label": "GST Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_19",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "gst_account",
+   "fieldtype": "Link",
+   "label": "GST Account",
+   "options": "Account",
+   "read_only": 1
+  },
+  {
+   "fieldname": "payable_amount_after_gst",
+   "fieldtype": "Currency",
+   "label": "Payable Amount (After GST)",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-02-13 14:43:59.223490",
+ "modified": "2026-01-20 12:54:01.878872",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "EME Invoice Entry",

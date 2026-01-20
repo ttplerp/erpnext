@@ -122,6 +122,9 @@ class EMEInvoice(AccountsController):
 				if not a.expense_account:
 					throw("Expense Account not defined in Expense Head {}".format(bold(a.expense_head)),title="Expense Account Not Found")
 		self.grand_total = flt(total,2)
+		if self.apply_gst == 1:
+			self.gst_amount = flt(self.grand_total * 0.05, 2)
+			self.payable_amount_after_gst = flt(self.grand_total + self.gst_amount)
 
 		# tds
 		if self.tds_percent:
@@ -139,7 +142,7 @@ class EMEInvoice(AccountsController):
 				frappe.throw("Account is mandatory for deductions")
 			total_deductions += flt(d.amount, 2)
 		self.total_deduction = flt(total_deductions + self.tds_amount,2)
-		self.payable_amount = self.outstanding_amount = flt(self.grand_total - self.total_deduction, 2)
+		self.payable_amount = self.outstanding_amount = flt((self.payable_amount_after_gst if self.apply_gst == 1 else self.grand_total) - self.total_deduction, 2)
 		self.total_hours = total_hrs
 		
 	def make_gl_entries(self):
@@ -148,6 +151,8 @@ class EMEInvoice(AccountsController):
 		self.make_item_gl_entries(gl_entries)
 		self.deduction_gl_entries(gl_entries)
 		self.make_tds_gl_entries(gl_entries)
+		if self.apply_gst:
+			self.make_gst_gl_entries(gl_entries)
 		gl_entries = merge_similar_entries(gl_entries)
 		make_gl_entries(gl_entries,update_outstanding="No",cancel=self.docstatus == 2)
 	
@@ -212,6 +217,28 @@ class EMEInvoice(AccountsController):
 							"voucher_type":self.doctype,
 							"voucher_no":self.name
 					}, self.currency)
+				)
+
+	def make_gst_gl_entries(self,gl_entries):
+		if flt(self.gst_amount)> 0:
+			party_type = party = ''
+			if  get_account_type(self.gst_account, self.company) in ["Receivable","Payable","Expense Account","Income Account"]:
+				party_type = "Supplier"
+				party = self.supplier
+
+			gl_entries.append(
+				self.get_gl_dict({
+						"account":  self.gst_account,
+						"debit": flt(self.gst_amount,2),
+						"debit_in_account_currency": flt(self.gst_amount,2),
+						"against_voucher": self.name,
+						"against_voucher_type": self.doctype,
+						"party_type": party_type,
+						"party": party,
+						"cost_center": self.cost_center,
+						"voucher_type":self.doctype,
+						"voucher_no":self.name
+				}, self.currency)
 				)
 
 	def make_supplier_gl_entry(self, gl_entries):
