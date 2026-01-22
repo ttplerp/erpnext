@@ -24,6 +24,7 @@
   "customer",
   "customer_code",
   "is_nhdcl_employee",
+  "gst_applicable",
   "employee",
   "employee_name",
   "sb_building_details",
@@ -551,12 +552,19 @@
    "fieldtype": "Data",
    "label": "Rental Focal Name",
    "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "gst_applicable",
+   "fieldtype": "Check",
+   "label": "GST Applicable"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-30 13:10:43.360562",
+ "modified": "2026-01-22 11:27:45.719118",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Tenant Information",
