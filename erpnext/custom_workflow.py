@@ -101,7 +101,8 @@ class CustomWorkflow:
 		if self.doc.doctype == "Employee Advance":
 			self.ceo			= frappe.db.get_value("Employee", frappe.db.get_value("Employee", {"designation": "Chief Executive Officer", "status": "Active"},"name"), self.field_list)
 			self.hr_approver	= frappe.db.get_value("Employee", frappe.db.get_single_value("HR Settings", "hr_approver"), self.field_list)
-		
+			self.hrgm = frappe.db.get_value("Employee",frappe.db.get_single_value("HR Settings","hrgm"), self.field_list)	
+
 		if self.doc.doctype == "Material Request":
 			employee = frappe.db.get_value("Employee", {"user_id":self.doc.owner},"name")
 			division = frappe.db.get_value("Employee",employee,"division")
@@ -601,6 +602,11 @@ class CustomWorkflow:
 			if self.doc.advance_approver != frappe.session.user:
 				frappe.throw("Only {} can Forward this document".format(self.doc.advance_approver_name))
 			self.set_approver("HRGM")
+		
+		elif self.new_state.lower() in ("Waiting CEO Approval".lower()):
+			if self.doc.advance_approver != frappe.session.user:
+				frappe.throw("Only {} can Forward this document".format(self.doc.advance_approver_name))
+			self.set_approver("CEO")
 
 		elif self.new_state.lower() == ("Approved".lower()):
 			if self.doc.advance_approver != frappe.session.user:
