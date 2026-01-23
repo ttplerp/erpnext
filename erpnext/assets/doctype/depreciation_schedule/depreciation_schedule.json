@@ -20,8 +20,7 @@
   "make_depreciation_entry",
   "finance_book_id",
   "depreciation_method",
-  "depreciation_entry",
-  "reverse_ds"
+  "depreciation_entry"
  ],
  "fields": [
   {
@@ -124,19 +123,11 @@
    "fieldname": "schedule_start_date",
    "fieldtype": "Date",
    "label": "Schedule Start Date"
-  },
-  {
-   "default": "0",
-   "description": "manually updated from backend to exclude from reports for reverse ds",
-   "fieldname": "reverse_ds",
-   "fieldtype": "Check",
-   "hidden": 1,
-   "label": "Reverse DS"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2026-01-16 14:16:50.526624",
+ "modified": "2026-01-23 12:16:39.840824",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Depreciation Schedule",
