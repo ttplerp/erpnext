@@ -97,7 +97,7 @@ class RentalBillEntry(Document):
 					select tenant_cid, tenant_name, customer, block, flat, block_no, flat_no,
 					ministry_and_agency, location_name, branch, tenant_department_name, tenant_department, dzongkhag, 
 					town_category, building_category, is_nhdcl_employee, rental_amount, building_classification,
-					phone_no, allocated_date, locations, employment_type, rental_focal, rental_focal_name
+					phone_no, allocated_date, locations, employment_type, rental_focal, rental_focal_name, gst_applicable
 					from `tabTenant Information` t 
 					inner join `tabTenant Rental Charges` r 
 					on t.name = r.parent 
@@ -133,7 +133,7 @@ class RentalBillEntry(Document):
 							prop_mgt_amount = flt(d.rental_amount * (pm_item.percent / 100), 2)
 							total_property_mgt_amount += prop_mgt_amount
 						total_property_management_amount = total_property_mgt_amount if total_property_mgt_amount > 0 else 0
-
+						gst_amount = flt(d.rental_amount + total_property_management_amount) * 0.05 if d.gst_applicable else 0.00
 						rb = frappe.get_doc({
 							"doctype": "Rental Bill",
 							"tenant": str(f.tenant),
@@ -157,11 +157,12 @@ class RentalBillEntry(Document):
 							"building_category": d.building_category,
 							"building_classification": d.building_classification,
 							"rent_amount": d.rental_amount,
-							"receivable_amount": flt(d.rental_amount + total_property_management_amount),
+							"receivable_amount": flt(d.rental_amount + total_property_management_amount + gst_amount),
 							"cost_center": cost_center,
 							"company": self.company,
 							"is_nhdcl_employee": d.is_nhdcl_employee,
 							"property_management_amount": total_property_management_amount,
+							"gst_amount": gst_amount,
 							"rental_bill_entry": self.name,
 							"employment_type": d.employment_type,
 							"rental_focal": d.rental_focal,

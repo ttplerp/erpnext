@@ -39,6 +39,7 @@
   "sb_rental_bill",
   "rent_amount",
   "property_management_amount",
+  "gst_amount",
   "cb_rb_1",
   "receivable_amount",
   "received_amount",
@@ -438,12 +439,18 @@
    "label": "Tenant Department",
    "options": "Tenant Department",
    "read_only": 1
+  },
+  {
+   "fieldname": "gst_amount",
+   "fieldtype": "Currency",
+   "label": "GST Amount",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-10-13 18:17:26.101175",
+ "modified": "2026-01-22 15:39:07.198462",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Rental Bill",

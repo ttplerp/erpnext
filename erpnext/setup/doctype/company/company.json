@@ -65,6 +65,7 @@
   "unrealized_profit_loss_account",
   "security_deposit_account",
   "weighbridge_account",
+  "input_gst_account",
   "column_break0",
   "allow_account_creation_against_child_company",
   "default_payable_account",
@@ -78,6 +79,7 @@
   "company_cost_center",
   "default_finance_book",
   "clearing_account",
+  "output_gst_account",
   "tds_accounts_section",
   "tds_deducted",
   "tds_account_item",
@@ -1067,6 +1069,20 @@
    "fieldtype": "Link",
    "label": "MR Salary Payable Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "input_gst_account",
+   "fieldtype": "Link",
+   "label": "Input GST Account",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "output_gst_account",
+   "fieldtype": "Link",
+   "label": "Output GST Account",
+   "options": "Account",
+   "reqd": 1
   }
  ],
  "icon": "fa fa-building",
@@ -1074,7 +1090,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2023-08-09 17:09:44.706793",
+ "modified": "2026-01-22 16:02:23.171441",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",
