@@ -23,7 +23,9 @@
   "epayment_bank_accounts_section",
   "branch_bank_account",
   "tab_seal_sign",
-  "seal_sign"
+  "seal_sign",
+  "sb_workflow",
+  "two_level_approval"
  ],
  "fields": [
   {
@@ -125,12 +127,23 @@
    "fieldname": "seal_sign",
    "fieldtype": "Attach",
    "label": "Seal and Sign"
+  },
+  {
+   "fieldname": "sb_workflow",
+   "fieldtype": "Section Break",
+   "label": "Workflow Settings"
+  },
+  {
+   "default": "0",
+   "fieldname": "two_level_approval",
+   "fieldtype": "Check",
+   "label": "Two Level Approval"
   }
  ],
  "icon": "fa fa-code-fork",
  "idx": 1,
  "links": [],
- "modified": "2025-03-05 16:18:15.695835",
+ "modified": "2026-01-28 15:37:22.251469",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Branch",
