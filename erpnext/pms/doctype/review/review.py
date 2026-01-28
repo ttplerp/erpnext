@@ -157,12 +157,12 @@ def get_permission_query_conditions(user):
 		return
 	if "HR User" in user_roles or "HR Manager" in user_roles:
 		return
-	if "GM" in user_roles:
+	if "GM" in user_roles or "Approver" in user_roles:
 		department = frappe.db.get_value("Employee", {"user_id": user}, "division")
 		return """(
-			`tabTarget Set Up`.owner = '{user}'
+			`tabReview`.owner = '{user}'
 			or
-			(`tabTarget Set Up`.division = '{department}' and `tabTarget Set Up`.workflow_state not in ('Draft', 'Rejected','Cancelled'))
+			(`tabReview`.division = '{department}' and `tabReview`.workflow_state not in ('Draft', 'Rejected','Cancelled'))
 		)""".format(department=department, user=user)
 	
 	return """(

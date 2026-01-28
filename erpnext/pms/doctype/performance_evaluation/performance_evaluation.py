@@ -247,7 +247,10 @@ class PerformanceEvaluation(Document):
 		self.db_set('final_score', flt(self.form_i_score) + flt(self.form_ii_score)+ flt(self.form_iii_score))
 		self.db_set('final_score_percent', flt(self.final_score))
 		# frappe.throw(str(self.final_score_percent))
-		self.overall_rating = frappe.db.sql('''select name from `tabOverall Rating` where  upper_range_percent >= {0} and lower_range_percent <= {0}'''.format(self.final_score_percent))[0][0]
+		if self.final_score_percent > 100:
+			self.final_score_percent = 100
+			# self.db_set('final_score_percent', self.final_score_percent)
+		self.overall_rating = frappe.db.sql("""select name from `tabOverall Rating` where  upper_range_percent >= {0} and lower_range_percent <= {0}""".format(self.final_score_percent))[0][0]
 		self.db_set('overall_rating', self.overall_rating)
 		# self.star_obtained = frappe.db.get_value('Overall Rating',self.overall_rating,'star')
 		# self.db_set('star_obtained', self.star_obtained)

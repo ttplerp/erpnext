@@ -103,6 +103,9 @@ cur_frm.cscript.approver = function(doc){
 frappe.ui.form.on('Evaluate Target Item',{
 	onload:(frm,cdt,cdn)=>{
 		toggle_reqd_qty_quality(frm,cdt,cdn)
+		calculate_timeline_rating(frm,cdt,cdn)
+		calculate_qty_quality_rating(frm,cdt,cdn)
+		calculate_score(frm,cdt,cdn)
 	},
 	form_render:(frm,cdt,cdn)=>{
 		// var row = locals[cdt][cdn]
@@ -177,7 +180,6 @@ var calculate_timeline_rating = (frm,cdt,cdn)=>{
 		}
 	}
 	row.timeline_rating = timeline_rating
-	console.log('here',row.timeline_rating)
 	frm.refresh_field('evaluate_target_item')
 }
 // calculate score and average
