@@ -16,7 +16,7 @@ class PerformanceEvaluation(Document):
 		if self.upload_old_data:
 			return 
 		# if self.eval_workflow_state != frappe.db.get_value('Performance Evaluation',self.name,'eval_workflow_state'): 
-		# 	validate_workflow_states(self)  
+		validate_workflow_states(self)  
 		self.set_dafault_values() 
 		self.check_duplicate_entry()
 		self.calculate_target_score()
@@ -25,8 +25,8 @@ class PerformanceEvaluation(Document):
 		self.calculate_final_score()
 		self.check_target()
 		self.validate_no_months_served()
-		# if self.workflow_state != "Approved":
-		# 	notify_workflow_states(self)
+		if self.workflow_state != "Approved":
+			notify_workflow_states(self)
 
 		# to record the approver details when it is manually set to be used if the pms gets Rejected
 		if self.eval_workflow_state == "Waiting Supervisor Approval":
