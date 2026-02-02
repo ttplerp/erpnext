@@ -228,7 +228,7 @@ def get_data(filters):
             dep_total	= dep_opening + dep_addition - dep_adjustment
 
             net_useful_life = gross_total - dep_total
-            net_income_tax = flt(a.gross_purchase_amount) - flt(a.opening_accumulated_depreciation) - flt(a.depreciation_income_tax) - flt(a.opening_income) - flt(a.value_after_depreciation)
+            net_income_tax = flt(a.gross_purchase_amount) - flt(flt(a.opening_accumulated_depreciation) + flt(a.depreciation_income_tax) + flt(a.opening_income) + flt(a.value_after_depreciation))
 
            
             row = {
