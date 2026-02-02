@@ -277,16 +277,20 @@ def get_depreciation_details(filters):
         SELECT
             ds.parent AS asset,
             SUM(CASE
-                WHEN ds.schedule_date < '{from_date}' THEN ds.depreciation_amount
+                WHEN ifnull(a.disposal_date, 0) != 0 and a.disposal_date < '{from_date}'
+					and ds.schedule_date <= a.disposal_date THEN ROUND(ds.depreciation_amount, 2)
+                WHEN ifnull(a.disposal_date, 0) = 0 and ds.schedule_date < '{from_date}' THEN ROUND(ds.depreciation_amount, 2)
                 ELSE 0
             END) AS opening_income,
             SUM(CASE
-                WHEN ds.schedule_date BETWEEN '{from_date}' AND '{to_date}' THEN ds.depreciation_amount
+                WHEN ifnull(a.disposal_date, 0) != 0 and a.disposal_date >= '{from_date}'
+					and a.disposal_date <= '{to_date}' and ds.schedule_date <= a.disposal_date THEN ROUND(ds.depreciation_amount, 2)
+                WHEN ifnull(a.disposal_date, 0) = 0 and ds.schedule_date BETWEEN '{from_date}' AND '{to_date}' THEN ROUND(ds.depreciation_amount, 2)
                 ELSE 0
             END) AS depreciation_income_tax
-        FROM `tabDepreciation Schedule` as ds
-        WHERE ds.schedule_date <= '{to_date}'
-        AND ds.docstatus = 1
+        FROM `tabDepreciation Schedule` as ds, tabAsset a
+        WHERE ds.parent=a.name and ds.schedule_date <= '{to_date}'
+        AND a.docstatus = 1
         GROUP BY ds.parent
     """.format(from_date=filters.from_date, to_date=filters.to_date, fiscal_year = filters.fiscal_year)
     
