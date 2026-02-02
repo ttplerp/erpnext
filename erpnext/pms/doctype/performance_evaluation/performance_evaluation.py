@@ -349,7 +349,7 @@ class PerformanceEvaluation(Document):
 		frappe.db.sql("update `tabPerformance Evaluation Negative Target` set docstatus = 0 where parent = '{}'".format(self.name))
 		frappe.db.sql("update `tabSupervisor Declaration` set docstatus = 0 where parent = '{}'".format(self.name))
 
-
+	@frappe.whitelist()
 	def set_approver_designation(self):
 		desig = frappe.db.get_value('Employee', {'user_id': self.approver}, 'designation')
 		return desig

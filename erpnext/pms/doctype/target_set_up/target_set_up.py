@@ -170,7 +170,7 @@ class TargetSetUp(Document):
 		for item in self.common_target:
 			total += flt(item.weightage)
 		self.total_weightage = total
-	
+	@frappe.whitelist()
 	def set_approver_designation(self):
 		desig = frappe.db.get_value('Employee', {'user_id': self.approver}, 'designation')
 		return desig
