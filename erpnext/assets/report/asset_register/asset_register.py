@@ -254,7 +254,7 @@ def get_data(filters):
                 "dep_income_tax": a.depreciation_income_tax,
                 "iopening": flt(a.opening_accumulated_depreciation,2) + flt(a.opening_income,2),
                 "net_useful_life": net_useful_life,
-                "net_income_tax": net_income_tax,
+                "net_income_tax": flt(net_income_tax, 2),
                 "total_number_of_depreciations": a.total_number_of_depreciations,
                 "depreciation_percent": a.depreciation_percent,
                 "old_asset_code": a.old_asset_code,
