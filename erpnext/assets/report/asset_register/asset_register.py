@@ -109,7 +109,8 @@ def get_data(filters):
             a.custodian as issued_to, a.custodian_name as employee_name,
             a.asset_quantity, a.asset_rate, a.additional_value,
             a.gross_purchase_amount, f.expected_value_after_useful_life,
-                        a.opening_accumulated_depreciation, f.value_after_depreciation,
+                        a.opening_accumulated_depreciation, 
+            (CASE WHEN a.status in ('Scrapped', 'Sold') THEN f.value_after_depreciation ELSE 0 END) as value_after_depreciation,
                         a.income_tax_opening_depreciation_amount as iopening,
             a.residual_value, a.remarks, 
             (CASE WHEN a.is_existing_asset = 1 THEN 'Yes' ELSE 'No' END ) AS is_existing_asset,
@@ -227,7 +228,7 @@ def get_data(filters):
             dep_total	= dep_opening + dep_addition - dep_adjustment
 
             net_useful_life = gross_total - dep_total
-            net_income_tax = flt(a.gross_purchase_amount) - flt(a.opening_accumulated_depreciation) - flt(a.depreciation_income_tax) - flt(a.opening_income)
+            net_income_tax = flt(a.gross_purchase_amount) - flt(a.opening_accumulated_depreciation) - flt(a.depreciation_income_tax) - flt(a.opening_income) - flt(a.value_after_depreciation)
 
            
             row = {
