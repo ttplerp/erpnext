@@ -27,8 +27,6 @@
   "cid_license_number",
   "guarantor",
   "contact_no",
-  "section_break_15",
-  "case_status",
   "loan_details_section",
   "sanction_date",
   "loan_category",
@@ -43,6 +41,8 @@
   "loan_outstanding",
   "recovered_amount",
   "collateral_description",
+  "section_break_15",
+  "case_status",
   "section_break_19",
   "hearing_details",
   "section_break_27",
@@ -70,7 +70,6 @@
    "reqd": 1
   },
   {
-   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\" || doc.case_type ==\"Counter Litigation\"",
    "fieldname": "court_venue",
    "fieldtype": "Select",
    "label": "Court Venue",
@@ -132,8 +131,9 @@
   },
   {
    "fieldname": "exposure",
-   "fieldtype": "Data",
-   "label": "Exposure"
+   "fieldtype": "Link",
+   "label": "Exposure/Bucket",
+   "options": "Exposure Detail"
   },
   {
    "fieldname": "collateral_type",
@@ -245,7 +245,7 @@
    "label": "Issue/Case Details"
   },
   {
-   "depends_on": "eval:doc.case_type==\"3)Criminal & ACC Cases\"",
+   "depends_on": "eval:doc.case_type==\"Criminal & ACC Cases\"",
    "fieldname": "court_case",
    "fieldtype": "Small Text",
    "label": "Court Case "
@@ -315,7 +315,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2026-01-20 16:42:28.922133",
+ "modified": "2026-02-03 15:46:19.863012",
  "modified_by": "Administrator",
  "module": "CCTS",
  "name": "Court Tracking System",
