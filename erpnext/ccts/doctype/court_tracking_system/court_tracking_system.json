@@ -192,7 +192,6 @@
   },
   {
    "bold": 1,
-   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\" || doc.case_type == \"Counter Litigation\"",
    "fieldname": "npl_clients_section",
    "fieldtype": "Section Break",
    "label": "Clients Details"
@@ -212,7 +211,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\" || doc.case_type ==\"Counter Litigation\"",
    "fieldname": "borrower_filed_by",
    "fieldtype": "Data",
    "label": "Borrower/Filed By Name"
@@ -315,7 +313,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2026-02-03 15:46:19.863012",
+ "modified": "2026-02-03 16:11:28.553085",
  "modified_by": "Administrator",
  "module": "CCTS",
  "name": "Court Tracking System",
