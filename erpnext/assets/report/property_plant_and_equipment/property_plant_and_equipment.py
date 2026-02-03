@@ -49,7 +49,7 @@ def get_accounts(filters):
 											and (
 												a.status not in ('Scrapped', 'Sold')
 												OR
-												(a.status in ('Scrapped', 'Sold') AND a.disposal_date >= '{1}')
+												(a.status in ('Scrapped', 'Sold') AND a.disposal_date >= '{1}' and b.schedule_date <= a.disposal_date)
 											)
 									""".format(a.name, filters.from_date, filters.to_date), as_dict=True)
 
@@ -71,7 +71,7 @@ def get_accounts(filters):
 											and (
 												a.status not in ('Scrapped', 'Sold')
 												OR
-												(a.status in ('Scrapped', 'Sold') AND a.disposal_date >= '{1}')
+												(a.status in ('Scrapped', 'Sold') AND a.disposal_date >= '{1}' and b.schedule_date <= a.disposal_date)
 											)
 								 			and b.depreciation_amount > 0
 									""".format(a.name, filters.from_date), as_dict=True)
