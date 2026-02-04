@@ -43,6 +43,9 @@ frappe.ui.form.on("Journal Entry", {
 			frm.add_custom_button(__('Reverse Journal Entry'), function() {
 				return erpnext.journal_entry.reverse_journal_entry(frm);
 			}, __('Actions'));
+			frm.add_custom_button(__('Disable/Enable CBS Entry'), function() {
+				return erpnext.journal_entry.toggle_cbs_entry(frm);
+			}, __('Actions'));
 		}
 
 		if (frm.doc.__islocal) {
@@ -730,6 +733,20 @@ $.extend(erpnext.journal_entry, {
 		frappe.model.open_mapped_doc({
 			method: "erpnext.accounts.doctype.journal_entry.journal_entry.make_reverse_journal_entry",
 			frm: cur_frm
+		})
+	},
+
+	toggle_cbs_entry: function() {
+		frappe.call({
+			method: "erpnext.accounts.doctype.journal_entry.journal_entry.toggle_cbs_entry",
+			args: {
+				docname: cur_frm.doc.name,
+				enable: cur_frm.doc.cbs_enabled ? 0 : 1},
+			callback: function(r) {
+				if(r.message){
+					cur_frm.reload_doc();
+				}
+			}
 		})
 	},
 });

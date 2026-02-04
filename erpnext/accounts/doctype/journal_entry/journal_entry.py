@@ -1822,3 +1822,28 @@ def make_bank_payment(source_name, target_doc=None):
 	}, target_doc, ignore_permissions=True)
 	return doc
 # ePayment Ends
+
+@frappe.whitelist()
+def toggle_cbs_entry(docname, enable):
+	""" check if cbs entry is posted or not """
+	availability = frappe.db.sql("""
+					select 1
+			from `tabGL Entry` t1
+			inner join `tabAccount` a on a.name = t1.account
+			inner join `tabTransaction Mapping` t2 on t2.name = t1.voucher_type and t2.transaction_type in ('CASA', 'GL')
+			left join `tabCurrency` c on c.name = a.account_currency
+			where 
+			t1.cbs_enabled = 1
+			and t1.is_cancelled = 0
+			and t1.voucher_type = 'Journal Entry' and t1.voucher_no = '{}'
+			and exists(select 1
+				from `tabCBS Entry Upload` ceu
+				where ceu.gl_entry = t1.name
+				and ceu.docstatus != 2)							
+		""".format(docname))
+	if availability:
+		frappe.throw(_("CBS Entry is already posted against this Journal Entry. Cannot perform this action."))
+	frappe.db.set_value("Journal Entry", docname, "cbs_enabled", enable)
+	frappe.db.set_value("GL Entry", {"voucher_no": docname, "voucher_type": "Journal Entry"}, "cbs_enabled", enable)
+	return True
+	
