@@ -16,6 +16,7 @@
   "country",
   "is_group",
   "default_holiday_list",
+  "gst_no",
   "cb0",
   "default_letter_head",
   "tax_id",
@@ -1083,6 +1084,11 @@
    "label": "Output GST Account",
    "options": "Account",
    "reqd": 1
+  },
+  {
+   "fieldname": "gst_no",
+   "fieldtype": "Data",
+   "label": "GST No"
   }
  ],
  "icon": "fa fa-building",
@@ -1090,7 +1096,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2026-01-22 16:02:23.171441",
+ "modified": "2026-02-05 10:54:48.282896",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",

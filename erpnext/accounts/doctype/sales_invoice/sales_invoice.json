@@ -91,7 +91,6 @@
   "total_net_weight",
   "net_total",
   "taxes_section",
-  "taxes_and_charges",
   "column_break_38",
   "shipping_rule",
   "tax_category",
@@ -165,6 +164,7 @@
   "tc_name",
   "terms",
   "section_break_40",
+  "taxes_and_charges",
   "taxes",
   "edit_printing_settings",
   "letter_head",
@@ -871,7 +871,6 @@
   {
    "fieldname": "taxes_and_charges",
    "fieldtype": "Link",
-   "hidden": 1,
    "hide_days": 1,
    "hide_seconds": 1,
    "label": "Sales Taxes and Charges Template",
@@ -908,7 +907,6 @@
    "print_hide": 1
   },
   {
-   "collapsible": 1,
    "fieldname": "section_break_40",
    "fieldtype": "Section Break",
    "hide_days": 1,
@@ -2110,7 +2108,7 @@
    "link_fieldname": "consolidated_invoice"
   }
  ],
- "modified": "2023-08-18 12:00:28.306019",
+ "modified": "2026-01-26 11:00:23.922064",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Sales Invoice",
