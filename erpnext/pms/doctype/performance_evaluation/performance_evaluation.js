@@ -211,6 +211,20 @@ var calculate_qty_quality_rating = (frm,cdt,cdn)=>{
 		if (row.is_expense_target){
 			rating = flt(targeted) / flt(achieved) * flt(weightage)
 		}
+		else if (row.is_conditional_target){
+			if(flt(achieved) <=70){
+				rating = 0
+			}else{
+				rating = flt(weightage)
+			}
+		}
+		else if (row.is_zero_value == 1){
+			if (flt(achieved) == 0){
+				rating = flt(weightage)
+			}else{
+				rating = flt(weightage) / (flt(achieved)+ 1)
+			}
+		}
 		else{
 			rating = weightage
 		}	
@@ -218,6 +232,19 @@ var calculate_qty_quality_rating = (frm,cdt,cdn)=>{
 	else{
 		if (row.is_expense_target){
 			rating = weightage
+		}
+		else if (row.is_conditional_target){
+			if(flt(achieved) <=70){
+				rating = 0
+			}else{
+				rating = flt(targeted) / flt(achieved) * flt(weightage)
+			}
+		}else if (row.is_zero_value == 1){
+			if (flt(achieved) == 0){
+				rating = flt(weightage)
+			}else{
+				rating = flt(weightage) / (flt(achieved)+ 1)
+			}
 		}
 		else{
 			rating = flt(achieved) / flt(targeted) * flt(weightage)

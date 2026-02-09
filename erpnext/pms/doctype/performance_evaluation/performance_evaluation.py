@@ -17,6 +17,7 @@ class PerformanceEvaluation(Document):
 			return 
 		# if self.eval_workflow_state != frappe.db.get_value('Performance Evaluation',self.name,'eval_workflow_state'): 
 		validate_workflow_states(self)  
+		self.validate_calendar()
 		self.set_dafault_values() 
 		self.check_duplicate_entry()
 		self.calculate_target_score()
@@ -75,8 +76,6 @@ class PerformanceEvaluation(Document):
 		self.max_rating_limit = frappe.db.get_single_value('PMS Setting','max_rating_limit')
 	@frappe.whitelist()
 	def create_employee_pms_record(self):
-		if self.reference:
-			return
 		emp = frappe.get_doc("Employee",self.employee)
 		row = emp.append("employee_pms",{})
 		row.fiscal_year = self.pms_calendar
@@ -114,7 +113,7 @@ class PerformanceEvaluation(Document):
 			if item.timeline_achieved <= 0:
 				frappe.throw('Timeline Achieved for target <b>{}</b> must be greater than 0'.format(item.performance_target))
 			if item.qty_quality == 'Quality':
-				if item.quality_achieved <= 0:
+				if item.quality_achieved <= 0 and not item.is_zero_value:
 					frappe.throw('Quality Achieved for target <b>{}</b> must be greater than or equal to 0'.format(item.performance_target))
 
 				if flt(item.quality_achieved) >= flt(item.quality):
@@ -122,19 +121,39 @@ class PerformanceEvaluation(Document):
 						extra_amount = flt(item.quality) / flt(item.quality_achieved) * flt(item.weightage)
 						diff_amount = flt(item.weightage) - flt(extra_amount)
 						quality_rating = flt(item.weightage) - flt(diff_amount)
+					elif item.is_conditional_target:
+						if item.quality_achieved <=70:
+							quality_rating= 0
+						else:
+							quality_rating = flt(item.weightage)
+					elif item.is_zero_value:
+						if item.quality_achieved <= 0:
+							quality_rating = item.weightage
+						else:
+							quality_rating = flt(item.weightage)/ (flt(item.quality_achieved) + 1)
 					else:
 						quality_rating = item.weightage
-
+					
 				else:
 					if item.is_expense_target:
 						quality_rating = item.weightage
+					elif item.is_conditional_target:
+						if item.quality_achieved <=70:
+							quality_rating= 0
+						else:
+							quality_rating = flt(item.quality_achieved) / flt(item.quality) * flt(item.weightage)
+					elif item.is_zero_value:
+						if item.quality_achieved <= 0:
+							quality_rating = item.weightage
+						else:
+							quality_rating = flt(item.weightage)/ (flt(item.quality_achieved) + 1)
 					else:
 						quality_rating = flt(item.quality_achieved) / flt(item.quality) * flt(item.weightage)
 				
 				item.quality_rating = quality_rating
 
 			elif item.qty_quality == 'Quantity':
-				if item.quantity_achieved < 0:
+				if item.quantity_achieved < 0 and not item.is_zero_value:
 					frappe.throw('Quality Achieved for target <b>{}</b> must be greater than or equal to 0'.format(item.performance_target))
 				
 				if flt(item.quantity_achieved)>= flt(item.quantity):
@@ -142,11 +161,31 @@ class PerformanceEvaluation(Document):
 						extra_amount = flt(item.quantity) / flt(item.quantity_achieved) * flt(item.weightage)
 						diff_amount = flt(item.weightage) - flt(extra_amount)
 						quantity_rating = flt(item.weightage) - flt(diff_amount)
+					elif item.is_conditional_target:
+						if item.quantity_achieved <=70:
+							quantity_rating= 0
+						else:
+							quantity_rating = flt(item.weightage)
+					elif item.is_zero_value:
+						if item.quantity_achieved <= 0:
+							quantity_rating = item.weightage
+						else:
+							quantity_rating = flt(item.weightage)/ (flt(item.quantity_achieved) + 1)
 					else:
 						quantity_rating = flt(item.weightage)
 				else:
 					if item.is_expense_target:
 						quantity_rating = item.weightage
+					elif item.is_conditional_target:
+						if item.quantity_achieved <=70:
+							quantity_rating= 0
+						else:
+							quantity_rating = flt(item.quantity_achieved) / flt(item.quality) * flt(item.weightage)
+					elif item.is_zero_value:
+						if item.quantity_achieved <= 0:
+							quantity_rating = item.weightage
+						else:
+							quantity_rating = flt(item.weightage)/ (flt(item.quantity_achieved) + 1)
 					else:
 						quantity_rating = flt(item.quantity_achieved) / flt(item.quantity)  * flt(item.weightage)
 				

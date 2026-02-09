@@ -14,7 +14,7 @@ from erpnext.custom_workflow import validate_workflow_states, notify_workflow_st
 class Review(Document):
 	def validate(self):
 		self.check_duplicate_entry()
-		# validate_workflow_states(self)
+		validate_workflow_states(self)
 		if self.workflow_state != "Approved":
 			notify_workflow_states(self)
 		self.check_target()
@@ -25,7 +25,9 @@ class Review(Document):
 			return
 		else:
 			self.validate_calendar()
-   
+	def on_cancel(self):
+		validate_workflow_states(self)
+
 	def record_self_rating(self):
 		if self.workflow_state == "Draft":
 			for i in self.review_target_item:

@@ -17,9 +17,11 @@
   "quality",
   "quantity",
   "accept_zero_qtyquality",
+  "is_conditional_target",
   "column_break_9",
   "timeline_base_on",
   "timeline",
+  "is_zero_value",
   "achievements_section",
   "quantity_achieved",
   "quality_achieved",
@@ -339,14 +341,31 @@
   {
    "allow_on_submit": 1,
    "default": "0",
+   "depends_on": "eval: doc.is_conditional_target==0",
    "fieldname": "is_expense_target",
    "fieldtype": "Check",
    "label": "Is Expense Target"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "depends_on": "eval:doc.is_expense_target==0",
+   "fieldname": "is_conditional_target",
+   "fieldtype": "Check",
+   "label": "is >70% Target",
+   "mandatory_depends_on": "eval:doc.is_expense_target==0"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "is_zero_value",
+   "fieldtype": "Check",
+   "label": "Is Zero Value Target"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2025-12-04 10:09:06.213700",
+ "modified": "2026-02-09 11:18:56.974647",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Evaluate Target Item",
