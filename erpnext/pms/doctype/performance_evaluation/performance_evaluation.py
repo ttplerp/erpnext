@@ -201,6 +201,8 @@ class PerformanceEvaluation(Document):
 					timeline_rating = flt(item.weightage)
 				else:
 					timeline_rating = flt(item.timeline) / flt(item.timeline_achieved) *  flt(item.weightage)
+			if item.is_conditional_target and item.quantity_achieved <=70 and item.quality_achieved <=70:
+				timeline_rating = 0
 			item.timeline_rating = timeline_rating
 			
 			if item.qty_quality == 'Quality':

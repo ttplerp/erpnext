@@ -135,6 +135,16 @@ frappe.ui.form.on('Evaluate Target Item',{
 		calculate_qty_quality_rating(frm,cdt,cdn)
 		calculate_score(frm,cdt,cdn)
 	},
+	is_conditional_target:(frm,cdt,cdn)=>{
+		calculate_timeline_rating(frm,cdt,cdn)
+		calculate_qty_quality_rating(frm,cdt,cdn)
+		calculate_score(frm,cdt,cdn)
+	},
+	is_expense_target:(frm,cdt,cdn)=>{
+		calculate_qty_quality_rating(frm,cdt,cdn)
+		calculate_timeline_rating(frm,cdt,cdn)
+		calculate_score(frm,cdt,cdn)
+	},
 	accept_zero_qtyquality:(frm,cdt,cdn)=>{
 		var row = locals[cdt][cdn]
 		row.quality_achieved = row.quantity_achieved = 0
@@ -162,6 +172,7 @@ var calculate_timeline_rating = (frm,cdt,cdn)=>{
 	timeline_achieved = row.timeline_achieved
 	weightage =row.weightage
 	timeline = row.timeline
+	
 	if (flt(timeline_achieved)<= flt(timeline)){
 		if (row.is_expense_target){
 			timeline_rating = (flt(timeline_achieved) / flt(timeline)) * flt(weightage)
@@ -169,7 +180,6 @@ var calculate_timeline_rating = (frm,cdt,cdn)=>{
 		else{
 			timeline_rating = weightage
 		}
-		
 	}
 	else{
 		if (row.is_expense_target){
@@ -179,6 +189,15 @@ var calculate_timeline_rating = (frm,cdt,cdn)=>{
 			timeline_rating = (flt(timeline) / flt(timeline_achieved)) * flt(weightage)
 		}
 	}
+	if (row.is_conditional_target==1){
+		if (row.quantity_achieved <=70 && row.qty_quality=='Quantity'){
+			timeline_rating =0
+		}
+		if(row.quality_achieved <=70 && row.qty_quality=='Quality' ){
+			timeline_rating =0
+		}
+	} 
+	
 	row.timeline_rating = timeline_rating
 	frm.refresh_field('evaluate_target_item')
 }
@@ -237,7 +256,7 @@ var calculate_qty_quality_rating = (frm,cdt,cdn)=>{
 			if(flt(achieved) <=70){
 				rating = 0
 			}else{
-				rating = flt(targeted) / flt(achieved) * flt(weightage)
+				rating = flt (achieved)/ flt(targeted) * flt(weightage)
 			}
 		}else if (row.is_zero_value == 1){
 			if (flt(achieved) == 0){
