@@ -157,6 +157,9 @@ def prepare_rts(source_name, target_doc=None):
 				"postprocess": update_docs,
 				"validation": {"docstatus": ["=", 1]}
 			},
+			"Technical Sanction Supervisor List": {
+				"doctype": "Revised Technical Sanction Item",
+			},
 		}, target_doc)
 	return doc
 
