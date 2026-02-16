@@ -30,6 +30,29 @@ erpnext.setup.EmployeeController = class EmployeeController extends frappe.ui.fo
 };
 
 frappe.ui.form.on("Employee", {
+	refresh: function(frm) {
+		frm.add_custom_button(__('Update Data'), function() {
+			frappe.prompt({
+				label: 'IP Number',
+				fieldname: 'ip_number',
+				fieldtype: 'Data'
+			}, (values) => {
+				console.log(values.ip_number);
+				frm.set_value('ip_number', values.ip_number);
+				frappe.call({
+					method: "erpnext.setup.doctype.employee.employee.update_data",
+					args: {
+						employee: frm.doc.name,
+						ip_number: values.ip_number
+					},
+					callback: function (r) {
+						// frm.refresh_field("ip_number");
+						frm.reload_doc();
+					}
+				});
+			})
+		}).addClass("btn-primary");
+	},
 	onload: function (frm) {
 		frm.set_query("department", function() {
 			return {

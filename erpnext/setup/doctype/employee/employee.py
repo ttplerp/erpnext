@@ -351,10 +351,10 @@ def is_holiday(
 ):
 	"""
 	Returns True if given Employee has an holiday on the given date
-	        :param employee: Employee `name`
-	        :param date: Date to check. Will check for today if None
-	        :param raise_exception: Raise an exception if no holiday list found, default is True
-	        :param only_non_weekly: Check only non-weekly holidays, default is False
+			:param employee: Employee `name`
+			:param date: Date to check. Will check for today if None
+			:param raise_exception: Raise an exception if no holiday list found, default is True
+			:param only_non_weekly: Check only non-weekly holidays, default is False
 	"""
 
 	holiday_list = get_holiday_list_for_employee(employee, raise_exception)
@@ -383,6 +383,12 @@ def deactivate_sales_person(status=None, employee=None):
 		if sales_person:
 			frappe.db.set_value("Sales Person", sales_person, "enabled", 0)
 
+@frappe.whitelist()
+def update_data(employee, ip_number):
+	doc = frappe.get_doc("Employee", employee)
+	doc.flags.ignore_permissions = True
+	doc.ip_number = ip_number
+	doc.save()
 
 @frappe.whitelist()
 def create_user(employee, user=None, email=None):
