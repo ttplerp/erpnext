@@ -312,7 +312,8 @@ function get_leadership_competency(frm) {
 		method: "get_leadership_competency",
 		doc: frm.doc,
 		callback:  (r) =>{
-			frm.refresh_fields()
+			frm.dirty();
+			frm.refresh_fields();
 		}
 	})
 }
