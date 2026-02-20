@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "creation": "2023-11-06 12:44:27.888023",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -313,7 +314,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2026-02-03 16:11:28.553085",
+ "modified": "2026-02-20 10:39:15.616996",
  "modified_by": "Administrator",
  "module": "CCTS",
  "name": "Court Tracking System",
