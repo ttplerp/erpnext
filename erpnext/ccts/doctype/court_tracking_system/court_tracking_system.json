@@ -111,12 +111,9 @@
    "label": "Sanction Amount"
   },
   {
-   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
    "fieldname": "loan_product",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Loan Product",
-   "options": "Loan Products"
+   "fieldtype": "Data",
+   "label": "Loan Product"
   },
   {
    "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
@@ -244,7 +241,6 @@
    "label": "Issue/Case Details"
   },
   {
-   "depends_on": "eval:doc.case_type==\"Criminal & ACC Cases\"",
    "fieldname": "court_case",
    "fieldtype": "Small Text",
    "label": "Court Case "
@@ -314,7 +310,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2026-02-20 10:39:15.616996",
+ "modified": "2026-02-20 16:06:57.460326",
  "modified_by": "Administrator",
  "module": "CCTS",
  "name": "Court Tracking System",
