@@ -144,7 +144,6 @@
    "ignore_user_permissions": 1,
    "label": "PMS Group",
    "options": "PMS Group",
-   "read_only": 1,
    "reqd": 1
   },
   {
@@ -884,7 +883,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2026-02-17 16:26:59.355899",
+ "modified": "2026-02-20 16:21:39.915318",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Performance Evaluation",
