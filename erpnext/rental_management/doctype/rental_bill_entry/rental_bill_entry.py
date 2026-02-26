@@ -133,7 +133,7 @@ class RentalBillEntry(Document):
 							prop_mgt_amount = flt(d.rental_amount * (pm_item.percent / 100), 2)
 							total_property_mgt_amount += prop_mgt_amount
 						total_property_management_amount = total_property_mgt_amount if total_property_mgt_amount > 0 else 0
-						gst_amount = flt(d.rental_amount + total_property_management_amount) * 0.05 if d.gst_applicable else 0.00
+						gst_amount = round(flt(d.rental_amount + total_property_management_amount) * 0.05 if d.gst_applicable else 0.00)
 						rb = frappe.get_doc({
 							"doctype": "Rental Bill",
 							"tenant": str(f.tenant),
