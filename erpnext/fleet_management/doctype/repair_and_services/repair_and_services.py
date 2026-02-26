@@ -108,6 +108,12 @@ class RepairAndServices(StockController):
 			else:
 				self.total_out_source_amt += flt(item.rate,2) * flt(item.qty)
 			self.total_amount += flt(item.charge_amount,2)
+		if self.calculate_gst == 1:
+			self.total_gst_amount = flt(self.total_amount*0.05,2)
+		else:
+			self.total_gst_amount = 0
+		self.grand_total = flt(self.total_amount+self.total_gst_amount,2)
+
 
 	def update_items(self):
 		for a in self.items:

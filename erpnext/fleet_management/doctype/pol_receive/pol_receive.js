@@ -133,6 +133,13 @@ function calculate_total(frm) {
 	if(frm.doc.qty && frm.doc.rate && frm.doc.discount_amount) {
 		frm.set_value("total_amount", (frm.doc.qty * frm.doc.rate) - frm.doc.discount_amount)
 	}
+	if(frm.doc.calculate_gst == 1){
+		frm.set_value("gst_amount", (frm.doc.total_amount*0.05));
+	}
+	else{
+		frm.set_value("gst_amount", 0);
+	}
+	frm.set_value("grand_total", (frm.doc.total_amount+frm.doc.gst_amount));
 }	
 
 var set_equipment_filter=function(frm){

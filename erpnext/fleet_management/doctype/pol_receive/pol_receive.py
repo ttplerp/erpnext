@@ -50,7 +50,8 @@ class POLReceive(StockController):
 		total_balance = 0
 		for row in self.items:
 			total_balance = flt(total_balance) + flt(row.balance_amount)
-		if total_balance < self.total_amount :
+		total_balance += self.gst_amount
+		if total_balance < self.grand_total:
 			frappe.throw("<b>Payable Amount</b> cannot be greater than <b>Total Advance Balance</b>")
 	def make_gl_entries(self):
 		if cint(self.use_common_fuelbook) == 0:
@@ -63,13 +64,13 @@ class POLReceive(StockController):
 		make_gl_entries(gl_entries,update_outstanding="No",cancel=self.docstatus == 2)
 
 	def make_supplier_gl_entry(self, gl_entries):
-		if flt(self.total_amount) > 0:
+		if flt(self.grand_total) > 0:
 			credit_account = get_party_account("Supplier", self.supplier, self.company, is_advance = self.use_common_fuelbook)
 			gl_entries.append(
 				self.get_gl_dict({
 					"account": credit_account,
-					"credit": self.total_amount,
-					"credit_in_account_currency": self.total_amount,
+					"credit": self.grand_total,
+					"credit_in_account_currency": self.grand_total,
 					"against_voucher": self.name,
 					"party_type": "Supplier",
 					"party": self.supplier,
@@ -90,6 +91,18 @@ class POLReceive(StockController):
 						"against_voucher": self.name,
 						"party_type": "Supplier",
 						"party": frappe.db.get_value("Equipment", self.equipment,"supplier"),
+						"against_voucher_type": self.doctype,
+						"cost_center": self.cost_center,
+						"voucher_type":self.doctype,
+						"voucher_no":self.name
+					}, self.currency))
+		if flt(self.gst_amount) > 0:
+			gl_entries.append(
+					self.get_gl_dict({
+						"account": "5% GST Inward - SMCL",
+						"debit": self.gst_amount,
+						"debit_in_account_currency": self.gst_amount,
+						"against_voucher": self.name,
 						"against_voucher_type": self.doctype,
 						"cost_center": self.cost_center,
 						"voucher_type":self.doctype,

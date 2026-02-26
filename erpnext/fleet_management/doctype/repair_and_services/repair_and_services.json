@@ -42,6 +42,9 @@
   "total_stock_amt",
   "column_break_30",
   "total_amount",
+  "calculate_gst",
+  "total_gst_amount",
+  "grand_total",
   "nature_of_break_down",
   "defect",
   "section_break_15",
@@ -413,12 +416,32 @@
    "hidden": 1,
    "label": "Invoice Created ",
    "read_only": 1
+  },
+  {
+   "fieldname": "total_gst_amount",
+   "fieldtype": "Currency",
+   "label": "Total GST Amount",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "grand_total",
+   "fieldtype": "Currency",
+   "label": "Grand Total",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "calculate_gst",
+   "fieldtype": "Check",
+   "label": "Calculate GST"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-04 12:05:41.434244",
+ "modified": "2026-02-25 16:53:28.632535",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Repair And Services",

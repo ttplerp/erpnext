@@ -28,6 +28,8 @@
   "items",
   "checked_by",
   "section_break_15",
+  "calculate_gst",
+  "gst_amount",
   "total_amount",
   "grand_total",
   "column_break_34",
@@ -313,12 +315,26 @@
    "fieldtype": "Currency",
    "label": "TDS Amount",
    "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.calculate_gst == 1;",
+   "fieldname": "gst_amount",
+   "fieldtype": "Currency",
+   "label": "GST Amount",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "calculate_gst",
+   "fieldtype": "Check",
+   "label": "Calculate GST"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-11-16 10:05:58.885206",
+ "modified": "2026-02-25 13:03:14.962489",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Repair And Service Invoice",

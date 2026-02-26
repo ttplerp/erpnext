@@ -77,7 +77,11 @@ class RepairAndServiceInvoice(AccountsController):
 			self.grand_total += flt(a.charge_amount,2)
 		if flt(self.tds_percent) > 0:
 			self.tds_amount = flt(self.grand_total) * flt(self.tds_percent) / 100
-		self.total_amount =	self.outstanding_amount = flt(self.grand_total) - flt(self.tds_amount)
+		if self.calculate_gst == 1:
+			self.gst_amount = flt(self.grand_total*0.05,2)
+		else:
+			self.gst_amount = 0
+		self.total_amount =	self.outstanding_amount = flt(self.grand_total) - flt(self.tds_amount) + flt(self.gst_amount)
 
 	def make_gl_entry(self):
 		from erpnext.accounts.general_ledger import make_gl_entries
@@ -114,6 +118,19 @@ class RepairAndServiceInvoice(AccountsController):
 				"against_voucher_type":self.doctype
 			}, self.currency)
 		)
+		if self.gst_amount > 0:
+			gl_entries.append(
+				self.get_gl_dict({
+					"account": "5% GST Inward - SMCL",
+					"debit": self.gst_amount,
+					"credit_in_account_currency": self.gst_amount,
+					"cost_center": self.cost_center,
+					"voucher_no":self.name,
+					"voucher_type":self.doctype,
+					"against_voucher":self.name,
+					"against_voucher_type":self.doctype
+				}, self.currency)
+			)
 		if flt(self.tds_percent) > 0:
 			gl_entries.append(
 				self.get_gl_dict({
