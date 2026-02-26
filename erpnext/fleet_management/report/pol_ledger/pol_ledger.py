@@ -4,80 +4,170 @@
 from __future__ import unicode_literals
 import frappe
 from frappe import _
-from frappe.utils import flt, getdate, formatdate, cstr, get_datetime
-from erpnext.fleet_management.fleet_utils import get_pol_till, get_pol_till,get_pol_consumed_till
-from operator import itemgetter, attrgetter
+from frappe.utils import flt, get_datetime
+from erpnext.fleet_management.fleet_utils import get_pol_till, get_pol_consumed_till
+from collections import defaultdict
 import datetime
 
 def execute(filters=None):
-	columns = get_columns()
-	data = get_data(filters)
-	return columns, data
+    columns = get_columns()
+    data = get_data(filters)
+    return columns, data
 
 def get_data(filters=None):
-	data = []
-	query = "select * from `tabPOL Entry` where docstatus = 1 "
-	
-	if filters.from_date and filters.to_date:
-		query += " and posting_date between \'" + str(filters.from_date) + "\' and \'" + str(filters.to_date) + "\'"
-	
-	if filters.branch:
-		query += " and branch = \'" + str(filters.branch) + "\'"
+    conditions = []
+    params = {}
+    query = """
+        SELECT 
+            pe.name,
+            pe.posting_date,
+            pe.posting_time,
+            pe.branch,
+            pe.equipment,
+            pe.pol_type,
+            pe.qty,
+            pe.type,
+            pe.reference_type,
+            pe.reference,
+            pe.reference_name,
+            i.item_name,
+            i.stock_uom,
+            e.equipment_type,
+            et.is_container
+        FROM `tabPOL Entry` pe
+        LEFT JOIN `tabItem` i ON i.name = pe.pol_type
+        LEFT JOIN `tabEquipment` e ON e.name = pe.equipment
+        LEFT JOIN `tabEquipment Type` et ON et.name = e.equipment_type
+        WHERE pe.docstatus = 1
+    """
+    
+    if filters:
+        if filters.get("from_date") and filters.get("to_date"):
+            conditions.append("pe.posting_date BETWEEN %(from_date)s AND %(to_date)s")
+            params["from_date"] = filters.from_date
+            params["to_date"] = filters.to_date
+        
+        if filters.get("branch"):
+            conditions.append("pe.branch = %(branch)s")
+            params["branch"] = filters.branch
 
-	if filters.equipment:
-		query += " and equipment = \'" + str(filters.equipment) + "\'"
+        if filters.get("equipment"):
+            conditions.append("pe.equipment = %(equipment)s")
+            params["equipment"] = filters.equipment
+    
+    if conditions:
+        query += " AND " + " AND ".join(conditions)
+    
+    query += " ORDER BY pe.posting_date, pe.posting_time"
+    
+    pol_entries = frappe.db.sql(query, params, as_dict=True)
+    
+    if not pol_entries:
+        return []
+    
+    # Get all reference documents in batch
+    reference_names = {}
+    for entry in pol_entries:
+        if entry.reference_type == "POL Receive" and entry.reference:
+            key = f"{entry.reference_type}::{entry.reference}"
+            reference_names[key] = {
+                "reference_type": entry.reference_type,
+                "reference": entry.reference
+            }
+    
+    direct_consumption_map = {}
+    if reference_names:
+        ref_list = list(reference_names.values())
+        for ref_group in chunk_list(ref_list, 50):  
+            ref_conditions = []
+            ref_params = {}
+            for i, ref in enumerate(ref_group):
+                ref_conditions.append(f"(name = %(ref_name_{i})s)")
+                ref_params[f"ref_name_{i}"] = ref["reference"]
+            
+            if ref_conditions:
+                dc_query = f"""
+                    SELECT name, direct_consumption 
+                    FROM `tabPOL Receive`
+                    WHERE {" OR ".join(ref_conditions)}
+                """
+                dc_results = frappe.db.sql(dc_query, ref_params, as_dict=True)
+                for dc in dc_results:
+                    direct_consumption_map[dc.name] = "Yes" if dc.direct_consumption else "No"
+    
+    opening_balances = defaultdict(float)
+    if filters and filters.get("from_date"):
+        equipment_pol_combos = set()
+        for entry in pol_entries:
+            equipment_pol_combos.add((entry.equipment, entry.pol_type, entry.is_container))
+        
+        for equipment, pol_type, is_container in equipment_pol_combos:
+            if is_container == 1:
+                balance_query = """
+                    SELECT 
+                        SUM(CASE WHEN type = 'Stock' THEN qty ELSE 0 END) as total_stock,
+                        SUM(CASE WHEN type = 'Issue' THEN qty ELSE 0 END) as total_issue
+                    FROM `tabPOL Entry`
+                    WHERE docstatus = 1
+                        AND equipment = %(equipment)s
+                        AND pol_type = %(pol_type)s
+                        AND (posting_date < %(from_date)s OR 
+                            (posting_date = %(from_date)s AND posting_time <= '00:00'))
+                """
+                balance_result = frappe.db.sql(balance_query, {
+                    "equipment": equipment,
+                    "pol_type": pol_type,
+                    "from_date": filters.from_date
+                }, as_dict=True)
+                
+                if balance_result:
+                    opening_balances[f"{equipment}|{pol_type}"] = flt(balance_result[0].total_stock) - flt(balance_result[0].total_issue)
+    
+    data = []
+    running_balances = defaultdict(float)
+    
+    for key, value in opening_balances.items():
+        running_balances[key] = value
+    
+    for entry in pol_entries:
+        trans_qty = -flt(entry.qty) if entry.type == "Issue" else flt(entry.qty)
+        
+        balance_key = f"{entry.equipment}|{entry.pol_type}"
+        
+        running_balances[balance_key] += trans_qty
+        
+        dc = direct_consumption_map.get(entry.reference, "No")
+        row = frappe._dict({
+            "posting_date": get_datetime(f"{entry.posting_date} {entry.posting_time}"),
+            "branch": entry.branch,
+            "equipment": entry.equipment,
+            "item_name": entry.item_name,
+            "trans_qty": trans_qty,
+            "balance": running_balances[balance_key] if entry.is_container == 1 else 0,
+            "type": entry.type,
+            "reference_type": entry.reference_type,
+            "reference": entry.reference,
+            "direct_comsumption": dc
+        })
+        data.append(row)
+    
+    return data
 
-	query += " order by posting_date"
-	# get_pol_till(purpose, equipment, date, pol_type=None)
-	for eq in frappe.db.sql(query, as_dict=True):
-		item = frappe.db.sql("select item_code, item_name, stock_uom from tabItem where `name`= \'" + str(eq.pol_type) + "\'", as_dict=True)
-	
-		branch = frappe.db.get_value(eq.reference_type, eq.reference_name, "branch")
-		dc = "No"
-		if eq.reference_type == "POL Recieve":
-			pol = frappe.get_doc(eq.reference_type, eq.reference)
-			if pol.direct_consumption:
-				dc = "Yes"
-	
-#		get_pol_till(purpose, equipment, posting_date, pol_type=None, own_cc=None, posting_time="24:00"):
-		received = get_pol_till("Receive", eq.equipment, eq.posting_date, eq.pol_type, posting_time=eq.posting_time )
-		equipment = frappe.db.sql("select e.name, e.branch, e.equipment_type as equipment_type, et.is_container as is_container from tabEquipment e, `tabEquipment Type` et where e.equipment_type = et.name and e.name = \'" + str(eq.equipment) + "\'", as_dict=True)	
-		if equipment[0]['is_container'] == 1:
-			stock = get_pol_till("Stock", eq.equipment, eq.posting_date, eq.pol_type, posting_time=eq.posting_time)
-			issued = get_pol_till("Issue", eq.equipment, eq.posting_date, eq.pol_type, posting_time=eq.posting_time)
-			balance = flt(stock) - flt(issued)
-		else:
-			balance = 0
-		if eq.type == "Issue":
-			trans_qty = -eq.qty
-		else:
-			trans_qty = eq.qty
-
-		row = frappe._dict({
-			"posting_date":get_datetime(str(eq.posting_date) + " " + str(eq.posting_time)), 
-			"branch":eq.branch, 
-			"equipment":eq.equipment, 
-			"item_name":item[0]['item_name'], 
-			"trans_qty":trans_qty, 
-			"balance":balance, 
-			"type":eq.type, 
-			"reference_type":eq.reference_type,
-			"reference" :eq.reference, 
-			"direct_comsumption": dc})
-		data.append(row)
-		
-	return data
+def chunk_list(lst, chunk_size):
+    """Split list into chunks of specified size"""
+    for i in range(0, len(lst), chunk_size):
+        yield lst[i:i + chunk_size]
 
 def get_columns():
-	return [
-		{"fieldname":"posting_date","fieldtype":"Datetime","width":150,"label":"Posting Date"},
-		{"fieldname":"branch","fieldtype":"Link","width":130,"label":"Branch", "options":"Branch"},
-		{"fieldname":"equipment","fieldtype":"Link","width":120,"label":"Equipment", "options":"Equipment"},
-		{"fieldname":"item_name","fieldtype":"Data","width":100,"label":"Item Name"},
-		{"fieldname":"trans_qty","fieldtype":"Float","width":100,"label":"Qty"},
-		{"fieldname":"balance","fieldtype":"Float","width":100,"label":"Tanker Balance"},
-		{"fieldname":"type","fieldtype":"Data","width":100,"label":"Type"},
-		{"fieldname":"reference_type","fieldtype":"Data","width":100,"label":"Reference Type"},
-		{"fieldname":"reference","fieldtype":"Data","width":100,"label":"Reference"},
-		{"fieldname":"direct_comsumption","fieldtype":"Data","width":100,"label":"Is Direct Consumption"},
-	]
+    return [
+        {"fieldname": "posting_date", "fieldtype": "Datetime", "width": 150, "label": "Posting Date"},
+        {"fieldname": "branch", "fieldtype": "Link", "width": 130, "label": "Branch", "options": "Branch"},
+        {"fieldname": "equipment", "fieldtype": "Link", "width": 120, "label": "Equipment", "options": "Equipment"},
+        {"fieldname": "item_name", "fieldtype": "Data", "width": 100, "label": "Item Name"},
+        {"fieldname": "trans_qty", "fieldtype": "Float", "width": 100, "label": "Qty", "precision": 2},
+        {"fieldname": "balance", "fieldtype": "Float", "width": 100, "label": "Tanker Balance", "precision": 2},
+        {"fieldname": "type", "fieldtype": "Data", "width": 100, "label": "Type"},
+        {"fieldname": "reference_type", "fieldtype": "Data", "width": 100, "label": "Reference Type"},
+        {"fieldname": "reference", "fieldtype": "Dynamic Link", "width": 100, "label": "Reference", "options": "reference_type"},
+        {"fieldname": "direct_comsumption", "fieldtype": "Data", "width": 100, "label": "Is Direct Consumption"},
+    ]
