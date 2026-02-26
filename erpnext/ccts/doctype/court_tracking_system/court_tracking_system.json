@@ -7,10 +7,8 @@
  "engine": "InnoDB",
  "field_order": [
   "case_type",
-  "issue_details",
   "court_venue",
   "investigation",
-  "court_case",
   "bank_name",
   "deferred",
   "column_break_2",
@@ -18,7 +16,6 @@
   "branch",
   "employee",
   "employee_name",
-  "current_status",
   "teams",
   "npl_clients_section",
   "borrower_filed_by",
@@ -30,14 +27,11 @@
   "contact_no",
   "loan_details_section",
   "sanction_date",
-  "loan_category",
   "loan_product",
-  "overdue_amount",
   "collateral_type",
   "exposure",
   "column_break_16",
   "sanction_amount",
-  "loan_sub_category",
   "loan_tenure",
   "loan_outstanding",
   "recovered_amount",
@@ -116,13 +110,6 @@
    "label": "Loan Product"
   },
   {
-   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
-   "fieldname": "overdue_amount",
-   "fieldtype": "Float",
-   "hidden": 1,
-   "label": "Overdue Amount"
-  },
-  {
    "fieldname": "loan_outstanding",
    "fieldtype": "Float",
    "label": "Loan Outstanding"
@@ -174,19 +161,10 @@
    "fieldtype": "Section Break"
   },
   {
-   "depends_on": "eval:doc.case_type == \"Criminal & ACC Cases\"",
    "fieldname": "investigation",
    "fieldtype": "Select",
    "label": "Investigation ",
    "options": "\nPolice\nACC\nAudit"
-  },
-  {
-   "allow_on_submit": 1,
-   "depends_on": "eval:doc.case_type == \"Criminal & ACC Cases\"",
-   "fieldname": "current_status",
-   "fieldtype": "Small Text",
-   "hidden": 1,
-   "label": "Current Status"
   },
   {
    "bold": 1,
@@ -231,34 +209,6 @@
   {
    "fieldname": "section_break_15",
    "fieldtype": "Section Break"
-  },
-  {
-   "allow_on_submit": 1,
-   "depends_on": "eval:doc.case_type ==\"Counter Litigation\" || doc.case_type == \"Criminal & ACC Cases\"",
-   "fieldname": "issue_details",
-   "fieldtype": "Small Text",
-   "hidden": 1,
-   "label": "Issue/Case Details"
-  },
-  {
-   "fieldname": "court_case",
-   "fieldtype": "Small Text",
-   "label": "Court Case "
-  },
-  {
-   "depends_on": "eval:doc.case_type == \"NPL Recovery Cases\"",
-   "fieldname": "loan_category",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Loan Category",
-   "options": "Loan Products"
-  },
-  {
-   "fieldname": "loan_sub_category",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Loan Sub Category",
-   "options": "Loan Products"
   },
   {
    "fieldname": "recovered_amount",
@@ -310,7 +260,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2026-02-20 16:06:57.460326",
+ "modified": "2026-02-26 11:07:57.897895",
  "modified_by": "Administrator",
  "module": "CCTS",
  "name": "Court Tracking System",
