@@ -48,7 +48,10 @@
   "user_remark",
   "amended_from",
   "workflow_state",
-  "payment_status"
+  "payment_status",
+  "cb_gst_dtls",
+  "gst_account",
+  "gst_amount"
  ],
  "fields": [
   {
@@ -329,12 +332,27 @@
    "fieldtype": "Currency",
    "label": "Advance Limit",
    "read_only": 1
+  },
+  {
+   "fieldname": "cb_gst_dtls",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "gst_account",
+   "fieldtype": "Link",
+   "label": "GST Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "gst_amount",
+   "fieldtype": "Float",
+   "label": "GST Amount"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-12-07 16:07:48.851529",
+ "modified": "2026-03-04 16:25:12.127916",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Advance",

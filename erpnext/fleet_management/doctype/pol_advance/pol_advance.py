@@ -30,6 +30,10 @@ class POLAdvance(AccountsController):
 
 		# if flt(self.is_opening) == 0 and self.workflow_state != "Approved" :
 		# 	notify_workflow_states(self)
+		if self.gst_amount and not self.gst_account:
+			frappe.throw("GST Account is mandatory if GST Amount is entered")
+		if self.gst_account and not self.gst_amount:
+			self.gst_account = None
 	
 	def on_submit(self): 
 		if not self.is_opening:
@@ -145,6 +149,15 @@ class POLAdvance(AccountsController):
 			"party": self.party,
 			"business_activity": default_ba
 		})
+		
+		if self.gst_amount and self.gst_account:
+			je.append("accounts",{
+				"account": self.gst_account,
+				"debit_in_account_currency": self.gst_amount,
+				"cost_center": self.cost_center,
+				"party_check": 0,
+				"business_activity": default_ba
+			})
 
 		je.insert()
 		#Set a reference to the claim journal entry
