@@ -133,7 +133,7 @@ class POLAdvance(AccountsController):
 
 		je.append("accounts",{
 			"account": credit_account,
-			"credit_in_account_currency": self.amount,
+			"credit_in_account_currency": self.amount if not self.gst_amount else flt(self.amount) + flt(self.gst_amount),
 			"cost_center": self.cost_center,
 			"reference_type": "POL Advance",
 			"reference_name": self.name,
