@@ -61,6 +61,7 @@
   "exchange_gain_loss_account",
   "unrealized_exchange_gain_loss_account",
   "unrealized_profit_loss_account",
+  "expense_payable_account",
   "column_break0",
   "allow_account_creation_against_child_company",
   "default_payable_account",
@@ -1037,6 +1038,12 @@
    "label": "Workshop, Meeting & Seminar Out Country Mileage Account",
    "options": "Account",
    "reqd": 1
+  },
+  {
+   "fieldname": "expense_payable_account",
+   "fieldtype": "Link",
+   "label": "Expense Payable Account",
+   "options": "Account"
   }
  ],
  "icon": "fa fa-building",
@@ -1044,7 +1051,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2024-11-08 13:12:25.421819",
+ "modified": "2026-03-03 11:21:34.277757",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",

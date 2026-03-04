@@ -383,12 +383,12 @@ def deactivate_sales_person(status=None, employee=None):
 		if sales_person:
 			frappe.db.set_value("Sales Person", sales_person, "enabled", 0)
 
-@frappe.whitelist()
-def update_data(employee, ip_number):
-	doc = frappe.get_doc("Employee", employee)
-	doc.flags.ignore_permissions = True
-	doc.ip_number = ip_number
-	doc.save()
+# @frappe.whitelist()
+# def update_data(employee, ip_number):
+# 	doc = frappe.get_doc("Employee", employee)
+# 	doc.flags.ignore_permissions = True
+# 	doc.ip_number = ip_number
+# 	doc.save()
 
 @frappe.whitelist()
 def create_user(employee, user=None, email=None):
