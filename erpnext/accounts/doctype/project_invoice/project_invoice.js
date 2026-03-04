@@ -2,6 +2,21 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Project Invoice', {
+	taxes_and_charges: function(frm) {
+		if (frm.doc.taxes_and_charges) {
+			get_gst_account_from_template(frm);
+		} else {
+			frm.set_value('gst_account', 'hi');
+		}
+		calculate_gst_amount(frm);
+	},
+    total_amount: function(frm) {
+        calculate_gst_amount(frm);
+    },
+    apply_gst: function(frm) {
+        calculate_gst_amount(frm);
+    },
+	
 	onload: function (frm, cdt, cdn) {
 		let grid = frm.fields_dict['advances'].grid;
         grid.cannot_add_rows = true;
@@ -33,6 +48,13 @@ frappe.ui.form.on('Project Invoice', {
 		});
 
 		frm.set_query("account", "deductions", function (doc) {
+			return {
+				filters: {
+					'is_group': 0,
+				}
+			}
+		});
+		frm.set_query("account", "additions", function (doc) {
 			return {
 				filters: {
 					'is_group': 0,
@@ -301,6 +323,32 @@ frappe.ui.form.on("Project Invoice Advance", {
 	},
 });
 
+frappe.ui.form.on("Project Invoice Addition", {
+	amount: function (frm, cdt, cdn) {
+		calculate_totals(frm, cdt, cdn);
+	},
+
+	deductions_remove: function (frm, cdt, cdn) {
+		calculate_totals(frm, cdt, cdn);
+	},
+
+	additions_add: function (frm, cdt, cdn) {
+		let child = locals[cdt][cdn];
+		frappe.model.set_value(cdt, cdn, 'cost_center', frm.doc.cost_center);
+	},
+});
+
+frappe.ui.form.on("Project Invoice Advance", {
+	allocated_amount: function (frm) {
+		calculate_totals(frm);
+	},
+
+	advances_remove: function (frm) {
+		calculate_totals(frm);
+	},
+});
+
+
 function get_advance_list(frm) {
 	if (frm.doc.project && frm.doc.party_type && frm.doc.party) {
 		frappe.call({
@@ -346,3 +394,38 @@ function tds_retention_calculation(frm) {
 	}
 	calculate_totals(frm)
 };
+
+function calculate_gst_amount(frm) {
+    let total_amount = frm.doc.total_amount || 0;
+    let net_amount = (flt(frm.doc.total_amount || 0) 
+                     - flt(frm.doc.total_deduction_amount || 0)
+					 - flt(frm.doc.total_addition_amount || 0));
+    if (!frm.doc.apply_gst || !frm.doc.taxes_and_charges) {
+        frm.set_value('gst_amount', 0);
+    } else if (frm.doc.taxes_and_charges === "5% GST Inward (Domestic)") {
+        let gst_amount = net_amount > 0 ? net_amount * 0.05 : 0;
+        frm.set_value('gst_amount', gst_amount);
+    } else {
+        frm.set_value('gst_amount', 0);
+    }
+    
+    l
+    
+    frm.set_value('net_amount', net_amount);
+    frm.refresh_field('net_amount');
+}
+
+function get_gst_account_from_template(frm) {
+    frappe.call({
+        method: 'frappe.client.get',
+        args: {
+            doctype: 'Purchase Taxes and Charges Template',
+            name: frm.doc.taxes_and_charges
+        },
+        callback: function(r) {
+            if (r.message && r.message.taxes && r.message.taxes.length) {
+                frm.set_value('gst_account', r.message.taxes[0].account_head);
+            }
+        }
+    });
+}

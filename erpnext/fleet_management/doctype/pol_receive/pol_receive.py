@@ -5,15 +5,15 @@ import frappe
 from frappe.model.document import Document
 from frappe import _, qb
 from frappe.utils import (
-    cint,
-    comma_or,
-    cstr,
-    flt,
-    format_time,
-    formatdate,
-    getdate,
-    nowdate,
-    nowtime
+	cint,
+	comma_or,
+	cstr,
+	flt,
+	format_time,
+	formatdate,
+	getdate,
+	nowdate,
+	nowtime
 )
 from erpnext.custom_utils import check_future_date
 from erpnext.accounts.doctype.business_activity.business_activity import get_default_ba
@@ -33,12 +33,117 @@ class POLReceive(StockController):
 		check_future_date(self.posting_date)
 		# self.calculate_km_diff()
 		self.validate_data()
-		# if self.workflow_state != "Approved":
-		#     notify_workflow_states(self)
-		# self.balance_check()
 		self.validate_posting_date_time()
 		validate_workflow_states(self)
+		self.calculate_taxes()  	
+				
+	def calculate_taxes(self):
+		if not self.taxes_and_charges:
+			self.taxes = []
+			self.grand_total = self.total_amount or 0
+			self.net_total = self.total_amount or 0
+			return
 
+		should_load_template = False
+		if not self.taxes or len(self.taxes) == 0:
+			should_load_template = True
+		else:
+			all_empty = True
+			for tax in self.taxes:
+				if tax.get('charge_type') or tax.get('account_head'):
+					all_empty = False
+					break
+			should_load_template = all_empty
+		
+		if should_load_template:
+			tax_template = frappe.get_doc("Purchase Taxes and Charges Template", self.taxes_and_charges)
+			
+			# Clear existing taxes first
+			self.taxes = []
+			
+			for tax in tax_template.taxes:
+				tax_row = self.append('taxes', {})
+				tax_row.update({
+					'charge_type': tax.charge_type,
+					'account_head': tax.account_head,
+					'description': tax.description,
+					'rate': tax.rate,
+					'cost_center': tax.cost_center or self.cost_center,
+					'category': tax.category,
+					'add_deduct_tax': tax.add_deduct_tax,
+					'included_in_print_rate': tax.included_in_print_rate,
+					'row_id': tax.row_id
+				})
+		
+		base_amount = flt(self.total_amount or 0)
+		
+		net_total = base_amount
+		gst_tax_amount = 0
+		tds_tax_amount = 0
+		
+		for tax_row in self.taxes:
+			if tax_row.charge_type == 'Actual':
+				tax_amount = flt(tax_row.tax_amount or 0)
+				
+				if tax_row.add_deduct_tax == 'Add':
+					net_total += tax_amount
+				elif tax_row.add_deduct_tax == 'Deduct':
+					net_total -= tax_amount
+				
+				tax_row.tax_amount = tax_amount
+				tax_row.total = tax_amount
+		
+		for tax_row in self.taxes:
+			tax_amount = 0
+			
+			if tax_row.charge_type == 'On Net Total':
+				tax_amount = flt(net_total) * flt(tax_row.rate) / 100
+				
+			elif tax_row.charge_type == 'On Previous Row Amount':
+				if tax_row.row_id:
+					prev_row_idx = int(tax_row.row_id) - 1
+					if prev_row_idx < len(self.taxes) and prev_row_idx >= 0:
+						prev_tax_amount = flt(self.taxes[prev_row_idx].tax_amount or 0)
+						tax_amount = prev_tax_amount * flt(tax_row.rate) / 100
+			
+			elif tax_row.charge_type == 'On Previous Row Total':
+				if tax_row.row_id:
+					prev_row_idx = int(tax_row.row_id) - 1
+					if prev_row_idx < len(self.taxes) and prev_row_idx >= 0:
+						prev_tax_total = flt(self.taxes[prev_row_idx].total or 0)
+						tax_amount = prev_tax_total * flt(tax_row.rate) / 100
+			
+			elif tax_row.charge_type == 'On Item Quantity':
+				tax_amount = flt(self.qty or 0) * flt(tax_row.rate)
+			
+			elif tax_row.charge_type == 'Actual':
+				continue
+			
+			tax_row.tax_amount = tax_amount
+			tax_row.total = tax_amount
+			
+			if 'GST' in str(tax_row.account_head).upper() or 'GST' in str(tax_row.description).upper():
+				gst_tax_amount += tax_amount
+			elif 'TDS' in str(tax_row.account_head).upper() or 'TDS' in str(tax_row.description).upper():
+				tds_tax_amount += tax_amount
+		
+		grand_total = net_total
+		
+		grand_total -= flt(self.deduction or 0)
+		grand_total += flt(self.additional_amount or 0)
+		
+		for tax_row in self.taxes:
+			if tax_row.charge_type != 'Actual':
+				if tax_row.add_deduct_tax == 'Add':
+					grand_total += tax_row.tax_amount
+				elif tax_row.add_deduct_tax == 'Deduct':
+					grand_total -= tax_row.tax_amount
+		
+		self.net_total = net_total
+		self.grand_total = grand_total
+		self.gst_tax_amount = gst_tax_amount
+		self.tds_tax_amount = tds_tax_amount
+	
 	def on_submit(self):
 		if self.direct_consumption == 0 and self.receive_in_barrel == 1:
 			self.update_stock_ledger()
@@ -48,7 +153,6 @@ class POLReceive(StockController):
 		self.post_journal_entry()
 		self.post_advance()
 		self.make_pol_receive_invoice()
-		# notify_workflow_states(self)
 
 	def post_advance(self):
 		if self.fuel_policy != "Without Fuel" or not self.direct_consumption or (self.direct_consumption and not self.hired_equipment):
@@ -224,6 +328,133 @@ class POLReceive(StockController):
 						title=_("Posting Date & Time"),
 					)
 
+	# def post_journal_entry(self):
+	# 	if self.hired_equipment:
+	# 		if self.fuel_policy == "Without Fuel" or not self.settle_imprest_advance:
+	# 			return
+	# 	else:
+	# 		if not self.settle_imprest_advance:
+	# 			return
+		
+	# 	if not self.total_amount:
+	# 		frappe.throw(_("Amount should be greater than zero"))
+
+	# 	credit_account = debit_account = pol_receive_account = pol_advance_account = None
+
+	# 	# getting credit account 
+	# 	if self.settle_imprest_advance == 1:
+	# 		credit_account = frappe.get_value("Company", self.company, "imprest_advance_account")
+	# 	else:
+	# 		credit_account = frappe.get_value("Company", self.company, "default_bank_account")
+	
+	# 	if self.equipment:
+	# 		(pol_receive_account, pol_advance_account) = frappe.db.get_value("Equipment Category", self.equipment_category,
+	# 			[
+	# 				"pol_receive_account",
+	# 				"pol_advance_account",
+	# 			],
+	# 		)
+
+	# 	if self.hired_equipment:
+	# 		if self.fuel_policy == "With Fuel":
+	# 			if self.hired_equipment_type == "Vehicle":
+	# 				debit_account = frappe.db.get_single_value("Maintenance Settings", "hired_fuel_expense_account")
+	# 			else:
+	# 				debit_account = frappe.db.get_single_value("Maintenance Settings", "hired_fuel_expense_account")
+	# 		if not debit_account:
+	# 			frappe.throw("Set <strong>{}</strong> account in Maintenance Settings.".format("Vehicle Expense Advance" if self.hired_equipment_type == "Vehicle" else "Machine Expense Account"))
+	# 	else:
+	# 		if self.direct_consumption:
+	# 			debit_account = pol_advance_account
+	# 		else:
+	# 			if not debit_account and self.receive_in_barrel == 1:
+	# 				debit_account = frappe.db.get_value("Warehouse", self.warehouse, "account")
+	# 			else:
+	# 				debit_account = pol_receive_account
+
+	# 	# Posting Journal Entry
+	# 	je = frappe.new_doc("Journal Entry")
+	# 	je.flags.ignore_permissions = 1
+	# 	accounts = []
+	# 	accounts.append(
+	# 		{
+	# 			"account": debit_account,
+	# 			"debit_in_account_currency": flt(self.total_amount, 2),
+	# 			"debit": flt(self.total_amount, 2),
+	# 			"cost_center": self.cost_center,
+	# 			"party_type": "Supplier",
+	# 			"party": self.paid_to,
+	# 			"business_activity": get_default_ba,
+	# 		}
+	# 	)
+	# 	if self.settle_imprest_advance == 0 or not self.settle_imprest_advance:
+	# 		accounts.append(
+	# 			{
+	# 				"account": credit_account,
+	# 				"credit_in_account_currency": flt(self.total_amount, 2),
+	# 				"credit": flt(self.total_amount, 2),
+	# 				"cost_center": self.cost_center,
+	# 				"reference_type": "POL Receive",
+	# 				"reference_name": self.name,
+	# 				"business_activity": get_default_ba,
+	# 			}
+	# 		)
+	# 	if self.apply_gst:
+	# 		accounts.append(
+	# 		self.get_gl_dict({"account": self.account_head,
+	# 				 "debit": flt(self.gst_amount),
+	# 				 "debit_in_account_currency": flt(self.gst_amount),
+	# 				 "cost_center": cost_center,
+	# 		})
+	# 	)
+	# 	else:
+	# 		accounts.append(
+	# 			{
+	# 				"account": credit_account,
+	# 				"credit_in_account_currency": flt(self.total_amount, 2),
+	# 				"credit": flt(self.total_amount, 2),
+	# 				"cost_center": frappe.get_value("Branch", self.expense_branch, "cost_center") if self.expense_branch else self.cost_center,
+	# 				"reference_type": "POL Receive",
+	# 				"reference_name": self.name,
+	# 				"party_type": "Employee",
+	# 				"party": self.party,
+	# 				"business_activity": get_default_ba,
+	# 			}
+	# 		)
+
+	# 	je.update(
+	# 		{
+	# 			"doctype": "Journal Entry",
+	# 			"voucher_type": "Journal Entry" if self.settle_imprest_advance else "Bank Entry",
+	# 			"naming_series": "Bank Payment Voucher" if self.settle_imprest_advance == 0 else "Journal Voucher",
+	# 			"title": "POL Receive - " + self.equipment if (self.receive_in_barrel == 0 and not self.hired_equipment) else "Adjustment Entry",
+	# 			"user_remark": "Note: " + "POL Receive - " + self.equipment if (self.receive_in_barrel == 0 and not self.hired_equipment) else "",
+	# 			"posting_date": self.posting_date,
+	# 			"company": self.company,
+	# 			"mode_of_payment" "Online Payment" if self.settle_imprest_advance else ""
+	# 			"total_amount_in_words": money_in_words(self.total_amount),
+	# 			"branch": self.branch,
+	# 			"accounts": accounts,
+	# 			"total_debit": flt(self.total_amount, 2),
+	# 			"total_credit": flt(self.total_amount, 2),
+	# 			"settle_project_imprest": self.settle_imprest_advance,
+	# 		}
+	# 	)
+	# 	# frappe.throw('{}'.format(accounts))
+	# 	je.insert()
+	# 	# Set a reference to the claim journal entry
+	# 	self.db_set("journal_entry", je.name)
+	# 	self.db_set(
+	# 		"journal_entry_status",
+	# 		"Forwarded to accounts for processing payment on {0}".format(
+	# 			now_datetime().strftime("%Y-%m-%d %H:%M:%S")
+	# 		),
+	# 	)
+	# 	frappe.msgprint(
+	# 		_("{} posted to accounts").format(
+	# 			frappe.get_desk_link("Journal Entry", je.name)
+	# 		)
+	# 	)
 	def post_journal_entry(self):
 		if self.hired_equipment:
 			if self.fuel_policy == "Without Fuel" or not self.settle_imprest_advance:
@@ -237,12 +468,11 @@ class POLReceive(StockController):
 
 		credit_account = debit_account = pol_receive_account = pol_advance_account = None
 
-		# getting credit account 
 		if self.settle_imprest_advance == 1:
 			credit_account = frappe.get_value("Company", self.company, "imprest_advance_account")
 		else:
 			credit_account = frappe.get_value("Company", self.company, "default_bank_account")
-	
+
 		if self.equipment:
 			(pol_receive_account, pol_advance_account) = frappe.db.get_value("Equipment Category", self.equipment_category,
 				[
@@ -268,39 +498,66 @@ class POLReceive(StockController):
 				else:
 					debit_account = pol_receive_account
 
-		# Posting Journal Entry
 		je = frappe.new_doc("Journal Entry")
 		je.flags.ignore_permissions = 1
 		accounts = []
+		total_debit = 0
+		total_credit = 0
+		
 		accounts.append(
 			{
 				"account": debit_account,
-				"debit_in_account_currency": flt(self.total_amount, 2),
-				"debit": flt(self.total_amount, 2),
+				"debit_in_account_currency": flt(self.total_amount, 2),  
+				"debit": flt(self.total_amount, 2),  
 				"cost_center": self.cost_center,
 				"party_type": "Supplier",
 				"party": self.paid_to,
 				"business_activity": get_default_ba,
 			}
 		)
+		total_debit += flt(self.net_total, 2)  
+
+		if hasattr(self, 'taxes') and self.taxes:
+			for tax in self.taxes:
+				if tax.tax_amount:
+					tax_amount = flt(tax.tax_amount, 2)
+					
+					accounts.append({
+						"account": tax.account_head,
+						"debit" if tax.add_deduct_tax == "Add" else "credit": tax_amount,
+						"debit_in_account_currency" if tax.add_deduct_tax == "Add" else "credit_in_account_currency": tax_amount,
+						"cost_center": tax.cost_center or self.cost_center,
+						"reference_type": "POL Receive",
+						"reference_name": self.name,
+						"party_type": "Supplier",
+						"party": self.paid_to,
+					})
+					
+					
+					if tax.add_deduct_tax == "Add":
+						total_debit += tax_amount
+					elif tax.add_deduct_tax == "Deduct":
+						total_credit += tax_amount
+
 		if self.settle_imprest_advance == 0 or not self.settle_imprest_advance:
 			accounts.append(
 				{
 					"account": credit_account,
-					"credit_in_account_currency": flt(self.total_amount, 2),
-					"credit": flt(self.total_amount, 2),
+					"credit_in_account_currency": flt(self.grand_total, 2), 
+					"credit": flt(self.grand_total, 2),  
 					"cost_center": self.cost_center,
 					"reference_type": "POL Receive",
 					"reference_name": self.name,
 					"business_activity": get_default_ba,
 				}
 			)
+			total_credit += flt(self.grand_total, 2)  
 		else:
 			accounts.append(
 				{
 					"account": credit_account,
-					"credit_in_account_currency": flt(self.total_amount, 2),
-					"credit": flt(self.total_amount, 2),
+					"credit_in_account_currency": flt(self.grand_total, 2), 
+					"credit": flt(self.grand_total, 2),  
 					"cost_center": frappe.get_value("Branch", self.expense_branch, "cost_center") if self.expense_branch else self.cost_center,
 					"reference_type": "POL Receive",
 					"reference_name": self.name,
@@ -309,6 +566,7 @@ class POLReceive(StockController):
 					"business_activity": get_default_ba,
 				}
 			)
+			total_credit += flt(self.grand_total, 2)  
 
 		je.update(
 			{
@@ -319,18 +577,18 @@ class POLReceive(StockController):
 				"user_remark": "Note: " + "POL Receive - " + self.equipment if (self.receive_in_barrel == 0 and not self.hired_equipment) else "",
 				"posting_date": self.posting_date,
 				"company": self.company,
-				"mode_of_payment" "Online Payment" if self.settle_imprest_advance else ""
-				"total_amount_in_words": money_in_words(self.total_amount),
+				"mode_of_payment": "" if self.settle_imprest_advance else "Online Payment",
+				"total_amount_in_words": money_in_words(total_debit),
 				"branch": self.branch,
 				"accounts": accounts,
-				"total_debit": flt(self.total_amount, 2),
-				"total_credit": flt(self.total_amount, 2),
+				"total_debit": total_debit,
+				"total_credit": total_credit,
 				"settle_project_imprest": self.settle_imprest_advance,
 			}
 		)
-		# frappe.throw('{}'.format(accounts))
+		
 		je.insert()
-		# Set a reference to the claim journal entry
+		
 		self.db_set("journal_entry", je.name)
 		self.db_set(
 			"journal_entry_status",
@@ -343,7 +601,7 @@ class POLReceive(StockController):
 				frappe.get_desk_link("Journal Entry", je.name)
 			)
 		)
-
+		
 	def update_pol_expense(self):
 		if self.docstatus == 2:
 			for item in self.items:

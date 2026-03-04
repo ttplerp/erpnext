@@ -32,8 +32,10 @@
   "check_all",
   "project_invoice_boq",
   "section_break_31",
+  "section_break_3xvoz",
   "deductions",
-  "taxes_and_retention_section",
+  "additions",
+  "section_break_x0tcp",
   "tds_percent",
   "tds_amount",
   "tds_account",
@@ -42,17 +44,25 @@
   "retention_amount",
   "retention_account",
   "column_break_38",
+  "total_advance_amount",
   "price_adjustment_percent",
   "price_adjustment_amount",
-  "section_break_41",
+  "section_break_osrkf",
   "total_amount",
   "outstanding_amount",
+  "apply_gst",
   "column_break_30",
   "net_amount",
+  "grand_total",
   "column_break_cofdj",
-  "total_advance_amount",
+  "total_addition_amount",
   "total_deduction_amount",
   "status",
+  "gst_details_section",
+  "taxes_and_charges",
+  "gst_account",
+  "column_break_3lecg",
+  "gst_amount",
   "additional_information_section",
   "company",
   "column_break_ewouf",
@@ -236,10 +246,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "section_break_41",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "total_deduction_amount",
    "fieldtype": "Currency",
    "label": "Total Deduction Amount",
@@ -267,14 +273,6 @@
    "no_copy": 1,
    "options": "Project Invoice",
    "print_hide": 1,
-   "read_only": 1
-  },
-  {
-   "allow_on_submit": 1,
-   "fieldname": "outstanding_amount",
-   "fieldtype": "Currency",
-   "label": "Outstanding Amount",
-   "precision": "2",
    "read_only": 1
   },
   {
@@ -337,10 +335,6 @@
    "options": "\n2\n3"
   },
   {
-   "fieldname": "taxes_and_retention_section",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "retention_percent",
    "fieldtype": "Select",
    "label": "Retention Percent  (%)",
@@ -381,12 +375,77 @@
    "hidden": 1,
    "label": "Price Adjustment (%)",
    "precision": "9"
+  },
+  {
+   "fieldname": "section_break_osrkf",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "apply_gst",
+   "fieldtype": "Check",
+   "label": "Apply GST"
+  },
+  {
+   "depends_on": "apply_gst",
+   "fieldname": "gst_details_section",
+   "fieldtype": "Section Break",
+   "label": "GST Details"
+  },
+  {
+   "fieldname": "taxes_and_charges",
+   "fieldtype": "Link",
+   "label": "Purchase Taxes and Charges Template",
+   "options": "Purchase Taxes and Charges Template"
+  },
+  {
+   "fieldname": "gst_amount",
+   "fieldtype": "Currency",
+   "label": "GST Amount"
+  },
+  {
+   "fieldname": "gst_account",
+   "fieldtype": "Data",
+   "label": "GST Account"
+  },
+  {
+   "fieldname": "outstanding_amount",
+   "fieldtype": "Currency",
+   "label": "Outstanding Amount"
+  },
+  {
+   "fieldname": "column_break_3lecg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_x0tcp",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "additions",
+   "fieldtype": "Table",
+   "label": "Additions",
+   "options": "Project Invoice Addition"
+  },
+  {
+   "fieldname": "section_break_3xvoz",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "total_addition_amount",
+   "fieldtype": "Currency",
+   "label": "Total Addition Amount"
+  },
+  {
+   "fieldname": "grand_total",
+   "fieldtype": "Currency",
+   "label": "Grand Total"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-02-15 18:48:49.272261",
+ "modified": "2026-02-12 11:05:56.182287",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Project Invoice",

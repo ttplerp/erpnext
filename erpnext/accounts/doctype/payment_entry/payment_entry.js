@@ -736,7 +736,7 @@ frappe.ui.form.on('Payment Entry', {
 	validate_filters_data: function(frm, filters) {
 		const fields = {
 			'Posting Date': ['from_posting_date', 'to_posting_date'],
-			'Due Date': ['from_posting_date', 'to_posting_date'],
+			'Due Date': ['from_due_date', 'to_due_date'],
 			'Advance Amount': ['from_posting_date', 'to_posting_date'],
 		};
 
@@ -1369,33 +1369,33 @@ frappe.ui.form.on('Payment Entry Reference', {
 		frm.events.validate_reference_document(frm, row);
 	},
 
-	reference_name: function(frm, cdt, cdn) {
-		var row = locals[cdt][cdn];
-		if (row.reference_name && row.reference_doctype) {
-			return frappe.call({
-				method: "erpnext.accounts.doctype.payment_entry.payment_entry.get_reference_details",
-				args: {
-					reference_doctype: row.reference_doctype,
-					reference_name: row.reference_name,
-					party_account_currency: frm.doc.payment_type=="Receive" ?
-						frm.doc.paid_from_account_currency : frm.doc.paid_to_account_currency
-				},
-				callback: function(r, rt) {
-					if(r.message) {
-						$.each(r.message, function(field, value) {
-							frappe.model.set_value(cdt, cdn, field, value);
-						})
+ reference_name: function(frm, cdt, cdn) {
+        var row = locals[cdt][cdn];
+        if (row.reference_name && row.reference_doctype) {
+            return frappe.call({
+                method: "erpnext.accounts.doctype.payment_entry.payment_entry.get_reference_details",
+                args: {
+                    reference_doctype: row.reference_doctype,
+                    reference_name: row.reference_name,
+                    party_account_currency: frm.doc.payment_type=="Receive" ?
+                        frm.doc.paid_from_account_currency : frm.doc.paid_to_account_currency
+                },
+                callback: function(r, rt) {
+                    if(r.message) {
+                        $.each(r.message, function(field, value) {
+                            frappe.model.set_value(cdt, cdn, field, value);
+                        })
 
-						let allocated_amount = frm.doc.unallocated_amount > row.outstanding_amount ?
-							row.outstanding_amount : frm.doc.unallocated_amount;
+                        let allocated_amount = frm.doc.unallocated_amount > row.outstanding_amount ?
+                            row.outstanding_amount : frm.doc.unallocated_amount;
 
-						frappe.model.set_value(cdt, cdn, 'allocated_amount', allocated_amount);
-						frm.refresh_fields();
-					}
-				}
-			})
-		}
-	},
+                        frappe.model.set_value(cdt, cdn, 'allocated_amount', allocated_amount);
+                        frm.refresh_fields();
+                    }
+                }
+            })
+        }
+    },
 
 	allocated_amount: function(frm) {
 		frm.events.set_total_allocated_amount(frm);

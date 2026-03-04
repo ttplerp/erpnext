@@ -36,13 +36,19 @@
   "items",
   "section_break_26",
   "deductions",
+  "additions",
+  "apply_gst",
   "section_break_ic1sb",
+  "taxes_and_charges",
+  "gst_account",
+  "column_break_em7do",
+  "gst_amount",
+  "section_break_zh0kk",
   "tds_percent",
+  "tds_account",
   "column_break_uwgsq",
   "tds_amount",
-  "column_break_w86c3",
-  "tds_account",
-  "section_break_qpjtp",
+  "section_break_5s9rb",
   "total_out_source_amt",
   "grand_total",
   "outstanding_amount",
@@ -51,6 +57,7 @@
   "total_amount",
   "column_break_30",
   "deduction_amount",
+  "addition_amount",
   "net_amount",
   "sb_approver",
   "approver",
@@ -300,8 +307,10 @@
    "options": "Repair And Services Deduction"
   },
   {
+   "depends_on": "apply_gst",
    "fieldname": "section_break_ic1sb",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "GST Details"
   },
   {
    "fieldname": "column_break_spfhe",
@@ -331,15 +340,10 @@
    "fieldtype": "Column Break"
   },
   {
-   "depends_on": "eval:doc.tds_percent",
    "fieldname": "tds_amount",
    "fieldtype": "Currency",
    "label": "TDS Amount",
    "read_only": 1
-  },
-  {
-   "fieldname": "column_break_w86c3",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "tds_account",
@@ -347,10 +351,6 @@
    "label": "TDS Account",
    "options": "Account",
    "read_only": 1
-  },
-  {
-   "fieldname": "section_break_qpjtp",
-   "fieldtype": "Section Break"
   },
   {
    "default": "0",
@@ -400,12 +400,58 @@
    "fieldname": "bill_received",
    "fieldtype": "Check",
    "label": "Bill Received"
+  },
+  {
+   "fieldname": "section_break_5s9rb",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_zh0kk",
+   "fieldtype": "Section Break",
+   "label": "TDS Details"
+  },
+  {
+   "fieldname": "column_break_em7do",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "gst_account",
+   "fieldtype": "Data",
+   "label": "GST Account"
+  },
+  {
+   "fieldname": "taxes_and_charges",
+   "fieldtype": "Link",
+   "label": "Purchase Taxes and Charges Template",
+   "options": "Purchase Taxes and Charges Template"
+  },
+  {
+   "fieldname": "gst_amount",
+   "fieldtype": "Currency",
+   "label": "GST Amount"
+  },
+  {
+   "default": "0",
+   "fieldname": "apply_gst",
+   "fieldtype": "Check",
+   "label": "Apply GST"
+  },
+  {
+   "fieldname": "additions",
+   "fieldtype": "Table",
+   "label": "Additions",
+   "options": "Repair And Services Addition"
+  },
+  {
+   "fieldname": "addition_amount",
+   "fieldtype": "Currency",
+   "label": "Addition Amount"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-25 16:23:17.370824",
+ "modified": "2026-02-05 14:40:54.103093",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Repair And Services",

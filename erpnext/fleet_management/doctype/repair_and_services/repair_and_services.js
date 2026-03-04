@@ -1,6 +1,3 @@
-// Copyright (c) 2022, Frappe Technologies Pvt. Ltd. and contributors
-// For license information, please see license.txt
-
 frappe.ui.form.on('Repair And Services', {
 	refresh: function(frm) {
 		frm.set_query("equipment", function (doc) {
@@ -48,10 +45,41 @@ frappe.ui.form.on('Repair And Services', {
 						frm.set_value("tds_account", r.message)
 						frm.refresh_fields("tds_account")
 						frm.set_value("tds_amount", parseFloat(frm.doc.total_amount) * (parseFloat(frm.doc.tds_percent) / 100));
-						frm.set_value("outstanding_amount", parseFloat(frm.doc.outstanding_amount) - parseFloat(frm.doc.tds_amount));
+						frm.set_value("outstanding_amount", parseFloat(frm.doc.net_amount) + parseFloat(frm.doc.gst_amount) - parseFloat(frm.doc.tds_amount));
 					}
 				}
 			});
+		}
+	},
+
+	taxes_and_charges: function(frm) {
+		if (frm.doc.taxes_and_charges) {
+			frappe.call({
+				method: "frappe.client.get",
+				args: {
+					doctype: "Purchase Taxes and Charges Template",
+					name: frm.doc.taxes_and_charges
+				},
+				callback: function(r) {
+					if (r.message && r.message.taxes && r.message.taxes.length > 0) {
+						var tax = r.message.taxes[0];
+						frm.set_value("gst_account", tax.account_head);
+						
+						var gst_amount = 0;
+						if (tax.charge_type == "On Net Total") {
+							gst_amount = flt(frm.doc.net_amount) * flt(tax.rate) / 100;
+						} else if (tax.charge_type == "Actual") {
+							gst_amount = flt(tax.tax_amount);
+						}
+						
+						frm.set_value("gst_amount", gst_amount);
+						frm.set_value("outstanding_amount", flt(frm.doc.outstanding_amount) + flt(gst_amount));
+					}
+				}
+			});
+		} else {
+			frm.set_value("gst_account", "");
+			frm.set_value("gst_amount", 0);
 		}
 	},
 
@@ -90,3 +118,4 @@ var calculate_amount = (frm,cdt,cdn)=>{
 		cur_frm.refresh_field('items')
 	}
 }
+

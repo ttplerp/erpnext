@@ -15,7 +15,10 @@ class RepairAndServiceInvoice(AccountsController):
 	def validate(self):
 		self.calculate_total_amount()
 		self.set_status()
+		self.update_outstanding_amount()
 		self.validate_imprest_party_amount()
+
+
 
 	def on_submit(self):
 		self.set_status(update=True)
@@ -85,26 +88,44 @@ class RepairAndServiceInvoice(AccountsController):
 			self.imprest_amount = self.outstanding_amount
 			self.outstanding_amount = 0.0
 
-	def calculate_total_amount(self):
-		self.total_amount = self.net_amount = self.outstanding_amount = 0
+	def update_outstanding_amount(self):
+			outstanding = flt(self.net_amount) + flt(self.gst_amount) - flt(self.tds_amount)-self.total_advance_allocated
+			self.outstanding_amount = outstanding
+			self.grand_total = outstanding
 
+	def calculate_total_amount(self):
+
+		self.total_amount = self.net_amount =  0
+	
 		total_allocated = self.calculate_allocated_amount()		
 		deduction  = self.calculate_deductions()
+		addition  = self.calculate_additions()
+
 		
 		for a in self.items:
 			a.charge_amount = flt(flt(a.rate) * flt(a.qty))
 			self.total_amount += flt(a.charge_amount)
 
-		self.net_amount = flt(self.total_amount) - flt(deduction)
-		self.outstanding_amount = self.calculate_tds_amount()
-		self.outstanding_amount = flt(self.outstanding_amount) - flt(total_allocated) 
+		self.net_amount = flt(self.total_amount) - flt(deduction) + flt(addition)
+		self.tds_amount = self.calculate_tds_amount(self.net_amount)
+		# Calculate GST on net amount
+		gst_amount = 0.0
+		if self.gst_account and self.gst_amount:
+			gst_amount = flt(self.gst_amount)
+		
+		# Calculate grand total: net amount + GST - TDS
+		grand_total = flt(self.net_amount) + flt(gst_amount) - flt(self.tds_amount)
 
-	def calculate_tds_amount(self):
+		
+
+		# Set grand_total field (before advance allocation)
+		self.grand_total = flt(grand_total)
+
+	def calculate_tds_amount(self, amount):
 		tds_amount = 0.0
 		if self.tds_percent and self.tds_account:
-			tds_amount = flt(self.tds_percent)/100 * flt(self.net_amount)
-		self.tds_amount = flt(tds_amount)
-		return flt(self.net_amount) - flt(tds_amount)
+			tds_amount = flt(self.tds_percent)/100 * flt(amount)
+		return flt(tds_amount)
 		
 	def calculate_deductions(self):
 		deduction = 0.0
@@ -113,7 +134,15 @@ class RepairAndServiceInvoice(AccountsController):
 				deduction += flt(d.amount)
 		self.deduction_amount = flt(deduction)
 		return deduction
-	
+
+	def calculate_additions(self):
+		addition = 0.0
+		if self.additions:
+			for d in self.additions:
+				addition += flt(d.amount)
+		self.addition_amount = flt(addition)
+		return addition
+
 	def calculate_allocated_amount(self):
 		allocated_amount = 0.0
 		for adv in self.advances:
@@ -206,6 +235,36 @@ class RepairAndServiceInvoice(AccountsController):
 				self.currency,
 			)
 		)
+		if self.additions:
+				for d in self.additions:
+					gl_entries.append(
+						self.get_gl_dict(
+							{
+								"account": d.account,
+								"party_type": self.party_type,
+								"party": self.party,
+								"debit": d.amount,
+								"debit_in_account_currency": d.amount,
+								"cost_center": self.cost_center,
+							},
+							self.currency,
+						)
+					)
+					
+		if self.gst_account and self.gst_amount > 0:
+			gl_entries.append(
+				self.get_gl_dict(
+					{
+						"account": self.gst_account,
+						"debit": flt(self.gst_amount),
+						"debit_in_account_currency": flt(self.gst_amount),
+						"voucher_no": self.name,
+						"voucher_type": self.doctype,
+						"cost_center": self.cost_center,
+					},
+					self.currency,
+				)
+			)
 
 		if self.advances:
 			advance_account = frappe.get_value("Advance Type", self.advance_type, 'account')
@@ -232,7 +291,22 @@ class RepairAndServiceInvoice(AccountsController):
 					self.currency,
 				)
 			)
-			
+		if self.outstanding_amount or self.imprest_amount:
+			gl_entries.append(
+				self.get_gl_dict(
+					{
+						"account": credit_account,
+						"party_type": "Employee" if self.settle_imprest_advance else self.party_type,
+						"party": self.imprest_party if self.settle_imprest_advance else self.party,
+						"credit": flt(self.imprest_amount) if self.settle_imprest_advance else flt(self.outstanding_amount),
+						"credit_in_account_currency": flt(self.imprest_amount) if self.settle_imprest_advance else flt(self.outstanding_amount),
+						"cost_center": self.cost_center,
+						"voucher_no": self.name,
+						"voucher_type": self.doctype,
+					},
+					self.currency,
+				))	
+
 		if self.deductions:
 			for d in self.deductions:
 				gl_entries.append(
@@ -248,6 +322,8 @@ class RepairAndServiceInvoice(AccountsController):
 						self.currency,
 					)
 				)
+	
+					
 					
 		if self.tds_account and self.tds_amount > 0:
 			gl_entries.append(
@@ -266,21 +342,9 @@ class RepairAndServiceInvoice(AccountsController):
 				)
 			)
 		
-		if self.outstanding_amount or self.imprest_amount:
-			gl_entries.append(
-				self.get_gl_dict(
-					{
-						"account": credit_account,
-						"party_type": "Employee" if self.settle_imprest_advance else self.party_type,
-						"party": self.imprest_party if self.settle_imprest_advance else self.party,
-						"credit": flt(self.imprest_amount) if self.settle_imprest_advance else flt(self.outstanding_amount),
-						"credit_in_account_currency": flt(self.imprest_amount) if self.settle_imprest_advance else flt(self.outstanding_amount),
-						"cost_center": self.cost_center,
-						"voucher_no": self.name,
-						"voucher_type": self.doctype,
-					},
-					self.currency,
-				))
+		payable_amount = flt(self.net_amount) + flt(self.gst_amount or 0) - flt(self.tds_amount)
+		
+		
 		make_gl_entries(gl_entries, update_outstanding="No", cancel=(self.docstatus == 2), merge_entries=False)
 
 	def make_filters(self):

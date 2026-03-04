@@ -60,6 +60,7 @@
   "section_break_14",
   "get_outstanding_invoice",
   "references",
+  "total_amount_of_invoices",
   "section_break_34",
   "total_allocated_amount",
   "base_total_allocated_amount",
@@ -860,12 +861,17 @@
    "options": "Company:company:default_currency",
    "precision": "2",
    "read_only": 1
+  },
+  {
+   "fieldname": "total_amount_of_invoices",
+   "fieldtype": "Currency",
+   "label": "Total Amount Of Invoices"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-11 16:19:55.687850",
+ "modified": "2026-03-03 15:51:59.201353",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Payment Entry",

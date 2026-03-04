@@ -17,10 +17,13 @@ class RepairAndServices(StockController):
 		super(RepairAndServices, self).__init__(*args, **kwargs)
 
 	def validate(self):
-		validate_workflow_states(self)
+		# validate_workflow_states(self)
 		self.update_items()
 		self.validate_rate()
 		self.calculate_total_amount()
+		self.calculate_tds_amount()
+		self.calculate_gst()
+		self.update_outstanding_amount()
 
 	def on_submit(self):
 		if not self.bill_no or not self.bill_date:
@@ -52,25 +55,25 @@ class RepairAndServices(StockController):
 		self.make_sl_entries(sl_entries, self.amended_from and "Yes" or "No")
 
 	def calculate_total_amount(self):
-		self.total_amount = self.net_amount = self.outstanding_amount = 0
+		self.total_amount = self.net_amount = 0
 	
-		deduction  = self.calculate_deductions()
+		deduction = self.calculate_deductions()
+		addition  = self.calculate_additions()
+
 		
 		for a in self.items:
 			a.charge_amount = flt(flt(a.rate) * flt(a.qty))
 			self.total_amount += flt(a.charge_amount)
 
-		self.net_amount = flt(self.total_amount) - flt(deduction)
-		self.outstanding_amount = self.calculate_tds_amount()
-		self.outstanding_amount = flt(self.outstanding_amount) 
+		self.net_amount = flt(self.total_amount) - flt(deduction) + flt(addition)
+
 
 	def calculate_tds_amount(self):
 		tds_amount = 0.0
 		if self.tds_percent and self.tds_account:
 			tds_amount = flt(self.tds_percent)/100 * flt(self.net_amount)
 		self.tds_amount = flt(tds_amount)
-		return flt(self.net_amount) - flt(tds_amount)
-		
+
 	def calculate_deductions(self):
 		deduction = 0.0
 		if self.deductions:
@@ -78,6 +81,37 @@ class RepairAndServices(StockController):
 				deduction += flt(d.amount)
 		self.deduction_amount = flt(deduction)
 		return deduction
+
+	def calculate_additions(self):
+		addition = 0.0
+		if self.additions:
+			for d in self.additions:
+				addition += flt(d.amount)
+		self.addition_amount = flt(addition)
+		return addition
+
+	def calculate_gst(self):
+		self.gst_amount = 0.0
+		self.gst_account = ""
+		
+		if self.apply_gst and self.taxes_and_charges:
+			tax_template = frappe.get_doc("Purchase Taxes and Charges Template", self.taxes_and_charges)
+			if tax_template.taxes:
+				for tax in tax_template.taxes:
+					if tax.charge_type == "On Net Total":
+						self.gst_amount = flt(self.net_amount) * flt(tax.rate) / 100
+					elif tax.charge_type == "Actual":
+						self.gst_amount = flt(tax.tax_amount)
+					
+					if tax.account_head:
+						self.gst_account = tax.account_head
+					
+					break
+
+	def update_outstanding_amount(self):
+		outstanding = flt(self.net_amount) + flt(self.gst_amount) - flt(self.tds_amount)
+		self.outstanding_amount = outstanding
+		self.grand_total = outstanding
 
 	def update_items(self):
 		for a in self.items:
@@ -117,7 +151,10 @@ class RepairAndServices(StockController):
 			"total_amount": self.total_amount,
 			"outstanding_amount": self.outstanding_amount,
 			"deduction_amount": self.deduction_amount,
+			"addition_amount": self.addition_amount,
 			"repair_and_services": self.name,
+			"gst_account": self.gst_account, 
+			"gst_amount": self.gst_amount,
 			"tds_percent": self.tds_percent if self.tds_percent and self.tds_amount > 0 else "",
 			"tds_amount": self.tds_amount if self.tds_percent and self.tds_amount > 0 else 0,
 			"tds_account": self.tds_account if self.tds_percent and self.tds_amount > 0 else "",
@@ -143,6 +180,13 @@ class RepairAndServices(StockController):
 					"account": d.account,
 					"amount": d.amount,
 				})
+		if self.additions:
+			for d in self.additions:
+				doc.append("additions", {
+					"addition_type": d.addition_type,
+					"account": d.account,
+					"amount": d.amount,
+				})
 
 		doc.insert()
 		frappe.msgprint(
@@ -156,13 +200,11 @@ class RepairAndServices(StockController):
 		if not frappe.db.get_value("Company", self.company, "imprest_advance_account"):
 			frappe.throw("Please set Imprest Advance Account in Company Settings")
 		return frappe.db.get_value("Company", self.company, "imprest_advance_account")
-	
 
 @frappe.whitelist()
 def make_mr(source_name, target_doc=None):
 	if frappe.db.exists("Material Request", {"repair_and_services": source_name}):
 		frappe.throw("Material Request already exists for this transaction")
-	from frappe.model.mapper import get_mapped_doc
 
 	def set_missing_values(source, target):
 		target.material_request_type = "Material Issue"

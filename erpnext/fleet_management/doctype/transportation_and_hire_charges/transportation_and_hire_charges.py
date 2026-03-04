@@ -1,5 +1,3 @@
-
-
 # Copyright (c) 2025, Frappe Technologies Pvt. Ltd. and contributors
 # For license information, please see license.txt
 
@@ -100,8 +98,6 @@ class TransportationandHireCharges(AccountsController):
 					'account': a.debit_account,
 				}
 				self.append("material_issue_details", entry)
-		# else:
-		# 	frappe.msgprint("No entries found.")
 
 	def get_total_allocated(self):
 		total = 0
@@ -123,19 +119,66 @@ class TransportationandHireCharges(AccountsController):
 
 	@frappe.whitelist()
 	def calculate_totals(self):
+		# Calculate basic totals
 		self.total_additional_amount = self.get_total_additional()
 		self.total_allocated_amount = self.get_total_allocated()
 		self.total_deduction_amount = self.get_total_deduction()
+		
+		# Calculate grand total (amount + additional items)
 		self.grand_total = flt(self.amount) + flt(self.total_additional_amount) if self.total_additional_amount else self.amount
 		
+		# Calculate grand total after deduction (for TDS calculation)
+		self.grand_total_after_deduction = flt(self.grand_total) - flt(self.total_deduction_amount)
+		
+		# Calculate GST if applicable
+		if self.apply_gst and self.taxes_and_charges:
+			self.calculate_gst()
+		else:
+			self.gst_amount = 0
+			self.gst_account = None
+		
+		# Calculate TDS on grand_total_after_deduction + gst_amount
 		if self.tds_percent:
-			self.tds_amount = flt(flt(self.grand_total, 2) * flt(self.tds_percent, 2) / 100.0, 2)
+			self.tds_amount = flt(flt(self.grand_total_after_deduction, 2) * flt(self.tds_percent, 2) / 100.0, 2)
 			self.tds_account = get_tds_account(self.tds_percent, self.company, self.party_type)
 		else:
 			self.tds_amount = 0
 			self.tds_account = None
 
-		self.net_payable = self.outstanding_amount = flt(self.grand_total) - flt(self.total_deduction_amount) - flt(self.total_allocated_amount) - flt(self.tds_amount)
+		# Calculate net payable and outstanding amount
+		base_amount = flt(self.grand_total_after_deduction) + flt(self.gst_amount)
+		self.net_payable = self.outstanding_amount = flt(base_amount) - flt(self.total_allocated_amount) - flt(self.tds_amount)
+	
+	def calculate_gst(self):
+		"""Calculate GST based on the selected tax template"""
+		if not self.taxes_and_charges:
+			self.gst_amount = 0
+			self.gst_account = None
+			return
+		
+		try:
+			# Get tax template
+			tax_template = frappe.get_doc("Purchase Taxes and Charges Template", self.taxes_and_charges)
+			
+			# Calculate GST amount based on grand_total_after_deduction
+			gst_amount = 0
+			gst_account = None
+			
+			for tax in tax_template.taxes:
+				if tax.rate:
+					tax_amount = flt(self.grand_total_after_deduction) * flt(tax.rate) / 100
+					gst_amount += tax_amount
+					# Use the first GST account found
+					if not gst_account:
+						gst_account = tax.account_head
+			
+			self.gst_amount = gst_amount
+			self.gst_account = gst_account
+			
+		except Exception as e:
+			frappe.log_error(frappe.get_traceback(), "GST Calculation Error")
+			self.gst_amount = 0
+			self.gst_account = None
 
 	def update_reference_document(self, cancel=False):
 		for item in self.material_issue_details:
@@ -155,13 +198,14 @@ class TransportationandHireCharges(AccountsController):
 		gl_entries = []    
 		self.make_additional_gl_entries(gl_entries)
 		self.deduction_gl_entries(gl_entries)
+		self.make_gst_gl_entries(gl_entries)
 		self.make_tds_gl_entries(gl_entries)
 		self.make_material_issue_gl_entries(gl_entries)
 		self.make_party_gl_entries(gl_entries)
 		
 		# Modify cost centers for self imprest advance
 		if getattr(self, 'settle_imprest_advance', False):
-			# Get the expense branch cost cent
+			# Get the expense branch cost center
 			expense_branch_cc = frappe.get_value("Branch", self.expense_branch, "cost_center") if self.expense_branch else None
 			
 			# Update cost center for all GL entries
@@ -172,12 +216,45 @@ class TransportationandHireCharges(AccountsController):
 						entry['cost_center'] = expense_branch_cc
 					else:
 						frappe.throw("Expense Branch is not set for this self imprest advance")
-				# For other accounts in self imprest advance, you can keep original or modify as needed
-				# Here we're keeping original cost center for other accounts
 		
 		gl_entries = merge_similar_entries(gl_entries)
 		make_gl_entries(gl_entries, update_outstanding="No", cancel=cancel)
 
+	def make_gst_gl_entries(self, gl_entries):
+		"""Create GL entries for GST"""
+		if flt(self.gst_amount) > 0 and self.gst_account:
+			if self.party_type == "Supplier":
+				# For supplier, GST is an expense (debit)
+				gl_entries.append(
+					self.get_gl_dict({
+						"account": self.gst_account,
+						"debit": flt(self.gst_amount),
+						"debit_in_account_currency": flt(self.gst_amount),
+						"against_voucher": self.name,
+						"against_voucher_type": self.doctype,
+						"party_type": self.party_type,
+						"party": self.party,
+						"cost_center": self.cost_center,
+						"voucher_type": self.doctype,
+						"voucher_no": self.name,
+					}, self.currency)
+				)
+			else:
+				# For customer, GST is income (credit)
+				gl_entries.append(
+					self.get_gl_dict({
+						"account": self.gst_account,
+						"credit": flt(self.gst_amount),
+						"credit_in_account_currency": flt(self.gst_amount),
+						"against_voucher": self.name,
+						"against_voucher_type": self.doctype,
+						"party_type": self.party_type,
+						"party": self.party,
+						"cost_center": self.cost_center,
+						"voucher_type": self.doctype,
+						"voucher_no": self.name,
+					}, self.currency)
+				)
 
 	def deduction_gl_entries(self, gl_entries):
 		if self.deduction_items:
@@ -310,8 +387,11 @@ class TransportationandHireCharges(AccountsController):
 			party_account = frappe.db.get_value("Charge Type", self.invoice_type, "default_expense_account")
 			if not party_account:
 				frappe.throw("The default expense account is not set for the selected Charge Type. Please configure it in the Charge Type record: {}".format(frappe.get_desk_link("Charge Type", self.invoice_type)), title="Expense Account Missing")
-
-			add_gl_entry(party_account, self.amount, 0, party_type=self.party_type, party=self.party)
+			
+			# For supplier, debit expense account with amount + gst
+			total_expense = flt(self.amount) 
+			add_gl_entry(party_account, total_expense, 0, party_type=self.party_type, party=self.party)
+			
 			party_type = ""
 			party = ""
 			if self.settle_imprest_advance:
@@ -346,6 +426,7 @@ class TransportationandHireCharges(AccountsController):
 			if not default_receivable_account:
 				frappe.throw("The default receivable account is not set for the selected Customer. Please configure it in the Customer: {}".format(frappe.get_desk_link("Customer", self.party)), title="Default Receivable Account Missing")
 
+			# For customer, credit income account with amount only (GST is separate)
 			add_gl_entry(party_account, 0, self.amount)
 			add_gl_entry(default_receivable_account, flt(self.outstanding_amount), 0)
 

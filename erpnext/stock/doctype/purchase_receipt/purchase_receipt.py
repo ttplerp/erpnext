@@ -1,7 +1,6 @@
 # Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and Contributors
 # License: GNU General Public License v3. See license.txt
 
-
 import frappe
 from frappe import _, throw
 from frappe.desk.notifications import clear_doctype_notifications
@@ -895,39 +894,56 @@ class PurchaseReceipt(BuyingController):
 
 		self.load_from_db()
 
-	@frappe.whitelist()
-	def make_journal_entry(self, args):
-		# Check if a Journal Entry already exists for this transaction
-		if args.journal_entry and frappe.db.exists("Journal Entry", args.journal_entry):
-			doc = frappe.get_doc("Journal Entry", args.journal_entry)
-			if doc.docstatus != 2:  # Not cancelled
-				# Show message and return existing JE name
-				frappe.msgprint(
-					_("Journal Entry already exists and was submitted: {0}").format(
-						frappe.get_desk_link("Journal Entry", args.journal_entry)
-					)
-				)
-				return args.journal_entry
-
-		# Prevent creating multiple JEs for the same employee & account
+	# ============================================================================
+	# VALIDATION: Check for existing Journal Entries before creating new one
+	# ============================================================================
+	def validate_no_existing_journal_entry(self, tax_row_name=None):
+		"""
+		Validate that no Journal Entry exists for this Purchase Receipt
+		If tax_row_name is provided, check only that specific tax row
+		"""
+		filters = {
+			"reference_type": "Purchase Receipt",
+			"reference_name": self.name,
+			"docstatus": 1
+		}
+		
+		# Check if any Journal Entry exists for this PR
 		existing_je = frappe.db.get_value(
 			"Journal Entry Account",
-			{
-				"reference_type": "Purchase Taxes and Charges",
-				"reference_name": args.name,
-				"docstatus": 1  # Only submitted entries
-			},
+			filters,
 			"parent"
 		)
-	
+		
 		if existing_je:
-			frappe.msgprint(
-				_("Journal Entry already submitted: {0}").format(
+			frappe.throw(
+				_("Cannot create Journal Entry. Journal Entry {0} already exists for this Purchase Receipt.").format(
 					frappe.get_desk_link("Journal Entry", existing_je)
 				)
 			)
-			return existing_je
+		
+		# If specific tax row is provided, also check if that row already has a journal entry
+		if tax_row_name:
+			tax_row = frappe.db.get_value(
+				"Purchase Taxes and Charges",
+				tax_row_name,
+				"journal_entry"
+			)
+			if tax_row:
+				frappe.throw(
+					_("Tax row already has Journal Entry {0} linked.").format(
+						frappe.get_desk_link("Journal Entry", tax_row)
+					)
+				)
 
+	# ============================================================================
+	# OPTIMIZED: make_journal_entry with duplicate prevention
+	# ============================================================================
+	@frappe.whitelist()
+	def make_journal_entry(self, args):
+		# Validate no existing Journal Entry for this PR
+		self.validate_no_existing_journal_entry(args.name)
+		
 		# Get imprest advance account
 		imprest_advance_account = frappe.db.get_value(
 			"Company", "VAJRA BUILDERS PRIVATE LIMITED", "imprest_advance_account"
@@ -950,6 +966,8 @@ class PurchaseReceipt(BuyingController):
 			"branch": self.branch,
 			"total_debit": args.tax_amount,
 			"total_credit": args.tax_amount,
+			"reference_type": "Purchase Receipt",
+			"reference_doctype": self.name
 		})
 
 		# Debit entry
@@ -961,8 +979,8 @@ class PurchaseReceipt(BuyingController):
 			"party_check": 0,
 			"party_type": "Supplier",
 			"party": args.party,
-			"reference_type": "Purchase Taxes and Charges",
-			"reference_name": args.name,
+			"reference_type": "Purchase Receipt",
+			"reference_name": self.name,
 		})
 
 		# Credit entry
@@ -976,14 +994,9 @@ class PurchaseReceipt(BuyingController):
 		})
 
 		je.insert()
-		je.submit()  # Submit immediately
+		je.submit()
 
-		frappe.msgprint(
-			_("Journal Entry created and submitted successfully: {0}").format(
-				frappe.get_desk_link("Journal Entry", je.name)
-			)
-		)
-
+		# Update the tax row with journal entry reference
 		frappe.db.set_value(
 			"Purchase Taxes and Charges",
 			{"name": args.name},
@@ -991,8 +1004,107 @@ class PurchaseReceipt(BuyingController):
 			je.name
 		)
 
-		
+		frappe.msgprint(
+			_("Journal Entry created and submitted successfully: {0}").format(
+				frappe.get_desk_link("Journal Entry", je.name)
+			)
+		)
 
+		return je.name
+
+	# ============================================================================
+	# OPTIMIZED: make_tax_payment with duplicate prevention
+	# ============================================================================
+	@frappe.whitelist()
+	def make_tax_payment(self, args=None):
+		# Validate no existing Journal Entry for this PR
+		self.validate_no_existing_journal_entry()
+		
+		gst_input_account = None
+		cost_center = None
+		
+		# Find GST account and cost center
+		for tax in self.taxes:
+			if tax.is_gst == 1:
+				gst_input_account = tax.account_head
+				if tax.cost_center and not cost_center:
+					cost_center = tax.cost_center
+		
+		bank_account = frappe.db.get_value("Company", self.company, "default_bank_account")
+		gst_amount = 0
+		gst_tax_rows = []
+		
+		# Process only GST taxes (is_gst = 1)
+		for tax in self.taxes:
+			if tax.is_gst == 1:
+				tax_amount = flt(tax.base_tax_amount_after_discount_amount, 2)
+				gst_amount += tax_amount
+				gst_tax_rows.append(tax)
+				
+				# Update cost_center if not set yet
+				if not cost_center and tax.cost_center:
+					cost_center = tax.cost_center
+		
+		# Ensure cost_center has a value
+		if not cost_center:
+			cost_center = frappe.db.get_value("Company", self.company, "cost_center")
+		
+		if gst_amount <= 0:
+			frappe.throw(_("No GST taxes found to create Tax Payment Journal."))
+		
+		# Create Journal Entry
+		je = frappe.new_doc("Journal Entry")
+		je.flags.ignore_permissions = True
+		je.tax_payment_jv = 1
+		je.purchase_invoice = self.name
+		je.voucher_type = 'Bank Entry'
+		je.naming_series = 'Bank Payment Voucher'
+		je.posting_date = nowdate()
+		je.branch = self.branch
+		je.company = self.company
+		je.remark = "Tax Payment Journal for Purchase Receipt: " + self.name
+		je.user_remark = "Tax Payment Journal for Purchase Receipt: " + self.name
+		je.reference_type = 'Purchase Receipt'
+		je.reference_doctype = self.name
+		
+		# Create GST debit entry
+		if gst_amount > 0 and gst_input_account:
+			gst_row = je.append("accounts")
+			gst_row.account = gst_input_account
+			gst_row.debit = gst_amount
+			gst_row.debit_in_account_currency = gst_amount
+			gst_row.cost_center = cost_center
+			gst_row.reference_type = "Purchase Receipt"
+			gst_row.reference_name = self.name
+		
+		# Create bank credit entry
+		if gst_amount > 0:
+			bank_row = je.append("accounts")
+			bank_row.account = bank_account
+			bank_row.credit = gst_amount
+			bank_row.credit_in_account_currency = gst_amount
+			bank_row.cost_center = cost_center
+			bank_row.reference_type = "Purchase Receipt"
+			bank_row.reference_name = self.name
+		
+		je.insert()
+		je.submit()
+		
+		# Update all GST tax rows with the journal entry reference
+		for tax in gst_tax_rows:
+			frappe.db.set_value(
+				"Purchase Taxes and Charges",
+				tax.name,
+				"journal_entry",
+				je.name
+			)
+		
+		frappe.msgprint(
+			_("Tax Payment Journal created and submitted successfully: {0}").format(
+				frappe.get_desk_link("Journal Entry", je.name)
+			)
+		)
+		
 		return je.name
 
 
@@ -1418,3 +1530,13 @@ def get_permission_query_conditions(user):
 	)""".format(
 		user=user
 	)
+
+
+# ============================================================================
+# DEPRECATED: Use the class methods instead (kept for backward compatibility)
+# ============================================================================
+@frappe.whitelist()
+def make_tax_payment(source_name, target_doc=None, args=None):
+	"""Legacy function - kept for backward compatibility"""
+	doc = frappe.get_doc("Purchase Receipt", source_name)
+	return doc.make_tax_payment(args)

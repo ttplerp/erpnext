@@ -20,13 +20,21 @@
   "party",
   "outstanding_amount",
   "accounting_details_section",
+  "taxes",
+  "section_break_hrtsa",
   "credit_account",
   "column_break_g6lzp",
   "debit_account",
+  "gst_details_section",
+  "gst_amount",
+  "net_total",
+  "column_break_z6f7g",
+  "gst_account",
+  "amount_after_gst",
   "reference_details_section",
   "reference_doctype",
   "status",
-  "column_break_z6f7g",
+  "column_break_pzhen",
   "reference_name",
   "amended_from"
  ],
@@ -155,12 +163,52 @@
    "label": "Debit Account",
    "options": "Account",
    "read_only": 1
+  },
+  {
+   "fieldname": "gst_details_section",
+   "fieldtype": "Section Break",
+   "label": "GST Details"
+  },
+  {
+   "fieldname": "gst_amount",
+   "fieldtype": "Currency",
+   "label": "GST Amount"
+  },
+  {
+   "fieldname": "amount_after_gst",
+   "fieldtype": "Currency",
+   "label": "Grand Total"
+  },
+  {
+   "fieldname": "gst_account",
+   "fieldtype": "Data",
+   "label": "GST Account"
+  },
+  {
+   "fieldname": "column_break_pzhen",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "amended_from.net_total",
+   "fieldname": "net_total",
+   "fieldtype": "Currency",
+   "label": "Net Total"
+  },
+  {
+   "fieldname": "taxes",
+   "fieldtype": "Table",
+   "label": "Purchase Taxes and Charges",
+   "options": "Purchase Taxes and Charges"
+  },
+  {
+   "fieldname": "section_break_hrtsa",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-01-24 11:52:28.794666",
+ "modified": "2026-02-12 16:20:01.128481",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Receive Invoice",

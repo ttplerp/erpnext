@@ -1222,7 +1222,7 @@ erpnext.TransactionController = class TransactionController extends erpnext.taxe
 		}
 
 		// toggle fields
-		this.frm.toggle_display(["conversion_rate", "base_total", "base_net_total",
+		this.frm.toggle_display(["conversion_rate", "base_total","base_bet_total",
 			"base_total_taxes_and_charges", "base_taxes_and_charges_added", "base_taxes_and_charges_deducted",
 			"base_grand_total", "base_rounded_total", "base_in_words", "base_discount_amount",
 			"base_paid_amount", "base_write_off_amount", "base_operating_cost", "base_raw_material_cost",
@@ -1235,8 +1235,8 @@ erpnext.TransactionController = class TransactionController extends erpnext.taxe
 		var show = cint(cur_frm.doc.discount_amount) ||
 				((cur_frm.doc.taxes || []).filter(function(d) {return d.included_in_print_rate===1}).length);
 
-		if(frappe.meta.get_docfield(cur_frm.doctype, "net_total"))
-			cur_frm.toggle_display("net_total", show);
+		// if(frappe.meta.get_docfield(cur_frm.doctype, "net_total"))
+		// 	cur_frm.toggle_display("net_total", show);
 
 		if(frappe.meta.get_docfield(cur_frm.doctype, "base_net_total"))
 			cur_frm.toggle_display("base_net_total", (show && (me.frm.doc.currency != company_currency)));

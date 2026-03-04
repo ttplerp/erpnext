@@ -29,23 +29,28 @@
   "section_break_bnljm",
   "deductions",
   "section_break_tnlr8",
+  "additions",
+  "section_break_wtoni",
   "advance_type",
   "advances",
   "section_break_15",
   "total_amount",
   "grand_total",
+  "outstanding_amount",
   "column_break_34",
   "deduction_amount",
+  "addition_amount",
   "net_amount",
   "column_break_4gesp",
   "total_advance_allocated",
   "imprest_amount",
-  "outstanding_amount",
-  "tds_details_section",
+  "gst_details_section",
+  "gst_account",
+  "tds_account",
+  "column_break_iv5qw",
+  "gst_amount",
   "tds_percent",
   "tds_amount",
-  "column_break_a7a2t",
-  "tds_account",
   "section_break_5",
   "repair_and_services_date",
   "equipment",
@@ -316,11 +321,6 @@
    "options": "Employee"
   },
   {
-   "fieldname": "tds_details_section",
-   "fieldtype": "Section Break",
-   "label": "TDS Details"
-  },
-  {
    "fieldname": "tds_percent",
    "fieldtype": "Select",
    "label": "TDS Percent",
@@ -341,10 +341,6 @@
    "label": "TDS Account",
    "options": "Account",
    "read_only": 1
-  },
-  {
-   "fieldname": "column_break_a7a2t",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "section_break_bnljm",
@@ -411,12 +407,45 @@
    "fieldtype": "Link",
    "label": "Expense Branch",
    "options": "Branch"
+  },
+  {
+   "fieldname": "gst_details_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "gst_account",
+   "fieldtype": "Link",
+   "label": "GST Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "gst_amount",
+   "fieldtype": "Currency",
+   "label": "GST Amount"
+  },
+  {
+   "fieldname": "column_break_iv5qw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_wtoni",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "additions",
+   "fieldtype": "Table",
+   "options": "RNS Invoice Addition Item"
+  },
+  {
+   "fieldname": "addition_amount",
+   "fieldtype": "Currency",
+   "label": "Addition Amount"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-09 15:43:41.668810",
+ "modified": "2026-02-05 16:03:17.178641",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Repair And Service Invoice",

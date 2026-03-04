@@ -871,8 +871,9 @@ class PurchaseInvoice(BuyingController):
 			# update_outstanding = "No" if (cint(self.is_paid) or self.write_off_account) else "Yes"
 			# above line commented as it was making outs zero when there is advance and advance account is different. we need to check on this
 			update_outstanding = "No"
-
+			#frappe.throw(str(gl_entries))
 			if self.docstatus == 1:
+
 				make_gl_entries(
 					gl_entries,
 					update_outstanding=update_outstanding,
@@ -1652,12 +1653,13 @@ class PurchaseInvoice(BuyingController):
 		return warehouse_debit_amount
 
 	def make_tax_gl_entries(self, gl_entries):
+		#frappe.throw("kkk")
 		# tax table gl entries
 		valuation_tax = {}
 		enable_discount_accounting = cint(
 			frappe.db.get_single_value("Buying Settings", "enable_discount_accounting")
-		)
-
+	)
+ 
 		for tax in self.get("taxes"):
 			amount, base_amount = self.get_tax_amounts(tax, None)
 			if tax.category in ("Total", "Valuation and Total") and flt(base_amount):

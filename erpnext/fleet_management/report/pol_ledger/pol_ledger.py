@@ -29,7 +29,6 @@ def get_data(filters=None):
             pe.type,
             pe.reference_type,
             pe.reference,
-            pe.reference_name,
             i.item_name,
             i.stock_uom,
             e.equipment_type,

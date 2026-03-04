@@ -38,9 +38,17 @@
   "registration_item",
   "bluebook_details_section",
   "items",
-  "post_je",
+  "section_break_xrq61",
+  "apply_gst",
+  "column_break_rglm8",
   "reference",
-  "company"
+  "company",
+  "section_break_5o1bl",
+  "taxes_and_charges",
+  "gst_account",
+  "column_break_nu2sj",
+  "gst_amount",
+  "net_total"
  ],
  "fields": [
   {
@@ -241,14 +249,55 @@
    "read_only": 1
   },
   {
-   "fieldname": "post_je",
-   "fieldtype": "Button",
-   "label": "Post Bluebook Fitness & Emission JE"
+   "depends_on": "apply_gst",
+   "fieldname": "section_break_5o1bl",
+   "fieldtype": "Section Break",
+   "label": "GST Details"
+  },
+  {
+   "fieldname": "taxes_and_charges",
+   "fieldtype": "Link",
+   "label": "Purchase Taxes and Charges Template",
+   "options": "Purchase Taxes and Charges Template"
+  },
+  {
+   "fieldname": "gst_account",
+   "fieldtype": "Link",
+   "label": "GST Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "gst_amount",
+   "fieldtype": "Currency",
+   "label": "GST Amount"
+  },
+  {
+   "default": "0",
+   "fieldname": "apply_gst",
+   "fieldtype": "Check",
+   "label": "Apply GST"
+  },
+  {
+   "fieldname": "column_break_rglm8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_xrq61",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_nu2sj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "net_total",
+   "fieldtype": "Currency",
+   "label": "Net Total"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-25 15:11:48.640743",
+ "modified": "2026-02-06 10:48:14.203252",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Insurance and Registration",

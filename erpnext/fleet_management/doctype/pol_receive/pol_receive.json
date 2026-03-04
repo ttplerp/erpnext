@@ -2,7 +2,7 @@
  "actions": [],
  "allow_rename": 1,
  "autoname": "format:POLR-{YY}-{MM}-{DD}-{###}",
- "creation": "2022-10-20 14:46:05.098826",
+ "creation": "2026-01-30 10:44:33.332134",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -57,11 +57,21 @@
   "get_pol_expense",
   "items",
   "section_break_10",
-  "total_amount",
   "pol_slip_no",
+  "total_amount",
+  "apply_gst",
   "column_break_12",
+  "additional_amount",
+  "deduction",
   "memo_number",
   "section_break_8",
+  "taxes_and_charges",
+  "taxes",
+  "section_break_k3c2h",
+  "net_total",
+  "column_break_q7miu",
+  "grand_total",
+  "section_break_w0sht",
   "remarks",
   "currency",
   "ad_info_section_break",
@@ -101,16 +111,32 @@
    "read_only": 1
   },
   {
-   "fieldname": "column_break_3",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "company",
    "fieldtype": "Link",
    "label": "Company",
    "options": "Company",
    "read_only": 1,
    "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.settle_imprest_advance == 1;",
+   "fieldname": "party",
+   "fieldtype": "Link",
+   "label": "Party",
+   "mandatory_depends_on": "eval:doc.settle_imprest_advance",
+   "options": "Employee"
+  },
+  {
+   "depends_on": "eval:doc.settle_imprest_advance",
+   "fetch_from": "party.branch",
+   "fieldname": "expense_branch",
+   "fieldtype": "Link",
+   "label": "Expense Branch",
+   "options": "Branch"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
   },
   {
    "default": "Today",
@@ -127,11 +153,30 @@
    "reqd": 1
   },
   {
+   "default": "0",
+   "fieldname": "hired_equipment",
+   "fieldtype": "Check",
+   "label": "Hired Equipment"
+  },
+  {
    "default": "1",
    "description": "If the POL is consumed directly by the vehicle, check this. This will consume the POL too",
    "fieldname": "direct_consumption",
    "fieldtype": "Check",
    "label": "Direct Consumption"
+  },
+  {
+   "default": "0",
+   "fieldname": "settle_imprest_advance",
+   "fieldtype": "Check",
+   "label": "Settle Imprest Advance Account"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.direct_consumption == 0;",
+   "fieldname": "receive_in_barrel",
+   "fieldtype": "Check",
+   "label": "Receive In Barrel"
   },
   {
    "depends_on": "eval:(doc.receive_in_barrel == 0 && doc.hired_equipment == 0);",
@@ -140,14 +185,108 @@
    "label": "Equipment Details"
   },
   {
+   "default": "0",
+   "fieldname": "out_sourced",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Out Sourced"
+  },
+  {
+   "fieldname": "equipment",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_standard_filter": 1,
+   "label": "Equipment",
+   "mandatory_depends_on": "eval:(doc.receive_in_barrel == 0 && doc.hired_equipment == 0);",
+   "options": "Equipment"
+  },
+  {
+   "fetch_from": "equipment.equipment_type",
+   "fieldname": "equipment_type",
+   "fieldtype": "Link",
+   "label": "Equipment Type",
+   "options": "Equipment Type",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "equipment.reading_uom",
+   "fieldname": "uom",
+   "fieldtype": "Data",
+   "label": "UOM",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "equipment.fuelbook",
+   "fieldname": "fuelbook",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Fuelbook",
+   "options": "Fuelbook"
+  },
+  {
    "fieldname": "section_break_15",
    "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "equipment.equipment_category",
+   "fieldname": "equipment_category",
+   "fieldtype": "Link",
+   "label": "Equipment Category",
+   "options": "Equipment Category",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "fuelbook.branch",
+   "fieldname": "fuelbook_branch",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Fuelbook Branch",
+   "options": "Branch",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval: doc.hired_equipment == 1;",
+   "fieldname": "hired_equipment_details_section",
+   "fieldtype": "Section Break",
+   "label": "Hired Equipment Details"
+  },
+  {
+   "fieldname": "hired_equipment_type",
+   "fieldtype": "Select",
+   "label": "Hired Equipment Type",
+   "options": "\nVehicle\nMachine"
+  },
+  {
+   "fieldname": "fuel_policy",
+   "fieldtype": "Select",
+   "label": "Fuel Policy",
+   "options": "\nWith Fuel\nWithout Fuel"
+  },
+  {
+   "fieldname": "column_break_spcy7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "hired_equipment_no",
+   "fieldtype": "Data",
+   "label": "Hired Equipment No"
   },
   {
    "fieldname": "supplier",
    "fieldtype": "Link",
    "label": "Supplier",
    "options": "Supplier"
+  },
+  {
+   "fieldname": "section_break_ky3pt",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "paid_to",
+   "fieldtype": "Link",
+   "label": "Paid To",
+   "options": "Supplier",
+   "reqd": 1
   },
   {
    "fieldname": "section_break_4",
@@ -200,35 +339,18 @@
    "reqd": 1
   },
   {
-   "fieldname": "section_break_10",
+   "depends_on": "eval:doc.direct_consumption == 0 && doc.receive_in_barrel == 1;",
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "label": "Destination Warehouse",
+   "mandatory_depends_on": "eval:doc.receive_in_barrel == 1;",
+   "options": "Warehouse"
+  },
+  {
+   "depends_on": "eval:!doc.hired_equipment",
+   "fieldname": "mileage_details",
    "fieldtype": "Section Break",
-   "label": "Amount Details"
-  },
-  {
-   "fieldname": "total_amount",
-   "fieldtype": "Currency",
-   "label": "Bill Amount",
-   "read_only": 1,
-   "reqd": 1
-  },
-  {
-   "fieldname": "column_break_12",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "memo_number",
-   "fieldtype": "Data",
-   "label": "Cash Memo Number",
-   "reqd": 1
-  },
-  {
-   "fieldname": "remarks",
-   "fieldtype": "Small Text",
-   "label": "Remarks"
-  },
-  {
-   "fieldname": "section_break_8",
-   "fieldtype": "Section Break"
+   "label": "Mileage Details"
   },
   {
    "fieldname": "cur_km_reading",
@@ -243,6 +365,21 @@
    "read_only": 1
   },
   {
+   "fieldname": "column_break_31",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "previous_km",
+   "fieldtype": "Float",
+   "label": "Previous KM",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_33",
+   "fieldtype": "Column Break"
+  },
+  {
    "fieldname": "mileage",
    "fieldtype": "Float",
    "label": "Mileage",
@@ -255,6 +392,12 @@
    "label": "Expenses Details"
   },
   {
+   "depends_on": "eval:doc.docstatus == 0",
+   "fieldname": "get_pol_expense",
+   "fieldtype": "Button",
+   "label": "Get Pol Expense"
+  },
+  {
    "fieldname": "items",
    "fieldtype": "Table",
    "label": "Items",
@@ -262,94 +405,58 @@
    "read_only": 1
   },
   {
-   "fieldname": "equipment",
-   "fieldtype": "Link",
-   "in_filter": 1,
-   "in_standard_filter": 1,
-   "label": "Equipment",
-   "mandatory_depends_on": "eval:(doc.receive_in_barrel == 0 && doc.hired_equipment == 0);",
-   "options": "Equipment"
-  },
-  {
-   "fetch_from": "equipment.equipment_type",
-   "fieldname": "equipment_type",
-   "fieldtype": "Link",
-   "label": "Equipment Type",
-   "options": "Equipment Type",
-   "read_only": 1
-  },
-  {
-   "fetch_from": "equipment.equipment_category",
-   "fieldname": "equipment_category",
-   "fieldtype": "Link",
-   "label": "Equipment Category",
-   "options": "Equipment Category",
-   "read_only": 1
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "POL Receive",
-   "print_hide": 1,
-   "read_only": 1
-  },
-  {
-   "fetch_from": "equipment.fuelbook",
-   "fieldname": "fuelbook",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Fuelbook",
-   "options": "Fuelbook"
-  },
-  {
-   "depends_on": "eval:doc.docstatus == 0",
-   "fieldname": "get_pol_expense",
-   "fieldtype": "Button",
-   "label": "Get Pol Expense"
-  },
-  {
-   "fetch_from": "fuelbook.branch",
-   "fieldname": "fuelbook_branch",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Fuelbook Branch",
-   "options": "Branch",
-   "read_only": 1
-  },
-  {
-   "fetch_from": "equipment.reading_uom",
-   "fieldname": "uom",
-   "fieldtype": "Data",
-   "label": "UOM",
-   "read_only": 1
-  },
-  {
-   "fieldname": "previous_km",
-   "fieldtype": "Float",
-   "label": "Previous KM",
-   "no_copy": 1,
-   "read_only": 1
-  },
-  {
-   "depends_on": "eval:!doc.hired_equipment",
-   "fieldname": "mileage_details",
+   "fieldname": "section_break_10",
    "fieldtype": "Section Break",
-   "label": "Mileage Details"
+   "label": "Amount Details"
   },
   {
-   "fieldname": "column_break_31",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_33",
-   "fieldtype": "Column Break"
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "label": "Bill Amount",
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "fieldname": "pol_slip_no",
    "fieldtype": "Data",
    "label": "POL Slip No."
+  },
+  {
+   "default": "0",
+   "fieldname": "apply_gst",
+   "fieldtype": "Check",
+   "label": "Apply GST"
+  },
+  {
+   "fieldname": "column_break_12",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "memo_number",
+   "fieldtype": "Data",
+   "label": "Cash Memo Number",
+   "reqd": 1
+  },
+  {
+   "depends_on": "apply_gst",
+   "fieldname": "section_break_8",
+   "fieldtype": "Section Break",
+   "label": "GST Details"
+  },
+  {
+   "fieldname": "taxes_and_charges",
+   "fieldtype": "Link",
+   "label": "Purchase Taxes and Charges Template",
+   "options": "Purchase Taxes and Charges Template"
+  },
+  {
+   "fieldname": "section_break_w0sht",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
   },
   {
    "fieldname": "currency",
@@ -359,16 +466,18 @@
    "read_only": 1
   },
   {
-   "default": "0",
-   "fieldname": "out_sourced",
-   "fieldtype": "Check",
-   "hidden": 1,
-   "label": "Out Sourced"
-  },
-  {
    "fieldname": "ad_info_section_break",
    "fieldtype": "Section Break",
    "label": "Additional Information"
+  },
+  {
+   "depends_on": "eval:doc.fuel_policy == \"Without Fuel\";",
+   "fieldname": "advance",
+   "fieldtype": "Link",
+   "label": "Advance",
+   "no_copy": 1,
+   "options": "Advance",
+   "read_only": 1
   },
   {
    "fieldname": "journal_entry_html",
@@ -398,35 +507,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "default": "0",
-   "fieldname": "settle_imprest_advance",
-   "fieldtype": "Check",
-   "label": "Settle Imprest Advance Account"
-  },
-  {
-   "depends_on": "eval:doc.settle_imprest_advance == 1;",
-   "fieldname": "party",
-   "fieldtype": "Link",
-   "label": "Party",
-   "mandatory_depends_on": "eval:doc.settle_imprest_advance",
-   "options": "Employee"
-  },
-  {
-   "default": "0",
-   "depends_on": "eval:doc.direct_consumption == 0;",
-   "fieldname": "receive_in_barrel",
-   "fieldtype": "Check",
-   "label": "Receive In Barrel"
-  },
-  {
-   "depends_on": "eval:doc.direct_consumption == 0 && doc.receive_in_barrel == 1;",
-   "fieldname": "warehouse",
-   "fieldtype": "Link",
-   "label": "Destination Warehouse",
-   "mandatory_depends_on": "eval:doc.receive_in_barrel == 1;",
-   "options": "Warehouse"
-  },
-  {
    "fieldname": "section_break_qmfkp",
    "fieldtype": "Section Break"
   },
@@ -438,10 +518,18 @@
    "read_only": 1
   },
   {
+   "fieldname": "column_break_fdusf",
+   "fieldtype": "Column Break"
+  },
+  {
    "fieldname": "approver_name",
    "fieldtype": "Data",
    "label": "Approver Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "column_break_zja4w",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "approver_designation",
@@ -450,79 +538,65 @@
    "read_only": 1
   },
   {
-   "fieldname": "column_break_fdusf",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_zja4w",
-   "fieldtype": "Column Break"
-  },
-  {
-   "depends_on": "eval: doc.hired_equipment == 1;",
-   "fieldname": "hired_equipment_details_section",
-   "fieldtype": "Section Break",
-   "label": "Hired Equipment Details"
-  },
-  {
-   "fieldname": "hired_equipment_type",
-   "fieldtype": "Select",
-   "label": "Hired Equipment Type",
-   "options": "\nVehicle\nMachine"
-  },
-  {
-   "fieldname": "column_break_spcy7",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "hired_equipment_no",
-   "fieldtype": "Data",
-   "label": "Hired Equipment No"
-  },
-  {
-   "fieldname": "fuel_policy",
-   "fieldtype": "Select",
-   "label": "Fuel Policy",
-   "options": "\nWith Fuel\nWithout Fuel"
-  },
-  {
-   "default": "0",
-   "fieldname": "hired_equipment",
-   "fieldtype": "Check",
-   "label": "Hired Equipment"
-  },
-  {
-   "fieldname": "section_break_ky3pt",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "paid_to",
+   "fieldname": "amended_from",
    "fieldtype": "Link",
-   "label": "Paid To",
-   "options": "Supplier",
-   "reqd": 1
-  },
-  {
-   "depends_on": "eval:doc.fuel_policy == \"Without Fuel\";",
-   "fieldname": "advance",
-   "fieldtype": "Link",
-   "label": "Advance",
+   "label": "Amended From",
    "no_copy": 1,
-   "options": "Advance",
+   "options": "POL Receive",
+   "print_hide": 1,
    "read_only": 1
   },
   {
-   "depends_on": "eval:doc.settle_imprest_advance",
-   "fetch_from": "party.branch",
-   "fieldname": "expense_branch",
+   "fieldname": "amended_from",
    "fieldtype": "Link",
-   "label": "Expense Branch",
-   "options": "Branch"
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "POL Receive",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "additional_amount",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Additional Amount"
+  },
+  {
+   "fieldname": "deduction",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Deduction Amount"
+  },
+  {
+   "depends_on": "taxes_and_charges",
+   "fieldname": "taxes",
+   "fieldtype": "Table",
+   "label": "Purchase Taxes and Charges",
+   "options": "Purchase Taxes and Charges"
+  },
+  {
+   "fieldname": "net_total",
+   "fieldtype": "Currency",
+   "label": "Net Total"
+  },
+  {
+   "fieldname": "grand_total",
+   "fieldtype": "Currency",
+   "label": "Grand Total"
+  },
+  {
+   "fieldname": "column_break_q7miu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_k3c2h",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-03 15:09:24.561140",
+ "modified": "2026-02-05 14:32:24.164586",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "POL Receive",
