@@ -161,7 +161,7 @@ function calculate_tds(frm) {
 			if(r.message) {
 				frm.set_value("tds_account", r.message.tax_withholding_account);
 				cur_frm.refresh_field("tds_account");
-				frm.set_value("tds_amount", flt(flt(r.message.tax_withholding_rate * frm.doc.tds_taxable_amount) / 100, 2) ?? 0.0);
+				frm.set_value("tds_amount", Math.round(flt(flt(r.message.tax_withholding_rate * frm.doc.tds_taxable_amount) / 100, 2) ?? 0.0));
 			}
 		}
 	})

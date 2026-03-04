@@ -28,7 +28,8 @@ class ImprestRecoup(Document):
 
 	def calculate_amount(self):
 		total_payable_amt = sum(d.amount for d in self.items) if self.items else 0
-		self.total_amount = total_payable_amt
+		self.total_amount_before_gst = total_payable_amt
+		self.total_amount = self.total_amount_before_gst + self.gst_amount if self.apply_gst else self.total_amount_before_gst
 	
 	def calculate_amount_final(self):
 		tot_bal_amt = sum(d.balance_amount for d in self.imprest_advance_list)
@@ -274,9 +275,21 @@ class ImprestRecoup(Document):
 
 				})
 			
+			if self.apply_gst:
+				je.append("accounts", {
+					"account": self.gst_account,
+					"debit_in_account_currency": self.gst_amount,
+					"cost_center": self.cost_center,
+					"project": self.project,
+					"reference_type": "Imprest Recoup",
+					"reference_name": self.name,
+					"party_type": party_type,
+					"party": party,
+				})
+
 			je.append("accounts", {
 				"account": credit_account,
-				"credit_in_account_currency": self.total_amount,
+				"credit_in_account_currency": self.total_amount if self.apply_gst else self.total_amount_before_gst,
 				"cost_center": self.cost_center,
 				"project": self.project,
 				"reference_type": "Imprest Recoup",

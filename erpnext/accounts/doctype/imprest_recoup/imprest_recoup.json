@@ -29,6 +29,10 @@
   "balance_amount",
   "remarks",
   "column_break_17",
+  "apply_gst",
+  "gst_account",
+  "gst_amount",
+  "total_amount_before_gst",
   "journal_entry",
   "final_je",
   "approver_details_section",
@@ -246,12 +250,42 @@
    "fieldtype": "Link",
    "label": "Project",
    "options": "Project"
+  },
+  {
+   "default": "0",
+   "fieldname": "apply_gst",
+   "fieldtype": "Check",
+   "label": "Apply GST"
+  },
+  {
+   "depends_on": "eval: doc.apply_gst == 1",
+   "fetch_from": "company.input_gst_account",
+   "fieldname": "gst_account",
+   "fieldtype": "Link",
+   "label": "GST Account",
+   "options": "Account",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "depends_on": "eval: doc.apply_gst == 1",
+   "fieldname": "gst_amount",
+   "fieldtype": "Currency",
+   "label": "GST Amount",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "total_amount_before_gst",
+   "fieldtype": "Currency",
+   "label": "Total Amount (Before GST)",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-08-08 16:14:03.394802",
+ "modified": "2026-02-16 11:54:59.489830",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Imprest Recoup",
