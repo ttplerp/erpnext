@@ -158,71 +158,6 @@ group by
     return record
 
 @frappe.whitelist()
-def create_scheduler():
-    # Create `Scheduled Job Type`
-    job = frappe.new_doc("Scheduled Job Type")
-    job.frequency = "Cron"
-    job.method = "crm.cbs_db.notify_expired_cid"
-    job.cron_format = "0 0 * * *"     # runs once a day and in the midnight
-    job.save()
-
-@frappe.whitelist()
-def notify_expired_cid():
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("""
-                SELECT g.foracid, g.acct_name, g.schm_code, g.acct_opn_date, g.acct_cls_flg,
-                    a.nat_id_card_num, e.DOCISSUEDATE AS issue, 
-                    e.DOCEXPIRYDATE AS expiry, p.phoneno
-                FROM 
-                tbaadm.gam g,
-                crmuser.accounts a,
-                crmuser.entitydocument e,
-                crmuser.phoneemail p
-                WHERE 
-                g.cif_id = a.orgkey
-                AND g.schm_type in ('SBA','CAA') 
-                AND a.orgkey = e.orgkey 
-                AND e.orgkey = p.orgkey
-                AND e.DOCEXPIRYDATE = TRUNC(SYSDATE) + 15
-                AND g.acct_cls_flg = 'N'
-            """)
-    result = cursor.fetchall()
-    i=0
-
-    for a in result:
-        msg="""Your CID/ID will expire on {}. Please update by visiting the nearest Branch or via kyc.bdb.bt before expiry date to avoid transaction restrictions""".format(str(a[7]).split(" ")[0])
-        mobile_no = str(a[8])
-        dtl = frappe.db.sql("""
-                            select name from `tabExpired CID Notification`
-                            where document_expiry_date='{}'
-                            and document_id='{}'
-                            and account_no='{}'
-                """.format(str(a[7]).split(" ")[0], a[5], str(a[0])), as_dict=True)
-        if not dtl:
-            doc = frappe.new_doc("Expired CID Notification")
-            doc.account_no = str(a[0])
-            doc.mobile_no = mobile_no[-8:]
-            doc.message = msg
-            doc.document_expiry_date = str(a[7]).split(" ")[0]
-            doc.document_id = a[5]
-            doc.save()
-            #print(str(a[0]), i, mobile_no[-8:], msg)
-            i+=1
-
-    for b in frappe.db.sql("""
-                            select name, mobile_no, document_expiry_date, message
-                            from `tabExpired CID Notification`
-                            where sms_sent=0
-                            AND (mobile_no LIKE '17%' OR mobile_no LIKE '77%' OR mobile_no LIKE '16%');
-                """, as_dict=True):
-        send_sms(msg, mobile_no[-8:])
-        frappe.db.sql(""" update `tabExpired CID Notification` set sms_sent=1 where name='{}' """.format(b.name))
-        frappe.db.commit()
-        print("Send SMS", b.mobile_no, b.document_expiry_date, b.message)
-            
-
-@frappe.whitelist()
 def cbs_td_enquiry(account_no=None):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -259,3 +194,59 @@ def cbs_td_enquiry(account_no=None):
                 "cid": a[12]
             })
     return record
+
+@frappe.whitelist()
+def cbs_account_enquiry(account_no=None):
+    if account_no:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT
+                g.cif_id as cif,
+                a.nat_id_card_num,
+                g.foracid as account_number,
+                g.clr_bal_amt as balance,
+                g.acct_name as name,
+                LISTAGG(p.PHONENOLOCALCODE, ', ') WITHIN GROUP (ORDER BY p.PHONENOLOCALCODE) AS PHONENOLOCALCODE,
+                LISTAGG(p.email, ', ') WITHIN GROUP (ORDER BY p.email) AS email,
+                s.ACCT_STATUS as status,
+                g.Schm_code as scheme_type
+            FROM
+                tbaadm.gam g
+            JOIN
+                tbaadm.smt s ON s.acid = g.acid
+            JOIN
+                crmuser.phoneemail p ON p.orgkey = g.cif_id
+            JOIN
+                crmuser.accounts a on a.orgkey = g.cif_id
+            WHERE
+                (g.foracid='{0}' or a.nat_id_card_num='{0}')
+                and g.acct_cls_flg = 'N'
+                and g.schm_type in ('SBA','CAA')
+            GROUP BY
+            g.cif_id, a.nat_id_card_num, g.foracid, g.clr_bal_amt, g.acct_name, s.ACCT_STATUS, g.Schm_code
+        """.format(account_no))
+
+        result = cursor.fetchall()
+        records = []
+        for a in result:
+            acc_type=None
+            if "OD" in a[8]:
+                acc_type = "OD"
+            elif "CA" in a[8]:
+                acc_type = "CA"
+            else:
+                acc_type = "SBA"
+
+            records.append({
+                "cif":a[0],
+                "cid":a[1],
+                "account_no":a[2],
+                "account_holder":a[4],
+                "balance": a[3],
+                "mobile_no":decode_string(a[5]) if a[5] else None,
+                "email": decode_string(a[6]) if a[6] else None,
+                "status": "Active" if a[7] == "A" else "Dormant",
+                "scheme_type": acc_type,
+            })
+        return records
