@@ -385,14 +385,130 @@ def td_account_inq(account_no=None, uuid=None, posting_date=None):
     c.close
 
 @frappe.whitelist()
-def fund_transfer(from_account=None, to_account=None, amount=None, remark=None):
+def make_fund_transfer(from_account=None, to_account=None, amount=None, remark=None):
     posting_date=get_datetime()
     pd = str(posting_date).split(" ")[0]+"T"+str(posting_date).split(" ")[1]
     import random
     uuid = random.randint(100_000_000, 999_999_999)
     buffer = BytesIO()
-    url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
+    url = "https://uat-dc-srv.bdbl.bt:22000/FISERVLET/fihttp"
     #url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
+    c = pycurl.Curl()
+    c.setopt(c.URL, url)
+    c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
+    c.setopt(c.TIMEOUT, 500)
+    c.setopt(c.SSLVERSION, pycurl.SSLVERSION_TLSv1)
+    c.setopt(c.WRITEDATA, buffer)
+    c.setopt(c.FOLLOWLOCATION, True)
+    c.setopt(c.SSL_VERIFYHOST, 0)
+    c.setopt(c.SSL_VERIFYPEER, 0)
+    payload = """<?xml version="1.0" encoding="UTF-8"?>
+                    <FIXML xsi:schemaLocation="http://www.finacle.com/fixml XferTrnAdd.xsd" xmlns="http://www.finacle.com/fixml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <Header>
+                        <RequestHeader>
+                        <MessageKey>
+                        <RequestUUID>{uuid}</RequestUUID>
+                        <ServiceRequestId>XferTrnAdd</ServiceRequestId>
+                        <ServiceRequestVersion>10.2</ServiceRequestVersion>
+                        <ChannelId>COR</ChannelId>
+                        <LanguageId/>
+                        </MessageKey>
+                        <RequestMessageInfo>
+                        <BankId>01</BankId>
+                        <TimeZone/>
+                        <EntityId/>
+                        <EntityType/>
+                        <ArmCorrelationId/>
+                        <MessageDateTime>2025-10-01T17:35:10.353</MessageDateTime>
+                        </RequestMessageInfo>
+                        <Security>
+                        <Token>
+                        <PasswordToken>
+                        <UserId/>
+                        <Password/>
+                        </PasswordToken>
+                        </Token>
+                        <FICertToken/>
+                        <RealUserLoginSessionId/>
+                        <RealUser/>
+                        <RealUserPwd/>
+                        <SSOTransferToken/>
+                        </Security>
+                        </RequestHeader>
+                        </Header>
+                        <Body>
+                        <XferTrnAddRequest>
+                        <XferTrnAddRq>
+                        <XferTrnHdr>
+                        <TrnType>T</TrnType>
+                        <TrnSubType>CI</TrnSubType>
+                        </XferTrnHdr>
+                        <XferTrnDetail>
+                            <PartTrnRec>
+                            <AcctId>
+                                <AcctId>{from_account}</AcctId>
+                            </AcctId>
+                            <CreditDebitFlg>D</CreditDebitFlg>
+                            <TrnAmt>
+                                <amountValue>{amount}</amountValue>
+                                <currencyCode>BTN</currencyCode>
+                            </TrnAmt>
+                            <TrnParticulars>{remark}</TrnParticulars>
+                            <PartTrnRmks>{remark}</PartTrnRmks>
+                            <ValueDt>{pd}</ValueDt>
+                            <SerialNum>1</SerialNum>
+                        </PartTrnRec>
+                        <PartTrnRec>
+                            <AcctId>
+                                <AcctId>{to_account}</AcctId>
+                            </AcctId>
+                            <CreditDebitFlg>C</CreditDebitFlg>
+                            <TrnAmt>
+                                <amountValue>{amount}</amountValue>
+                                <currencyCode>BTN</currencyCode>
+                            </TrnAmt>
+                            <TrnParticulars>{remark}</TrnParticulars>
+                            <PartTrnRmks>{remark}</PartTrnRmks>
+                            <ValueDt>{pd}</ValueDt>
+                            <SerialNum>2</SerialNum>
+                        </PartTrnRec>
+                        </XferTrnDetail>
+                        </XferTrnAddRq>
+                    </XferTrnAddRequest>
+                    </Body>
+                </FIXML>
+    """.format(uuid=uuid, from_account=from_account, to_account=to_account, amount=amount, remark=remark, pd=pd)
+
+    headers = {
+    'Content-Type': 'application/'
+    'xml'
+    }
+    c.setopt(c.HTTPHEADER, [
+        'Content-Type: application/xml; charset=utf-8'
+    ])
+    c.setopt(c.POSTFIELDS, payload)
+    c.setopt(c.WRITEDATA, buffer)
+    c.perform()
+    http_code = c.getinfo(c.RESPONSE_CODE)
+    body = buffer.getvalue()
+    result = str(body.decode('utf-8'))
+    print(result)
+    root = ET.fromstring(result)
+    ns = {"fixml": "http://www.finacle.com/fixml"}
+    status = root.find(".//fixml:HostTransaction/fixml:Status", ns).text
+    trans_datetime = root.find(".//fixml:ResponseMessageInfo/fixml:MessageDateTime", ns).text
+    c.close
+
+@frappe.whitelist()
+def fund_transfer(from_account=None, to_account=None, amount=None, remark=None):
+    posting_date=get_datetime()
+    print(posting_date)
+    pd = str(posting_date).split(" ")[0]+"T"+str(posting_date).split(" ")[1]
+    import random
+    uuid = random.randint(100_000_000, 999_999_999)
+    buffer = BytesIO()
+    #url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
+    url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
     c = pycurl.Curl()
     c.setopt(c.URL, url)
     c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
@@ -480,12 +596,12 @@ def fund_transfer(from_account=None, to_account=None, amount=None, remark=None):
 @frappe.whitelist()
 def loan_payment(loan_account=None, payment_account=None, amount=None, remark=None):
     posting_date=get_datetime()
-    pd = str(posting_date).split(" ")[0]+"T"+str(posting_date).split(" ")[1]
     import random
     uuid = random.randint(100_000_000, 999_999_999)
     buffer = BytesIO()
-    url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
-    #url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
+    #url = "https://was1-dc-srv.bdbl.bt:11300/FISERVLET/fihttp" #New Pro Server
+    #url = "https://uat-dc-srv.bdbl.bt:22000/FISERVLET/fihttp" #New UAT Server
+    url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
     c = pycurl.Curl()
     c.setopt(c.URL, url)
     c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
@@ -496,57 +612,55 @@ def loan_payment(loan_account=None, payment_account=None, amount=None, remark=No
     c.setopt(c.SSL_VERIFYHOST, 0)
     c.setopt(c.SSL_VERIFYPEER, 0)
     pd = str(today())+"T00:00:00.000"
-    payload = """<FIXML xsi:schemaLocation="http://www.finacle.com/fixml doFundsTransfer.xsd" xmlns="http://www.finacle.com/fixml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <Header>
-        <RequestHeader>
-            <MessageKey>
-                <RequestUUID>{uuid}</RequestUUID>
-                <ServiceRequestId>doFundsTransfer</ServiceRequestId>
-                <ServiceRequestVersion>10.2</ServiceRequestVersion>
-                <ChannelId>CRM</ChannelId>
-            </MessageKey>
-            <RequestMessageInfo>
-                <BankId />
-                <TimeZone />
-                <EntityId />
-                <EntityType />
-                <ArmCorrelationId />
-                <MessageDateTime>{pd}</MessageDateTime>
-            </RequestMessageInfo>
-            <Security>
-                <Token>
-                    <PasswordToken>
-                        <UserId />
-                        <Password />
-                    </PasswordToken>
-                </Token>
-                <FICertToken />
-                <RealUserLoginSessionId />
-                <RealUser />
-                <RealUserPwd />
-                <SSOTransferToken />
-            </Security>
-        </RequestHeader>
-    </Header>
-    <Body>
-        <doFundsTransferRequest>
-            <ProcessFTInputVO>
-                <frAcid>{from_account}</frAcid>
-                <frBrchId>0010</frBrchId>
-                <toAcid>{to_account}</toAcid>
-                <toBrchId>0010</toBrchId>
-                <txnAmt>
-                    <amountValue>{amount}</amountValue>
-                    <currencyCode>BTN</currencyCode>
-                </txnAmt>
-                <txnCrn>BTN</txnCrn>
-                <valuedate>{pd}</valuedate>
-                <tranRmks>{remark}</tranRmks>
-            </ProcessFTInputVO>
-        </doFundsTransferRequest>
-    </Body>
-</FIXML>""".format(uuid=uuid, pd=pd, from_account=from_account, to_account=to_account, amount=amount, remark=remark)
-
+    payload = """<FIXML xsi:schemaLocation="http://www.finacle.com/fixml executeFinacleScript.xsd"
+                    xmlns="http://www.finacle.com/fixml"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                    <Header>
+                        <RequestHeader>
+                            <MessageKey>
+                                <RequestUUID>{uuid}</RequestUUID>
+                                <ServiceRequestId>executeFinacleScript</ServiceRequestId>
+                                <ServiceRequestVersion>10.2</ServiceRequestVersion>
+                                <ChannelId>COR</ChannelId>
+                                <LanguageId></LanguageId>
+                            </MessageKey>
+                            <RequestMessageInfo>
+                                <BankId>01</BankId>
+                                <TimeZone></TimeZone>
+                                <EntityId></EntityId>
+                                <EntityType></EntityType>
+                                <ArmCorrelationId></ArmCorrelationId>
+                                <MessageDateTime>{pd}</MessageDateTime>
+                            </RequestMessageInfo>
+                            <Security>
+                                <Token>
+                                    <PasswordToken>
+                                        <UserId></UserId>
+                                        <Password></Password>
+                                    </PasswordToken>
+                                </Token>
+                                <FICertToken></FICertToken>
+                                <RealUserLoginSessionId></RealUserLoginSessionId>
+                                <RealUser></RealUser>
+                                <RealUserPwd></RealUserPwd>
+                                <SSOTransferToken></SSOTransferToken>
+                            </Security>
+                        </RequestHeader>
+                    </Header>
+                    <Body>
+                        <executeFinacleScriptRequest>
+                            <ExecuteFinacleScriptInputVO>
+                                <requestId>LoanPaymentAPI.scr</requestId>
+                            </ExecuteFinacleScriptInputVO>
+                            <executeFinacleScript_CustomData>
+                                <ofcAcctNum>{payment_account}</ofcAcctNum>
+                                <loanAcctNum>{loan_account}</loanAcctNum>
+                                <tranAmt>{amount}</tranAmt>
+                            </executeFinacleScript_CustomData>
+                        </executeFinacleScriptRequest>
+                    </Body>
+                </FIXML>
+    """.format(uuid=uuid, pd=pd, loan_account=loan_account, payment_account=payment_account, amount=amount)
     headers = {
     'Content-Type': 'application/'
     'xml'
@@ -650,6 +764,127 @@ def getLastTransactions(account=None, tran_nos=None):
             "transactionDetails": transactions
         }
         return result
+    except:
+        return {"msg":"No record Found"}
+
+@frappe.whitelist()
+def getFullStatement(account=None, from_date=None, to_date=None):
+    posting_date=get_datetime()
+    import random
+    uuid = random.randint(100_000_000, 999_999_999)
+    buffer = BytesIO()
+    #url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
+    url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
+    c = pycurl.Curl()
+    c.setopt(c.URL, url)
+    c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
+    c.setopt(c.TIMEOUT, 500)
+    c.setopt(c.SSLVERSION, pycurl.SSLVERSION_TLSv1)
+    c.setopt(c.WRITEDATA, buffer)
+    c.setopt(c.FOLLOWLOCATION, True)
+    c.setopt(c.SSL_VERIFYHOST, 0)
+    c.setopt(c.SSL_VERIFYPEER, 0)
+    pd = str(today())+"T00:00:00.000"
+    from_date = str(from_date)+"T00:00:00.000"
+    to_date = str(to_date)+"T23:59:00.000"
+    payload = """<FIXML
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xmlns="http://www.finacle.com/fixml" xsi:schemaLocation="http://www.finacle.com/fixml getFullAccountStatementRequest.xsd">
+                <Header>
+                    <RequestHeader>
+                        <MessageKey>
+                            <RequestUUID>{uuid}</RequestUUID>
+                            <ServiceRequestId>getFullAccountStatement</ServiceRequestId>
+                            <ServiceRequestVersion>10.2</ServiceRequestVersion>
+                            <ChannelId>CRM</ChannelId>
+                        </MessageKey>
+                        <RequestMessageInfo>
+                            <BankId/>
+                            <TimeZone/>
+                            <EntityId/>
+                            <EntityType/>
+                            <ArmCorrelationId/>
+                            <MessageDateTime>{pd}</MessageDateTime>
+                        </RequestMessageInfo>
+                        <Security>
+                            <Token>
+                                <PasswordToken>
+                                    <UserId/>
+                                    <Password/>
+                                </PasswordToken>
+                            </Token>
+                            <FICertToken/>
+                            <RealUserLoginSessionId/>
+                            <RealUser/>
+                            <RealUserPwd/>
+                            <SSOTransferToken/>
+                        </Security>
+                    </RequestHeader>
+                </Header>
+                <Body>
+                    <getFullAccountStatementRequest>
+                        <AccountTransactionCriteria>
+                            <acid>{account}</acid>
+                            <beginChkNo/>
+                            <branchId>0010</branchId>
+                            <endChkNo/>
+                            <fromDate>{from_date}</fromDate>
+                            <maxAmt>
+                                <amountValue/>
+                                <currencyCode/>
+                            </maxAmt>
+                            <minAmt>
+                                <amountValue/>
+                                <currencyCode/>
+                            </minAmt>
+                            <numOfTxns/>
+                            <sortIn/>
+                            <txnType/>
+                            <toDate>{to_date}</toDate>
+                        </AccountTransactionCriteria>
+                        <getFullAccountStatement_CustomData/>
+                    </getFullAccountStatementRequest>
+                </Body>
+            </FIXML>""".format(uuid=uuid,pd=pd,account=account,from_date=from_date,to_date=to_date)
+    headers = {
+    'Content-Type': 'application/'
+    'xml'
+    }
+    c.setopt(c.HTTPHEADER, [
+        'Content-Type: application/xml; charset=utf-8'
+    ])
+    c.setopt(c.POSTFIELDS, payload)
+    c.setopt(c.WRITEDATA, buffer)
+    c.perform()
+    http_code = c.getinfo(c.RESPONSE_CODE)
+    body = buffer.getvalue()
+    result = str(body.decode('utf-8'))
+    root = ET.fromstring(result)
+    try:
+        ns = {"fixml": "http://www.finacle.com/fixml"}
+        available_balance = root.find(".//fixml:ledgerBalance/fixml:amountValue", ns).text
+        transactions = []
+        for txn in root.findall(".//fixml:transactionDetails", ns):
+            pstdDate = txn.find("fixml:pstdDate", ns).text
+            txnAmt = txn.find(".//fixml:txnAmt/fixml:amountValue", ns).text
+            txnDesc = txn.find(".//fixml:txnDesc", ns).text.strip()
+            txnType = txn.find(".//fixml:txnType", ns).text
+            txnBalance = txn.find(".//fixml:txnBalance/fixml:amountValue", ns).text
+
+            transactions.append({
+                "txnAmt": txnAmt,
+                "pstdDate": pstdDate,
+                "txnDesc": txnDesc,
+                "txnType": txnType,
+                "txnBalance": txnBalance
+            })
+
+        result = {
+            "availableBalance": available_balance,
+            "transactionDetails": transactions
+        }
+        return result
+    
     except:
         return {"msg":"No record Found"}
 
