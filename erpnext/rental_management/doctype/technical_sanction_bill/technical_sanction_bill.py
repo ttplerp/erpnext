@@ -18,7 +18,7 @@ class TechnicalSanctionBill(AccountsController):
 	@frappe.whitelist()
 	def calculate_total_amount(self):
 		self.total_deduction_amount = 0
-		net_services_total = services_total = tdsAmount = 0
+		net_services_total = services_total = tdsAmount = gst = 0
 		for item in self.deduction: 
 			self.total_deduction_amount += item.deduction_amount
 
@@ -35,10 +35,13 @@ class TechnicalSanctionBill(AccountsController):
 		
 		if self.tds_amount > 0:
 			tdsAmount = self.tds_amount
+		
+		if self.apply_gst and self.gst_amount > 0:
+			gst = self.gst_amount
 		self.total_amount = net_services_total - self.total_deduction_amount - tdsAmount
 
 		self.total_gross_amount = services_total
-		self.invoice_amount = net_services_total
+		self.invoice_amount = net_services_total + gst
 
 	def on_submit(self):
 		self.make_gl_entries()
@@ -76,6 +79,7 @@ class TechnicalSanctionBill(AccountsController):
 			gl_entries = []
 			currency = frappe.db.get_value(doctype=self.party_type, filters=self.party, fieldname=["default_currency"], as_dict=True)
 			default_ba =  get_default_ba()
+			gst_account = frappe.db.get_value("Company", self.company,'output_gst_account')
 
 			if self.party_type not in ["Customer","Supplier"]:
 				frappe.throw("Party type can only be Customer or Supplier!")
@@ -96,6 +100,9 @@ class TechnicalSanctionBill(AccountsController):
 
 			if not rec_gl:
 				frappe.throw(_("Default Receivable Account is not defined in Company Settings."))
+
+			if not gst_account:
+				frappe.throw(_("Default Output GST Account is not defined in Company"))
 					
 			gl_entries.append(
 				self.get_gl_dict({
@@ -182,6 +189,19 @@ class TechnicalSanctionBill(AccountsController):
 						"account": self.tds_account,
 						"credit": self.tds_amount,
 						"credit_in_account_currency": self.tds_amount,
+						"cost_center": cost_center,
+						"company": self.company,
+						"technical_sanction_bill": self.name,
+						"business_activity": default_ba,
+					})
+				)
+
+			if self.apply_gst and flt(self.gst_amount)> 0:
+				gl_entries.append(
+					self.get_gl_dict({
+						"account": gst_account,
+						"credit": self.gst_amount,
+						"credit_in_account_currency": self.gst_amount,
 						"cost_center": cost_center,
 						"company": self.company,
 						"technical_sanction_bill": self.name,

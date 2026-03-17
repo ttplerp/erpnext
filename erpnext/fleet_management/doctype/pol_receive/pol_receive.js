@@ -89,6 +89,25 @@ frappe.ui.form.on('POL Receive', {
 	reset_items:function(frm){
 		cur_frm.clear_table("items");
 	},
+	apply_gst: function(frm){
+		if(frm.doc.apply_gst == 1){
+			frm.refresh_fields("gst_account");
+			if (frm.doc.total_amount_before_gst > 0) {
+				frm.set_value("gst_amount", Math.round(frm.doc.total_amount_before_gst * 0.05));
+				frm.set_value("total_amount", frm.doc.total_amount_before_gst + frm.doc.gst_amount);
+				frm.refresh_fields("gst_amount");
+				frm.refresh_fields("total_amount");
+			}
+
+		}else{
+			frm.set_value("gst_account", "");
+			frm.refresh_fields("gst_account");
+			frm.set_value("gst_amount", "");
+			frm.refresh_fields("gst_amount");
+			frm.set_value("total_amount", frm.doc.total_amount_before_gst);
+			frm.refresh_fields("total_amount");
+		}
+	},
 });
 
 cur_frm.set_query("pol_type", function() {

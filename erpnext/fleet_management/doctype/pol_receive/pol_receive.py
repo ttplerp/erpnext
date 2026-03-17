@@ -65,6 +65,8 @@ class POLReceive(StockController):
 		gl_entries = []
 		self.make_expense_gl_entry(gl_entries)
 		self.make_advance_gl_entry(gl_entries)
+		if self.apply_gst:
+			self.make_gst_gl_entry(gl_entries)
 		gl_entries = merge_similar_entries(gl_entries)
 		make_gl_entries(gl_entries,update_outstanding="No",cancel=self.docstatus == 2)
 
@@ -74,8 +76,8 @@ class POLReceive(StockController):
 			gl_entries.append(
 				self.get_gl_dict({
 					"account": advance_account,
-					"credit": self.total_amount,
-					"credit_in_account_currency": self.total_amount,
+					"credit": flt(self.total_amount_before_gst) if self.apply_gst else flt(self.total_amount),
+					"credit_in_account_currency": flt(self.total_amount_before_gst) if self.apply_gst else flt(self.total_amount),
 					"against_voucher": self.name,
 					"party_type": "Supplier",
 					"party": self.supplier,
@@ -91,8 +93,22 @@ class POLReceive(StockController):
 			gl_entries.append(
 					self.get_gl_dict({
 						"account": expense_account,
-						"debit": self.total_amount,
-						"debit_in_account_currency": self.total_amount,
+						"debit": flt(self.total_amount_before_gst) if self.apply_gst else flt(self.total_amount),
+						"debit_in_account_currency": flt(self.total_amount_before_gst) if self.apply_gst else flt(self.total_amount),
+						"against_voucher": self.name,
+						"against_voucher_type": self.doctype,
+						"cost_center": self.cost_center,
+						"voucher_type":self.doctype,
+						"voucher_no":self.name
+					}, self.currency))
+
+	def make_gst_gl_entry(self, gl_entries):
+		if flt(self.gst_amount) > 0:
+			gl_entries.append(
+					self.get_gl_dict({
+						"account": self.gst_account,
+						"credit": self.gst_amount,
+						"credit_in_account_currency": self.gst_amount,
 						"against_voucher": self.name,
 						"against_voucher_type": self.doctype,
 						"cost_center": self.cost_center,

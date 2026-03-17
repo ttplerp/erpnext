@@ -109,6 +109,26 @@ frappe.ui.form.on('Technical Sanction Bill', {
 	"price_adjustment_amount": function (frm) {
 		cur_frm.set_value("tds_taxable_amount", flt(frm.doc.total_gross_amount) + flt(frm.doc.price_adjustment_amount))
 		calculate_total_amount(frm)
+	},
+	invoice_amount: function (frm) {
+	},
+	apply_gst: function (frm) {
+		if(frm.doc.apply_gst == 1){
+			// if (frm.doc.amount_before_gst > 0) {
+				cur_frm.set_value("amount_before_gst", frm.doc.invoice_amount);
+				cur_frm.set_value("gst_amount",  Math.round(frm.doc.amount_before_gst * 0.05));
+				frm.set_value("invoice_amount", frm.doc.amount_before_gst +  Math.round(frm.doc.amount_before_gst * 0.05));
+			// }
+		}else{
+			cur_frm.set_value("gst_amount", 0);
+			frm.refresh_fields("gst_amount");
+			frm.set_value("invoice_amount", frm.doc.amount_before_gst);
+			frm.refresh_fields("invoice_amount");
+			frm.set_value("amount_before_gst", 0);
+			frm.refresh_fields("amount_before_gst");
+
+		}
+
 	}
 });
 
