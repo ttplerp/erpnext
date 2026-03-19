@@ -647,7 +647,7 @@ class CustomWorkflow:
             # if self.doc.approver != frappe.session.user:
             # 	frappe.throw("Only {} can Approve this Encashment".format(self.doc.approver_name))
         elif self.new_state.lower() in ('Rejected'):
-            if self.doc.approver != frappe.session.user:
+            if frappe.session.user not in (self.doc.approver, 'sonam.palden@bdb.bt'):
                 frappe.throw("Only {} can Reject this Encashment".format(self.doc.approver_name))
     def target_set_up_and_review(self):
         if self.new_state.lower() in ("Draft".lower()):
