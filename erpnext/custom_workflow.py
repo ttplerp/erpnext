@@ -655,11 +655,11 @@ class CustomWorkflow:
                 frappe.throw("Only {} can apply".format(self.doc.owner))
         elif self.new_state and self.old_state and self.new_state.lower() == self.old_state.lower():
             return
-        elif self.new_state.lower() == ("Waiting for Verification".lower()):
+        elif self.new_state.lower() == ("Waiting For Reviewer".lower()):
             self.set_approver("PMS Verifier")
 
-        elif self.old_state.lower() == ("Waiting for Verification".lower()) and self.doc.approver != frappe.session.user:
-            frappe.throw("Only {} can Verify/Reject this Application".format(self.doc.approver_name))
+        elif self.old_state.lower() == ("Waiting For Reviewer".lower()) and self.doc.approver != frappe.session.user:
+            frappe.throw("Only {} can Review/Reject this Application".format(self.doc.approver_name))
         
         elif self.new_state.lower() == ("Waiting Supervisor Approval".lower()):
             self.set_approver("Supervisor")
