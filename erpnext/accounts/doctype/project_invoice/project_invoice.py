@@ -320,8 +320,8 @@ class ProjectInvoice(AccountsController):
         for rec in self.project_invoice_mb:
             if rec.is_selected:
                 total += flt(rec.entry_amount)
-        total -= flt(self.price_adjustment_amount)
-        self.total_amount = flt(total, 2)
+        total += flt(self.price_adjustment_amount)
+        self.total_amount = flt(total,2)
 
         
         if self.apply_gst and self.taxes_and_charges:
