@@ -38,6 +38,9 @@ class PerformanceEvaluation(Document):
 		
 		if self.set_approver_manually !=1 and self.workflow_state != "Draft":
 			validate_workflow_states(self)
+		else:
+			self.approver_designation = frappe.get_value('Employee', {'user_id': self.approver}, 'designation')
+
 		if self.workflow_state != "Approved":
 			notify_workflow_states(self)
 		# self.reset_manual_app()
