@@ -292,7 +292,11 @@ def get_depreciation_details(filters):
         WHERE ds.parent=a.name and ds.schedule_date <= '{to_date}'
         AND a.docstatus = 1
         GROUP BY ds.parent
-    """.format(from_date=filters.from_date, to_date=filters.to_date, fiscal_year = filters.fiscal_year)
+    """.format(
+        from_date=filters.from_date, 
+        to_date= getdate(filters.to_date) if getdate(filters.to_date) < getdate() else getdate(),
+        fiscal_year = filters.fiscal_year
+    )
     
     query= """
         SELECT
