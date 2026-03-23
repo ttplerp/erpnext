@@ -988,13 +988,13 @@ def get_tds_account(percent, company, party_type=None):
    
     if party_type == "Customer":
         account = frappe.db.get_value(
-            "TDS Account Item", {"parent": company, "tds_percent": percent}, "receivable_account"
+            "TDS Account Item", {"parent": company, "tds_percent": percent,}, "receivable_account"
         )  
         if not account:
             frappe.throw("Please set TDS Account in Company")
     else:
         account = frappe.db.get_value(
-            "TDS Account Item", {"parent": company, "tds_percent": percent}, "account"
+            "TDS Account Item", {"parent": company, "tds_percent": percent,"type":"TDS"}, "account"
         )
         if not account:
             frappe.throw("Please set TDS Account in Company")

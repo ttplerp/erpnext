@@ -10,6 +10,8 @@
   "column_break_2",
   "account",
   "column_break_iaihb",
+  "type",
+  "column_break_gi7je",
   "receivable_account"
  ],
  "fields": [
@@ -45,12 +47,23 @@
    "in_list_view": 1,
    "label": "Account (Receivable)",
    "options": "Account"
+  },
+  {
+   "fieldname": "column_break_gi7je",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Type",
+   "options": "TDS\nRetention"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-11-17 18:11:07.332471",
+ "modified": "2026-03-20 10:26:34.003448",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "TDS Account Item",
