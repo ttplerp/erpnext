@@ -235,7 +235,8 @@
    "default": "0",
    "fieldname": "budget_check",
    "fieldtype": "Check",
-   "label": "Ignore Budget Check"
+   "label": "Ignore Budget Check",
+   "permlevel": 1
   },
   {
    "fieldname": "default_party_type",
@@ -337,7 +338,7 @@
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2024-08-13 16:16:20.258213",
+ "modified": "2026-03-25 15:51:31.033917",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Account",
@@ -362,7 +363,7 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "Auditor"
+   "role": "Auditor Manager"
   },
   {
    "email": 1,
