@@ -241,9 +241,9 @@ class PerformanceEvaluation(Document):
 					frappe.throw('You need to rate competency at row <b>{}</b>'.format(item.idx))
 			if item.weightage_percent >=95:
 				if not item.comment:
-					frappe.throw('If Self Rating is more than 95, comment is necessary in Evaluate Competency row <b>{}</b>'.format(item.idx));
+					frappe.throw('If Self Rating is more than 95, comment is necessary in Evaluate Competency row <b>{}</b>'.format(item.idx))
 			if item.weightage_percent >100:
-				frappe.throw('Self Rating cannot be more than 100 in Evaluate Competency row <b>{}</b>'.format(item.idx));
+				frappe.throw('Self Rating cannot be more than 100 in Evaluate Competency row <b>{}</b>'.format(item.idx))
 
 			tot_rating = flt(item.weightage_percent)/100 * flt(item.weightage)
 			item.average = tot_rating
@@ -346,11 +346,11 @@ class PerformanceEvaluation(Document):
 		frappe.db.sql("update `tabPerformance Evaluation` set workflow_state = 'Moderating', docstatus = 0 where name = '{}'".format(self.name))
 		#Updating child table docstatus
 		frappe.db.sql("update `tabEvaluate Target Item` set docstatus = 0 where parent = '{}'".format(self.name))
-		frappe.db.sql("update `tabEvaluate Additional Achievements` set docstatus = 0 where parent = '{}'".format(self.name))
+		# frappe.db.sql("update `tabEvaluate Additional Achievements` set docstatus = 0 where parent = '{}'".format(self.name))
 		frappe.db.sql("update `tabEvaluate Competency` set docstatus = 0 where parent = '{}'".format(self.name))
 		frappe.db.sql("update `tabLeadership Competency` set docstatus = 0 where parent = '{}'".format(self.name))
-		frappe.db.sql("update `tabPerformance Evaluation Negative Target` set docstatus = 0 where parent = '{}'".format(self.name))
-		frappe.db.sql("update `tabSupervisor Declaration` set docstatus = 0 where parent = '{}'".format(self.name))
+		# frappe.db.sql("update `tabPerformance Evaluation Negative Target` set docstatus = 0 where parent = '{}'".format(self.name))
+		# frappe.db.sql("update `tabSupervisor Declaration` set docstatus = 0 where parent = '{}'".format(self.name))
 
 	@frappe.whitelist()
 	def set_approver_designation(self):
