@@ -25,6 +25,7 @@
   "posting_date",
   "is_existing",
   "opening_accrued_interest",
+  "days_in_month",
   "section_break_gb8qi",
   "interest_item",
   "amount_details_section",
@@ -247,12 +248,19 @@
    "fieldtype": "Currency",
    "label": "Total Interest",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "description": "*if checked, it will consider 30 days uniformly over the months",
+   "fieldname": "days_in_month",
+   "fieldtype": "Check",
+   "label": "30 Days in Month"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-03-25 16:43:57.373581",
+ "modified": "2026-03-30 16:43:52.059197",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Treasury",

@@ -249,7 +249,7 @@ def make_treasury_maturity(source_name, target_doc=None):
 		target.interest_amount = flt(interest_amount,2)
 		# target.total_interest_amount = total_interest
 		target.maturity_amount = flt(source.principal_amount+total_interest,2)
-		if source.type_of_instrument == "FDR":
+		if source.type_of_instrument in ("FDR", "Bond"):
 			target.tds_amount = flt(total_interest*0.1,2)
 		elif source.type_of_instrument != "CP":
 			target.tds_amount = flt(total_interest*0.05,2)

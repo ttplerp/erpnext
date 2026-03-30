@@ -140,7 +140,9 @@ class InterestAccrual(Document):
 			days -= days_paid
 			month = flt(str(self.posting_date).split("-")[1])
 			# days_in_month = flt(calendar.monthrange(int(2024), month)[1])
-			if str(treasury.issue_date).split("-")[0] == str(self.posting_date).split("-")[0] and str(treasury.issue_date).split("-")[1] == str(self.posting_date).split("-")[1]:
+			if str(treasury.issue_date).split("-")[0] == str(self.posting_date).split("-")[0] and str(treasury.issue_date).split("-")[1] == str(self.posting_date).split("-")[1] and treasury.days_in_month:
+				days_in_month = 30
+			elif str(treasury.issue_date).split("-")[0] == str(self.posting_date).split("-")[0] and str(treasury.issue_date).split("-")[1] == str(self.posting_date).split("-")[1]:
 				days_in_month = no_of_days_in_month = get_date_diff(treasury.issue_date, get_last_day(getdate(self.posting_date)))
 			else:
 				days_in_month = no_of_days_in_month = get_date_diff(get_first_day(getdate(self.posting_date)), get_last_day(getdate(self.posting_date)))
@@ -149,7 +151,7 @@ class InterestAccrual(Document):
 			self.days = days
 			d2 = datetime.strptime(str(self.posting_date).split("-")[0]+"-12-31","%Y-%m-%d").date()
 			d3 = datetime.strptime(str(self.posting_date).split("-")[0]+"-01-01","%Y-%m-%d").date()
-			days_in_year = ((d2-d3).days)+1
+			days_in_year = ((d2-d3).days)+1 if not treasury.days_in_month else 360
 			self.interest_amount = flt(flt(treasury.principal_amount) * (flt(self.interest_rate)*0.01) *(flt(days)/flt(days_in_year)),2)
 		else:
 			days_paid = frappe.db.sql("""
