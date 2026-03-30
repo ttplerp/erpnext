@@ -25,8 +25,11 @@ import json
 @frappe.whitelist()
 def loan_account_inq(account_no=None):
     buffer = BytesIO()
+    doc = frappe.get_doc("API Detail","MULTI LEDGER")
+    url = str(doc.api_link)
     #url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
-    url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
+    #url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
+    # url = "https://was1-dc-srv.bdbl.bt:11300/FISERVLET/fihttp"
     c = pycurl.Curl()
     c.setopt(c.URL, url)
     c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
@@ -135,8 +138,11 @@ def loan_account_inq(account_no=None):
 @frappe.whitelist()
 def account_inq(account_no=None, uuid=None, posting_date=None):
     buffer = BytesIO()
+    doc = frappe.get_doc("API Detail","MULTI LEDGER")
+    url = str(doc.api_link)
     #url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
-    url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
+    #url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
+    # url = "https://was1-dc-srv.bdbl.bt:11300/FISERVLET/fihttp"
     c = pycurl.Curl()
     c.setopt(c.URL, url)
     c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
@@ -269,8 +275,11 @@ def account_inq(account_no=None, uuid=None, posting_date=None):
 @frappe.whitelist()
 def td_account_inq(account_no=None, uuid=None, posting_date=None):
     buffer = BytesIO()
+    doc = frappe.get_doc("API Detail","MULTI LEDGER")
+    url = str(doc.api_link)
     #url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
-    url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
+    #url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
+    # url = "https://was1-dc-srv.bdbl.bt:11300/FISERVLET/fihttp"
     c = pycurl.Curl()
     c.setopt(c.URL, url)
     c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
@@ -384,15 +393,51 @@ def td_account_inq(account_no=None, uuid=None, posting_date=None):
         return {"msg":"No Account Found"}
     c.close
 
+def prepare_multi():
+    data = {'message': [{'account': '100234567', 'amount': 484360.0, 'debit_credit': 'D', 'remark': 'IB260213/b'}, {'account': '35345347856', 'amount': 60000.0, 'debit_credit': 'C', 'remark': 'IB260213/hofdhfd'}, {'account': '5334543456', 'amount': 545.0, 'debit_credit': 'C', 'remark': 'IB260213/dfgh'}, {'account': '35345347856', 'amount': 60000.0, 'debit_credit': 'C', 'remark': 'IB260213/hofdhfd'}, {'account': '5334543456', 'amount': 545.0, 'debit_credit': 'C', 'remark': 'IB260213/dfgh'}, {'account': '35345347856', 'amount': 60000.0, 'debit_credit': 'C', 'remark': 'IB260213/hofdhfd'}, {'account': '5334543456', 'amount': 545.0, 'debit_credit': 'C', 'remark': 'IB260213/dfgh'}, {'account': '35345347856', 'amount': 60000.0, 'debit_credit': 'C', 'remark': 'IB260213/hofdhfd'}, {'account': '5334543456', 'amount': 545.0, 'debit_credit': 'C', 'remark': 'IB260213/dfgh'}, {'account': '35345347856', 'amount': 60000.0, 'debit_credit': 'C', 'remark': 'IB260213/hofdhfd'}, {'account': '5334543456', 'amount': 545.0, 'debit_credit': 'C', 'remark': 'IB260213/dfgh'}, {'account': '35345347856', 'amount': 60000.0, 'debit_credit': 'C', 'remark': 'IB260213/hofdhfd'}, {'account': '5334543456', 'amount': 545.0, 'debit_credit': 'C', 'remark': 'IB260213/dfgh'}, {'account': '35345347856', 'amount': 60000.0, 'debit_credit': 'C', 'remark': 'IB260213/hofdhfd'}, {'account': '5334543456', 'amount': 545.0, 'debit_credit': 'C', 'remark': 'IB260213/dfgh'}, {'account': '35345347856', 'amount': 60000.0, 'debit_credit': 'C', 'remark': 'IB260213/hofdhfd'}, {'account': '5334543456', 'amount': 545.0, 'debit_credit': 'C', 'remark': 'IB260213/dfgh'}]}
+    for a in data['message']:
+        print(a['account'], a['amount'])
+
+
 @frappe.whitelist()
-def make_fund_transfer(from_account=None, to_account=None, amount=None, remark=None):
+def multi_fund_transfer(data):
     posting_date=get_datetime()
     pd = str(posting_date).split(" ")[0]+"T"+str(posting_date).split(" ")[1]
     import random
     uuid = random.randint(100_000_000, 999_999_999)
+    xml_data = ""
+    sl=1
+    records = data['message'] if isinstance(data, dict) else data
+    for a in records:
+        xml_data += """
+                    <PartTrnRec>
+                        <AcctId>
+                            <AcctId>{account}</AcctId>
+                        </AcctId>
+                        <CreditDebitFlg>{debit_credit}</CreditDebitFlg>
+                        <TrnAmt>
+                            <amountValue>{amount}</amountValue>
+                            <currencyCode>BTN</currencyCode>
+                        </TrnAmt>
+                        <TrnParticulars>{remark}</TrnParticulars>
+                        <PartTrnRmks>{remark}</PartTrnRmks>
+                        <ValueDt>{pd}</ValueDt>
+                        <SerialNum>{sl}</SerialNum>
+                    </PartTrnRec>
+                """.format(account=a['account'],
+                debit_credit=a['debit_credit'],
+                amount=a['amount'],
+                remark=a['remark'],
+                pd=pd,
+                sl=sl
+            )
+        sl += 1
+
     buffer = BytesIO()
-    url = "https://uat-dc-srv.bdbl.bt:22000/FISERVLET/fihttp"
-    #url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
+    doc = frappe.get_doc("API Detail","MULTI LEDGER")
+    url = str(doc.api_link)
+    #url = "https://uat-dc-srv.bdbl.bt:22000/FISERVLET/fihttp"
+    # url = "https://was1-dc-srv.bdbl.bt:11300/FISERVLET/fihttp"
     c = pycurl.Curl()
     c.setopt(c.URL, url)
     c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
@@ -419,7 +464,7 @@ def make_fund_transfer(from_account=None, to_account=None, amount=None, remark=N
                         <EntityId/>
                         <EntityType/>
                         <ArmCorrelationId/>
-                        <MessageDateTime>2025-10-01T17:35:10.353</MessageDateTime>
+                        <MessageDateTime>{pd}</MessageDateTime>
                         </RequestMessageInfo>
                         <Security>
                         <Token>
@@ -444,40 +489,13 @@ def make_fund_transfer(from_account=None, to_account=None, amount=None, remark=N
                         <TrnSubType>CI</TrnSubType>
                         </XferTrnHdr>
                         <XferTrnDetail>
-                            <PartTrnRec>
-                            <AcctId>
-                                <AcctId>{from_account}</AcctId>
-                            </AcctId>
-                            <CreditDebitFlg>D</CreditDebitFlg>
-                            <TrnAmt>
-                                <amountValue>{amount}</amountValue>
-                                <currencyCode>BTN</currencyCode>
-                            </TrnAmt>
-                            <TrnParticulars>{remark}</TrnParticulars>
-                            <PartTrnRmks>{remark}</PartTrnRmks>
-                            <ValueDt>{pd}</ValueDt>
-                            <SerialNum>1</SerialNum>
-                        </PartTrnRec>
-                        <PartTrnRec>
-                            <AcctId>
-                                <AcctId>{to_account}</AcctId>
-                            </AcctId>
-                            <CreditDebitFlg>C</CreditDebitFlg>
-                            <TrnAmt>
-                                <amountValue>{amount}</amountValue>
-                                <currencyCode>BTN</currencyCode>
-                            </TrnAmt>
-                            <TrnParticulars>{remark}</TrnParticulars>
-                            <PartTrnRmks>{remark}</PartTrnRmks>
-                            <ValueDt>{pd}</ValueDt>
-                            <SerialNum>2</SerialNum>
-                        </PartTrnRec>
+                        {xml_data}
                         </XferTrnDetail>
                         </XferTrnAddRq>
                     </XferTrnAddRequest>
                     </Body>
                 </FIXML>
-    """.format(uuid=uuid, from_account=from_account, to_account=to_account, amount=amount, remark=remark, pd=pd)
+    """.format(uuid=uuid, xml_data=xml_data, pd=pd)
 
     headers = {
     'Content-Type': 'application/'
@@ -492,12 +510,19 @@ def make_fund_transfer(from_account=None, to_account=None, amount=None, remark=N
     http_code = c.getinfo(c.RESPONSE_CODE)
     body = buffer.getvalue()
     result = str(body.decode('utf-8'))
-    print(result)
     root = ET.fromstring(result)
     ns = {"fixml": "http://www.finacle.com/fixml"}
-    status = root.find(".//fixml:HostTransaction/fixml:Status", ns).text
-    trans_datetime = root.find(".//fixml:ResponseMessageInfo/fixml:MessageDateTime", ns).text
+    status_elem = root.find(".//fixml:HostTransaction/fixml:Status", ns)
+    status = status_elem.text if status_elem is not None else None
+
+    trn_dt_elem = root.find(".//fixml:XferTrnAddResponse/fixml:XferTrnAddRs/fixml:TrnIdentifier/fixml:TrnDt", ns)
+    trans_datetime = trn_dt_elem.text if trn_dt_elem is not None else None
+
     c.close
+    return {
+        "status": status,
+        "trans_datetime": trans_datetime
+    }
 
 @frappe.whitelist()
 def fund_transfer(from_account=None, to_account=None, amount=None, remark=None):
@@ -507,8 +532,11 @@ def fund_transfer(from_account=None, to_account=None, amount=None, remark=None):
     import random
     uuid = random.randint(100_000_000, 999_999_999)
     buffer = BytesIO()
+    doc = frappe.get_doc("API Detail","MULTI LEDGER")
+    url = str(doc.api_link)
     #url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
-    url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
+    #url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
+    # url = "https://uat-dc-srv.bdbl.bt:22000/FISERVLET/fihttp"
     c = pycurl.Curl()
     c.setopt(c.URL, url)
     c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
@@ -599,9 +627,11 @@ def loan_payment(loan_account=None, payment_account=None, amount=None, remark=No
     import random
     uuid = random.randint(100_000_000, 999_999_999)
     buffer = BytesIO()
+    doc = frappe.get_doc("API Detail","MULTI LEDGER")
+    url = str(doc.api_link)
     #url = "https://was1-dc-srv.bdbl.bt:11300/FISERVLET/fihttp" #New Pro Server
-    #url = "https://uat-dc-srv.bdbl.bt:22000/FISERVLET/fihttp" #New UAT Server
-    url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
+    # url = "https://uat-dc-srv.bdbl.bt:22000/FISERVLET/fihttp" #New UAT Server
+    #url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
     c = pycurl.Curl()
     c.setopt(c.URL, url)
     c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
@@ -676,7 +706,7 @@ def loan_payment(loan_account=None, payment_account=None, amount=None, remark=No
     result = str(body.decode('utf-8'))
     root = ET.fromstring(result)
     ns = {"fixml": "http://www.finacle.com/fixml"}
-    status = root.find(".//fixml:HostTransaction/fixml:Status", ns).text
+    status = root.find(".//fixml:_trandetails/fixml:Status", ns).text
     c.close
     return status
 
@@ -686,8 +716,10 @@ def getLastTransactions(account=None, tran_nos=None):
     import random
     uuid = random.randint(100_000_000, 999_999_999)
     buffer = BytesIO()
+    doc = frappe.get_doc("API Detail","MULTI LEDGER")
+    url = str(doc.api_link)
     #url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
-    url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
+    # url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
     c = pycurl.Curl()
     c.setopt(c.URL, url)
     c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
@@ -773,8 +805,10 @@ def getFullStatement(account=None, from_date=None, to_date=None):
     import random
     uuid = random.randint(100_000_000, 999_999_999)
     buffer = BytesIO()
+    doc = frappe.get_doc("API Detail","MULTI LEDGER")
+    url = str(doc.api_link)
     #url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
-    url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
+    # url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
     c = pycurl.Curl()
     c.setopt(c.URL, url)
     c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
