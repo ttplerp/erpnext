@@ -55,7 +55,7 @@ class PurchaseReceipt(BuyingController):
 				"second_join_field": "po_detail",
 				"percent_join_field": "purchase_order",
 				"overflow_type": "receipt",
-				"second_source_extra_cond": """ and exists(select name from `tabPurchase Invoice`
+				"second_source_extra_cond": """ and exists( select name from `tabPurchase Invoice`
 				where name=`tabPurchase Invoice Item`.parent and update_stock = 1)""",
 			},
 			{
@@ -894,55 +894,14 @@ class PurchaseReceipt(BuyingController):
 
 		self.load_from_db()
 
-	# ============================================================================
-	# VALIDATION: Check for existing Journal Entries before creating new one
-	# ============================================================================
-	def validate_no_existing_journal_entry(self, tax_row_name=None):
-		"""
-		Validate that no Journal Entry exists for this Purchase Receipt
-		If tax_row_name is provided, check only that specific tax row
-		"""
-		filters = {
-			"reference_type": "Purchase Receipt",
-			"reference_name": self.name,
-			"docstatus": 1
-		}
-		
-		# Check if any Journal Entry exists for this PR
-		existing_je = frappe.db.get_value(
-			"Journal Entry Account",
-			filters,
-			"parent"
-		)
-		
-		if existing_je:
-			frappe.throw(
-				_("Cannot create Journal Entry. Journal Entry {0} already exists for this Purchase Receipt.").format(
-					frappe.get_desk_link("Journal Entry", existing_je)
-				)
-			)
-		
-		# If specific tax row is provided, also check if that row already has a journal entry
-		if tax_row_name:
-			tax_row = frappe.db.get_value(
-				"Purchase Taxes and Charges",
-				tax_row_name,
-				"journal_entry"
-			)
-			if tax_row:
-				frappe.throw(
-					_("Tax row already has Journal Entry {0} linked.").format(
-						frappe.get_desk_link("Journal Entry", tax_row)
-					)
-				)
+	
 
 	# ============================================================================
 	# OPTIMIZED: make_journal_entry with duplicate prevention
 	# ============================================================================
 	@frappe.whitelist()
 	def make_journal_entry(self, args):
-		# Validate no existing Journal Entry for this PR
-		self.validate_no_existing_journal_entry(args.name)
+
 		
 		# Get imprest advance account
 		imprest_advance_account = frappe.db.get_value(
@@ -996,13 +955,14 @@ class PurchaseReceipt(BuyingController):
 		je.insert()
 		je.submit()
 
-		# Update the tax row with journal entry reference
-		frappe.db.set_value(
-			"Purchase Taxes and Charges",
-			{"name": args.name},
-			"journal_entry",
-			je.name
-		)
+		# Update the tax row with journal entry reference ONLY if imprest_settlement is ticked
+		if args.get("imprest_settlement"):
+			frappe.db.set_value(
+				"Purchase Taxes and Charges",
+				{"name": args.name},
+				"journal_entry",
+				je.name
+			)
 
 		frappe.msgprint(
 			_("Journal Entry created and submitted successfully: {0}").format(
@@ -1011,14 +971,8 @@ class PurchaseReceipt(BuyingController):
 		)
 
 		return je.name
-
-	# ============================================================================
-	# OPTIMIZED: make_tax_payment with duplicate prevention
-	# ============================================================================
 	@frappe.whitelist()
 	def make_tax_payment(self, args=None):
-		# Validate no existing Journal Entry for this PR
-		self.validate_no_existing_journal_entry()
 		
 		gst_input_account = None
 		cost_center = None
@@ -1033,6 +987,7 @@ class PurchaseReceipt(BuyingController):
 		bank_account = frappe.db.get_value("Company", self.company, "default_bank_account")
 		gst_amount = 0
 		gst_tax_rows = []
+		gst_5_percent_row = None  # Track the specific 5% GST Inward row
 		
 		# Process only GST taxes (is_gst = 1)
 		for tax in self.taxes:
@@ -1040,6 +995,10 @@ class PurchaseReceipt(BuyingController):
 				tax_amount = flt(tax.base_tax_amount_after_discount_amount, 2)
 				gst_amount += tax_amount
 				gst_tax_rows.append(tax)
+				
+				# Store the row if account head is exactly "5% GST Inward"
+				if tax.account_head == "5% GST Inward":
+					gst_5_percent_row = tax
 				
 				# Update cost_center if not set yet
 				if not cost_center and tax.cost_center:
@@ -1090,15 +1049,14 @@ class PurchaseReceipt(BuyingController):
 		je.insert()
 		je.submit()
 		
-		# Update all GST tax rows with the journal entry reference
-		for tax in gst_tax_rows:
+		if gst_5_percent_row:
 			frappe.db.set_value(
 				"Purchase Taxes and Charges",
-				tax.name,
-				"journal_entry",
+				gst_5_percent_row.name,
+				"reference_no",
 				je.name
 			)
-		
+			
 		frappe.msgprint(
 			_("Tax Payment Journal created and submitted successfully: {0}").format(
 				frappe.get_desk_link("Journal Entry", je.name)
@@ -1106,8 +1064,7 @@ class PurchaseReceipt(BuyingController):
 		)
 		
 		return je.name
-
-
+		
 @erpnext.allow_regional
 def update_regional_gl_entries(gl_list, doc):
 	return
@@ -1532,9 +1489,7 @@ def get_permission_query_conditions(user):
 	)
 
 
-# ============================================================================
-# DEPRECATED: Use the class methods instead (kept for backward compatibility)
-# ============================================================================
+
 @frappe.whitelist()
 def make_tax_payment(source_name, target_doc=None, args=None):
 	"""Legacy function - kept for backward compatibility"""

@@ -1,5 +1,3 @@
-// Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and Contributors
-// License: GNU General Public License v3. See license.txt
 
 {% include 'erpnext/public/js/controllers/buying.js' %};
 
@@ -63,11 +61,6 @@ frappe.ui.form.on("Purchase Receipt", {
 	},
 
 	refresh: function (frm) {
-		// Optimized: Check for existing journal entries in taxes
-		if (frm.doc.docstatus == 1) {
-			frm.events.check_and_add_tax_payment_button(frm);
-		}
-
 		if (frm.doc.company) {
 			frm.trigger("toggle_display_account_head");
 		}
@@ -81,6 +74,21 @@ frappe.ui.form.on("Purchase Receipt", {
 			}
 		}
 		
+		if(cur_frm.doc.supplier && cur_frm.doc.docstatus == 1){
+				frappe.db.get_value("Supplier", frm.doc.supplier, "country", (r)=>{
+					if(r.country != "Bhutan" && frm.doc.supplier && frm.doc.docstatus == 1){
+						if(!cur_frm.doc.tax_payment_jv){
+							cur_frm.add_custom_button(
+								__("Tax Payment Journal"),
+								make_tax_payment,
+								__("Create")
+							);
+						}
+					}
+				})
+
+			}
+
 		if (frm.doc.docstatus === 1 && frm.doc.is_return === 1 && frm.doc.per_billed !== 100) {
 			frm.add_custom_button(__('Debit Note'), function () {
 				frappe.model.open_mapped_doc({
@@ -110,47 +118,6 @@ frappe.ui.form.on("Purchase Receipt", {
 		}
 
 		frm.events.add_custom_buttons(frm);
-	},
-
-	// New optimized function to check and add tax payment button
-	check_and_add_tax_payment_button: function(frm) {
-		if (!frm.doc.supplier) return;
-		
-		frappe.db.get_value("Supplier", frm.doc.supplier, "country", (r) => {
-			if (r.country != "Bhutan") {
-				// Check if any tax row has a journal_entry
-				let has_journal_entry = frm.doc.taxes?.some(tax => tax.journal_entry) || false;
-				
-				// Only show button if no tax has journal_entry AND tax_payment_jv is not set
-				if (!frm.doc.tax_payment_jv && !has_journal_entry) {
-					frm.add_custom_button(
-						__("Tax Payment Journal"),
-						() => frm.events.make_tax_payment(frm),
-						__("Create")
-					);
-				}
-			}
-		});
-	},
-
-	// Optimized tax payment function
-	make_tax_payment: function(frm) {
-		// Double-check before creating
-		let has_journal_entry = frm.doc.taxes?.some(tax => tax.journal_entry) || false;
-		
-		if (has_journal_entry) {
-			frappe.msgprint(__('Cannot create Tax Payment Journal because some taxes already have Journal Entries.'));
-			return;
-		}
-		
-		frappe.model.open_mapped_doc({
-			method: "erpnext.stock.doctype.purchase_receipt.purchase_receipt.make_tax_payment",
-			frm: frm,
-			callback: function(doc) {
-				// After successful creation, remove the button
-				frm.remove_custom_button('Tax Payment Journal', 'Create');
-			}
-		});
 	},
 
 	add_custom_buttons: function (frm) {
@@ -189,6 +156,7 @@ frappe.ui.form.on("Purchase Receipt", {
 		frm.fields_dict["items"].grid.set_column_disp(["cost_center"], enabled);
 	},
 	
+	// FIX: Add taxes_and_charges handler
 	taxes_and_charges: function(frm) {
 		if (frm.doc.taxes_and_charges) {
 			frm.trigger("load_taxes_from_template");
@@ -434,6 +402,7 @@ cur_frm.cscript.update_status = function (status) {
 	})
 }
 
+// FIX: Add tax calculation and validation handlers
 frappe.ui.form.on("Purchase Taxes and Charges", {
     account_head: function(frm, cdt, cdn) {
         var row = locals[cdt][cdn];
@@ -466,41 +435,7 @@ frappe.ui.form.on("Purchase Taxes and Charges", {
     
     tax_amount: function(frm, cdt, cdn) {
         frm.refresh_field("taxes");
-    },
-    
-    // Optimized make_journal_entry function
-    make_journal_entry: function (frm, cdt, cdn) {
-        let row = locals[cdt][cdn];
-        
-        // Check if this tax row already has a journal entry
-        if (row.journal_entry) {
-            frappe.msgprint(__('Journal Entry already exists: {0}', [row.journal_entry]));
-            return;
-        }
-        
-        frappe.call({
-            method: "make_journal_entry",
-            doc: frm.doc,
-            args: row,
-            callback: function (r) {
-                if (r.message) {
-                    frappe.model.set_value(cdt, cdn, "journal_entry", r.message);
-                    frm.refresh_field("taxes");
-                    frm.dirty();
-                    
-                    // After creating journal entry, hide the Tax Payment Journal button
-                    frm.remove_custom_button('Tax Payment Journal', 'Create');
-                    
-                    frappe.msgprint(__('Journal Entry created successfully: {0}', [r.message]));
-                }
-            }
-        });
-    },
-
-    payable_to_different_vendor: function (frm, cdt, cdn) {
-        let row = locals[cdt][cdn];
-        frappe.model.set_value(cdt, cdn, "amount_paid_to_different_vendors", row.tax_amount);
-    },
+    }
 });
 
 function calculate_tax_amount(frm, cdt, cdn) {
@@ -592,6 +527,32 @@ var validate_sample_quantity = function (frm, cdt, cdn) {
 	}
 };
 
+frappe.ui.form.on('Purchase Taxes and Charges', {
+	make_journal_entry: function (frm, cdt, cdn) {
+		let row = locals[cdt][cdn]
+		frappe.call({
+			method: "make_journal_entry",
+			doc: frm.doc,
+			args: row,
+			callback: function (r) {
+				if (r.message) {
+					// Only update journal_entry if imprest_settlement is ticked
+					if (row.imprest_settlement) {
+						frappe.model.set_value(cdt, cdn, "journal_entry", r.message);
+					}
+					frm.refresh_field("taxes")
+					frm.dirty()
+				}
+			}
+		})
+	},
+
+	payable_to_different_vendor: function (frm, cdt, cdn) {
+		let row = locals[cdt][cdn]
+		frappe.model.set_value(cdt, cdn, "amount_paid_to_different_vendors", row.tax_amount);
+	},
+});
+
 frappe.ui.form.on("Purchase Receipt", "before_save", function(frm) {
     if (frm.doc.taxes && frm.doc.taxes.length > 0) {
         frm.doc.taxes.forEach(function(tax, index) {
@@ -603,4 +564,9 @@ frappe.ui.form.on("Purchase Receipt", "before_save", function(frm) {
     }
 });
 
-// Note: make_tax_payment function is now moved to frm.events
+var make_tax_payment = function() {
+	frappe.model.open_mapped_doc({
+		method: "erpnext.stock.doctype.purchase_receipt.purchase_receipt.make_tax_payment",
+		frm: cur_frm,
+	});
+}
