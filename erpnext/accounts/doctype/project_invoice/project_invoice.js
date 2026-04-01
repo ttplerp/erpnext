@@ -206,6 +206,24 @@ frappe.ui.form.on('Project Invoice', {
 	},
 	type: function (frm) {
 		tds_calculation(frm)
+	},
+	apply_gst: function (frm) {
+		if(frm.doc.apply_gst == 1){
+			// if (frm.doc.amount_before_gst > 0) {
+				cur_frm.set_value("amount_before_gst", frm.doc.net_amount);
+				cur_frm.set_value("gst_amount",  Math.round(frm.doc.amount_before_gst * 0.05));
+				frm.set_value("net_invoice_amount", (frm.doc.amount_before_gst - frm.doc.total_deduction_amount) +  Math.round(frm.doc.amount_before_gst * 0.05));
+			// }
+		}else{
+			cur_frm.set_value("gst_amount", 0);
+			frm.refresh_fields("gst_amount");
+			frm.set_value("net_invoice_amount", frm.doc.amount_before_gst - frm.doc.total_deduction_amount);
+			frm.refresh_fields("net_invoice_amount");
+			frm.set_value("amount_before_gst", 0);
+			frm.refresh_fields("amount_before_gst");
+
+		}
+
 	}
 });
 
@@ -482,7 +500,7 @@ function tds_calculation(frm) {
 
 	cur_frm.set_value("tds_taxable_amount", cur_frm.doc.net_amount);
 	cur_frm.refresh_field("tds_taxable_amount")
-	cur_frm.set_value("tds_amount", (cur_frm.doc.tds_rate / 100) * cur_frm.doc.tds_taxable_amount);
+	cur_frm.set_value("tds_amount", Math.round((cur_frm.doc.tds_rate / 100) * cur_frm.doc.tds_taxable_amount));
 	cur_frm.refresh_field("tds_amount")
     frm.trigger("tds_rate")
 	calculate_deductions(cur_frm)

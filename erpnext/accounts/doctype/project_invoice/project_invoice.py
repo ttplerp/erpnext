@@ -403,7 +403,7 @@ class ProjectInvoice(AccountsController):
 		self.gross_invoice_amount    = flt(gross_invoice_amount)
 		self.net_amount              = flt(self.gross_invoice_amount)-flt(rebate_deduction_total)
 		self.price_adjustment_amount = flt(price_adjustment_amount)
-		self.net_invoice_amount = self.outstanding_amount      = flt(self.net_amount)+flt(self.price_adjustment_amount)-flt(self.advance_recovery)-flt(self.total_deduction_amount)
+		self.net_invoice_amount = self.outstanding_amount      = flt(self.net_amount)+flt(self.price_adjustment_amount)-flt(self.advance_recovery)-flt(self.total_deduction_amount) + self.gst_amount
 		self.total_balance_amount    = flt(self.net_invoice_amount)-flt(self.total_received_amount)-flt(self.total_paid_amount)
 		
 		if flt(self.gross_invoice_amount) == 0:
@@ -425,6 +425,8 @@ class ProjectInvoice(AccountsController):
 		self.make_advance_gl_entry(gl_entries)
 		self.make_other_deduction_gl_entry(gl_entries)
 		self.make_tds_gl_entry(gl_entries)
+		if self.apply_gst:
+			self.make_gst_gl_entry(gl_entries)
 		gl_entries = merge_similar_entries(gl_entries)
 		make_gl_entries(gl_entries,update_outstanding="No",cancel=self.docstatus == 2)
 						
@@ -527,6 +529,36 @@ class ProjectInvoice(AccountsController):
 					"posting_date":self.invoice_date
 				},self.currency)
 			)
+
+	def make_gst_gl_entry(self, gl_entries):
+		if flt(self.gst_amount) > 0:
+			gst_account_output = frappe.db.get_value("Company", self.company,'output_gst_account')
+
+			if not gst_account_output:
+				frappe.throw(_("Default Output GST Account is not defined in Company"))
+
+			gst_account_input = frappe.db.get_value("Company", self.company,'input_gst_account')
+
+			if not gst_account_input:
+				frappe.throw(_("Default Input GST Account is not defined in Company"))
+				
+			gst_account_output_type = frappe.db.get_value(doctype="Account", filters=gst_account_output, fieldname=["account_type"])
+			gst_account_input_type = frappe.db.get_value(doctype="Account", filters=gst_account_input, fieldname=["account_type"])
+
+			gl_entries.append(
+				self.get_gl_dict({"account": gst_account_input if self.party_type == "Supplier" else gst_account_output,
+					"debit" if self.party_type == "Supplier" else "credit": flt(self.gst_amount),
+					"debit_in_account_currency" if self.party_type == "Supplier" else "credit_in_account_currency": flt(self.gst_amount),
+					"cost_center": self.cost_center,
+					"account_type": gst_account_input_type if self.party_type == "Supplier" else gst_account_output_type,
+					"is_advance": "No",
+					"reference_type": self.doctype,
+					"reference_name": self.name,
+					"project": self.project,
+					"posting_date":self.invoice_date,
+				},self.currency)
+			)
+
 	def update_boq_item(self):
 		name_list = self.get_name_list()
 		if self.invoice_type == "Direct Invoice":
