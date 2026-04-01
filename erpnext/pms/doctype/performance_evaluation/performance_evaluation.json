@@ -105,7 +105,8 @@
   "other_information_section",
   "reason",
   "column_break_73",
-  "reference"
+  "reference",
+  "amended_from"
  ],
  "fields": [
   {
@@ -758,11 +759,20 @@
    "fieldtype": "Float",
    "label": "Form lll Score",
    "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Performance Evaluation",
+   "print_hide": 1,
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2026-01-28 19:16:32.568352",
+ "modified": "2026-04-01 09:51:04.106088",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Performance Evaluation",
