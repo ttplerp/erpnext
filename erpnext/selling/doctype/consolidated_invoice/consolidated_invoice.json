@@ -211,6 +211,7 @@
    "label": "Invoices"
   },
   {
+   "allow_bulk_edit": 1,
    "fieldname": "items",
    "fieldtype": "Table",
    "options": "Consolidated Invoice Item",
@@ -261,7 +262,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-12-29 22:54:10.395160",
+ "modified": "2026-04-06 11:29:32.390586",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Consolidated Invoice",

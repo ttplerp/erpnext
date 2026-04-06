@@ -2,6 +2,12 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Consolidated Invoice', {
+	onload_post_render: function(frm){
+		if (frm.doc.docstatus === 1){
+			$(".grid-footer").attr('style','');
+		}
+		$(".grid-upload").addClass('hidden');
+	},
 	refresh: function(frm) {
 		if(!frm.doc.posting_date) {
 			frm.set_value("posting_date", get_today())
@@ -24,7 +30,7 @@ frappe.ui.form.on('Consolidated Invoice', {
 	},
 	to_date: function(frm) {
 		if(frm.doc.from_date && frm.doc.from_date < frm.doc.to_date) {
-			get_invoices(frm.doc.from_date, frm.doc.to_date, ßfrm.doc.item_code, frm.doc.customer, frm.doc.cost_center)
+			get_invoices(frm.doc.from_date, frm.doc.to_date, frm.doc.item_code, frm.doc.customer, frm.doc.cost_center)
 		}
 		else if(frm.doc.from_date && frm.doc.from_date > frm.doc.to_date) {
 			msgprint("To Date should be smaller than From Date")
