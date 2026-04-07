@@ -24,6 +24,7 @@
   "branch_created",
   "use_budget_from_parent",
   "budget_cost_center",
+  "budget_check",
   "clearance_section_section",
   "approver",
   "column_break_18",
@@ -176,13 +177,20 @@
   {
    "fieldname": "column_break_18",
    "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "description": "*ignore budget check related to this cost center",
+   "fieldname": "budget_check",
+   "fieldtype": "Check",
+   "label": "Ignore Budget Check"
   }
  ],
  "icon": "fa fa-money",
  "idx": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2024-03-21 11:05:37.643951",
+ "modified": "2026-04-06 10:08:15.440625",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Cost Center",
@@ -204,7 +212,7 @@
    "export": 1,
    "read": 1,
    "report": 1,
-   "role": "Auditor"
+   "role": "Auditor Manager"
   },
   {
    "email": 1,

@@ -209,7 +209,13 @@ def validate_expense_against_budget(args):
 	if not account_type:
 		frappe.throw("Account Type missing for Budget account <b>{}</b>".format(args.account))
 
+	# ignore account base budget check
 	if account_dtl.budget_check:
+		return
+	# ignore cc base budget check
+	cost_center_doc = frappe.get_doc("Cost Center", args.cost_center)
+	budget_cc = cost_center_doc.budget_cost_center if cost_center_doc.use_budget_from_parent else args.cost_center
+	if frappe.get_value("Cost Center", budget_cc, "budget_check"):
 		return
 	'''
 	if not frappe.db.exists("Budget Settings Account Types", {"parent":"Budget Settings","account_type":account_type}):
