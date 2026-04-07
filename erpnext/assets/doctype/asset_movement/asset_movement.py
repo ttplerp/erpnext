@@ -130,6 +130,8 @@ class AssetMovement(Document):
 		current_cost_center, current_employee, current_employee_name = "", "", ""
 		cond = "1=1"
 
+		cbs_enable = 0
+		gl = 0
 		for d in self.assets:
 			args = {"asset": d.asset, "company": self.company}
 
@@ -172,9 +174,18 @@ class AssetMovement(Document):
 			
 			""" Asset transfer gl """
 			if d.source_cost_center != d.target_cost_center and self.purpose == "Transfer":
+				gl = 1
 				self.posting_date = self.transaction_date
 				self.remarks = self.doctype + ' - ' + self.name
 				make_asset_transfer_gl(self, d.asset, self.transaction_date, d.source_cost_center, d.target_cost_center, cancel)
+				
+				source_cc_code = frappe.db.get_value("Cost Center", d.source_cost_center, "cost_center_number")
+				target_cc_code = frappe.db.get_value("Cost Center", d.target_cost_center, "cost_center_number")
+				if str(source_cc_code) != str(target_cc_code) and not cbs_enable:
+					cbs_enable = 1
+		# disable gl_entry push to cbs for same sol's
+		if cbs_enable == 0 and gl:
+			frappe.db.sql("update `tabGL Entry` set cbs_enabled=0 where voucher_type='Asset Movement' and voucher_no='{}'".format(self.name))
 			
 	# Update Cost Center in Depreciation Journal Entries and GL Entries, on backdated Asset Movement
 	def update_ledger(self, cancel=0):
@@ -207,7 +218,7 @@ class AssetMovement(Document):
 				select name
 				from `tabAsset` 
 				where custodian = {} 
-				and docstatus = 1 
+				and docstatus = 1 and status not in ('Draft', 'Scrapped', 'Sold')
 				""".format(self.from_employee),as_dict = 1)
 			if asset_list:
 				self.set("assets",[])
