@@ -213,9 +213,11 @@ def validate_expense_against_budget(args):
 	if account_dtl.budget_check:
 		return
 	# ignore cc base budget check
+	cost_center_doc = budget_cc = ''
 	cost_center_doc = frappe.get_doc("Cost Center", args.cost_center)
 	budget_cc = cost_center_doc.budget_cost_center if cost_center_doc.use_budget_from_parent else args.cost_center
-	if frappe.get_value("Cost Center", budget_cc, "budget_check"):
+	
+	if frappe.get_value("Budget Account", {"account": args.account, "parent": frappe.db.get_value("Budget", {"cost_center": budget_cc, "fiscal_year": args.fiscal_year, "docstatus": 1}, "name")}, "budget_check"):
 		return
 	'''
 	if not frappe.db.exists("Budget Settings Account Types", {"parent":"Budget Settings","account_type":account_type}):
