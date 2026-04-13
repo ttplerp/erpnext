@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "BR.YYYY.###",
  "creation": "2022-09-11 09:29:25.117778",
@@ -168,7 +169,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-03 14:48:51.718251",
+ "modified": "2026-04-13 14:42:57.426366",
  "modified_by": "Administrator",
  "module": "Budget",
  "name": "Budget Reappropiation",
