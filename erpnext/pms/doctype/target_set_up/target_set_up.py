@@ -115,10 +115,11 @@ class TargetSetUp(Document):
 			total_target_weightage = 0
 			# total weightage must be 100
 			for i, t in enumerate(self.target_item):
-				if t.qty_quality == 'Quantity' and flt(t.quantity) <= 0 :
+				""" if t.qty_quality == 'Quantity' and flt(t.quantity) <= 0 :
 					frappe.throw(
 						title=_('Error'),
 						msg=_("<b>{}</b> value is not allowed for <b>Quantity</b> in Target Item at Row <b>{}</b>".format(t.quantity,i+1)))
+				 """
 				'''
 				if t.qty_quality == 'Quality' and flt(t.quality) <= 0 :
 					frappe.throw(
