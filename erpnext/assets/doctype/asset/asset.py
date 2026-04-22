@@ -932,7 +932,7 @@ class Asset(AccountsController):
 				"reference_name": self.name,
 				"cost_center": self.cost_center
 				})
-			je.submit()
+			je.save()
 
 		if self.is_existing_asset and self.asset_category not in ("Investment Property", "Land") and self.opening_accumulated_depreciation:
 			je = frappe.new_doc("Journal Entry")
@@ -963,7 +963,7 @@ class Asset(AccountsController):
 				"reference_name": self.name,
 				"cost_center": self.cost_center
 				})
-			je.submit()
+			je.save()
 	
 	def make_gl_entries(self):
 		gl_entries = []
