@@ -12,7 +12,9 @@
   "column_break_7",
   "recoup_type",
   "account",
-  "amount"
+  "amount",
+  "apply_gst",
+  "gst_amount"
  ],
  "fields": [
   {
@@ -61,12 +63,25 @@
    "fieldname": "remarks",
    "fieldtype": "Small Text",
    "label": "Remarks"
+  },
+  {
+   "default": "0",
+   "fieldname": "apply_gst",
+   "fieldtype": "Check",
+   "label": "Apply GST"
+  },
+  {
+   "depends_on": "eval: doc.apply_gst == 1",
+   "fieldname": "gst_amount",
+   "fieldtype": "Currency",
+   "label": "GST Amount",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-05-24 11:35:25.163433",
+ "modified": "2026-04-23 16:53:42.767478",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Imprest Recoup Item",
