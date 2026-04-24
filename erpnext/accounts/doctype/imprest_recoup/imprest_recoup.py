@@ -27,9 +27,10 @@ class ImprestRecoup(Document):
 				]
 
 	def calculate_amount(self):
-		total_payable_amt = sum(d.amount for d in self.items) if self.items else 0
-		self.total_amount_before_gst = total_payable_amt
-		self.total_amount = self.total_amount_before_gst + self.gst_amount if self.apply_gst else self.total_amount_before_gst
+		total_payable_amt = sum((d.amount if d.amount else 0) for d in self.items) if self.items else 0
+		self.gst_amount = sum((d.gst_amount if d.gst_amount else 0) for d in self.items) if self.items else 0
+		# self.total_amount_before_gst = total_payable_amt
+		self.total_amount = total_payable_amt + flt(self.gst_amount)
 	
 	def calculate_amount_final(self):
 		tot_bal_amt = sum(d.balance_amount for d in self.imprest_advance_list)
@@ -275,9 +276,13 @@ class ImprestRecoup(Document):
 
 				})
 			
-			if self.apply_gst:
+			if self.gst_amount > 0:
+				gst_account = frappe.db.get_value("Company", self.company, "input_gst_account")
+				if not gst_account:
+					frappe.throw("GST Input account not set in the Company Settings")
+
 				je.append("accounts", {
-					"account": self.gst_account,
+					"account": gst_account,
 					"debit_in_account_currency": self.gst_amount,
 					"cost_center": self.cost_center,
 					"project": self.project,
@@ -289,7 +294,7 @@ class ImprestRecoup(Document):
 
 			je.append("accounts", {
 				"account": credit_account,
-				"credit_in_account_currency": self.total_amount if self.apply_gst else self.total_amount_before_gst,
+				"credit_in_account_currency": self.total_amount,
 				"cost_center": self.cost_center,
 				"project": self.project,
 				"reference_type": "Imprest Recoup",

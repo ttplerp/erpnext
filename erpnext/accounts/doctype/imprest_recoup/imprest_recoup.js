@@ -50,24 +50,24 @@ frappe.ui.form.on('Imprest Recoup', {
 			}
 		});
 	},
-	apply_gst: function(frm){
-		if(frm.doc.apply_gst == 1){
-			if (frm.doc.total_amount_before_gst > 0) {
-				frm.set_value("gst_amount", Math.round(frm.doc.total_amount_before_gst * 0.05));
-				frm.set_value("total_amount", frm.doc.total_amount_before_gst + Math.round(frm.doc.total_amount_before_gst * 0.05));
-				frm.refresh_fields("gst_amount");
-				frm.refresh_fields("total_amount");
-			}
+	// apply_gst: function(frm){
+	// 	if(frm.doc.apply_gst == 1){
+	// 		if (frm.doc.total_amount_before_gst > 0) {
+	// 			frm.set_value("gst_amount", Math.round(frm.doc.total_amount_before_gst * 0.05));
+	// 			frm.set_value("total_amount", frm.doc.total_amount_before_gst + Math.round(frm.doc.total_amount_before_gst * 0.05));
+	// 			frm.refresh_fields("gst_amount");
+	// 			frm.refresh_fields("total_amount");
+	// 		}
 
-		}else{
-			frm.set_value("gst_account", "");
-			frm.refresh_fields("gst_account");
-			frm.set_value("gst_amount", "");
-			frm.refresh_fields("gst_amount");
-			frm.set_value("total_amount", frm.doc.total_amount_before_gst);
-			frm.refresh_fields("total_amount");
-		}
-	},
+	// 	}else{
+	// 		frm.set_value("gst_account", "");
+	// 		frm.refresh_fields("gst_account");
+	// 		frm.set_value("gst_amount", "");
+	// 		frm.refresh_fields("gst_amount");
+	// 		frm.set_value("total_amount", frm.doc.total_amount_before_gst);
+	// 		frm.refresh_fields("total_amount");
+	// 	}
+	// },
 });
 
 frappe.ui.form.on("Imprest Recoup Item", {
@@ -100,7 +100,17 @@ frappe.ui.form.on("Imprest Recoup Item", {
 				frm.refresh_fields();
 			}
 		});
-	}
+	},
+	apply_gst: function(frm, cdt, cdn){
+		var row = locals[cdt][cdn];
+		if(row.apply_gst == 1){
+			if (row.amount > 0) {
+				frappe.model.set_value(cdt, cdn, "gst_amount", Math.round(row.amount * 0.05));
+			}
+		}else{
+			frappe.model.set_value(cdt, cdn, "gst_amount", "");
+		}
+	},
 })
 
 var get_imprest_advance = function(frm){
