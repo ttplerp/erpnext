@@ -465,7 +465,6 @@
    "default": "0",
    "fieldname": "set_manual_approver",
    "fieldtype": "Check",
-   "hidden": 1,
    "label": "Set Manual Approver",
    "permlevel": 1
   },
@@ -493,7 +492,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-12 10:28:11.980560",
+ "modified": "2026-04-29 12:38:50.793050",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "Target Set Up",
