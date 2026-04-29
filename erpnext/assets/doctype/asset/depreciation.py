@@ -318,7 +318,7 @@ def reset_asset_value_for_scrap_sales(asset_name, posting_date):
 			#Update Depreciation Schedule table
 			frappe.db.set_value("Depreciation Schedule", dtl[0].name, "schedule_date", posting_date)
 			frappe.db.set_value("Depreciation Schedule", dtl[0].name, "no_of_days_in_a_schedule", pro_rate_days)
-			frappe.db.set_value("Depreciation Schedule", dtl[0].name, "journal_entry", je.name)
+			frappe.db.set_value("Depreciation Schedule", dtl[0].name, "journal_entry", je.name if flt(dtl[0].income_depreciation_amount) else '')
 			frappe.db.set_value("Depreciation Schedule", dtl[0].name, "depreciation_amount", flt(pro_rate_depreciation_amount))
 			frappe.db.set_value("Depreciation Schedule", dtl[0].name, "income_depreciation_amount", flt(pro_rate_depreciation_income_tax))
 			frappe.db.set_value("Depreciation Schedule", dtl[0].name, "accumulated_depreciation_amount", flt(pro_accumulated_depreciation_amount))
