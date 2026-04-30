@@ -652,13 +652,14 @@ class CustomWorkflow:
     def target_set_up_and_review(self):
         if self.new_state.lower() in ("Draft".lower()):
             if frappe.session.user != self.doc.owner:
-                frappe.throw("Only {} can apply".format(self.doc.owner))
+                return
+                # frappe.throw("Only {} can apply".format(self.doc.owner))
         elif self.new_state and self.old_state and self.new_state.lower() == self.old_state.lower():
             return
-        elif self.new_state.lower() == ("Waiting For Reviewer".lower()):
+        elif self.new_state.lower() == ("Waiting For Reviewer".lower()) or self.new_state.lower() == ("Waiting for Verification".lower()):
             self.set_approver("PMS Verifier")
 
-        elif self.old_state.lower() == ("Waiting For Reviewer".lower()) and self.doc.approver != frappe.session.user:
+        elif (self.old_state.lower() == ("Waiting For Reviewer".lower()) or self.old_state.lower() == ("Waiting for Verification".lower())) and self.doc.approver != frappe.session.user:
             frappe.throw("Only {} can Review/Reject this Application".format(self.doc.approver_name))
         
         elif self.new_state.lower() == ("Waiting Supervisor Approval".lower()):
