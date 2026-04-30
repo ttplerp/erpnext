@@ -423,8 +423,8 @@ def get_gl_entries_on_asset_disposal(asset, selling_amount=0, finance_book=None)
 	gl_entries = [
 		{
 			"account": fixed_asset_account,
-			"credit_in_account_currency": asset.gross_purchase_amount,
-			"credit": asset.gross_purchase_amount,
+			"credit_in_account_currency": flt(asset.gross_purchase_amount, 2),
+			"credit": flt(asset.gross_purchase_amount, 2),
 			"cost_center": depreciation_cost_center,
 		}
 	]
@@ -473,7 +473,7 @@ def get_asset_details(asset, finance_book=None):
 			if asset.calculate_depreciation
 			else asset.value_after_depreciation
 		)
-	accumulated_depr_amount = flt(asset.gross_purchase_amount) - flt(value_after_depreciation)
+	accumulated_depr_amount = flt(asset.gross_purchase_amount, 2) - flt(value_after_depreciation, 2)
 	return (
 		fixed_asset_account,
 		asset,
@@ -481,7 +481,7 @@ def get_asset_details(asset, finance_book=None):
 		accumulated_depr_account,
 		accumulated_depr_amount,
 		gain_disposal_account,
-		value_after_depreciation,
+		flt(value_after_depreciation, 2),
 	)
 
 
