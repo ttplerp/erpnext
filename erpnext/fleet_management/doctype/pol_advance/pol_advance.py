@@ -133,7 +133,7 @@ class POLAdvance(AccountsController):
 
 		je.append("accounts",{
 			"account": credit_account,
-			"credit_in_account_currency": self.amount if not self.gst_amount else flt(self.amount) + flt(self.gst_amount),
+			"credit_in_account_currency": self.amount,
 			"cost_center": self.cost_center,
 			"reference_type": "POL Advance",
 			"reference_name": self.name,
@@ -150,16 +150,16 @@ class POLAdvance(AccountsController):
 			"business_activity": default_ba
 		})
 		
-		if self.gst_amount and self.gst_account:
-			je.append("accounts",{
-				"account": self.gst_account,
-				"debit_in_account_currency": self.gst_amount,
-				"cost_center": self.cost_center,
-				"party_check": 0,
-				"party_type": "Supplier",
-				"party": self.party,
-				"business_activity": default_ba
-			})
+		# if self.gst_amount and self.gst_account:
+		# 	je.append("accounts",{
+		# 		"account": self.gst_account,
+		# 		"debit_in_account_currency": self.gst_amount,
+		# 		"cost_center": self.cost_center,
+		# 		"party_check": 0,
+		# 		"party_type": "Supplier",
+		# 		"party": self.party,
+		# 		"business_activity": default_ba
+		# 	})
 
 		je.insert()
 		#Set a reference to the claim journal entry
