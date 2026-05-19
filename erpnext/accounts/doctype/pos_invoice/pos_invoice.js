@@ -36,6 +36,12 @@ erpnext.selling.POSInvoiceController = class POSInvoiceController extends erpnex
 			this.frm.return_print_format = "Sales Invoice Return";
 			this.frm.set_value('consolidated_invoice', '');
 		}
+		// if (frm.doc.is_pos && frm.doc.ignore_taxes_temporarily) {
+        //     frm.clear_table("taxes");
+        //     frm.set_value("taxes_and_charges", null);
+        //     frm.refresh_field("taxes");
+        //     frm.calculate_taxes_and_totals();
+        // }
 	}
 
 	is_pos() {

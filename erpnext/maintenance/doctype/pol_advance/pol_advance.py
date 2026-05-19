@@ -11,7 +11,7 @@ from erpnext.controllers.accounts_controller import AccountsController
 from erpnext.custom_utils import check_budget_available
 import json
 from frappe import _, msgprint
-from frappe.utils import flt, cint, nowdate, getdate, formatdate, money_in_words
+from frappe.utils import flt, cint, nowdate, getdate, formatdate, money_in_words, now_datetime
 
 
 class PolAdvance(AccountsController):
@@ -22,6 +22,7 @@ class PolAdvance(AccountsController):
 			self.od_outstanding_amount = flt(self.od_amount)
 		else:
 			self.od_amount = self.od_outstanding_amount = 0.0
+		self.validate_fuelbook()
 
 	def before_cancel(self):
 		if self.is_opening:
@@ -32,14 +33,21 @@ class PolAdvance(AccountsController):
 
 	def on_submit(self):
 		if not self.is_opening:
-			# check_budget_available(self.cost_center,advance_account,self.entry_date,self.amount,self.business_activity)
 			self.update_od_balance()
 			self.post_journal_entry()
 
 	def on_cancel(self):
 		if not self.is_opening:
-			# self.cancel_budget_entry()
 			self.update_od_balance()
+
+	def validate_fuelbook(self):
+		fuelbook_list = frappe.get_all("Fuelbook", filters={'equipment': self.equipment}, pluck='name')
+		
+		if self.fuelbook not in fuelbook_list:
+			frappe.throw("Fuelbook {} does not belong to {}".format(
+				frappe.bold(self.fuelbook),
+				frappe.get_desk_link("Equipment", self.equipment),
+			))
 
 	def update_od_balance(self):
 		if self.is_opening:
@@ -96,10 +104,7 @@ class PolAdvance(AccountsController):
 
 	def validate_cheque_info(self):
 		if self.cheque_date and not self.cheque_no:
-			frappe.msgprint(_("Cheque No is mandatory if you entered Cheque Date"), raise_exception=1)
-  
-	# def cancel_budget_entry(self):
-	# 	frappe.db.sql("delete from `tabConsumed Budget` where reference_no = %s", self.name) 
+			frappe.msgprint(_("Cheque No is mandatory if you entered Cheque Date"), raise_exception=1) 
    
 	def post_journal_entry(self):
 		if not self.amount:
@@ -151,8 +156,7 @@ class PolAdvance(AccountsController):
 			"user_remark": remarks if remarks else "Note: " + "POL Advance - " + self.equipment,
 			"posting_date": self.posting_date,
 			"company": self.company,
-			"total_amount_in_words": money_in_words(self.amount),
-			"branch": self.fuelbook_branch,
+			"branch": self.branch,
 		})
 
 		je.append("accounts",{
@@ -178,5 +182,13 @@ class PolAdvance(AccountsController):
 
 		je.insert()
 
-		self.db_set("journal_entry",je.name)
-		frappe.msgprint(_('Journal Entry {} posted to accounts').format(frappe.get_desk_link(je.doctype,je.name)))
+		self.db_set("journal_entry", je.name)
+		self.db_set(
+			"journal_entry_status",
+			"Forwarded to accounts for processing payment on {0}".format(
+				now_datetime().strftime("%Y-%m-%d %H:%M:%S")
+			),
+		)
+		frappe.msgprint(
+			_("{} posted to accounts").format(frappe.get_desk_link(je.doctype, je.name))
+		)

@@ -18,8 +18,8 @@ from erpnext.budget.doctype.budget.budget import validate_expense_against_budget
 import csv
 
 def submit_ta():
-    for a in frappe.db.sql("select name, docstatus from `tabTrainee Addition`", as_dict=True):
-        print(a.name, a.docstatus)
+	for a in frappe.db.sql("select name, docstatus from `tabTrainee Addition`", as_dict=True):
+		print(a.name, a.docstatus)
 
 def change_warehouse():
 	for a in frappe.db.sql("""select name, voucher_type, voucher_no 
@@ -390,8 +390,8 @@ def update_deployment():
 	frappe.db.commit()
 
 def decrypt_pass():
-    doc = frappe.get_doc("User", "kesang.tshomo@thimphutechpark.bt").get_password("api_secret")
-    print(str(doc))
+	doc = frappe.get_doc("User", "kesang.tshomo@thimphutechpark.bt").get_password("api_secret")
+	print(str(doc))
 
 def pull_pms():
 	pms_list = frappe.db.sql("""
@@ -471,26 +471,35 @@ def delete_sister_brother():
 # and a.cost_center = 'Tailoring & Productions of Apparels - Jangsheri - DSP'
 def depreciate_asset():
 	count=0
-	'''
-	for a in frappe.db.sql("""
-						   select a.name,d.schedule_date, a.company
-						   from `tabAsset` a inner join
-						   `tabDepreciation Schedule` d
-						   on a.name = d.parent
-						   where d.schedule_date <= '2024-05-01'
-						   and (d.journal_entry is null or d.journal_entry ='')
-						   and a.docstatus = 1 group by a.name
-						   """,as_dict=1):
-	'''
 	for a in frappe.db.sql(""" select d.parent, d.schedule_date from  `tabDepreciation Schedule` d 	
-								where d.docstatus=1
-								and (d.journal_entry='' or journal_entry is NULL)
-								and d.parent not in ("ASSET23006457","ASSET23010207", "ASSET23004837","ASSET23002907","ASSET23004380","ASSET24000030","ASSET23003772","ASSET24000030","ASSET23004569","ASSET23000089")
-								and d.schedule_date = '2024-04-30'
-						""", as_dict=True):
+	 							where d.docstatus=1
+	 							and (d.journal_entry='' or journal_entry is NULL)
+	 							and d.schedule_date = '2024-09-30'
+	 					""", as_dict=True):
 		print(count, a.parent, a.schedule_date)
 		make_depreciation_entry(a.parent, a.schedule_date)
 		count += 1
+		frappe.db.commit()
+	print(count)
+
+def run_depreciation():
+    # Post DSP - DS | 706 | 881
+    # Screen & Media - DS | 882 | 909
+	count=0
+	date = getdate('2025-02-28')
+	for asset in frappe.db.sql_list("""select distinct a.name
+		from tabAsset a, `tabDepreciation Schedule` ds
+		where a.name = ds.parent and a.docstatus=1 and ds.schedule_date<=%s and a.calculate_depreciation = 1
+			and a.status in ('Submitted', 'Partially Depreciated')
+   
+			and a.company = 'De-suung Skilling'
+			and a.cost_center in (select name from `tabCost Center` where lft>706 and rgt<881)
+   
+			and ifnull(ds.journal_entry, '')=''
+			and (a.branch is not NULL or a.branch != '')
+			limit 800""", date):
+		count+=1
+		make_depreciation_entry(asset, date)
 		frappe.db.commit()
 	print(count)
 
@@ -990,14 +999,14 @@ def update_JE_GL():
 	print("done")
 
 def update_cc():
-    count=0
-    for d in frappe.db.sql("""select * from `tabCost Center` where branch_created = 1""", as_dict=1):
-        count += 1
-        doc = frappe.get_doc("Cost Center", d.name)
-        doc.center_category = 'Course'
-        doc.save()
-    
-    print(count)
+	count=0
+	for d in frappe.db.sql("""select * from `tabCost Center` where branch_created = 1""", as_dict=1):
+		count += 1
+		doc = frappe.get_doc("Cost Center", d.name)
+		doc.center_category = 'Course'
+		doc.save()
+	
+	print(count)
 
 def delete_cost_center():
 	with open("/home/frappe/erp/apps/erpnext/erpnext/CC to delete.csv") as f:
@@ -1364,34 +1373,34 @@ import random
 import string
 
 def insert_pol_to_pol_item():
-    def generate_random_name(length):
-        letters_and_digits = string.ascii_letters + string.digits
-        return ''.join(random.choice(letters_and_digits) for _ in range(length))
+	def generate_random_name(length):
+		letters_and_digits = string.ascii_letters + string.digits
+		return ''.join(random.choice(letters_and_digits) for _ in range(length))
 
-    # Fetch records from tabPOL
-    pol_records = frappe.db.sql("SELECT * FROM `tabPOL` WHERE docstatus = 1 AND amount > 0", as_dict=True)
+	# Fetch records from tabPOL
+	pol_records = frappe.db.sql("SELECT * FROM `tabPOL` WHERE docstatus = 1 AND amount > 0", as_dict=True)
 
-    for pol in pol_records:
-        random_name = generate_random_name(10)
-        
-        # Check if random_name already exists in tabPOL Item
-        while frappe.db.exists("tabPOL Item", {"name": random_name}):
-            random_name = generate_random_name(10)  # Generate new random name if it exists
+	for pol in pol_records:
+		random_name = generate_random_name(10)
+		
+		# Check if random_name already exists in tabPOL Item
+		while frappe.db.exists("tabPOL Item", {"name": random_name}):
+			random_name = generate_random_name(10)  # Generate new random name if it exists
 
-        print(pol.name, pol.qty, pol.amount, pol.stock_uom, pol.posting_date, pol.memo_number)
+		print(pol.name, pol.qty, pol.amount, pol.stock_uom, pol.posting_date, pol.memo_number)
 
-        # Insert into tabPOL Item
-        frappe.db.sql("""
-            INSERT INTO `tabPOL Item` (
-                name, creation, modified, modified_by, owner, docstatus, idx,
-                parent, parentfield, parenttype, bill_no, uom, bill_date, rate, amount, qty
-            ) VALUES (
-                %s, %s, %s, %s, %s, 1, 1,
-                %s, 'items', 'POL', %s, %s, %s, %s, %s, %s
-            )""", (random_name, pol.creation, pol.modified, pol.modified_by, pol.owner, pol.name, pol.memo_number, pol.stock_uom,
-                   pol.posting_date, pol.rate, pol.amount, pol.qty))
+		# Insert into tabPOL Item
+		frappe.db.sql("""
+			INSERT INTO `tabPOL Item` (
+				name, creation, modified, modified_by, owner, docstatus, idx,
+				parent, parentfield, parenttype, bill_no, uom, bill_date, rate, amount, qty
+			) VALUES (
+				%s, %s, %s, %s, %s, 1, 1,
+				%s, 'items', 'POL', %s, %s, %s, %s, %s, %s
+			)""", (random_name, pol.creation, pol.modified, pol.modified_by, pol.owner, pol.name, pol.memo_number, pol.stock_uom,
+				   pol.posting_date, pol.rate, pol.amount, pol.qty))
 
-        print("DONE")
+		print("DONE")
 
 def post_je():
 	doc = frappe.get_doc("Trainee Addition", "AT-24-07-131161")
@@ -1410,37 +1419,376 @@ def pos_bank_gl_correction():
 
 			if len(d) > 0:
 				print(count, d.v_no, str(bank_account), str(d.account))
-				frappe.db.sql("update `tabGL Entry` set account='{0}' where account='{1}' and debit>0 and voucher_no='{2}'".format(str(bank_account),str(d.account),str(d.v_no)))
+				# frappe.db.sql("update `tabGL Entry` set account='{0}' where account='{1}' and debit>0 and voucher_no='{2}'".format(str(bank_account),str(d.account),str(d.v_no)))
 
+	#update account in Sales Invoice payment table
+	# count=0
+	# profiles = frappe.db.sql("select name from `tabPOS Profile` where bank_account is not null or bank_account != '' limit 45", as_dict=1)
+	# for p in profiles:
+	# 	for d in frappe.db.sql("select sl.name sales_invoice, sip.name sales_inv_payment from `tabSales Invoice` sl, `tabSales Invoice Payment` sip where sip.parent=sl.name \
+	# 		and sl.pos_profile='{}' and sip.account='113003 - Bank - CD (203632677) - DS' order by sl.name".format(str(p.name)), as_dict=1):
+	# 		bank_account = frappe.db.get_value("POS Profile", str(p.name), "bank_account")
+	# 		count += 1
+
+	# 		if len(d) > 0:
+	# 			print(count, d.sales_invoice, str(bank_account), str(d.sales_inv_payment))
+	# 			frappe.db.sql("update `tabSales Invoice Payment` set account='{0}' where account='113003 - Bank - CD (203632677) - DS' and name='{1}'".format(str(bank_account),str(d.sales_inv_payment)))
 
 def update_desuup_attendance():
-    # Query to fetch the necessary details
-    query = """
-        SELECT 
-            t1.name AS name, 
-            t1.training_start_date AS from_date, 
-            t1.training_end_date AS to_date, 
-            t2.desuup_id AS desuup 
-        FROM 
-            `tabTraining Management` t1, 
-            `tabTrainee Details` t2 
-        WHERE 
-            t1.name = t2.parent
-    """
-    
-    # Execute the query and iterate over the results
-    for a in frappe.db.sql(query, as_dict=True):
-        # Update `tabDesuup Attendance` based on the fetched details
-        update_query = """
-            UPDATE `tabDesuup Attendance`
-            SET reference_doctype = 'Training Management', 
-                reference_name = %s
-            WHERE 
-                docstatus = 1 
-                AND attendance_date BETWEEN %s AND %s 
-                AND desuup = %s
-        """
-        
-        # Execute the update query
-        frappe.db.sql(update_query, (a.name, a.from_date, a.to_date, a.desuup))
-        print(f"Updated Desuup: {a.desuup}")
+	# Query to fetch the necessary details
+	query = """
+		SELECT 
+			t1.name AS name, 
+			t1.training_start_date AS from_date, 
+			t1.training_end_date AS to_date, 
+			t2.desuup_id AS desuup 
+		FROM 
+			`tabTraining Management` t1, 
+			`tabTrainee Details` t2 
+		WHERE 
+			t1.name = t2.parent
+	"""
+	
+	# Execute the query and iterate over the results
+	for a in frappe.db.sql(query, as_dict=True):
+		# Update `tabDesuup Attendance` based on the fetched details
+		update_query = """
+			UPDATE `tabDesuup Attendance`
+			SET reference_doctype = 'Training Management', 
+				reference_name = %s
+			WHERE 
+				docstatus = 1 
+				AND attendance_date BETWEEN %s AND %s 
+				AND desuup = %s
+				AND attendance_for = 'Trainee'
+		"""
+		
+		# Execute the update query
+		frappe.db.sql(update_query, (a.name, a.from_date, a.to_date, a.desuup))
+		print(f"Updated Desuup: {a.desuup}")
+
+
+def update_ojt_desuup_attendance():
+	# Query to fetch the necessary details
+	query = """
+		SELECT 
+			t1.name, 
+			t1.start_date, 
+			t1.end_date, 
+			t2.desuup
+		FROM 
+			`tabDesuup Deployment Entry` t1, 
+			`tabDesuup Deployment Entry Item` t2 
+		WHERE 
+			t1.name = t2.parent
+	"""
+	
+	# Execute the query and iterate over the results
+	for a in frappe.db.sql(query, as_dict=True):
+		# Update `tabDesuup Attendance` based on the fetched details
+		update_query = """
+			UPDATE `tabDesuup Attendance`
+			SET reference_doctype = 'Desuup Deployment Entry', 
+				reference_name = %s
+			WHERE 
+				docstatus = 1 
+				AND attendance_date BETWEEN %s AND %s 
+				AND desuup = %s
+				AND attendance_for != 'Trainee'
+		"""
+		
+		# Execute the update query
+		frappe.db.sql(update_query, (a.name, a.start_date, a.end_date, a.desuup))
+		print(f"Updated Desuup: {a.desuup}")
+
+
+def update_consumed_budget():
+	query = frappe.db.sql("""
+							select t1.name, t2.account, t2.cost_center
+							from `tabJournal Entry` t1
+							inner join `tabJournal Entry Account` t2
+							ON t1.name = t2.parent
+							where t1.docstatus = 1
+							and t1.posting_date between '2023-07-01' and '2024-06-30'
+						  """, as_dict=True)
+	
+	count = 0
+	for q in query:
+		frappe.db.sql("""
+			update `tabConsumed Budget` 
+			set consumed_cost_center = %s 
+			where reference_no = %s 
+			and account = %s 
+			and consumed_cost_center = ''
+		""", (q.cost_center, q.name, q.account))
+		
+		count += 1
+		print(count, "Done")
+	
+	print("Update Completed")
+
+def calculate_reported_desuup():
+	for a in frappe.db.sql("""
+						select name from `tabTraining Management` where status='On Going' 
+						""", as_dict=True):
+		doc = frappe.get_doc("Training Management", a.name)
+		doc.calcualte_total_report_desuups()
+		print(a.name)
+
+from erpnext.assets.doctype.asset.depreciation import (
+	get_depreciation_accounts,
+	get_disposal_account_and_cost_center,
+)
+
+def move_asset_to_si_phase_one():
+	assets = [
+		"ASSET23000704", "ASSET23000729", "ASSET23001027", "ASSET23000936", "ASSET23000873",
+		"ASSET23000995", "ASSET23000950", "ASSET23001042", "ASSET23001001", "ASSET23000949",
+		"ASSET23000901", "ASSET23001251", "ASSET23001257", "ASSET23000727", "ASSET23001178",
+		"ASSET23001152", "ASSET23000917", "ASSET23001161", "ASSET23000864", "ASSET23001012",
+		"ASSET23000512", "ASSET23001124", "ASSET23000571", "ASSET23001195", "ASSET23000838",
+		"ASSET23010633", "ASSET23001172", "ASSET23000706", "ASSET23001071", "ASSET23001268",
+		"ASSET23001391", "ASSET23001054", "ASSET23001278", "ASSET23000537", "ASSET23000500",
+		"ASSET23000801", "ASSET23000665", "ASSET23000772", "ASSET23000562", "ASSET23000685",
+		"ASSET23000693", "ASSET23000828", "ASSET23000889", "ASSET23001110", "ASSET23000823",
+		"ASSET23001022", "ASSET23001103", "ASSET23001198", "ASSET23001394", "ASSET23000521",
+		"ASSET23001051", "ASSET23001021", "ASSET23001061", "ASSET23000730", "ASSET23000906",
+		"ASSET23000944", "ASSET23000923", "ASSET23001175", "ASSET23010706", "ASSET23000560",
+		"ASSET23000857", "ASSET23001184", "ASSET23001015", "ASSET23001116", "ASSET23000613",
+		"ASSET23000952", "ASSET23010710", "ASSET23001047", "ASSET23000858", "ASSET23000523",
+		"ASSET23001284", "ASSET23001125", "ASSET23000874"
+	]
+
+	c = 1
+	for d in assets:
+		# Asset
+		company = "Solar Initiative"
+		branch = "Dechencholing Phase I"
+		cost_center = frappe.db.get_value("Branch", branch, "cost_center")
+
+		doc = frappe.get_doc("Asset", d)
+		doc.db_set("company", company)
+		doc.db_set("asset_owner_company", company)
+		doc.db_set("branch", branch)
+		doc.db_set("cost_center", cost_center)
+
+		asset_account, credit_account, accumulated_depreciation_account = frappe.db.get_value('Asset Category Account',{'parent':doc.asset_category, 'company_name': doc.company},['fixed_asset_account','credit_account','accumulated_depreciation_account'])
+		
+		doc.db_set("asset_account", asset_account)
+		doc.db_set("credit_account", credit_account)
+		doc.db_set("accumulated_depreciation_account", accumulated_depreciation_account)
+
+		# Asset Movement
+		as_mo = frappe.db.get_value("Asset Movement Item", {'asset': doc.name}, "parent")
+		frappe.db.sql("update `tabAsset Movement` set company='{}' where name='{}'".format("Solar Initiative", as_mo))
+		frappe.db.sql("update `tabAsset Movement Item` set target_cost_center='{}', company='{}' where parent='{}'".format(cost_center, company, as_mo))
+		print(c, doc.name, as_mo)
+		c += 1
+	
+	print("DONE")
+
+
+def move_asset_to_si_phase_two():
+
+	company = "Solar Initiative"
+	branch = "Dechencholing Phase II"
+	cost_center = frappe.db.get_value("Branch", branch, "cost_center")
+
+	with open("/home/frappe/erp/desc_phase_ii.csv") as f:
+		reader = csv.reader(f)
+		mylist = list(reader)
+		c = 1
+		for d in mylist:
+			# Asset
+			doc = frappe.get_doc("Asset", d[0])
+			doc.db_set("company", company)
+			doc.db_set("asset_owner_company", company)
+			doc.db_set("branch", branch)
+			doc.db_set("cost_center", cost_center)
+
+			asset_account, credit_account, accumulated_depreciation_account = frappe.db.get_value('Asset Category Account',{'parent':doc.asset_category, 'company_name': doc.company},['fixed_asset_account','credit_account','accumulated_depreciation_account'])
+			
+			doc.db_set("asset_account", asset_account)
+			doc.db_set("credit_account", credit_account)
+			doc.db_set("accumulated_depreciation_account", accumulated_depreciation_account)
+
+			# Asset Movement
+			as_mo = frappe.db.get_value("Asset Movement Item", {'asset': doc.name}, "parent")
+			frappe.db.sql("update `tabAsset Movement` set company='{}' where name='{}'".format("Solar Initiative", as_mo))
+			frappe.db.sql("update `tabAsset Movement Item` set target_cost_center='{}', company='{}' where parent='{}'".format(cost_center, company, as_mo))
+			print(c, doc.name)
+			c += 1
+	
+	print("DONE")
+
+def asset_update_in_je():
+	try:
+		journal_entries = frappe.db.sql("""
+			SELECT DISTINCT je.name, je.branch, jea.reference_name
+			FROM `tabJournal Entry` je
+			JOIN `tabJournal Entry Account` jea ON je.name = jea.parent
+			WHERE jea.reference_name = %s
+		""", ("ASSET23010812",), as_dict=True)
+
+		updated_entries = []
+
+		for je in journal_entries:
+			cost_center = frappe.db.get_value("Branch", je.branch, "cost_center")
+
+			if not cost_center:
+				frappe.log_error(f"Cost center not found for branch: {je.branch}", "Asset Update in JE")
+				continue
+
+			doc = frappe.get_doc("Journal Entry", je.name)
+			doc.db_set("company", "Solar Initiative")
+			doc.db_set("branch", "Dechencholing Phase I")
+
+			frappe.db.sql("""
+				UPDATE `tabJournal Entry Account`
+				SET cost_center = %s
+				WHERE parent = %s
+			""", (cost_center, je.name))
+
+			updated_entries.append({"name": je.name, "asset": je.reference_name})
+			frappe.logger().info(f"Updated Journal Entry: {je.name}")
+
+		for jv in updated_entries:
+			doc = frappe.get_doc("Journal Entry", jv.name)
+			if jv.voucher_type == "Journal Entry":
+				frappe.db.sql("""
+					UPDATE `tabJournal Entry Account`
+					SET account = %s
+					WHERE parent = %s and idx=1
+				""", (doc.credit_account, je.name))
+				frappe.db.sql("""
+					UPDATE `tabJournal Entry Account`
+					SET account = %s
+					WHERE parent = %s and idx=2
+				""", (doc.asset_account, je.name))
+			else:
+				(
+					fixed_asset_account,
+					accumulated_depreciation_account,
+					depreciation_expense_account,
+				) = get_depreciation_accounts(jv.asset)
+				frappe.db.sql("""
+					UPDATE `tabJournal Entry Account`
+					SET account = %s
+					WHERE parent = %s and idx=1
+				""", (accumulated_depreciation_account, je.name))
+				frappe.db.sql("""
+					UPDATE `tabJournal Entry Account`
+					SET account = %s
+					WHERE parent = %s and idx=2
+				""", (depreciation_expense_account, je.name))
+			
+		print("Updated Journal Entries:", updated_entries)
+
+	except Exception as e:
+		frappe.log_error(frappe.get_traceback(), "Error in asset_update_in_je")
+		print(f"Error occurred: {str(e)}")
+
+
+from erpnext.assets.doctype.asset.depreciation import (
+	get_depreciation_accounts,
+	get_disposal_account_and_cost_center,
+)
+
+def asset_copy_to_si():
+	try:
+		doc = frappe.get_doc("Asset", "ASSET23010811")
+		asset_movements = frappe.db.sql("""
+			SELECT DISTINCT je.name
+			FROM `tabAsset Movement` je
+			JOIN `tabAsset Movement Item` jea ON je.name = jea.parent
+			WHERE jea.asset = %s
+		""", ("ASSET23010811",), as_dict=True)
+
+		for a in asset_movements:
+			asss = frappe.get_doc("Asset Movement", a.name)
+			asss.cancel()
+
+		# Update asset details
+		branch = "Dechencholing Phase I"
+		doc.db_set("company", "Solar Initiative")
+		doc.db_set("asset_owner_company", "Solar Initiative")
+		doc.db_set("branch", branch)
+		doc.db_set("cost_center", frappe.db.get_value("Branch", branch, "cost_center"))
+
+		# Fetch and update accounts
+		asset_account, credit_account, accumulated_depreciation_account = frappe.db.get_value(
+			"Asset Category Account",
+			{"parent": doc.asset_category, "company_name": doc.company},
+			["fixed_asset_account", "credit_account", "accumulated_depreciation_account"]
+		)
+
+		doc.db_set("asset_account", asset_account)
+		doc.db_set("credit_account", credit_account)
+		doc.db_set("accumulated_depreciation_account", accumulated_depreciation_account)
+		
+		doc.make_asset_movement()
+		doc.make_asset_je_entry()
+		if not doc.booked_fixed_asset and doc.validate_make_gl_entry():
+			doc.make_gl_entries()
+
+		print("Asset updated successfully with accounts:", asset_account)
+
+	except Exception as e:
+		frappe.log_error(frappe.get_traceback(), "Error in asset_copy_to_si")
+		print(f"Error occurred: {str(e)}")
+
+
+def asset_update_in_je():
+	journal_entries = frappe.db.sql("""
+		SELECT DISTINCT je.name, je.branch, jea.reference_name
+		FROM `tabJournal Entry` je
+		JOIN `tabJournal Entry Account` jea ON je.name = jea.parent
+		WHERE jea.reference_name = %s
+	""", ("ASSET23010811",), as_dict=True)
+
+	if not journal_entries:
+		frappe.log_error("No journal entries found for the specified asset.", "Asset Update in JE")
+		return
+
+	for je in journal_entries:
+		doc = frappe.get_doc("Journal Entry", je.name)
+		doc.cancel()
+	print("DONE")
+
+def set_verifier():
+	for a in frappe.db.sql("select name from `tabMaterial Request` where company='Solar Initiative'", as_dict=True):
+		doc = frappe.get_doc("Material Request", a.name)
+		frappe.db.sql("update `tabMaterial Request` set creator='{}', creator_name='{}', verifier_name='Rinzin Galley', verifier='galleyrinzin@gmail.com' where name='{}'".format(doc.owner, frappe.db.get_value("User", doc.owner, "full_name"), doc.name))
+		print("done")
+	print("DONE")
+
+
+def create_je_reim():
+	doc = frappe.get_doc("Reimbursement", "RIMB25020301")
+	doc.post_journal_entry()
+	print("DONE")
+
+def update_item_name():
+	for d in frappe.db.sql("""select item_code from `tabPurchase Receipt Item` where docstatus=1""", as_dict=True):
+		item_name = frappe.db.get_value("Item", d.item_code, "item_name")
+		frappe.db.sql("update `tabPurchase Receipt Item` set item_name='{}' where item_code='{}'".format(item_name, d.item_code))
+		print("done")
+	print("done")
+
+
+def post_je_pol_advance():
+	doc = frappe.get_doc("Pol Advance", "POLAD25040802")
+	doc.post_journal_entry()
+	print("done")
+
+def bulk_save_salary_structure():
+	count = 1
+	# ss_list = frappe.db.sql("""select name from tabSalary Structure where is_active='Yes'""",as_dict=1)
+	ss_list = frappe.db.sql("""select name from `tabSalary Structure` where is_active='Yes'""",as_dict=1)
+	for a in ss_list:
+		doc = frappe.get_doc("Salary Structure",a.name)
+		doc.save(ignore_permissions=1)
+		print(a.name)
+		count += 1
+		if count % 10 == 0:
+			frappe.db.commit()	

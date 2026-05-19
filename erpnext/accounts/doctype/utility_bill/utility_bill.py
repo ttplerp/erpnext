@@ -212,7 +212,7 @@ class UtilityBill(Document):
             }
 
             response = requests.request("POST", url, headers=headers, data=payload)
-            #frappe.throw(str(payload),str(response))
+            frappe.throw(str(payload),str(response))
             details = response.json()
             res_status = details['statusCode']
             d.payment_status = "In Progress"

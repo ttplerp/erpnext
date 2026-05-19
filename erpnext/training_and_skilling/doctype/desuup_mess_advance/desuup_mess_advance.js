@@ -32,13 +32,12 @@ frappe.ui.form.on('Desuup Mess Advance', {
     },
 	onload: function(frm) {
 		frm.set_query("party_type", function() {
-			return {
-				filters: {
-					name: ["in", ["Employee", "Supplier"]]
-				}
-			};
-		});
-	
+            return {
+                filters: {
+                    name: ["in", ["Employee", "Supplier"]]
+                }
+            };
+        });
 		frm.set_query('branch', function(doc) {
 			return {
 				filters: {
@@ -69,7 +68,24 @@ frappe.ui.form.on('Desuup Mess Advance', {
 	
 	refresh: function(frm) {
 		calculate_total_advance(frm);
+
+		// // Initialize the query if party_type is already set
+        // if (frm.doc.party_type) {
+        //     frm.set_query('paid_to', function() {
+        //         return {
+        //             filters: {
+        //                 'doctype': frm.doc.party_type
+        //             }
+        //         };
+        //     });
+        // }
+		setup_paid_to_query(frm);
+
 	},
+	// party_type: function(frm) {
+    //     frm.set_value('paid_to', '');
+    //     setup_paid_to_query(frm);
+    // },
 
 	training_center: function (frm) {
 		frappe.call({
@@ -122,11 +138,17 @@ frappe.ui.form.on('Desuup Mess Advance', {
 	},
 });
 
-var calculate_total_advance = function(frm) {
-	let total_amt = 0
-	$.each(frm.doc['items'] || [], function(i, amt){
-		total_amt += amt.amount;
-	})
-	frm.set_value('total_advance', total_amt);
-	refresh_field('total_advance');
-}
+// function setup_paid_to_query(frm) {
+//     if (frm.doc.party_type) {
+//         frm.set_query('paid_to', function() {
+//             return {
+//                 query: 'erpnext.training_and_skilling.doctype.desuup_mess_advance.desuup_mess_advance.get_party_names',
+//                 filters: {
+//                     party_type: frm.doc.party_type
+//                 }
+				
+//             };
+			
+//         });
+//     }
+// }

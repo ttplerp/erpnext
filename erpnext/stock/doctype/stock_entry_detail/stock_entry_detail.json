@@ -25,7 +25,6 @@
   "issued_employee_name",
   "issued_desuup_name",
   "issued_equipment_name",
-  "phone_no",
   "is_finished_item",
   "is_scrap_item",
   "is_process_loss",
@@ -63,19 +62,8 @@
   "col_break4",
   "batch_no",
   "transporter_info_section",
-  "equipment",
-  "equipment_category",
-  "equipment_model",
-  "equipment_type",
   "remarks",
   "column_break_54",
-  "hired_equipmentvehicle",
-  "transporter",
-  "weight_slip_no",
-  "pol_slip_no",
-  "gross_vehicle_weight",
-  "tare_weight",
-  "unloading_by",
   "accounting",
   "expense_account",
   "accounting_dimensions_section",
@@ -98,8 +86,7 @@
   "sco_rm_detail",
   "putaway_rule",
   "column_break_51",
-  "reference_purchase_receipt",
-  "job_card_item"
+  "reference_purchase_receipt"
  ],
  "fields": [
   {
@@ -582,15 +569,6 @@
    "label": "Is Finished Item"
   },
   {
-   "fieldname": "job_card_item",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "Job Card Item",
-   "no_copy": 1,
-   "print_hide": 1,
-   "read_only": 1
-  },
-  {
    "default": "0",
    "fieldname": "is_process_loss",
    "fieldtype": "Check",
@@ -636,92 +614,13 @@
    "options": "issue_type"
   },
   {
-   "collapsible": 1,
-   "depends_on": "eval:parent.stock_entry_type ==\"Material Transfer\"",
-   "fieldname": "transporter_info_section",
-   "fieldtype": "Section Break",
-   "label": "Transporter Info"
-  },
-  {
-   "fieldname": "equipment",
-   "fieldtype": "Link",
-   "label": "Vehicle/Equipment",
-   "options": "Equipment"
-  },
-  {
-   "fetch_from": "equipment.equipment_category",
-   "fieldname": "equipment_category",
-   "fieldtype": "Link",
-   "label": "Vehicle/Equipment Category",
-   "options": "Equipment Category",
-   "read_only": 1
-  },
-  {
-   "fetch_from": "equipment.equipment_model",
-   "fieldname": "equipment_model",
-   "fieldtype": "Link",
-   "label": "Vehicle/Equipment Model",
-   "options": "Equipment Model",
-   "read_only": 1
-  },
-  {
    "fieldname": "remarks",
    "fieldtype": "Small Text",
    "label": "Remarks"
   },
   {
-   "fetch_from": "equipment.equipment_type",
-   "fieldname": "equipment_type",
-   "fieldtype": "Link",
-   "label": "Vehicle/Equipment Type",
-   "options": "Equipment Type"
-  },
-  {
    "fieldname": "column_break_54",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "weight_slip_no",
-   "fieldtype": "Data",
-   "label": "Weight Slip No"
-  },
-  {
-   "fieldname": "pol_slip_no",
-   "fieldtype": "Data",
-   "label": "POL Slip No"
-  },
-  {
-   "fieldname": "gross_vehicle_weight",
-   "fieldtype": "Float",
-   "label": "Gross Vehicle Weight"
-  },
-  {
-   "fieldname": "tare_weight",
-   "fieldtype": "Float",
-   "label": "Tare Weight"
-  },
-  {
-   "default": "0",
-   "fetch_from": "equipment.hired_equipment",
-   "fieldname": "hired_equipmentvehicle",
-   "fieldtype": "Check",
-   "label": "Hired Equipment/Vehicle",
-   "read_only": 1
-  },
-  {
-   "depends_on": "eval:doc.hired_equipment",
-   "fetch_from": "equipment.supplier",
-   "fieldname": "transporter",
-   "fieldtype": "Link",
-   "label": "Transporter",
-   "options": "Supplier",
-   "read_only": 1
-  },
-  {
-   "fieldname": "unloading_by",
-   "fieldtype": "Select",
-   "label": "Unloading By",
-   "options": "\nCompany\nTransporter"
   },
   {
    "fetch_from": "issue_to_employee.employee_name",
@@ -770,12 +669,6 @@
    "fieldtype": "Data",
    "label": "Issued Desuup Name",
    "read_only": 1
-  },
-  {
-   "depends_on": "eval: parent.stock_entry_type == \"Material Issue\"",
-   "fieldname": "phone_no",
-   "fieldtype": "Data",
-   "label": "Phone No"
   }
  ],
  "idx": 1,

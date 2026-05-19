@@ -48,7 +48,7 @@
   "gst_calculation_section",
   "gst_percent",
   "gst_amount",
-  "column_break_42",
+  "column_break_43",
   "gst_account",
   "section_break_15",
   "goods_amount",
@@ -495,7 +495,12 @@
    "options": "\n5"
   },
   {
-   "fieldname": "column_break_42",
+   "fieldname": "gst_amount",
+   "fieldtype": "Currency",
+   "label": "GST Amount"
+  },
+  {
+   "fieldname": "column_break_43",
    "fieldtype": "Column Break"
   },
   {
@@ -503,16 +508,11 @@
    "fieldtype": "Link",
    "label": "GST Account",
    "options": "Account"
-  },
-  {
-   "fieldname": "gst_amount",
-   "fieldtype": "Currency",
-   "label": "GST Amount"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2026-01-25 19:30:03.154650",
+ "modified": "2026-01-25 22:22:32.932976",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Job Card",

@@ -370,10 +370,13 @@ class TrainingSelection(Document):
 					headers = {
 						'Authorization': bearer_token
 					}
+					# frappe.throw(str(url))
 					response = requests.request(api_doc.request_method, url, headers=headers, data=payload)
 					data = response.json()
 					if data['content']:
 						for d in data['content']:
+							# if not d['deploymentTitle']:
+							# 	frappe.throw(a.profile_id)
 							if not frappe.db.exists("Deployment", {"deployment_id":d['id']}):
 								doc = frappe.new_doc("Deployment")
 								doc.deployment_id = d['id']
@@ -383,7 +386,8 @@ class TrainingSelection(Document):
 								doc.start_date = d['startDate']
 								doc.end_date = d['endDate']
 								doc.days_attended = d['daysAttended']
-								title = d['deploymentTitle'].lstrip()
+								raw_title = d['deploymentTitle'].lstrip()
+								title = raw_title.rstrip()
 								deployment_title = title.replace('"','')
 								if not frappe.db.exists("Deployment Title", deployment_title):
 									dep_doc = frappe.new_doc("Deployment Title")

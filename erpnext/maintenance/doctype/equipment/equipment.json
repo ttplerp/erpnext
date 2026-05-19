@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_import": 1,
+ "allow_rename": 1,
  "autoname": "EQUIP.YY.####",
  "creation": "2017-07-17 10:26:25.774536",
  "doctype": "DocType",
@@ -284,7 +285,7 @@
   }
  ],
  "links": [],
- "modified": "2024-07-18 10:42:28.423830",
+ "modified": "2025-07-30 14:28:31.282651",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Equipment",

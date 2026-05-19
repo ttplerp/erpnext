@@ -130,7 +130,7 @@ class JobCard(AccountsController):
 		if not payable_account:
 			frappe.throw("Setup Default Payable Account in company '{}'".format(frappe.get_desk_link("Company", self.company)))
 		if not gst_account:
-			frappe.throw("Setup Default GST Account in company '{}'".format(frappe.get_desk_link("Company", self.company)))	
+			frappe.throw("Setup Default GST Account in company '{}'".format(frappe.get_desk_link("Company", self.company)))
 
 		tds_rate, tds_account = 0, ""
 		if self.tds_amount > 0:
@@ -192,7 +192,7 @@ class JobCard(AccountsController):
 
 		je.append("accounts",{
 			"account": payable_account,
-			"credit_in_account_currency": self.net_amount if self.tds_amount or gst_amount > 0 else self.total_amount,
+			"credit_in_account_currency": self.net_amount if self.tds_amount or self.gst_amount > 0 else self.total_amount,
 			"cost_center": self.cost_center,
 			"party_check": 0,
 			"party_type": "Supplier",
@@ -222,8 +222,8 @@ class JobCard(AccountsController):
 				self.get_gl_dict({
 					"account":  maintenance_account,
 					"against": self.supplier,
-					"debit": self.total_amount,
-					"debit_in_account_currency": self.total_amount,
+					"debit": self.net_amount,
+					"debit_in_account_currency": self.net_amount,
 					"against_voucher": self.name,
 					"against_voucher_type": self.doctype,
 					"cost_center": self.cost_center,
@@ -248,24 +248,73 @@ class JobCard(AccountsController):
 					self.get_gl_dict({
 						"account": self.tds_account,
 						"against": self.supplier,
-						"credit": self.tds_amount,
-						"credit_in_account_currency": self.tds_amount,
+						"debit": self.tds_amount,
+						"debit_in_account_currency": self.tds_amount,
 						"business_activity": self.business_activity,
 						"cost_center": self.cost_center
 						}, self.currency)
 					)
+			# if self.gst_amount > 0:
+			# 	gl_entries.append(
+			# 	self.get_gl_dict({
+			# 		"account":  self.gst_account,
+			# 		"against": self.supplier,
+			# 		"debit": self.gst_amount,
+			# 		"debit_in_account_currency": self.gst_amount,
+			# 		"against_voucher": self.name,
+			# 		"against_voucher_type": self.doctype,
+			# 		"cost_center": self.cost_center,
+			# 		"business_activity": self.business_activity
+			# 	}, self.currency)
+			# )
+			if self.gst_amount > 0:
+				gl_entries.append(
+				self.get_gl_dict({
+					"account":  self.gst_account,
+					"against": self.supplier,
+					"credit": self.gst_amount,
+					"credit_in_account_currency": self.gst_amount,
+					"against_voucher": self.name,
+					"against_voucher_type": self.doctype,
+					"cost_center": self.cost_center,
+					"business_activity": self.business_activity
+				}, self.currency)
+			)
 			gl_entries.append(
 				self.get_gl_dict({
 					"account": payable_account,
 					"party_type": "Supplier",
 					"party": self.supplier,
 					"against": self.supplier,
-					"credit": self.net_amount,
-					"credit_in_account_currency": self.net_amount,
+					"credit": self.total_amount,
+					"credit_in_account_currency": self.total_amount,
 					"business_activity": self.business_activity,
 					"cost_center": self.cost_center
 					}, self.currency)
 				)
+			# if self.tds_amount > 0:
+			# 	gl_entries.append(
+			# 		self.get_gl_dict({
+			# 			"account": self.tds_account,
+			# 			"against": self.supplier,
+			# 			"credit": self.tds_amount,
+			# 			"credit_in_account_currency": self.tds_amount,
+			# 			"business_activity": self.business_activity,
+			# 			"cost_center": self.cost_center
+			# 			}, self.currency)
+			# 		)
+			# gl_entries.append(
+			# 	self.get_gl_dict({
+			# 		"account": payable_account,
+			# 		"party_type": "Supplier",
+			# 		"party": self.supplier,
+			# 		"against": self.supplier,
+			# 		"credit": self.net_amount,
+			# 		"credit_in_account_currency": self.net_amount,
+			# 		"business_activity": self.business_activity,
+			# 		"cost_center": self.cost_center
+			# 		}, self.currency)
+			# 	)
 			make_gl_entries(gl_entries, cancel=(self.docstatus == 2),update_outstanding="Yes", merge_entries=False)
 
 	# def commit_budget(self, maintenance_account):
@@ -384,10 +433,21 @@ class JobCard(AccountsController):
 			"tax_amount_in_account_currency": self.tds_amount,
 			"tax_amount": self.tds_amount
 		})
+		if self.gst_amount > 0:
+			je.append("accounts",{
+			"account":  self.gst_account,
+			"against": self.supplier,
+			"debit": self.gst_amount,
+			"debit_in_account_currency": self.gst_amount,
+			"against_voucher": self.name,
+			"against_voucher_type": self.doctype,
+			"cost_center": self.cost_center,
+			"business_activity": self.business_activity
+		})
 
 		je.append("accounts",{
 			"account": bank_account,
-			"credit_in_account_currency": self.net_amount if self.tds_amount > 0 else self.total_amount,
+			"credit_in_account_currency": self.net_amount if self.tds_amount or self.gst_amount > 0 else self.total_amount,
 			"cost_center": self.cost_center,
 			"business_activity": ba,
 		})

@@ -216,9 +216,12 @@ def get_conditions(filters):
 		filters.account = get_accounts_with_children(filters.account)
 		conditions.append("account in %(account)s")
 
+	# if filters.get("cost_center"):
+	# 	filters.cost_center = get_cost_centers_with_children(filters.cost_center)
+	# 	conditions.append("cost_center in %(cost_center)s")
+
 	if filters.get("cost_center"):
-		filters.cost_center = get_cost_centers_with_children(filters.cost_center)
-		conditions.append("cost_center in %(cost_center)s")
+		conditions.append("cost_center=%(cost_center)s")		
 
 	if filters.get("voucher_no"):
 		conditions.append("voucher_no=%(voucher_no)s")

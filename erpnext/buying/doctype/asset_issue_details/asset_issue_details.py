@@ -27,6 +27,7 @@ class AssetIssueDetails(Document):
 								  where item_code="{}"
 								  and ref_doc = "{}"
 								  and docstatus = 1""".format(self.item_code, self.purchase_receipt))[0][0]
+		# frappe.throw(str(total_qty))						  
 		issued_qty = frappe.db.sql("""select sum(ifnull(qty,0)) issued_qty
 								   from `tabAsset Issue Details` 
 								   where item_code ="{}"

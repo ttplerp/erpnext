@@ -24,6 +24,22 @@ frappe.ui.form.on('Asset', {
 				}
 			};
 		});
+		frm.set_query("asset_account", function() {
+			return {
+				"filters": {
+					"company": frm.doc.company,
+					"is_group": 0,
+				}
+			};
+		});
+		frm.set_query("credit_account", function() {
+			return {
+				"filters": {
+					"company": frm.doc.company,
+					"is_group": 0
+				}
+			};
+		});
 
 		frm.set_query("department", function() {
 			return {

@@ -155,6 +155,7 @@
   "column_break_135",
   "desuup_deduction_account",
   "arrear_account",
+  "project_allowance_account",
   "online_sales_settings_tab",
   "online_sales_income",
   "column_break_142",
@@ -1113,7 +1114,13 @@
    "fieldname": "gst_5_account",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "GST 5 % Account",
+   "label": "GST 5% Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "project_allowance_account",
+   "fieldtype": "Link",
+   "label": "Project Allowance Account",
    "options": "Account"
   }
  ],
@@ -1122,7 +1129,7 @@
  "image_field": "company_logo",
  "is_tree": 1,
  "links": [],
- "modified": "2026-01-25 22:26:26.668086",
+ "modified": "2026-02-27 14:54:29.344608",
  "modified_by": "Administrator",
  "module": "Setup",
  "name": "Company",
@@ -1176,6 +1183,17 @@
    "read": 1,
    "report": 1,
    "role": "Accounts Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "POL User",
    "share": 1,
    "write": 1
   }

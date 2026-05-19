@@ -128,8 +128,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Payment Status",
-   "options": "\nUnpaid\nPaid",
-   "read_only": 1
+   "options": "\nUnpaid\nPaid"
   },
   {
    "fieldname": "payment_type",
@@ -157,7 +156,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-10-08 12:56:23.526754",
+ "modified": "2025-11-07 11:26:21.830173",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Travel Payment",

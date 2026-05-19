@@ -157,64 +157,6 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Training",
-   "link_count": 5,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Training Management",
-   "link_count": 0,
-   "link_to": "Training Management",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Barred Desuups For DSP",
-   "link_count": 0,
-   "link_to": "Barred Desuup",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Desuup List",
-   "link_count": 0,
-   "link_to": "Desuup",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Add Trainee ",
-   "link_count": 0,
-   "link_to": "Trainee Addition",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Make Training Management Draft",
-   "link_count": 0,
-   "link_to": "Draft Training Management",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Report",
    "link_count": 8,
    "onboard": 0,
@@ -419,7 +361,7 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Deployment Record",
+   "label": "Training",
    "link_count": 6,
    "onboard": 0,
    "type": "Card Break"
@@ -427,9 +369,9 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Deployment Category",
+   "label": "Training Management",
    "link_count": 0,
-   "link_to": "Deployment Category",
+   "link_to": "Training Management",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -437,9 +379,9 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Deployment Title",
+   "label": "Barred Desuups For DSP",
    "link_count": 0,
-   "link_to": "Deployment Title",
+   "link_to": "Barred Desuup",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -447,9 +389,9 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Deployment Requisition",
+   "label": "Desuup List",
    "link_count": 0,
-   "link_to": "Deployment Requisition",
+   "link_to": "Desuup",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -457,9 +399,9 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Deployment Announcement",
+   "label": "Add Trainee ",
    "link_count": 0,
-   "link_to": "Deployment Announcement",
+   "link_to": "Trainee Addition",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -467,9 +409,9 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Desuup Deployment",
+   "label": "Make Training Management Draft",
    "link_count": 0,
-   "link_to": "Deployment",
+   "link_to": "Draft Training Management",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -477,15 +419,15 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Update Deployment Category to Title",
+   "label": "Travel Route",
    "link_count": 0,
-   "link_to": "Update Deployment Category",
+   "link_to": "Travel Route",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
   }
  ],
- "modified": "2026-03-02 11:17:52.158236",
+ "modified": "2024-10-22 16:19:07.264041",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training And Skilling",

@@ -316,6 +316,14 @@ class BankPayment(Document):
                 # doc.save(ignore_permissions=True)
                 docs_updated[i.transaction_id] = doc
 
+            elif self.transaction_type == 'Stipend Payment':
+                if i.transaction_id in docs_updated: continue
+                doc = frappe.get_doc('Desuup Payout Entry', i.transaction_id)
+                doc.payment_status = status
+                doc.bank_payment = self.name
+                # doc.save(ignore_permissions=True)
+                docs_updated[i.transaction_id] = doc    
+
         for transaction_id, doc in docs_updated.items():
             doc.save(ignore_permissions=True)
 
@@ -470,6 +478,8 @@ class BankPayment(Document):
             data = self.get_leave_encashment()
         elif self.transaction_type == "Desuup Payout Entry":
             data =self.get_desuup_payment()
+        elif self.transaction_type == "Stipend Payment":
+            data =self.get_desuup_payment()    
         data = merge_similar_entries(data)
         return data
     
@@ -547,6 +557,8 @@ class BankPayment(Document):
             cond = 'AND je.posting_date BETWEEN "{}" AND "{}"'.format(
                 str(self.from_date), str(self.to_date)
             )
+
+       
         for a in frappe.db.sql(
             """SELECT je.name transaction_id, je.posting_date transaction_date, je.voucher_type,
 								je.user_remark
@@ -560,7 +572,8 @@ class BankPayment(Document):
 									AND bpi.transaction_id = je.name
 									AND bpi.parent != '{bank_payment}'
 									AND bpi.docstatus != 2
-									AND bpi.status NOT IN ('Cancelled', 'Failed')
+									AND bpi.status NOT IN ('Cancelled')
+                                    AND (select count(bpii.name) from `tabBank Payment Item` bpii where bpii.parent = bpi.parent and bpii.status IN ('Cancelled')) = (select count(bpii.name) from `tabBank Payment Item` bpii where bpii.parent = bpi.parent and bpii.status NOT IN ('Cancelled') )
 								)
 								ORDER BY je.posting_date
 							""".format(
@@ -668,28 +681,34 @@ class BankPayment(Document):
                         desuup = i["party"]
                         
                     dtl = frappe.db.sql(query, party, as_dict=True)
-                    data.append(
-                        frappe._dict(
-                            {
-                                "transaction_type": "Journal Entry",
-                                "transaction_id": a.transaction_id,
-                                "transaction_date": a.transaction_date,
-                                "employee": employee,
-                                "supplier": supplier,
-                                "desuup": desuup,
-                                "beneficiary_name": dtl[0]["beneficiary_name"],
-                                "bank_name": dtl[0]["bank_name"],
-                                "bank_branch": dtl[0]["bank_branch"],
-                                "bank_account_type": dtl[0]["bank_account_type"],
-                                "bank_account_no": dtl[0]["bank_account_no"],
-                                "amount": flt(i["amount"]),
-                                "inr_bank_code": dtl[0]["inr_bank_code"],
-                                "inr_purpose_code": dtl[0]["inr_purpose_code"],
-                                "status": "Draft",
-                                "remarks": a.user_remark,
-                            }
+                    exists = frappe.db.sql("""
+                        select name from `tabBank Payment Item` where
+                        transaction_id = '{}' and parent != '{}'
+                        and bank_account_no = '{}' and status = "Completed"
+                    """.format(a.transaction_id, self.name, dtl[0]["bank_account_no"]))
+                    if not exists:
+                        data.append(
+                            frappe._dict(
+                                {
+                                    "transaction_type": "Journal Entry",
+                                    "transaction_id": a.transaction_id,
+                                    "transaction_date": a.transaction_date,
+                                    "employee": employee,
+                                    "supplier": supplier,
+                                    "desuup": desuup,
+                                    "beneficiary_name": dtl[0]["beneficiary_name"],
+                                    "bank_name": dtl[0]["bank_name"],
+                                    "bank_branch": dtl[0]["bank_branch"],
+                                    "bank_account_type": dtl[0]["bank_account_type"],
+                                    "bank_account_no": dtl[0]["bank_account_no"],
+                                    "amount": flt(i["amount"]),
+                                    "inr_bank_code": dtl[0]["inr_bank_code"],
+                                    "inr_purpose_code": dtl[0]["inr_purpose_code"],
+                                    "status": "Draft",
+                                    "remarks": a.user_remark,
+                                }
+                            )
                         )
-                    )
         return data
 
     def get_direct_payment(self):
@@ -1500,3 +1519,5 @@ def check_if_in_list(entry, data):
 
 		if same_head:
 			return e
+
+          

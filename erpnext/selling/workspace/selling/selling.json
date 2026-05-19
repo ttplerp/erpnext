@@ -1,11 +1,11 @@
 {
  "charts": [
   {
-   "chart_name": "Sales Order Trends",
-   "label": "Sales Order Trends"
+   "chart_name": "POS Item Quantity Sales",
+   "label": "POS Item Wise Quantity Sales "
   }
  ],
- "content": "[{\"type\":\"chart\",\"data\":{\"chart_name\":\"Sales Order Trends\",\"col\":12}},{\"type\":\"spacer\",\"data\":{\"col\":12}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Quick Access</b></span>\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Item\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Order\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Analytics\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Order Analysis\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":3}},{\"type\":\"spacer\",\"data\":{\"col\":12}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Custom Transactions\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Selling\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Items and Pricing\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Key Reports\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Other Reports\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Point Of Sales\",\"col\":4}}]",
+ "content": "[{\"type\":\"chart\",\"data\":{\"chart_name\":\"POS Item Wise Quantity Sales \",\"col\":12}},{\"type\":\"spacer\",\"data\":{\"col\":12}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Quick Access</b></span>\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Item\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Order\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Analytics\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Order Analysis\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":3}},{\"type\":\"spacer\",\"data\":{\"col\":12}},{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Custom Transactions\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Selling\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Items and Pricing\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Key Reports\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Other Reports\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Point Of Sales\",\"col\":4}}]",
  "creation": "2020-01-28 11:49:12.092882",
  "docstatus": 0,
  "doctype": "Workspace",
@@ -583,7 +583,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Point Of Sales",
-   "link_count": 8,
+   "link_count": 9,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -666,10 +666,20 @@
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "POS Consolidated Sales Report",
+   "link_count": 0,
+   "link_to": "POS Consolidated Sales Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2024-06-05 14:12:24.795526",
- "modified_by": "pema.dhendup@thimphutechpark.bt",
+ "modified": "2024-08-16 16:11:09.762615",
+ "modified_by": "Administrator",
  "module": "Selling",
  "name": "Selling",
  "owner": "Administrator",

@@ -10,7 +10,7 @@ frappe.query_reports["OBA Report DSP"] = {
 			"fieldtype": "Link",
 			"options": "Company",
 			"default": frappe.defaults.get_user_default("Company"),
-			"hidden": 1
+			// "hidden": 1
 		},
 		{
 			"fieldname":"party_type",

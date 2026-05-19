@@ -45,7 +45,7 @@ class SupplementaryBudget(Document):
 	# Written by Thukten to perform budget supplement, 13 Sept 2022
 	def supplement_budget(self, cancel = False):
 		if frappe.db.get_value("Fiscal Year", self.fiscal_year, "closed"):
-			frappe.throw("Fiscal Year " + fiscal_year + " has already been closed")
+			frappe.throw("Fiscal Year " + self.fiscal_year + " has already been closed")
 		else:
 			budget_against_field = frappe.scrub(self.budget_against)
 			budget_against = self.get(budget_against_field)

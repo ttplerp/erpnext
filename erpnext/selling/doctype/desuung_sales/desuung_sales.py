@@ -24,11 +24,12 @@ class DesuungSales(Document):
 				SELECT 
 					spr.selling_price as selling_price, sp.name as name 
 				FROM `tabSelling Price Rate` spr, `tabSelling Price` sp, `tabSelling Price Branch` spb 
-				WHERE spr.parent = spb.parent 
+				WHERE spr.parent = sp.name AND spb.parent = sp.name 
 				AND spr.particular = '{0}' 
 				AND spb.branch = '{1}' 
 				AND '{2}' BETWEEN sp.from_date 
 				AND sp.to_date""".format(item_code, branch, posting_date), as_dict = True)
+			# frappe.throw(str(selling_price))	
 		return selling_price
 	#end
 

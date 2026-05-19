@@ -167,7 +167,7 @@ class PaymentLedgerEntry(Document):
 		else:
 			update_voucher_outstanding(
 				self.against_voucher_type, self.against_voucher_no, self.account, self.party_type, self.party
-			)	
+			)				
 
 
 def on_doctype_update():

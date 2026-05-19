@@ -124,7 +124,6 @@
   {
    "fieldname": "fiscal_year",
    "fieldtype": "Link",
-   "hidden": 1,
    "label": "Fiscal Year",
    "options": "Fiscal Year"
   },
@@ -265,7 +264,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-07 15:18:23.368508",
+ "modified": "2026-02-26 12:23:35.722340",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Payout Entry",

@@ -266,7 +266,6 @@ erpnext.stock.PurchaseReceiptController = class PurchaseReceiptController extend
 			var item = args.item_name;
 			var itemIdx = item.substr(0, item.indexOf(" "));
 			var itemName = item.substr(item.indexOf(" "), item.length - 1);
-
 			frappe.call({
 				method:'frappe.client.get_value',
 				args:{
@@ -279,11 +278,11 @@ erpnext.stock.PurchaseReceiptController = class PurchaseReceiptController extend
 				},
 				callback:(r)=>{
 					if(r.message){
-						if ( !r.message.is_fixed_asset){
-							frappe.msgprint('Item selected is not a fixed asset')
-							dialog.hide();
-							return;
-						}
+						// if ( !r.message.is_fixed_asset){
+						// 	frappe.msgprint('Item selected is not a fixed asset')
+						// 	dialog.hide();
+						// 	return;
+						// }
 	
 						if(!args) return;
 						dialog.hide();

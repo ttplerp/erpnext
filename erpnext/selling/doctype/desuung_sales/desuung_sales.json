@@ -254,7 +254,6 @@
    "oldfieldname": "company",
    "oldfieldtype": "Link",
    "options": "Company",
-   "read_only": 1,
    "search_index": 1,
    "width": "150px"
   },
@@ -1324,7 +1323,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-05-21 10:30:17.948471",
+ "modified": "2025-08-05 09:54:20.373853",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Desuung Sales",

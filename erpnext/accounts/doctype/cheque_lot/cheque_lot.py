@@ -11,6 +11,7 @@ class ChequeLot(Document):
 def update_cheque_lot(ref_doc):
 	if ref_doc:
 		current = ref_doc.next_no
+		# frappe.throw(str(ref_doc.end_no))
 		if cint(current) < cint(ref_doc.end_no):
 			ref_doc.db_set("next_no", str((cint(current) + 1)).zfill(len(ref_doc.next_no)))
 			ref_doc.db_set("status", "In Use")

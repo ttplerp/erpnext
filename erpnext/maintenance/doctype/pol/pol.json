@@ -6,16 +6,15 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "section_break_1",
-  "branch",
-  "cost_center",
-  "business_activity",
-  "column_break_3",
-  "warehouse",
+  "basic_info_section",
   "company",
+  "branch",
+  "warehouse",
+  "cost_center",
   "col_break_2",
   "posting_date",
   "posting_time",
+  "business_activity",
   "column_break_2",
   "book_type",
   "direct_consumption",
@@ -36,11 +35,9 @@
   "column_break_27",
   "hiring_warehouse",
   "section_break_15",
-  "supplier",
-  "col_break_supp",
   "fuelbook",
-  "column_break_19",
-  "fuelbook_branch",
+  "col_break_supp",
+  "supplier",
   "section_break_4",
   "pol_type",
   "rate",
@@ -87,11 +84,6 @@
  ],
  "fields": [
   {
-   "fieldname": "section_break_1",
-   "fieldtype": "Section Break",
-   "label": "Location Information"
-  },
-  {
    "fieldname": "branch",
    "fieldtype": "Link",
    "label": "Branch",
@@ -115,15 +107,11 @@
    "reqd": 1
   },
   {
-   "fieldname": "column_break_3",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "warehouse",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Warehouse",
-   "options": "Warehouse",
-   "reqd": 1
+   "options": "Warehouse"
   },
   {
    "fetch_from": "branch.company",
@@ -165,7 +153,6 @@
    "description": "If the POL is consumed directly by the vehicle, check this. This will consume the POL too",
    "fieldname": "direct_consumption",
    "fieldtype": "Check",
-   "hidden": 1,
    "label": "Direct Consumption"
   },
   {
@@ -263,6 +250,7 @@
    "fieldtype": "Section Break"
   },
   {
+   "fetch_from": "fuelbook.supplier",
    "fieldname": "supplier",
    "fieldtype": "Link",
    "label": "Supplier",
@@ -274,23 +262,11 @@
    "fieldtype": "Column Break"
   },
   {
-   "depends_on": "eval:doc.equipment",
-   "fetch_from": "equipment.fuelbook",
    "fieldname": "fuelbook",
    "fieldtype": "Link",
    "label": "Fuelbook",
    "options": "Fuelbook",
-   "read_only": 1
-  },
-  {
-   "fieldname": "column_break_19",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fetch_from": "fuelbook.branch",
-   "fieldname": "fuelbook_branch",
-   "fieldtype": "Read Only",
-   "label": "Fuelbook Branch"
+   "reqd": 1
   },
   {
    "fieldname": "section_break_4",
@@ -540,11 +516,16 @@
   {
    "fieldname": "column_break_49",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "basic_info_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Info"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-07-18 12:36:18.477233",
+ "modified": "2025-07-24 10:56:08.723034",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "POL",

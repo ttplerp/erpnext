@@ -165,7 +165,7 @@ frappe.ui.form.on('Payment Entry', {
 		frm.set_query("from_party_type", function() {
 			return{
 				"filters": {
-					"name": ["in", ["Employee"]],
+					"name": ["in", ["Employee", "Supplier"]],
 				}
 			}
 		});
@@ -446,9 +446,9 @@ frappe.ui.form.on('Payment Entry', {
 
 	paid_from_account_type: function(frm) {
 		if(!in_list(["Receivable", "Payable"], frm.doc.paid_from_account_type)){
-			frm.toggle_display("from_party_type", 0);
-			frm.toggle_display("from_party", 0);
-			frm.toggle_display("from_party_name", 0);
+			frm.toggle_display("from_party_type", 1);
+			frm.toggle_display("from_party", 1);
+			frm.toggle_display("from_party_name", 1);
 
 			$.each(["from_party_type", "from_party", "from_party_name"], function(i, field) {
 				frm.set_value(field, null);
@@ -461,9 +461,24 @@ frappe.ui.form.on('Payment Entry', {
 		}
 	},
 
+	// from_party: function(frm) {
+	// 	frm.add_fetch("from_party", "employee_name", "from_party_name");
+	// },
+
 	from_party: function(frm) {
-		frm.add_fetch("from_party", "employee_name", "from_party_name");
-	},
+        if (frm.doc.from_party && frm.doc.from_party_type) {
+            if (frm.doc.from_party_type == 'Employee') {
+                frappe.db.get_value('Employee', frm.doc.from_party, 'employee_name', (r) => {
+                    frm.set_value('from_party_name', r.employee_name);
+                });
+            } else if (frm.doc.from_party_type == 'Supplier') {
+                frappe.db.get_value('Supplier', frm.doc.from_party, 'supplier_name', (r) => {
+                    frm.set_value('from_party_name', r.supplier_name);
+                });
+            }
+        }
+    },
+
 
 	paid_to: function(frm) {
 		if(frm.set_party_account_based_on_party) return;

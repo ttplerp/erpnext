@@ -28,6 +28,10 @@
   "set_posting_time",
   "due_date",
   "return_against",
+  "month_electricity_bill_detail_section",
+  "billing_period",
+  "previous_meter_reading",
+  "current_meter_reading",
   "amended_from",
   "accounting_dimensions_section",
   "project",
@@ -2044,6 +2048,27 @@
    "fieldname": "total_excess_amount",
    "fieldtype": "Float",
    "label": "Excess Amount"
+  },
+  {
+   "depends_on": "eval:doc.company ==\"Solar Initiative\"",
+   "fieldname": "month_electricity_bill_detail_section",
+   "fieldtype": "Section Break",
+   "label": "Month Electricity bill Detail"
+  },
+  {
+   "fieldname": "billing_period",
+   "fieldtype": "Data",
+   "label": "Billing Period"
+  },
+  {
+   "fieldname": "previous_meter_reading",
+   "fieldtype": "Data",
+   "label": "Previous Meter Reading"
+  },
+  {
+   "fieldname": "current_meter_reading",
+   "fieldtype": "Data",
+   "label": "Current Meter Reading:"
   }
  ],
  "icon": "fa fa-file-text",
@@ -2056,7 +2081,7 @@
    "link_fieldname": "consolidated_invoice"
   }
  ],
- "modified": "2025-11-03 15:07:47.041483",
+ "modified": "2026-02-13 12:08:52.598275",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Sales Invoice",

@@ -29,7 +29,10 @@
   "base_total",
   "base_tax_amount_after_discount_amount",
   "item_wise_tax_detail",
-  "dont_recompute_tax"
+  "dont_recompute_tax",
+  "add_deduct_tax",
+  "category",
+  "title"
  ],
  "fields": [
   {
@@ -213,17 +216,38 @@
    "read_only": 1
   },
   {
-    "default": "0",
-    "fieldname": "is_gst",
-    "fieldtype": "Check",
-    "label": "Is GST?"
-   }
+   "default": "Deduct",
+   "fieldname": "add_deduct_tax",
+   "fieldtype": "Select",
+   "label": "Add or Deduct",
+   "options": "\nDeduct\nAdd",
+   "reqd": 1
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Consider Tax or Charge for",
+   "options": "\nValuation and Total\nValuation\nTotal"
+  },
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Title"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_gst",
+   "fieldtype": "Check",
+   "label": "Is GST?"
+  }
  ],
  "idx": 1,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-12-07 11:44:10.888827",
+ "modified": "2026-01-15 15:20:27.134974",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Sales Taxes and Charges",

@@ -237,12 +237,18 @@
     "fieldname": "is_gst",
     "fieldtype": "Check",
     "label": "Is GST?"
-   }
+   },
+  {
+   "default": "0",
+   "fieldname": "is_custom_charges",
+   "fieldtype": "Check",
+   "label": "Is Custom Charges?"
+  }
  ],
  "idx": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-01-20 10:16:04.803777",
+ "modified": "2026-01-14 11:13:16.642536",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Purchase Taxes and Charges",

@@ -3,7 +3,42 @@
 {% include "erpnext/public/js/controllers/cheque_details.js" %};
 
 frappe.ui.form.on('Desuup Payout Entry', {
+	party_type: function(frm) {
+        frm.set_value("paid_to", "");  // clear previous value
+
+        if (frm.doc.party_type === "Employee") {
+            frm.set_df_property("paid_to", "options", "Employee");
+
+            frm.set_query("paid_to", function() {
+                return {
+                    filters: {
+                        status: "Active"
+                    }
+                };
+            });
+
+        } else if (frm.doc.party_type === "Supplier") {
+            frm.set_df_property("paid_to", "options", "Supplier");
+
+            frm.set_query("paid_to", function() {
+                return {
+                    filters: {
+                        disabled: 0  // only active suppliers
+                    }
+                };
+            });
+        } else {
+            frm.set_df_property("paid_to", "options", "");  // reset
+        }
+    },
 	onload: function (frm) {
+		frm.set_query("party_type", function() {
+            return {
+                filters: {
+                    name: ["in", ["Employee", "Supplier"]]
+                }
+            };
+        });
 		frm.set_query('training_management', function(doc) {
 			return {
 				filters: [

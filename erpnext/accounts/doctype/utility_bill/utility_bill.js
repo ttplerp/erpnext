@@ -21,6 +21,22 @@ frappe.ui.form.on('Utility Bill', {
 					cur_frm.set_df_property("bank_balance", "hidden", 1);
 				}
 			});
+			frm.set_query("utility_services", function(doc){
+				return {
+					filters: {
+						company: doc.company,
+						branch: doc.branch,
+					}
+				}
+			})
+			frm.set_query("branch", function(doc){
+				return {
+					filters: {
+						company: doc.company,
+					}
+				}
+			})
+
 	},
 	refresh: function(frm) {
 		cur_frm.set_query("utility_services", function() {
