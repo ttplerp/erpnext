@@ -22,6 +22,10 @@ def get_data(query, filters):
 			cost_center = ""
 			committed = frappe.db.sql("select SUM(amount) from `tabCommitted Budget` where account = %s and reference_date BETWEEN %s and %s", (d.account, filters.from_date, filters.to_date))[0][0]
 			consumed = frappe.db.sql("select SUM(amount) from `tabConsumed Budget` where account = %s and reference_date BETWEEN %s and %s", (d.account, filters.from_date, filters.to_date))[0][0]
+		elif filters.branch_cost_center:
+			b_cost_center = filters.branch_cost_center
+			committed = frappe.db.sql("select SUM(amount) from `tabCommitted Budget` where cost_center = %s and committed_cost_center = %s and account = %s and reference_date BETWEEN %s and %s and business_activity = %s", (b_cost_center, d.account, filters.from_date, filters.to_date, filters.business_activity))[0][0]
+			consumed = frappe.db.sql("select SUM(amount) from `tabConsumed Budget` where cost_center = %s and consumed_cost_center = %s and account = %s and reference_date BETWEEN %s and %s and business_activity = %s", (b_cost_center, d.account, filters.from_date, filters.to_date, filters.business_activity))[0][0]
 		else:
 			cost_center = d.cost_center
 			committed = frappe.db.sql("select SUM(amount) from `tabCommitted Budget` where cost_center = %s and account = %s and reference_date BETWEEN %s and %s and business_activity = %s", (d.cost_center, d.account, filters.from_date, filters.to_date, filters.business_activity))[0][0]
@@ -89,8 +93,8 @@ def construct_query(filters=None):
 											) 
 					 or b.cost_center = '{0}')
 				""".format(filters.cost_center, lft, rgt)
-	elif filters.cost_center and filters.branch_cost_center:
-		condition += " and b.cost_center = \'" + str(filters.branch_cost_center) + "\' "
+	# elif filters.cost_center and filters.branch_cost_center:
+	# 	condition += " and b.cost_center = \'" + str(filters.branch_cost_center) + "\' "
 
 
 	query = """select b.cost_center, ba.account, b.project,

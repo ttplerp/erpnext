@@ -1,0 +1,122 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:AEN{YY}{MM}{DD}{#####}",
+ "creation": "2026-02-09 15:57:43.242416",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "desuup",
+  "desuup_attendance",
+  "deployment",
+  "attendance_date",
+  "enquiry",
+  "support_doc",
+  "column_break_6",
+  "amended_from",
+  "status",
+  "response",
+  "action_taken_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "desuup_attendance",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Desuup Attendance",
+   "options": "Desuup Attendance",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "desuup_attendance.reference_name",
+   "fieldname": "deployment",
+   "fieldtype": "Link",
+   "label": "Deployment",
+   "options": "Desuup Deployment",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuup_attendance.attendance_date",
+   "fieldname": "attendance_date",
+   "fieldtype": "Date",
+   "label": "Attendance Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "enquiry",
+   "fieldtype": "Data",
+   "label": "Enquiry"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "response",
+   "fieldtype": "Text",
+   "label": "Response"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Absence Enquiry",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuup_attendance.desuup",
+   "fieldname": "desuup",
+   "fieldtype": "Link",
+   "label": "Desuup",
+   "options": "Desuup",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Submitted\nRejected\nAccepted",
+   "reqd": 1
+  },
+  {
+   "fieldname": "action_taken_date",
+   "fieldtype": "Date",
+   "label": "Action Taken Date"
+  },
+  {
+   "fieldname": "support_doc",
+   "fieldtype": "Attach",
+   "label": "Supporting Document"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-05-04 11:58:44.053700",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Absence Enquiry",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

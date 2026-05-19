@@ -30,6 +30,9 @@
   "total_invoice_amount",
   "advance_amount",
   "balance_advance_amount",
+  "gst_percent",
+  "gst_account",
+  "gst_amount",
   "column_break_14",
   "tax_withholding_category",
   "tds_account",
@@ -349,11 +352,31 @@
    "label": "Tax Withholding Category",
    "options": "Tax Withholding Category",
    "reqd": 1
+  },
+  {
+   "fieldname": "gst_percent",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "GST Percent",
+   "options": "\n5"
+  },
+  {
+   "fieldname": "gst_account",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "GST Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "gst_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "GST Amount"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-08-24 16:41:01.038886",
+ "modified": "2026-01-26 10:58:03.367519",
  "modified_by": "Administrator",
  "module": "Maintenance",
  "name": "Hire Charge Invoice",

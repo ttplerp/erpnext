@@ -84,6 +84,16 @@ frappe.ui.form.on("Job Card", {
 		cur_frm.toggle_display("owned_by", 0);
 	},
 
+	"gst_percent": function(frm) {
+		calculate_gst(frm);
+        // When GST percent changes, recalculate GST for all items
+        if(frm.doc.gst_percent && frm.doc.items) {
+            frm.doc.items.forEach(function(item) {
+                calculate_gst_total(frm, item.doctype, item.name);
+            });
+        }
+  	},
+
 	items_on_form_rendered: function (frm, grid_row, cdt, cdn) {
 		var row = cur_frm.open_grid_row();
 		var df = frappe.meta.get_docfield("Job Card Item", "quantity", cur_frm.doc.name);
@@ -115,6 +125,38 @@ frappe.ui.form.on("Job Card", {
 		});
 	}
 });
+
+function calculate_gst(frm) {
+	frappe.call({
+		method: "erpnext.maintenance.doctype.job_card.job_card.get_gst_account",
+		args: {
+			percent: frm.doc.gst_percent,
+			company: frm.doc.company
+		},
+		callback: function (r) {
+			if (r.message) {
+				frm.set_value("gst_account", r.message);
+				cur_frm.refresh_field("gst_account");
+			}
+		}
+	})
+}
+
+function calculate_gst_total(frm, cdt, cdn) {
+	var item = frappe.get_doc(cdt, cdn);
+  
+	var charge_amount = 0.00;
+	frm.doc.items.forEach(function(item) {
+	  charge_amount += item.charge_amount;
+	});
+	
+	if(frm.doc.gst_percent && frm.doc.gst_account) {
+		var gst_amount = parseFloat(frm.doc.gst_percent || 0) * parseFloat(charge_amount) / 100;
+		if(frm.doc.gst_amount == 0) {
+			frappe.model.set_value(cdt, cdn, "gst_amount", gst_amount);
+		}
+	} 
+}
 
 frappe.ui.form.on("Job Card Item", {
 	job: function (frm, cdt, cdn) {

@@ -12,6 +12,7 @@
   "advance_for",
   "training_center",
   "column_break_1",
+  "party_type",
   "fiscal_year",
   "cost_center",
   "from_date",
@@ -190,12 +191,18 @@
    "label": "Desuup Deployment Entry",
    "mandatory_depends_on": "eval:['OJT', 'Production'].includes(doc.advance_for)",
    "options": "Desuup Deployment Entry"
+  },
+  {
+   "fieldname": "party_type",
+   "fieldtype": "Link",
+   "label": "Party Type",
+   "options": "Party Type"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-07 15:39:10.909302",
+ "modified": "2025-10-08 14:16:08.416858",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Mess Advance",

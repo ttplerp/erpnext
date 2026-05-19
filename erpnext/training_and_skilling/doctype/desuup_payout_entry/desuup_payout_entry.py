@@ -354,7 +354,8 @@ class DesuupPayoutEntry(Document):
 				t2.reported_date,
 				t2.exit_date,
 				t2.is_mess_member,
-				t2.amount as monthly_stipend_amount  
+				t2.amount as monthly_stipend_amount,
+				t2.project_allowance 
 				FROM `tabDesuup Deployment Entry` t1, `tabDesuup Deployment Entry Item` t2
 				WHERE t1.name = t2.parent
 				AND t1.deployment_type = 'OJT'
@@ -402,7 +403,8 @@ class DesuupPayoutEntry(Document):
 				t2.reported_date,
 				t2.exit_date,
 				t2.is_mess_member,
-				t2.amount as monthly_stipend_amount  
+				t2.amount as monthly_stipend_amount,
+				t2.project_allowance
 				FROM `tabDesuup Deployment Entry` t1, `tabDesuup Deployment Entry Item` t2
 				WHERE t1.name = t2.parent
 				AND t1.deployment_type = 'Production' 
@@ -523,7 +525,7 @@ class DesuupPayoutEntry(Document):
 			cost_center = item.get('cost_center')
 
 			if not cost_center:
-				frappe.throw("Cost center is missing in one of the items.")
+				frappe.throw(f"Cost center is missing in one of the items no. {item.idx}")
 
 			if cost_center not in aggregated_values:
 				aggregated_values[cost_center] = {

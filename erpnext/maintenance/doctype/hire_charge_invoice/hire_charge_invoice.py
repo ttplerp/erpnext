@@ -20,6 +20,7 @@ class HireChargeInvoice(AccountsController):
 		self.set_advance_data()
 		self.set_discount_data()
 		self.set_amount()
+		self.gst_amount	= (total_invoice_amount * flt(self.gst_percent)/100)
 		if self.total_invoice_amount <= 0:
 			frappe.throw("Total Invoice Amount should be greater than 0")
 		if self.balance_amount < 0:
@@ -49,7 +50,7 @@ class HireChargeInvoice(AccountsController):
 		self.total_invoice_amount = total_amount
 
 	def set_amount(self):
-		self.balance_amount = flt(self.total_invoice_amount) - flt(self.advance_amount) - flt(self.discount_amount) - flt(self.tds_amount)
+		self.balance_amount = flt(self.total_invoice_amount) - flt(self.advance_amount) - flt(self.discount_amount) - flt(self.tds_amount) - flt(self.gst_amount)
 		self.outstanding_amount = self.balance_amount
 
 	def on_submit(self):
@@ -345,6 +346,21 @@ class HireChargeInvoice(AccountsController):
 						"party_type": "Supplier"
 					}, self.currency)
 			)
+
+		if self.gst_amount > 0:
+				gl_entries.append(
+				self.get_gl_dict({
+					"account":  self.gst_account,
+					"against": self.supplier,
+					"debit": self.gst_amount,
+					"debit_in_account_currency": self.gst_amount,
+					"against_voucher": self.name,
+					"against_voucher_type": self.doctype,
+					"cost_center": self.cost_center,
+					"business_activity": self.business_activity
+				}, self.currency)
+			)
+				
 		# added by phuntsho on march 16 2021
 		if self.tds_amount: 
 			gl_entries.append(
@@ -426,6 +442,17 @@ class HireChargeInvoice(AccountsController):
 		tax_rate = frappe.db.get_value("Tax Withholding Rate", {"parent": self.tax_withholding_category}, "tax_withholding_rate")
 
 		return {"account": tax_account, "rate": tax_rate}
+
+@frappe.whitelist()
+def get_gst_account(percent, company):
+	if percent:
+		if cint(percent) == 5:
+			field = "gst_5_account"
+		else:
+			frappe.throw(
+				"Set TDS Accounts in Accounts Settings and try again")
+		# return frappe.db.get_single_value("Accounts Settings", field)
+		return frappe.db.get_value("Company", company, field)
 
 @frappe.whitelist()
 def get_vehicle_logs(form=None, branch=None):

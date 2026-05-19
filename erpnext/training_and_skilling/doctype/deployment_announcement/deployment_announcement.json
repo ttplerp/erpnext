@@ -1,0 +1,388 @@
+{
+ "actions": [],
+ "autoname": "DEPANN.YY.MM.######",
+ "creation": "2025-10-21 12:50:16.260101",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "type_of_deployment",
+  "column_break_2",
+  "funding_source",
+  "section_break_1",
+  "event",
+  "category",
+  "cohort",
+  "course",
+  "registration_deadline",
+  "column_break_3",
+  "start_date",
+  "end_date",
+  "reporting_date",
+  "column_break_10",
+  "starttime",
+  "endtime",
+  "duration",
+  "section_break_11",
+  "country",
+  "dzongkhag",
+  "gewog",
+  "reporting_place",
+  "column_break_15",
+  "objective",
+  "section_break_17",
+  "desuup_coordinator",
+  "column_break_27",
+  "coordinatorname",
+  "section_break_15",
+  "by_gender",
+  "column_break_17",
+  "male_desuups",
+  "total_desuups",
+  "column_break_19",
+  "female_desuups",
+  "section_break_31",
+  "by_dzongkhag",
+  "column_break_33",
+  "by_batch",
+  "column_break_35",
+  "by_employment_status",
+  "column_break_37",
+  "by_qualification",
+  "section_break_30",
+  "deployment_requisition",
+  "column_break_32",
+  "amended_from",
+  "deployment_created"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_1",
+   "fieldtype": "Section Break",
+   "label": "Event Details"
+  },
+  {
+   "depends_on": "eval:[\"Deployment\", \"Desuung National Service\"].includes(doc.type_of_deployment)",
+   "fieldname": "event",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Type of Event",
+   "mandatory_depends_on": "eval:[\"Deployment\", \"Desuung National Service\"].includes(doc.type_of_deployment)",
+   "options": "Type of Event",
+   "read_only_depends_on": "eval:[\"Skilling\", \"\"].includes(doc.type_of_deployment)"
+  },
+  {
+   "depends_on": "eval:[\"Deployment\", \"Desuung National Service\"].includes(doc.type_of_deployment)",
+   "fetch_from": "deployment_event.event_name",
+   "fieldname": "category",
+   "fieldtype": "Link",
+   "label": "Category of Deployment",
+   "mandatory_depends_on": "eval:[\"Deployment\", \"Desuung National Service\"].includes(doc.type_of_deployment)",
+   "options": "Category of Deployment",
+   "read_only_depends_on": "eval:[\"Skilling\", \"\"].includes(doc.type_of_deployment)"
+  },
+  {
+   "fieldname": "registration_deadline",
+   "fieldtype": "Datetime",
+   "label": "Registration Deadline",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "End Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "duration",
+   "fieldtype": "Int",
+   "label": "Duration (days)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_11",
+   "fieldtype": "Section Break",
+   "label": "Location Details"
+  },
+  {
+   "default": "Bhutan",
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country",
+   "reqd": 1
+  },
+  {
+   "fieldname": "dzongkhag",
+   "fieldtype": "Link",
+   "label": "Dzongkhag",
+   "options": "Dzongkhags",
+   "reqd": 1
+  },
+  {
+   "fieldname": "gewog",
+   "fieldtype": "Link",
+   "label": "Gewog",
+   "options": "Gewogs",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_15",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "objective",
+   "fieldtype": "Long Text",
+   "label": "Brief objective of the deployment",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_15",
+   "fieldtype": "Section Break",
+   "label": "Registration Criteria"
+  },
+  {
+   "depends_on": "eval: doc.by_gender === \"Yes\"",
+   "fieldname": "male_desuups",
+   "fieldtype": "Int",
+   "label": "Male Desuups",
+   "mandatory_depends_on": "eval: doc.by_gender === \"Yes\""
+  },
+  {
+   "fieldname": "column_break_17",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.by_gender === \"Yes\"",
+   "fieldname": "female_desuups",
+   "fieldtype": "Int",
+   "label": "Female Desuups",
+   "mandatory_depends_on": "eval: doc.by_gender === \"Yes\""
+  },
+  {
+   "fieldname": "column_break_19",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.by_gender === \"No\"",
+   "fieldname": "total_desuups",
+   "fieldtype": "Int",
+   "label": "Total Desuups",
+   "mandatory_depends_on": "eval: doc.by_gender === \"No\""
+  },
+  {
+   "fieldname": "reporting_date",
+   "fieldtype": "Datetime",
+   "label": "Reporting Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "reporting_place",
+   "fieldtype": "Data",
+   "label": "Reporting Place",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_17",
+   "fieldtype": "Section Break",
+   "label": "Coordinator Details"
+  },
+  {
+   "fieldname": "column_break_27",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "type_of_deployment",
+   "fieldtype": "Select",
+   "label": "Type of Deployment",
+   "options": "\nDeployment\nSkilling\nDesuung National Service",
+   "reqd": 1
+  },
+  {
+   "fieldname": "deployment_requisition",
+   "fieldtype": "Link",
+   "label": "Deployment Requisition",
+   "options": "Deployment Requisition",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Deployment Announcement",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_30",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_32",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "by_gender",
+   "fieldtype": "Select",
+   "label": "Gender Specification Ratio",
+   "options": "\nYes\nNo",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_31",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "by_dzongkhag",
+   "fieldtype": "Link",
+   "label": "Invite desuups by Dzongkhag ",
+   "options": "Dzongkhags"
+  },
+  {
+   "fieldname": "column_break_33",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "by_batch",
+   "fieldtype": "Link",
+   "label": "Invite desuups by Batch ",
+   "options": "Desuung Batch"
+  },
+  {
+   "fieldname": "column_break_35",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "by_employment_status",
+   "fieldtype": "Select",
+   "label": "Invite desuups by Employment Status ",
+   "options": "\nEmployed\nUnemployed\nStudent\nDisplaced\nRetired\nFreelancer"
+  },
+  {
+   "fieldname": "column_break_37",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "by_qualification",
+   "fieldtype": "Select",
+   "label": "Invite desuups by Qualification Level ",
+   "options": "\nPhD (Doctorate)\nMasters Degree\nPost Graduate Diploma\nGraduate\nDiploma\nCertificates\nHigher Secondary (7+2+2+2)\nMiddle Secondary (7+2+2)\nLower Secondary (7+2)\nPrimary (7 Years)\nOthers"
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "starttime",
+   "fieldtype": "Time",
+   "label": "Daily Start Time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "endtime",
+   "fieldtype": "Time",
+   "label": "Daily End Time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "desuup_coordinator",
+   "fieldtype": "Link",
+   "label": "Desuup Coordinator",
+   "options": "Desuup",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "desuup_coordinator.desuup_name",
+   "fieldname": "coordinatorname",
+   "fieldtype": "Data",
+   "label": "Coordinator\u2019s Name",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "deployment_created",
+   "fieldtype": "Check",
+   "label": "Deployment Created",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "funding_source",
+   "fieldtype": "Select",
+   "label": "Funding Source",
+   "options": "\nNo Funding\nDGRK\nExternal",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.type_of_deployment == \"Skilling\"",
+   "fieldname": "cohort",
+   "fieldtype": "Link",
+   "label": "Cohort",
+   "mandatory_depends_on": "eval:doc.type_of_deployment == \"Skilling\"",
+   "options": "Cohort",
+   "read_only_depends_on": "eval:doc.type_of_deployment != \"Skilling\""
+  },
+  {
+   "depends_on": "eval:doc.type_of_deployment == \"Skilling\"",
+   "fieldname": "course",
+   "fieldtype": "Link",
+   "label": "Course",
+   "mandatory_depends_on": "eval:doc.type_of_deployment == \"Skilling\"",
+   "options": "Course",
+   "read_only_depends_on": "eval:doc.type_of_deployment != \"Skilling\""
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-04-14 11:58:31.119870",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Deployment Announcement",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Desuup",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,33 @@
+{
+ "chart_name": "Desuup Count Undergone DSP Training",
+ "chart_type": "Report",
+ "creation": "2023-04-07 13:21:08.600598",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "dynamic_filters_json": "{}",
+ "filters_json": "{}",
+ "group_by_type": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "modified": "2023-04-07 13:21:22.701978",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Desuup Count Undergone DSP Training",
+ "number_of_groups": 0,
+ "owner": "Administrator",
+ "report_name": "Desuung Undergone DSP Training",
+ "roles": [],
+ "time_interval": "Yearly",
+ "timeseries": 0,
+ "timespan": "Last Year",
+ "type": "Pie",
+ "use_report_chart": 0,
+ "x_field": "gender",
+ "y_axis": [
+  {
+   "color": "#2592e6",
+   "y_field": "total"
+  }
+ ]
+}

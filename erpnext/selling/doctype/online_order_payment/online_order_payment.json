@@ -1,0 +1,238 @@
+{
+ "actions": [],
+ "autoname": "format:OLS{YY}{MM}{######}",
+ "creation": "2025-12-29 16:11:20.085743",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "online_order",
+  "ordered_on",
+  "posting_date",
+  "data_3",
+  "desuup",
+  "desuup_name",
+  "phone_number",
+  "section_break_6",
+  "items",
+  "section_break_8",
+  "total_amount",
+  "journal_no",
+  "location",
+  "currency",
+  "column_break_10",
+  "branch",
+  "warehouse",
+  "cost_center",
+  "business_activity",
+  "section_break_14",
+  "company",
+  "column_break_22",
+  "stock_entry",
+  "column_break_20",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "desuup",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Desuup",
+   "options": "Desuup",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "data_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "desuup.desuup_name",
+   "fieldname": "desuup_name",
+   "fieldtype": "Data",
+   "label": "Desuup Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuup.mobile_number",
+   "fieldname": "phone_number",
+   "fieldtype": "Data",
+   "label": "Phone Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_6",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "options": "Online Order Item",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_8",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "label": "Total Amount",
+   "non_negative": 1,
+   "precision": "2",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "journal_no",
+   "fieldtype": "Data",
+   "label": "Journal Number",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_14",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Online Order Payment",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Online Order Payment",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fetch_from": "online_order.posting_date",
+   "fieldname": "ordered_on",
+   "fieldtype": "Datetime",
+   "label": "Ordered On",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "location.warehouse",
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "options": "Warehouse",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "online_order",
+   "fieldtype": "Link",
+   "label": "Online Order",
+   "options": "Online Order",
+   "reqd": 1
+  },
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "location.branch",
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fetch_from": "location.cost_center",
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "stock_entry",
+   "fieldtype": "Link",
+   "label": "Stock Entry",
+   "options": "Stock Entry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_20",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "company.default_currency",
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency"
+  },
+  {
+   "fetch_from": "location.business_activity",
+   "fieldname": "business_activity",
+   "fieldtype": "Link",
+   "label": "Business Activity",
+   "options": "Business Activity",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "location.company",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "column_break_22",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Link",
+   "label": "Pickup Location",
+   "options": "Pickup Location",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-02-11 16:43:55.370441",
+ "modified_by": "Administrator",
+ "module": "Selling",
+ "name": "Online Order Payment",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

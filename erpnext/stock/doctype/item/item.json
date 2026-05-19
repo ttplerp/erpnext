@@ -27,6 +27,8 @@
   "has_variants",
   "is_production_item",
   "is_pol_item",
+  "is_selling_item",
+  "is_gst_exempted",
   "include_item_in_manufacturing",
   "opening_stock",
   "valuation_rate",
@@ -125,7 +127,9 @@
   "default_item_manufacturer",
   "default_manufacturer_part_no",
   "published_in_website",
-  "total_projected_qty"
+  "total_projected_qty",
+  "section_break_116",
+  "images"
  ],
  "fields": [
   {
@@ -949,6 +953,27 @@
    "fieldname": "hsn_code",
    "fieldtype": "Data",
    "label": "HSN Code"
+  },
+  {
+   "fieldname": "images",
+   "fieldtype": "Attach Image",
+   "label": "Attachment"
+  },
+  {
+   "fieldname": "section_break_116",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_selling_item",
+   "fieldtype": "Check",
+   "label": "Is Selling Item"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_gst_exempted",
+   "fieldtype": "Check",
+   "label": "Is GST Exempted"
   }
  ],
  "icon": "fa fa-tag",
@@ -956,7 +981,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-02-13 17:42:09.135131",
+ "modified": "2026-01-26 17:27:46.877343",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",

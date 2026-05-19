@@ -61,34 +61,6 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Deployment Record",
-   "link_count": 4,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Deployment Category",
-   "link_count": 0,
-   "link_to": "Deployment Category",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Deployment Title",
-   "link_count": 0,
-   "link_to": "Deployment Title",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Desuup Deployment",
    "link_count": 0,
    "link_to": "Deployment",
@@ -443,9 +415,77 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Deployment Record",
+   "link_count": 6,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Deployment Category",
+   "link_count": 0,
+   "link_to": "Deployment Category",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Deployment Title",
+   "link_count": 0,
+   "link_to": "Deployment Title",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Deployment Requisition",
+   "link_count": 0,
+   "link_to": "Deployment Requisition",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Deployment Announcement",
+   "link_count": 0,
+   "link_to": "Deployment Announcement",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Desuup Deployment",
+   "link_count": 0,
+   "link_to": "Deployment",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Update Deployment Category to Title",
+   "link_count": 0,
+   "link_to": "Update Deployment Category",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2024-10-08 12:39:18.505761",
+ "modified": "2026-03-02 11:17:52.158236",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training And Skilling",

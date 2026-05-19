@@ -138,15 +138,36 @@ class PaymentLedgerEntry(Document):
 			validate_balance_type(self.account, adv_adj)
 			validate_frozen_account(self.account, adv_adj)
 
-		# update outstanding amount
-		if (
-			self.against_voucher_type in ["Journal Entry", "Sales Invoice", "Purchase Invoice", "Fees"]
-			and self.flags.update_outstanding == "Yes"
-			and not frappe.flags.is_reverse_depr_entry
-		):
+		# # update outstanding amount
+		# if (
+		# 	self.against_voucher_type in ["Journal Entry", "Sales Invoice", "Purchase Invoice", "Fees"]
+		# 	and self.flags.update_outstanding == "Yes"
+		# 	and not frappe.flags.is_reverse_depr_entry
+		# ):
+		# 	update_voucher_outstanding(
+		# 		self.against_voucher_type, self.against_voucher_no, self.account, self.party_type, self.party
+		# 	)
+		if "GST" in self.account:
+			if self.party_type == "Supplier":
+				if frappe.db.get_value("Supplier", self.party, "country") == "Bhutan":
+					update_voucher_outstanding(
+						self.against_voucher_type, self.against_voucher_no, self.account, self.party_type, self.party
+					)
+				elif self.party_type == "Customer":
+					# Empty block - may need to add logic here
+					pass
+				else:
+					update_voucher_outstanding(
+						self.against_voucher_type, self.against_voucher_no, self.account, self.party_type, self.party
+					)
+			else:
+				update_voucher_outstanding(
+					self.against_voucher_type, self.against_voucher_no, self.account, self.party_type, self.party
+				)
+		else:
 			update_voucher_outstanding(
 				self.against_voucher_type, self.against_voucher_no, self.account, self.party_type, self.party
-			)
+			)	
 
 
 def on_doctype_update():

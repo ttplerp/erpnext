@@ -25,6 +25,7 @@
   "column_break_14",
   "monthly_mess_amount",
   "mess_advance_used",
+  "project_allowance",
   "column_break_16",
   "stipend_amount",
   "refundable_amount",
@@ -240,12 +241,18 @@
    "fieldtype": "Currency",
    "label": "Total Amount",
    "read_only": 1
+  },
+  {
+   "fieldname": "project_allowance",
+   "fieldtype": "Currency",
+   "in_standard_filter": 1,
+   "label": "Project Allowance"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-09-24 20:38:18.519920",
+ "modified": "2026-01-27 16:02:53.259609",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Payout Item",

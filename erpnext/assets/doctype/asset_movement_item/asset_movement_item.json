@@ -7,8 +7,8 @@
  "field_order": [
   "company",
   "asset",
+  "asset_name",
   "source_cost_center",
-  "source_location",
   "source_custodian_type",
   "from_employee",
   "from_employee_name",
@@ -16,16 +16,15 @@
   "from_desuup_name",
   "others",
   "column_break_2",
-  "asset_name",
   "description",
-  "target_location",
   "target_custodian_type",
   "to_employee",
   "to_employee_name",
   "to_desuup",
   "to_desuup_name",
   "to_other",
-  "target_cost_center"
+  "target_cost_center",
+  "to_company"
  ],
  "fields": [
   {
@@ -43,22 +42,6 @@
    "in_list_view": 1,
    "label": "Asset Name",
    "read_only": 1
-  },
-  {
-   "fieldname": "source_location",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "in_list_view": 1,
-   "label": "Source Location",
-   "options": "Location"
-  },
-  {
-   "fieldname": "target_location",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "in_list_view": 1,
-   "label": "Target Location",
-   "options": "Location"
   },
   {
    "fieldname": "from_employee",
@@ -87,7 +70,6 @@
   {
    "fieldname": "company",
    "fieldtype": "Link",
-   "hidden": 1,
    "label": "Company",
    "options": "Company",
    "read_only": 1
@@ -102,6 +84,7 @@
   {
    "fieldname": "target_cost_center",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Target Cost Center",
    "mandatory_depends_on": "eval: in_list([\"Cost Center To Cost Center\"], parent.transfer_type)",
    "options": "Cost Center"
@@ -181,11 +164,19 @@
    "label": "Source Custodian Type",
    "options": "\nEmployee\nDesuup\nOther",
    "read_only": 1
+  },
+  {
+   "fieldname": "to_company",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "To Company",
+   "options": "Company",
+   "reqd": 1
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2024-03-22 10:45:46.046023",
+ "modified": "2025-03-19 10:39:18.526493",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset Movement Item",

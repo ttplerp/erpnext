@@ -1,0 +1,117 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:SURVEYR{YY}{MM}{#####}",
+ "creation": "2026-04-28 15:57:32.644950",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "desuup",
+  "desuup_name",
+  "column_break_3",
+  "mobile_number",
+  "employment_status",
+  "column_break_6",
+  "questionaire",
+  "title",
+  "section_break_6",
+  "items",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "desuup",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Desuup",
+   "options": "Desuup",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "desuup.desuup_name",
+   "fieldname": "desuup_name",
+   "fieldtype": "Data",
+   "label": "Desuup Name"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "desuup.mobile_number",
+   "fieldname": "mobile_number",
+   "fieldtype": "Data",
+   "label": "Mobile Number"
+  },
+  {
+   "fetch_from": "desuup.employment_type",
+   "fieldname": "employment_status",
+   "fieldtype": "Data",
+   "label": "Employment Status"
+  },
+  {
+   "fieldname": "section_break_6",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Survey Response",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Survey Responses",
+   "options": "Survey Response Item"
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "questionaire",
+   "fieldtype": "Link",
+   "label": "Questionaire",
+   "options": "Questionaire",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "questionaire.title",
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "label": "Title",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-05-05 16:35:12.203959",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Survey Response",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

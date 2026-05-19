@@ -156,7 +156,10 @@
   "sales_order_header_text",
   "column_break_144",
   "sales_order_footer_text",
-  "amended_from"
+  "amended_from",
+  "party_type",
+  "party",
+  "journal_no"
  ],
  "fields": [
   {
@@ -1601,13 +1604,32 @@
    "fieldname": "rate_quoted",
    "fieldtype": "Data",
    "label": "Rate Quoted"
+  },
+  {
+   "fieldname": "party_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Party Type",
+   "options": "\nCustomer\nSupplier\nEmployee\nDesuup"
+  },
+  {
+   "fieldname": "party",
+   "fieldtype": "Dynamic Link",
+   "in_list_view": 1,
+   "label": "Party",
+   "options": "party_type"
+  },
+  {
+   "fieldname": "journal_no",
+   "fieldtype": "Int",
+   "label": "Journal No"
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 105,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-11-28 12:17:05.659584",
+ "modified": "2025-12-04 07:57:48.516042",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Sales Order",

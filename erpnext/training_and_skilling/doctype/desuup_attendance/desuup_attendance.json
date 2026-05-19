@@ -1,14 +1,13 @@
 {
  "actions": [],
  "allow_import": 1,
- "autoname": "naming_series:",
+ "autoname": "DSPATT.YYYY.MM.########",
  "creation": "2024-05-12 18:11:03.548382",
  "doctype": "DocType",
  "document_type": "Setup",
  "engine": "InnoDB",
  "field_order": [
   "attendance_details",
-  "naming_series",
   "attendance_for",
   "desuup",
   "desuup_name",
@@ -30,17 +29,6 @@
    "fieldtype": "Section Break",
    "oldfieldtype": "Section Break",
    "options": "Simple"
-  },
-  {
-   "fieldname": "naming_series",
-   "fieldtype": "Select",
-   "label": "Series",
-   "no_copy": 1,
-   "oldfieldname": "naming_series",
-   "oldfieldtype": "Select",
-   "options": "DSP-ATT-.YYYY.MM.-",
-   "reqd": 1,
-   "set_only_once": 1
   },
   {
    "fieldname": "desuup",
@@ -119,8 +107,7 @@
    "oldfieldname": "company",
    "oldfieldtype": "Link",
    "options": "Company",
-   "remember_last_selected_value": 1,
-   "reqd": 1
+   "remember_last_selected_value": 1
   },
   {
    "fieldname": "amended_from",
@@ -144,7 +131,7 @@
    "fieldname": "attendance_for",
    "fieldtype": "Select",
    "label": "Attendance For",
-   "options": "\nTrainee\nOJT\nProduction",
+   "options": "\nTrainee\nOJT\nProduction\nDeployment",
    "reqd": 1
   },
   {
@@ -172,11 +159,11 @@
  "icon": "fa fa-ok",
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-30 11:03:19.884740",
+ "modified": "2026-02-10 13:13:08.982686",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Attendance",
- "naming_rule": "By \"Naming Series\" field",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
@@ -216,6 +203,18 @@
    "read": 1,
    "report": 1,
    "role": "HR Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Desuup",
    "share": 1,
    "submit": 1,
    "write": 1

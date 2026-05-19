@@ -126,7 +126,7 @@ class DeliveryNote(SellingController):
 	def validate(self):
 		self.validate_posting_time()
 		super(DeliveryNote, self).validate()
-		self.calculate_qty_and_fetch_transporter_rate()
+		# self.calculate_qty_and_fetch_transporter_rate()
 		self.set_status()
 		self.so_required()
 		self.validate_proj_cust()
@@ -190,10 +190,10 @@ class DeliveryNote(SellingController):
 	def validate_with_previous_doc(self):
 		super(DeliveryNote, self).validate_with_previous_doc(
 			{
-				"Sales Order": {
-					"ref_dn_field": "against_sales_order",
-					"compare_fields": [["customer", "="], ["company", "="], ["project", "="], ["currency", "="]],
-				},
+				# "Sales Order": {
+				# 	"ref_dn_field": "against_sales_order",
+				# 	"compare_fields": [["customer", "="], ["company", "="], ["project", "="], ["currency", "="]],
+				# },
 				"Sales Order Item": {
 					"ref_dn_field": "so_detail",
 					"compare_fields": [["item_code", "="], ["uom", "="], ["conversion_factor", "="]],

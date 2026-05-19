@@ -3,11 +3,12 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 from frappe import msgprint
-from frappe.utils import flt, cint, nowdate, getdate, formatdate
+from frappe.utils import now, flt, cint, nowdate, getdate, formatdate
 from erpnext.accounts.utils import get_fiscal_year
 from frappe.utils.data import get_first_day, get_last_day, add_years
 from frappe.desk.form.linked_with import get_linked_doctypes, get_linked_docs
 from frappe.model.naming import getseries
+import requests
 
 #function to get the difference between two dates
 @frappe.whitelist()
@@ -420,4 +421,120 @@ def has_record_permission(doc, user):
 		return True
 	else:
 		return False 
+
+def create_message(document, desuup, message):
+    doc = frappe.new_doc("Message")
+    doc.desuup = desuup
+    doc.reference_document = document.doctype
+    doc.reference_name = document.name
+    doc.message = message
+    doc.docstatus = 1
+    doc.save(ignore_permissions=True)
+
+def create_log(mobile, message, provider="SMPP"):
+    doc = frappe.get_doc({
+        "doctype": "SMS Log",
+        "mobile": mobile,
+        "message": message,
+        "status": "Queued",
+        "provider": provider,
+        "retry_count": 0
+    })
+    doc.insert(ignore_permissions=True)
+    frappe.db.commit()
+    return doc.name
+
+
+def mark_sent(log_name, message_id=None):
+    frappe.db.set_value(
+        "SMS Log",
+        log_name,
+        {
+            "status": "Sent",
+            "message_id": message_id,
+            "sent_on": now()
+        }
+    )
+
+def mark_failed(log_name, error):
+    frappe.db.set_value(
+        "SMS Log",
+        log_name,
+        {
+            "status": "Failed",
+            "error": str(error)
+        }
+    )
+
+
+def mark_delivered(log_name):
+    frappe.db.set_value(
+        "SMS Log",
+        log_name,
+        {
+            "status": "Delivered",
+            "delivered_on": now()
+        }
+    )
+
+def send_sms(mobile, message):
+    log_name = create_log(mobile, message)
+    try:
+        response = requests.post("http://127.0.0.1:9008/send", json={"mobile": mobile, "message": message})
+        if response.status_code == 200:
+            mark_sent(log_name, "")
+        else:
+            mark_failed(log_name, response.text)
+    except Exception as ex:
+        mark_failed(log_name, ex)
+
+def queue_sms(mobile, message):
+    if not mobile:
+        frappe.throw("Mobile number is mandatory")
+    if not message:
+        frappe.throw("Message is mandatory")
+    frappe.enqueue(
+        "erpnext.custom_utils.send_sms",
+        queue="short",
+        mobile=mobile,
+        message=message
+    )
+def desuuplog():
+    logger = frappe.logger("create_desuup", allow_site=True)
+    logger.setLevel("INFO")
+    return logger
+
+def create_desuup(desuup_details=None):
+    if not desuup_details:
+        desuuplog().error("Desuup details is mandatory")
+    for d in desuup_details:
+        if not d.get("desuung_id"):
+            desuuplog().error("Desuup Id is mandatory")
+            continue
+        desuung_id = d.get("desuung_id")
+        desuup_exists = frappe.db.exists("Desuup", desuung_id)
+        if desuup_exists:
+            desuuplog().info(f"Desuup {desuung_id} already exists")
+            continue
+        try:
+            dp = frappe.new_doc("Desuup")
+            dp.desuung_id = d.get("desuung_id")
+            dp.desuup_name = d.get("desuup_name")
+            dp.gender = d.get("gender")
+            dp.date_of_birth = d.get("date_of_birth")
+            dp.cid_number = d.get("cid_number")
+            dp.batch_number = d.get("batch_number")
+            dp.mobile_number = d.get("mobile_number")
+            dp.email_id = d.get("email")
+            dp.present_country = d.get("present_country")
+            dp.present_dzongkhag = d.get("present_dzongkhag")
+            dp.present_gewog = d.get("present_gewog")
+            dp.country = "Bhutan"
+            dp.dzongkhag = d.get("dzongkhag")
+            dp.gewog = d.get("gewog")
+            dp.save(ignore_permissions=True)
+            frappe.db.commit()
+            desuuplog().info(f"Desuup {desuung_id} created")
+        except Exception as e:
+            desuuplog().error(f"ERROR while creating desuup {desuung_id} : {e}")
 

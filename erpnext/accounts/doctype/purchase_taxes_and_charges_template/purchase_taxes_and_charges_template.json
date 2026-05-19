@@ -24,8 +24,7 @@
    "label": "Title",
    "no_copy": 1,
    "oldfieldname": "title",
-   "oldfieldtype": "Data",
-   "reqd": 1
+   "oldfieldtype": "Data"
   },
   {
    "default": "0",
@@ -77,7 +76,7 @@
  "icon": "fa fa-money",
  "idx": 1,
  "links": [],
- "modified": "2022-05-16 16:15:29.059370",
+ "modified": "2026-01-20 10:05:56.262715",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Purchase Taxes and Charges Template",

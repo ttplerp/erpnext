@@ -23,7 +23,11 @@
   "deduction_account",
   "section_break_23",
   "arrear_account",
-  "refundable_mess_account"
+  "refundable_mess_account",
+  "section_break_19",
+  "automark_not_selected",
+  "column_break_21",
+  "shortlist_percent"
  ],
  "fields": [
   {
@@ -121,12 +125,33 @@
    "fieldtype": "Link",
    "label": "Travel Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "section_break_19",
+   "fieldtype": "Section Break",
+   "label": "Deployment Settings"
+  },
+  {
+   "default": "0",
+   "fieldname": "shortlist_percent",
+   "fieldtype": "Percent",
+   "label": "Shortlist Percent"
+  },
+  {
+   "default": "0",
+   "fieldname": "automark_not_selected",
+   "fieldtype": "Check",
+   "label": "Auto Mark 'Not Selected' "
+  },
+  {
+   "fieldname": "column_break_21",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-10-02 23:49:11.835526",
+ "modified": "2025-12-01 11:04:34.707837",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Settings",

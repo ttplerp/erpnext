@@ -1,0 +1,113 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2025-11-29 10:40:18.295191",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "desuup",
+  "full_name",
+  "cid",
+  "gender",
+  "column_break_5",
+  "phone",
+  "email",
+  "batch",
+  "deployment_application",
+  "applied_at",
+  "selected_later"
+ ],
+ "fields": [
+  {
+   "fieldname": "desuup",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Desuup",
+   "options": "Desuup",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fetch_from": "desuup.desuup_name",
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Full Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuup.cid_number",
+   "fieldname": "cid",
+   "fieldtype": "Data",
+   "label": "CID",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuup.gender",
+   "fieldname": "gender",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Gender",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuup.mobile_number",
+   "fieldname": "phone",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Phone",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuup.email_id",
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuup.batch_number",
+   "fieldname": "batch",
+   "fieldtype": "Data",
+   "label": "Batch",
+   "read_only": 1
+  },
+  {
+   "fieldname": "deployment_application",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Deployment Application",
+   "options": "Deployment Application",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "applied_at",
+   "fieldtype": "Datetime",
+   "label": "Applied At",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "selected_later",
+   "fieldtype": "Check",
+   "hidden": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-12-01 21:57:41.131786",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Deployment Standby",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
 from frappe.utils.data import time_diff_in_hours
-from frappe.utils import cstr, flt, fmt_money, formatdate, nowdate, money_in_words
+from frappe.utils import cstr, flt, fmt_money, formatdate, nowdate, money_in_words, cint
 from frappe.model.mapper import get_mapped_doc
 from erpnext.controllers.accounts_controller import AccountsController
 from erpnext.custom_utils import check_uncancelled_linked_doc, check_future_date, check_budget_available
@@ -20,12 +20,14 @@ class JobCard(AccountsController):
 		if self.finish_date:
 			check_future_date(self.finish_date)
 		self.update_breakdownreport()
-		self.calculate_total_amount()
+		self.calculate_total_amount()	
 	
 	def calculate_total_amount(self):
 		cc_amount = {}
+		gst_amount = 0.00
 		self.services_amount = self.goods_amount = 0
 		for a in self.items:
+			gst_amount += flt(a.charge_amount)
 			if a.which in cc_amount:
 				cc_amount[a.which] = flt(cc_amount[a.which]) + flt(a.charge_amount)
 			else:
@@ -34,6 +36,7 @@ class JobCard(AccountsController):
 			self.services_amount = cc_amount['Service']
 		if 'Item' in cc_amount:
 			self.goods_amount = cc_amount['Item']
+		self.gst_amount	= (gst_amount * flt(self.gst_percent)/100)
 		self.total_amount = flt(self.services_amount) + flt(self.goods_amount)
 
 		if self.apply_tds:
@@ -43,11 +46,11 @@ class JobCard(AccountsController):
 			self.tds_amount = flt(tds_rate)/100 * flt(self.total_amount)
 		
 		if self.apply_tds:
-			self.net_amount = self.total_amount - self.tds_amount
-			self.outstanding_amount = self.total_amount - self.tds_amount
+			self.net_amount = self.total_amount - self.tds_amount + self.gst_amount
+			self.outstanding_amount = self.total_amount - self.tds_amount + self.gst_amount
 		else:
-			self.net_amount = self.total_amount
-			self.outstanding_amount = self.total_amount
+			self.net_amount = self.total_amount + self.gst_amount
+			self.outstanding_amount = self.total_amount + self.gst_amount
 
 	def on_submit(self):
 		self.check_items()
@@ -120,11 +123,14 @@ class JobCard(AccountsController):
 		if not payable_account:
 			payable_account = frappe.db.get_value("Company", self.company, "default_payable_account")
 		maintenance_account = frappe.db.get_value("Company", self.company, "repair_and_maintenance_account")
+		gst_account = frappe.db.get_value("Company", self.company, "gst_5_account")
 			
 		if not maintenance_account:
 				frappe.throw("Setup Repair and Maintenance Account in company '{}'".format(frappe.get_desk_link("Company", self.company)))
 		if not payable_account:
 			frappe.throw("Setup Default Payable Account in company '{}'".format(frappe.get_desk_link("Company", self.company)))
+		if not gst_account:
+			frappe.throw("Setup Default GST Account in company '{}'".format(frappe.get_desk_link("Company", self.company)))	
 
 		tds_rate, tds_account = 0, ""
 		if self.tds_amount > 0:
@@ -170,8 +176,23 @@ class JobCard(AccountsController):
 		})
 
 		je.append("accounts",{
+			"account": gst_account,
+			"debit_in_account_currency": self.gst_amount,
+			"cost_center": self.cost_center,
+			"reference_type": "Job Card",
+			"reference_name": self.name,
+			"business_activity": ba,
+			"apply_tds": 1 if self.tds_amount > 0 else 0,
+			"add_deduct_tax": "Deduct" if self.tds_amount > 0 else "",
+			"tax_account": tds_account,
+			"rate": tds_rate,
+			"tax_amount_in_account_currency": self.tds_amount,
+			"tax_amount": self.tds_amount
+		})
+
+		je.append("accounts",{
 			"account": payable_account,
-			"credit_in_account_currency": self.net_amount if self.tds_amount > 0 else self.total_amount,
+			"credit_in_account_currency": self.net_amount if self.tds_amount or gst_amount > 0 else self.total_amount,
 			"cost_center": self.cost_center,
 			"party_check": 0,
 			"party_type": "Supplier",
@@ -203,6 +224,19 @@ class JobCard(AccountsController):
 					"against": self.supplier,
 					"debit": self.total_amount,
 					"debit_in_account_currency": self.total_amount,
+					"against_voucher": self.name,
+					"against_voucher_type": self.doctype,
+					"cost_center": self.cost_center,
+					"business_activity": self.business_activity
+				}, self.currency)
+			)
+			if self.gst_amount > 0:
+				gl_entries.append(
+				self.get_gl_dict({
+					"account":  self.gst_account,
+					"against": self.supplier,
+					"debit": self.gst_amount,
+					"debit_in_account_currency": self.gst_amount,
 					"against_voucher": self.name,
 					"against_voucher_type": self.doctype,
 					"cost_center": self.cost_center,
@@ -378,6 +412,16 @@ class JobCard(AccountsController):
 		where t.name = "{}" """.format(self.company, self.tax_withholding_category), as_dict=True)
 		return account[0] if account else None
 	
+@frappe.whitelist()
+def get_gst_account(percent, company):
+	if percent:
+		if cint(percent) == 5:
+			field = "gst_5_account"
+		else:
+			frappe.throw(
+				"Set TDS Accounts in Accounts Settings and try again")
+		# return frappe.db.get_single_value("Accounts Settings", field)
+		return frappe.db.get_value("Company", company, field)
 
 @frappe.whitelist()
 def get_payment_entry(doc_name, total_amount):

@@ -45,13 +45,13 @@ frappe.ui.form.on("Delivery Note", {
 			}
 		});
 		
-		frm.set_query('equipment', 'items', function (doc, cdt, cdn) {
-			return {
-				filters: {
-					"hired_equipment": 1
-				}
-			}
-		});
+		// frm.set_query('equipment', 'items', function (doc, cdt, cdn) {
+		// 	return {
+		// 		filters: {
+		// 			"hired_equipment": 1
+		// 		}
+		// 	}
+		// });
 		frm.set_query('driver', function (doc) {
 			return {
 				filters: {

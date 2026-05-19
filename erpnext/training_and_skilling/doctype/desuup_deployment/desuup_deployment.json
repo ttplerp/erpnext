@@ -1,0 +1,286 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "autoname": "DEPLOY.YY.MM.######",
+ "creation": "2026-03-02 10:49:31.382305",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_1",
+  "column_break_2",
+  "deployment_code",
+  "type_of_deployment",
+  "event",
+  "category",
+  "column_break_6",
+  "country",
+  "dzongkhag",
+  "gewog",
+  "daily_start_time",
+  "column_break_10",
+  "start_date",
+  "end_date",
+  "duration",
+  "daily_end_time",
+  "reporting_details_section",
+  "reporting_place",
+  "reporting_date",
+  "column_break_21",
+  "remark",
+  "section_break_16",
+  "gojay",
+  "column_break_23",
+  "gojay_name",
+  "section_break_26",
+  "get_applicants",
+  "items",
+  "standbys",
+  "column_break_29",
+  "deployment_announcement",
+  "column_break_28",
+  "completed",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_1",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break",
+   "label": "Deployment Details"
+  },
+  {
+   "fieldname": "deployment_code",
+   "fieldtype": "Data",
+   "label": "Deployment Code",
+   "read_only": 1
+  },
+  {
+   "fieldname": "type_of_deployment",
+   "fieldtype": "Link",
+   "label": "Type of Deployment",
+   "options": "Type of Deployment",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fetch_from": "deployment_title.deployment_category",
+   "fieldname": "event",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Type of Event",
+   "options": "Type of Event",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Link",
+   "label": "Category of Deployment",
+   "options": "Category of Deployment",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break",
+   "label": "Location Details"
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country",
+   "read_only": 1
+  },
+  {
+   "fieldname": "dzongkhag",
+   "fieldtype": "Link",
+   "label": "Dzongkhag",
+   "options": "Dzongkhags",
+   "read_only": 1
+  },
+  {
+   "fieldname": "gewog",
+   "fieldtype": "Link",
+   "label": "Gewog",
+   "options": "Gewogs",
+   "read_only": 1
+  },
+  {
+   "fieldname": "daily_start_time",
+   "fieldtype": "Time",
+   "label": "Daily Start Time"
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break",
+   "label": "Date & Time Details"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date"
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "End Date"
+  },
+  {
+   "fieldname": "duration",
+   "fieldtype": "Data",
+   "label": "Duration (days)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "daily_end_time",
+   "fieldtype": "Time",
+   "label": "Daily End Time"
+  },
+  {
+   "fieldname": "reporting_details_section",
+   "fieldtype": "Section Break",
+   "label": "Reporting Details"
+  },
+  {
+   "fieldname": "reporting_place",
+   "fieldtype": "Data",
+   "label": "Reporting Place"
+  },
+  {
+   "fieldname": "reporting_date",
+   "fieldtype": "Datetime",
+   "label": "Reporting Date"
+  },
+  {
+   "fieldname": "column_break_21",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "remark",
+   "fieldtype": "Small Text",
+   "label": "Remark"
+  },
+  {
+   "fieldname": "section_break_16",
+   "fieldtype": "Section Break",
+   "label": "Gojay Details"
+  },
+  {
+   "fieldname": "gojay",
+   "fieldtype": "Link",
+   "label": "Gojay",
+   "options": "Desuup",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_23",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "gojay.desuup_name",
+   "fieldname": "gojay_name",
+   "fieldtype": "Data",
+   "label": "Gojay Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_26",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.docstatus==0;",
+   "fieldname": "get_applicants",
+   "fieldtype": "Button",
+   "label": "Shortlist Applicants"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Selected Applicants",
+   "options": "Deployment Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "standbys",
+   "fieldtype": "Table",
+   "label": "Standby Applicants",
+   "options": "Deployment Standby",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_29",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "deployment_announcement",
+   "fieldtype": "Link",
+   "label": "Deployment Announcement",
+   "options": "Deployment Announcement",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_28",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Desuup Deployment",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "completed",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Completed"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Desuup Deployment",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-04-14 09:06:33.203457",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Desuup Deployment",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "deployment_code",
+ "track_changes": 1
+}

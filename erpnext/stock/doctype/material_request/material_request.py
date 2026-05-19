@@ -75,7 +75,7 @@ class MaterialRequest(BuyingController):
 	def validate(self):
 		super(MaterialRequest, self).validate()
 		if self.company not in ("De-suung HQ"):
-			validate_workflow_states(self)
+			# validate_workflow_states(self)
 			notify_workflow_states(self)
 
 		self.validate_schedule_date()

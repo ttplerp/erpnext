@@ -17,6 +17,14 @@ frappe.ui.form.on('Asset Movement', {
 		}
 	},
 	setup: (frm) => {
+		frm.set_query("branch", (doc) => {
+			return {
+				filters: {
+					company: doc.company
+				}
+			};
+		});
+
 		frm.set_query("to_employee", "assets", (doc) => {
 			return {
 				filters: {

@@ -1,0 +1,81 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:category_of_deployment",
+ "creation": "2025-10-21 11:21:41.564194",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "type_of_event",
+  "category_of_deployment",
+  "abbreviation",
+  "heart_point",
+  "disabled"
+ ],
+ "fields": [
+  {
+   "fieldname": "type_of_event",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Type of Event",
+   "options": "Type of Event",
+   "reqd": 1
+  },
+  {
+   "fieldname": "category_of_deployment",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Category of Deployment",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "abbreviation",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Abbreviation",
+   "reqd": 1
+  },
+  {
+   "fieldname": "heart_point",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Heart Point",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "disabled",
+   "fieldtype": "Check",
+   "label": "Disabled",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-10-21 11:21:41.564194",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Category of Deployment",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

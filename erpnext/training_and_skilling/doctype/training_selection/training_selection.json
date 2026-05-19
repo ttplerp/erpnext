@@ -10,6 +10,7 @@
  "field_order": [
   "training_selection_section",
   "posting_date",
+  "deployment_announcement",
   "cohort",
   "cohort_id",
   "cohort_name",
@@ -52,6 +53,7 @@
  ],
  "fields": [
   {
+   "fetch_from": "deployment_announcement.cohort",
    "fieldname": "cohort",
    "fieldtype": "Link",
    "label": "Cohort",
@@ -88,6 +90,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "fetch_from": "deployment_announcement.course",
    "fieldname": "course",
    "fieldtype": "Link",
    "in_standard_filter": 1,
@@ -318,12 +321,19 @@
    "fieldname": "disable_eligibility_for_programme",
    "fieldtype": "Check",
    "label": "Disable Eligibility Check For Maximum of 3 Programmes"
+  },
+  {
+   "fieldname": "deployment_announcement",
+   "fieldtype": "Link",
+   "label": "Skilling Announcement",
+   "options": "Deployment Announcement",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-19 22:25:31.910778",
+ "modified": "2026-04-14 12:08:04.634355",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Selection",

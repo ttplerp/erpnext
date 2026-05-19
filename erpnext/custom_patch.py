@@ -1209,7 +1209,7 @@ def update_budget_cc():
 	# 			consume.flags.ignore_permissions=1
 	# 			consume.submit()
 
-	""" MR """
+	""" MR Material Request"""
 	for a in frappe.db.sql("select distinct reference_no from `tabCommitted Budget` where reference_type='Material Request' and cost_center='Other Domain - DS'", as_dict=1):
 		cc_doc = frappe.get_doc("Cost Center", frappe.db.get_value("Material Request",a.reference_no, "cost_center"))
 		budget_cost_center = cc_doc.budget_cost_center
@@ -1411,3 +1411,36 @@ def pos_bank_gl_correction():
 			if len(d) > 0:
 				print(count, d.v_no, str(bank_account), str(d.account))
 				frappe.db.sql("update `tabGL Entry` set account='{0}' where account='{1}' and debit>0 and voucher_no='{2}'".format(str(bank_account),str(d.account),str(d.v_no)))
+
+
+def update_desuup_attendance():
+    # Query to fetch the necessary details
+    query = """
+        SELECT 
+            t1.name AS name, 
+            t1.training_start_date AS from_date, 
+            t1.training_end_date AS to_date, 
+            t2.desuup_id AS desuup 
+        FROM 
+            `tabTraining Management` t1, 
+            `tabTrainee Details` t2 
+        WHERE 
+            t1.name = t2.parent
+    """
+    
+    # Execute the query and iterate over the results
+    for a in frappe.db.sql(query, as_dict=True):
+        # Update `tabDesuup Attendance` based on the fetched details
+        update_query = """
+            UPDATE `tabDesuup Attendance`
+            SET reference_doctype = 'Training Management', 
+                reference_name = %s
+            WHERE 
+                docstatus = 1 
+                AND attendance_date BETWEEN %s AND %s 
+                AND desuup = %s
+        """
+        
+        # Execute the update query
+        frappe.db.sql(update_query, (a.name, a.from_date, a.to_date, a.desuup))
+        print(f"Updated Desuup: {a.desuup}")

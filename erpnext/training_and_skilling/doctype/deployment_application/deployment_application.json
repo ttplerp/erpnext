@@ -1,0 +1,179 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-10-28 16:51:06.657859",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "deployment_announcement",
+  "start_date",
+  "end_date",
+  "desuup",
+  "status",
+  "withdraw_date",
+  "desuup_name",
+  "gender",
+  "mobile_number",
+  "email_id",
+  "cid",
+  "amended_from",
+  "batch",
+  "column_break_12",
+  "reason",
+  "done_manually"
+ ],
+ "fields": [
+  {
+   "fieldname": "deployment_announcement",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Deployment Announcement",
+   "options": "Deployment Announcement",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Deployment Application",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Applied\nAccepted\nRejected\nStandby\nNot Selected\nWithdrawn\nDeregistered",
+   "reqd": 1
+  },
+  {
+   "fieldname": "desuup",
+   "fieldtype": "Link",
+   "label": "Desuup",
+   "options": "Desuup",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "desuup.gender",
+   "fieldname": "gender",
+   "fieldtype": "Data",
+   "label": "Gender",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuup.mobile_number",
+   "fieldname": "mobile_number",
+   "fieldtype": "Data",
+   "label": "Mobile Number",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuup.email_id",
+   "fieldname": "email_id",
+   "fieldtype": "Data",
+   "label": "Email ID",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuup.desuup_name",
+   "fieldname": "desuup_name",
+   "fieldtype": "Data",
+   "label": "Desuup Name",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:[\"Withdrawn\", \"Rejected\", \"Not Selected\"].includes(doc.status)",
+   "fieldname": "reason",
+   "fieldtype": "Small Text",
+   "label": "Reason",
+   "mandatory_depends_on": "eval:doc.status==\"Withdrawn\""
+  },
+  {
+   "fieldname": "withdraw_date",
+   "fieldtype": "Datetime",
+   "label": "Withdraw Date",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuup.cid_number",
+   "fieldname": "cid",
+   "fieldtype": "Data",
+   "label": "CID",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuup.batch_number",
+   "fieldname": "batch",
+   "fieldtype": "Data",
+   "label": "Batch",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_12",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "done_manually",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Done manually"
+  },
+  {
+   "fetch_from": "deployment_announcement.start_date",
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date"
+  },
+  {
+   "fetch_from": "deployment_announcement.end_date",
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "End Date"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-03-31 16:16:01.200580",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Deployment Application",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Desuup",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

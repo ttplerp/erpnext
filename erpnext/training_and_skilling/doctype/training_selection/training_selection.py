@@ -400,6 +400,10 @@ class TrainingSelection(Document):
 
 	@frappe.whitelist()
 	def get_applicants(self):
+        pass
+
+	@frappe.whitelist()
+	def get_applicants_old(self):
 		self.set('item', [])
 		if not self.cohort_id:
 			frappe.throw("Cohort ID is mandatory to fetch applicants")

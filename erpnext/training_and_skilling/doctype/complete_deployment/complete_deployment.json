@@ -1,0 +1,225 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "autoname": "CDEPLOY.YY.MM.######",
+ "creation": "2025-12-01 13:11:27.122179",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_1",
+  "column_break_2",
+  "deployment",
+  "type_of_deployment",
+  "event",
+  "category",
+  "column_break_6",
+  "deployment_code",
+  "country",
+  "dzongkhag",
+  "gewog",
+  "column_break_10",
+  "start_date",
+  "end_date",
+  "duration",
+  "section_break_16",
+  "gojay",
+  "column_break_23",
+  "gojay_name",
+  "section_break_26",
+  "get_applicants",
+  "items",
+  "column_break_29",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_1",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break",
+   "label": "Deployment Details"
+  },
+  {
+   "fieldname": "deployment_code",
+   "fieldtype": "Data",
+   "label": "Deployment Code",
+   "read_only": 1
+  },
+  {
+   "fieldname": "type_of_deployment",
+   "fieldtype": "Link",
+   "label": "Type of Deployment",
+   "options": "Type of Deployment",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fetch_from": "deployment_title.deployment_category",
+   "fieldname": "event",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Type of Event",
+   "options": "Type of Event",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Link",
+   "label": "Category of Deployment",
+   "options": "Category of Deployment",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break",
+   "label": "Location Details"
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country",
+   "read_only": 1
+  },
+  {
+   "fieldname": "dzongkhag",
+   "fieldtype": "Link",
+   "label": "Dzongkhag",
+   "options": "Dzongkhags",
+   "read_only": 1
+  },
+  {
+   "fieldname": "gewog",
+   "fieldtype": "Link",
+   "label": "Gewog",
+   "options": "Gewogs",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break",
+   "label": "Date & Time Details"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "End Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "duration",
+   "fieldtype": "Data",
+   "label": "Duration (days)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_16",
+   "fieldtype": "Section Break",
+   "label": "Gojay Details"
+  },
+  {
+   "fieldname": "gojay",
+   "fieldtype": "Link",
+   "label": "Gojay",
+   "options": "Desuup",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_23",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "gojay.desuup_name",
+   "fieldname": "gojay_name",
+   "fieldtype": "Data",
+   "label": "Gojay Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_26",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "get_applicants",
+   "fieldtype": "Button",
+   "label": "Pull Desuup Details"
+  },
+  {
+   "fieldname": "column_break_29",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Complete Deployment",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Complete Deployment",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "options": "Complete Deployment Item"
+  },
+  {
+   "fieldname": "deployment",
+   "fieldtype": "Link",
+   "label": "Deployment",
+   "options": "Desuup Deployment",
+   "read_only": 1,
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-03-02 11:05:50.105132",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Complete Deployment",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "deployment_code",
+ "track_changes": 1
+}

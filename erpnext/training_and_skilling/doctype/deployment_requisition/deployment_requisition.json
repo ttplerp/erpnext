@@ -1,0 +1,280 @@
+{
+ "actions": [],
+ "autoname": "DEPLOYR.YYYY.MM.###",
+ "creation": "2025-10-09 08:35:23.270990",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "rejection_reason",
+  "section_break_1",
+  "event",
+  "category",
+  "column_break_3",
+  "start_date",
+  "end_date",
+  "duration",
+  "column_break_8",
+  "starttime",
+  "endtime",
+  "section_break_11",
+  "country",
+  "dzongkhag",
+  "gewog",
+  "column_break_15",
+  "objective",
+  "section_break_15",
+  "by_gender",
+  "male_desuups",
+  "column_break_17",
+  "female_desuups",
+  "total_desuups",
+  "section_break_7",
+  "reporting_date",
+  "column_break_9",
+  "reporting_place",
+  "section_break_17",
+  "contactname",
+  "column_break_27",
+  "contactnumber",
+  "section_break_28",
+  "amended_from",
+  "column_break_30",
+  "announced"
+ ],
+ "fields": [
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "End Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "duration",
+   "fieldtype": "Int",
+   "label": "Duration (days)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "reporting_date",
+   "fieldtype": "Datetime",
+   "label": "Reporting Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "reporting_place",
+   "fieldtype": "Data",
+   "label": "Reporting Place",
+   "reqd": 1
+  },
+  {
+   "default": "Bhutan",
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country",
+   "reqd": 1
+  },
+  {
+   "fieldname": "dzongkhag",
+   "fieldtype": "Link",
+   "label": "Dzongkhag",
+   "options": "Dzongkhags",
+   "reqd": 1
+  },
+  {
+   "fieldname": "gewog",
+   "fieldtype": "Link",
+   "label": "Gewog",
+   "options": "Gewogs",
+   "reqd": 1
+  },
+  {
+   "fieldname": "objective",
+   "fieldtype": "Long Text",
+   "label": "Brief objective of the deployment",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_7",
+   "fieldtype": "Section Break",
+   "label": "Reporting Details"
+  },
+  {
+   "fieldname": "column_break_9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_11",
+   "fieldtype": "Section Break",
+   "label": "Location Details"
+  },
+  {
+   "fieldname": "column_break_15",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_17",
+   "fieldtype": "Section Break",
+   "label": "Coordinator Details"
+  },
+  {
+   "fieldname": "section_break_1",
+   "fieldtype": "Section Break",
+   "label": "Event Details"
+  },
+  {
+   "fieldname": "event",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Type of Event",
+   "options": "Type of Event",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "deployment_event.event_name",
+   "fieldname": "category",
+   "fieldtype": "Link",
+   "label": "Category of Deployment",
+   "options": "Category of Deployment",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_15",
+   "fieldtype": "Section Break",
+   "label": "Required Numbers"
+  },
+  {
+   "depends_on": "eval: doc.by_gender === \"Yes\"",
+   "fieldname": "male_desuups",
+   "fieldtype": "Int",
+   "label": "Male Desuups",
+   "mandatory_depends_on": "eval: doc.by_gender === \"Yes\""
+  },
+  {
+   "fieldname": "column_break_17",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.by_gender === \"Yes\"",
+   "fieldname": "female_desuups",
+   "fieldtype": "Int",
+   "label": "Female Desuups",
+   "mandatory_depends_on": "eval: doc.by_gender === \"Yes\""
+  },
+  {
+   "fieldname": "total_desuups",
+   "fieldtype": "Int",
+   "label": "Total Desuups",
+   "mandatory_depends_on": "eval: doc.by_gender === \"No\"",
+   "read_only_depends_on": "eval: doc.by_gender === \"Yes\""
+  },
+  {
+   "fieldname": "column_break_27",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Deployment Requisition",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_28",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_30",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "announced",
+   "fieldtype": "Check",
+   "label": "Announced",
+   "read_only": 1
+  },
+  {
+   "fieldname": "by_gender",
+   "fieldtype": "Select",
+   "label": "Require Gender Specific Numbers?",
+   "options": "\nYes\nNo",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "starttime",
+   "fieldtype": "Time",
+   "label": "Daily Start Time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "endtime",
+   "fieldtype": "Time",
+   "label": "Daily End Time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "contactname",
+   "fieldtype": "Data",
+   "label": "Coordinator\u2019s Name",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "desuup_coordinator.desuup_name",
+   "fieldname": "contactnumber",
+   "fieldtype": "Data",
+   "label": "Coordinator\u2019s Phone",
+   "reqd": 1
+  },
+  {
+   "fieldname": "rejection_reason",
+   "fieldtype": "Data",
+   "label": "Rejection reason",
+   "read_only_depends_on": "eval:doc.workflow_state == \"Approved\" "
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-03-30 17:02:32.281550",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Deployment Requisition",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

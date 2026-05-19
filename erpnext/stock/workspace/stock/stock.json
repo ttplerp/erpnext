@@ -385,6 +385,15 @@
    "type": "Link"
   },
   {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Inventory",
+   "link_count": 0,
+   "link_type": "",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
    "dependencies": "",
    "hidden": 0,
    "is_query_report": 0,
@@ -403,6 +412,26 @@
    "link_to": "Item Sub Group",
    "link_type": "DocType",
    "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Item",
+   "link_count": 0,
+   "link_to": "Item",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Online Shopping Settings",
+   "link_count": 0,
+   "link_to": "Online Shopping Settings",
+   "link_type": "DocType",
+   "onboard": 0,
    "type": "Link"
   },
   {
@@ -428,12 +457,11 @@
    "type": "Link"
   },
   {
-   "dependencies": "",
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Pricing Rule",
+   "label": "Online Orders",
    "link_count": 0,
-   "link_to": "Pricing Rule",
+   "link_to": "Online Order",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -487,10 +515,39 @@
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Online Sales",
+   "link_count": 0,
+   "link_type": "",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Online Shopping Settings",
+   "link_count": 0,
+   "link_to": "Online Shopping Settings",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Online Orders",
+   "link_count": 0,
+   "link_to": "Online Order",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2024-05-07 14:24:33.617387",
- "modified_by": "pema.dhendup@thimphutechpark.bt",
+ "modified": "2026-01-05 14:48:45.758835",
+ "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock",
  "owner": "Administrator",

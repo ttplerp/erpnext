@@ -1,0 +1,51 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-04-28 15:55:03.531123",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "enable_survey",
+  "till_date"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "fieldname": "enable_survey",
+   "fieldtype": "Check",
+   "label": "Enable Survey"
+  },
+  {
+   "fieldname": "till_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Till Date",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-04-28 15:55:03.531123",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Desuup Management Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

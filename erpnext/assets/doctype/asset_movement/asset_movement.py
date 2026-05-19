@@ -120,7 +120,7 @@ class AssetMovement(Document):
 		self.cancel_asset_transfer_gl_entry()
 
 	def make_asset_transfer_gl_entry(self):
-		if self.purpose in ["Receipt","Issue"]:
+		if self.purpose in ["Receipt", "Issue"]:
 			return
 
 		for d in self.assets:
@@ -128,8 +128,9 @@ class AssetMovement(Document):
 				make_asset_transfer_gl(self, d.asset, self.transaction_date, d.source_cost_center, d.target_cost_center)
 	
 	def cancel_asset_transfer_gl_entry(self):
-		if self.purpose in ["Receipt","Issue"]:
+		if self.purpose in ["Receipt", "Issue"]:
 			return
+		
 		frappe.db.sql("delete from `tabGL Entry` where voucher_no = %s", self.name)
 
 	def set_latest_cost_center_in_asset(self):
@@ -143,21 +144,26 @@ class AssetMovement(Document):
 			# In case of cancellation it corresponds to previous latest document's Cost Center, employee
 			latest_movement_entry = frappe.db.sql(
 				"""
-				SELECT asm_item.target_cost_center, asm_item.target_custodian_type, asm_item.to_employee, asm_item.to_employee_name, 
-					asm_item.to_desuup, asm_item.to_desuup_name, asm_item.to_other
-				FROM `tabAsset Movement Item` asm_item, `tabAsset Movement` asm
-				WHERE
-					asm_item.parent=asm.name and
-					asm_item.asset=%(asset)s and
-					asm.company=%(company)s and
-					asm.docstatus=1 and {0}
-				ORDER BY
-					asm.transaction_date desc limit 1
-				""".format(
-					cond
-				),
-				args, as_dict=True
+					SELECT 
+						asm_item.target_cost_center, 
+						asm_item.target_custodian_type, 
+						asm_item.to_employee, 
+						asm_item.to_employee_name, 
+						asm_item.to_desuup, 
+						asm_item.to_desuup_name, 
+						asm_item.to_other
+					FROM 
+						`tabAsset Movement Item` asm_item, `tabAsset Movement` asm
+					WHERE
+						asm_item.parent=asm.name and
+						asm_item.asset=%(asset)s and
+						asm.company=%(company)s and
+						asm.docstatus=1 and {0}
+					ORDER BY
+						asm.transaction_date desc limit 1
+				""".format(cond), args, as_dict=True
 			)
+
 			# frappe.throw(str(latest_movement_entry))
 			if latest_movement_entry:
 				current_cost_center = latest_movement_entry[0]['target_cost_center']
@@ -190,7 +196,7 @@ class AssetMovement(Document):
 			equipment = frappe.db.get_value("Equipment", {"asset_code": d.asset}, "name")
 			if equipment:
 				purpose = 'Cancel' if self.docstatus == 2 else ''
-				save_equipment(equipment, branch, self.transaction_date, self.name, purpose)
+				self.save_equipment(equipment, branch, self.transaction_date, self.name, purpose)
 
 	def save_equipment(equipment, branch, posting_date, ref_doc, purpose):
 		equip = frappe.get_doc("Equipment", equipment)
@@ -200,26 +206,42 @@ class AssetMovement(Document):
 
 	@frappe.whitelist()
 	def get_asset_list(self):
-		if not self.from_employee:
-			frappe.throw("From Employee missing!")
-		else:
-			asset_list = frappe.db.sql("""
-				select name, cost_center, issued_to, asset_name, description 
+		cond = ""
+		params = [self.company]
+		
+		if self.branch:
+			cond += " and branch = %s"
+			params.append(self.branch)
+
+		asset_list = frappe.db.sql(
+			"""
+				select 
+					name, 
+					cost_center, 
+					issued_to, 
+					asset_name, 
+					description, 
+					company 
 				from `tabAsset` 
-				where issue_to_employee = '{}' 
-				and docstatus = 1 
-				""".format(self.from_employee),as_dict = 1)
-			if asset_list:
-				self.set("assets",[])
-				for x in asset_list:
-					row = self.append("assets",{})
-					data = {
-							"asset":x.name, 
-							"asset_name":x.asset_name, 
-							"description":x.description, 
-							"from_employee":self.from_employee, 
-							"from_employee_name":frappe.db.get_value("Employee", self.from_employee, 'employee_name'), 
-							"source_cost_center": x.cost_center,
-							"source_custodian_type": x.issued_to,
-						}
-					row.update(data)
+				where docstatus = 1 
+					and company = %s {}
+				
+			""".format(cond), tuple(params), as_dict=1
+		)
+
+		if asset_list:
+			self.set("assets", [])
+			for asset in asset_list:
+				row = self.append("assets", {})
+				row.update({
+					"asset": asset.name,
+					"asset_name": asset.asset_name,
+					"description": asset.description,
+					"from_employee": self.from_employee,
+					"from_employee_name": frappe.db.get_value("Employee", self.from_employee, 'employee_name'),
+					"source_cost_center": asset.cost_center,
+					"source_custodian_type": asset.issued_to,
+					"company": asset.company,
+					"to_company": asset.company,
+				})
+

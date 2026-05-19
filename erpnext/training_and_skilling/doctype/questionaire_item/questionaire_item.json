@@ -1,0 +1,81 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2026-05-05 09:42:15.153357",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "question",
+  "question_text",
+  "column_break_3",
+  "type",
+  "is_required",
+  "allow_others"
+ ],
+ "fields": [
+  {
+   "columns": 3,
+   "fieldname": "question",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Question Id",
+   "options": "Survey Question",
+   "reqd": 1
+  },
+  {
+   "columns": 6,
+   "fetch_from": "question.question",
+   "fieldname": "question_text",
+   "fieldtype": "Data",
+   "label": "Question",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "columns": 1,
+   "default": "0",
+   "fetch_from": "question.is_required",
+   "fieldname": "is_required",
+   "fieldtype": "Check",
+   "label": "Is Required",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "question.type",
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "Checkbox\nRadio\nShort",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fetch_from": "question.allow_others",
+   "fieldname": "allow_others",
+   "fieldtype": "Check",
+   "label": "Allow Others",
+   "read_only": 1,
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-05-05 16:07:41.076971",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Questionaire Item",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -38,6 +38,20 @@ frappe.ui.form.on("Purchase Order", {
 				}
 			}
 		});
+		frm.set_query("branch", function(doc){
+			return {
+				filters: {
+					company: doc.company,
+				}
+			}
+		});
+		frm.set_query("cost_center", function(doc){
+			return {
+				filters: {
+					company: doc.company,
+				}
+			}
+		})
 	},
 	supplier: function (frm, cdt, cdn){
 		frappe.call({

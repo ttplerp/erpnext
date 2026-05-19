@@ -1,0 +1,33 @@
+{
+ "chart_name": "Desuung Daily Sales Item Counts",
+ "chart_type": "Report",
+ "creation": "2023-03-02 14:42:20.163013",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "dynamic_filters_json": "{}",
+ "filters_json": "{\"from_date\":\"2023-02-02\",\"to_date\":\"2023-03-02\"}",
+ "group_by_type": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "modified": "2023-03-02 14:49:26.185359",
+ "modified_by": "Administrator",
+ "module": "Selling",
+ "name": "Desuung Daily Sales Item Counts",
+ "number_of_groups": 0,
+ "owner": "Administrator",
+ "report_name": "Desuung Sales Report",
+ "roles": [],
+ "time_interval": "Yearly",
+ "timeseries": 0,
+ "timespan": "Last Year",
+ "type": "Bar",
+ "use_report_chart": 0,
+ "x_field": "material_name",
+ "y_axis": [
+  {
+   "color": "#CB2929",
+   "y_field": "quantity"
+  }
+ ]
+}
