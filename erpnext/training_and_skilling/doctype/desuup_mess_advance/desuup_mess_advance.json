@@ -13,6 +13,7 @@
   "training_center",
   "column_break_1",
   "fiscal_year",
+  "party_type",
   "cost_center",
   "from_date",
   "training_management",
@@ -88,21 +89,19 @@
   {
    "fieldname": "from_date",
    "fieldtype": "Date",
-   "label": "From Date",
-   "read_only": 1
+   "label": "From Date"
   },
   {
    "fieldname": "to_date",
    "fieldtype": "Date",
-   "label": "To Date",
-   "read_only": 1
+   "label": "To Date"
   },
   {
    "fieldname": "paid_to",
-   "fieldtype": "Link",
+   "fieldtype": "Dynamic Link",
    "in_list_view": 1,
    "label": "Paid To",
-   "options": "Employee",
+   "options": "party_type",
    "reqd": 1
   },
   {
@@ -190,12 +189,19 @@
    "label": "Desuup Deployment Entry",
    "mandatory_depends_on": "eval:['OJT', 'Production'].includes(doc.advance_for)",
    "options": "Desuup Deployment Entry"
+  },
+  {
+   "fieldname": "party_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Party Type",
+   "options": "Supplier\nEmployee"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-07 15:39:10.909302",
+ "modified": "2026-02-16 17:11:03.303492",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Mess Advance",

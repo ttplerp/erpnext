@@ -80,6 +80,7 @@ class PurchaseOrder(BuyingController):
 			self.doctype, self.supplier, self.company, self.inter_company_order_reference
 		)
 		self.reset_default_field_value("set_warehouse", "items", "warehouse")
+		# self.adjust_gst_for_exempted_items()
 
 	@frappe.whitelist()
 	def get_gst_template(self):
@@ -641,6 +642,26 @@ def get_list_context(context=None):
 		}
 	)
 	return list_context
+
+	# def adjust_gst_for_exempted_items(self):
+	# 	"""
+	# 	Exclude GST for items where Item.is_gst_exempted = 1
+	# 	"""
+	# 	gst_taxable_amount = 0
+
+	# 	for item in self.items:
+	# 		is_gst_exempted = frappe.get_cached_value(
+	# 			"Item", item.item_code, "is_gst_exempted"
+	# 		)
+
+	# 		if not is_gst_exempted:
+	# 			gst_taxable_amount += flt(item.net_amount)
+
+	# 	for tax in self.taxes:
+	# 		if cint(tax.is_gst) == 1:
+	# 			tax.tax_amount = flt(gst_taxable_amount * flt(tax.rate) / 100)
+	# 			tax.base_tax_amount = flt(tax.tax_amount * flt(self.conversion_rate))
+
 
 @frappe.whitelist()
 def make_tax_payment(source_name, target_doc=None, args=None):

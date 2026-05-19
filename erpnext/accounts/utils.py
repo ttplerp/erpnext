@@ -1538,8 +1538,19 @@ def make_asset_transfer_gl(self, asset, date, from_cc, to_cc, not_legacy_data=Tr
 	asset = frappe.get_doc("Asset", asset)
 	
 	accumulated_dep = flt(asset.gross_purchase_amount) - flt(asset.value_after_depreciation)
-	
-	accumulated_dep_account = frappe.db.sql("select accumulated_depreciation_account from `tabAsset Category Account` where parent = %s", asset.asset_category, as_dict=True)[0].accumulated_depreciation_account
+	# frappe.throw(frappe.as_json(asset))
+	# accumulated_dep_account = frappe.db.sql("select accumulated_depreciation_account from `tabAsset Category Account` where parent = %s and company=%s", asset.asset_category,asset.company, as_dict=True)[0].accumulated_depreciation_account
+	# frappe.log_error(f"hi{accumulated_dep_account}")
+	dep_account_data = frappe.db.sql(
+			"SELECT accumulated_depreciation_account FROM `tabAsset Category Account` WHERE parent = %s AND company_name = %s",
+			(asset.asset_category, asset.company),
+			as_dict=True
+		)
+
+	if not dep_account_data:
+		frappe.throw(f"No Asset Category Account found for Asset Category: {asset.asset_category} and Company: {asset.company}")
+
+	accumulated_dep_account = dep_account_data[0].accumulated_depreciation_account
 	# Below code commented by Jai, under Deki's recommendation
 	""" ic_account = frappe.db.get_single_value("Accounts Settings", "intra_company_account")
 	if not ic_account:

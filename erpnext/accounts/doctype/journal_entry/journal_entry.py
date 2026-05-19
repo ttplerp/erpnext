@@ -6,7 +6,7 @@ import json
 
 import frappe
 from frappe import _, msgprint, scrub
-from frappe.utils import cint, cstr, flt, fmt_money, formatdate, get_link_to_form, nowdate, get_datetime
+from frappe.utils import cint, cstr, flt, fmt_money, formatdate, get_link_to_form, nowdate, get_datetime, now_datetime
 
 import erpnext
 from erpnext.accounts.deferred_revenue import get_deferred_booking_accounts
@@ -136,10 +136,15 @@ class JournalEntry(AccountsController):
 		self.update_reference_document()
 
 	def on_cancel(self):
+		# super().on_cancel()
 		from erpnext.accounts.utils import unlink_ref_doc_from_payment_entries
 
 		unlink_ref_doc_from_payment_entries(self)
-		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
+		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry", "Repost Payment Ledger", "Repost Payment Ledger Items",
+			"Repost Accounting Ledger",
+			"Repost Accounting Ledger Items",
+			"Unreconcile Payment",
+			"Unreconcile Payment Entries",)
 		self.make_gl_entries(1)
 		self.update_advance_paid()
 		self.unlink_advance_entry_reference()
@@ -149,7 +154,7 @@ class JournalEntry(AccountsController):
 		self.update_invoice_discounting()
 		self.update_project_transaction_details() #added by Jai
 		self.link_je_to_doc(cancel=self.docstatus == 2)
-		self.update_reference_document(cancel=1)
+		self.update_reference_document(cancel=True)
 
 	@frappe.whitelist()
 	def set_letter_head(self):
@@ -161,22 +166,8 @@ class JournalEntry(AccountsController):
 	def get_title(self):
 		return self.pay_to_recd_from or self.accounts[0].account
 	
-	def update_reference_document(self, cancel=0):
-		if cint(cancel) == 0:
-			for a in self.get("accounts"):
-				if a.reference_type == "POL" and a.reference_name:
-					doc = frappe.get_doc("POL", a.reference_name)
-					doc.db_set("paid_amount", doc.outstanding_amount)
-					doc.db_set("outstanding_amount", 0)
-
-				if a.reference_type == "Desuup Mess Advance" and a.reference_name:
-					doc = frappe.get_doc("Desuup Mess Advance", a.reference_name)
-					doc.db_set("payment_status", "Paid")
-
-				if a.reference_type == "Desuup Travel Payment" and a.reference_name:
-					doc = frappe.get_doc("Desuup Travel Payment", a.reference_name)
-					doc.db_set("payment_status", "Paid")
-		else:
+	def update_reference_document(self, cancel=False):
+		if cancel:
 			for a in self.get("accounts"):
 				if a.reference_type == "POL" and a.reference_name:
 					doc = frappe.get_doc("POL", a.reference_name)
@@ -190,6 +181,29 @@ class JournalEntry(AccountsController):
 				if a.reference_type == "Desuup Travel Payment" and a.reference_name:
 					doc = frappe.get_doc("Desuup Travel Payment", a.reference_name)
 					doc.db_set("payment_status", "Unpaid")
+
+				if a.reference_type == "Pol Advance" and a.reference_name:
+					doc = frappe.get_doc("Pol Advance", a.reference_name)
+					doc.db_set('journal_entry_status', "Cancelled on {0}".format(now_datetime().strftime("%Y-%m-%d %H:%M:%S")))
+		else:
+			for a in self.get("accounts"):
+				if a.reference_type == "POL" and a.reference_name:
+					doc = frappe.get_doc("POL", a.reference_name)
+					doc.db_set("paid_amount", doc.outstanding_amount)
+					doc.db_set("outstanding_amount", 0)
+
+				if a.reference_type == "Desuup Mess Advance" and a.reference_name:
+					doc = frappe.get_doc("Desuup Mess Advance", a.reference_name)
+					doc.db_set("payment_status", "Paid")
+
+				if a.reference_type == "Desuup Travel Payment" and a.reference_name:
+					doc = frappe.get_doc("Desuup Travel Payment", a.reference_name)
+					doc.db_set("payment_status", "Paid")
+
+				elif a.reference_type == "Pol Advance" and a.reference_name:
+					doc = frappe.get_doc("Pol Advance", a.reference_name)
+					doc.db_set('journal_entry_status', "Paid on {0}".format(now_datetime().strftime("%Y-%m-%d %H:%M:%S")))
+			
 
 	def link_je_to_doc(self, cancel=False):
 		ref_list = ['Pol Advance', 'Job Card']
@@ -975,6 +989,7 @@ class JournalEntry(AccountsController):
 						)
 					)
 		return gl_map
+		
 
 	def make_gl_entries(self, cancel=0, adv_adj=0):
 		from erpnext.accounts.general_ledger import make_gl_entries

@@ -180,7 +180,7 @@ def fetch_data(name, param):
 				employment_types = {
 						1 : "Employed",
 						2 : "Unemployed",
-						3 :"Student",
+						3 : "Student",
 						4 : "Displaced",
 						5 : "Retired",
 						6 : "Freelancer",

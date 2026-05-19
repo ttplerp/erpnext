@@ -207,24 +207,29 @@ class GLEntry(Document):
 			as_dict=1,
 		)[0]
 
+		frappe.log_error(f"{self.account}")
+		
+		
+
 		if ret.is_group == 1:
 			frappe.throw(
 				_(
 					"""{0} {1}: Account {2} is a Group Account and group accounts cannot be used in transactions"""
 				).format(self.voucher_type, self.voucher_no, self.account)
 			)
-
 		if ret.docstatus == 2:
 			frappe.throw(
 				_("{0} {1}: Account {2} is inactive").format(self.voucher_type, self.voucher_no, self.account)
 			)
 
 		if ret.company != self.company:
+			
 			frappe.throw(
 				_("{0} {1}: Account {2} does not belong to Company {3}").format(
 					self.voucher_type, self.voucher_no, self.account, self.company
 				)
-			)
+			)	
+
 
 	def validate_cost_center(self):
 		if not self.cost_center:

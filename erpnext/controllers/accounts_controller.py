@@ -1030,6 +1030,10 @@ class AccountsController(TransactionBase):
 	def on_cancel(self):
 		from erpnext.accounts.utils import unlink_ref_doc_from_payment_entries
 
+		if self.doctype == "Purchase Receipt":
+			# only applies if accounting entries exist
+			unlink_ref_doc_from_payment_entries(self)
+
 		if self.doctype in ["Sales Invoice", "Purchase Invoice"]:
 			if frappe.db.get_single_value("Accounts Settings", "unlink_payment_on_cancellation_of_invoice"):
 				unlink_ref_doc_from_payment_entries(self)
@@ -1042,6 +1046,35 @@ class AccountsController(TransactionBase):
 
 			if self.doctype == "Sales Order":
 				self.unlink_ref_doc_from_po()
+
+	# def on_cancel(self):
+	# 	from erpnext.accounts.doctype.bank_transaction.bank_transaction import (
+	# 		remove_from_bank_transaction,
+	# 	)
+	# 	from erpnext.accounts.utils import (
+	# 		cancel_exchange_gain_loss_journal,
+	# 		unlink_ref_doc_from_payment_entries,
+	# 	)
+
+	# 	remove_from_bank_transaction(self.doctype, self.name)
+
+	# 	if self.doctype in ["Sales Invoice", "Purchase Invoice", "Payment Entry", "Journal Entry"]:
+	# 		self.cancel_system_generated_credit_debit_notes()
+
+	# 		# Cancel Exchange Gain/Loss Journal before unlinking
+	# 		cancel_exchange_gain_loss_journal(self)
+
+	# 		if frappe.db.get_single_value("Accounts Settings", "unlink_payment_on_cancellation_of_invoice"):
+	# 			unlink_ref_doc_from_payment_entries(self)
+
+	# 	elif self.doctype in ["Sales Order", "Purchase Order"]:
+	# 		if frappe.db.get_single_value(
+	# 			"Accounts Settings", "unlink_advance_payment_on_cancelation_of_order"
+	# 		):
+	# 			unlink_ref_doc_from_payment_entries(self)
+
+	# 		if self.doctype == "Sales Order":
+	# 			self.unlink_ref_doc_from_po()			
 
 	def unlink_ref_doc_from_po(self):
 		so_items = []

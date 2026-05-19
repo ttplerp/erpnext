@@ -252,8 +252,12 @@ class PurchaseReceipt(BuyingController):
 		if submit_rv:
 			frappe.throw(_("Purchase Invoice {0} is already submitted").format(self.submit_rv[0][0]))
 
+	# def on_cancel(self):
+	# 	super(PurchaseReceipt, self).on_cancel()
 	def on_cancel(self):
-		super(PurchaseReceipt, self).on_cancel()
+		self.make_gl_entries_on_cancel()
+		self.update_stock_ledger()
+
 
 		self.check_on_hold_or_closed_status()
 		# Check if Purchase Invoice has been submitted against current Purchase Order
@@ -281,9 +285,10 @@ class PurchaseReceipt(BuyingController):
 
 	#Update asset entries if asset
 	def update_asset_receive_entries(self):
+		asset_item_groups = ["Fixed Asset", "Electrical Equipment", "Tools & Plants", "Automobiles", "Electrical Accessories"]
 		for a in self.items:
 			item_group = frappe.db.get_value("Item", a.item_code, "item_group")
-			if item_group and item_group == "Fixed Asset":
+			if item_group and item_group in asset_item_groups:
 				ae = frappe.new_doc("Asset Received Entries")
 				ae.item_code = a.item_code
 				ae.child_ref = a.name

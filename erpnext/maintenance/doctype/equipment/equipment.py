@@ -17,6 +17,14 @@ class Equipment(Document):
 	def validate(self):
 		if not self.equipment_number:
 			self.equipment_number = self.name
+
+		if self.equipment_number:
+			existing = frappe.db.exists(
+				"Equipment",
+				{"equipment_number": self.equipment_number, "name": ["!=", self.name]},
+			)
+			if existing:
+				frappe.throw("Equipment Number must be unique. It already exists in: " + existing)	
 		
 		if not self.equipment_history:
 			self.create_equipment_history(branch = self.branch, on_date = today(), ref_doc = self.name, purpose = 'Submit')

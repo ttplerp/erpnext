@@ -4,11 +4,38 @@
 import frappe
 import calendar
 import frappe.translate
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from frappe import _
 from frappe.utils import cint, flt, nowdate, add_days, getdate, fmt_money, add_to_date, DATE_FORMAT, date_diff, get_last_day
 from frappe.model.document import Document
 
+
+
+@frappe.whitelist()
+def get_party_names(doctype, txt, searchfield, start, page_len, filters):
+    """Server-side method to filter parties based on type"""
+    party_type = filters.get('party_type')
+    
+    if not party_type:
+        return []
+    
+    if party_type == 'Employee':
+        return frappe.get_all('Employee',
+            filters={'name': ['like', f'%{txt}%']},
+            fields=['name'],
+            limit_start=start,
+            limit_page_length=page_len,
+            as_list=True
+        )
+    elif party_type == 'Supplier':
+        return frappe.get_all('Supplier',
+            filters={'name': ['like', f'%{txt}%']},
+            fields=['name'],
+            limit_start=start,
+            limit_page_length=page_len,
+            as_list=True
+        )
+    return []
 
 class DesuupMessAdvance(Document):
 	def validate(self):
@@ -38,13 +65,17 @@ class DesuupMessAdvance(Document):
 			if self.advance_for in ("OJT", "Production"):
 				query = frappe.db.sql("select mess_amount from `tabDesuup Deployment Entry Item` where parent=%s and desuup=%s", 
                       (self.desuup_deployment_entry, adv.desuup), as_dict=True)
-				if query:
+				if query:		  
 					mess_amt = query[0].get('mess_amount', 0)
 				else:
+					# frappe.throw(str(query))		  
 					mess_amt = 0
 		
 			days = (getdate(adv.to_date) - getdate(adv.from_date)).days + 1
-			mess_adv_amt = flt(mess_amt)/days_to_pro_rate
+			if self.month =="02":
+				mess_adv_amt = flt(mess_amt)/30
+			else:	
+				mess_adv_amt = flt(mess_amt)/days_to_pro_rate
 
 			# Fetch previous advances for the desuup
 			prev_adv = frappe.db.sql("""
@@ -54,15 +85,34 @@ class DesuupMessAdvance(Document):
 				AND parent != %s
 				AND from_date >= %s 
 				AND to_date <= %s
+				and docstatus = 1
 			""", (adv.desuup, self.name, month_start_date, month_end_date))
+			# frappe.throw(str(prev_adv))
+			# frappe.msgprint(str(prev_adv))
 
 			prev_adv_amt = flt(prev_adv[0][0]) if prev_adv else 0
+			# frappe.throw(str(prev_adv_amt))
 
 			# Calculate the allowable advance for the current entry
 			allowable_amt = max(flt(mess_amt) - prev_adv_amt, 0)
 			current_adv_amt = min(flt(mess_adv_amt * days, 2), allowable_amt)
+			# frappe.msgprint(str(current_adv_amt))
 
-			adv.amount = current_adv_amt
+			if isinstance(adv.to_date, str):
+				adv_to_date = datetime.strptime(adv.to_date, "%Y-%m-%d").date()
+			else:
+				adv_to_date = adv.to_date
+			
+			if self.month == "02":
+				last_day_of_feb = calendar.monthrange(adv_to_date.year, 2)[1]
+				if adv_to_date.day == last_day_of_feb:
+					# adv.amount = mess_adv_amt * 30
+					adv.amount = current_adv_amt
+				else:
+					adv.amount = current_adv_amt
+					# total_adv += adv.amount
+			else:	
+				adv.amount = current_adv_amt
 			total_adv += adv.amount
 
 		self.total_advance = total_adv
@@ -323,7 +373,7 @@ class DesuupMessAdvance(Document):
 			filtered_desuup_list.append(desuup)
 
 		return filtered_desuup_list
-	
+
 	@frappe.whitelist()
 	def get_desuup_details(self):
 		self.set('items', [])
@@ -356,17 +406,30 @@ class DesuupMessAdvance(Document):
 
 		# Create journal entry lines for each cost center
 		for cost_center, amount in cost_center_amounts.items():
-			accounts.append({
-				"account": mess_advance_account,
-				"debit_in_account_currency": amount,
-				"cost_center": cost_center,
-				"party_check": 1,
-				"party_type": "Employee",
-				"party": self.paid_to,
-				"party_name": frappe.db.get_value("Employee", self.paid_to, "employee_name"),
-				"reference_type": self.doctype,
-				"reference_name": self.name,
-			})
+			if self.party_type == "Employee":
+				accounts.append({
+					"account": mess_advance_account,
+					"debit_in_account_currency": amount,
+					"cost_center": cost_center,
+					"party_check": 1,
+					"party_type": "Employee",
+					"party": self.paid_to,
+					"party_name": frappe.db.get_value("Employee", self.paid_to, "employee_name"),
+					"reference_type": self.doctype,
+					"reference_name": self.name,
+				})
+			else:
+				accounts.append({
+					"account": mess_advance_account,
+					"debit_in_account_currency": amount,
+					"cost_center": cost_center,
+					"party_check": 1,
+					"party_type": "Supplier",
+					"party": self.paid_to,
+					# "party_name": frappe.db.get_value("Employee", self.paid_to, "employee_name"),
+					"reference_type": self.doctype,
+					"reference_name": self.name,
+				})	
 
 		accounts.append({
 			"account": bank_account,
@@ -453,5 +516,7 @@ class DesuupMessAdvance(Document):
 			self.paid_to = frappe.db.get_value("Desuup Deployment Entry", self.desuup_deployment_entry, "party")
 			if not self.paid_to:
 				frappe.throw("Please set party in {}".format(frappe.get_desk_link("Desuup Deployment Entry", self.desuup_deployment_entry)))
+
+
 
 	

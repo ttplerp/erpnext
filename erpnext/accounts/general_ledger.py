@@ -29,7 +29,7 @@ def make_gl_entries(
 	update_outstanding="Yes",
 	from_repost=False,
 ):
-	# frappe.throw(str(update_outstanding))
+	# frappe.throw(str(gl_map))
 	if gl_map:
 		if not cancel:
 			validate_accounting_period(gl_map)
@@ -56,6 +56,7 @@ def make_gl_entries(
 
 
 def validate_disabled_accounts(gl_map):
+	# frappe.throw(str(gl_map))
 	accounts = [d.account for d in gl_map if d.account]
 
 	Account = frappe.qb.DocType("Account")
@@ -302,6 +303,7 @@ def make_entry(args, adv_adj, update_outstanding, from_repost=False):
 	gle.flags.update_outstanding = update_outstanding or "Yes"
 	gle.flags.notify_update = False
 	gle.submit()
+	
 
 	if not from_repost and gle.voucher_type != "Period Closing Voucher":
 		#Commit and Consume budget

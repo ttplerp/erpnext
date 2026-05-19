@@ -76,5 +76,6 @@ def get_duplicate_attendance_record(desuup, attendance_date, name=None):
 
 	if name:
 		query = query.where(attendance.name != name)
+		# frappe.throw(str(query))
 
 	return query.run(as_dict=True)

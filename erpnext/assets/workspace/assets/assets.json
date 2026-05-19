@@ -164,7 +164,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Reports",
-   "link_count": 7,
+   "link_count": 6,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -214,16 +214,6 @@
   {
    "hidden": 0,
    "is_query_report": 1,
-   "label": "Fixed Asset Register",
-   "link_count": 0,
-   "link_to": "Fixed Asset Register",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Asset Register",
    "link_count": 0,
    "link_to": "Asset Register",
@@ -242,7 +232,7 @@
    "type": "Link"
   }
  ],
- "modified": "2024-06-30 20:38:53.830982",
+ "modified": "2024-08-28 11:16:20.112119",
  "modified_by": "pema.dhendup@thimphutechpark.bt",
  "module": "Assets",
  "name": "Assets",

@@ -325,6 +325,8 @@ def consolidate_pos_invoices(pos_invoices=None, closing_entry=None):
 		invoices = get_all_unconsolidated_invoices()
 
 	invoice_by_customer = get_invoice_customer_map(invoices)
+	# frappe.throw(frappe.as_json(invoice_by_customer))
+
 
 	if len(invoices) >= 10 and closing_entry:
 		closing_entry.set_status(update=True, status="Queued")

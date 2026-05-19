@@ -1971,11 +1971,11 @@ class StockEntry(StockController):
 				item_row = d.as_dict()
 				item_row["idx"] = len(item_dict) + 1
 
-				if consider_job_card:
-					job_card_item = frappe.db.get_value(
-						"Job Card Item", {"item_code": d.item_code, "parent": self.get("job_card")}
-					)
-					item_row["job_card_item"] = job_card_item or None
+				# if consider_job_card:
+				# 	job_card_item = frappe.db.get_value(
+				# 		"Job Card Item", {"item_code": d.item_code, "parent": self.get("job_card")}
+				# 	)
+				# 	item_row["job_card_item"] = job_card_item or None
 
 				if d.source_warehouse and not frappe.db.get_value("Warehouse", d.source_warehouse, "is_group"):
 					item_row["from_warehouse"] = d.source_warehouse
@@ -2857,7 +2857,7 @@ def has_warehouse_permission(warehouse):
 	user = frappe.session.user
 	user_roles = frappe.get_roles(user)
 
-	if user == "Administrator" or "System Manager" in user_roles:
+	if user == "Administrator" or "System Manager" or "Stock Manager" in user_roles:
 		return 1
 	res = frappe.db.sql("""
 			select 1

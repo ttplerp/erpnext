@@ -22,9 +22,11 @@ class DesuupPayoutEntry(Document):
 		net_amount = 0
 		refund_amount = 0
 		for amt in self.items:
-			net_amount += amt.net_amount
+			net_amount += amt.net_amount + amt.project_allowance
+			# frappe.throw(str(net_amount))
 			refund_amount += amt.refundable_amount
 		self.total_net_amount = net_amount
+		# frappe.throw(str(self.total_net_amount))
 		self.total_refundable_amount = refund_amount
 
 	def validate_data(self):
@@ -32,19 +34,20 @@ class DesuupPayoutEntry(Document):
 		if self.payment_for in ('Proudction', 'OJT'):
 			cond = {"docstatus": ("!=", 2), "month_name": self.month_name, "name": ("!=", self.name), "payment_for": self.payment_for, "desuup_deployment": self.desuup_deployment}
 		else:
-			cond = {"docstatus": ("!=", 2), "month_name": self.month_name, "name": ("!=", self.name), "payment_for": self.payment_for, "training_management": self.training_management}
+			cond = {"docstatus": ("!=", 2), "month_name": self.month_name, "fiscal_year":self.fiscal_year, "name": ("!=", self.name), "payment_for": self.payment_for, "training_management": self.training_management}
 		
 		for d in frappe.db.get_all("Desuup Payout Entry", cond):
 			frappe.throw("There is another {} with this Deployment/Training Ref: {}.".format( 
 				frappe.get_desk_link("Desuup Payout Entry", d.name), self.training_management if self.payment_for == 'Trainee' else self.desuup_deployment))
 		
 		for i in self.get("items"):
-			if flt(i.mess_advance_amount) < flt(i.mess_advance_used):
-				frappe.throw("In Row #{}: The used advance amount ({}) exceeds the total claimed advance ({}). Please adjust the values.".format(
-					frappe.bold(i.idx), 
-					frappe.bold(i.mess_advance_used), 
-					frappe.bold(i.mess_advance_amount)
-				))
+			# if flt(i.mess_advance_amount) < flt(i.mess_advance_used):
+			# 	# frappe.throw(str(i.mess_advance_used))
+			# 	frappe.throw("In Row #{}: The used advance amount ({}) exceeds the total claimed advance ({}). Please adjust the values.".format(
+			# 		frappe.bold(i.idx), 
+			# 		frappe.bold(i.mess_advance_used), 
+			# 		frappe.bold(i.mess_advance_amount)
+			# 	))
 
 			if i.total_days_present <= 0 and not i.refundable_amount:
 				frappe.throw("Remove Row #{} or mark attendance for desuup {}".format(
@@ -105,6 +108,8 @@ class DesuupPayoutEntry(Document):
 			if item.is_mess_member and mess_adv_amt > 0:
 				item.mess_advance_party = adv_party
 				item.mess_advance_amount = mess_adv_amt
+				# frappe.throw(frappe.as_json(adv_party))
+				# frappe.log_error(f"hi{item.mess_advance_amount}")
 
 				if item.days_in_month == item.total_days_present:
 					stipend = flt(item.monthly_stipend_amount - item.monthly_mess_amount)
@@ -113,11 +118,13 @@ class DesuupPayoutEntry(Document):
 					item.stipend_amount = flt(stipend, 2)
 					item.mess_advance_used = flt(adv_amt, 2)	
 				else:
+					# frappe.throw("gggg")
 					stipend = flt(item.monthly_stipend_amount - item.monthly_mess_amount)/flt(days_to_pro_rate)
 					adv_amt = flt(item.monthly_mess_amount)/flt(days_to_pro_rate)
 
 					item.stipend_amount = flt(stipend * total_days, 2)
 					item.mess_advance_used = flt(adv_amt * total_days, 2)
+					# frappe.throw(str(adv_amt))
 			else:
 				if item.days_in_month == item.total_days_present:
 					stipend = flt(item.monthly_stipend_amount)
@@ -135,7 +142,7 @@ class DesuupPayoutEntry(Document):
 
 			item.refundable_amount = flt(item.mess_advance_amount, 2) - flt(item.mess_advance_used)
 
-			item.net_amount = flt(flt(item.stipend_amount) + flt(item.total_arrear_amount)) - flt(item.total_deduction_amount)
+			item.net_amount = flt(flt(item.stipend_amount) + flt(item.total_arrear_amount)) - flt(item.total_deduction_amount) +flt(item.project_allowance)
 		
 
 		'''
@@ -211,6 +218,7 @@ class DesuupPayoutEntry(Document):
 
 		# Check if the query returns any results and then get the amount
 		if adv_list:
+			frappe.log_error(f"hi{adv_list}")
 			adv_amt = flt(adv_list[0].amount)
 			adv_party = adv_list[0].paid_to
 		else:
@@ -303,7 +311,8 @@ class DesuupPayoutEntry(Document):
 					t1.course_cost_center AS cost_center, 
 					t2.desuup_id AS desuup, 
 					t2.desuup_name, 
-					t2.is_mess_member
+					t2.is_mess_member,
+					t2.status != "Terminated"
 				FROM 
 					`tabTraining Management` t1
 				INNER JOIN 
@@ -338,6 +347,53 @@ class DesuupPayoutEntry(Document):
 					t2.desuup_name
 			""".format(cond), params, as_dict=True)
 
+		# elif self.payment_for == "OJT":
+		# 	desuup_list = frappe.db.sql("""
+		# 		SELECT 
+		# 		'Desuup Deployment Entry' as reference_doctype, 
+		# 		t1.name as reference_name, 
+		# 		t2.desuup, 
+		# 		t2.desuup_name, 
+		# 		t2.amount as monthly_pay_amount, 
+		# 		t2.mess_amount as monthly_mess_amount,
+		# 		t1.branch, 
+		# 		t1.cost_center,
+		# 		t1.start_date from_date,
+		# 		t1.end_date to_date,
+		# 		t2.reported_date,
+		# 		t2.exit_date,
+		# 		t2.is_mess_member,
+		# 		t2.amount as monthly_stipend_amount  
+		# 		FROM `tabDesuup Deployment Entry` t1, `tabDesuup Deployment Entry Item` t2
+		# 		WHERE t1.name = t2.parent
+		# 		AND t1.deployment_type = 'OJT'
+		# 		AND t1.status='On Going'
+		# 		AND t2.reported_date IS NOT NULL 
+		# 		AND (
+		# 			t1.start_date BETWEEN %(start_date)s AND %(end_date)s 
+		# 			OR t1.end_date BETWEEN %(start_date)s AND %(end_date)s
+		# 			OR %(start_date)s BETWEEN t1.start_date AND t1.end_date
+		# 			OR %(end_date)s BETWEEN t1.start_date AND t1.end_date
+		# 		)
+		# 		AND (
+		# 				t2.exit_date IS NULL 
+		# 				OR t2.exit_date > %(start_date)s
+		# 			)
+		# 		AND t2.desuup NOT IN (
+		# 			SELECT desuup
+		# 			FROM `tabDesuup Payout Item` 
+		# 			WHERE (
+		# 				from_date BETWEEN %(start_date)s AND %(end_date)s 
+		# 				OR to_date BETWEEN %(start_date)s AND %(end_date)s
+		# 				OR %(start_date)s BETWEEN from_date AND to_date
+		# 				OR %(end_date)s BETWEEN from_date AND to_date
+		# 			)
+		# 			AND docstatus IN (1)
+		# 			AND reference_name = %(ref_name)s
+		# 		)
+		# 		{}
+		# 		ORDER BY t2.desuup_name
+		# 	""".format(cond), params, as_dict=True)
 		elif self.payment_for == "OJT":
 			desuup_list = frappe.db.sql("""
 				SELECT 
@@ -354,7 +410,11 @@ class DesuupPayoutEntry(Document):
 				t2.reported_date,
 				t2.exit_date,
 				t2.is_mess_member,
-				t2.amount as monthly_stipend_amount  
+				t2.amount as monthly_stipend_amount,
+				t2.project_allowance,
+				(SELECT party_type FROM `tabDesuup Mess Advance` d1 
+				WHERE desuup = t2.desuup 
+				ORDER BY creation DESC LIMIT 1) as party_type
 				FROM `tabDesuup Deployment Entry` t1, `tabDesuup Deployment Entry Item` t2
 				WHERE t1.name = t2.parent
 				AND t1.deployment_type = 'OJT'
@@ -402,7 +462,8 @@ class DesuupPayoutEntry(Document):
 				t2.reported_date,
 				t2.exit_date,
 				t2.is_mess_member,
-				t2.amount as monthly_stipend_amount  
+				t2.amount as monthly_stipend_amount,
+				t2.project_allowance  
 				FROM `tabDesuup Deployment Entry` t1, `tabDesuup Deployment Entry Item` t2
 				WHERE t1.name = t2.parent
 				AND t1.deployment_type = 'Production' 
@@ -490,6 +551,7 @@ class DesuupPayoutEntry(Document):
 		deduction_account = frappe.db.get_value("Company", self.company, "desuup_deduction_account")
 		arrear_account = frappe.db.get_value("Company", self.company, "arrear_account")
 		refundable_account = frappe.db.get_value("Company", self.company, "refundable_mess_account")
+		project_allowance_account = frappe.db.get_value("Company", self.company, "project_allowance_account")
 
 		if self.payment_for == "Trainee":
 			payable_account = frappe.db.get_value("Company", self.company, "stipend_payable_account")
@@ -536,7 +598,8 @@ class DesuupPayoutEntry(Document):
 					'net_amount': 0,
 					'total_refundable': 0,
 					'ojt_expense': 0,
-					'ojt_payable': 0
+					'ojt_payable': 0,
+					'project_allowance': 0,
 				}
 
 			aggregated_values[cost_center]['stipend_expense'] += item.get('stipend_amount', 0) + item.get('mess_advance_used', 0)
@@ -547,6 +610,7 @@ class DesuupPayoutEntry(Document):
 			aggregated_values[cost_center]['stipend_payable'] += item.get('net_amount', 0)
 			aggregated_values[cost_center]['total_refundable'] += item.get('refundable_amount', 0)
 			aggregated_values[cost_center]['net_amount'] += item.get('net_amount', 0)
+			aggregated_values[cost_center]['project_allowance'] += item.get('project_allowance', 0)
 
 		# Journal entry templates
 		journal_templates = [
@@ -593,7 +657,7 @@ class DesuupPayoutEntry(Document):
 			accounts = []
 
 			if journal["type"] == "payable":
-				for cost_center, values in aggregated_values.items():
+				for cost_center, values in   aggregated_values.items():
 					if values['stipend_expense'] > 0:
 						accounts.append({
 							'account': expense_account,
@@ -613,6 +677,17 @@ class DesuupPayoutEntry(Document):
 							"reference_type": self.doctype,
 							"reference_name": self.name,
 						})
+					if values['mess_advance_refundable'] < 0:
+						accounts.append({
+							'account': refundable_account,
+							'debit_in_account_currency': values['mess_advance_refundable'],
+							'cost_center': cost_center,
+							'party_type': 'Employee',
+							'party': party,
+							'party_name': party_name,
+							"reference_type": self.doctype,
+							"reference_name": self.name,
+						})	
 					if values['arrear_account'] > 0:
 						accounts.append({
 							'account': arrear_account,
@@ -621,6 +696,14 @@ class DesuupPayoutEntry(Document):
 							"reference_type": self.doctype,
 							"reference_name": self.name,
 						})
+					if values['project_allowance'] > 0:
+						accounts.append({
+							'account': project_allowance_account,
+							'debit_in_account_currency': values['project_allowance'],
+							'cost_center': cost_center,
+							"reference_type": self.doctype,
+							"reference_name": self.name,
+						})	
 					if values['mess_advance_amount'] > 0:
 						accounts.append({
 							'account': adv_account,
@@ -645,6 +728,17 @@ class DesuupPayoutEntry(Document):
 							"reference_type": self.doctype,
 							"reference_name": self.name,
 						})
+					# if values['mess_advance_refundable'] < 0:
+					# 	accounts.append({
+					# 		'account': refundable_account,
+					# 		'credit_in_account_currency':- values['mess_advance_refundable'],
+					# 		'cost_center': cost_center,
+					# 		'party_type': 'Employee',
+					# 		'party': party,
+					# 		'party_name': party_name,
+					# 		"reference_type": self.doctype,
+					# 		"reference_name": self.name,
+					# 	})	
 
 			elif journal["type"] == "payment":
 				for cost_center, values in aggregated_values.items():
@@ -688,6 +782,7 @@ class DesuupPayoutEntry(Document):
 			if accounts:
 				total_debit = sum(account.get('debit_in_account_currency', 0) for account in accounts)
 				total_credit = sum(account.get('credit_in_account_currency', 0) for account in accounts)
+				# frappe.throw(str(total_debit))
 
 				# Adjust for rounding or discrepancies
 				if abs(total_debit - total_credit) > 0.005:  # Adjust tolerance as needed

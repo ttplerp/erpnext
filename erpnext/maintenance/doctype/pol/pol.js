@@ -16,6 +16,32 @@ frappe.ui.form.on('POL', {
 				}
 			});
 		}
+
+		frm.set_query("branch", function(){
+			return {
+				filters: {
+					company: frm.doc.company,
+				}
+			}
+		});
+
+		frm.set_query("equipment", function () {
+			return {
+				"filters": {
+					"is_disabled": 0,
+					branch: frm.doc.branch
+				}
+			};
+		});
+
+		frm.set_query("fuelbook", function(){
+			return {
+				filters: {
+					'equipment': frm.doc.equipment,
+					'disabled': 0
+				}
+			}
+		});
 	},
 	refresh: function (frm) {
 		if (frm.doc.jv) {
@@ -45,9 +71,11 @@ frappe.ui.form.on('POL', {
 	"is_disabled": function (frm) {
 		cur_frm.toggle_reqd("disabled_date", frm.doc.is_disabled)
 	},
+
 	"get_advance":function(frm){
 		get_advance(frm)
 	},
+
 	"credit_account": function (frm) {
 		frappe.model.get_value("Account", frm.doc.credit_account, "account_type", function (d){
 			if (d.account_type == 'Payable' || d.account_type == 'Receivable'){
@@ -109,11 +137,11 @@ var calculate_total_amount = function(frm){
 // end here
 
 var get_advance = function(frm){
-	if (frm.doc.fuelbook && frm.doc.total_amount) {
+	if (frm.doc.equipment && frm.doc.fuelbook) {
 		frappe.call({
 			method: 'get_advance',
 			doc: frm.doc,
-			callback:  () =>{
+			callback: () =>{
 				frm.refresh_field('advances')
 				cur_frm.refresh_fields()
 			}
@@ -131,14 +159,6 @@ frappe.ui.form.on("POL", "refresh", function (frm) {
 		};
 	});
 
-	cur_frm.set_query("equipment", function () {
-		return {
-			"filters": {
-				"is_disabled": 0
-			}
-		};
-	});
-
 	cur_frm.set_query("pol_type", function () {
 		return {
 			"filters": {
@@ -148,25 +168,25 @@ frappe.ui.form.on("POL", "refresh", function (frm) {
 		};
 	});
 
-	cur_frm.set_query("warehouse", function () {
-		return {
-			query: "erpnext.controllers.queries.filter_branch_wh",
-			filters: { 'branch': frm.doc.branch }
-		}
-	});
+	// cur_frm.set_query("warehouse", function () {
+	// 	return {
+	// 		query: "erpnext.controllers.queries.filter_branch_wh",
+	// 		filters: { 'branch': frm.doc.branch }
+	// 	}
+	// });
 
-	cur_frm.set_query("equipment_warehouse", function () {
-		return {
-			query: "erpnext.controllers.queries.filter_branch_wh",
-			filters: { 'branch': frm.doc.equipment_branch }
-		}
-	});
+	// cur_frm.set_query("equipment_warehouse", function () {
+	// 	return {
+	// 		query: "erpnext.controllers.queries.filter_branch_wh",
+	// 		filters: { 'branch': frm.doc.equipment_branch }
+	// 	}
+	// });
 
-	cur_frm.set_query("hiring_warehouse", function () {
-		return {
-			query: "erpnext.controllers.queries.filter_branch_wh",
-			filters: { 'branch': frm.doc.hiring_branch }
-		}
-	});
+	// cur_frm.set_query("hiring_warehouse", function () {
+	// 	return {
+	// 		query: "erpnext.controllers.queries.filter_branch_wh",
+	// 		filters: { 'branch': frm.doc.hiring_branch }
+	// 	}
+	// });
 
 })
