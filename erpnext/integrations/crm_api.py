@@ -110,7 +110,7 @@ def td_account_inq(td_account_no=None):
         return {"msg":"No Account Found"}
 
 @frappe.whitelist()
-def td_closure(td_account_no=None, credit_account=None):
+def td_closure(td_account_no=None, credit_account=None, uuid=None, pd=None):
     if not td_account_no or not credit_account:
         return
 
@@ -136,7 +136,7 @@ def td_closure(td_account_no=None, credit_account=None):
                     <Header>
                         <RequestHeader>
                             <MessageKey>
-                                <RequestUUID>39ds8c-2a81c75ad8f6</RequestUUID>
+                                <RequestUUID>{3}</RequestUUID>
                                 <ServiceRequestId>DepAcctClose</ServiceRequestId>
                                 <ServiceRequestVersion>10.2</ServiceRequestVersion>
                                 <ChannelId>COR</ChannelId>
@@ -148,7 +148,7 @@ def td_closure(td_account_no=None, credit_account=None):
                                 <EntityId></EntityId>
                                 <EntityType></EntityType>
                                 <ArmCorrelationId></ArmCorrelationId>
-                                <MessageDateTime>2025-11-09T11:44:07.906</MessageDateTime>
+                                <MessageDateTime>{4}</MessageDateTime>
                             </RequestMessageInfo>
                             <Security>
                                 <Token>
@@ -183,7 +183,7 @@ def td_closure(td_account_no=None, credit_account=None):
                             </DepAcctClose_CustomData>
                         </DepAcctCloseRequest>
                     </Body>
-            </FIXML>""".format(td_account_no, credit_account, actual_amt)
+            </FIXML>""".format(td_account_no, credit_account, actual_amt, uuid, pd)
 
     headers = {
     'Content-Type': 'application/'
