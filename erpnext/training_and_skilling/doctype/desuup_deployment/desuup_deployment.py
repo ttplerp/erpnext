@@ -5,6 +5,7 @@ import frappe
 from frappe.model.document import Document
 from frappe.utils import date_diff, getdate, ceil, flt
 from frappe.model.mapper import get_mapped_doc
+from erpnext.custom_utils import queue_sms
 
 class DesuupDeployment(Document):
     def validate(self):
@@ -33,6 +34,8 @@ class DesuupDeployment(Document):
                 frappe.throw("Click on shortlist applicants again as you wanted to replace desuups")
             app = frappe.get_doc("Deployment Application", a.deployment_application)
             app.db_set("status", "Accepted")
+            if app.mobile_number:
+                queue_sms(app.mobile_number, "You had been selected for {}. Check for details on Desuung App".format(self.deployment_code))
 
         for a in self.standbys:
             app = frappe.get_doc("Deployment Application", a.deployment_application)
@@ -72,7 +75,7 @@ class DesuupDeployment(Document):
 
         applicants = dict()
         columns = "name, desuup_name, mobile_number, email_id, desuup, cid, gender, batch"
-        if deploy.by_gender == "No":
+        if deploy.by_gender == 0:
             applicants = frappe.db.sql(f""" 
                     SELECT distinct 
                     name, desuup_name, mobile_number, email_id, desuup, cid, gender, batch, creation
@@ -144,7 +147,7 @@ class DesuupDeployment(Document):
         standby_percent = frappe.db.get_single_value("Desuup Settings", "shortlist_percent")
         standbys = dict()
         columns = "name, desuup_name, mobile_number, email_id, desuup, cid, gender, batch"
-        if deploy.by_gender == "No":
+        if deploy.by_gender == 0:
             standby_num = ceil(flt(standby_percent/100) * flt(deploy.total_desuups))
             standbys = frappe.db.sql(f""" 
                     select distinct 

@@ -1,0 +1,157 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:DEPENTRY{YY}{MM}{########}",
+ "creation": "2026-05-26 14:51:50.132725",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "desuup_deployment",
+  "type_of_deployment",
+  "category_of_deployment",
+  "start_date",
+  "end_date",
+  "days_attended",
+  "pin",
+  "heart_points",
+  "column_break_2",
+  "desuup",
+  "full_name",
+  "gender",
+  "cid",
+  "complete_deployment",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "desuup_deployment",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Desuup Deployment",
+   "options": "Desuup Deployment",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "desuup",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Desuup",
+   "options": "Desuup",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Deployment Entry",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuup_deployment.type_of_deployment",
+   "fieldname": "type_of_deployment",
+   "fieldtype": "Data",
+   "label": "Type of Deployment",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuup_deployment.category",
+   "fieldname": "category_of_deployment",
+   "fieldtype": "Data",
+   "label": "Category of Deployment",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuup_deployment.start_date",
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuup_deployment.end_date",
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "End Date",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuup.desuup_name",
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "label": "Full Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuup.gender",
+   "fieldname": "gender",
+   "fieldtype": "Data",
+   "label": "Gender",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuup.cid_number",
+   "fieldname": "cid",
+   "fieldtype": "Data",
+   "label": "CID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "days_attended",
+   "fieldtype": "Int",
+   "label": "Days Attended",
+   "read_only": 1
+  },
+  {
+   "fieldname": "pin",
+   "fieldtype": "Link",
+   "label": "Pin",
+   "options": "Pin",
+   "read_only": 1
+  },
+  {
+   "fieldname": "heart_points",
+   "fieldtype": "Int",
+   "label": "Heart Points",
+   "read_only": 1
+  },
+  {
+   "fieldname": "complete_deployment",
+   "fieldtype": "Data",
+   "label": "Complete Deployment",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-05-26 15:27:38.691820",
+ "modified_by": "Administrator",
+ "module": "Training And Skilling",
+ "name": "Deployment Entry",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

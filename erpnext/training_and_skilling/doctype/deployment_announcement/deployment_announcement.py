@@ -16,7 +16,7 @@ class DeploymentAnnouncement(Document):
             frappe.throw("End date should be after start date")
         self.duration = date_diff(self.end_date, self.start_date) + 1
 
-        if self.by_gender == "Yes":
+        if self.by_gender == 1:
             self.total_desuups = self.male_desuups + self.female_desuups
         else:
             self.male_desuups = 0
@@ -70,7 +70,7 @@ def make_training_selection(source_name, target_doc=None):
         source_name,
         {
             "Deployment Announcement": {"doctype": "Training Selection", "validation": {"docstatus": "1"}},
-            "field_map": {"deployment_announcement": "name", "course_start_date": "start_date", "course_end_date": "end_date", "gender_base_selection": "by_gender", "male_slot": "male_desuups", "female_slot": "female_desuups", "slot": "total_desuups"}
+            "field_map": {"deployment_announcement": "name", "course_start_date": "start_date", "course_end_date": "end_date", "male_slot": "male_desuups", "female_slot": "female_desuups", "slot": "total_desuups", "gender_base_selection": "by_gender"}
         },
         target_doc,
     )

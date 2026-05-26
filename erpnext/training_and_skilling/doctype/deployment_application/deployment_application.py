@@ -49,14 +49,18 @@ class DeploymentApplication(Document):
                 frappe.throw("Only male desuups can apply for this position")
 
         # Check dzongkhag
-        if ann.by_dzongkhag:
-            if ann.by_dzongkhag != desup.present_dzongkhag:
-                frappe.throw("Only desuups residing in {} can apply".format(ann.by_dzongkhag))
+        by_dzongkhag = frappe.db.sql("select dzongkhag from `tabDeployment Announcement Dzongkhag` where parent = %(deploy)s", {"deploy": ann.name}, as_dict=1)
+        if by_dzongkhag:
+            allowed_dzongkhags = [d["dzongkhag"] for d in by_dzongkhag]
+            if not any(dzo == desup.present_dzongkhag for dzo in allowed_dzongkhags):
+                frappe.throw("Only desuups residing in {} can apply".format(", ".join(allowed_dzongkhags)))
 
         # Check batch
-        if ann.by_batch:
-            if ann.by_batch != desup.batch_number:
-                frappe.throw("Only desuups from batch {} can apply".format(ann.by_batch))
+        by_batch = frappe.db.sql("select batch from `tabDeployment Announcement Batch` where parent = %(deploy)s", {"deploy": ann.name}, as_dict=1)
+        if by_batch:
+            allowed_batches = [d["batch"] for d in by_batch]
+            if not any(batch == desup.batch_number for batch in allowed_batches):
+                frappe.throw("Only desuups from batch {} can apply".format(", ".join(allowed_batches)))
 
         # Check employment status
         if ann.by_employment_status:

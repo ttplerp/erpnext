@@ -15,7 +15,9 @@ def get_desuup():
 
 @frappe.whitelist()
 def get_desuup_detail():
-    return frappe.get_doc("Desuup", get_desuup())
+    desuup = frappe.get_doc("Desuup", get_desuup())
+    desuup.deployment_history = frappe.db.sql("select * from `tabDeployment Entry` where desuup = %(desuup)s", {"desuup": desuup.name}, as_dict=1)
+    return desuup
 
 @frappe.whitelist()
 def get_announcement_list(dep_type=None):
@@ -38,6 +40,9 @@ def get_announcement_list(dep_type=None):
         FROM `tabDeployment Announcement` a 
             LEFT JOIN (select deployment_announcement, status, reason, 1 as applied from `tabDeployment Application` where desuup = %(desupid)s and docstatus = 1) d ON d.deployment_announcement = a.name 
         WHERE a.docstatus = 1  {}""".format(additional_cond), filters, as_dict=1)
+    for a in doc_list:
+        a.by_dzongkhag = frappe.db.sql("select dzongkhag from `tabDeployment Announcement Dzongkhag` where parent = %(d)s", {"d": a.name}, as_dict=1)
+        a.by_batch = frappe.db.sql("select batch from `tabDeployment Announcement Batch` where parent = %(d)s", {"d": a.name}, as_dict=1)
 
     return doc_list
 
@@ -237,6 +242,21 @@ def upload_cv():
         frappe.throw("File is mandatory")
 
 @frappe.whitelist()
+def upload_profile():
+    file = frappe.request.files.get("file")
+    if file and file.mimetype.startswith("image/"):
+        desup = frappe.get_doc("Desuup", get_desuup())
+        if desup.photo:
+            existing_file = frappe.db.sql("select name from tabFile where file_url = %(file)s", {"file": desup.cv}, as_dict=1)
+            if existing_file:
+                frappe.delete_doc("File", existing_file[0].name, ignore_permissions=True)
+
+        file_doc = upload_file(file, desup.doctype, desup.name) 
+        desup.db_set("photo", file_doc.file_url, update_modified=False)
+    else:
+        frappe.throw("An image file is mandatory")
+
+@frappe.whitelist()
 def get_dress_requisitions():
     filters = {}
     desup = frappe.get_doc("Desuup", get_desuup())
@@ -332,8 +352,10 @@ def get_vacancies():
     desup = frappe.get_doc("Desuup", get_desuup())
     doc_list = frappe.db.sql("""
         SELECT * 
-        FROM tabVacancy  
-        WHERE published = 1 and application_end_date >= %(date)s""", {"date": str(getdate(now()))}, as_dict=1)
+        FROM tabVacancy v
+        WHERE published = 1 and application_end_date >= %(date)s
+            and (not exists (select 1 from `tabVacancy Dzongkhag` where parent =  %(dzongkhag)s) or exists (select 1 from `tabVacancy Dzongkhag` where dzongkhag = %(dzongkhag)s and parent = v.name)) 
+        """, {"date": str(getdate(now())), "dzongkhag": desup.present_dzongkhag}, as_dict=1)
 
     for a in doc_list:
         app = frappe.db.exists("Job Applicant", {"desuup": desup.name, "vacancy": a.name})
@@ -538,19 +560,17 @@ def set_deployment_conditions(desup, filter):
     employment_type = desup.employment_type
 
     if gender == "Male":
-        additional_conditions.append("(a.by_gender = 'No' OR a.male_desuups > 0)")
+        additional_conditions.append("(a.by_gender = 0 OR a.male_desuups > 0)")
     else:
-        additional_conditions.append("(a.by_gender = 'No' OR a.female_desuups > 0)")
+        additional_conditions.append("(a.by_gender = 0 OR a.female_desuups > 0)")
 
     # for batch
-    if batch:
-        additional_conditions.append("(NULLIF(a.by_batch, '') is null OR a.by_batch = %(batch)s)")
-        filter["batch"] = batch
+    additional_conditions.append("(NOT EXISTS (select 1 from `tabDeployment Announcement Batch` where parent = a.name) OR EXISTS (select 1 from `tabDeployment Announcement Batch` where parent = a.name and batch = %(batch)s)) ")
+    filter["batch"] = batch
 
     # for present dzongkhag
-    if present_dzo:
-        additional_conditions.append("(NULLIF(a.by_dzongkhag, '') is null OR a.by_dzongkhag = %(present_dzo)s)")
-        filter["present_dzo"] = present_dzo
+    additional_conditions.append("(NOT EXISTS (select 1 from `tabDeployment Announcement Dzongkhag` where parent = a.name) OR EXISTS (select 1 from `tabDeployment Announcement Dzongkhag` where parent = a.name and dzongkhag = %(present_dzo)s)) ")
+    filter["present_dzo"] = present_dzo
 
     # for emplyement type 
     if employment_type:

@@ -4,6 +4,7 @@
 import frappe
 from frappe.model.document import Document
 from frappe.utils import getdate, add_to_date
+from erpnext.custom_utils import queue_sms
 
 class DeploymentWithdrawal(Document):
     def validate(self):
@@ -22,7 +23,6 @@ class DeploymentWithdrawal(Document):
         # check for date
         deploy = frappe.get_doc("Desuup Deployment", self.deployment)
         if getdate(self.withdrawal_date) > getdate(deploy.end_date) or getdate(self.withdrawal_date) < getdate(deploy.start_date):
-            frappe.throw(str(deploy.end_date) + " => " + str(deploy.start_date) + " :: " + str(self.withdrawal_date))
             frappe.throw("Invalid withdrawal date")
 
         # update status
@@ -38,6 +38,8 @@ class DeploymentWithdrawal(Document):
 
                 app = frappe.get_doc("Deployment Application", a.deployment_application)
                 app.db_set("status", "Accepted")
+                if app.mobile_number:
+                    queue_sms(app.mobile_number, "You have been selected for a deployment. Please check your Desuung App")
 
                 deploy = frappe.get_doc("Desuup Deployment", self.deployment)
                 deploy.append("items", {

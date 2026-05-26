@@ -152,33 +152,33 @@
    "label": "Registration Criteria"
   },
   {
-   "depends_on": "eval: doc.by_gender === \"Yes\"",
+   "depends_on": "eval: doc.by_gender",
    "fieldname": "male_desuups",
    "fieldtype": "Int",
    "label": "Male Desuups",
-   "mandatory_depends_on": "eval: doc.by_gender === \"Yes\""
+   "mandatory_depends_on": "eval: doc.by_gender"
   },
   {
    "fieldname": "column_break_17",
    "fieldtype": "Column Break"
   },
   {
-   "depends_on": "eval: doc.by_gender === \"Yes\"",
+   "depends_on": "eval: doc.by_gender === 1",
    "fieldname": "female_desuups",
    "fieldtype": "Int",
    "label": "Female Desuups",
-   "mandatory_depends_on": "eval: doc.by_gender === \"Yes\""
+   "mandatory_depends_on": "eval: doc.by_gender === 1"
   },
   {
    "fieldname": "column_break_19",
    "fieldtype": "Column Break"
   },
   {
-   "depends_on": "eval: doc.by_gender === \"No\"",
+   "depends_on": "eval: doc.by_gender === 0",
    "fieldname": "total_desuups",
    "fieldtype": "Int",
    "label": "Total Desuups",
-   "mandatory_depends_on": "eval: doc.by_gender === \"No\""
+   "mandatory_depends_on": "eval: doc.by_gender === 0"
   },
   {
    "fieldname": "reporting_date",
@@ -233,10 +233,10 @@
    "fieldtype": "Column Break"
   },
   {
+   "default": "0",
    "fieldname": "by_gender",
-   "fieldtype": "Select",
-   "label": "Gender Specification Ratio",
-   "options": "\nYes\nNo",
+   "fieldtype": "Check",
+   "label": "Gender Specification Ratio?",
    "reqd": 1
   },
   {
@@ -245,9 +245,9 @@
   },
   {
    "fieldname": "by_dzongkhag",
-   "fieldtype": "Link",
+   "fieldtype": "Table MultiSelect",
    "label": "Invite desuups by Dzongkhag ",
-   "options": "Dzongkhags"
+   "options": "Deployment Announcement Dzongkhag"
   },
   {
    "fieldname": "column_break_33",
@@ -255,9 +255,9 @@
   },
   {
    "fieldname": "by_batch",
-   "fieldtype": "Link",
+   "fieldtype": "Table MultiSelect",
    "label": "Invite desuups by Batch ",
-   "options": "Desuung Batch"
+   "options": "Deployment Announcement Batch"
   },
   {
    "fieldname": "column_break_35",
@@ -324,7 +324,7 @@
    "fieldname": "funding_source",
    "fieldtype": "Select",
    "label": "Funding Source",
-   "options": "\nNo Funding\nDGRK\nExternal",
+   "options": "\nNo Funding\nDGRK\nExternal\nDSP",
    "reqd": 1
   },
   {
@@ -349,7 +349,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-04-14 11:58:31.119870",
+ "modified": "2026-05-26 17:07:59.798273",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Deployment Announcement",
