@@ -551,6 +551,9 @@ def submit_questionaire(questionaire, response):
     doc.docstatus = 1
     doc.save(ignore_permissions=True)
 
+@frappe.whitelist()
+def get_announcement():
+    return frappe.db.sql("select * from tabAnnouncement where status = %(status)s", {"status": "Active"}, as_dict=1)
 
 def set_deployment_conditions(desup, filter):
     additional_conditions = []
