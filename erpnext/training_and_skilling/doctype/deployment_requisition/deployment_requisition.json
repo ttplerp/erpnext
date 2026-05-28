@@ -40,7 +40,8 @@
   "section_break_28",
   "amended_from",
   "column_break_30",
-  "announced"
+  "announced",
+  "captcha_html_wrapper"
  ],
  "fields": [
   {
@@ -155,29 +156,29 @@
    "label": "Required Numbers"
   },
   {
-   "depends_on": "eval: doc.by_gender === \"Yes\"",
+   "depends_on": "eval: doc.by_gender === 1",
    "fieldname": "male_desuups",
    "fieldtype": "Int",
    "label": "Male Desuups",
-   "mandatory_depends_on": "eval: doc.by_gender === \"Yes\""
+   "mandatory_depends_on": "eval: doc.by_gender === 1"
   },
   {
    "fieldname": "column_break_17",
    "fieldtype": "Column Break"
   },
   {
-   "depends_on": "eval: doc.by_gender === \"Yes\"",
+   "depends_on": "eval: doc.by_gender === 1",
    "fieldname": "female_desuups",
    "fieldtype": "Int",
    "label": "Female Desuups",
-   "mandatory_depends_on": "eval: doc.by_gender === \"Yes\""
+   "mandatory_depends_on": "eval: doc.by_gender === 1"
   },
   {
    "fieldname": "total_desuups",
    "fieldtype": "Int",
    "label": "Total Desuups",
-   "mandatory_depends_on": "eval: doc.by_gender === \"No\"",
-   "read_only_depends_on": "eval: doc.by_gender === \"Yes\""
+   "mandatory_depends_on": "eval: doc.by_gender === 0",
+   "read_only_depends_on": "eval: doc.by_gender === 1"
   },
   {
    "fieldname": "column_break_27",
@@ -208,10 +209,10 @@
    "read_only": 1
   },
   {
+   "default": "0",
    "fieldname": "by_gender",
-   "fieldtype": "Select",
+   "fieldtype": "Check",
    "label": "Require Gender Specific Numbers?",
-   "options": "\nYes\nNo",
    "reqd": 1
   },
   {
@@ -248,12 +249,18 @@
    "fieldtype": "Data",
    "label": "Rejection reason",
    "read_only_depends_on": "eval:doc.workflow_state == \"Approved\" "
+  },
+  {
+   "fieldname": "captcha_html_wrapper",
+   "fieldtype": "HTML Editor",
+   "label": "CAPTCHA",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-03-30 17:02:32.281550",
+ "modified": "2026-05-28 17:38:15.296482",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Deployment Requisition",

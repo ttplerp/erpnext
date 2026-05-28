@@ -59,5 +59,27 @@ frappe.ready(function() {
 		}
 	})
     })
+
+	frappe.require("https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit&type=api.js")
+
+	let el = document.querySelector('[data-fieldname="captcha_html_wrapper"]');
+	window.onloadCallback = function() {
+		captcha = grecaptcha.render(el, {
+			'sitekey' : '6LdtxAAtAAAAAKLagJFZvq1ZRQzklrRYkabCkAE4'
+		});
+	}
+
+	frappe.web_form.after_load = () => {
+	    frappe.web_form.set_df_property('captcha_html_wrapper', 'hidden', 0);
+	}
+
+	frappe.web_form.validate = () => {
+		if (!grecaptcha.getResponse(captcha)) {
+		    frappe.throw("Please complete the captcha");
+	    } else {
+		frappe.web_form.doc['captcha_html_wrapper'] = '';
+		return true;
+	    }
+	}
 })
 
