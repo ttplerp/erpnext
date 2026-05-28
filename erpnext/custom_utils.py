@@ -499,6 +499,16 @@ def queue_sms(mobile, message):
         mobile=mobile,
         message=message
     )
+
+def queue_message(document, desuup, message):
+    frappe.enqueue(
+        "erpnext.custom_utils.create_message",
+        queue="short",
+        document=document,
+        desuup=desuup,
+        message=message
+    )
+
 def desuuplog():
     logger = frappe.logger("create_desuup", allow_site=True)
     logger.setLevel("INFO")

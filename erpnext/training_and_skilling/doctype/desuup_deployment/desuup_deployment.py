@@ -5,7 +5,7 @@ import frappe
 from frappe.model.document import Document
 from frappe.utils import date_diff, getdate, ceil, flt
 from frappe.model.mapper import get_mapped_doc
-from erpnext.custom_utils import queue_sms
+from erpnext.custom_utils import queue_sms, queue_message
 
 class DesuupDeployment(Document):
     def validate(self):
@@ -36,6 +36,7 @@ class DesuupDeployment(Document):
             app.db_set("status", "Accepted")
             if app.mobile_number:
                 queue_sms(app.mobile_number, "You had been selected for {}. Check for details on Desuung App".format(self.deployment_code))
+            queue_message(self, app.desuup, "You had been selected for {}. Check for details on Desuung App".format(self.deployment_code))
 
         for a in self.standbys:
             app = frappe.get_doc("Deployment Application", a.deployment_application)

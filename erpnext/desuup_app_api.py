@@ -274,6 +274,7 @@ def apply_dress_requisitions(details):
     req = frappe.new_doc("Dress Requisition")
     req.desuup = desup.name
     req.details = details
+    req.docstatus = 1
     req.save(ignore_permissions=True)
     return req
 
@@ -484,8 +485,7 @@ def get_feedback():
 
 @frappe.whitelist()
 def get_messages():
-    doc_list = frappe.db.sql("select * from tabMessage where docstatus = 1 and desuup = %(desuup)s and seen = 0 order by creation", {"desuup": get_desuup()}, as_dict=1)
-    return doc_list
+    return frappe.db.sql("select * from tabMessage where docstatus = 1 and desuup = %(desuup)s and seen = 0 order by creation limit 10", {"desuup": get_desuup()}, as_dict=1)
 
 @frappe.whitelist()
 def mark_seen(doc_id):
