@@ -20,8 +20,12 @@
   "full_name",
   "gender",
   "cid",
+  "phone_number",
   "complete_deployment",
-  "amended_from"
+  "amended_from",
+  "code",
+  "description",
+  "dzongkhag"
  ],
  "fields": [
   {
@@ -126,12 +130,40 @@
    "fieldtype": "Data",
    "label": "Complete Deployment",
    "reqd": 1
+  },
+  {
+   "fetch_from": "desuup.mobile_number",
+   "fieldname": "phone_number",
+   "fieldtype": "Data",
+   "label": "Phone Number",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuup_deployment.deployment_code",
+   "fieldname": "code",
+   "fieldtype": "Data",
+   "label": "Deployment Code",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuup_deployment.deployment_title",
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "label": "Description",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "desuup_deployment.dzongkhag",
+   "fieldname": "dzongkhag",
+   "fieldtype": "Data",
+   "label": "Dzongkhag",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-05-26 15:27:38.691820",
+ "modified": "2026-05-29 12:19:51.742516",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Deployment Entry",

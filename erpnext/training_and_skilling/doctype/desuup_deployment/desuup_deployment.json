@@ -8,6 +8,8 @@
  "engine": "InnoDB",
  "field_order": [
   "section_break_1",
+  "deployment_title",
+  "section_break_3",
   "column_break_2",
   "deployment_code",
   "type_of_deployment",
@@ -60,9 +62,9 @@
   },
   {
    "fieldname": "type_of_deployment",
-   "fieldtype": "Link",
+   "fieldtype": "Select",
    "label": "Type of Deployment",
-   "options": "Type of Deployment",
+   "options": "\nDeployment\nSkilling\nDesuung National Service",
    "read_only": 1,
    "reqd": 1
   },
@@ -252,12 +254,22 @@
    "options": "Desuup Deployment",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "deployment_title",
+   "fieldtype": "Data",
+   "label": "Deployment Title",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_3",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-05-26 17:01:03.900920",
+ "modified": "2026-05-29 16:13:46.214195",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Desuup Deployment",
@@ -277,6 +289,7 @@
    "write": 1
   }
  ],
+ "search_fields": "type_of_deployment,event,category,start_date,end_date",
  "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
