@@ -432,7 +432,7 @@ def multi_fund_transfer(data):
                 sl=sl
             )
         sl += 1
-
+    
     buffer = BytesIO()
     doc = frappe.get_doc("API Detail","MULTI LEDGER")
     url = str(doc.api_link)
@@ -922,5 +922,155 @@ def getFullStatement(account=None, from_date=None, to_date=None):
     except:
         return {"msg":"No record Found"}
 
+@frappe.whitelist()
+def get_acc_from_cif(cust_id=None):
 
+    buffer = BytesIO()
+
+    # Fetch API URL from API Detail Doctype
+    doc = frappe.get_doc("API Detail", "MULTI LEDGER")
+    url = str(doc.api_link)
+
+    # Initialize Curl
+    c = pycurl.Curl()
+    c.setopt(c.URL, url)
+    c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
+    c.setopt(c.TIMEOUT, 500)
+    c.setopt(c.SSLVERSION, pycurl.SSLVERSION_TLSv1)
+    c.setopt(c.WRITEDATA, buffer)
+    c.setopt(c.FOLLOWLOCATION, True)
+    c.setopt(c.SSL_VERIFYHOST, 0)
+    c.setopt(c.SSL_VERIFYPEER, 0)
+
+    # XML Payload
+    payload = """<?xml version="1.0" encoding="UTF-8"?>
+<FIXML xsi:schemaLocation="http://www.finacle.com/fixml executeFinacleScript.xsd"
+    xmlns="http://www.finacle.com/fixml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <Header>
+        <RequestHeader>
+            <MessageKey>
+                <RequestUUID>561197496264</RequestUUID>
+                <ServiceRequestId>executeFinacleScript</ServiceRequestId>
+                <ServiceRequestVersion>10.2</ServiceRequestVersion>
+                <ChannelId>COR</ChannelId>
+            </MessageKey>
+
+            <RequestMessageInfo>
+                <BankId>01</BankId>
+                <TimeZone></TimeZone>
+                <EntityId></EntityId>
+                <EntityType></EntityType>
+                <ArmCorrelationId></ArmCorrelationId>
+                <MessageDateTime>2026-03-17T17:37:05.030</MessageDateTime>
+            </RequestMessageInfo>
+
+            <Security>
+                <Token>
+                    <PasswordToken>
+                        <UserId></UserId>
+                        <Password></Password>
+                    </PasswordToken>
+                </Token>
+                <FICertToken></FICertToken>
+                <RealUserLoginSessionId></RealUserLoginSessionId>
+                <RealUser></RealUser>
+                <RealUserPwd></RealUserPwd>
+                <SSOTransferToken></SSOTransferToken>
+            </Security>
+        </RequestHeader>
+    </Header>
+
+    <Body>
+        <executeFinacleScriptRequest>
+
+            <ExecuteFinacleScriptInputVO>
+                <requestId>CustLoginInfo.scr</requestId>
+            </ExecuteFinacleScriptInputVO>
+
+            <executeFinacleScript_CustomData>
+                <CustId>{0}</CustId>
+            </executeFinacleScript_CustomData>
+
+        </executeFinacleScriptRequest>
+    </Body>
+
+</FIXML>""".format(cust_id)
+
+    # Headers
+    c.setopt(c.HTTPHEADER, [
+        'Content-Type: application/xml; charset=utf-8'
+    ])
+
+    # POST Request
+    c.setopt(c.POSTFIELDS, payload)
+
+    # Execute API
+    c.perform()
+
+    http_code = c.getinfo(c.RESPONSE_CODE)
+
+    body = buffer.getvalue()
+    result = body.decode('utf-8')
+
+    c.close()
+
+    try:
+        root = ET.fromstring(result)
+
+        namespace = {'ns': 'http://www.finacle.com/fixml'}
+
+        # -------------------------
+        # Customer Info
+        # -------------------------
+        cust_info = root.find('.//ns:Custinfo', namespaces=namespace)
+
+        customer_data = {
+            "cust_id": cust_info.find('ns:CustId', namespace).text if cust_info.find('ns:CustId', namespace) is not None else "",
+            "name": cust_info.find('ns:Name', namespace).text if cust_info.find('ns:Name', namespace) is not None else "",
+            "email": cust_info.find('ns:EmailInfo', namespace).text if cust_info.find('ns:EmailInfo', namespace) is not None else "",
+            "phone": cust_info.find('ns:PHONE', namespace).text if cust_info.find('ns:PHONE', namespace) is not None else "",
+            "status": cust_info.find('ns:Status', namespace).text if cust_info.find('ns:Status', namespace) is not None else "",
+            "cust_status": cust_info.find('ns:CustStatus', namespace).text if cust_info.find('ns:CustStatus', namespace) is not None else "",
+            "primary_sol_id": cust_info.find('ns:PrimarySolId', namespace).text if cust_info.find('ns:PrimarySolId', namespace) is not None else ""
+        }
+
+        # -------------------------
+        # Account Info
+        # -------------------------
+        accounts = []
+
+        account_nodes = root.findall(
+            './/ns:GenUnifiedAcctsDtls',
+            namespaces=namespace
+        )
+
+        for acc in account_nodes:
+
+            account_data = {
+                "account_number": acc.find('ns:AccNumber', namespace).text if acc.find('ns:AccNumber', namespace) is not None else "",
+                "account_name": acc.find('ns:AccName', namespace).text if acc.find('ns:AccName', namespace) is not None else "",
+                "account_type": acc.find('ns:AccType', namespace).text if acc.find('ns:AccType', namespace) is not None else "",
+                "currency": acc.find('ns:AccCurrencyCode', namespace).text if acc.find('ns:AccCurrencyCode', namespace) is not None else "",
+                "branch_id": acc.find('ns:BranchId', namespace).text if acc.find('ns:BranchId', namespace) is not None else "",
+                "account_status": acc.find('ns:AcctStatus', namespace).text if acc.find('ns:AcctStatus', namespace) is not None else ""
+            }
+
+            accounts.append(account_data)
+
+        return {
+            "http_status": http_code,
+            "customer_info": customer_data,
+            "accounts": accounts
+        }
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Customer Login Info API Error")
+
+        return {
+            "status": "error",
+            "message": "No Customer Found",
+            "error": str(e)
+        }
 
