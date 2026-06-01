@@ -197,6 +197,10 @@ class CustomWorkflow:
 
 		if self.doc.doctype == "Repair And Services":
 			self.expense_approver = frappe.db.get_value("Employee", {"user_id":frappe.db.get_value("Employee", {"user_id":self.doc.owner}, "expense_approver")}, self.field_list)
+			if frappe.db.exists("Employee", {"user_id": self.doc.owner}):
+				self.section_approver= frappe.db.get_value("Employee", frappe.db.get_value("Department", str(frappe.db.get_value("Employee", {"user_id":self.doc.owner}, "section")), "approver"), self.field_list)
+			else:
+				frappe.throw("You are not registered as an Employee.")
 			self.hrgm = frappe.db.get_value("Employee",frappe.db.get_single_value("HR Settings","hrgm"), self.field_list)
 		
 		if self.doc.doctype == "Vehicle Request":
@@ -817,15 +821,17 @@ class CustomWorkflow:
 		'''
 		if self.new_state and self.old_state and self.new_state.lower() == self.old_state.lower():
 			return
-
-		if self.new_state.lower() in ("Waiting Approval".lower()):
+		if self.new_state.lower() in ("Waiting Supervisor Approval".lower()):
 			self.doc.check_advance_and_report()
 			self.doc.check_date()
 			self.set_approver("Supervisor")
-			self.doc.document_status = "Draft"
+		if self.new_state.lower() in ("Waiting Approval".lower()):
+			if self.doc.supervisor != frappe.session.user:
+				frappe.throw("Only {} can Forward/Approve this request".format(self.doc.supervisor_name))
+			self.set_approver("Section Head")
 		elif self.new_state == "Waiting Hr Approval":
 			if self.doc.supervisor != frappe.session.user:
-				frappe.throw("Only {} can Forware this request".format(self.doc.supervisor_name))
+				frappe.throw("Only {} can Forward this request".format(self.doc.supervisor_name))
 			self.set_approver("HR")	
 		elif self.new_state == "Travel Authorization Approved":
 			self.doc.travel_authorization_approved = 1
@@ -976,7 +982,7 @@ class CustomWorkflow:
 		elif self.new_state.lower() in ("Waiting Approval".lower()):
 			if self.doc.approver != frappe.session.user:
 				frappe.throw("Only {} can forward this request".format(self.doc.approver))
-			self.set_approver("HRGM")
+			self.set_approver("Section Head")
 		elif self.new_state.lower() in ("Approved".lower()):
 			if self.doc.approver != frappe.session.user:
 				frappe.throw("Only {} can Approve this document".format(self.doc.approver))
@@ -988,6 +994,10 @@ class CustomWorkflow:
 			if self.doc.approver != frappe.session.user and "HR User" not in frappe.get_roles(frappe.session.user):
 				frappe.throw("Only {} can Approve this request".format(self.doc.approver_name))
 			self.doc.status = 'Approved'
+		elif self.new_state.lower() == "Waiting Approval".lower():
+			if self.doc.approver != frappe.session.user and "HR User" not in frappe.get_roles(frappe.session.user):
+				frappe.throw("Only {} can Forward this request".format(self.doc.approver_name))
+			self.set_approver("Supervisors Supervisor")
 		elif self.new_state.lower() in ('Rejected'.lower(), 'Rejected By Supervisor'.lower()):
 			if self.doc.approver != frappe.session.user:
 				frappe.throw("Only {} can Reject this request".format(self.doc.approver_name))
