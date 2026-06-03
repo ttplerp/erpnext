@@ -79,7 +79,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-05-05 09:55:15.403910",
+ "modified": "2026-06-03 09:16:55.324402",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Questionaire",
@@ -99,6 +99,7 @@
    "write": 1
   }
  ],
+ "search_fields": "from_date, to_date,title",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

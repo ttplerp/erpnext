@@ -146,14 +146,13 @@
    "fieldname": "branch",
    "fieldtype": "Link",
    "label": "Branch",
-   "options": "Branch",
-   "reqd": 1
+   "options": "Branch"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-03-19 11:00:18.718543",
+ "modified": "2026-06-03 14:48:02.977039",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset Movement",

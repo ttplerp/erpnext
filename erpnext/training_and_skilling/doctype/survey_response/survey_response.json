@@ -9,9 +9,11 @@
  "field_order": [
   "desuup",
   "desuup_name",
+  "country",
   "column_break_3",
   "mobile_number",
   "employment_status",
+  "dzongkhag",
   "column_break_6",
   "questionaire",
   "title",
@@ -86,12 +88,26 @@
    "fieldtype": "Data",
    "label": "Title",
    "read_only": 1
+  },
+  {
+   "fetch_from": "desuup.present_country",
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country"
+  },
+  {
+   "fetch_from": "desuup.present_dzongkhag",
+   "fieldname": "dzongkhag",
+   "fieldtype": "Link",
+   "label": "Dzongkhag",
+   "options": "Dzongkhags"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-05-05 16:35:12.203959",
+ "modified": "2026-06-03 08:43:21.897066",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Survey Response",

@@ -22,10 +22,10 @@
   "cid",
   "phone_number",
   "complete_deployment",
-  "amended_from",
   "code",
   "description",
-  "dzongkhag"
+  "dzongkhag",
+  "amended_from"
  ],
  "fields": [
   {
@@ -59,6 +59,7 @@
   },
   {
    "fetch_from": "desuup_deployment.type_of_deployment",
+   "fetch_if_empty": 1,
    "fieldname": "type_of_deployment",
    "fieldtype": "Data",
    "label": "Type of Deployment",
@@ -66,6 +67,7 @@
   },
   {
    "fetch_from": "desuup_deployment.category",
+   "fetch_if_empty": 1,
    "fieldname": "category_of_deployment",
    "fieldtype": "Data",
    "label": "Category of Deployment",
@@ -73,6 +75,7 @@
   },
   {
    "fetch_from": "desuup_deployment.start_date",
+   "fetch_if_empty": 1,
    "fieldname": "start_date",
    "fieldtype": "Date",
    "label": "Start Date",
@@ -80,6 +83,7 @@
   },
   {
    "fetch_from": "desuup_deployment.end_date",
+   "fetch_if_empty": 1,
    "fieldname": "end_date",
    "fieldtype": "Date",
    "label": "End Date",
@@ -87,6 +91,7 @@
   },
   {
    "fetch_from": "desuup.desuup_name",
+   "fetch_if_empty": 1,
    "fieldname": "full_name",
    "fieldtype": "Data",
    "label": "Full Name",
@@ -94,6 +99,7 @@
   },
   {
    "fetch_from": "desuup.gender",
+   "fetch_if_empty": 1,
    "fieldname": "gender",
    "fieldtype": "Data",
    "label": "Gender",
@@ -101,6 +107,7 @@
   },
   {
    "fetch_from": "desuup.cid_number",
+   "fetch_if_empty": 1,
    "fieldname": "cid",
    "fieldtype": "Data",
    "label": "CID",
@@ -133,6 +140,7 @@
   },
   {
    "fetch_from": "desuup.mobile_number",
+   "fetch_if_empty": 1,
    "fieldname": "phone_number",
    "fieldtype": "Data",
    "label": "Phone Number",
@@ -140,6 +148,7 @@
   },
   {
    "fetch_from": "desuup_deployment.deployment_code",
+   "fetch_if_empty": 1,
    "fieldname": "code",
    "fieldtype": "Data",
    "label": "Deployment Code",
@@ -147,6 +156,7 @@
   },
   {
    "fetch_from": "desuup_deployment.deployment_title",
+   "fetch_if_empty": 1,
    "fieldname": "description",
    "fieldtype": "Data",
    "label": "Description",
@@ -154,6 +164,7 @@
   },
   {
    "fetch_from": "desuup_deployment.dzongkhag",
+   "fetch_if_empty": 1,
    "fieldname": "dzongkhag",
    "fieldtype": "Data",
    "label": "Dzongkhag",
@@ -163,7 +174,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-05-29 12:19:51.742516",
+ "modified": "2026-06-03 16:38:05.312150",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Deployment Entry",
