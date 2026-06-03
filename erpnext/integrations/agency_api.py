@@ -521,7 +521,9 @@ def multi_fund_transfer(data):
     c.close
     return {
         "status": status,
-        "trans_datetime": trans_datetime
+        "trans_datetime": trans_datetime,
+        "http_code": http_code,
+        "response": result
     }
 
 @frappe.whitelist()
