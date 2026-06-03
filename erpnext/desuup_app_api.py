@@ -177,7 +177,7 @@ def submit_attendance(deployment, date, attendance_detail):
             att.attendance_date = date
             att.reference_doctype = "Desuup Deployment"
             att.reference_name = deployment
-            att.submit()
+            att.submit(ignore_permissions=True)
         else:
             att = frappe.get_doc("Desuup Attendance", n)
             att.db_set("status", s)
