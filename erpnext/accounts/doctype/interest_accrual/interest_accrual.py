@@ -207,4 +207,4 @@ class InterestAccrual(Document):
 			month = "Nov"
 		elif month == 12:
 			month = "Dec"
-		return month, str(posting_date).split("-")[0]
+		return month

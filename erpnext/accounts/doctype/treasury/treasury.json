@@ -20,6 +20,7 @@
   "cost_center",
   "issue_date",
   "maturity_date",
+  "extend_maturity_date",
   "term",
   "day",
   "posting_date",
@@ -85,9 +86,11 @@
    "reqd": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "maturity_date",
    "fieldtype": "Date",
    "label": "Maturity Date",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -126,6 +129,7 @@
    "reqd": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "day",
    "fieldtype": "Float",
    "label": "Days",
@@ -255,12 +259,23 @@
    "fieldname": "days_in_month",
    "fieldtype": "Check",
    "label": "30 Days in Month"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "depends_on": "eval: doc.docstatus",
+   "description": "*enabled only for CP",
+   "fieldname": "extend_maturity_date",
+   "fieldtype": "Check",
+   "label": "Extend Maturity Date",
+   "permlevel": 1,
+   "read_only_depends_on": "eval: doc.type_of_instrument != 'CP'"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-03-30 16:43:52.059197",
+ "modified": "2026-06-03 18:27:00.563324",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Treasury",

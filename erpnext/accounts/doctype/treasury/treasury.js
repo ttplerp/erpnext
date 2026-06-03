@@ -27,11 +27,20 @@ frappe.ui.form.on('Treasury', {
 		})
 		cur_frm.page.set_inner_btn_group_as_primary(__('Create'));
 
+		if(frm.doc.docstatus === 0){
+			frm.set_df_property("maturity_date", "read_only", 0);
+			frm.set_df_property("extend_maturity_date", "read_only", 1);
+		}
 	},
 	principal_amount: function(frm) {
 		frm.set_value("total_outstanding", frm.doc.principal_amount)
 		frm.refresh_field("total_outstanding")
 	},
+	extend_maturity_date: function(frm) {
+		if(frm.doc.extend_maturity_date) {
+			frm.set_df_property("maturity_date", "read_only", frm.doc.type_of_instrument === "CP" ? 0 : 1);
+		}
+	}
 });
 
 var make_interest_accrual = function () {
