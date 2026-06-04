@@ -7,6 +7,8 @@ from frappe.utils import flt
 
 class CompleteDeployment(Document):
     def on_submit(self):
+        if not self.items:
+            frappe.throw("Load Desuup Details")
         self.update_deployment()
         self.pass_deployment_entry()
 

@@ -16,8 +16,10 @@ def get_desuup():
 @frappe.whitelist()
 def get_desuup_detail():
     desuup = frappe.get_doc("Desuup", get_desuup())
-    desuup.deployment_history = frappe.db.sql("select * from `tabDeployment Entry` where desuup = %(desuup)s", {"desuup": desuup.name}, as_dict=1)
-    return desuup
+    result = desuup.as_dict()
+    result.deployment_history = frappe.db.sql("select * from `tabDeployment Entry` where desuup = %(desuup)s", {"desuup": desuup.name}, as_dict=1)
+    result.total_hearts = sum(dep["heart_points"] for dep in result.deployment_history)
+    return result
 
 @frappe.whitelist()
 def get_announcement_list(dep_type=None):
