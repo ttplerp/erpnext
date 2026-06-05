@@ -9,6 +9,7 @@
  "field_order": [
   "desuup_deployment",
   "type_of_deployment",
+  "type_of_event",
   "category_of_deployment",
   "start_date",
   "end_date",
@@ -169,12 +170,20 @@
    "fieldtype": "Data",
    "label": "Dzongkhag",
    "read_only": 1
+  },
+  {
+   "fetch_from": "desuup_deployment.event",
+   "fetch_if_empty": 1,
+   "fieldname": "type_of_event",
+   "fieldtype": "Data",
+   "label": "Type of Event",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-06-03 16:38:05.312150",
+ "modified": "2026-06-05 16:19:50.464345",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Deployment Entry",

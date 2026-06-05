@@ -17,8 +17,8 @@ def get_desuup():
 def get_desuup_detail():
     desuup = frappe.get_doc("Desuup", get_desuup())
     result = desuup.as_dict()
-    result.deployment_history = frappe.db.sql("select * from `tabDeployment Entry` where desuup = %(desuup)s", {"desuup": desuup.name}, as_dict=1)
-    result.total_hearts = sum(dep["heart_points"] for dep in result.deployment_history)
+    result.desuup_deployment_history = frappe.db.sql("select * from `tabDeployment Entry` where desuup = %(desuup)s", {"desuup": desuup.name}, as_dict=1)
+    result.total_hearts = sum(dep["heart_points"] for dep in result.desuup_deployment_history)
     return result
 
 @frappe.whitelist()
@@ -65,7 +65,7 @@ def get_deployment_list(dep_type=None):
         and d.docstatus = 1 
         and di.parent = d.name
         and d.type_of_deployment = %(dep_type)s
-        and d.end_date > %(deadline)s
+        and d.end_date >= %(deadline)s
         """, filters, as_dict=1)
 
     return doc_list
