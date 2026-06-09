@@ -303,7 +303,7 @@ class BankPayment(Document):
                                 rec.payment_status = status
                                 rec.bank_payment = self.name
                         doc.save(ignore_permissions=True)
-
+                # Sanga
                 # for rec in doc.item:
                 #     if rec.name == i.transaction_reference:
                 #         rec.payment_status = status
