@@ -324,9 +324,12 @@ def update_bank_payment_status(file_name, file_status, bank, ack_file=None):
 					if idx == len(rows) - 1:
 						continue
 
-				bank_account_no_from_ack = row[1]
-				bank_response = row[8]
-
+				try:
+					bank_account_no_from_ack = row[1]
+					bank_response = row[8]
+				except Exception as e:
+					bank_account_no_from_ack = ""
+					bank_response = "No Response from Bank in file"
 				for rec in doc.items:
 					if rec.bank_account_no == bank_account_no_from_ack:
 						doc_modified += 1

@@ -259,8 +259,14 @@ class BankPayment(Document):
                             if file_path_to_check.endswith('_VALERR.csv'):
                                 if idx == len(rows) - 1:
                                     continue
-                            bank_account_no_from_ack = row[1]
-                            bank_response = row[8]
+                            try:
+								# if frappe.session.user == "Administrator":
+								# 	print(str(row))
+								bank_account_no_from_ack = row[1]
+								bank_response = row[8]
+							except Exception as e:
+								bank_account_no_from_ack = ""
+								bank_response = "No Response from Bank in file"
 
                             for rec in self.items:
                                 if rec.bank_account_no == bank_account_no_from_ack:
@@ -284,45 +290,60 @@ class BankPayment(Document):
                 if i.transaction_id in docs_updated:
                     doc = docs_updated[i.transaction_id]
                 else:
-                    doc = frappe.get_doc('Direct Payment', i.transaction_id)
-                    doc.payment_status = status
-                    docs_updated[i.transaction_id] = doc
+                    # doc = frappe.get_doc('Direct Payment', i.transaction_id)
+                    # doc.payment_status = status
+                    # docs_updated[i.transaction_id] = doc
 
-                for rec in doc.item:
-                    if rec.name == i.transaction_reference:
-                        rec.payment_status = status
-                        rec.bank_payment = self.name
-                # doc.save(ignore_permissions=True)
+                    doc = frappe.get_doc(self.transaction_type, i.transaction_id)
+                    if doc.docstatus == 1 and self.docstatus == 1:
+                        doc.payment_status = status
+                        child_item = doc.item if self.transaction_type == "Direct Payment" else doc.items
+                        for rec in child_item:
+                            if rec.name == i.transaction_reference:
+                                rec.payment_status = status
+                                rec.bank_payment = self.name
+                        doc.save(ignore_permissions=True)
+
+                # for rec in doc.item:
+                #     if rec.name == i.transaction_reference:
+                #         rec.payment_status = status
+                #         rec.bank_payment = self.name
+                # # doc.save(ignore_permissions=True)
+
             elif self.transaction_type == 'Payment Entry':
                 if i.transaction_id in docs_updated: continue
                 doc = frappe.get_doc('Payment Entry', i.transaction_id)
-                doc.payment_status = status
-                doc.bank_payment = self.name
-                # doc.save(ignore_permissions=True)
-                docs_updated[i.transaction_id] = doc
+                if doc.docstatus == 1 and self.docstatus == 1:
+                    doc.payment_status = status
+                    doc.bank_payment = self.name
+                    # doc.save(ignore_permissions=True)
+                    docs_updated[i.transaction_id] = doc
             elif self.transaction_type == 'Journal Entry':
                 if i.transaction_id in docs_updated: continue
                 doc = frappe.get_doc('Journal Entry', i.transaction_id)
-                doc.payment_status = status
-                doc.bank_payment = self.name
-                # doc.save(ignore_permissions=True)
-                docs_updated[i.transaction_id] = doc
+                if doc.docstatus == 1 and self.docstatus == 1:
+                    doc.payment_status = status
+                    doc.bank_payment = self.name
+                    # doc.save(ignore_permissions=True)
+                    docs_updated[i.transaction_id] = doc
             
             elif self.transaction_type == 'Desuup Payout Entry':
                 if i.transaction_id in docs_updated: continue
                 doc = frappe.get_doc('Desuup Payout Entry', i.transaction_id)
-                doc.payment_status = status
-                doc.bank_payment = self.name
-                # doc.save(ignore_permissions=True)
-                docs_updated[i.transaction_id] = doc
+                if doc.docstatus == 1 and self.docstatus == 1:
+                    doc.payment_status = status
+                    doc.bank_payment = self.name
+                    # doc.save(ignore_permissions=True)
+                    docs_updated[i.transaction_id] = doc
 
             elif self.transaction_type == 'Stipend Payment':
                 if i.transaction_id in docs_updated: continue
                 doc = frappe.get_doc('Desuup Payout Entry', i.transaction_id)
-                doc.payment_status = status
-                doc.bank_payment = self.name
-                # doc.save(ignore_permissions=True)
-                docs_updated[i.transaction_id] = doc    
+                if doc.docstatus == 1 and self.docstatus == 1:
+                    doc.payment_status = status
+                    doc.bank_payment = self.name
+                    # doc.save(ignore_permissions=True)
+                    docs_updated[i.transaction_id] = doc    
 
         for transaction_id, doc in docs_updated.items():
             doc.save(ignore_permissions=True)
