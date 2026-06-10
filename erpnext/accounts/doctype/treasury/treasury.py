@@ -25,12 +25,8 @@ class Treasury(Document):
 		old_doc = self.get_doc_before_save()
 		
 		if self.extend_maturity_date:
-			if getdate(self.maturity_date) <= getdate(old_doc.maturity_date):
+			if getdate(self.maturity_date) < getdate(old_doc.maturity_date):
 				frappe.throw(f"{getdate(self.maturity_date)} Maturity date cannot be extended to a date before the original maturity date {getdate(old_doc.maturity_date)}")
-			
-			if self.issue_date and self.maturity_date:
-				no_of_days = date_diff(self.maturity_date, self.issue_date)
-				self.db_set("day", no_of_days)
 
 	def before_cancel(self):
 		if self.journal_entry:
