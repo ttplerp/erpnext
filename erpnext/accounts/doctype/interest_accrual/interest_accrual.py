@@ -32,7 +32,7 @@ class InterestAccrual(Document):
 	def validate_existing(self):
 		if not self.posting_date:
 			frappe.throw("Please Enter Posting Date.")
-		if self.get_month(frappe.db.get_value("Treasury", self.treasury_id, "maturity_date")) == self.month and str(frappe.db.get_value("Treasury", self.treasury_id, "maturity_date")).split("-")[0] == str(self.posting_date).split("-")[0]:
+		if str(self.get_month(frappe.db.get_value("Treasury", self.treasury_id, "maturity_date"))[0]) == self.month and str(frappe.db.get_value("Treasury", self.treasury_id, "maturity_date")).split("-")[0] == str(self.posting_date).split("-")[0]:
 			frappe.throw("Cannot create Interest for Treasury {} on maturity month".format(self.name))
 		exists = frappe.db.sql("""
                          select name from `tabInterest Accrual` where
@@ -207,4 +207,4 @@ class InterestAccrual(Document):
 			month = "Nov"
 		elif month == 12:
 			month = "Dec"
-		return month
+		return month, str(posting_date).split("-")[0]
