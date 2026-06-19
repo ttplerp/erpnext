@@ -220,7 +220,10 @@ def validate_expense_against_budget(args):
 	'''
 	""" avoid budget check at MR """
 	if frappe.db.get_single_value("Budget Settings", "budget_commit_on") != "Material Request":
-		for budget_against in ["project", "cost_center"] + get_accounting_dimensions():
+		budget_against_list = [
+			frappe.db.get_single_value("Budget Settings", "budget_against")
+		] + [d.document_type for d in get_accounting_dimensions()]
+		for budget_against in budget_against_list:
 			if (
 				args.get(budget_against)
 				and args.account
