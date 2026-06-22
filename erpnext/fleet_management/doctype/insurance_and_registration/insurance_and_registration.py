@@ -621,3 +621,14 @@ class InsuranceandRegistration(Document):
         )
         frappe.db.set_value("Insurance and Registration", self.name, "reference", je.name)
         return je.name
+
+@frappe.whitelist()
+def post_je(docname=None):
+    if not docname:
+        docname = frappe.form_dict.get("docname")
+
+    if not docname:
+        frappe.throw(_("Document name is required to create Journal Entry"))
+
+    doc = frappe.get_doc("Insurance and Registration", docname)
+    return doc.post_je()

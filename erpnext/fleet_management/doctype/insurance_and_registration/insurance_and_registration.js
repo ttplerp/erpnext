@@ -1,27 +1,46 @@
 frappe.ui.form.on('Insurance and Registration', {
     refresh: function(frm) {
-    	if (!frm.doc.__islocal) {
-            frm.add_custom_button(__('Post Bluebook Fitness & Emission JE'), function() {
-                frappe.call({
-                    method: 'post_je',
-                    doc: frm.doc,
-                    callback: function(r) {
-                        if (!r.exc) {
-                            frm.reload_doc();
-                            frappe.show_alert({
-                                message: __('Journal Entry created successfully'),
-                                indicator: 'green'
-                            });
-                        }
+
+        frm.set_df_property("posting_date","reqd",1)
+        frm.remove_custom_button(__('Post Bluebook Fitness & Emission JE'));
+
+        if (!frm.doc.__islocal && !frm.doc.reference) {
+
+            frm.add_custom_button(__('Post Insurance and Registration JE'), function() {
+
+                frappe.confirm(
+                    __('Are you sure you want to create Journal Entry?'),
+                    function() {
+
+                        frappe.call({
+                            method: "erpnext.fleet_management.doctype.insurance_and_registration.insurance_and_registration.post_je",
+                            args: {
+                                docname: frm.doc.name
+                            },
+                            freeze: true,
+                            freeze_message: __("Creating Journal Entry..."),
+                            callback: function(r) {
+                                if (!r.exc) {
+                                    frappe.show_alert({
+                                        message: __("Journal Entry created successfully"),
+                                        indicator: "green"
+                                    });
+
+                                    frm.reload_doc();
+                                }
+                            }
+                        });
+
                     }
-                });
+                );
+
             });
         }
     },
     
-    posting_date: function(frm) {
-        // Update all dates in child tables if needed
-    },
+    // posting_date: function(frm) {
+    //     // Update all dates in child tables if needed
+    // },
     
     taxes_and_charges: function(frm) {
         if (frm.doc.taxes_and_charges) {
