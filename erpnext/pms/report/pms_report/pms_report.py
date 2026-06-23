@@ -25,7 +25,8 @@ def get_data(filters):
                 division,
                 region,
                 unit,
-                section               
+                section,
+                workflow_state               
             """
     if filters.type == "Target Setup Report":
         query += ",date from `tabTarget Set Up` {}".format(cond)
@@ -56,6 +57,8 @@ def get_column(filters):
                 _("Region") + ":Link/Region:120",
                 _("Unit") + ":Link/Unit:120",
                 _("Section") + ":Link/Section:120",
+                _("Workflow State") + ":Link/Workflow State:120",
+
                 
     ]		
     if filters.get("type") == "Target Setup Report":		
@@ -111,23 +114,23 @@ def get_conditions(filters):
 
     elif filters.type == "Review Report":
         if filters.workflow_state == "Draft":
-            cond += " and rev_workflow_state = 'Draft'"
+            cond += " and workflow_state = 'Draft'"
         elif filters.workflow_state == "Waiting Approval":
-            cond += " and rev_workflow_state = 'Waiting Approval'"
+            cond += " and workflow_state = 'Waiting Approval'"
         elif filters.workflow_state == "Approved":
-            cond += " and rev_workflow_state = 'Approved'"
+            cond += " and workflow_state = 'Approved'"
         elif filters.workflow_state == "Rejected":
-            cond += " and rev_workflow_state = 'Rejected'"
+            cond += " and workflow_state = 'Rejected'"
     
     elif filters.type == "Performance Evaluation Report":
         if filters.workflow_state == "Draft":
-            cond += " and eval_workflow_state = 'Draft'"
+            cond += " and workflow_state = 'Draft'"
         elif filters.workflow_state == "Waiting Approval":
-            cond += " and (eval_workflow_state = 'Waiting Approval' or eval_workflow_state = 'Waiting Supervisor Approval' or eval_workflow_state = 'Waiting PERC')"
+            cond += " and (workflow_state = 'Waiting Approval' or workflow_state = 'Waiting Supervisor Approval' or workflow_state = 'Waiting PERC')"
         elif filters.workflow_state == "Approved":
-            cond += " and eval_workflow_state = 'Approved'"
+            cond += " and workflow_state = 'Approved'"
         elif filters.workflow_state == "Rejected":
-            cond += " and eval_workflow_state = 'Rejected'"
+            cond += " and workflow_state = 'Rejected'"
 
     elif filters.type == "PMS Summary":
         if filters.docstatus == "Draft":

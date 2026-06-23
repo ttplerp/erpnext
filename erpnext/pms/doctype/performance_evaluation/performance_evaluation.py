@@ -110,10 +110,10 @@ class PerformanceEvaluation(Document):
 			quality_rating, quantity_rating, timeline_rating= 0, 0, 0
 			if cint(item.reverse_formula) == 0:
 				item.accept_zero_qtyquality = 0
-			if item.timeline_achieved <= 0:
+			if item.timeline_achieved < 0:
 				frappe.throw('Timeline Achieved for target <b>{}</b> must be greater than 0'.format(item.performance_target))
 			if item.qty_quality == 'Quality':
-				if item.quality_achieved <= 0 and not item.is_zero_value:
+				if item.quality_achieved < 0 and not item.is_zero_value:
 					frappe.throw('Quality Achieved for target <b>{}</b> must be greater than or equal to 0'.format(item.performance_target))
 
 				if flt(item.quality_achieved) >= flt(item.quality):
@@ -149,7 +149,8 @@ class PerformanceEvaluation(Document):
 							quality_rating = flt(item.weightage)/ (flt(item.quality_achieved) + 1)
 					else:
 						quality_rating = flt(item.quality_achieved) / flt(item.quality) * flt(item.weightage)
-				
+				if flt(item.quality_achieved) ==0 and not item.is_zero_value:
+					quality_rating=0
 				item.quality_rating = quality_rating
 
 			elif item.qty_quality == 'Quantity':
@@ -188,7 +189,8 @@ class PerformanceEvaluation(Document):
 							quantity_rating = flt(item.weightage)/ (flt(item.quantity_achieved) + 1)
 					else:
 						quantity_rating = flt(item.quantity_achieved) / flt(item.quantity)  * flt(item.weightage)
-				
+				if flt(item.quantity_achieved)==0 and not item.is_zero_value:
+					quantity_rating=0
 				item.quantity_rating = quantity_rating
 
 			if flt(item.timeline_achieved)<= flt(item.timeline):
@@ -204,12 +206,20 @@ class PerformanceEvaluation(Document):
 			if item.is_conditional_target and item.quantity_achieved <=70 and item.quality_achieved <=70:
 				timeline_rating = 0
 			item.timeline_rating = timeline_rating
-			
 			if item.qty_quality == 'Quality':
-				item.average_rating = (flt(item.timeline_rating) + flt(item.quality_rating)) / 2
+				if item.quality_achieved ==0 and not item.is_zero_value:
+					item.timeline_rating =0
+					item.average_rating =0
+				else:
+					item.average_rating = (flt(item.timeline_rating) + flt(item.quality_rating)) / 2
 
 			elif item.qty_quality == 'Quantity':
-				item.average_rating = (flt(item.timeline_rating) + flt(item.quantity_rating)) / 2
+				if item.quantity_achieved ==0 and not item.is_zero_value:
+					item.timeline_rating =0
+					item.average_rating =0
+				else:
+					item.average_rating = (flt(item.timeline_rating) + flt(item.quantity_rating)) / 2
+
 			target_rating = frappe.db.get_value("PMS Group",self.pms_group,"weightage_for_target")
 			item.score = (flt(item.average_rating ) / flt(item.weightage)) * 100
 			if item.quantity and item.quantity_achieved == 0:
@@ -417,6 +427,14 @@ def get_permission_query_conditions(user):
 	if "HR User" in user_roles or "HR Manager" in user_roles:
 		return
 
+	if "GM" in user_roles or "Approver" in user_roles:
+		department = frappe.db.get_value("Employee", {"user_id": user}, "division")
+		return """(
+			`tabPerformance Evaluation`.owner = '{user}'
+			or
+			(`tabPerformance Evaluation`.division = '{department}' and `tabPerformance Evaluation`.workflow_state not in ('Draft', 'Rejected','Cancelled'))
+		)""".format(department=department, user=user)
+
 	return """(
 		`tabPerformance Evaluation`.owner = '{user}'
 		or
@@ -425,6 +443,5 @@ def get_permission_query_conditions(user):
 				where `tabEmployee`.name = `tabPerformance Evaluation`.employee
 				and `tabEmployee`.user_id = '{user}')
 		or
-		(`tabPerformance Evaluation`.approver = '{user}' and `tabPerformance Evaluation`.eval_workflow_state not in ('Draft', 'Rejected', 'Cancelled'))
+		(`tabPerformance Evaluation`.approver = '{user}' and `tabPerformance Evaluation`.workflow_state not in ('Draft', 'Rejected', 'Cancelled'))
 		)""".format(user=user)
-
