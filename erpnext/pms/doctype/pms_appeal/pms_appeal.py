@@ -41,58 +41,146 @@ class PMSAppeal(Document):
 
 	def calculate_target_score(self):
 		total_score = 0
-		for item in self.evaluate_target_item :
+		target_rating = 1
+		for item in self.evaluate_target_item:
 			quality_rating, quantity_rating, timeline_rating= 0, 0, 0
 			if cint(item.reverse_formula) == 0:
 				item.accept_zero_qtyquality = 0
-			if item.timeline_achieved <= 0:
+			if item.timeline_achieved < 0:
 				frappe.throw('Timeline Achieved for target <b>{}</b> must be greater than 0'.format(item.performance_target))
 			if item.qty_quality == 'Quality':
-				if item.quality_achieved <= 0:
+				if item.quality_achieved < 0 and not item.is_zero_value:
 					frappe.throw('Quality Achieved for target <b>{}</b> must be greater than or equal to 0'.format(item.performance_target))
 
 				if flt(item.quality_achieved) >= flt(item.quality):
-					quality_rating = item.weightage
-
+					if item.is_expense_target:
+						extra_amount = flt(item.quality) / flt(item.quality_achieved) * flt(item.weightage)
+						diff_amount = flt(item.weightage) - flt(extra_amount)
+						quality_rating = flt(item.weightage) - flt(diff_amount)
+					elif item.is_conditional_target:
+						if item.quality_achieved <=70:
+							quality_rating= 0
+						else:
+							quality_rating = flt(item.weightage)
+					elif item.is_zero_value:
+						if item.quality_achieved <= 0:
+							quality_rating = item.weightage
+						else:
+							quality_rating = flt(item.weightage)/ (flt(item.quality_achieved) + 1)
+					else:
+						quality_rating = item.weightage
+					
 				else:
-					quality_rating = flt(item.quality_achieved) / flt(item.quality) * flt(item.weightage)
-				
+					if item.is_expense_target:
+						quality_rating = item.weightage
+					elif item.is_conditional_target:
+						if item.quality_achieved <=70:
+							quality_rating= 0
+						else:
+							quality_rating = flt(item.quality_achieved) / flt(item.quality) * flt(item.weightage)
+					elif item.is_zero_value:
+						if item.quality_achieved <= 0:
+							quality_rating = item.weightage
+						else:
+							quality_rating = flt(item.weightage)/ (flt(item.quality_achieved) + 1)
+					else:
+						quality_rating = flt(item.quality_achieved) / flt(item.quality) * flt(item.weightage)
+				if flt(item.quality_achieved) ==0 and not item.is_zero_value:
+					quality_rating=0
 				item.quality_rating = quality_rating
 
 			elif item.qty_quality == 'Quantity':
-				# if item.quantity_achieved <= 0:
-				# 	frappe.throw('Quality Achieved for target <b>{}</b> must be greater than or equal to 0'.format(item.performance_target))
+				if item.quantity_achieved < 0 and not item.is_zero_value:
+					frappe.throw('Quality Achieved for target <b>{}</b> must be greater than or equal to 0'.format(item.performance_target))
 				
 				if flt(item.quantity_achieved)>= flt(item.quantity):
-					quantity_rating = flt(item.weightage)
+					if item.is_expense_target:
+						extra_amount = flt(item.quantity) / flt(item.quantity_achieved) * flt(item.weightage)
+						diff_amount = flt(item.weightage) - flt(extra_amount)
+						quantity_rating = flt(item.weightage) - flt(diff_amount)
+					elif item.is_conditional_target:
+						if item.quantity_achieved <=70:
+							quantity_rating= 0
+						else:
+							quantity_rating = flt(item.weightage)
+					elif item.is_zero_value:
+						if item.quantity_achieved <= 0:
+							quantity_rating = item.weightage
+						else:
+							quantity_rating = flt(item.weightage)/ (flt(item.quantity_achieved) + 1)
+					else:
+						quantity_rating = flt(item.weightage)
 				else:
-					quantity_rating = flt(item.quantity_achieved) / flt(item.quantity)  * flt(item.weightage)
-				
+					if item.is_expense_target:
+						quantity_rating = item.weightage
+					elif item.is_conditional_target:
+						if item.quantity_achieved <=70:
+							quantity_rating= 0
+						else:
+							quantity_rating = flt(item.quantity_achieved) / flt(item.quality) * flt(item.weightage)
+					elif item.is_zero_value:
+						if item.quantity_achieved <= 0:
+							quantity_rating = item.weightage
+						else:
+							quantity_rating = flt(item.weightage)/ (flt(item.quantity_achieved) + 1)
+					else:
+						quantity_rating = flt(item.quantity_achieved) / flt(item.quantity)  * flt(item.weightage)
+				if flt(item.quantity_achieved)==0 and not item.is_zero_value:
+					quantity_rating=0
 				item.quantity_rating = quantity_rating
 
 			if flt(item.timeline_achieved)<= flt(item.timeline):
-				timeline_rating = flt(item.weightage)
+				if item.is_expense_target:
+					timeline_rating = flt(item.timeline_achieved) / flt(item.timeline) *  flt(item.weightage)
+				else:
+					timeline_rating = flt(item.weightage)
 			else:
-				timeline_rating = flt(item.timeline) / flt(item.timeline_achieved) *  flt(item.weightage)
+				if item.is_expense_target:
+					timeline_rating = flt(item.weightage)
+				else:
+					timeline_rating = flt(item.timeline) / flt(item.timeline_achieved) *  flt(item.weightage)
+			if item.is_conditional_target and item.quantity_achieved <=70 and item.quality_achieved <=70:
+				timeline_rating = 0
 			item.timeline_rating = timeline_rating
-			
 			if item.qty_quality == 'Quality':
-				item.average_rating = (flt(item.timeline_rating) + flt(item.quality_rating)) / 2
+				if item.quality_achieved ==0 and not item.is_zero_value:
+					item.timeline_rating =0
+					item.average_rating =0
+				else:
+					item.average_rating = (flt(item.timeline_rating) + flt(item.quality_rating)) / 2
 
 			elif item.qty_quality == 'Quantity':
-				item.average_rating = (flt(item.timeline_rating) + flt(item.quantity_rating)) / 2
+				if item.quantity_achieved ==0 and not item.is_zero_value:
+					item.timeline_rating =0
+					item.average_rating =0
+				else:
+					item.average_rating = (flt(item.timeline_rating) + flt(item.quantity_rating)) / 2
+
 			target_rating = frappe.db.get_value("PMS Group",self.pms_group,"weightage_for_target")
 			item.score = (flt(item.average_rating ) / flt(item.weightage)) * 100
-
+			if item.quantity and item.quantity_achieved == 0:
+				item.score= 0
+			if item.quality and item.quality_achieved == 0:
+				item.score= 0
+			if item.applylessthanseven:
+				if item.quantity:
+					cal = (item.quantity_achieved / item.quantity)*100
+					if cal < 80:
+						item.score= 0
+				if item.quality:
+					cal = (item.quality_achieved / item.quality)*100
+					if cal < 80:
+						item.score= 0
+						
 			total_score += flt(item.average_rating)
+			
 		score =flt(total_score)/100 * flt(target_rating)
 		total_score = score
 		self.form_i_total_rating = total_score
 		self.db_set('form_i_total_rating', self.form_i_total_rating)
 
+
 	def calculate_competency_score(self):
-		# if self.eval_workflow_state == 'Draft':
-		#     return
 		if not self.evaluate_competency_item:
 			frappe.throw('Competency cannot be empty please use <b>Get Competency Button</b>')
 		indx, total, count, total_score = 0,0,0,0

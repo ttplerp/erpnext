@@ -354,16 +354,20 @@ class CustomWorkflow:
 		elif self.new_state.lower() in ("Approved".lower(), "Rejected".lower()):
 			if (self.doc.approver != frappe.session.user):
 				frappe.throw("Only {} can Approved or make Reject this Request".format(self.doc.approver_name))
+		elif self.new_state.lower() in ("Cancelled".lower()):
+			if (self.doc.approver != frappe.session.user):
+				frappe.throw("Only {} can Cancel this Request".format(self.doc.approver_name))
 				
 	def performance_evaluation(self):
 		if self.new_state.lower() in ("Draft".lower(), "Waiting Supervisor Approval".lower()):
-			frappe.throw(str("thth"))
 			self.set_approver("Supervisor")
 
 		elif self.new_state.lower() in ("Approved".lower(), "Rejected".lower()):
-			frappe.throw(str("here"))
 			if (self.doc.approver != frappe.session.user):
 				frappe.throw("Only {} can Approved or make Reject this Request".format(self.doc.approver_name))
+
+		elif self.new_state.lower() in ("Cancelled".lower()):
+			pass
 
 	def pms_appeal_request(self):
 		if self.new_state.lower() in ("Draft".lower(), "Waiting Approval".lower()):

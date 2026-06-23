@@ -396,11 +396,12 @@ def pms_appeal(source_name, target_doc=None):
 		"Performance Evaluation": {
 			"doctype": "PMS Appeal",
 			"field_map":{
-					"reference":"name"
+					"name":"reference"
 				},
 		},
 		"Evaluate Target Item":{
-			"doctype":"Evaluate Appeal Target Item"
+			"doctype":"Evaluate Appeal Target Item",
+			"add_if_empty": True
 		},
 		"Evaluate Competency Item":{
 			"doctype":"Evaluate Appeal Competency Item"

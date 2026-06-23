@@ -576,7 +576,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2025-12-04 16:12:31.989225",
+ "modified": "2026-06-23 15:49:25.875701",
  "modified_by": "Administrator",
  "module": "PMS",
  "name": "PMS Appeal",
@@ -593,6 +593,7 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
+   "submit": 1,
    "write": 1
   },
   {
@@ -613,14 +614,11 @@
    "read": 1,
    "report": 1,
    "role": "CEO",
-   "share": 1,
-   "submit": 1,
-   "write": 1
+   "share": 1
   },
   {
    "cancel": 1,
    "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
@@ -633,7 +631,6 @@
   },
   {
    "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
@@ -641,6 +638,7 @@
    "report": 1,
    "role": "HR User",
    "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],
