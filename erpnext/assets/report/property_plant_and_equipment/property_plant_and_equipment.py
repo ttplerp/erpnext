@@ -122,6 +122,9 @@ def get_accounts(filters):
 												OR
 												(a.status in ('Scrapped', 'Sold') AND a.disposal_date >= '{1}')
 											)
+							  				and not exists(
+											    select 1 from `tabDepreciation Schedule` c where a.name=c.parent and c.schedule_date < '{1}' and c.depreciation_amount > 0
+											)
 								""".format(a.name, filters.from_date), as_dict=True)
 		eliminated_dep = frappe.db.sql(
 								"""
