@@ -94,38 +94,34 @@ def get_accounts(filters):
 								 	) as result
 									""".format(a.name, filters.from_date), as_dict=True)
 		
-		opening_it_dep_zero = frappe.db.sql("""select 
-												sum(a.opening_accumulated_depreciation) as it_opening
-							   			from `tabAsset` a, `tabDepreciation Schedule` b
-						 	 			where a.name = b.parent
-						  					and a.asset_category = '{0}'
-						  					and '{1}' between b.schedule_start_date and b.schedule_date
-											and a.docstatus = 1
-								 			and b.depreciation_amount <= 0
-											and not exists(
-													select 1 from `tabDepreciation Schedule` c where c.parent=a.name and c.schedule_date < '{1}' and c.depreciation_amount > 0
-												)
-											and (
-												a.status not in ('Scrapped', 'Sold')
-												OR
-												(a.status in ('Scrapped', 'Sold') AND a.disposal_date >= '{1}')
-											)
-									""".format(a.name, filters.from_date), as_dict=True)
+		# opening_it_dep_zero = frappe.db.sql("""select 
+		# 										sum(a.opening_accumulated_depreciation) as it_opening
+		# 					   			from `tabAsset` a, `tabDepreciation Schedule` b
+		# 				 	 			where a.name = b.parent
+		# 				  					and a.asset_category = '{0}'
+		# 				  					and '{1}' between b.schedule_start_date and b.schedule_date
+		# 									and a.docstatus = 1
+		# 						 			and b.depreciation_amount <= 0
+		# 									and not exists(
+		# 											select 1 from `tabDepreciation Schedule` c where c.parent=a.name and c.schedule_date < '{1}' and c.depreciation_amount > 0
+		# 										)
+		# 									and (
+		# 										a.status not in ('Scrapped', 'Sold')
+		# 										OR
+		# 										(a.status in ('Scrapped', 'Sold') AND a.disposal_date >= '{1}')
+		# 									)
+		# 							""".format(a.name, filters.from_date), as_dict=True)
 
 		opening_dep = frappe.db.sql("""select  sum(a.opening_accumulated_depreciation) as it_opening
 										from `tabAsset` a
 						 	 			where a.asset_category = '{0}'
 						  					and a.docstatus = 1
+							  				and a.is_existing_asset = 1
 											and (
 												a.status not in ('Scrapped', 'Sold')
 												OR
 												(a.status in ('Scrapped', 'Sold') AND a.disposal_date >= '{1}')
 											)
-											and NOT EXISTS(
-												select 1
-												from  `tabDepreciation Schedule` b
-												where b.parent = a.name
-											)	
 								""".format(a.name, filters.from_date), as_dict=True)
 		eliminated_dep = frappe.db.sql(
 								"""
@@ -156,7 +152,7 @@ def get_accounts(filters):
 								as_dict=1,
 							)
 		
-		acc_it_zero = opening_it_dep_zero[0].it_opening if opening_it_dep_zero[0].it_opening else 0.00
+		# acc_it_zero = opening_it_dep_zero[0].it_opening if opening_it_dep_zero[0].it_opening else 0.00
 		acc_it = opening_it_dep[0].acc_income_tax if opening_it_dep[0].acc_income_tax else 0.00
 		depreciation_it = opening_it_dep[0].depreciation_income_tax if opening_it_dep[0].depreciation_income_tax else 0.00
 		it_opening = opening_dep[0].it_opening if opening_dep[0].it_opening else 0.00
@@ -176,7 +172,7 @@ def get_accounts(filters):
 			#adj_adjust,
 			"dep_total":d_total,
 			"net_block":flt(g_total) - flt(d_total),
-			"opening_income_tax":acc_it - depreciation_it + it_opening + acc_it_zero,
+			"opening_income_tax":acc_it - depreciation_it + it_opening,
 			"it_dep_addition":income_tax[0].total_income_tax,
 			"it_dep_eliminated":eliminated_dep[0].depreciation_eliminated_during_the_period
 		})
