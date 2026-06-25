@@ -254,19 +254,6 @@ class JobCard(AccountsController):
 						"cost_center": self.cost_center
 						}, self.currency)
 					)
-			# if self.gst_amount > 0:
-			# 	gl_entries.append(
-			# 	self.get_gl_dict({
-			# 		"account":  self.gst_account,
-			# 		"against": self.supplier,
-			# 		"debit": self.gst_amount,
-			# 		"debit_in_account_currency": self.gst_amount,
-			# 		"against_voucher": self.name,
-			# 		"against_voucher_type": self.doctype,
-			# 		"cost_center": self.cost_center,
-			# 		"business_activity": self.business_activity
-			# 	}, self.currency)
-			# )
 			if self.gst_amount > 0:
 				gl_entries.append(
 				self.get_gl_dict({
