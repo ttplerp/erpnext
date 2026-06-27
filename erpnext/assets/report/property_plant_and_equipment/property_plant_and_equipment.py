@@ -94,29 +94,7 @@ def get_accounts(filters):
 								 	) as result
 									""".format(a.name, filters.from_date), as_dict=True)
 		
-		opening_it_dep_zero = frappe.db.sql("""select sum(it_opening) it_opening from
-		(select 
-												sum(a.opening_accumulated_depreciation) as it_opening
-							   			from `tabAsset` a, `tabDepreciation Schedule` b
-						 	 			where a.name = b.parent
-						  					and a.asset_category = '{0}'
-						  					and '{1}' between b.schedule_start_date and b.schedule_date
-											and a.docstatus = 1
-								 			and b.depreciation_amount <= 0
-											and (
-												a.status not in ('Scrapped', 'Sold')
-												OR
-												(a.status in ('Scrapped', 'Sold') AND a.disposal_date >= '{1}')
-											)
-									  		and EXISTS(
-												select 1 from  `tabDepreciation Schedule` b where b.parent = a.name
-											)	
-											and not exists(
-													select 1 from `tabDepreciation Schedule` c where c.parent=a.name and c.schedule_date < '{1}' and c.depreciation_amount > 0
-												)
-										union all
-										select 
-									    sum(a.opening_accumulated_depreciation) as it_opening
+		opening_it_dep_zero = frappe.db.sql("""select sum(a.opening_accumulated_depreciation) as it_opening
 							   			from `tabAsset` a
 						 	 			where a.asset_category = '{0}'
 											and a.docstatus = 1
@@ -129,10 +107,8 @@ def get_accounts(filters):
 												select 1 from  `tabDepreciation Schedule` b where b.parent = a.name
 											)
 											and not exists(
-												select 1 from `tabDepreciation Schedule` c where c.parent=a.name 
-									  			and (c.depreciation_amount > 0 or '{1}' not between c.schedule_start_date and c.schedule_date)
+												select 1 from `tabDepreciation Schedule` c where c.parent=a.name and c.depreciation_amount > 0
 											)
-										) x
 									""".format(a.name, filters.from_date), as_dict=True)
 
 		opening_dep = frappe.db.sql("""select  sum(a.opening_accumulated_depreciation) as it_opening
