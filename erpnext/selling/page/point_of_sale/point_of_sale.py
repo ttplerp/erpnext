@@ -58,10 +58,18 @@ def search_by_term(search_term, warehouse, price_list):
 
 
 @frappe.whitelist()
-def get_items(start, page_length, price_list, item_group, pos_profile, search_term=""):
+def get_items(start, page_length, price_list=None, item_group=None, pos_profile=None, search_term=""):
+	# If price_list is not provided, get it from POS Profile
+	if not price_list and pos_profile:
+		price_list = frappe.db.get_value("POS Profile", pos_profile, "selling_price_list")
+
+	# If still no price_list, use a default
+	if not price_list:
+		price_list = "Standard Selling"
+
 	warehouse, hide_unavailable_items = frappe.db.get_value(
 		"POS Profile", pos_profile, ["warehouse", "hide_unavailable_items"]
-	)
+	) if pos_profile else (None, None)
 
 	result = []
 
