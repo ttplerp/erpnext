@@ -16,7 +16,7 @@ frappe.query_reports["OBA Report DSP"] = {
 			"fieldname":"party_type",
 			"label": __("Party Type"),
 			"fieldtype": "Select",
-			"options": "\nEmployee\nSupplier",
+			"options": "\nEmployee\nSupplier\nDesuup",
 			"reqd": 1
 		},
 		{
