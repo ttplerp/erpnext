@@ -1,0 +1,64 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2026-07-20 14:56:31.550924",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "From Date",
+   "mandatory": 1,
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date",
+   "mandatory": 1,
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Bhutan Development Bank LImited",
+ "modified": "2026-07-20 16:03:23.448086",
+ "modified_by": "Administrator",
+ "module": "Assets",
+ "name": "New Asset Report",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "select distinct t1.voucher_no 'Journal Entry:Link/Journal Entry', \r\n\t\t\t\tt1.against_voucher 'Asset:Link/Asset',\r\n\t\t\t\tt1.account,\r\n\t\t\t\tt1.cost_center 'Cost Center',\r\n\t\t\t\tt1.debit,\r\n\t\t\t\tt1.credit\r\n\t\t\tfrom `tabGL Entry` t1\r\n\t\t\tinner join `tabAccount` a on a.name = t1.account\r\n\t\t\twhere t1.cbs_enabled = 1\r\n\t\t\tand t1.is_cancelled = 0\r\n\t\t\tand t1.voucher_no in (\r\n\t\t\t\tselect je.parent\r\n            \tfrom `tabJournal Entry Account` je, tabAsset a \r\n            \twhere a.name=je.reference_name and a.name in ( select name from tabAsset where is_existing_asset=0 and available_for_use_date between %(from_date)s and %(to_date)s and docstatus=1) \r\n            \tand je.account='120060004 - Stock Asset - BDBL' group by a.name\r\n\t\t\t)\r\n\t\t\tand not exists(select 1\r\n\t\t\t\tfrom `tabCBS Entry Upload` ceu\r\n\t\t\t\twhere ceu.gl_entry = t1.name\r\n\t\t\t\tand ceu.docstatus != 2)\r\n\t\tgroup by voucher_no\r\n\t\torder by posting_date, voucher_type, voucher_no",
+ "ref_doctype": "Asset",
+ "report_name": "New Asset Report",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Administrator"
+  },
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Employee"
+  },
+  {
+   "role": "Asset Manager"
+  },
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Asset User"
+  },
+  {
+   "role": "Auditor"
+  }
+ ]
+}
