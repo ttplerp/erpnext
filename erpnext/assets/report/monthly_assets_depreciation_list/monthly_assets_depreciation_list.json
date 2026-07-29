@@ -1,0 +1,64 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2026-07-29 15:43:25.530482",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "From Date",
+   "mandatory": 1,
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date",
+   "mandatory": 1,
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Bhutan Development Bank LImited",
+ "modified": "2026-07-29 15:44:17.181036",
+ "modified_by": "Administrator",
+ "module": "Assets",
+ "name": "Monthly Assets Depreciation List",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "select gl.account Account, gl.credit Credit, gl.debit Debit, gl.cost_center 'Cost Center', gl.posting_date 'Posting Date', \r\ngl.against_voucher_type Against, gl.against_voucher Asset, a.status Status, a.gross_purchase_amount 'Gross Purchase Amount', \r\na.asset_rate 'Asset Rate', voucher_type, voucher_no \r\nfrom `tabGL Entry` gl, tabAsset a \r\nwhere gl.against_voucher=a.name \r\nand gl.docstatus=1 and gl.is_cancelled=0 and voucher_type != \"Asset Movement\" and gl.account in ( \r\n'160030003 - Accumulated Depreciation - Computer & Accessories - BDBL', '510010062 - Depreciation-Computer & Assessories - BDBL', \r\n'160040001 - Accumulated Depreciation - SOFTWARE - BDBL', '510010029 - Amortization - BDBL', \r\n'160030002 - Accumulated Depreciation - Office Equipment - BDBL', '510010061 - Depreciation- Office Equipment - BDBL', \r\n'160030001 - Accumulated Depreciation - Buildings - BDBL', '510010060 - Depreciation-Buildings - BDBL', \r\n'160030006 - Accumulated Depreciation - Furniture and Fixtures - BDBL', '510010065 - Depreciation - Furniture and Fixtures - BDBL', \r\n'160030010 - Accumulated Depreciation - Electrical Equipments & Installations - BDBL', '510010069 - Depreciation - Electrical Equipments & Installations - BDBL', \r\n'160030004 - Accumulated Depreciation - Motor Vehicle - BDBL', '510010063 - Depreciation-Motor Vehicle - BDBL', \r\n'160030009 - Accumulated Depreciation - Network Equipments & Installations - BDBL', '510010068 - Depreciation - Network Equipments & Installations - BDBL', \r\n'160030007 - Accumulated Depreciation - Security Equipments - BDBL', '510010066 - Depreciation - Security Equipments - BDBL', \r\n'160030008 - Accumulated Depreciation - Other Equipment - BDBL', '510010067 - Depreciation - Other Equipment - BDBL', \r\n'160030005 - Accumulated Depreciation - Arts & Artefacts - BDBL','510010064 - Depreciation - Arts & Artefacts - BDBL') \r\nand gl.posting_date between %(from_date)s and %(to_date)s\r\nand gl.voucher_no not in (\r\n    select journal_entry_for_scrap from tabAsset where disposal_date between %(from_date)s and %(to_date)s\r\n)\r\nand gl.voucher_no not in ( select name from `tabJournal Entry` where docstatus=1 and reverse_jv = 1 )\r\norder by gl.cost_center, gl.against_voucher",
+ "ref_doctype": "Asset",
+ "report_name": "Monthly Assets Depreciation List",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Administrator"
+  },
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Employee"
+  },
+  {
+   "role": "Asset Manager"
+  },
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Asset User"
+  },
+  {
+   "role": "Auditor"
+  }
+ ]
+}

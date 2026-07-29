@@ -1,0 +1,64 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2026-07-29 15:59:33.279717",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "From Date",
+   "mandatory": 1,
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date",
+   "mandatory": 1,
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Bhutan Development Bank LImited",
+ "modified": "2026-07-29 16:00:08.441608",
+ "modified_by": "Administrator",
+ "module": "Assets",
+ "name": "Monthly New Assets Depreciation List",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "select je.parent 'Journal Entry', je.credit Amount,je.reference_name Asset,a.asset_name 'Asset Name',a.purchase_date 'Purchase Date', \r\n    a.posting_date 'Posting Date', a.asset_category 'Asset Category', \r\n    (select income_depreciation_amount from `tabDepreciation Schedule` where parent=a.name and schedule_date=%(to_date)s) 'Dep Amount'\r\nfrom `tabJournal Entry Account` je, tabAsset a \r\nwhere a.name=je.reference_name and a.name in ( \r\n    select name \r\n    from tabAsset \r\n    where is_existing_asset=0 and available_for_use_date between %(from_date)s and %(to_date)s and docstatus=1\r\n) \r\nand je.account='120060004 - Stock Asset - BDBL' group by a.name order by a.posting_date desc;",
+ "ref_doctype": "Asset",
+ "report_name": "Monthly New Assets Depreciation List",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Administrator"
+  },
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Employee"
+  },
+  {
+   "role": "Asset Manager"
+  },
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Asset User"
+  },
+  {
+   "role": "Auditor"
+  }
+ ]
+}
