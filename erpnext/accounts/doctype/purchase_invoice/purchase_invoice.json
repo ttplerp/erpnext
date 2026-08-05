@@ -134,6 +134,18 @@
   "get_advances",
   "advances",
   "advance_tax",
+  "retention_section",
+  "apply_retention",
+  "retention_calculation_base",
+  "retention_percentage",
+  "retention_amount",
+  "retention_column_break",
+  "retention_payable_account",
+  "retention_liability_end_date",
+  "retention_settled",
+  "retention_settled_amount",
+  "retention_journal_entry",
+  "retention_settlement_payment_entry",
   "payment_schedule_section",
   "payment_terms_template",
   "ignore_default_payment_terms_template",
@@ -1442,13 +1454,92 @@
    "fieldname": "write_off_description",
    "fieldtype": "Text",
    "label": "Write Off Description"
+  },
+  {
+   "fieldname": "retention_section",
+   "fieldtype": "Section Break",
+   "label": "Retention Money"
+  },
+  {
+   "default": "0",
+   "fieldname": "apply_retention",
+   "fieldtype": "Check",
+   "label": "Apply Retention Money"
+  },
+  {
+   "default": "Before Tax Deductions (Gross)",
+   "depends_on": "eval:doc.apply_retention",
+   "description": "'Before Tax Deductions (Gross)' adds back any Deduct-type tax rows (e.g. TDS/WHT) before applying the retention %. Added taxes like GST are always included either way.",
+   "fieldname": "retention_calculation_base",
+   "fieldtype": "Select",
+   "label": "Retention Calculation Base",
+   "options": "\nBefore Tax Deductions (Gross)\nGrand Total (Net of Deductions)"
+  },
+  {
+   "depends_on": "eval:doc.apply_retention",
+   "fieldname": "retention_percentage",
+   "fieldtype": "Percent",
+   "label": "Retention Percentage"
+  },
+  {
+   "depends_on": "eval:doc.apply_retention",
+   "fieldname": "retention_amount",
+   "fieldtype": "Currency",
+   "label": "Retention Amount"
+  },
+  {
+   "fieldname": "retention_column_break",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.apply_retention",
+   "description": "Liability account used to hold retention money until settlement. Must be an account of type Payable.",
+   "fieldname": "retention_payable_account",
+   "fieldtype": "Link",
+   "label": "Retention Payable Account",
+   "options": "Account"
+  },
+  {
+   "depends_on": "eval:doc.apply_retention",
+   "fieldname": "retention_liability_end_date",
+   "fieldtype": "Date",
+   "label": "Retention Liability End Date"
+  },
+  {
+   "default": "0",
+   "fieldname": "retention_settled",
+   "fieldtype": "Check",
+   "label": "Retention Settled",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "retention_settled_amount",
+   "fieldtype": "Currency",
+   "label": "Retention Settled Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "retention_journal_entry",
+   "fieldtype": "Link",
+   "label": "Retention Journal Entry",
+   "no_copy": 1,
+   "options": "Journal Entry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "retention_settlement_payment_entry",
+   "fieldtype": "Link",
+   "label": "Retention Settlement Payment Entry",
+   "options": "Payment Entry",
+   "read_only": 1
   }
  ],
  "icon": "fa fa-file-text",
  "idx": 204,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-07-17 11:03:53.679018",
+ "modified": "2026-08-05 10:58:10.548863",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Purchase Invoice",

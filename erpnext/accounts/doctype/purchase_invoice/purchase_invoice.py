@@ -126,6 +126,9 @@ class PurchaseInvoice(BuyingController):
 		self.reset_default_field_value("rejected_warehouse", "items", "rejected_warehouse")
 		self.reset_default_field_value("set_from_warehouse", "items", "from_warehouse")
 
+		if self.apply_retention and self.retention_percentage:
+			self.calculate_retention_amount()
+
 	def validate_release_date(self):
 		if self.release_date and getdate(nowdate()) >= getdate(self.release_date):
 			frappe.throw(_("Release date must be in the future"))
@@ -531,6 +534,8 @@ class PurchaseInvoice(BuyingController):
 		self.process_common_party_accounting()
 		self.consume_budget(cancel=False)
 		self.update_tds_receipt_entry()
+
+		self.create_retention_journal_entry()
 
 	def update_tds_receipt_entry(self):
 		if self.amended_from: 
@@ -1557,6 +1562,8 @@ class PurchaseInvoice(BuyingController):
 		self.update_advance_tax_references(cancel=1)
 		self.consume_budget(cancel=True)
 
+		self.cancel_retention_journal_entry()
+
 	def update_project(self):
 		project_list = []
 		for d in self.items:
@@ -1758,6 +1765,180 @@ class PurchaseInvoice(BuyingController):
 
 		if update:
 			self.db_set("status", self.status, update_modified=update_modified)
+
+	def calculate_retention_amount(doc, method=None):
+		"""Purchase Invoice: validate hook"""
+		if doc.get("apply_retention") and flt(doc.get("retention_percentage")):
+			base_amount = get_retention_base_amount(doc)
+			doc.retention_amount = base_amount * flt(doc.retention_percentage) / 100.0
+		else:
+			doc.retention_amount = 0
+
+		if doc.get("apply_retention") and flt(doc.retention_amount) and not doc.get("retention_payable_account"):
+			default_account = frappe.get_cached_value(
+				"Company", doc.company, "default_retention_payable_account"
+			)
+			if default_account:
+				doc.retention_payable_account = default_account
+
+	# ---------------------------------------------------------------------
+	# 2. On submit: withhold retention via a Journal Entry
+	#    Dr Creditors (against this PI)  /  Cr Retention Payable
+	# ---------------------------------------------------------------------
+	def create_retention_journal_entry(doc, method=None):
+		"""Purchase Invoice: on_submit hook"""
+		if not doc.get("apply_retention") or not flt(doc.retention_amount):
+			return
+
+		if doc.get("retention_journal_entry"):
+			# already created (e.g. amended doc reused the field) - don't duplicate
+			return
+
+		if not doc.retention_payable_account:
+			frappe.throw(_("Please set Retention Payable Account before submitting an invoice with retention applied."))
+
+		payable_account_type = frappe.get_cached_value("Account", doc.retention_payable_account, "account_type")
+		if payable_account_type != "Payable":
+			frappe.throw(_("Retention Payable Account {0} must be of Account Type 'Payable' so it can carry a Supplier balance.").format(
+				frappe.bold(doc.retention_payable_account)
+			))
+
+		je = frappe.new_doc("Journal Entry")
+		je.voucher_type = "Journal Entry"
+		je.company = doc.company
+		je.branch = doc.branch
+		je.posting_date = doc.posting_date
+		je.user_remark = _("Retention money withheld against Purchase Invoice {0}").format(doc.name)
+
+		je.append("accounts", {
+			"account": doc.credit_to,
+			"party_type": "Supplier",
+			"party": doc.supplier,
+			"debit_in_account_currency": flt(doc.retention_amount),
+			"credit_in_account_currency": 0,
+			"reference_type": "Purchase Invoice",
+			"reference_name": doc.name,
+			"cost_center": doc.get("cost_center"),
+		})
+		je.append("accounts", {
+			"account": doc.retention_payable_account,
+			"party_type": "Supplier",
+			"party": doc.supplier,
+			"debit_in_account_currency": 0,
+			"credit_in_account_currency": flt(doc.retention_amount),
+			"cost_center": doc.get("cost_center"),
+		})
+
+		je.flags.ignore_permissions = True
+		je.insert()
+		je.submit()
+
+		frappe.db.set_value("Purchase Invoice", doc.name, "retention_journal_entry", je.name)
+		doc.retention_journal_entry = je.name
+
+		frappe.msgprint(
+			_("Retention of {0} withheld and moved to {1} via Journal Entry {2}").format(
+				frappe.format(doc.retention_amount, {"fieldtype": "Currency"}),
+				frappe.bold(doc.retention_payable_account),
+				frappe.bold(je.name),
+			),
+			alert=True,
+			indicator="orange",
+		)
+
+	# ---------------------------------------------------------------------
+	# 3. On cancel: cancel the retention Journal Entry too
+	# ---------------------------------------------------------------------
+	def cancel_retention_journal_entry(doc, method=None):
+		"""Purchase Invoice: on_cancel hook"""
+		if not doc.get("apply_retention") or not doc.get("retention_journal_entry"):
+			return
+
+		if doc.get("retention_settled"):
+			frappe.throw(_(
+				"Retention on this invoice has already been settled via Payment Entry {0}. "
+				"Cancel that Payment Entry first before cancelling this invoice."
+			).format(frappe.bold(doc.retention_payment_entry)))
+
+		je = frappe.get_doc("Journal Entry", doc.retention_journal_entry)
+		if je.docstatus == 1:
+			je.flags.ignore_permissions = True
+			je.cancel()
+
+# ---------------------------------------------------------------------
+# 1. Calculate retention amount before save
+# ---------------------------------------------------------------------
+def get_retention_base_amount(doc):
+	base = flt(doc.grand_total)
+
+	if doc.get("retention_calculation_base") == "Grand Total (Net of Deductions)":
+		return base
+
+	# default: gross up by any "Deduct" category tax rows
+	for tax in doc.get("taxes") or []:
+		if tax.get("add_deduct_tax") == "Deduct":
+			base += abs(flt(tax.tax_amount))
+		elif tax.get("add_deduct_tax") == "Add":
+			base -= abs(flt(tax.tax_amount))
+
+	return base
+
+# ---------------------------------------------------------------------
+# 4. Settlement: create a Payment Entry against the retention Journal Entry
+# ---------------------------------------------------------------------
+@frappe.whitelist()
+def make_retention_payment_entry(purchase_invoice):
+    doc = frappe.get_doc("Purchase Invoice", purchase_invoice)
+
+    if not doc.get("apply_retention") or not flt(doc.retention_amount):
+        frappe.throw(_("Retention is not applicable on this invoice."))
+    if doc.get("retention_settled"):
+        frappe.throw(_("Retention has already been settled for this invoice."))
+    if not doc.get("retention_journal_entry"):
+        frappe.throw(_("Retention Journal Entry not found. The invoice may not have been submitted with retention properly withheld."))
+    if doc.docstatus != 1:
+        frappe.throw(_("Purchase Invoice must be submitted."))
+
+    company_doc = frappe.get_cached_doc("Company", doc.company)
+    paid_to = company_doc.default_bank_account or company_doc.default_cash_account
+    if not paid_to:
+        frappe.throw(_("Please set a Default Bank Account or Default Cash Account on Company {0}, or fill it manually on the Payment Entry.").format(doc.company))
+
+    pe = frappe.new_doc("Payment Entry")
+    pe.payment_type = "Pay"
+    pe.company = doc.company
+    pe.branch = doc.branch
+    pe.cost_center = doc.cost_center
+    pe.mode_of_payment = "Bank Payment"
+    pe.posting_date = nowdate()
+    pe.party_type = "Supplier"
+    pe.party = doc.supplier
+    pe.paid_from = paid_to
+    pe.paid_to = doc.retention_payable_account
+    pe.paid_amount = flt(doc.retention_amount)
+    pe.received_amount = flt(doc.retention_amount)
+    pe.reference_no = f"RETENTION-{doc.name}"
+    pe.reference_date = nowdate()
+    pe.remarks = _("Settlement of retention money withheld against Purchase Invoice {0} (Journal Entry {1})").format(
+        doc.name, doc.retention_journal_entry
+    )
+
+    pe.append("references", {
+        "reference_doctype": "Journal Entry",
+        "reference_name": doc.retention_journal_entry,
+        "total_amount": flt(doc.retention_amount),
+        "outstanding_amount": flt(doc.retention_amount),
+        "allocated_amount": flt(doc.retention_amount),
+    })
+
+    # Keep track of which PI this settlement belongs to, for the submit hook below
+    pe.flags.retention_source_invoice = doc.name
+
+    pe.insert(ignore_permissions=True)
+
+    frappe.db.set_value("Purchase Invoice", doc.name, "retention_settlement_payment_entry", pe.name)
+
+    return pe.name
 
 # to get details of purchase invoice/receipt from which this doc was created for exchange rate difference handling
 def get_purchase_document_details(doc):

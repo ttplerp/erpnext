@@ -548,6 +548,54 @@ frappe.ui.form.on("Purchase Invoice", {
 
 	refresh: function(frm) {
 		frm.events.add_custom_buttons(frm);
+		/* Retention JS Start */
+		if (
+			frm.doc.docstatus === 1 &&
+			frm.doc.apply_retention &&
+			flt(frm.doc.retention_amount) > 0 &&
+			!frm.doc.retention_settled
+		) {
+			frm.add_custom_button(
+				__('Settle Retention Payment'),
+				function () {
+					frappe.confirm(
+						__(
+							'This will create a Payment Entry of {0} paying out the retention money held for {1}. Continue?',
+							[format_currency(frm.doc.retention_amount, frm.doc.currency), frm.doc.supplier]
+						),
+						function () {
+							frappe.call({
+								method: 'erpnext.accounts.doctype.purchase_invoice.purchase_invoice.make_retention_payment_entry',
+								args: { purchase_invoice: frm.doc.name },
+								freeze: true,
+								freeze_message: __('Creating Payment Entry...'),
+								callback: function (r) {
+									if (r.message) {
+										frappe.set_route('Form', 'Payment Entry', r.message);
+									}
+								},
+							});
+						}
+					);
+				},
+				__('Retention')
+			);
+		}
+
+		if (frm.doc.apply_retention && flt(frm.doc.retention_amount) > 0) {
+			if (frm.doc.retention_settled) {
+				frm.dashboard.add_indicator(
+					__('Retention Settled: {0}', [format_currency(frm.doc.retention_settled_amount, frm.doc.currency)]),
+					'green'
+				);
+			} else if (frm.doc.docstatus === 1) {
+				frm.dashboard.add_indicator(
+					__('Retention Held: {0}', [format_currency(frm.doc.retention_amount, frm.doc.currency)]),
+					'orange'
+				);
+			}
+		}
+		/* Retention JS End */
 	},
 
 	add_custom_buttons: function(frm) {
@@ -622,4 +670,37 @@ frappe.ui.form.on("Purchase Invoice", {
 			});
 		}
 	},
+	/* Retention JS Start */
+	retention_percentage: function (frm) {
+		calculate_retention(frm);
+	},
+
+	total_taxes_and_charges: function (frm) {
+		calculate_retention(frm);
+	},
+	/* Retention JS End */
 })
+
+function calculate_retention(frm) {
+	if (frm.doc.apply_retention && frm.doc.retention_percentage) {
+		let base = flt(frm.doc.grand_total);
+
+		// Mirrors get_retention_base_amount() on the server: gross up by
+		// any "Deduct" category tax rows (e.g. TDS/WHT) unless the user
+		// explicitly wants retention on the net (post-deduction) total.
+		if (frm.doc.retention_calculation_base !== 'Grand Total (Net of Deductions)') {
+			(frm.doc.taxes || []).forEach((tax) => {
+				if (tax.add_deduct_tax === 'Deduct') {
+					base += Math.abs(flt(tax.tax_amount));
+				} else if (tax.add_deduct_tax === 'Add') {
+					base -= Math.abs(flt(tax.tax_amount));
+				}
+			});
+		}
+
+		let amount = (base * flt(frm.doc.retention_percentage)) / 100;
+		frm.set_value('retention_amount', amount);
+	} else {
+		frm.set_value('retention_amount', 0);
+	}
+}

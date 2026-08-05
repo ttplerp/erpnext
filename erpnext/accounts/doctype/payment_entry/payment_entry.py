@@ -96,6 +96,8 @@ class PaymentEntry(AccountsController):
 		self.update_employee_advance()
 		self.update_expense_claim(submit=1)
 
+		self.update_purchase_invoice_on_payment_submit()
+
 	def on_cancel(self):
 		check_clearance_date(self.doctype, self.name)
 		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry", "Payment Ledger Entry")
@@ -107,6 +109,8 @@ class PaymentEntry(AccountsController):
 		self.set_payment_req_status()
 		self.set_status()
 		self.update_expense_claim(cancel=1)
+
+		self.update_purchase_invoice_on_payment_cancel()
 	def set_payment_req_status(self):
 		from erpnext.accounts.doctype.payment_request.payment_request import update_payment_req_status
 
@@ -1198,6 +1202,34 @@ class PaymentEntry(AccountsController):
 
 		return current_tax_fraction
 
+	# ---------------------------------------------------------------------
+	# 5. When that Payment Entry is submitted/cancelled, flip the flags back on the PI
+	# ---------------------------------------------------------------------
+	def update_purchase_invoice_on_payment_submit(doc, method=None):
+		"""Payment Entry: on_submit hook"""
+		for ref in doc.references:
+			if ref.reference_doctype != "Journal Entry":
+				continue
+			pi_name = frappe.db.get_value(
+				"Purchase Invoice",
+				{"retention_journal_entry": ref.reference_name, "retention_payment_entry": doc.name},
+				"name",
+			)
+			if pi_name:
+				frappe.db.set_value("Purchase Invoice", pi_name, {
+					"retention_settled": 1,
+					"retention_settled_amount": ref.allocated_amount,
+				})
+
+	def update_purchase_invoice_on_payment_cancel(doc, method=None):
+		"""Payment Entry: on_cancel hook"""
+		pi_name = frappe.db.get_value("Purchase Invoice", {"retention_payment_entry": doc.name}, "name")
+		if pi_name:
+			frappe.db.set_value("Purchase Invoice", pi_name, {
+				"retention_settled": 0,
+				"retention_settled_amount": 0,
+				"retention_payment_entry": None,
+			})
 
 def validate_inclusive_tax(tax, doc):
 	def _on_previous_row_error(row_range):
