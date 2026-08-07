@@ -3,7 +3,7 @@
 
 import frappe
 from frappe.model.document import Document
-from frappe.utils import flt
+from frappe.utils import flt, cint
 from datetime import date
 from erpnext.assets.doctype.asset.depreciation import scrap_asset
 from erpnext.assets.doctype.asset.depreciation import get_disposal_account_and_cost_center
@@ -55,8 +55,36 @@ class BulkAssetDisposal(Document):
 		self.revert_asset()
 	
 	def scrap_asset(self):
-		for data in self.item: 
-			scrap_asset(data.asset, self.scrap_date)
+		# Enqueue the heavy work per asset to avoid request timeout
+		for data in self.item:
+			# Use frappe.enqueue to run the worker in background. Pass asset and scrap_date.
+			# Set timeout and queue as needed (timeout in seconds, eg: 300)
+			frappe.enqueue(
+				method="erpnext.assets.doctype.bulk_asset_disposal.bulk_asset_disposal._scrap_asset_worker",
+				asset=data.asset,
+				scrap_date=self.scrap_date,
+				queue="long", # use long queue for heavy jobs
+				tag="bulk_asset_disposal",
+				timeout=600,
+			)
+
+			# depreciation_schedules = frappe.db.sql(
+			# 	"""select name, journal_entry from `tabDepreciation Schedule` where parent = %s and schedule_date > %s and journal_entry is not NULL""",
+			# 	(data.asset, self.scrap_date), as_dict=True,
+			# )
+
+			# for ds in depreciation_schedules:
+			# 	if ds.get('journal_entry'):
+			# 		frappe.db.sql(
+			# 			"delete from `tabGL Entry` where voucher_no=%s and voucher_type='Journal Entry'",
+			# 			ds.get('journal_entry'),
+			# 		)
+			# 		frappe.db.sql("delete from `tabJournal Entry Account` where parent=%s", ds.get('journal_entry'))
+			# 		frappe.db.sql("delete from `tabJournal Entry` where name=%s", ds.get('journal_entry'))
+
+			# 	frappe.db.sql("update `tabDepreciation Schedule` set journal_entry = NULL where name = %s", ds.get('name'))
+
+			# scrap_asset(data.asset, self.scrap_date)
 
 	#Written by Thukten for cancel
 	def revert_asset(self):
@@ -104,3 +132,48 @@ def sale_asset(branch, business_activity, name, scrap_date, customer, posting_da
 			"rate": 0
 		})
 	return si
+
+
+# Worker function to be executed via frappe.enqueue
+def _scrap_asset_worker(asset, scrap_date, **kwargs):
+	"""
+	Background worker that removes future depreciation entries for an asset
+	and then calls the existing scrap_asset from the depreciation module.
+	This mirrors the logic previously executed synchronously in
+	BulkAssetDisposal.scrap_asset.
+	"""
+	# Remove future depreciation entries, created due to rescheduling work
+	try:
+		# kwargs may include worker metadata such as 'job_id', 'tag', etc.
+		if kwargs:
+			frappe.log_error(message=str(kwargs), title="bulk_asset_disposal.worker_kwargs")
+		# depreciation_schedules = frappe.db.sql(
+		# 	"""select name, journal_entry, depreciation_amount, income_depreciation_amount, finance_book_id from `tabDepreciation Schedule` where parent = %s and schedule_date > %s and (journal_entry is not NULL or journal_entry != '')""",
+		# 	(asset, scrap_date), as_dict=True,
+		# )
+
+		# for ds in depreciation_schedules:
+		# 	asset_doc = frappe.get_doc("Asset", asset)
+		# 	idx = cint(ds.finance_book_id)
+		# 	finance_books = asset_doc.get("finance_books")[idx - 1]
+		# 	finance_books.value_after_depreciation += ds.depreciation_amount
+		# 	finance_books.income_tax_value_after_depreciation += ds.income_depreciation_amount
+		# 	finance_books.db_update()
+
+		# 	if ds.get('journal_entry'):
+		# 		# Delete GL entries, journal entry accounts and journal entry
+		# 		frappe.db.sql(
+		# 			"delete from `tabGL Entry` where voucher_no=%s and voucher_type='Journal Entry'",
+		# 			ds.get('journal_entry'),
+		# 		)
+		# 		frappe.db.sql("delete from `tabJournal Entry Account` where parent=%s", ds.get('journal_entry'))
+		# 		frappe.db.sql("delete from `tabJournal Entry` where name=%s", ds.get('journal_entry'))
+
+		# 	frappe.db.sql("update `tabDepreciation Schedule` set journal_entry = NULL where name = %s", ds.get('name'))
+
+		# Finally call the depreciation scrap_asset function
+		# (imported at top of module)
+		scrap_asset(asset, scrap_date)
+	except Exception:
+		# Log exception but don't raise so worker doesn't crash silently
+		frappe.log_error(frappe.get_traceback(), "bulk_asset_disposal._scrap_asset_worker")
