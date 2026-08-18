@@ -267,7 +267,7 @@ def get_data(filters):
 	# if filters.get("rental_official"):
 	# 	cond = " and rb.rental_focal='{}'".format(filters.get("rental_official"))
 	if filters.get("ministry_agency"):
-		cond += " and ha.ministry_and_agency='{}'".format(filters.get("ministry_agency"))
+		cond += " and ti.ministry_and_agency='{}'".format(filters.get("ministry_agency"))
 	if filters.get("dzongkhag"):
 		cond += " and ha.dzongkhag='{}'".format(filters.get("dzongkhag"))
 	if filters.get("building_classification"):
