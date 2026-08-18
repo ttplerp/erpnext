@@ -269,7 +269,7 @@ def get_data(filters):
 	if filters.get("ministry_agency"):
 		cond += " and ti.ministry_and_agency='{}'".format(filters.get("ministry_agency"))
 	if filters.get("dzongkhag"):
-		cond += " and ha.dzongkhag='{}'".format(filters.get("dzongkhag"))
+		cond += " and ti.dzongkhag='{}'".format(filters.get("dzongkhag"))
 	if filters.get("building_classification"):
 		cond += " and ha.building_classification='{}'".format(filters.get("building_classification"))
 	if filters.get("locations"):
