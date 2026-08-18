@@ -274,6 +274,10 @@ class PartyLedgerSummaryReport(object):
 					"""party in (select name from tabSupplier
 					where supplier_group=%(supplier_group)s)"""
 				)
+			if self.filters.get("account"):
+				conditions.append(
+					"""account = %(account)s"""
+				)
 
 		return " and ".join(conditions)
 

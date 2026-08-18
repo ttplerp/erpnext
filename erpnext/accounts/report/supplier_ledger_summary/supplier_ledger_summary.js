@@ -92,6 +92,12 @@ frappe.query_reports["Supplier Ledger Summary"] = {
 			"label": __("Supplier Name"),
 			"fieldtype": "Data",
 			"hidden": 1
-		}
+		},
+		{
+			"fieldname":"account",
+			"label": __("Account"),
+			"fieldtype": "Link",
+			"options": "Account"
+		},
 	]
 };
