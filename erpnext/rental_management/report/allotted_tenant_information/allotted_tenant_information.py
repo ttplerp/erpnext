@@ -51,14 +51,15 @@ def get_columns():
 			},
 			{
 				"label": _("Ministry/Agency"),
-				"fieldname": "ministry_agency",
+				"fieldname": "ministry_and_agency",
 				"fieldtype": "Data",
 				"width": 100,
 			},
 			{
-				"label": _("Department"),
-				"fieldname": "department",
-				"fieldtype": "Data",
+				"label": _("Tenant Department"),
+				"fieldname": "tenant_department",
+				"fieldtype": "Link",
+				"options": "Tenant Department",
 				"width": 100,
 			},
 			{
@@ -266,7 +267,7 @@ def get_data(filters):
 	# if filters.get("rental_official"):
 	# 	cond = " and rb.rental_focal='{}'".format(filters.get("rental_official"))
 	if filters.get("ministry_agency"):
-		cond += " and ha.ministry_agency='{}'".format(filters.get("ministry_agency"))
+		cond += " and ha.ministry_and_agency='{}'".format(filters.get("ministry_agency"))
 	if filters.get("dzongkhag"):
 		cond += " and ha.dzongkhag='{}'".format(filters.get("dzongkhag"))
 	if filters.get("building_classification"):
@@ -277,18 +278,18 @@ def get_data(filters):
 	# 	cond += " and rb.tenant_department='{}'".format(filters.get("department"))
 
 	query = """select 
-				COALESCE(ha.applicant_name, ti.tenant_name) as tenant_name, ha.gender, ha.cid, ha.employee_id, ha.grade, ha.designation, ha.ministry_agency, 
-				ha.department, ha.old_flat_no, ti.initial_allotment_date, ti.total_floor_area, trc.rental_amount as current_rent, ti.rate_per_sqft,
-				ti.block, ti.flat, ti.flat_no, ti.block_no, ha.building_classification, ti.locations, ha.employment_type, ha.application_date_time, ha.gross_salary,
+				COALESCE(ha.applicant_name, ti.tenant_name) as tenant_name, ha.gender, ha.cid, ha.employee_id, ha.grade, ti.designation, ti.ministry_and_agency, 
+				ti.tenant_department, ha.old_flat_no, ti.initial_allotment_date, ti.total_floor_area, trc.rental_amount as current_rent, ti.rate_per_sqft,
+				ti.block, ti.flat, ti.flat_no, ti.block_no, ha.building_classification, ti.locations, ti.employment_type, ha.application_date_time, ha.gross_salary,
 				ha.spouse_gross_salary, ha.total_gross_salary, ti.security_deposit, ha.mobile_no, ha.email_id, ha.marital_status, ha.work_station, ha.spouse_name,
 				ha.spouse_cid, ha.spouse_employment_type, ha.spouse_employee_id, ha.spouse_designation, ha.spouse_grade, ha.spouse_ministry, ha.spouse_department, 
-				trc.increment as last_increment, ti.status, ti.name as ti_name, trc.idx
+				COALESCE(trc.increment, 0) as last_increment, ti.status, ti.name as ti_name, trc.idx
 			from `tabHousing Application` ha
 			left join `tabTenant Information` ti 
 			on ha.name=ti.housing_application 
 			left join `tabTenant Rental Charges` trc
 			on ti.name = trc.parent and trc.from_date between '{from_date}' and '{to_date}'
-			where ha.application_date_time between '{from_date}' and '{to_date}' {cond} group by ha.name order by ha.name
+			where (ti.status != "Surrendered" or ti.status is null) and ha.application_date_time between '{from_date}' and '{to_date}' {cond} group by ha.name order by ha.name
 		""".format(from_date=filters.get("from_date"), to_date=filters.get("to_date"), cond=cond)
 	
 	result = frappe.db.sql(query, as_dict=1)
