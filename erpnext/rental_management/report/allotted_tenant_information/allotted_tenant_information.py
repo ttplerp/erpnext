@@ -14,17 +14,16 @@ def execute(filters=None):
 def get_columns():
 	columns = [
 			{
-				"label": _("Housing Application Item"),
-				"fieldname": "housing_application_id",
-				"fieldtype": "Link",
-				"options": "Housing Application",
+				"label": _("Tenant Name"),
+				"fieldname": "tenant_name",
+				"fieldtype": "Data",
 				"width": 120,
 			},
 			{
-				"label": _("Application Date"),
-				"fieldname": "application_date_time",
-				"fieldtype": "Date",
-				"width": 150,
+				"label": _("Gender"),
+				"fieldname": "gender",
+				"fieldtype": "Data",
+				"width": 100,
 			},
 			{
 				"label": _("CID"),
@@ -33,9 +32,151 @@ def get_columns():
 				"width": 100,
 			},
 			{
-				"label": _("Gender"),
-				"fieldname": "gender",
+				"label": _("EMP ID"),
+				"fieldname": "employee_id",
 				"fieldtype": "Data",
+				"width": 100,
+			},
+			{
+				"label": _("Grade"),
+				"fieldname": "grade",
+				"fieldtype": "Data",
+				"width": 100,
+			},
+			{
+				"label": _("Designation"),
+				"fieldname": "designation",
+				"fieldtype": "Data",
+				"width": 100,
+			},
+			{
+				"label": _("Ministry/Agency"),
+				"fieldname": "ministry_agency",
+				"fieldtype": "Data",
+				"width": 100,
+			},
+			{
+				"label": _("Department"),
+				"fieldname": "department",
+				"fieldtype": "Data",
+				"width": 100,
+			},
+			{
+				"label": _("Old Flat No"),
+				"fieldname": "old_flat_no",
+				"fieldtype": "Date",
+				"width": 150,
+			},
+			{
+				"label": _("Initial Allotment Date"),
+				"fieldname": "initial_allotment_date",
+				"fieldtype": "Date",
+				"width": 120,
+			},
+			{
+				"label": _("Floor Area"),
+				"fieldname": "total_floor_area",
+				"fieldtype": "Data",
+				"width": 100,
+			},
+			{
+				"label": _("Current Rent"),
+				"fieldname": "current_rent",
+				"fieldtype": "Data",
+				"width": 100,
+			},
+			{
+				"label": _("Rate"),
+				"fieldname": "rate_per_sqft",
+				"fieldtype": "Currency",
+				"width": 100,
+			},
+			{
+				"label": _("Block"),
+				"fieldname": "block",
+				"fieldtype": "Data",
+				"width": 100,
+			},
+			{
+				"label": _("Flat"),
+				"fieldname": "flat",
+				"fieldtype": "Data",
+				"width": 100,
+			},
+			{
+				"label": _("Flat No ID"),
+				"fieldname": "flat_no",
+				"fieldtype": "Link",
+				"options": "Flat No",
+				"width": 100,
+			},
+			{
+				"label": _("Block No ID"),
+				"fieldname": "block_no",
+				"fieldtype": "Link",
+				"options": "Block No",
+				"width": 100,
+			},
+			{
+				"label": _("Eligible Building Classification"),
+				"fieldname": "building_classification",
+				"fieldtype": "Link",
+				"options": "Building Classification",
+				"width": 100,
+			},
+			{
+				"label": _("Location"),
+				"fieldname": "locations",
+				"fieldtype": "Link",
+				"options": "Locations",
+				"width": 100,
+			},
+			{
+				"label": _("Employment Type"),
+				"fieldname": "employment_type",
+				"fieldtype": "Data",
+				"width": 100,
+			},
+			{
+				"label": _("Application Date Time"),
+				"fieldname": "application_date_time",
+				"fieldtype": "Datetime",
+				"width": 150,
+			},
+			{
+				"label": _("Gross Salary"),
+				"fieldname": "gross_salary",
+				"fieldtype": "Currency",
+				"width": 160,
+			},
+			{
+				"label": _("Spouse Gross Salary"),
+				"fieldname": "spouse_gross_salary",
+				"fieldtype": "Currency",
+				"width": 160,
+			},
+			{
+				"label": _("Total Gross Salary"),
+				"fieldname": "total_gross_salary",
+				"fieldtype": "Currency",
+				"width": 160,
+			},
+			{
+				"label": _("Security Deposit"),
+				"fieldname": "security_deposit",
+				"fieldtype": "Currency",
+				"width": 120,
+			},
+			{
+				"label": _("Mobile No"),
+				"fieldname": "mobile_no",
+				"fieldtype": "Data",
+				"width": 150,
+			},
+			{
+				"label": _("Email ID"),
+				"fieldname": "email_id",
+				"fieldtype": "Date",
 				"width": 100,
 			},
 			{
@@ -51,62 +192,71 @@ def get_columns():
 				"width": 100,
 			},
 			{
-				"label": _("Employment Type"),
-				"fieldname": "employment_type",
+				"label": _("Spouse Name"),
+				"fieldname": "spouse_name",
 				"fieldtype": "Data",
 				"width": 100,
 			},
 			{
-				"label": _("Tenant ID"),
-				"fieldname": "tenant_id",
-				"fieldtype": "Link",
-				"options": "Tenant Information",
-				"width": 150,
-			},
-			{
-				"label": _("Location Id"),
-				"fieldname": "locations",
-				"fieldtype": "Link",
-				"options": "Locations",
-				"width": 160,
-			},
-			{
-				"label": _("Block No"),
-				"fieldname": "block_no",
+				"label": _("Spouse CID"),
+				"fieldname": "spouse_cid",
 				"fieldtype": "Data",
-				"width": 120,
-			},
-			{
-				"label": _("Flat No"),
-				"fieldname": "flat_no",
-				"fieldtype": "Data",
-				"width": 150,
-			},
-			{
-				"label": _("Initial Allotment Date"),
-				"fieldname": "initial_allotment_date",
-				"fieldtype": "Date",
-				"width": 120,
-			},
-			{
-				"label": _("Allocated Date"),
-				"fieldname": "allocated_date",
-				"fieldtype": "Date",
 				"width": 100,
 			},
 			{
-				"label": _("Inital Rental Amount"),
-				"fieldname": "initial_rental_amount",
+				"label": _("Spouse Employment Type"),
+				"fieldname": "spouse_employment_type",
+				"fieldtype": "Data",
+				"width": 100,
+			},
+			{
+				"label": _("Spouse EMPP ID"),
+				"fieldname": "spouse_employee_id",
+				"fieldtype": "Data",
+				"width": 100,
+			},
+			{
+				"label": _("Spouse Designation"),
+				"fieldname": "spouse_designation",
+				"fieldtype": "Data",
+				"width": 100,
+			},
+			{
+				"label": _("Spouse Grade"),
+				"fieldname": "spouse_grade",
+				"fieldtype": "Data",
+				"width": 100,
+			},
+			{
+				"label": _("Spouse Ministry/Agency"),
+				"fieldname": "spouse_ministry",
+				"fieldtype": "Data",
+				"width": 100,
+			},
+			{
+				"label": _("Spouse Department"),
+				"fieldname": "spouse_department",
+				"fieldtype": "Data",
+				"width": 100,
+			},
+			{
+				"label": _("Last Increment"),
+				"fieldname": "last_increment",
 				"fieldtype": "Currency",
 				"width": 100,
 			},
 			{
-				"label": _("Rental Term Year"),
-				"fieldname": "rental_term_year",
-				"fieldtype": "Date",
+				"label": _("Next Increment"),
+				"fieldname": "next_increment",
+				"fieldtype": "Currency",
 				"width": 100,
 			},
-			
+			{
+				"label": _("Status"),
+				"fieldname": "status",
+				"fieldtype": "Data",
+				"width": 100,
+			},
 		]
 	
 	return columns
@@ -115,28 +265,42 @@ def get_data(filters):
 	cond=''
 	# if filters.get("rental_official"):
 	# 	cond = " and rb.rental_focal='{}'".format(filters.get("rental_official"))
-	# if filters.get("ministry_agency"):
-	# 	cond += " and rb.ministry_agency='{}'".format(filters.get("ministry_agency"))
-	# if filters.get("dzongkhag"):
-	# 	cond += " and rb.dzongkhag='{}'".format(filters.get("dzongkhag"))
-	# if filters.get("building_category"):
-	# 	cond += " and rb.building_category='{}'".format(filters.get("building_category"))
-	# if filters.get("location"):
-	# 	cond += " and rb.location_id='{}'".format(filters.get("location"))
+	if filters.get("ministry_agency"):
+		cond += " and ha.ministry_agency='{}'".format(filters.get("ministry_agency"))
+	if filters.get("dzongkhag"):
+		cond += " and ha.dzongkhag='{}'".format(filters.get("dzongkhag"))
+	if filters.get("building_classification"):
+		cond += " and ha.building_classification='{}'".format(filters.get("building_classification"))
+	if filters.get("locations"):
+		cond += " and ti.locations='{}'".format(filters.get("location"))
 	# if filters.get("department"):
 	# 	cond += " and rb.tenant_department='{}'".format(filters.get("department"))
 
 	query = """select 
-				ha.name as housing_application_id, ha.application_date_time, ha.cid,
-				ha.gender, ha.marital_status, ha.work_station, ha.employment_type,
-				ti.name as tenant_id, ti.locations, ti.block_no, ti.flat_no,
-				ti.initial_allotment_date, ti.allocated_date, ti.initial_rental_amount,
-				ti.rental_term_year
+				COALESCE(ha.applicant_name, ti.tenant_name) as tenant_name, ha.gender, ha.cid, ha.employee_id, ha.grade, ha.designation, ha.ministry_agency, 
+				ha.department, ha.old_flat_no, ti.initial_allotment_date, ti.total_floor_area, trc.rental_amount as current_rent, ti.rate_per_sqft,
+				ti.block, ti.flat, ti.flat_no, ti.block_no, ha.building_classification, ti.locations, ha.employment_type, ha.application_date_time, ha.gross_salary,
+				ha.spouse_gross_salary, ha.total_gross_salary, ti.security_deposit, ha.mobile_no, ha.email_id, ha.marital_status, ha.work_station, ha.spouse_name,
+				ha.spouse_cid, ha.spouse_employment_type, ha.spouse_employee_id, ha.spouse_designation, ha.spouse_grade, ha.spouse_ministry, ha.spouse_department, 
+				trc.increment as last_increment, ti.status, ti.name as ti_name, trc.idx
 			from `tabHousing Application` ha
 			left join `tabTenant Information` ti 
 			on ha.name=ti.housing_application 
-			where ha.docstatus=1 and ha.application_status = "Allotted" and ha.application_date_time between '{from_date}' and '{to_date}' {cond} group by ha.name order by ha.name
+			left join `tabTenant Rental Charges` trc
+			on ti.name = trc.parent and trc.from_date between '{from_date}' and '{to_date}'
+			where ha.application_date_time between '{from_date}' and '{to_date}' {cond} group by ha.name order by ha.name
 		""".format(from_date=filters.get("from_date"), to_date=filters.get("to_date"), cond=cond)
 	
 	result = frappe.db.sql(query, as_dict=1)
+	for i in result:
+		next_increment = frappe.db.get_value(
+			"Tenant Rental Charges",
+			filters={
+				"parent": i.ti_name,
+				"idx": (i.idx or 0) + 1
+			},
+			fieldname="increment"
+		)
+		i["next_increment"] = next_increment if next_increment else 0
+
 	return result
