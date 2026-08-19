@@ -24,8 +24,8 @@ frappe.ui.form.on("Subcontract Adjustment Item",{
 });
 
 var calculate_amount = function(frm, cdt, cdn){
-	child = locals[cdt][cdn];
-	amount = 0.0;
+	let child = locals[cdt][cdn];
+	let amount = 0.0;
 	
 	if(child.is_group){
 		if(parseFloat(child.adjustment_quantity) || parseFloat(child.adjustment_amount)) {

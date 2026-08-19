@@ -27,6 +27,13 @@ frappe.query_reports["Site Material Issued"] = {
 			"default": frappe.datetime.get_today(),
 			"redq": 1
 		},
+		
+		{
+			"fieldname":"title",
+			"label": __("Title"),
+			"fieldtype": "Data",
+			"width": "80",
+		},
 		{
 			"fieldname": "rental_type",
 			"label": __("Rental Site"),

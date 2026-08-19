@@ -19,10 +19,10 @@ class TargetSetUp(Document):
 		validate_workflow_states(self)
 		if self.workflow_state != "Approved":
 			notify_workflow_states(self)
-		if self.reference and self.reason:
-			return
-		else:
-			self.validate_calendar()
+		# if self.reference and self.reason:
+		# 	return
+		# else:
+		self.validate_calendar()
 		self.record_self_rating()
 			
 	def on_submit(self):

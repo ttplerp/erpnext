@@ -206,6 +206,29 @@ def get_gl_entries(filters, accounting_dimensions):
 		as_dict=1,
 	)
 
+	# query = """
+	# 	select
+	# 		name as gl_entry, posting_date, account, party_type, party,
+	# 		voucher_type, voucher_no, {dimension_fields}
+	# 		cost_center, project, 
+	# 		(case when ifnull(project, '') != '' 
+	# 			then (select a.project_name from tabProject a where a.name=project)
+	# 			else ''
+	# 		end) as project_title,
+	# 		against_voucher_type, against_voucher, account_currency,
+	# 		remarks, against, is_opening, creation {select_fields}
+	# 	from `tabGL Entry` gl
+	# 	where company=%(company)s {conditions}
+	# 	{order_by_statement}
+	# """.format(
+	# 	dimension_fields=dimension_fields,
+	# 	select_fields=select_fields,
+	# 	conditions=get_conditions(filters),
+	# 	order_by_statement=order_by_statement,
+	# )
+	# frappe.throw(query)
+
+
 	if filters.get("presentation_currency"):
 		return convert_to_presentation_currency(gl_entries, currency_map, filters.get("company"))
 	else:
@@ -231,7 +254,7 @@ def get_conditions(filters):
 
 	if filters.get("party_type"):
 		conditions.append("party_type=%(party_type)s")
-		conditions.append(" EXISTS(SELECT 1 FROM `tabAccount` where name = gl.account and account_type in ('Payable','Receivable'))")
+		conditions.append("EXISTS(SELECT 1 FROM `tabAccount` where name = gl.account and account_type in ('Payable','Receivable'))")
 
 	if filters.get("party"):
 		conditions.append("party in %(party)s")

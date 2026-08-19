@@ -1107,7 +1107,7 @@ class AccountsController(TransactionBase):
 			amount = tax.tax_amount
 			base_amount = tax.base_tax_amount
 
-		return amount, base_amount
+		return round(amount), round(base_amount)
 
 	def make_discount_gl_entries(self, gl_entries):
 		if self.doctype == "Purchase Invoice":

@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
 from frappe import _
-from frappe.utils import flt, cint, nowdate, getdate, formatdate, money_in_words
+from frappe.utils import flt, cint, nowdate, getdate, formatdate, money_in_words, get_link_to_form
 from erpnext.custom_workflow import validate_workflow_states, notify_workflow_states
 
 class ImprestRecoup(Document):
@@ -58,7 +58,7 @@ class ImprestRecoup(Document):
 				frappe.db.sql("delete from `tabJournal Entry` where name = '{}'".format(self.journal_entry))
 				self.db_set("journal_entry", None)
 
-		self.check_imprest_advance_status_and_cancel()
+		# self.check_imprest_advance_status_and_cancel()
 		
 	def on_cancel(self):
 		self.update_advance(1)

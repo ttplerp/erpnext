@@ -36,5 +36,12 @@ frappe.query_reports["Sales History Report"] = {
 			default: frappe.defaults.get_user_default("Company"),
 			reqd: 1
 		},
+		{
+			fieldname: "item_sub_group",
+			label: __("Item Sub Group"),
+			fieldtype: "Link",
+			options: "Item Group",
+		},
+		
 	]
 };

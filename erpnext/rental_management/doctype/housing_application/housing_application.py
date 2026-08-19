@@ -2,6 +2,7 @@
 # For license information, please see license.txt
 
 import frappe
+from datetime import datetime
 from frappe.model.document import Document
 from frappe.utils import add_to_date, get_last_day, flt, getdate, cint
 from frappe import _
@@ -25,8 +26,8 @@ class HousingApplication(Document):
 		
 		# self.check_app_limit()
 	
-		if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2:
-			self.generate_rank()
+		# if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2:
+		self.generate_rank()
 		# self.check_spouse_gross()
 	
 	def onload(self):
@@ -37,8 +38,11 @@ class HousingApplication(Document):
 		# Assign values if they exist
 		if self.gross_salary:
 			gross_sal = self.gross_salary
-		if self.spouse_gross_salary:
+		if self.spouse_gross_salary and self.marital_status=='Married':
 			spouse_gross = self.spouse_gross_salary
+		if self.spouse_gross_salary and self.marital_status!='Married':
+			spouse_gross = 0
+		
 
 		# Calculate total gross salary
 		self.total_gross_salary = flt(gross_sal, 2) + flt(spouse_gross, 2)
@@ -80,10 +84,18 @@ class HousingApplication(Document):
 			self.total_gross_salary = flt(gross_sal, 2) + flt(spouse_gross, 2)
 			if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2 and self.work_station in ("Thimphu"):
 				if self.employment_type == "Civil Servant":
-					# frappe.throw(str(self.gross_salary))
-					# if self.total_gross_salary < 80001:
-					# frappe.throw("Only total gross salary above Nu.800001 are open for civil servant ")
-					frappe.throw("Currently not open")
+					# # frappe.throw(str(self.total_gross_salary))
+					# # if self.total_gross_salary < 80001:
+					# # frappe.throw("Only total gross salary above Nu.800001 are open for civil servant ")
+					# if frappe.utils.now_datetime() >= datetime(2026, 3, 9):
+					# 	# frappe.throw(str(self.total_gross_salary))
+					# 	if self.total_gross_salary < 80001:
+					# 		frappe.throw("Currently, applications are open only for the Class 1A category for civil servants in Thimphu, and your gross income does not meet the eligibility criteria for this category.")
+					# 	if self.total_gross_salary > 300000:
+					# 		frappe.throw("Currently, applications are open only for the Class 1A category for civil servants in Thimphu, and your gross income does not meet the eligibility criteria for this category.")
+					# else: 
+
+					frappe.throw("Applications currently not open")
 				elif self.employment_type == "Corporation, Private and etc":
 					frappe.throw("Not Eligible Right row")
 					if self.total_gross_salary > 16000:
@@ -92,8 +104,24 @@ class HousingApplication(Document):
 				if self.employment_type == "Corporation, Private and etc":
 					frappe.throw("Not Eligible right now")
    
-		if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2 and self.work_station not in ("Samdrup Jongkhar","Phuentsholing","Thimphu")  :
-			frappe.throw("Applications are currently only allowed for Samdrup Jongkhar and Phuentsholing")
+		allowed_dzongkhags = frappe.get_all(
+			"Dzongkhag",
+			filters={"allow_in_online_housing_application": 1},
+			pluck="name"
+		)
+
+		if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2 and self.work_station not in allowed_dzongkhags:
+			if len(allowed_dzongkhags) == 1:
+				allowed_names = allowed_dzongkhags[0]
+			elif len(allowed_dzongkhags) == 2:
+				allowed_names = " and ".join(allowed_dzongkhags)
+			else:
+				allowed_names = (
+					", ".join(allowed_dzongkhags[:-1])
+					+ " and "
+					+ allowed_dzongkhags[-1]
+				)
+			frappe.throw(f"Applications are currently only allowed for {allowed_names}")
    
    
 	def check_app_limit(self):
@@ -116,12 +144,13 @@ class HousingApplication(Document):
 					gross_salary = data1['GrossPay']
 				else:
 					gross_salary = 0
-			data2=get_civil_servant_detail(cid=self.spouse_cid)
-			if data2:
-				if 'GrossPay' in data2:
-					spouse_gross_salary = data2['GrossPay']
-				else:
-					spouse_gross_salary =0
+			if self.spouse_cid:
+				data2=get_civil_servant_detail(cid=self.spouse_cid)
+				if data2:
+					if 'GrossPay' in data2:
+						spouse_gross_salary = data2['GrossPay']
+					else:
+						spouse_gross_salary =0
 		
 		total_salary = float(gross_salary) + float(spouse_gross_salary)
 		# frappe.throw(str(total_salary))
@@ -238,8 +267,8 @@ class HousingApplication(Document):
 		# 	frappe.throw("Housing Application for <b>Non Civil Servant</b> are accepted only for <b>Thimphu</b>")
 
 	def generate_rank(self):
-		gross_income = flt(self.gross_salary, 2) + flt(self.spouse_gross_salary, 2)
-		
+		gross_income = flt(self.gross_salary, 2) + flt((self.spouse_gross_salary) if self.marital_status == "Married" else 0, 2)
+		# frappe.msgprint(str(gross_income))
 		# Using parameterized queries to prevent SQL injection
 		building_class_result = frappe.db.sql("""
 			SELECT name 
@@ -260,6 +289,7 @@ class HousingApplication(Document):
 				WHERE employment_type=%s
 				AND building_classification=%s
 				AND work_station=%s
+				AND application_status = 'Pending'
 			""", (self.employment_type, self.building_classification, self.work_station))
 			
 			if highest_rank_result and highest_rank_result[0][0] is not None:

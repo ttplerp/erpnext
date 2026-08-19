@@ -19,6 +19,7 @@ class Review(Document):
 			notify_workflow_states(self)
 		self.check_target()
 		self.record_self_rating()
+		self.validate_calendar()
 
 	def on_submit(self):
 		if self.reference and self.reason:

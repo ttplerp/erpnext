@@ -38,6 +38,13 @@ def get_columns(filters):
 			"options": "Item Group",
 			"width": 120,
 		},
+		{
+			"label": _("Item Sub Group"),
+			"fieldtype": "Link",
+			"fieldname": "item_sub_group",
+			"options": "Item Group",
+			"width": 120,
+		},
 		{"label": _("Description"), "fieldtype": "Data", "fieldname": "description", "width": 150},
 		{"label": _("Quantity"), "fieldtype": "Float", "fieldname": "quantity", "width": 150},
 		{"label": _("UOM"), "fieldtype": "Link", "fieldname": "uom", "options": "UOM", "width": 100},
@@ -125,6 +132,7 @@ def get_data(filters):
 			"item_code": record.get("item_code"),
 			"item_name": item_record.get("item_name"),
 			"item_group": item_record.get("item_group"),
+			"item_sub_group": item_record.get("item_sub_group"),
 			"description": record.get("description"),
 			"quantity": record.get("qty"),
 			"uom": record.get("uom"),
@@ -150,6 +158,9 @@ def get_conditions(filters):
 	conditions = ""
 	if filters.get("item_group"):
 		conditions += "AND so_item.item_group = %s" % frappe.db.escape(filters.item_group)
+
+	if filters.get("item_sub_group"):
+		conditions += "AND item.item_sub_group = %s" % frappe.db.escape(filters.item_sub_group)
 
 	if filters.get("from_date"):
 		conditions += "AND so.transaction_date >= '%s'" % filters.from_date
@@ -177,11 +188,11 @@ def get_customer_details():
 
 
 def get_item_details():
-	details = frappe.db.get_all("Item", fields=["name", "item_name", "item_group"])
+	details = frappe.db.get_all("Item", fields=["name", "item_name", "item_group", "item_sub_group"])
 	item_details = {}
 	for d in details:
 		item_details.setdefault(
-			d.name, frappe._dict({"item_name": d.item_name, "item_group": d.item_group})
+			d.name, frappe._dict({"item_name": d.item_name, "item_group": d.item_group, "item_sub_group": d.item_sub_group})
 		)
 	return item_details
 
@@ -198,9 +209,10 @@ def get_sales_order_details(company_list, filters):
 			so.project, so_item.delivered_qty,
 			so_item.billed_amt, so.company
 		FROM
-			`tabSales Order` so, `tabSales Order Item` so_item
+			`tabSales Order` so, `tabSales Order Item` so_item, `tabItem` item
 		WHERE
 			so.name = so_item.parent
+			AND so_item.item_code = item.name
 			AND so.company in ({0})
 			AND so.docstatus = 1 {1}
 	""".format(

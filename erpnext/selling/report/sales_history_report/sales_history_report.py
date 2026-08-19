@@ -32,7 +32,7 @@ def get_columns(data):
 		{ "label": _("Item Code"), "fieldtype": "Link", "fieldname": "item_code", "options": "Item", "width": 120, },
 		{ "label": _("Item Name"), "fieldtype": "Data", "fieldname": "item_name", "width": 120, },
 		{ "label": _("UoM"), "fieldtype": "Link", "fieldname": "stock_uom", "options": "UOM", "width": 60, },
-		{ "label": _("Item Type"), "fieldtype": "Data", "fieldname": "item_type", "width": 120, },
+		{ "label": _("Item Sub Group"), "fieldtype": "Data", "fieldname": "item_type", "width": 120, },
 		{ "label": _("Warehouse"), "fieldtype": "Link", "fieldname": "warehouse", "options": "Warehouse", "width": 160, },
 		{ "label": _("Delivery No"), "fieldtype": "Link", "fieldname": "dn_name", "options": "Delivery Note", "width": 170, },
 		{ "label": _("Delivery Date"), "fieldtype": "Date", "fieldname": "dn_date", "width": 120, },
@@ -71,6 +71,7 @@ def get_data(filters):
 	si = frappe.qb.DocType('Sales Invoice')
 	si_item = frappe.qb.DocType('Sales Invoice Item')
 	equip = frappe.qb.DocType('Equipment')
+	item = frappe.qb.DocType('Item')
 
 	# query = (
 	# 	frappe.qb.from_(so)
@@ -105,12 +106,14 @@ def get_data(filters):
 		frappe.qb.from_(so)
 		.inner_join(so_item)
 		.on(so.name == so_item.parent)
+		.left_join(item)
+		.on(so_item.item_code == item.name)
 		.left_join(dn_item)
 		.on(dn_item.so_detail == so_item.name)
 		.left_join(dn)
 		.on(dn_item.parent == dn.name)
 		.left_join(si_item)
-		.on(si_item.delivery_note == dn.name)
+		.on(si_item.dn_detail == dn_item.name)
 		.left_join(si)
 		.on(si_item.parent == si.name)
 		.left_join(equip)
@@ -128,7 +131,7 @@ def get_data(filters):
 			(so_item.rate.as_("so_rate")), 
 			(so_item.base_net_amount).as_("so_amount"), 
 			so_item.item_code, so_item.item_name, 
-			dn_item.item_type, 
+			(item.item_sub_group).as_("item_type"), 
 			so_item.uom, 
 			so_item.warehouse, 
 			(dn.name).as_("dn_name"), 
@@ -153,6 +156,8 @@ def get_data(filters):
 
 	if filters.get("customer"):
 		query = (query.where(so.customer == filters.customer)) 
+	if filters.get("item_sub_group"):
+		query = (query.where(item.item_sub_group == filters.item_sub_group)) 
 	if filters.get("from_date") and filters.get("to_date"):
 		if filters.get("from_date") > filters.get("to_date"):
 			frappe.throw('Enter From Date less than To Date')

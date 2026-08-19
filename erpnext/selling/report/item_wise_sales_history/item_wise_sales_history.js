@@ -33,6 +33,12 @@ frappe.query_reports["Item-wise Sales History"] = {
 			options: "Item Group"
 		},
 		{
+			fieldname:"item_sub_group",
+			label: __("Item Sub Group"),
+			fieldtype: "Link",
+			options: "Item Group"
+		},
+		{
 			fieldname:"item_code",
 			label: __("Item"),
 			fieldtype: "Link",

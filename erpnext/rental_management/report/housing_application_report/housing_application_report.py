@@ -250,13 +250,23 @@ def get_data(filters):
     conditions = get_filters(filters)
     # data = frappe.db.get_all("Housing Application",fields=get_fields_name(), filters = conditions)
     # return data
-    query = """
-                     SELECT *,
-                     gross_salary + spouse_gross_salary AS total_gross_salary
+    # query = """
+    #                  SELECT *,
+    #                  gross_salary + spouse_gross_salary AS total_gross_salary
         
-           FROM `tabHousing Application`
-           WHERE {conditions}""".format(conditions = conditions)
-           
+    #        FROM `tabHousing Application`
+    #        WHERE {conditions}""".format(conditions = conditions)
+    query = """
+        SELECT *,
+        gross_salary +
+        CASE 
+            WHEN marital_status = 'Married' THEN IFNULL(spouse_gross_salary, 0)
+            ELSE 0
+        END AS total_gross_salary
+
+        FROM `tabHousing Application`
+        WHERE {conditions}
+    """.format(conditions=conditions)
     data = frappe.db.sql(query, filters,as_dict=True)
     return data
         

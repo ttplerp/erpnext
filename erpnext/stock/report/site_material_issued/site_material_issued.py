@@ -12,6 +12,7 @@ def execute(filters=None):
 
 def get_columns():
 	return [
+		_("Title") + ":Data:100", 
 		_("Rental Site") + ":Data:100", 
 		_("Site Name") + ":Dynamic Link/Rental Type:100",
 		_("Posting Date") + ":Date:100", 
@@ -31,6 +32,7 @@ def get_data(filters):
 	cond = get_conditions(filters)
 	query = """ 
 		SELECT
+			se.title,
 			se.rental_site,
 			se.site_name,
 			se.posting_date,
@@ -58,6 +60,9 @@ def get_data(filters):
 
 def get_conditions (filters):
 	cond = ""
+	if filters.get("title"): 
+		cond += "and se.title LIKE '%{}%'".format(filters.get("title"))
+		
 	if filters.get("rental_type"): 
 		cond += "and se.rental_site = '{}'".format(filters.get("rental_type"))
 		

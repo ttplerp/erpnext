@@ -264,8 +264,10 @@ def get_columns():
 
 def get_data(filters):
 	cond=''
-	# if filters.get("rental_official"):
-	# 	cond = " and rb.rental_focal='{}'".format(filters.get("rental_official"))
+	trc_cond=''
+	if filters.get("from_date") and filters.get("to_date"):
+		trc_cond = " and trc.from_date between '{0}' and '{1}'".format(filters.get("from_date"), filters.get("to_date"))
+		cond = " and ha.application_date_time between '{0}' and '{1}'".format(filters.get("from_date"), filters.get("to_date"))
 	if filters.get("ministry_agency"):
 		cond += " and ti.ministry_and_agency='{}'".format(filters.get("ministry_agency"))
 	if filters.get("dzongkhag"):
@@ -278,20 +280,20 @@ def get_data(filters):
 	# 	cond += " and rb.tenant_department='{}'".format(filters.get("department"))
 
 	query = """select 
-				COALESCE(ha.applicant_name, ti.tenant_name) as tenant_name, ha.gender, ha.cid, ha.employee_id, ha.grade, ti.designation, ti.ministry_and_agency, 
+				COALESCE(ha.applicant_name, ti.tenant_name) as tenant_name, ha.gender, ti.tenant_cid as cid, ha.employee_id, ha.grade, ha.designation, ti.ministry_and_agency, 
 				ti.tenant_department, ha.old_flat_no, ti.initial_allotment_date, ti.total_floor_area, trc.rental_amount as current_rent, ti.rate_per_sqft,
 				ti.block, ti.flat, ti.flat_no, ti.block_no, ha.building_classification, ti.locations, ti.employment_type, ha.application_date_time, ha.gross_salary,
 				ha.spouse_gross_salary, ha.total_gross_salary, ti.security_deposit, ha.mobile_no, ha.email_id, ha.marital_status, ha.work_station, ha.spouse_name,
 				ha.spouse_cid, ha.spouse_employment_type, ha.spouse_employee_id, ha.spouse_designation, ha.spouse_grade, ha.spouse_ministry, ha.spouse_department, 
 				COALESCE(trc.increment, 0) as last_increment, ti.status, ti.name as ti_name, trc.idx
-			from `tabHousing Application` ha
-			left join `tabTenant Information` ti 
+			from `tabTenant Information` ti
+			left join `tabHousing Application` ha 
 			on ha.name=ti.housing_application 
 			left join `tabTenant Rental Charges` trc
-			on ti.name = trc.parent and trc.from_date between '{from_date}' and '{to_date}'
-			where (ti.status != "Surrendered" or ti.status is null) and ha.application_date_time between '{from_date}' and '{to_date}' {cond} group by ha.name order by ha.name
-		""".format(from_date=filters.get("from_date"), to_date=filters.get("to_date"), cond=cond)
-	
+			on ti.name = trc.parent {trc_cond}
+			where ti.status = "Allocated" {cond} group by ti.name order by ti.name
+		""".format(trc_cond=trc_cond, cond=cond)
+	# frappe.msgprint(str(query))
 	result = frappe.db.sql(query, as_dict=1)
 	for i in result:
 		next_increment = frappe.db.get_value(

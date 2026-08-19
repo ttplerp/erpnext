@@ -319,14 +319,13 @@
    "fieldname": "site_supervisors",
    "fieldtype": "Table",
    "label": "Site Supervisor(s)",
-   "options": "Technical Sanction Supervisor List",
-   "reqd": 1
+   "options": "Technical Sanction Supervisor List"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-12-01 17:04:40.580005",
+ "modified": "2026-07-20 10:23:16.376330",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Technical Sanction",

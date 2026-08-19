@@ -732,50 +732,7 @@ class BankPayment(Document):
      
         total_amount = total + tax - d_amount
         total_amount = round(total_amount,2)
-        # frappe.throw(str(total_amount))
-
-        # return frappe.db.sql(
-        #     """
-        #         SELECT 
-        #             "Payment Entry" transaction_type, 
-        #             pe.name transaction_id, 
-		# 			pe.name transaction_reference, 
-        #             pe.posting_date transaction_date, 
-		# 			pe.party as supplier, 
-        #             pe.party as beneficiary_name, 
-		# 			s.bank_name as bank_name, 
-        #             s.bank_branch, 
-        #             fib.financial_system_code, 
-        #             s.bank_account_type, 
-        #             s.account_number as bank_account_no,
-		# 			round(( pe.paid_amount_after_tax + (select ifnull(sum(ped.amount),0)
-        #                 from `tabPayment Entry Deduction` ped
-        #                 where ped.parent = pe.name
-        #             )),2) amount,
-		# 			(CASE WHEN s.bank_name = "INR" THEN s.inr_bank_code ELSE NULL END) inr_bank_code,
-		# 			(CASE WHEN s.bank_name = "INR" THEN s.inr_purpose_code ELSE NULL END) inr_purpose_code,
-		# 			"Draft" status
-		# 		FROM `tabPayment Entry` pe
-		# 		JOIN `tabSupplier` s ON s.name = pe.party
-		# 		LEFT JOIN `tabFinancial Institution Branch` fib ON fib.name = s.bank_branch
-		# 		WHERE pe.branch = "{branch}" 
-		# 			{cond}
-		# 			AND pe.docstatus = 1
-		# 			AND pe.party_type = 'Supplier'
-		# 			AND pe.party IS NOT NULL
-		# 			AND IFNULL(pe.paid_amount,0) > 0
-		# 			AND NOT EXISTS(select 1
-		# 				FROM `tabBank Payment Item` bpi
-		# 				WHERE bpi.transaction_type = 'Payment Entry'
-		# 				AND bpi.transaction_id = pe.name
-		# 				AND bpi.parent != '{bank_payment}'
-		# 				AND bpi.docstatus != 2
-		# 				AND bpi.status NOT IN ('Cancelled', 'Failed')
-		# 			)
-		#         ORDER BY pe.posting_date, pe.name """.format(bank_payment=self.name, branch=self.branch, cond=cond
-        #         ),
-        #         as_dict=True,
-        #     )
+        
         return frappe.db.sql(
             """
                 SELECT 
@@ -1481,15 +1438,6 @@ def get_paid_from(doctype, txt, searchfield, start, page_len, filters):
             filters.get("branch")
         )
     )
-    # data = frappe.db.sql("""select a.name, a.bank_name, a.bank_branch, a.bank_account_type, a.bank_account_no
-    #     from `tabBranch` b, `tabAccount` a
-    #     where b.name = "{}"
-    #     and a.name = b.expense_bank_account
-    #     and a.bank_name is not null
-    #     and a.bank_branch is not null
-    #     and a.bank_account_type is not null
-    #     and a.bank_account_no is not null
-    # """.format(filters.get("branch")))
 
     if filters.get("branch") and not data:
         expense_bank_account = frappe.db.get_value(

@@ -41,10 +41,10 @@ class PerformanceEvaluation(Document):
 	def on_submit(self):
 		if self.upload_old_data:
 			return
-		if self.reference and self.reason:
-			return
-		else:  
-			self.validate_calendar()
+		# if self.reference and self.reason:
+		# 	return
+		# else:  
+		self.validate_calendar()
 
 		#Added by Kinley Dorji for creating pms record in employee master
 		self.create_employee_pms_record()

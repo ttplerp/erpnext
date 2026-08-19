@@ -1,5 +1,5 @@
 {
- "add_total_row": 1,
+ "add_total_row": 0,
  "columns": [],
  "creation": "2026-04-13 14:50:09.834593",
  "disable_prepared_report": 0,
@@ -10,7 +10,7 @@
  "idx": 0,
  "is_standard": "Yes",
  "letter_head": "New Letter head",
- "modified": "2026-08-17 16:55:28.151787",
+ "modified": "2026-08-19 09:35:23.191681",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Allotted Tenant Information",
@@ -31,9 +31,6 @@
   },
   {
    "role": "Rental Manager"
-  },
-  {
-   "role": "All"
   }
  ]
 }

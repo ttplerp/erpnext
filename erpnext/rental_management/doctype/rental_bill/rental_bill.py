@@ -4,10 +4,13 @@
 import frappe
 from frappe import _
 from frappe.model.document import Document
-from frappe.utils import formatdate, flt
+from frappe.utils import formatdate, flt, getdate, add_days, add_months
+from calendar import monthrange
+from datetime import date
 from erpnext.accounts.general_ledger import make_gl_entries
 from frappe.model.naming import make_autoname
 from erpnext.controllers.accounts_controller import AccountsController
+from collections import defaultdict
 
 class RentalBill(AccountsController):
 	def autoname(self):
@@ -234,4 +237,78 @@ class RentalBill(AccountsController):
 		make_gl_entries(gl_entries, cancel=(self.docstatus == 2), update_outstanding="No", merge_entries=True)
 		self.db_set("gl_entry", 1)
 
-		
+def send_followup_emails():
+	docs = frappe.db.sql("""
+		SELECT
+			name,
+			posting_date,
+			tenant_cid,
+			tenant_name
+		FROM `tabRental Bill`
+		WHERE
+			receivable_amount >
+			(
+				IFNULL(received_amount, 0)
+				+ IFNULL(discount_amount, 0)
+				+ IFNULL(tds_amount, 0)
+				+ IFNULL(adjusted_amount, 0)
+			)
+
+			AND IFNULL(received_amount, 0) > 0
+	""", as_dict=1)
+	today = getdate()
+	grouped = defaultdict(list)
+	email_body = ""
+
+	for d in docs:
+		posting_date = getdate(d.posting_date)
+		one_month = add_months(posting_date, 1)
+		one_n_half_month = add_days(one_month, 15)
+		two_month = add_months(posting_date, 2)
+		if today == one_month:
+			grouped["One Month"].append(d)
+		elif today == one_n_half_month:
+			grouped["One Month and 15 Days"].append(d)
+		elif today == two_month:
+			grouped["Two Months"].append(d)
+		# Do not send empty email
+	if not grouped:
+		return
+	
+	for reminder_type, records in grouped.items():
+		email_body += f"""
+		<p>The following rental bills are {reminder_type} due for follow-up:</p>
+
+		<table style="border-collapse: collapse; width: 100%;">
+			<thead>
+				<tr>
+					<th style="border:1px solid #ddd;padding:8px;">Rental Bill ID</th>
+					<th style="border:1px solid #ddd;padding:8px;">Tenant CID</th>
+					<th style="border:1px solid #ddd;padding:8px;">Tenant Name</th>
+				</tr>
+			</thead>
+			<tbody>
+		"""
+		for r in records:
+			email_body += f"""
+				<tr>
+					<td style="border:1px solid #ddd;padding:8px;">{r.name}</td>
+					<td style="border:1px solid #ddd;padding:8px;">{r.tenant_cid or ""}</td>
+					<td style="border:1px solid #ddd;padding:8px;">{r.tenant_name or ""}</td>
+				</tr>
+			"""
+		email_body += "</tbody></table>"
+
+		frappe.sendmail(
+			# recipients=["leki.tshewang@nhdcl.bt"],
+			# cc=["user2@gmail.com", "user3@gmail.com"],
+			recipients=["leki.tshewang@nhdcl.bt"],
+			cc=["contactlhendup@gmail.com", "bumpa.dema@nhdcl.bt", "dm.ghalley@nhdcl.bt", "dema@nhdcl.bt", "rinzin.dema@nhdcl.bt", "dorji.wangmo@nhdcl.bt", "sangay.dorji@nhdcl.bt", "seema.uroan@nhdcl.bt"],
+			subject="Reminder for Rental Due",
+			message=f"""
+				<p>Dear Sir/Mam,</p>
+				{email_body}
+				<br>
+				<p>Thank you.</p>
+			"""
+		)
