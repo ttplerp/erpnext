@@ -3,7 +3,7 @@
 
 import frappe
 from frappe import _, _dict
-from frappe.utils import cstr, getdate, flt
+from frappe.utils import cstr, today, getdate, flt
 
 
 def execute(filters=None):
@@ -387,16 +387,41 @@ def get_data(filters):
 		""".format(trc_cond=trc_cond, cond=cond)
 	# frappe.msgprint(str(query))
 	result = frappe.db.sql(query, as_dict=1)
+	current_date = getdate(today())
+
 	for i in result:
-		rental_charge = frappe.db.get_value(
+		# rental_charge = frappe.db.get_value(
+		# 	"Tenant Rental Charges",
+		# 	filters={
+		# 		"parent": i.ti_name,
+		# 		"idx": (i.idx or 0) + 1
+		# 	},
+		# 	fieldname=["increment", "from_date", "to_date"],
+		# 	as_dict=True
+		# )
+
+		to_date = frappe.db.get_value(
 			"Tenant Rental Charges",
-			filters={
+			{
 				"parent": i.ti_name,
-				"idx": (i.idx or 0) + 1
+				"from_date": ["<=", current_date],
+				"to_date": [">=", current_date]
 			},
-			fieldname=["increment", "from_date", "to_date"],
-			as_dict=True
+			"to_date",
 		)
+		rental_charge = None
+		if to_date:
+			rental_charge = frappe.db.get_value(
+				"Tenant Rental Charges",
+				filters={
+					"parent": i.ti_name,
+					"from_date": [">=", to_date]
+				},
+				fieldname=["increment", "from_date", "to_date"],
+				as_dict=True,
+				order_by="from_date asc"
+			)
+
 		if rental_charge:
 			i["next_increment"] = rental_charge.increment or 0
 			i["increment_from_date"] = rental_charge.from_date
