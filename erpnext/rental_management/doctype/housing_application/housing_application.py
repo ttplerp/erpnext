@@ -14,7 +14,7 @@ class HousingApplication(Document):
 	def validate(self):
 		self.check_agree()
 		self.check_status()
-		self.check_salary()
+		# self.check_salary()
 		
 		
 		# if self.application_status == None or self.application_status== 'Pending':
@@ -280,6 +280,10 @@ class HousingApplication(Document):
 			frappe.throw("Building Classification not found")
 		
 		building_class = building_class_result[0][0]
+
+		if frappe.db.get_value("Building Classification", building_class, "allow_in_housing_application") == 0:
+			frappe.throw("Currently, applications are not open for Building Classification: <b>{0}</b>".format(building_class))
+
 		self.building_classification = building_class
 
 		if not self.applicant_rank:

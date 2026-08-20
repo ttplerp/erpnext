@@ -257,12 +257,54 @@ def get_data(filters):
     #        FROM `tabHousing Application`
     #        WHERE {conditions}""".format(conditions = conditions)
     query = """
-        SELECT *,
-        gross_salary +
-        CASE 
-            WHEN marital_status = 'Married' THEN IFNULL(spouse_gross_salary, 0)
-            ELSE 0
-        END AS total_gross_salary
+        SELECT
+            *,
+            CASE
+                WHEN marital_status = 'Divorced' THEN NULL
+                ELSE spouse_gross_salary
+            END AS spouse_gross_salary,
+
+            CASE
+                WHEN marital_status = 'Divorced' THEN NULL
+                ELSE spouse_name
+            END AS spouse_name,
+
+            CASE
+                WHEN marital_status = 'Divorced' THEN NULL
+                ELSE spouse_cid
+            END AS spouse_cid,
+
+            CASE
+                WHEN marital_status = 'Divorced' THEN NULL
+                ELSE spouse_dzongkhag
+            END AS spouse_dzongkhag,
+
+            CASE
+                WHEN marital_status = 'Divorced' THEN NULL
+                ELSE spouse_gewog
+            END AS spouse_gewog,
+
+            CASE
+                WHEN marital_status = 'Divorced' THEN NULL
+                ELSE spouse_dob
+            END AS spouse_dob,
+
+            CASE
+                WHEN marital_status = 'Divorced' THEN NULL
+                ELSE spouse_village
+            END AS spouse_village,
+
+            CASE
+                WHEN marital_status = 'Divorced' THEN NULL
+                ELSE spouse_employment_type
+            END AS spouse_employment_type,
+
+            gross_salary +
+            CASE
+                WHEN marital_status = 'Married'
+                    THEN IFNULL(spouse_gross_salary, 0)
+                ELSE 0
+            END AS total_gross_salary
 
         FROM `tabHousing Application`
         WHERE {conditions}

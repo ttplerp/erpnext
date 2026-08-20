@@ -120,6 +120,8 @@ function get_employee_detail(applicant_cid, category){
 					$('[data-fieldname="gross_salary"]').val(r.message['GrossPay']);
 					$('[data-fieldname="email_id"]').val(r.message['Email']);
 					$('[data-fieldname="mobile_no"]').val(r.message['MobileNo']);
+					$('[data-fieldname="date_of_appointment"]').val(r.message['dateOfAppointment']);
+					$('[data-fieldname="date_of_birth"]').val(r.message['dateOfBirth']);
 					
 				} else if(category=="Spouse"){
 					$('[data-fieldname="spouse_designation"]').val(r.message['positionTitle']);

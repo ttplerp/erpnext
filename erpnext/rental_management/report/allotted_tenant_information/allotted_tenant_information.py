@@ -65,7 +65,7 @@ def get_columns():
 			{
 				"label": _("Old Flat No"),
 				"fieldname": "old_flat_no",
-				"fieldtype": "Date",
+				"fieldtype": "Data",
 				"width": 150,
 			},
 			{
@@ -84,6 +84,36 @@ def get_columns():
 				"label": _("Current Rent"),
 				"fieldname": "current_rent",
 				"fieldtype": "Data",
+				"width": 100,
+			},
+			{
+				"label": _("Land"),
+				"fieldname": "land",
+				"fieldtype": "Currency",
+				"width": 100,
+			},
+			{
+				"label": _("Building"),
+				"fieldname": "building",
+				"fieldtype": "Currency",
+				"width": 100,
+			},
+			{
+				"label": _("Garbage"),
+				"fieldname": "garbage",
+				"fieldtype": "Currency",
+				"width": 100,
+			},
+			{
+				"label": _("Amenities"),
+				"fieldname": "amenities",
+				"fieldtype": "Currency",
+				"width": 100,
+			},
+			{
+				"label": _("MTC"),
+				"fieldname": "mtc",
+				"fieldtype": "Currency",
 				"width": 100,
 			},
 			{
@@ -253,6 +283,18 @@ def get_columns():
 				"width": 100,
 			},
 			{
+				"label": _("Last Increment Date"),
+				"fieldname": "increment_from_date",
+				"fieldtype": "Date",
+				"width": 100,
+			},
+			{
+				"label": _("Next Increment Date"),
+				"fieldname": "increment_to_date",
+				"fieldtype": "Date",
+				"width": 100,
+			},
+			{
 				"label": _("Status"),
 				"fieldname": "status",
 				"fieldtype": "Data",
@@ -273,37 +315,109 @@ def get_data(filters):
 	if filters.get("dzongkhag"):
 		cond += " and ti.dzongkhag='{}'".format(filters.get("dzongkhag"))
 	if filters.get("building_classification"):
-		cond += " and ha.building_classification='{}'".format(filters.get("building_classification"))
+		cond += " and ti.building_classification='{}'".format(filters.get("building_classification"))
 	if filters.get("locations"):
 		cond += " and ti.locations='{}'".format(filters.get("location"))
-	# if filters.get("department"):
-	# 	cond += " and rb.tenant_department='{}'".format(filters.get("department"))
+	if filters.get("status"):
+		cond += " and ti.status='{}'".format(filters.get("status"))
+	if filters.get("flat_no"):
+		cond += " and fn.name='{}'".format(filters.get("flat_no"))
+	if filters.get("old_flat_no"):
+		cond += " and fn.old_flat_no like '%{}%'".format(filters.get("old_flat_no"))
 
 	query = """select 
 				COALESCE(ha.applicant_name, ti.tenant_name) as tenant_name, ha.gender, ti.tenant_cid as cid, ha.employee_id, ha.grade, ha.designation, ti.ministry_and_agency, 
-				ti.tenant_department, ha.old_flat_no, ti.initial_allotment_date, ti.total_floor_area, trc.rental_amount as current_rent, ti.rate_per_sqft,
-				ti.block, ti.flat, ti.flat_no, ti.block_no, ha.building_classification, ti.locations, ti.employment_type, ha.application_date_time, ha.gross_salary,
-				ha.spouse_gross_salary, ha.total_gross_salary, ti.security_deposit, ha.mobile_no, ha.email_id, ha.marital_status, ha.work_station, ha.spouse_name,
-				ha.spouse_cid, ha.spouse_employment_type, ha.spouse_employee_id, ha.spouse_designation, ha.spouse_grade, ha.spouse_ministry, ha.spouse_department, 
-				COALESCE(trc.increment, 0) as last_increment, ti.status, ti.name as ti_name, trc.idx
+				ti.tenant_department, fn.old_flat_no, ti.initial_allotment_date, ti.total_floor_area, trc.rental_amount as current_rent, ti.rate_per_sqft, ti.block, ti.flat, 
+				ti.flat_no, ti.block_no, ti.building_classification, ti.locations, ti.employment_type, ha.application_date_time, ha.gross_salary, ti.security_deposit, ha.mobile_no,
+				ha.email_id, ha.marital_status, ha.work_station, COALESCE(trc.increment, 0) as last_increment, ti.status, ti.name as ti_name, trc.idx,
+				CASE
+					WHEN ha.marital_status = 'Divorced' THEN NULL
+					ELSE ha.spouse_gross_salary
+				END AS spouse_gross_salary,
+
+				CASE
+					WHEN ha.marital_status = 'Divorced' THEN NULL
+					ELSE ha.spouse_name
+				END AS spouse_name,
+
+				CASE
+					WHEN ha.marital_status = 'Divorced' THEN NULL
+					ELSE ha.spouse_cid
+				END AS spouse_cid,
+
+				CASE
+					WHEN ha.marital_status = 'Divorced' THEN NULL
+					ELSE ha.spouse_dzongkhag
+				END AS spouse_dzongkhag,
+
+				CASE
+					WHEN ha.marital_status = 'Divorced' THEN NULL
+					ELSE ha.spouse_gewog
+				END AS spouse_gewog,
+
+				CASE
+					WHEN ha.marital_status = 'Divorced' THEN NULL
+					ELSE ha.spouse_dob
+				END AS spouse_dob,
+
+				CASE
+					WHEN ha.marital_status = 'Divorced' THEN NULL
+					ELSE ha.spouse_village
+				END AS spouse_village,
+
+				CASE
+					WHEN ha.marital_status = 'Divorced' THEN NULL
+					ELSE ha.spouse_employment_type
+				END AS spouse_employment_type,
+
+				ha.gross_salary +
+				CASE
+					WHEN ha.marital_status = 'Married'
+						THEN IFNULL(ha.spouse_gross_salary, 0)
+					ELSE 0
+				END AS total_gross_salary
 			from `tabTenant Information` ti
 			left join `tabHousing Application` ha 
-			on ha.name=ti.housing_application 
+			on ha.name = ti.housing_application 
+			left join `tabFlat No` fn
+			on ti.flat_no = fn.name 
 			left join `tabTenant Rental Charges` trc
 			on ti.name = trc.parent {trc_cond}
-			where ti.status = "Allocated" {cond} group by ti.name order by ti.name
+			where ti.docstatus = 1 {cond} group by ti.name order by ti.name
 		""".format(trc_cond=trc_cond, cond=cond)
 	# frappe.msgprint(str(query))
 	result = frappe.db.sql(query, as_dict=1)
 	for i in result:
-		next_increment = frappe.db.get_value(
+		rental_charge = frappe.db.get_value(
 			"Tenant Rental Charges",
 			filters={
 				"parent": i.ti_name,
 				"idx": (i.idx or 0) + 1
 			},
-			fieldname="increment"
+			fieldname=["increment", "from_date", "to_date"],
+			as_dict=True
 		)
-		i["next_increment"] = next_increment if next_increment else 0
+		if rental_charge:
+			i["next_increment"] = rental_charge.increment or 0
+			i["increment_from_date"] = rental_charge.from_date
+			i["increment_to_date"] = rental_charge.to_date
+		else:
+			i["next_increment"] = 0
+			i["increment_from_date"] = None
+			i["increment_to_date"] = None
+
+		land = building = garbage = amenities = mtc = 0
+
+		land = frappe.db.get_value("Property Management Item", filters={"parent": i.flat_no, "property_management_type": "Land"}, fieldname="amount")
+		building = frappe.db.get_value("Property Management Item", filters={"parent": i.flat_no, "property_management_type": "Building/ under development"}, fieldname="amount")
+		garbage = frappe.db.get_value("Property Management Item", filters={"parent": i.flat_no, "property_management_type": "Garbage collection"}, fieldname="amount")
+		amenities = frappe.db.get_value("Property Management Item", filters={"parent": i.flat_no, "property_management_type": "Amenities service fee"}, fieldname="amount")
+		mtc = frappe.db.get_value("Property Management Item", filters={"parent": i.flat_no, "property_management_type": "Mtc cost (Service Charge)"}, fieldname="amount")
+
+		i["land"] = land
+		i["building"] = building
+		i["garbage"] = garbage
+		i["amenities"] = amenities
+		i["mtc"] = mtc
 
 	return result

@@ -40,5 +40,23 @@ frappe.query_reports["Allotted Tenant Information"] = {
 			"fieldtype": "Link",
 			"options": "Building Classification"
 		},
+		{
+			"fieldname": "status",
+			"label": __("Status"),
+			"fieldtype": "Select",
+			"options": ["", "Allocated", "Surrendered"],
+			default: "Allocated"
+		},
+		{
+			"fieldname": "flat_no",
+			"label": __("Flat No"),
+			"fieldtype": "Link",
+			options: "Flat No"
+		},
+		{
+			"fieldname": "old_flat_no",
+			"label": __("Old Flat No"),
+			"fieldtype": "Data",
+		},
 	]
 };

@@ -10,6 +10,7 @@
   "building_classification",
   "minimum_floor_area",
   "maximum_floor_area",
+  "allow_in_housing_application",
   "column_break_5",
   "minimum_income",
   "maximum_income",
@@ -58,11 +59,17 @@
   {
    "fieldname": "column_break_5",
    "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "allow_in_housing_application",
+   "fieldtype": "Check",
+   "label": "Allow in Housing Application"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-30 15:22:48.916542",
+ "modified": "2026-08-20 09:39:21.354222",
  "modified_by": "Administrator",
  "module": "Rental Management",
  "name": "Building Classification",
