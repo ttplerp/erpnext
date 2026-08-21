@@ -1212,7 +1212,7 @@ class PaymentEntry(AccountsController):
 				continue
 			pi_name = frappe.db.get_value(
 				"Purchase Invoice",
-				{"retention_journal_entry": ref.reference_name, "retention_payment_entry": doc.name},
+				{"retention_journal_entry": ref.reference_name, "retention_settlement_payment_entry": doc.name},
 				"name",
 			)
 			if pi_name:
@@ -1223,12 +1223,12 @@ class PaymentEntry(AccountsController):
 
 	def update_purchase_invoice_on_payment_cancel(doc, method=None):
 		"""Payment Entry: on_cancel hook"""
-		pi_name = frappe.db.get_value("Purchase Invoice", {"retention_payment_entry": doc.name}, "name")
+		pi_name = frappe.db.get_value("Purchase Invoice", {"retention_settlement_payment_entry": doc.name}, "name")
 		if pi_name:
 			frappe.db.set_value("Purchase Invoice", pi_name, {
 				"retention_settled": 0,
 				"retention_settled_amount": 0,
-				"retention_payment_entry": None,
+				"retention_settlement_payment_entry": None,
 			})
 
 def validate_inclusive_tax(tax, doc):
