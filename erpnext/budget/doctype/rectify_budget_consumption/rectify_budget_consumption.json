@@ -1,0 +1,172 @@
+{
+ "actions": [],
+ "autoname": "RBC-.YYYY.-.###",
+ "creation": "2026-08-27 15:44:05.106340",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "amended_from",
+  "posting_date",
+  "section_break_6bgk3",
+  "wrongly_consumed_column",
+  "h4wrongly_consumedh4",
+  "document_type",
+  "document",
+  "document_date",
+  "document_owner",
+  "column_break_gupcq",
+  "h4rectified_referenceh4",
+  "rectified_type",
+  "rectified_reference",
+  "rectified_ref_date",
+  "rectified_owner",
+  "section_break_ghxqm",
+  "user"
+ ],
+ "fields": [
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "section_break_6bgk3",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "h4wrongly_consumedh4",
+   "fieldtype": "HTML",
+   "label": "<h4>Wrongly Consumed</h4>"
+  },
+  {
+   "fieldname": "document_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Document Type",
+   "options": "\nExpense Claim",
+   "reqd": 1
+  },
+  {
+   "fieldname": "document",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Document"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Rectify Budget Consumption",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_gupcq",
+   "fieldtype": "Column Break",
+   "label": "Rectified Reference"
+  },
+  {
+   "fieldname": "h4rectified_referenceh4",
+   "fieldtype": "HTML",
+   "label": "<h4>Rectified Reference</h4>"
+  },
+  {
+   "fieldname": "rectified_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Rectified Type",
+   "options": "\nJournal Entry",
+   "reqd": 1
+  },
+  {
+   "fieldname": "rectified_reference",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Rectified Reference"
+  },
+  {
+   "fieldname": "wrongly_consumed_column",
+   "fieldtype": "Column Break",
+   "label": "Wrongly Consumed"
+  },
+  {
+   "fieldname": "section_break_ghxqm",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Data",
+   "label": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "document_date",
+   "fieldtype": "Date",
+   "label": "Document Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "document_owner",
+   "fieldtype": "Data",
+   "label": "Document Owner",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rectified_ref_date",
+   "fieldtype": "Date",
+   "label": "Rectified Ref Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rectified_owner",
+   "fieldtype": "Data",
+   "label": "Rectified Owner",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-08-28 11:21:31.444236",
+ "modified_by": "Administrator",
+ "module": "Budget",
+ "name": "Rectify Budget Consumption",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Budget Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
