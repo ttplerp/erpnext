@@ -1149,6 +1149,9 @@ def get_permission_query_conditions(user):
 	if user == "Administrator" or "System Manager" in user_roles or "Stock Master" in user_roles or "Auditor" in user_roles: 
 		return
 
+	if "Stock User" in user_roles or "Purchase User" in user_roles or "Purchase Manager" in user_roles:
+		return
+
 	return """(
 		`tabPurchase Receipt`.owner = '{user}'
 		or
