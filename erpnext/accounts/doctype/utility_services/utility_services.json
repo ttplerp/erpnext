@@ -42,7 +42,7 @@
    "fieldtype": "Link",
    "label": "Branch Expense Account",
    "options": "Account",
-   "read_only": 1,
+   "read_only": 0,
    "reqd": 1
   },
   {

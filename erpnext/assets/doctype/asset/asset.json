@@ -209,12 +209,10 @@
    "options": "Employee"
   },
   {
-   "fetch_from": "branch.cost_center",
    "fetch_if_empty": 1,
    "fieldname": "cost_center",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "label": "Cost Center",
-   "options": "Cost Center",
    "reqd": 1
   },
   {
@@ -536,9 +534,8 @@
    "fetch_from": "custodian.branch",
    "fetch_if_empty": 1,
    "fieldname": "branch",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "label": "Branch",
-   "options": "Branch",
    "reqd": 1
   },
   {
@@ -680,10 +677,11 @@
    "label": "Is Self Manufactured Asset"
   },
   {
+   "fetch_from": "custodian.branch",
+   "fetch_if_empty": 1,
    "fieldname": "asset_station",
-   "fieldtype": "Link",
-   "label": "Asset Station ",
-   "options": "Asset Station"
+   "fieldtype": "Data",
+   "label": "Asset Station "
   },
   {
    "fieldname": "column_break_krioz",
@@ -716,7 +714,7 @@
    "link_fieldname": "asset"
   }
  ],
- "modified": "2025-01-09 12:14:27.083398",
+ "modified": "2026-04-09 12:08:50.424188",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Asset",

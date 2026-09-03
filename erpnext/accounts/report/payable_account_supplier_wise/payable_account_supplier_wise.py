@@ -110,7 +110,7 @@ def get_data(filters):
 		query = '''
 			SELECT gl.account, sum(gl.credit) as total_payable, sum(gl.debit) as total_paid, sum(gl.credit-gl.debit) as payable_balance  FROM       
    			`tabGL Entry` AS gl INNER JOIN `tabAccount` AS a ON gl.account = a.name left join 
-      		`tabSupplier` s on s.name=gl.party WHERE   a.parent_account = "21.100 - Account Payable" 
+      		`tabSupplier` s on s.name=gl.party WHERE   a.parent_account = "21.1 - Account Payable" 
         	and gl.is_cancelled=0 {conditions} group by gl.account;
 		'''.format(conditions=conditions)
 		data = frappe.db.sql(query, as_dict=1)
@@ -128,7 +128,7 @@ def get_data(filters):
 			LEFT JOIN
 			`tabSupplier` AS s ON s.name = gl.party
 			WHERE
-			gl.account = "21.101 - Sundry Creditors"
+			gl.account = "21.1.001 - Sundry Creditors"
 			AND gl.is_cancelled = 0 {conditions}
    			group by gl.party;
 		'''.format(conditions=conditions)
@@ -136,7 +136,7 @@ def get_data(filters):
 			SELECT gl.account as account, gl.party as party, gl.party_type as party_type,sum(gl.credit) as total_payable, 
    			sum(gl.debit) as debit, sum(gl.credit-gl.debit) as total
  			FROM `tabGL Entry` AS gl INNER JOIN `tabAccount` AS a ON gl.account = a.name left join        
-    		`tabSupplier` s on s.name=gl.party WHERE   a.parent_account = "21.100 - Account Payable"          
+    		`tabSupplier` s on s.name=gl.party WHERE   a.parent_account = "21.1 - Account Payable"          
       		and gl.is_cancelled=0 {conditions}
         	group by gl.party
 		'''.format(conditions=conditions)

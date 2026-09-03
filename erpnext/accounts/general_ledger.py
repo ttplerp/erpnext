@@ -108,13 +108,13 @@ def validate_accounting_period(gl_map):
 		as_dict=1,
 	)
 
-	if accounting_periods:
-		frappe.throw(
-			_(
-				"You cannot create or cancel any accounting entries with in the closed Accounting Period {0}"
-			).format(frappe.bold(accounting_periods[0].name)),
-			ClosedAccountingPeriod,
-		)
+	# if accounting_periods:
+	# 	frappe.throw(
+	# 		_(
+	# 			"You cannot create or cancel any accounting entries with in the closed Accounting Period {0}"
+	# 		).format(frappe.bold(accounting_periods[0].name)),
+	# 		ClosedAccountingPeriod,
+	# 	)
 
 
 def process_gl_map(gl_map, merge_entries=True, precision=None):

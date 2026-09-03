@@ -90,6 +90,13 @@ def execute(filters=None):
 	columns = get_columns(
 		filters.periodicity, period_list, filters.accumulated_values, company=filters.company
 	)
+	note_column = {
+		"label": "Note",
+		"fieldname": "note",
+		"fieldtype": "Int",
+		"width": 100
+	}
+	columns.insert(1, note_column)
 
 	chart = get_chart_data(filters, columns, asset, liability, equity)
 
@@ -98,7 +105,6 @@ def execute(filters=None):
 	)
 
 	return columns, data, message, chart, report_summary
-
 
 def get_provisional_profit_loss(
 	asset, liability, equity, period_list, company, currency=None, consolidated=False

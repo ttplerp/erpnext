@@ -39,7 +39,7 @@ class ItemGroup(NestedSet, WebsiteGenerator):
 		self.validate_item_group_defaults()
 		ECommerceSettings.validate_field_filters(self.filter_fields, enable_field_filters=True)
 		# self.validate_item_code()
-		self.validate_item_code_base()
+		# self.validate_item_code_base()
 
 	def validate_item_code(self):
 		if self.item_code_base:
@@ -50,12 +50,12 @@ class ItemGroup(NestedSet, WebsiteGenerator):
 			if existing_item and existing_item != self.name:
 				frappe.throw("Item code already in use.")
 
-	def validate_item_code_base(self):
-		if not re.match(r'^[A-Z]{2}$', self.item_code_base):
-			frappe.throw(
-				_("Item Code Base must consist of exactly two uppercase letters (e.g., 'AB')."),
-				title=_("Invalid Item Code Base")
-			)
+	# def validate_item_code_base(self):
+	# 	if not re.match(r'^[A-Z]{2}$', self.item_code_base):
+	# 		frappe.throw(
+	# 			_("Item Code Base must consist of exactly two uppercase letters (e.g., 'AB')."),
+	# 			title=_("Invalid Item Code Base")
+	# 		)
 
 	def on_update(self):
 		NestedSet.on_update(self)

@@ -350,7 +350,7 @@ def check_account_frozen(posting_date):
 				and not frozen_accounts_modifier in frappe.get_roles():
 			frappe.throw(_("You are not authorized to add or update entries before {0}").format(formatdate(acc_frozen_upto)))
 
-       
+	   
 def sendmail(recipent, subject, message, sender=None):
 	try:
 		frappe.sendmail(recipients=recipent, sender=None, subject=subject, message=message)
@@ -371,7 +371,7 @@ def get_production_groups(group):
 	for a in frappe.db.sql("select item_code from `tabProduction Group Item` where parent = %s", group, as_dict=1):
 		groups.append(str(a.item_code))
 	return groups
-                   
+				   
 # Following code added by SHIV on 2021/05/13
 def has_record_permission(doc, user):
 	if not user: user = frappe.session.user
@@ -384,12 +384,106 @@ def has_record_permission(doc, user):
 		return True
 	elif frappe.db.sql("""select count(*)
    				from `tabEmployee` e, `tabAssign Branch` ab, `tabBranch Item` bi
-       			where e.user_id = '{user}'
-          		and ab.employee = e.name
-            	and bi.parent = ab.name
-             	and bi.branch = "{branch}"
-            """.format(user=user, branch=doc.branch))[0][0]:
+	   			where e.user_id = '{user}'
+		  		and ab.employee = e.name
+				and bi.parent = ab.name
+			 	and bi.branch = "{branch}"
+			""".format(user=user, branch=doc.branch))[0][0]:
 		return True
 	else:
 		return False 
 
+import frappe
+
+#linking PR to PI
+def link_pr_pi():
+    pr_pi_data = [
+        ('PR25100237', 'PI25030084'),
+        ('PR25080362', 'PI25010051'),
+        ('PR25080367', 'PI25010052'),
+        ('PR25080338', 'PI25010048'),
+        ('PR25080338', 'PI25010049'),
+    ]
+
+    for pr_number, pi_number in pr_pi_data:
+        receipt_items = frappe.db.sql(
+            '''
+            SELECT name
+            FROM `tabPurchase Receipt Item`
+            WHERE parent = %s
+            ''',
+            (pr_number,), as_dict=True
+        )
+
+        for item in receipt_items:
+            frappe.db.set_value(
+                "Purchase Receipt Item",
+                item['name'],
+                "purchase_invoice",
+                pi_number  
+            )
+            print(f"Linked PR {pr_number} → PI {pi_number} for item {item['name']}")
+
+    frappe.db.commit()
+    print("✅ All PR → PI links updated successfully.")
+
+# Linking all PI to PR from the table
+def link_pi_pr():
+    pi_pr_data = [
+        ('PI25110077', 'PR25110073'),
+        ('PI25090022', 'PR25090013'),
+        ('PI25050153', 'PR25050111'),
+        ('PI25030346', 'PR25030886'),
+        ('PI25030077', 'PR25070002'),
+        ('PI25010034-1', 'PR25080337')
+
+     
+    ]
+    for pi_number, pr_number in pi_pr_data:
+        invoice_items = frappe.db.sql(
+            '''
+            SELECT name
+            FROM `tabPurchase Invoice Item`
+            WHERE parent = %s
+            ''',
+            (pi_number,), as_dict=True
+        )
+
+        for item in invoice_items:
+            frappe.db.set_value(
+                "Purchase Invoice Item",
+                item['name'],
+                "purchase_receipt",  
+                pr_number
+            )
+
+    frappe.db.commit()
+    print("✅ All PI → PR links updated successfully.")
+	
+#Linking PR to PO
+def link_pr_po():
+    pr_po_data = [
+        ('PR25080337', 'PO250122086'),
+        
+    ]
+	
+    for pr_number, po_number in pr_po_data: 
+        receipt_items = frappe.db.sql(
+            '''
+            SELECT name
+            FROM `tabPurchase Receipt Item`
+            WHERE parent = %s
+            ''',
+            (pr_number,), as_dict=True
+        )
+
+        for item in receipt_items:
+            frappe.db.set_value(
+                "Purchase Receipt Item",
+                item['name'],
+                "purchase_order",
+                po_number
+            )
+
+    frappe.db.commit()
+    print("All PR → PO links updated successfully.")

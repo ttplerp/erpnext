@@ -901,7 +901,6 @@ class PurchaseReceipt(BuyingController):
 	# ============================================================================
 	@frappe.whitelist()
 	def make_journal_entry(self, args):
-
 		
 		# Get imprest advance account
 		imprest_advance_account = frappe.db.get_value(
@@ -909,7 +908,12 @@ class PurchaseReceipt(BuyingController):
 		)
 		if not imprest_advance_account:
 			frappe.throw("Please set imprest advance account in Company Settings.")
-
+		
+		# Simple currency conversion - if currency is USD, convert to Nu using conversion_rate
+		tax_amount = args.tax_amount
+		if self.currency == "USD" and self.conversion_rate:
+			tax_amount = self.conversion_rate * args.tax_amount
+		
 		# Create new Journal Entry
 		je = frappe.new_doc("Journal Entry")
 		je.flags.ignore_permissions = True
@@ -921,19 +925,19 @@ class PurchaseReceipt(BuyingController):
 			"user_remark": "Note: Imprest settlement against " + args.account_head,
 			"posting_date": self.posting_date,
 			"company": "VAJRA BUILDERS PRIVATE LIMITED",
-			"total_amount_in_words": money_in_words(args.tax_amount),
+			"total_amount_in_words": money_in_words(tax_amount),
 			"branch": self.branch,
-			"total_debit": args.tax_amount,
-			"total_credit": args.tax_amount,
+			"total_debit": tax_amount,
+			"total_credit": tax_amount,
 			"reference_type": "Purchase Receipt",
 			"reference_doctype": self.name
 		})
-
+		
 		# Debit entry
 		je.append("accounts", {
 			"account": args.account_head,
-			"debit_in_account_currency": args.tax_amount,
-			"debit": args.tax_amount,
+			"debit_in_account_currency": tax_amount,
+			"debit": tax_amount,
 			"cost_center": frappe.db.get_value("Branch", self.branch, "cost_center"),
 			"party_check": 0,
 			"party_type": "Supplier",
@@ -941,20 +945,20 @@ class PurchaseReceipt(BuyingController):
 			"reference_type": "Purchase Receipt",
 			"reference_name": self.name,
 		})
-
+		
 		# Credit entry
 		je.append("accounts", {
 			"account": imprest_advance_account,
 			"party_type": "Employee",
 			"party": args.imprest_party,
-			"credit_in_account_currency": args.tax_amount,
-			"credit": args.tax_amount,
+			"credit_in_account_currency": tax_amount,
+			"credit": tax_amount,
 			"cost_center": frappe.db.get_value("Branch", self.branch, "cost_center"),
 		})
-
+		
 		je.insert()
 		je.submit()
-
+		
 		# Update the tax row with journal entry reference ONLY if imprest_settlement is ticked
 		if args.get("imprest_settlement"):
 			frappe.db.set_value(
@@ -963,14 +967,14 @@ class PurchaseReceipt(BuyingController):
 				"journal_entry",
 				je.name
 			)
-
+		
 		frappe.msgprint(
 			_("Journal Entry created and submitted successfully: {0}").format(
 				frappe.get_desk_link("Journal Entry", je.name)
 			)
 		)
-
 		return je.name
+	
 	@frappe.whitelist()
 	def make_tax_payment(self, args=None):
 		
@@ -1003,6 +1007,10 @@ class PurchaseReceipt(BuyingController):
 				# Update cost_center if not set yet
 				if not cost_center and tax.cost_center:
 					cost_center = tax.cost_center
+		
+		# Simple currency conversion - if currency is USD, convert to Nu using conversion_rate
+		if self.currency == "USD" and self.conversion_rate:
+			gst_amount = self.conversion_rate * gst_amount
 		
 		# Ensure cost_center has a value
 		if not cost_center:
@@ -1064,7 +1072,6 @@ class PurchaseReceipt(BuyingController):
 		)
 		
 		return je.name
-		
 @erpnext.allow_regional
 def update_regional_gl_entries(gl_list, doc):
 	return

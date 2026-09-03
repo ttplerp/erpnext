@@ -344,8 +344,8 @@ class POLReceiveInvoice(AccountsController):
         gl_entries.append(
             self.get_gl_dict({
                 "account": self.credit_account,
-                "credit": flt(self.grand_total, 2),
-                "credit_in_account_currency": flt(self.grand_total, 2),
+                "credit": flt(self.amount_after_gst, 2),
+                "credit_in_account_currency": flt(self.amount_after_gst, 2),
                 "voucher_type": self.doctype,
                 "voucher_no": self.name,
                 "posting_date": self.posting_date,

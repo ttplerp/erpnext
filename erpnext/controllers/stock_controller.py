@@ -244,7 +244,10 @@ class StockController(AccountsController):
             if default_expense_account or default_cost_center:
                 for d in details:
                     if default_expense_account and not d.get("expense_account"):
-                        d.expense_account = default_expense_account
+                        if self.doctype == "Equipment Material Issue":
+                            d.expense_account = frappe.db.get_value("Item Default", d.item_code, "expense_account")
+                        else:
+                            d.expense_account = default_expense_account
                     if default_cost_center and not d.get("cost_center"):
                         d.cost_center = default_cost_center
             return details
@@ -319,8 +322,8 @@ class StockController(AccountsController):
         if not item.get("expense_account"):
             msg = _("Please set an Expense Account in the Items table")
             frappe.throw(
-                _("Row #{0}: Expense Account not set for the Item {1}. {2}").format(
-                    item.idx, frappe.bold(item.item_code), msg
+                _("Row #{0}: Expense Account not set for the Item {1}. {2}. Voucher No: {3}").format(
+                    item.idx, frappe.bold(item.item_code), msg, item.parent
                 ),
                 title=_("Expense Account Missing"),
             )

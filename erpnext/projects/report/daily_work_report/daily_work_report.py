@@ -103,8 +103,10 @@ def get_data(filters):
 				(mre.rate_per_day / 8) as wages,
 				(count(mre.name) * 8 * (mre.rate_per_day / 8)) as amount
 			FROM 
-				`tabMuster Roll Employee` mre, `tabMuster Roll Attendance` mra
+				`tabMuster Roll Employee` mre, `tabMuster Roll Attendance` mra, `tabProject` p
 			WHERE
+				mre.project = p.name and
+				p.status != 'Completed' and
 				mre.status = 'Active' and
 				mre.name = mra.mr_employee 
 				AND mra.date = '{0}' {1}
@@ -126,8 +128,11 @@ def get_data(filters):
 				(count(mre.name) * mroe.number_of_hours * mre.rate_per_hour) as amount
 			FROM 
 				`tabMuster Roll Employee` mre, 
-				`tabMuster Roll Overtime Entry` mroe
+				`tabMuster Roll Overtime Entry` mroe,
+				`tabProject` p
 			WHERE
+				mre.project = p.name and
+				p.status != 'Completed' and
 				mre.status = 'Active' 
 				AND mre.name = mroe.mr_employee 
 				AND mroe.docstatus = 1 
@@ -157,8 +162,10 @@ def get_data(filters):
 				sum(t2.hours) as hours,
 				t2.rate, 
 				sum(t2.amount) as amount
-			FROM `tabProject Equipment Engagement` t1, `tabProject Equipment Engagement Item` t2
+			FROM `tabProject Equipment Engagement` t1, `tabProject Equipment Engagement Item` t2, `tabProject` t3
 			WHERE t1.docstatus = 1
+				and t1.project = t3.name
+				and t3.status != 'Completed'
 				and t1.name = t2.parent
 				and t1.posting_date = '{}' {}
 			GROUP BY t1.cost_center, t2.equipment, t2.rate
@@ -191,20 +198,22 @@ def get_data(filters):
 	if filters.report_type == "Expenditure for Mess":
 		cond = ""
 		if filters.project:
-			cond += " and project = '{}'".format(filters.project)
+			cond += " and pmm.project = '{}'".format(filters.project)
 		if filters.cost_center:
-			cond += " and cost_center = '{}'".format(filters.cost_center)
+			cond += " and pmm.cost_center = '{}'".format(filters.cost_center)
 		query = """
 				select 
-					project,
-					cost_center,
-					head_count,
-					rate_per_head,
-					amount
+					pmm.project,
+					pmm.cost_center,
+					pmm.head_count,
+					pmm.rate_per_head,
+					pmm.amount
 				from
-					`tabProject Mess Management`
-				where docstatus = 1
-				and posting_date = '{}' {}
+					`tabProject Mess Management` pmm, `tabProject` p
+				where pmm.docstatus = 1
+				and pmm.project = p.name,
+				and p.status != 'Completed'
+				and pmm.posting_date = '{}' {}
 				""".format(filters.date, cond)
 		data = frappe.db.sql(query, as_dict=True)
 
@@ -225,8 +234,10 @@ def get_data(filters):
 					t1.stock_uom as uom,
 					t2.rate,
 					t2.amount
-				from `tabPOL Issue` t1, `tabPOL Issue Items` t2
+				from `tabPOL Issue` t1, `tabPOL Issue Items` t2, `tabProject` t3
 				where t1.name = t2.parent
+				and t1.project = t3.name
+				and t3.status != 'Completed'
 				and t1.docstatus = 1
 				and t1.posting_date = '{}' {}
 			""".format(filters.date, cond)
@@ -330,6 +341,8 @@ def get_overall_data(filters):
 def get_conditions(filters):
 	conditions = []
 	params = {}
+
+	conditions.append("status != 'Completed'")
 
 	if filters.get('project'):
 		conditions.append("name = %(project)s")

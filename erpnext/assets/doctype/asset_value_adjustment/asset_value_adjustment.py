@@ -290,7 +290,7 @@ class AssetValueAdjustment(Document):
 			"party":party,
 			"party_type":party_type,
 			"credit_in_account_currency": flt(value),
-			"reference_type": "Asset Value Adjustment",
+			"reference_type": self.doctype,
 			"reference_name": self.name,
 			"cost_center": asset.cost_center,
 			# "business_activity": asset.business_activity,
@@ -300,7 +300,7 @@ class AssetValueAdjustment(Document):
 		je.append("accounts", {
 			"account": asset_account,
 			"debit_in_account_currency": flt(value),
-			"reference_type": "Asset Value Adjustment",
+			"reference_type": self.doctype,
 			"reference_name": self.name,
 			"cost_center": asset.cost_center,
 			# "business_activity": asset.business_activity,

@@ -126,7 +126,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Reports",
-   "link_count": 6,
+   "link_count": 8,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -189,9 +189,29 @@
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Asset for Office Equipement",
+   "link_count": 0,
+   "link_to": "Asset for Office Equipment",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Depreciation Schedule Tool",
+   "link_count": 0,
+   "link_to": "Depreciation Schedule Tool",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2025-04-15 17:02:34.806174",
+ "modified": "2026-07-13 12:39:25.123076",
  "modified_by": "Administrator",
  "module": "Assets",
  "name": "Assets",

@@ -130,12 +130,15 @@ class AssetMovement(Document):
 			equipment = frappe.db.get_value(
 				"Equipment", {"asset_code": ass.asset}, "name")
 			if equipment:
-				self.save_equipment(self,equipment, branch, self.posting_date,
+				self.save_equipment(equipment, branch, self.posting_date,
 							self.name, purpose)
 
-	def save_equipment(equipment, branch, posting_date, ref_doc, purpose):
-		if not frappe.db.get_single_value("Accounts Settings", "update_equipment_from_asset"):
-			return
+	def save_equipment(self,equipment, branch, posting_date, ref_doc, purpose):
+		try:
+			if not frappe.db.get_single_value("Accounts Settings"):
+				return
+		except Exception:
+			pass 
 		equip = frappe.get_doc("Equipment", equipment)
 		equip.branch = branch
 		equip.create_equipment_history(branch, posting_date, ref_doc, purpose)
@@ -146,9 +149,8 @@ class AssetMovement(Document):
 			fuelb = frappe.get_doc("Fuelbook", fuelbook)
 			fuelb.branch = branch
 			fuelb.save()
-			equip.save()
-		else:
-			frappe.throw("Fuelbook is not set for equipment {}".format(equipment))
+		equip.save()
+		
 
 	def set_latest_cost_center_in_asset(self):
 		current_cost_center, current_employee = "", ""

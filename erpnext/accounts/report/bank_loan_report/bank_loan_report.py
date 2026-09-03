@@ -61,8 +61,8 @@ def get_data(filters):
             `tabAccount` AS a ON gl.account = a.name
         WHERE
             gl.company = "VAJRA BUILDERS PRIVATE LIMITED"
-            AND a.parent_account IN ("21.200 - Bank Overdraft",
-            "22.100 - Unsecured Loans", "22.200 - Secured Loans (Bank)")
+            AND a.parent_account IN ("21.2 - Bank Overdraft",
+            "22.1 - Unsecured Loans", "22.2 - Secured Loans (Bank)")
             and gl.is_cancelled=0
             {conditions}
         GROUP BY

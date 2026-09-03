@@ -38,6 +38,8 @@ class POLIssue(StockController):
 		if not self.receive_in_barrel:
 			self.check_balance()
 		self.validate_data()
+		if  self.hired_equipment:
+			self.expense_branch=None
 		# self.validate_posting_date_time()
 		self.validate_barrel_or_tanker()
 
@@ -290,19 +292,42 @@ class POLIssue(StockController):
 			self.repost_future_sle_and_gle()
 		self.delete_pol_entry()
 
+	# def check_tanker_hsd_balance(self):
+	# 	if not self.tanker:
+	# 		return
+	# 	received_till = get_pol_till(
+	# 		"Stock", self.tanker, self.posting_date, self.pol_type, self.posting_time
+	# 	)
+	# 	issue_till = get_pol_till(
+	# 		"Issue", self.tanker, self.posting_date, self.pol_type
+	# 	)
+	# 	balance = flt(received_till) - flt(issue_till)
+	# 	frappe.throw(str(balance))
+	# 	if flt(self.total_quantity) > flt(balance):
+	# 		frappe.throw(
+	# 			"Not enough balance in tanker to issue. The balance is " + str(balance)
+	# 		)
 	def check_tanker_hsd_balance(self):
 		if not self.tanker:
 			return
+		
+		# Get branch from the current document if it exists
+		branch = getattr(self, 'branch', None)
+		
 		received_till = get_pol_till(
-			"Stock", self.tanker, self.posting_date, self.pol_type, self.posting_time
+			"Stock", self.tanker, self.posting_date, self.pol_type, self.posting_time, branch
 		)
 		issue_till = get_pol_till(
-			"Issue", self.tanker, self.posting_date, self.pol_type
+			"Issue", self.tanker, self.posting_date, self.pol_type, branch=branch
 		)
 		balance = flt(received_till) - flt(issue_till)
+		
+		# Remove the debug throw or keep it commented
+		# frappe.throw(str(balance))
+		
 		if flt(self.total_quantity) > flt(balance):
 			frappe.throw(
-				"Not enough balance in tanker to issue. The balance is " + str(balance)
+				f"Not enough balance in tanker to issue. The balance is {balance}"
 			)
 
 	def post_journal_entry(self):
@@ -349,6 +374,7 @@ class POLIssue(StockController):
 						"business_activity": get_default_ba,
 					}
 				)
+
 		else:
 			for a in self.items:
 				debit_account = frappe.db.get_value(
@@ -680,3 +706,134 @@ def get_permission_query_conditions(user):
 	return """(
 		`tabPol Issue`.owner = '{user}'
 	)""".format(user=user)
+
+
+import frappe
+
+def update_pol_issue_rates():
+  
+    
+    # Mapping of POL Issue ID (parent name) -> New Rate
+    rate_mapping = {
+		"POLI-26-01-01-47843": 64.77,
+		"POLI-26-01-01-47844": 64.77,
+		"POLI-25-03-31-27833": 69.10,
+		"POLI-25-03-31-27832": 69.10,
+		"POLI-25-07-30-37628": 69.10,
+		"POLI-25-07-30-37629": 69.10,
+		"POLI-25-07-30-37671": 69.10,
+		"POLI-25-07-23-37165": 69.10,
+		"POLI-25-08-18-39085": 68.59,
+		"POLI-25-08-18-39086": 68.59,
+		"POLI-25-08-27-39856": 68.59,
+		"POLI-25-08-27-39855": 68.26,
+		"POLI-25-08-27-39858": 68.26,
+		"POLI-25-09-01-40297": 68.26,
+		"POLI-25-09-27-41915": 68.14,
+		"POLI-25-09-27-41918": 67.13,
+		"POLI-25-09-13-41195": 67.13,
+		"POLI-25-09-27-41916": 67.13,
+		"POLI-25-09-27-41919": 67.01,
+		"POLI-25-11-13-44771": 67.78,
+		"POLI-25-11-13-44772": 67.78,
+		"POLI-25-11-27-45642": 67.78,
+		"POLI-25-11-29-45788": 67.78,
+		"POLI-25-12-03-46118": 69.05,
+		"POLI-25-12-09-46482": 69.05,
+		"POLI-25-12-13-46666": 70.37,
+		"POLI-25-12-15-46698": 70.37,
+		"POLI-25-12-18-46861": 70.37,
+		"POLI-25-12-20-47028": 68.78,
+		"POLI-26-01-07-48153": 68.78,
+		"POLI-26-01-07-48156": 68.78,
+		"POLI-26-01-07-48158": 68.78,
+		"POLI-26-01-07-48159": 68.78,
+		"POLI-25-03-27-27555": 68.67,
+		"POLI-25-03-31-27826": 68.67,
+		"POLI-25-03-31-27954": 66.15,
+		"POLI-25-03-31-27955": 66.15,
+		"POLI-25-03-31-27966": 66.15,
+		"POLI-25-03-31-27942": 66.15,
+		"POLI-25-03-31-27953": 66.15,
+		"POLI-25-03-31-27963": 66.15,
+		"POLI-25-03-31-27964": 66.15,
+		"POLI-25-04-04-28216": 66.15,
+		"POLI-25-04-05-28288": 66.15,
+		"POLI-25-04-05-28289": 66.15,
+		"POLI-25-04-05-28290": 66.15,
+		"POLI-25-04-05-28292": 66.15,
+		"POLI-25-04-08-28409": 66.15,
+		"POLI-25-04-05-28293": 66.15,
+		"POLI-25-04-05-28306": 66.15,
+		"POLI-25-04-05-28327": 66.15,
+		"POLI-25-04-09-28491": 64.56,
+		"POLI-25-04-10-28612": 64.56,
+		"POLI-25-04-11-28666": 64.56,
+		"POLI-25-04-11-28749": 64.56,
+		"POLI-25-04-12-28764": 64.56,
+		"POLI-25-04-12-28848": 64.56,
+		"POLI-25-04-14-29078": 64.56,
+		"POLI-25-04-15-29139": 64.56,
+		"POLI-25-04-16-29232": 64.56,
+		"POLI-25-04-18-29639": 62.80,
+		"POLI-25-04-21-29832": 62.80,
+		"POLI-25-04-22-29893": 62.80,
+		"POLI-25-04-26-30237": 62.80,
+		"POLI-25-04-28-30292": 62.52,
+		"POLI-25-04-30-30471": 62.52,
+		"POLI-25-05-01-30658": 62.52,
+		"POLI-25-05-17-31802": 62.52,
+		"POLI-25-05-05-31024": 61.70,
+		"POLI-25-05-06-31130": 61.70,
+		"POLI-25-05-07-31164": 61.70,
+		"POLI-25-05-08-31279": 61.70,
+		"POLI-25-05-09-31372": 61.70,
+		"POLI-25-05-11-31427": 61.70,
+		"POLI-25-05-17-31803": 61.53,
+		"POLI-25-05-13-31553": 61.53,
+		"POLI-25-05-10-31425": 61.53,
+		"POLI-25-05-14-31600": 61.53,
+		"POLI-25-05-16-31724": 61.53,
+		"POLI-25-05-16-31762": 61.53,
+		"POLI-25-05-17-31855": 61.53,
+		"POLI-25-05-19-31956": 61.53,
+		"POLI-25-07-31-37824": 61.53,
+		"POLI-26-04-03-52997": 66.75,
+		"POLI-26-04-03-52999": 66.75,
+		"POLI-26-04-03-53002": 69.19,
+		"POLI-26-04-03-53005": 69.19,
+	}
+    print("Starting update...")
+    print("="*50)
+    
+    total_updated = 0
+    
+    for parent_name, new_rate in rate_mapping.items():
+        # Update all POL Issue Item records where parent = parent_name
+        frappe.db.sql("""
+            UPDATE `tabPOL Issue Items` 
+            SET rate = %s 
+            WHERE parent = %s
+        """, (new_rate, parent_name))
+        
+        # Get number of rows updated
+        updated_rows = frappe.db.sql("SELECT ROW_COUNT()")[0][0]
+        
+        if updated_rows > 0:
+            print(f"✓ {parent_name}: Updated {updated_rows} item(s) to rate {new_rate}")
+            total_updated += updated_rows
+        else:
+            print(f"✗ {parent_name}: No child items found")
+    
+    # Commit all changes
+    frappe.db.commit()
+    
+    print("="*50)
+    print(f"✅ COMPLETE! Total child items updated: {total_updated}")
+    
+    return total_updated
+
+
+# Run the function
+if __name__ == "__main__":
+    update_pol_issue_rates()

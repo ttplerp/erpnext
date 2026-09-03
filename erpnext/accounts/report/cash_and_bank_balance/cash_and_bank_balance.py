@@ -46,6 +46,14 @@ def get_columns(filters):
 					"options":"",
 					"width":160
 				},
+
+		{
+					"fieldname":"bob_fc",
+					"label":"BOB FC",
+					"fieldtype":"Currency",
+					"options":"",
+					"width":160
+				},
 		#  {
 		# 			"fieldname":"project_imprest",
 		# 			"label":"project_imprest",
@@ -111,10 +119,11 @@ def get_data(filters):
 	if not filters.get("cash_in_hand"):
 		data = frappe.db.sql(
 					'''
-					SELECT  SUM(CASE WHEN a.parent_account = "11.300 - Cash In Hand Account"  THEN gl.debit - gl.credit ELSE 0 END) AS cash_in_hand, 
-		SUM(CASE WHEN (a.name = "11.201 - BOB - 100896320 - CD" or a2.name = "11.201 - BOB - 100896320 - CD" or a3.name = "11.201 - BOB - 100896320 - CD")  THEN gl.debit - gl.credit ELSE 0 END) AS bob_cd,
-		SUM(CASE WHEN (a.name = "11.202 - BNB - 641964721 - CD" or a2.name = "11.202 - BNB - 641964721 - CD" or a3.name = "11.202 - BNB - 641964721 - CD")  THEN gl.debit - gl.credit ELSE 0 END) AS bnb_cd,
-		SUM(CASE WHEN (a.name = "11.204 - PNB - 110210010626 - CD" or a2.name = "11.204 - PNB - 110210010626 - CD" or a3.name = "11.204 - PNB - 110210010626 - CD")  THEN gl.debit - gl.credit ELSE 0 END) AS pnb_cd
+					SELECT  SUM(CASE WHEN a.parent_account = "11.3 - Cash In Hand Account"  THEN gl.debit - gl.credit ELSE 0 END) AS cash_in_hand, 
+		SUM(CASE WHEN (a.name = "11.2.001 - BOB - 100896320 - CD" or a2.name = "11.2.001 - BOB - 100896320 - CD" or a3.name = "11.2.001 - BOB - 100896320 - CD")  THEN gl.debit - gl.credit ELSE 0 END) AS bob_cd,
+		SUM(CASE WHEN (a.name = "11.2.002 - BNB - 641964721 - CD" or a2.name = "11.2.002 - BNB - 641964721 - CD" or a3.name = "11.2.002 - BNB - 641964721 - CD")  THEN gl.debit - gl.credit ELSE 0 END) AS bnb_cd,
+		SUM(CASE WHEN (a.name = "11.2.004 - PNB - 110210010626 - CD" or a2.name = "11.2.004 - PNB - 110210010626 - CD" or a3.name = "11.2.004 - PNB - 110210010626 - CD")  THEN gl.debit - gl.credit ELSE 0 END) AS pnb_cd,
+		SUM(CASE WHEN (a.name = "11.2.006 - BOB-223605979-FC A/C" or a2.name = "11.2.006 - BOB-223605979-FC A/CD" or a3.name = "11.2.006 - BOB-223605979-FC A/C")  THEN gl.debit - gl.credit ELSE 0 END) AS bob_fc
 					FROM `tabGL Entry` AS gl INNER JOIN `tabAccount` AS a ON gl.account = a.name INNER JOIN `tabAccount` AS a2 ON a.parent_account = a2.name INNER JOIN `tabAccount` AS a3 ON a2.parent_account = a3.name and gl.is_cancelled = 0;
 
 			'''.format(conditions=conditions),as_dict=1)
@@ -127,9 +136,9 @@ def get_data(filters):
 				'''.format(conditions=conditions),as_dict=1)
 		data = frappe.db.sql(
 					'''
-					SELECT      a.name AS name2,      SUM(CASE WHEN a.parent_account = "11.300 - Cash In Hand Account" THEN gl.debit - gl.credit ELSE 0 END) AS cash FROM      
+					SELECT      a.name AS name2,      SUM(CASE WHEN a.parent_account = "11.3 - Cash In Hand Account" THEN gl.debit - gl.credit ELSE 0 END) AS cash FROM      
      				`tabGL Entry` AS gl INNER JOIN      `tabAccount` AS a ON gl.account = a.name WHERE      
-         			a.parent_account = "11.300 - Cash In Hand Account" GROUP BY      a.name;
+         			a.parent_account = "11.3 - Cash In Hand Account" GROUP BY      a.name;
 				'''.format(conditions=conditions),as_dict=1)
 		accounts = frappe.db.sql(
 					'''

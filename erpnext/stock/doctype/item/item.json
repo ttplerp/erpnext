@@ -241,7 +241,8 @@
    "depends_on": "is_stock_item",
    "fieldname": "valuation_rate",
    "fieldtype": "Currency",
-   "label": "Valuation Rate"
+   "label": "Valuation Rate",
+   "read_only": 1
   },
   {
    "bold": 1,
@@ -970,7 +971,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-21 15:26:23.830970",
+ "modified": "2026-09-03 13:28:12.183165",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",

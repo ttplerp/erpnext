@@ -679,7 +679,7 @@ class BuyingController(SubcontractingController):
 		for d in self.get("items"):
 			if d.is_fixed_asset:
 				is_auto_create_enabled = frappe.db.get_value("Item", d.item_code, "auto_create_assets")
-				assets = frappe.db.get_all("Asset", filters={field: self.name, "item_code": d.item_code})
+				assets = frappe.db.get_all("Asset", filters={field: self.name, "item_code": d.item_code, "docstatus": 1})
 
 				for asset in assets:
 					asset = frappe.get_doc("Asset", asset.name)

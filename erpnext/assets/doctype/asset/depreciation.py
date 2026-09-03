@@ -71,6 +71,8 @@ def make_depreciation_entry(asset_name, date=None):
     branch = asset.branch
     for d in asset.get("schedules"):
         if not d.journal_entry and getdate(d.schedule_date) <= getdate(date):
+            if flt(d.depreciation_amount) == 0:
+                continue
             je = frappe.new_doc("Journal Entry")
             je.naming_series = "Journal Voucher"
             je.mode_of_payment = "Cash"
@@ -678,5 +680,53 @@ def get_disposal_account_and_cost_center(company):
                 company
             )
         )
-
     return loss_disposal_account, gain_disposal_account, depreciation_cost_center
+
+
+    
+# # This is for Script Run Only
+# @frappe.whitelist()
+# def custom_made_depreciation(start_date="2026-04-01", end_date="2026-06-28"):
+#     """
+#     Run depreciation for all assets with schedule dates between start_date and end_date
+#     where journal entry is not set and docstatus is not cancelled
+#     """
+#     # Return if automatic booking is disabled
+#     if not cint(
+#         frappe.db.get_value(
+#             "Accounts Settings", None, "book_asset_depreciation_entry_automatically"
+#         )
+#     ):
+#         frappe.msgprint(_("Automatic depreciation booking is disabled in Accounts Settings"))
+#         return
+    
+#     # Get all eligible assets
+#     assets = frappe.db.sql("""
+#         SELECT DISTINCT a.name
+#         FROM `tabAsset` a
+#         INNER JOIN `tabDepreciation Schedule` ds ON a.name = ds.parent
+#         WHERE a.docstatus = 1
+#             AND a.calculate_depreciation = 1
+#             AND a.status IN ('Submitted', 'Partially Depreciated')
+#             AND ds.schedule_date BETWEEN %s AND %s
+#             AND (ds.journal_entry IS NULL OR ds.journal_entry = '')
+#     """, (start_date, end_date))
+    
+#     if not assets:
+#         frappe.msgprint(_(f"No eligible assets found for depreciation from {start_date} to {end_date}"))
+#         return
+    
+#     success_count = 0
+#     error_count = 0
+    
+#     for asset in assets:
+#         try:
+#             make_depreciation_entry(asset[0], end_date)
+#             success_count += 1
+#             frappe.db.commit()
+#         except Exception as e:
+#             error_count += 1
+#             frappe.db.rollback()
+    
+#     frappe.msgprint(_(f"Depreciation completed. Success: {success_count}, Failed: {error_count}"))
+#     return success_count, error_count

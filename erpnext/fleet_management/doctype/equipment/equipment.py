@@ -64,12 +64,14 @@ class Equipment(Document):
 			self.set_to_date()
 
 	def set_to_date(self):
+		if not self.equipment_history:
+			return  # Exit if there's no history    
 		if len(self.equipment_history) > 1:
 			for a in range(len(self.equipment_history)-1):
 				self.equipment_history[a].to_date = frappe.utils.data.add_days(
-					getdate(self.equipment_history[a + 1].from_date), -1)
-		else:
-			self.equipment_history[0].to_date = None
+					getdate(self.equipment_history[a + 1].from_date), -1)   
+		# Set last entry's to_date to None
+		self.equipment_history[-1].to_date = None
 
 	@frappe.whitelist()
 	def get_operator_name(self, employee_type, employee):

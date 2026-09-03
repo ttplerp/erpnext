@@ -6,6 +6,9 @@ frappe.provide("erpnext.accounts.dimensions");
 
 frappe.ui.form.on('Asset', {
 	onload: function(frm) {
+		frm.page.add_menu_item(__("Bulk Depreciation"), function() {
+            erpnext.asset.show_bulk_depreciation_dialog();
+        });
 		frm.set_query("item_code", function() {
 			if (frm.doc.is_self_manufactured) {
 				return {

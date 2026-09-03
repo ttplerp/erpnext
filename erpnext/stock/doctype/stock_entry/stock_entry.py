@@ -3144,7 +3144,7 @@ def has_warehouse_permission(warehouse):
     user = frappe.session.user
     user_roles = frappe.get_roles(user)
 
-    if user == "Administrator" or "System Manager" in user_roles:
+    if user == "Administrator" or "System Manager" or "System User" in user_roles:
         return 1
     res = frappe.db.sql(
         """
@@ -3171,3 +3171,203 @@ def has_warehouse_permission(warehouse):
     )
 
     return res[0][0] if res else 0
+
+
+#Custom for specific ledger run
+
+# def create_complete_ledger_for_mi25050234():
+#     """
+#     Create complete accounting ledger with both debit and credit entries
+#     Specifically for Stock Entry MI25050234
+#     """
+#     stock_entry_name = "MI25050234"
+    
+#     try:
+#         # Get the Stock Entry document
+#         stock_entry = frappe.get_doc("Stock Entry", stock_entry_name)
+        
+#         if stock_entry.docstatus != 1:
+#             print(f"Stock Entry {stock_entry_name} is not in Submitted state")
+#             return
+        
+#         # Delete existing GL entries
+#         frappe.db.sql("""
+#             DELETE FROM `tabGL Entry` 
+#             WHERE voucher_type = 'Stock Entry' 
+#             AND voucher_no = %s
+#         """, stock_entry_name)
+        
+#         frappe.db.commit()
+        
+#         # Get company currency
+#         company_currency = frappe.get_cached_value("Company", stock_entry.company, "default_currency")
+        
+#         gl_entries = []
+        
+#         # Process each item
+#         for item in stock_entry.items:
+#             print(f"\nProcessing Item: {item.item_code}")
+#             print(f"  Amount: {item.amount}")
+#             print(f"  Source Warehouse: {item.s_warehouse}")
+#             print(f"  Target Warehouse: {item.t_warehouse}")
+#             print(f"  Expense Account: {item.expense_account}")
+            
+#             # 1. CREDIT Entry - Source Warehouse (Stock Out)
+#             if item.s_warehouse:
+#                 source_account = frappe.db.get_value("Warehouse", item.s_warehouse, "account")
+#                 if not source_account:
+#                     source_account = frappe.get_cached_value("Company", stock_entry.company, "default_inventory_account")
+                
+#                 print(f"  Source Account: {source_account}")
+                
+#                 gl_entries.append({
+#                     "doctype": "GL Entry",
+#                     "posting_date": stock_entry.posting_date,
+#                     "posting_time": stock_entry.posting_time,
+#                     "voucher_type": "Stock Entry",
+#                     "voucher_no": stock_entry.name,
+#                     "voucher_detail_no": item.name,
+#                     "account": source_account,
+#                     "cost_center": item.cost_center,
+#                     "debit": 0,
+#                     "credit": item.amount,
+#                     "debit_in_account_currency": 0,
+#                     "credit_in_account_currency": item.amount,
+#                     "account_currency": company_currency,
+#                     "against": item.expense_account or "Expense Account",
+#                     "remarks": f"Stock Issue - {item.item_code}",
+#                     "company": stock_entry.company,
+#                     "is_opening": stock_entry.is_opening or "No"
+#                 })
+            
+#             # 2. DEBIT Entry - Target Warehouse (Stock In)
+#             if item.t_warehouse:
+#                 target_account = frappe.db.get_value("Warehouse", item.t_warehouse, "account")
+#                 if not target_account:
+#                     target_account = frappe.get_cached_value("Company", stock_entry.company, "default_inventory_account")
+                
+#                 print(f"  Target Account: {target_account}")
+                
+#                 gl_entries.append({
+#                     "doctype": "GL Entry",
+#                     "posting_date": stock_entry.posting_date,
+#                     "posting_time": stock_entry.posting_time,
+#                     "voucher_type": "Stock Entry",
+#                     "voucher_no": stock_entry.name,
+#                     "voucher_detail_no": item.name,
+#                     "account": target_account,
+#                     "cost_center": item.cost_center,
+#                     "debit": item.amount,
+#                     "credit": 0,
+#                     "debit_in_account_currency": item.amount,
+#                     "credit_in_account_currency": 0,
+#                     "account_currency": company_currency,
+#                     "against": source_account if item.s_warehouse else "Stock Adjustment",
+#                     "remarks": f"Stock Receipt - {item.item_code}",
+#                     "company": stock_entry.company,
+#                     "is_opening": stock_entry.is_opening or "No"
+#                 })
+            
+#             # 3. EXPENSE Account Entry (if exists)
+#             if item.expense_account and item.amount > 0:
+#                 print(f"  Expense Account: {item.expense_account}")
+                
+#                 # For Material Issue, Expense account should be DEBITED
+#                 if stock_entry.purpose == "Material Issue":
+#                     gl_entries.append({
+#                         "doctype": "GL Entry",
+#                         "posting_date": stock_entry.posting_date,
+#                         "posting_time": stock_entry.posting_time,
+#                         "voucher_type": "Stock Entry",
+#                         "voucher_no": stock_entry.name,
+#                         "voucher_detail_no": item.name,
+#                         "account": item.expense_account,
+#                         "cost_center": item.cost_center,
+#                         "debit": item.amount,
+#                         "credit": 0,
+#                         "debit_in_account_currency": item.amount,
+#                         "credit_in_account_currency": 0,
+#                         "account_currency": company_currency,
+#                         "against": source_account,
+#                         "remarks": f"Expense for {item.item_code}",
+#                         "company": stock_entry.company,
+#                         "is_opening": stock_entry.is_opening or "No"
+#                     })
+                    
+#                     print(f"  Added Expense Debit: {item.expense_account} - {item.amount}")
+                
+#                 # For Material Receipt, Expense account should be CREDITED
+#                 elif stock_entry.purpose == "Material Receipt":
+#                     gl_entries.append({
+#                         "doctype": "GL Entry",
+#                         "posting_date": stock_entry.posting_date,
+#                         "posting_time": stock_entry.posting_time,
+#                         "voucher_type": "Stock Entry",
+#                         "voucher_no": stock_entry.name,
+#                         "voucher_detail_no": item.name,
+#                         "account": item.expense_account,
+#                         "cost_center": item.cost_center,
+#                         "debit": 0,
+#                         "credit": item.amount,
+#                         "debit_in_account_currency": 0,
+#                         "credit_in_account_currency": item.amount,
+#                         "account_currency": company_currency,
+#                         "against": target_account,
+#                         "remarks": f"Expense for {item.item_code}",
+#                         "company": stock_entry.company,
+#                         "is_opening": stock_entry.is_opening or "No"
+#                     })
+                    
+#                     print(f"  Added Expense Credit: {item.expense_account} - {item.amount}")
+        
+#         # Insert all GL entries
+#         for entry in gl_entries:
+#             frappe.get_doc(entry).insert()
+        
+#         frappe.db.commit()
+        
+#         print(f"\n{'='*70}")
+#         print(f"SUCCESS: Complete accounting ledger created for Stock Entry {stock_entry_name}")
+#         print(f"Total GL Entries Created: {len(gl_entries)}")
+#         print(f"{'='*70}")
+        
+#         # Display all entries
+#         print("\nLEDGER ENTRIES:")
+#         print("-" * 70)
+#         print(f"{'Account':<50} {'Debit':>10} {'Credit':>10}")
+#         print("-" * 70)
+        
+#         total_debit = 0
+#         total_credit = 0
+        
+#         for entry in gl_entries:
+#             if entry["debit"] > 0:
+#                 print(f"{entry['account']:<50} {entry['debit']:>10.2f} {'':>10}")
+#                 total_debit += entry["debit"]
+#             else:
+#                 print(f"{entry['account']:<50} {'':>10} {entry['credit']:>10.2f}")
+#                 total_credit += entry["credit"]
+        
+#         print("-" * 70)
+#         print(f"{'TOTAL':<50} {total_debit:>10.2f} {total_credit:>10.2f}")
+#         print(f"{'BALANCE':<50} {total_debit - total_credit:>10.2f}")
+        
+#         return {
+#             "status": "success",
+#             "total_debit": total_debit,
+#             "total_credit": total_credit,
+#             "balance": total_debit - total_credit,
+#             "entries_count": len(gl_entries)
+#         }
+        
+#     except Exception as e:
+#         frappe.db.rollback()
+#         error_msg = f"ERROR: {str(e)}"
+#         print(error_msg)
+#         frappe.log_error(error_msg, "Ledger Creation Error")
+#         return {"status": "error", "message": error_msg}
+
+# # Execute
+# if __name__ == "__main__":
+#     result = create_complete_ledger_for_mi25050234()
+#     print("\nResult:", result)

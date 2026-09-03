@@ -3,6 +3,16 @@ from erpnext.setup.doctype.employee.employee import create_user
 import pandas as pd
 import csv
 
+def update_gl_entry():
+	count = 1
+	for gl in frappe.db.sql("""
+		select name from `tabGL Entry` where account = '21.2.005 - BOB-223428024-GCP OD'
+	""",as_dict=1):
+		frappe.db.sql("""
+			update `tabGL Entry` set account = '21.2.005 - BOB-223428024-GCP OD' where name = '{}'
+		""".format(gl.name))
+		print(str(count)+". "+gl.name)
+		count += 1
 def update_pol_entry():
 	pol_receive = frappe.db.sql("""
 		select name from `tabPOL Receive` where docstatus = 1 and receive_in_barrel = 1;
@@ -553,3 +563,51 @@ def update_sle():
 			se.update_stock_ledger()
 	print(voucher_type)
 	print("DONE")
+
+def create_invoice():
+	# Replace 'MR Invoice Entry' with your DocType and 'DOC-001' with the actual document name
+	print("pl")
+	#doc = frappe.get_doc('MR Invoice Entry', 'MRINE-25-11-002')
+	#doc.create_mr_invoice()
+	#frappe.db.commit()
+	
+def bulk_save_salary_structure():
+	count=0
+	ss_list=frappe.db.sql(""" SELECT name FROM `tabSalary Structure` WHERE is_active='Yes' """,
+		as_dict=True
+	)
+	for row in ss_list:
+		doc=frappe.get_doc("Salary Structure",row.name)
+		doc.save(ignore_permissions=True)
+
+		count+=1
+		print(f"Saved Salary Structure: {row.name}")
+
+		if count % 1 ==0:
+			frappe.db.commit()
+
+	frappe.db.commit()
+
+def bulk_save_salary_structure_individual():
+	count = 0
+	ss_names = [
+			"20250303385/SST/00001",
+			"20250201379/SST/00001",
+			"20250303384/SST/00001",
+		]
+
+
+	for name in ss_names:
+		if not frappe.db.exists("Salary Structure", name):
+			print(f"Skipping (not found): {name}")
+			continue
+
+		doc = frappe.get_doc("Salary Structure", name)
+		doc.save(ignore_permissions=True)
+
+		count += 1
+		print(f"Saved Salary Structure: {name}")
+
+		frappe.db.commit()  # commit after each save (safe)
+
+	print(f"\nTotal Salary Structures saved: {count}")

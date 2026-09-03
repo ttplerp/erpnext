@@ -7,20 +7,52 @@ from frappe.utils import flt, cint,add_days, cstr, flt, getdate, nowdate, rounde
 ##
 # Both recieved and issued pols can be queried with this
 ##
-def get_pol_till(purpose, equipment, posting_date, pol_type=None, posting_time="23:59:59"):
-	if not equipment or not posting_date:
-		frappe.throw("Equipment and Till Date are Mandatory")
-	total = 0
-	posting_datetime = str(get_datetime(str(posting_date) + ' ' + str(posting_time)))
-	query = "select sum(ifnull(qty,0)) as total from `tabPOL Entry` where docstatus = 1 and type = \'"+str(purpose)+"\' and equipment = \'" + str(equipment) + "\' and cast(concat(posting_date, ' ' , posting_time) as datetime) <= \'" + str(posting_datetime) + "\'"
-	if pol_type:
-		query += " and pol_type = \'" + str(pol_type) + "\'"
+# def get_pol_till(purpose, equipment, posting_date, pol_type=None, posting_time="23:59:59"):
+# 	if not equipment or not posting_date:
+# 		frappe.throw("Equipment and Till Date are Mandatory")
+# 	total = 0
+# 	posting_datetime = str(get_datetime(str(posting_date) + ' ' + str(posting_time)))
+# 	query = "select sum(ifnull(qty,0)) as total from `tabPOL Entry` where docstatus = 1 and type = \'"+str(purpose)+"\' and equipment = \'" + str(equipment) + "\' and cast(concat(posting_date, ' ' , posting_time) as datetime) <= \'" + str(posting_datetime) + "\'"
+# 	if pol_type:
+# 		query += " and pol_type = \'" + str(pol_type) + "\'"
 	
-	quantity = frappe.db.sql(query, as_dict=True)
-	if quantity:
-		total = quantity[0].total
-	return total
+# 	quantity = frappe.db.sql(query, as_dict=True)
+# 	if quantity:
+# 		total = quantity[0].total
+# 	return total
 
+def get_pol_till(purpose, equipment, posting_date, pol_type=None, posting_time="23:59:59", branch=None):
+    if not equipment or not posting_date:
+        frappe.throw("Equipment and Till Date are Mandatory")
+    
+    total = 0
+    posting_datetime = str(get_datetime(str(posting_date) + ' ' + str(posting_time)))
+    
+    query = """
+        select sum(ifnull(qty,0)) as total 
+        from `tabPOL Entry` 
+        where docstatus = 1 
+            and type = %s 
+            and equipment = %s 
+            and cast(concat(posting_date, ' ', posting_time) as datetime) <= %s
+    """
+    
+    params = [purpose, equipment, posting_datetime]
+    
+    if pol_type:
+        query += " and pol_type = %s"
+        params.append(pol_type)
+    
+    if branch:
+        query += " and branch = %s"
+        params.append(branch)
+    
+    quantity = frappe.db.sql(query, params, as_dict=True)
+    if quantity:
+        total = quantity[0].total
+    
+    return total
+	
 def get_previous_km(purpose, equipment, posting_date, uom):
 	pol_entry = qb.DocType("POL Entry")
 	if not uom:

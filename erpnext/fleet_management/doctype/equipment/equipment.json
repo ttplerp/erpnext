@@ -57,9 +57,7 @@
   "gewog",
   "village",
   "equipment_history_tab",
-  "equipment_history",
-  "maintenance_history"
- ],
+  "equipment_history" ],
  "fields": [
   {
    "fieldname": "branch",
@@ -379,12 +377,6 @@
    "fieldname": "is_tanker",
    "fieldtype": "Check",
    "label": "Is Tanker"
-  },
-  {
-   "fieldname": "maintenance_history",
-   "fieldtype": "Table",
-   "label": "Maintenance History",
-   "options": "Equipment Maintenance History"
   }
  ],
  "index_web_pages_for_search": 1,

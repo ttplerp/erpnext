@@ -85,7 +85,7 @@ def get_data(filters):
 			SELECT gl.account, sum(gl.debit) as total_receivable, sum(gl.credit) as total_received, sum(gl.credit-gl.debit) as receivable_balance  
    			FROM  `tabGL Entry` AS gl INNER JOIN `tabAccount` AS a ON gl.account = a.name left join        
       		`tabCustomer` c on c.name=gl.party WHERE 
- 			a.parent_account = "11.100 - Accounts Receivable"          
+ 			a.parent_account = "11.1 - Accounts Receivable"          
     		and gl.is_cancelled=0 {conditions} group by gl.account;
 		'''.format(conditions=conditions)
 		data = frappe.db.sql(query, as_dict=1)
@@ -94,7 +94,7 @@ def get_data(filters):
 		query='''
 			SELECT gl.account,gl.party,gl.party_type, sum(gl.debit) as total_receivable, sum(gl.credit) as total_received, 
    			sum(gl.credit-gl.debit) as receivable_balance FROM  `tabGL Entry` AS gl INNER JOIN `tabAccount` AS a ON gl.account = a.name left join   
-           `tabCustomer` c on c.name=gl.party WHERE a.parent_account = "11.100 - Accounts Receivable" and gl.is_cancelled=0 {conditions}
+           `tabCustomer` c on c.name=gl.party WHERE a.parent_account = "11.1 - Accounts Receivable" and gl.is_cancelled=0 {conditions}
            group by gl.party;
 		'''.format(conditions=conditions)
 		data = frappe.db.sql(query, as_dict=1)
