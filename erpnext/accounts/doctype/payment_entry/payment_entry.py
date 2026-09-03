@@ -1548,21 +1548,22 @@ class PaymentEntry(AccountsController):
 					)
 					
 					# Entry for advance amount
-					gl_entries.append(
-						self.get_gl_dict(
-							{
-								"account":ad_payable,
-								"account_currency": self.paid_to_account_currency,
-								"against": receivable_account,
-								"debit_in_account_currency": self.total_advance_amount,
-								"debit": self.total_advance_amount,
-								"cost_center": self.cost_center,
-								'party_type': self.party_type,
-								'party': self.party,
-							},
-							item=self,
+					for advances in self.advances:
+						gl_entries.append(
+							self.get_gl_dict(
+								{
+									"account":advances.advance_account,
+									"account_currency": self.paid_to_account_currency,
+									"against": receivable_account,
+									"debit_in_account_currency": self.total_advance_amount,
+									"debit": self.total_advance_amount,
+									"cost_center": self.cost_center,
+									'party_type': self.party_type,
+									'party': self.party,
+								},
+								item=self,
+							)
 						)
-					)
 					
 					# Bank/Cash entry
 					gl_entries.append(

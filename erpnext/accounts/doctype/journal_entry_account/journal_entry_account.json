@@ -58,6 +58,7 @@
  ],
  "fields": [
   {
+   "allow_on_submit": 1,
    "bold": 1,
    "columns": 2,
    "fieldname": "account",
@@ -417,7 +418,7 @@
  "idx": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-12-02 12:12:44.829020",
+ "modified": "2026-09-03 14:49:35.442810",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry Account",

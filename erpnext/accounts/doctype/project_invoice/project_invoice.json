@@ -332,7 +332,7 @@
    "fieldname": "tds_percent",
    "fieldtype": "Select",
    "label": "TDS Percent (%)",
-   "options": "\n2\n3"
+   "options": "\n2\n3\n5"
   },
   {
    "fieldname": "retention_percent",
@@ -445,7 +445,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-02-12 11:05:56.182287",
+ "modified": "2026-03-24 10:01:00.362155",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Project Invoice",
