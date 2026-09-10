@@ -111,13 +111,16 @@ def loan_account_inq(account_no=None):
         outstanding_amt = root.find('.//ns:Total_Outstanding', namespaces=namespace).text
         next_payment_date = root.find('.//ns:NEXT_DMD_DATE', namespaces=namespace).text 
         emi_amt = root.find('.//ns:installment_Amount', namespaces=namespace).text
+        acc_status = root.find('.//ns:ACCT_STATUS', namespaces=namespace).text
         
         #dt = datetime.strptime(sanction_date, "%Y-%m-%dT%H:%M:%S.%f")
         #sanction_date = dt.strftime("%d-%m-%Y")
 
         #dt = datetime.strptime(next_payment_date, "%Y-%m-%dT%H:%M:%S.%f")
         #next_payment_date = dt.strftime("%d-%m-%Y")
-         
+        if acc_status != "Active":
+            return {"msg":"Account Not Active"}
+            
         acc_dtl = {
             "account_no": account_no,
             "acc_holder": acc_holder,
@@ -128,7 +131,8 @@ def loan_account_inq(account_no=None):
             "overdue_amt": overdue_amt,
             "outstanding_amt": outstanding_amt,
             "next_payment_date": next_payment_date,
-            "emi_amt": emi_amt
+            "emi_amt": emi_amt,
+            "acc_status": acc_status
         }
         return acc_dtl
     except:
