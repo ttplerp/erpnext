@@ -163,7 +163,7 @@ erpnext.accounts.PurchaseInvoice = class PurchaseInvoice extends erpnext.buying.
 	delay_by(frm) {
 		console.log("here "+String(cur_frm.doc.delay_by))
 		if(cur_frm.doc.delay_by && flt(cur_frm.doc.delay_by) > 0){
-			if(flt(cur_frm.doc.delay_by) <= 90){
+			if(flt(cur_frm.doc.delay_by) <= 120){
 				cur_frm.set_value("write_off_amount", flt((flt(cur_frm.doc.delay_by)/100)*0.1 * flt(cur_frm.doc.grand_total),2))
 			}
 			else{
