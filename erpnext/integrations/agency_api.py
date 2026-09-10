@@ -617,7 +617,7 @@ def fund_transfer(from_account=None, to_account=None, amount=None, remark=None):
     ns = {"fixml": "http://www.finacle.com/fixml"}
     status = root.find(".//fixml:HostTransaction/fixml:Status", ns).text
     trans_datetime = root.find(".//fixml:ResponseMessageInfo/fixml:MessageDateTime", ns).text
-    c.close
+    c.close()
     return {
         "status": status,
         "trans_datetime": trans_datetime
@@ -709,7 +709,7 @@ def loan_payment(loan_account=None, payment_account=None, amount=None, remark=No
     root = ET.fromstring(result)
     ns = {"fixml": "http://www.finacle.com/fixml"}
     status = root.find(".//fixml:_trandetails/fixml:Status", ns).text
-    c.close
+    c.close()
     return status
 
 @frappe.whitelist()
@@ -1076,3 +1076,272 @@ def get_acc_from_cif(cust_id=None):
             "error": str(e)
         }
 
+
+@frappe.whitelist()
+def field_advance_account_inq(account_no=None, uuid=None, posting_date=None):
+    if not account_no:
+        frappe.throw("Account number is required")
+
+    buffer = BytesIO()
+
+    doc = frappe.get_doc("API Detail", "MULTI LEDGER")
+    url = str(doc.api_link)
+
+    c = pycurl.Curl()
+
+    c.setopt(c.URL, url)
+    c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
+    c.setopt(c.TIMEOUT, 500)
+    c.setopt(c.SSLVERSION, pycurl.SSLVERSION_TLSv1)
+    c.setopt(c.WRITEDATA, buffer)
+    c.setopt(c.FOLLOWLOCATION, True)
+
+    # Same SSL settings as existing API
+    c.setopt(c.SSL_VERIFYHOST, 0)
+    c.setopt(c.SSL_VERIFYPEER, 0)
+
+    payload = """<FIXML xsi:schemaLocation="http://www.finacle.com/fixml AcctInq.xsd"
+        xmlns="http://www.finacle.com/fixml"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+        <Header>
+            <RequestHeader>
+                <MessageKey>
+                    <RequestUUID>7779100066</RequestUUID>
+                    <ServiceRequestId>AcctInq</ServiceRequestId>
+                    <ServiceRequestVersion>10.2</ServiceRequestVersion>
+                    <ChannelId>COR</ChannelId>
+                    <LanguageId/>
+                </MessageKey>
+
+                <RequestMessageInfo>
+                    <BankId>01</BankId>
+                    <TimeZone/>
+                    <EntityId/>
+                    <EntityType/>
+                    <ArmCorrelationId/>
+                    <MessageDateTime>2025-01-09T05:56:07.000</MessageDateTime>
+                </RequestMessageInfo>
+
+                <Security>
+                    <Token>
+                        <PasswordToken>
+                            <UserId/>
+                            <Password/>
+                        </PasswordToken>
+                    </Token>
+                    <FICertToken/>
+                    <RealUserLoginSessionId/>
+                    <RealUser/>
+                    <RealUserPwd/>
+                    <SSOTransferToken/>
+                </Security>
+            </RequestHeader>
+        </Header>
+
+        <Body>
+            <AcctInqRequest>
+                <AcctInqRq>
+                    <AcctId>
+                        <AcctId>{account_no}</AcctId>
+                    </AcctId>
+                </AcctInqRq>
+            </AcctInqRequest>
+        </Body>
+
+    </FIXML>""".format(account_no=account_no)
+
+    c.setopt(c.HTTPHEADER, [
+        'Content-Type: application/xml; charset=utf-8'
+    ])
+
+    c.setopt(c.POSTFIELDS, payload)
+
+    try:
+        c.perform()
+
+        http_code = c.getinfo(c.RESPONSE_CODE)
+
+        body = buffer.getvalue()
+        result = body.decode("utf-8")
+
+        if not result:
+            return {
+                "status": "FAILED",
+                "msg": "Empty response from Finacle"
+            }
+
+        root = ET.fromstring(result)
+
+        namespace = {
+            "ns": "http://www.finacle.com/fixml"
+        }
+
+        # Check Finacle transaction status
+        status_element = root.find(
+            ".//ns:HostTransaction/ns:Status",
+            namespaces=namespace
+        )
+
+        status = (
+            status_element.text
+            if status_element is not None
+            else None
+        )
+
+        if status != "SUCCESS":
+            return {
+                "status": status or "FAILED",
+                "msg": "Account inquiry failed"
+            }
+
+        # Account number
+        account_element = root.find(
+            ".//ns:AcctId/ns:AcctId",
+            namespaces=namespace
+        )
+
+        account_no_response = (
+            account_element.text
+            if account_element is not None
+            else None
+        )
+
+        # Scheme code
+        schm_code_element = root.find(
+            ".//ns:SchmCode",
+            namespaces=namespace
+        )
+
+        schm_code = (
+            schm_code_element.text
+            if schm_code_element is not None
+            else None
+        )
+
+        # Scheme type
+        schm_type_element = root.find(
+            ".//ns:SchmType",
+            namespaces=namespace
+        )
+
+        schm_type = (
+            schm_type_element.text
+            if schm_type_element is not None
+            else None
+        )
+
+        # Currency
+        currency_element = root.find(
+            ".//ns:AcctCurr",
+            namespaces=namespace
+        )
+
+        currency = (
+            currency_element.text
+            if currency_element is not None
+            else None
+        )
+
+        # Branch
+        branch_element = root.find(
+            ".//ns:BankInfo/ns:BranchId",
+            namespaces=namespace
+        )
+
+        branch_id = (
+            branch_element.text
+            if branch_element is not None
+            else None
+        )
+
+        # Account holder
+        holder_element = root.find(
+            ".//ns:CustId/ns:PersonName/ns:Name",
+            namespaces=namespace
+        )
+
+        acc_holder = (
+            holder_element.text
+            if holder_element is not None
+            else None
+        )
+
+        # Opening date
+        opening_date_element = root.find(
+            ".//ns:AcctOpenDt",
+            namespaces=namespace
+        )
+
+        acc_opening_date = (
+            opening_date_element.text
+            if opening_date_element is not None
+            else None
+        )
+
+        if acc_opening_date:
+            try:
+                dt = datetime.strptime(
+                    acc_opening_date,
+                    "%Y-%m-%dT%H:%M:%S.%f"
+                )
+
+                acc_opening_date = dt.strftime("%d-%m-%Y")
+
+            except ValueError:
+                pass
+
+        # Available balance
+        bal_amt = None
+
+        for acct_bal in root.findall(
+            ".//ns:AcctBal",
+            namespaces=namespace
+        ):
+
+            bal_type_element = acct_bal.find(
+                "ns:BalType",
+                namespaces=namespace
+            )
+
+            amount_element = acct_bal.find(
+                "ns:BalAmt/ns:amountValue",
+                namespaces=namespace
+            )
+
+            if (
+                bal_type_element is not None
+                and bal_type_element.text == "AVAIL"
+                and amount_element is not None
+            ):
+                bal_amt = amount_element.text
+                break
+
+        return {
+            "status": status,
+            "schm_code": schm_code,
+            "schm_type": schm_type,
+            "cust_id": None,
+            "account_no": account_no_response,
+            "acc_holder": acc_holder,
+            "acc_opening_date": acc_opening_date,
+            "bal_amt": bal_amt,
+            "currency": currency,
+            "branch_id": branch_id,
+            "account_status": None,
+            "contact_no": None,
+            "operation_mode": None
+        }
+
+    except ET.ParseError as e:
+        frappe.throw(
+            f"Invalid XML response from Finacle: {e}"
+        )
+
+    except pycurl.error as e:
+        frappe.throw(
+            f"An error occurred while connecting to Finacle: {e}"
+        )
+
+    finally:
+        c.close()
