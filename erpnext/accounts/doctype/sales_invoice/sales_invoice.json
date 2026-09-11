@@ -11,6 +11,7 @@
   "business_activity",
   "branch",
   "title",
+  "posting_date",
   "customer",
   "customer_name",
   "tax_id",
@@ -23,7 +24,6 @@
   "column_break1",
   "company",
   "company_tax_id",
-  "posting_date",
   "posting_time",
   "set_posting_time",
   "dispatch",
@@ -2127,7 +2127,7 @@
    "link_fieldname": "consolidated_invoice"
   }
  ],
- "modified": "2025-12-29 22:38:11.636005",
+ "modified": "2026-09-09 13:08:16.179733",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Sales Invoice",

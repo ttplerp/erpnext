@@ -44,6 +44,12 @@ erpnext.accounts.SalesInvoiceController = class SalesInvoiceController extends e
 		erpnext.queries.setup_queries(this.frm, "Warehouse", function() {
 			return erpnext.queries.warehouse(me.frm.doc);
 		});
+		
+		// If customer is already set, check for international status
+		if (this.frm.doc.customer && this.frm.doc.__islocal) {
+			this.check_international_customer_gst();
+		}
+		
 		if(cur_frm.doc.gst_template && cur_frm.doc.__islocal) {
 			return this.frm.call({
 				method: "erpnext.controllers.accounts_controller.get_taxes_and_charges",
@@ -179,6 +185,96 @@ erpnext.accounts.SalesInvoiceController = class SalesInvoiceController extends e
 				}, __('Create'));
 			}
 		}
+		
+		// Check and display international customer GST exemption
+		this.check_international_customer_gst();
+	}
+
+	// New method to check and handle international customer GST exemption
+	check_international_customer_gst() {
+		var me = this;
+		if (this.frm.doc.customer) {
+			frappe.call({
+				method: "frappe.client.get_value",
+				args: {
+					doctype: "Customer",
+					filters: { name: this.frm.doc.customer },
+					fieldname: "customer_type"
+				},
+				callback: function(r) {
+					if (r.message && r.message.customer_type === "International") {
+						// Set flag for international customer
+						me.frm.doc.is_international_customer = 1;
+						
+						// Clear all taxes
+						me.frm.doc.taxes = [];
+						me.frm.doc.taxes_and_charges = null;
+						if (me.frm.doc.tax_category) {
+							me.frm.doc.tax_category = null;
+						}
+						
+						// Show message
+						frappe.msgprint({
+							title: __('GST Exemption'),
+							indicator: 'blue',
+							message: __('This customer is International. GST will be exempted (set to 0) for this invoice.')
+						}, 5); // Auto close after 5 seconds
+						
+						// Recalculate taxes and charges
+						me.frm.trigger("other_charges");
+						me.calculate_taxes_and_totals();
+						
+						// Update UI fields
+						me.frm.refresh_fields();
+					} else {
+						me.frm.doc.is_international_customer = 0;
+					}
+				}
+			});
+		}
+	}
+
+	// Override calculate_taxes_and_totals to handle international customers
+	calculate_taxes_and_totals() {
+		var me = this;
+		
+		// If international customer, ensure taxes are cleared
+		if (this.frm.doc.is_international_customer) {
+			this.frm.doc.taxes = [];
+			this.frm.doc.taxes_and_charges = null;
+		}
+		
+		// Call original calculation
+		super.calculate_taxes_and_totals();
+	}
+
+	// Override set_taxes to prevent adding taxes for international customers
+	set_taxes() {
+		if (this.frm.doc.is_international_customer) {
+			frappe.msgprint(__('Taxes are exempted for International Customer.'));
+			return;
+		}
+		
+		// Original logic
+		if(this.frm.doc.taxes_and_charges) {
+			this.frm.call({
+				method: "erpnext.controllers.accounts_controller.get_taxes_and_charges",
+				args: {
+					"master_doctype": frappe.meta.get_docfield(this.frm.doc.doctype, "taxes_and_charges",
+						this.frm.doc.name).options,
+					"master_name": this.frm.doc.taxes_and_charges
+				},
+				callback: function(r) {
+					if(!r.exc) {
+						if(!me.frm.doc.is_international_customer) {
+							// Only set taxes if not international
+							me.frm.set_value("taxes", r.message);
+							me.calculate_taxes_and_totals();
+						}
+					}
+				}
+			});
+		}
 	}
 
 	make_maintenance_schedule() {
@@ -199,12 +295,14 @@ erpnext.accounts.SalesInvoiceController = class SalesInvoiceController extends e
 			if(row.delivery_note) frappe.model.clear_doc("Delivery Note", row.delivery_note)
 		});
 	}
+	
 	other_charges(doc, dt, dn){
 		this.calculate_taxes_and_totals();
 		if(this.frm.doc.advances){ 
 			this.calculate_total_advance()
 		}
 	}
+	
 	set_default_print_format() {
 		// set default print format to POS type or Credit Note
 		if(cur_frm.doc.is_pos) {
@@ -304,6 +402,7 @@ erpnext.accounts.SalesInvoiceController = class SalesInvoiceController extends e
 	tc_name() {
 		this.get_terms();
 	}
+	
 	customer() {
 		if (this.frm.doc.is_pos){
 			var pos_profile = this.frm.doc.pos_profile;
@@ -337,6 +436,9 @@ erpnext.accounts.SalesInvoiceController = class SalesInvoiceController extends e
 					}
 				}
 			});
+			
+			// Check if customer is international and handle GST exemption
+			me.check_international_customer_gst();
 		}
 		if (this.frm.doc.company && !this.frm.doc.debit_to && this.frm.doc.customer) {
 			frappe.call({
@@ -473,7 +575,7 @@ erpnext.accounts.SalesInvoiceController = class SalesInvoiceController extends e
 								me.frm.pos_print_format = r.message.print_format;
 							}
 							me.frm.trigger("update_stock");
-							if(me.frm.doc.taxes_and_charges) {
+							if(me.frm.doc.taxes_and_charges && !me.frm.doc.is_international_customer) {
 								me.frm.script_manager.trigger("taxes_and_charges");
 							}
 
@@ -532,7 +634,19 @@ erpnext.accounts.SalesInvoiceController = class SalesInvoiceController extends e
 
 		this.calculate_taxes_and_totals();
 	}
+	
+	// Prevent adding taxes manually for international customers
+	taxes_and_charges(frm) {
+		if (frm.doc.is_international_customer) {
+			frappe.msgprint(__('Taxes cannot be added for International Customer.'));
+			frm.set_value("taxes_and_charges", null);
+			return;
+		}
+		// Original logic
+		this.frm.script_manager.trigger("taxes_and_charges");
+	}
 };
+
 frappe.ui.form.on("Other Charge Entry", {
 	rate:function(frm, cdt, cdn){
 		let row = locals[cdt][cdn]
@@ -554,6 +668,7 @@ frappe.ui.form.on("Other Charge Entry", {
 		frm.refresh_field('other_charges')
 	}
 })
+
 // for backward compatibility: combine new and previous states
 extend_cscript(cur_frm.cscript, new erpnext.accounts.SalesInvoiceController({frm: cur_frm}));
 
@@ -574,12 +689,14 @@ cur_frm.fields_dict.cash_bank_account.get_query = function(doc) {
 		]
 	}
 }
+
 cur_frm.fields_dict["other_charges"].grid.get_field("account").get_query = function (doc) {
 	return {
 		filters: { 'is_group': 0,
 					'account_type':["in",["Income Account","Expense Account"]]}
 	};
 };
+
 cur_frm.fields_dict.write_off_account.get_query = function(doc) {
 	return{
 		filters:{
@@ -798,6 +915,32 @@ frappe.ui.form.on('Sales Invoice', {
 			}
 		};
 	},
+	
+	// Onload handler
+	onload: function(frm) {
+		frm.redemption_conversion_factor = null;
+		
+		// If customer is already set, check for international status
+		if (frm.doc.customer) {
+			frappe.call({
+				method: "frappe.client.get_value",
+				args: {
+					doctype: "Customer",
+					filters: { name: frm.doc.customer },
+					fieldname: "customer_type"
+				},
+				callback: function(r) {
+					if (r.message && r.message.customer_type === "International") {
+						frm.doc.is_international_customer = 1;
+						frm.doc.taxes = [];
+						frm.doc.taxes_and_charges = null;
+						frm.refresh_fields();
+					}
+				}
+			});
+		}
+	},
+
 	// When multiple companies are set up. in case company name is changed set default company address
 	company: function(frm){
 		if (frm.doc.company) {
@@ -815,10 +958,6 @@ frappe.ui.form.on('Sales Invoice', {
 				}
 			})
 		}
-	},
-
-	onload: function(frm) {
-		frm.redemption_conversion_factor = null;
 	},
 
 	update_stock: function(frm, dt, dn) {
@@ -1060,6 +1199,25 @@ frappe.ui.form.on('Sales Invoice', {
 			method: "erpnext.accounts.doctype.sales_invoice.sales_invoice.create_dunning",
 			frm: frm
 		});
+	},
+	
+	// Prevent adding taxes row if international
+	'taxes': function(frm) {
+		if (frm.doc.is_international_customer) {
+			frappe.msgprint(__('Taxes cannot be added for International Customer.'));
+			return;
+		}
+	}
+});
+
+// Prevent tax row addition in child table
+frappe.ui.form.on('Sales Taxes and Charges', {
+	before_taxes_add: function(frm, cdt, cdn) {
+		if (frm.doc.is_international_customer) {
+			frappe.msgprint(__('Taxes cannot be added for International Customer.'));
+			frappe.validated = false;
+			return;
+		}
 	}
 });
 
@@ -1215,11 +1373,6 @@ frappe.ui.form.on("Sales Invoice Item","loss_method",function(frm, cdt, cdn){
 		 validate_loss_tolerance(frm, cdt, cdn);
 	}
 });
-// frappe.ui.form.on("Sales Invoice Advance",{
-// 	cost_center:function(frm, cdt, cdn){
-// 		console.log('here')
-// 	}
-// })
 
 frappe.ui.form.on("Sales Invoice","items_on_form_rendered", function(frm, grid_row) {
    cur_frm.call({

@@ -95,6 +95,9 @@ class SalesInvoice(SellingController):
 		super(SalesInvoice, self).validate()
 		self.validate_auto_set_posting_time()
 
+		# Check for international customer and handle GST exemption
+		self.handle_international_customer_gst()
+
 		if not self.is_pos:
 			self.so_dn_required()
 
@@ -177,23 +180,113 @@ class SalesInvoice(SellingController):
 			validate_loyalty_points(self, self.loyalty_points)
 
 		self.reset_default_field_value("set_warehouse", "items", "warehouse")
+		
+	def handle_international_customer_gst(self):
+		if not self.customer:
+			return
+		
+		# Get customer type
+		customer_type = frappe.db.get_value("Customer", self.customer, "customer_type")
+		
+		if customer_type == "International Customer":
+			# Set flag for international customer
+			self.is_international_customer = 1
+			
+			# Remove all tax rows (GST)
+			self.set("taxes", [])
+			
+			# Clear taxes_and_charges template
+			self.taxes_and_charges = None
+			
+			# Clear tax_category if exists
+			if hasattr(self, 'tax_category'):
+				self.tax_category = None
+				
+			# Log for audit purposes
+			frappe.msgprint(
+				_("GST has been exempted for International Customer: {0}").format(self.customer),
+				alert=True
+			)
+		else:
+			self.is_international_customer = 0
+
 	def calculate_charges(self):
+		customer_type = frappe.db.get_value("Customer", self.customer, "customer_type")
 		total_charges = 0
 		total_qty = 0
-		total_gst = 0
-		for tax in self.taxes:
-			if tax.is_gst == 1:
-				total_gst += flt(tax.tax_amount)
 		for i in self.items:
 			total_qty += i.qty
 		for d in self.other_charges:
 			d.amount = flt(flt(d.rate) * flt(total_qty),2)
-			d.gst_amount = flt(d.amount)*0.05
-			total_gst += flt(d.gst_amount)
 			total_charges += flt(d.amount)
 		self.total_charges = total_charges
-		self.total_gst_amount = flt(total_gst,2)
 		self.grand_total = flt(self.total + self.total_charges,2)
+		if customer_type == "International Customer":
+			self.outstanding_amount = flt(self.total + self.total_charges,2)
+
+
+	def calculate_taxes_and_totals(self):
+		"""Override to handle GST exemption for international customers"""
+		# First, check if customer is international and clear taxes if needed
+		if self.customer:
+			customer_type = frappe.db.get_value("Customer", self.customer, "customer_type")
+			if customer_type == "International":
+				# Ensure taxes are cleared for international customers
+				self.set("taxes", [])
+				self.taxes_and_charges = None
+				self.is_international_customer = 1
+		
+		# Call parent method
+		super(SalesInvoice, self).calculate_taxes_and_totals()
+
+	def get_tax_amounts(self, tax, enable_discount_accounting):
+		"""Override to return zero tax amounts for international customers"""
+		if self.is_international_customer:
+			return 0.0, 0.0
+		
+		# Original logic from parent
+		if enable_discount_accounting:
+			amount = tax.tax_amount_after_discount_amount
+			base_amount = tax.base_tax_amount_after_discount_amount
+		else:
+			amount = tax.tax_amount
+			base_amount = tax.base_tax_amount
+		
+		return amount, base_amount
+
+	def make_tax_gl_entries(self, gl_entries):
+		"""Skip tax GL entries for international customers"""
+		if self.is_international_customer:
+			return
+		
+		# Original logic
+		enable_discount_accounting = cint(
+			frappe.db.get_single_value("Selling Settings", "enable_discount_accounting")
+		)
+
+		for tax in self.get("taxes"):
+			amount, base_amount = self.get_tax_amounts(tax, enable_discount_accounting)
+
+			if flt(tax.base_tax_amount_after_discount_amount):
+				account_currency = get_account_currency(tax.account_head)
+				gl_entries.append(
+					self.get_gl_dict(
+						{
+							"account": tax.account_head,
+							"against": self.customer,
+							"credit": flt(base_amount, tax.precision("tax_amount_after_discount_amount")),
+							"credit_in_account_currency": (
+								flt(base_amount, tax.precision("base_tax_amount_after_discount_amount"))
+								if account_currency == self.company_currency
+								else flt(amount, tax.precision("tax_amount_after_discount_amount"))
+							),
+							"cost_center": tax.cost_center,
+						},
+						account_currency,
+						item=tax,
+					)
+				)
+
 	def validate_fixed_asset(self):
 		for d in self.get("items"):
 			if d.is_fixed_asset and d.meta.get_field("asset") and d.asset:
@@ -226,6 +319,9 @@ class SalesInvoice(SellingController):
 			validate_account_head(item.idx, item.income_account, self.company, "Income")
 
 	def set_tax_withholding(self):
+		if self.is_international_customer:
+			return
+			
 		tax_withholding_details = get_party_tax_withholding_details(self)
 
 		if not tax_withholding_details:
@@ -1005,6 +1101,7 @@ class SalesInvoice(SellingController):
 		self.make_gle_for_rounding_adjustment(gl_entries)
 
 		return gl_entries
+		
 	def make_charges_gl_entry(self, gl_entries):
 		for a in self.other_charges:
 			if flt(a.amount) and a.account:
@@ -1017,6 +1114,7 @@ class SalesInvoice(SellingController):
 							"cost_center": a.cost_center
 						}, accounts)
 					)
+					
 	def make_advance_gl_entry(self, gl_entries):
 		for a in self.get("advances"):
 			if flt(a.allocated_amount) and a.advance_account:
@@ -1033,6 +1131,7 @@ class SalesInvoice(SellingController):
 					"against_voucher_type": self.doctype,
 					"cost_center": a.cost_center,
 				}, advance_account_currency))
+				
 	def make_customer_gl_entry(self, gl_entries):
 		# Checked both rounding_adjustment and rounded_total
 		# because rounded_total had value even before introcution of posting GLE based on rounded total
@@ -1072,6 +1171,10 @@ class SalesInvoice(SellingController):
 			)
 
 	def make_tax_gl_entries(self, gl_entries):
+		"""Skip tax GL entries for international customers"""
+		if self.is_international_customer:
+			return
+			
 		enable_discount_accounting = cint(
 			frappe.db.get_single_value("Selling Settings", "enable_discount_accounting")
 		)
