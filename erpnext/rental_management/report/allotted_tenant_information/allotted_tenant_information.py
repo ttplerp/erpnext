@@ -305,8 +305,10 @@ def get_columns():
 	return columns
 
 def get_data(filters):
+	current_date = getdate(today())
 	cond=''
-	trc_cond=''
+	trc_cond = " AND trc.from_date <= '{0}' AND trc.to_date >= '{0}'".format(current_date)
+
 	if filters.get("from_date") and filters.get("to_date"):
 		trc_cond = " and trc.from_date between '{0}' and '{1}'".format(filters.get("from_date"), filters.get("to_date"))
 		cond = " and ha.application_date_time between '{0}' and '{1}'".format(filters.get("from_date"), filters.get("to_date"))
@@ -387,7 +389,6 @@ def get_data(filters):
 		""".format(trc_cond=trc_cond, cond=cond)
 	# frappe.msgprint(str(query))
 	result = frappe.db.sql(query, as_dict=1)
-	current_date = getdate(today())
 
 	for i in result:
 		# rental_charge = frappe.db.get_value(
@@ -404,8 +405,8 @@ def get_data(filters):
 			"Tenant Rental Charges",
 			{
 				"parent": i.ti_name,
-				"from_date": ["<=", current_date],
-				"to_date": [">=", current_date]
+				"from_date": ["<=", current_date if not filters.get("from_date") else filters.get("from_date")],
+				"to_date": [">=", current_date if not filters.get("from_date") else filters.get("from_date")]
 			},
 			"to_date",
 		)
