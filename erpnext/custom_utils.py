@@ -7,6 +7,7 @@ from frappe.utils import flt, cint, nowdate, getdate, formatdate
 from erpnext.accounts.utils import get_fiscal_year
 from frappe.utils.data import get_first_day, get_last_day, add_years, get_datetime
 from frappe.desk.form.linked_with import get_linked_doctypes, get_linked_docs
+from datetime import datetime
 from frappe.model.naming import getseries
 
 #function to get the difference between two dates
@@ -535,7 +536,6 @@ def send_bulk_email_nhdcl_housing_applicant():
 
 
 #update date for housing applicants		
-import datetime
 
 def update_date():
 	update_list = frappe.get_all("Date Update Housing Applicants", filters={}, fields=["name","citizen_id_no","application_date_and_time"])
@@ -603,11 +603,13 @@ def update_gross_sal():
 #updating housing applicants ranking to zero for those total gross 80k plus
 			
 def update_ranking():
-	housing_applications = frappe.get_all("Housing Application",filters={},fields=["name","gross_salary","spouse_gross_salary"])
+	housing_applications = frappe.get_all("Housing Application",filters={},fields=["name","gross_salary","spouse_gross_salary","marital_status"])
 
 	for application in housing_applications:
 		applicant_salary = application.get('gross_salary') if application.get('gross_salary') is not None else 0
 		spouse_salary = application.get('spouse_gross_salary') if application.get('spouse_gross_salary') is not None else 0
+		# if application.get("marital_status")!='Married':
+		# 	spouse_gross = 0
 			
 		total_gross_salary = flt(applicant_salary) + flt(spouse_salary)
 
@@ -685,9 +687,13 @@ def update_ranks():
 
 #update the building category
 def update_builCate():
-	applicant_list = frappe.get_all("Housing Application", filters={}, fields=["name", "cid", "gross_salary", "spouse_gross_salary"])
+	applicant_list = frappe.get_all("Housing Application", filters={}, fields=["name", "cid", "gross_salary", "spouse_gross_salary","marital_status"])
+	
 	for applicant in applicant_list:
-		gross_income = flt(applicant.get('gross_salary'), 2) + flt(applicant.get('spouse_gross_salary'), 2)
+		spouse_gross = applicant.get('spouse_gross_salary')
+		if applicant.get("marital_status")!='Married':
+			spouse_gross = 0
+		gross_income = flt(applicant.get('gross_salary'), 2) + flt(spouse_gross, 2)
 		building_class_result = frappe.db.sql("""
 			select name from `tabBuilding Classification`
 			where %s between minimum_income and maximum_income
@@ -784,7 +790,7 @@ def test():
 	frappe.throw('test')
 	
 def updateHousingApplicantsdata():
-	update_gross_sal()
+	# update_gross_sal()
 	update_ranking()
 	update_builCate()
 	update_ranking_3pa()
@@ -833,15 +839,15 @@ def tenant_info():
 	data = frappe.db.sql('''
 		SELECT name, tenant_cid, tenant_name,block_no,flat_no,initial_allotment_date,locations,total_floor_area,building_classification
 		FROM `tabTenant Information` 
-		WHERE dzongkhag = "Thimphu" AND status = "Allocated";
+		WHERE dzongkhag = "Thimphu" AND status = "Allocated" and tenant_cid not in (select cid from `tabHousing Application`);
 	''', as_dict=True)
 
 	# Define the custom path for CSV (change this path if needed)
 	custom_path = os.path.expanduser('~/erp/apps/erpnext')  # Adjust path as needed
-	file_path = os.path.join(custom_path, 'tenant_info_aug_1.csv')
+	file_path = os.path.join(custom_path, 'tenant_info_may_19.csv')
 
 	# Prepare CSV headers
-	headers = ['Tenant Name', 'Cid', 'Designation','Grade','salary','old flat no','block no id','flat no id','current rent','initial allotment date','location','total_floor_area','classification','department','Ministry_agency']
+	headers = ['Tenant Name', 'Cid', 'Designation','Grade','salary','old flat no','block no id','flat no id','current rent','initial allotment date','location','total_floor_area','classification','department','Ministry_agency','land','building','garbage','amenities','mtc','dzongkhag','gewog','village','mobile no','email','date_of_appointment', 'dob']
 
 	# Create CSV file
 	with open(file_path, mode='w', newline='') as file:
@@ -851,7 +857,7 @@ def tenant_info():
 		# Loop through tenants, fetch civil servant details, and write to CSV
 		for i in data:
 			latest_rent = frappe.db.sql('''
-										select rental_amount from `tabTenant Rental Charges` where parent='{name}' and '2024-09-18' between from_date and to_date
+										select rental_amount from `tabTenant Rental Charges` where parent='{name}' and '2026-05-19' between from_date and to_date
 										'''.format(name=i['name']))
 			if not latest_rent:
 				latest_rent = '0'
@@ -860,15 +866,190 @@ def tenant_info():
 										'''.format(name=i['flat_no']))
 			if not old_flat_no:
 				old_flat_no = 'None'
+
+			land = frappe.db.sql('''
+										select amount from 
+										`tabProperty Management Item` where 
+										parent='{name}' 
+										and property_management_type='Land' limit 1 
+										'''.format(name=i['flat_no']))
+			if not land:
+				land = 'None'
+			building = frappe.db.sql('''
+										select amount from 
+										`tabProperty Management Item` where 
+										parent='{name}' 
+										and property_management_type='Building/ under development' limit 1 
+										'''.format(name=i['flat_no']))
+			if not building:
+				building = 'None'
+			garbage = frappe.db.sql('''
+										select amount from 
+										`tabProperty Management Item` where 
+										parent='{name}' 
+										and property_management_type='Garbage collection' limit 1 
+										'''.format(name=i['flat_no']))
+			if not garbage:
+				garbage = 'None'
+			amenities = frappe.db.sql('''
+										select amount from 
+										`tabProperty Management Item` where 
+										parent='{name}' 
+										and property_management_type='Amenities service fee' limit 1 
+										'''.format(name=i['flat_no']))
+			if not amenities:
+				amenities = 'None'
+			mtc = frappe.db.sql('''
+										select amount from 
+										`tabProperty Management Item` where 
+										parent='{name}' 
+										and property_management_type='Mtc cost (Service Charge)' limit 1 
+										'''.format(name=i['flat_no']))
+			if not mtc:
+				mtc = 'None'
 			data1 = get_civil_servant_detail(cid=i['tenant_cid'])
+			data2 = get_cid_detail(cid=i['tenant_cid'])
+			# print(data2)
 			first_name = data1.get('firstName', '')  # Fetch first name or default to empty if not found
 			designation = data1.get('Designation', '')
-			grade = data1.get('positionLevel', '')
+			grade = data1.get('PositionLevel', '')
 			salary = data1.get('GrossPay', '')
 			dept= data1.get('DeptName','')
 			ministry_agency= data1.get('FullWorkingAgency','')
-			writer.writerow([i['tenant_name'],i['tenant_cid'], designation,grade,salary,old_flat_no[0][0],i['block_no'],i['flat_no'],latest_rent[0][0],i['initial_allotment_date'],i['locations'],i['total_floor_area'],i['building_classification'],dept,ministry_agency])  # Write tenant CID and first name to CSV
+			date_of_appointment= data1.get('dateOfAppointment','')
+			mobile_no= data1.get('MobileNo','')
+			email= data1.get('Email','')
+			EmpName= data1.get('EmpName','')
+			dob= data1.get('dateOfBirth','')
+			dzongkhag= data2.get('dzongkhagName','')
+			gewog= data2.get('gewogName','')
+			village= data2.get('permanentVillagename','')
+			writer.writerow([i['tenant_name'],i['tenant_cid'], designation,grade,salary,old_flat_no[0][0],i['block_no'],i['flat_no'],latest_rent[0][0],i['initial_allotment_date'],i['locations'],i['total_floor_area'],i['building_classification'],dept,ministry_agency,land[0][0],building[0][0],garbage[0][0],amenities[0][0],mtc[0][0], dzongkhag, gewog, village, mobile_no, email, date_of_appointment, dob])  # Write tenant CID and first name to CSV
 			print(i['name'])
 
 	frappe.msgprint(f"CSV file created at: {file_path}")
 		
+def upload_old_housing_application():
+				
+	# Fetch tenant_cid for tenants in 'Thimphu' with status 'Allocated'
+	data = frappe.db.sql('''
+		SELECT name, tenant_cid, tenant_name,block_no,flat_no,initial_allotment_date,locations,total_floor_area,building_classification
+		FROM `tabTenant Information` 
+		WHERE dzongkhag = "Thimphu" AND status = "Allocated" and tenant_cid not in (select cid from `tabHousing Application`) LIMIT 1;
+	''', as_dict=True)
+
+	count = 0
+	for i in data:
+		count += 1
+		data1 = get_civil_servant_detail(cid=i['tenant_cid'])
+		data2 = get_cid_detail(cid=i['tenant_cid'])
+		first_name = data1.get('firstName', '')  # Fetch first name or default to empty if not found
+		designation = data1.get('Designation', '')
+		grade = data1.get('PositionLevel', '')
+		salary = data1.get('GrossPay', '')
+		dept= data1.get('DeptName','')
+		ministry_agency= data1.get('FullWorkingAgency','')
+		date_of_appointment= data1.get('dateOfAppointment','')
+		mobile_no= data1.get('MobileNo','')
+		email= data1.get('Email','')
+		EmpName= data1.get('EmpName','')
+		dob= data1.get('dateOfBirth','')
+		dzongkhag= data2.get('dzongkhagName','')
+		gewog= data2.get('gewogName','')
+		village= data2.get('permanentVillagename','')
+		gender= data2.get('gender','')
+
+		
+		# doc = frappe.new_doc("Housing Application")
+		# doc.application_date_and_time = application_date
+		# doc.applicant_name = EmpName
+		# doc.applicant_rank = 0
+		# doc.cid = i['tenant_cid']
+		# doc.work_station = "Thimphu"
+		# doc.marital_status = "Single"
+		# doc.employment_type = "Civil Servant"
+		# doc.dzongkhag = dzongkhag
+		# doc.gewog = gewog
+		# doc.village = village
+		# doc.agree = 1
+		# doc.gross_salary = salary
+		# doc.mobile_no = mobile_no
+		# doc.email_id = email
+		# doc.ministry_agency = ministry_agency
+		# doc.grade = grade
+		# doc.application_status = "Pending"
+		# doc.gender = "Female" if gender == 'F' else "Male"
+		# doc.date_of_birth = datetime.strptime(dob, "%d/%m/%Y").strftime("%Y-%m-%d") if dob else ""
+		# doc.date_of_appointment = datetime.strptime(date_of_appointment, "%d/%m/%Y").strftime("%Y-%m-%d") if date_of_appointment else ""
+		# doc.save()
+
+		print(count)
+		print(data1)
+		print(data2)
+
+	# frappe.msgprint(f"CSV file created at: {file_path}")
+
+def upload_zhe_lhun_housing():
+	count = 0
+	data = {
+		"10101004249":	"2026-03-05",
+		"10811002567":	"2026-03-10",
+		"10910000339":	"2026-06-18",
+		"11106004645":	"2026-06-19",
+		"10712001069":	"2026-07-08",
+		"11903000853":	"2026-07-09",
+		# "11513004516":	"2026-07-02",
+		# "11111002604":	"2026-07-24",
+		# "10101002430":	"2026-07-24",
+		# "11908000421":	"2026-07-01",
+	}
+
+	for cid, application_date in data.items():
+		count += 1
+		print("CID:", cid)
+		print("Application Date:", application_date)
+		data1 = get_civil_servant_detail(cid)
+		data2 = get_cid_detail(cid)
+		# print(data2)
+		first_name = data1.get('firstName', '')  # Fetch first name or default to empty if not found
+		designation = data1.get('Designation', '')
+		grade = data1.get('PositionLevel', '')
+		salary = data1.get('GrossPay', '')
+		dept= data1.get('DeptName','')
+		ministry_agency= data1.get('FullWorkingAgency','')
+		date_of_appointment= data1.get('dateOfAppointment','')
+		mobile_no= data1.get('MobileNo','')
+		email= data1.get('Email','')
+		EmpName= data1.get('EmpName','')
+		dob= data1.get('dateOfBirth','')
+		dzongkhag= data2.get('dzongkhagName','')
+		gewog= data2.get('gewogName','')
+		village= data2.get('permanentVillagename','')
+		gender= data2.get('gender','')
+
+		doc = frappe.new_doc("Housing Application")
+		doc.application_date_and_time = application_date
+		doc.applicant_name = EmpName
+		doc.applicant_rank = 0
+		doc.cid = cid
+		doc.work_station = "Lhuentse"
+		doc.marital_status = "Single"
+		doc.employment_type = "Civil Servant"
+		doc.dzongkhag = dzongkhag
+		doc.gewog = gewog
+		doc.village = village
+		doc.agree = 1
+		doc.gross_salary = salary
+		doc.mobile_no = mobile_no
+		doc.email_id = email
+		doc.ministry_agency = ministry_agency
+		doc.grade = grade
+		doc.application_status = "Pending"
+		doc.gender = "Female" if gender == 'F' else "Male"
+		doc.date_of_birth = datetime.strptime(dob, "%d/%m/%Y").strftime("%Y-%m-%d") if dob else ""
+		doc.date_of_appointment = datetime.strptime(date_of_appointment, "%d/%m/%Y").strftime("%Y-%m-%d") if date_of_appointment else ""
+		doc.save()
+		# frappe.db.commit()
+		print(count)
+		print(data1)
+		print(data2)
