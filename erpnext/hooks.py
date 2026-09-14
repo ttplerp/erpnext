@@ -448,6 +448,7 @@ scheduler_events = {
 		"erpnext.buying.doctype.supplier_quotation.supplier_quotation.set_expired_status",
 		"erpnext.accounts.doctype.process_statement_of_accounts.process_statement_of_accounts.send_auto_email",
         "erpnext.integrations.bps.download_bs",
+		"erpnext.rental_management.doctype.rental_bill.rental_bill.send_followup_emails",
 	],
 	"daily_long": [
 		"erpnext.setup.doctype.email_digest.email_digest.send",

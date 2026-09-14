@@ -41,6 +41,23 @@ def cost_center_correction_budget():
 	print('done')
 	frappe.db.commit()
 
+def check_mismatch_br():
+	for d in frappe.db.sql('''select voucher_type, voucher_no, sum(credit) as total from `tabGL Entry` where account = "BOBL A/C 100930599 - NHDCL" and posting_date between "2025-11-01" and "2025-11-30" and is_cancelled = 0 and credit > 0 Group By voucher_no''',as_dict=1):
+		doc = frappe.get_doc(d.voucher_type, d.voucher_no)
+		if d.voucher_type == "Rental Payment":
+			if doc.total_amount_received != d.total:
+				print(d.voucher_no)
+		else:
+			if doc.total_debit != d.total:
+				print(d.voucher_no)
+
+def check_mismatch_br_jv():
+	count = 1
+	for d in frappe.db.sql('''select jea.parent name from `tabJournal Entry Account` jea, `tabJournal Entry` je where jea.parent = je.name and jea.account = "BOBL A/C 100930599 - NHDCL" and je.posting_date between "2025-11-01" and "2025-11-30" and je.docstatus = 2''',as_dict=1):
+		if frappe.db.exists("GL Entry", {"is_cancelled": 0, "voucher_no": d.name}):
+			print(str(count)+". "+d.name)
+		count += 1
+
 def create_gl_for_previous_production():
 	for p in frappe.db.get_list("Production",filters={"creation":["<=","2023-03-02"],"docstatus":1}, fields=["name","creation"]):
 		doc = frappe.get_doc("Production",p.name)
@@ -337,3 +354,42 @@ def submit_boq_addition():
 	doc =frappe.get_doc("BOQ Addition", "BOQADD2025070005")
 	doc.submit()
 	print("done")
+
+def update_salary_tax():
+	count =0
+	salary_structure= frappe.db.sql("""select name from `tabSalary Structure` where is_active='Yes' """,as_dict=True)
+	if salary_structure:
+		
+		for row in salary_structure:
+			count +=1
+			doc = frappe.get_doc("Salary Structure", row.name)
+			# if getdate(row.from_date) < getdate(frappe.db.get_value("Employee",row.employee,"date_of_joining")):
+			# 	frappe.throw("from date cannot be earlier to employee joining date")
+			doc.save()
+			print(count)
+def update_leave_merg():
+	leave_id = frappe.db.sql("""select name
+			from `tabLeave Ledger Entry` 
+			where docstatus=1 
+			and leave_type='Casual Leave' 
+			and is_expired=1
+			and from_date='2025-12-31'
+			and to_date='2025-12-31'
+	""",as_dict=True)
+	count = 0
+	for row in leave_id:
+		count = count + 1
+		frappe.db.sql("""
+				update `tabLeave Ledger Entry` set from_date='2025-01-01' where name='{name}'
+				""".format(name=row.name))
+	print(count)
+
+def update_salary_tax():
+	count =0
+	salary_structure= frappe.db.sql("""select name from `tabSalary Structure` where is_active='Yes' """,as_dict=True)
+	if salary_structure:
+		for row in salary_structure:
+			count +=1
+			doc = frappe.get_doc("Salary Structure", row.name)
+			doc.save()
+			print(doc)

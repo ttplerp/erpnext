@@ -603,11 +603,13 @@ def update_gross_sal():
 #updating housing applicants ranking to zero for those total gross 80k plus
 			
 def update_ranking():
-	housing_applications = frappe.get_all("Housing Application",filters={},fields=["name","gross_salary","spouse_gross_salary"])
+	housing_applications = frappe.get_all("Housing Application",filters={},fields=["name","gross_salary","spouse_gross_salary","marital_status"])
 
 	for application in housing_applications:
 		applicant_salary = application.get('gross_salary') if application.get('gross_salary') is not None else 0
 		spouse_salary = application.get('spouse_gross_salary') if application.get('spouse_gross_salary') is not None else 0
+		if application.get("marital_status")=='Divorced':
+			spouse_salary = 0
 			
 		total_gross_salary = flt(applicant_salary) + flt(spouse_salary)
 
@@ -685,9 +687,13 @@ def update_ranks():
 
 #update the building category
 def update_builCate():
-	applicant_list = frappe.get_all("Housing Application", filters={}, fields=["name", "cid", "gross_salary", "spouse_gross_salary"])
+	applicant_list = frappe.get_all("Housing Application", filters={}, fields=["name", "cid", "gross_salary", "spouse_gross_salary","marital_status"])
+	
 	for applicant in applicant_list:
-		gross_income = flt(applicant.get('gross_salary'), 2) + flt(applicant.get('spouse_gross_salary'), 2)
+		spouse_gross = applicant.get('spouse_gross_salary')
+		if applicant.get("marital_status")!='Married':
+			spouse_gross = 0
+		gross_income = flt(applicant.get('gross_salary'), 2) + flt(spouse_gross, 2)
 		building_class_result = frappe.db.sql("""
 			select name from `tabBuilding Classification`
 			where %s between minimum_income and maximum_income
@@ -784,7 +790,7 @@ def test():
 	frappe.throw('test')
 	
 def updateHousingApplicantsdata():
-	update_gross_sal()
+	# update_gross_sal()
 	update_ranking()
 	update_builCate()
 	update_ranking_3pa()
@@ -838,10 +844,10 @@ def tenant_info():
 
 	# Define the custom path for CSV (change this path if needed)
 	custom_path = os.path.expanduser('~/erp/apps/erpnext')  # Adjust path as needed
-	file_path = os.path.join(custom_path, 'tenant_info_aug_1.csv')
+	file_path = os.path.join(custom_path, 'tenant_info_may_19.csv')
 
 	# Prepare CSV headers
-	headers = ['Tenant Name', 'Cid', 'Designation','Grade','salary','old flat no','block no id','flat no id','current rent','initial allotment date','location','total_floor_area','classification','department','Ministry_agency']
+	headers = ['Tenant Name', 'Cid', 'Designation','Grade','salary','old flat no','block no id','flat no id','current rent','initial allotment date','location','total_floor_area','classification','department','Ministry_agency','land','building','garbage','amenities','mtc']
 
 	# Create CSV file
 	with open(file_path, mode='w', newline='') as file:
@@ -851,7 +857,7 @@ def tenant_info():
 		# Loop through tenants, fetch civil servant details, and write to CSV
 		for i in data:
 			latest_rent = frappe.db.sql('''
-										select rental_amount from `tabTenant Rental Charges` where parent='{name}' and '2024-09-18' between from_date and to_date
+										select rental_amount from `tabTenant Rental Charges` where parent='{name}' and '2026-05-19' between from_date and to_date
 										'''.format(name=i['name']))
 			if not latest_rent:
 				latest_rent = '0'
@@ -860,6 +866,47 @@ def tenant_info():
 										'''.format(name=i['flat_no']))
 			if not old_flat_no:
 				old_flat_no = 'None'
+
+			land = frappe.db.sql('''
+										select amount from 
+										`tabProperty Management Item` where 
+										parent='{name}' 
+										and property_management_type='Land' limit 1 
+										'''.format(name=i['flat_no']))
+			if not land:
+				land = 'None'
+			building = frappe.db.sql('''
+										select amount from 
+										`tabProperty Management Item` where 
+										parent='{name}' 
+										and property_management_type='Building/ under development' limit 1 
+										'''.format(name=i['flat_no']))
+			if not building:
+				building = 'None'
+			garbage = frappe.db.sql('''
+										select amount from 
+										`tabProperty Management Item` where 
+										parent='{name}' 
+										and property_management_type='Garbage collection' limit 1 
+										'''.format(name=i['flat_no']))
+			if not garbage:
+				garbage = 'None'
+			amenities = frappe.db.sql('''
+										select amount from 
+										`tabProperty Management Item` where 
+										parent='{name}' 
+										and property_management_type='Amenities service fee' limit 1 
+										'''.format(name=i['flat_no']))
+			if not amenities:
+				amenities = 'None'
+			mtc = frappe.db.sql('''
+										select amount from 
+										`tabProperty Management Item` where 
+										parent='{name}' 
+										and property_management_type='Mtc cost (Service Charge)' limit 1 
+										'''.format(name=i['flat_no']))
+			if not mtc:
+				mtc = 'None'
 			data1 = get_civil_servant_detail(cid=i['tenant_cid'])
 			first_name = data1.get('firstName', '')  # Fetch first name or default to empty if not found
 			designation = data1.get('Designation', '')
@@ -867,7 +914,7 @@ def tenant_info():
 			salary = data1.get('GrossPay', '')
 			dept= data1.get('DeptName','')
 			ministry_agency= data1.get('FullWorkingAgency','')
-			writer.writerow([i['tenant_name'],i['tenant_cid'], designation,grade,salary,old_flat_no[0][0],i['block_no'],i['flat_no'],latest_rent[0][0],i['initial_allotment_date'],i['locations'],i['total_floor_area'],i['building_classification'],dept,ministry_agency])  # Write tenant CID and first name to CSV
+			writer.writerow([i['tenant_name'],i['tenant_cid'], designation,grade,salary,old_flat_no[0][0],i['block_no'],i['flat_no'],latest_rent[0][0],i['initial_allotment_date'],i['locations'],i['total_floor_area'],i['building_classification'],dept,ministry_agency,land[0][0],building[0][0],garbage[0][0],amenities[0][0],mtc[0][0]])  # Write tenant CID and first name to CSV
 			print(i['name'])
 
 	frappe.msgprint(f"CSV file created at: {file_path}")
