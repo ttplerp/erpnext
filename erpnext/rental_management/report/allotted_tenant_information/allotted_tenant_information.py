@@ -380,7 +380,7 @@ def get_data(filters):
 				END AS total_gross_salary
 			from `tabTenant Information` ti
 			left join `tabHousing Application` ha 
-			on ha.name = ti.housing_application 
+			on ha.cid = ti.tenant_cid 
 			left join `tabFlat No` fn
 			on ti.flat_no = fn.name 
 			left join `tabTenant Rental Charges` trc

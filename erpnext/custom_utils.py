@@ -935,7 +935,7 @@ def upload_old_housing_application():
 	data = frappe.db.sql('''
 		SELECT name, tenant_cid, tenant_name,block_no,flat_no,initial_allotment_date,locations,total_floor_area,building_classification
 		FROM `tabTenant Information` 
-		WHERE dzongkhag = "Thimphu" AND status = "Allocated" and tenant_cid not in (select cid from `tabHousing Application`) LIMIT 1;
+		WHERE dzongkhag = "Thimphu" AND status = "Allocated" and docstatus = 1 and tenant_cid not in (select cid from `tabHousing Application`) LIMIT 100;
 	''', as_dict=True)
 
 	count = 0
@@ -945,7 +945,7 @@ def upload_old_housing_application():
 		data2 = get_cid_detail(cid=i['tenant_cid'])
 		first_name = data1.get('firstName', '')  # Fetch first name or default to empty if not found
 		designation = data1.get('Designation', '')
-		grade = data1.get('PositionLevel', '')
+		grade = data1.get('PositionLevel') or data1.get('positionLevel') or ""
 		salary = data1.get('GrossPay', '')
 		dept= data1.get('DeptName','')
 		ministry_agency= data1.get('FullWorkingAgency','')
@@ -958,34 +958,43 @@ def upload_old_housing_application():
 		gewog= data2.get('gewogName','')
 		village= data2.get('permanentVillagename','')
 		gender= data2.get('gender','')
-
 		
-		# doc = frappe.new_doc("Housing Application")
-		# doc.application_date_and_time = application_date
-		# doc.applicant_name = EmpName
-		# doc.applicant_rank = 0
-		# doc.cid = i['tenant_cid']
-		# doc.work_station = "Thimphu"
-		# doc.marital_status = "Single"
-		# doc.employment_type = "Civil Servant"
-		# doc.dzongkhag = dzongkhag
-		# doc.gewog = gewog
-		# doc.village = village
-		# doc.agree = 1
-		# doc.gross_salary = salary
-		# doc.mobile_no = mobile_no
-		# doc.email_id = email
-		# doc.ministry_agency = ministry_agency
-		# doc.grade = grade
-		# doc.application_status = "Pending"
-		# doc.gender = "Female" if gender == 'F' else "Male"
-		# doc.date_of_birth = datetime.strptime(dob, "%d/%m/%Y").strftime("%Y-%m-%d") if dob else ""
-		# doc.date_of_appointment = datetime.strptime(date_of_appointment, "%d/%m/%Y").strftime("%Y-%m-%d") if date_of_appointment else ""
-		# doc.save()
+		if dzongkhag and gewog and village:
 
-		print(count)
-		print(data1)
-		print(data2)
+			doc = frappe.new_doc("Housing Application")
+			doc.application_date_and_time = i.initial_allotment_date
+			doc.allotted_date = i.initial_allotment_date
+			doc.applicant_name = EmpName
+			doc.applicant_rank = 0
+			doc.cid = i.tenant_cid
+			doc.work_station = "Thimphu"
+			doc.marital_status = "Single"
+			doc.employment_type = "Civil Servant"
+			doc.dzongkhag = dzongkhag
+			doc.gewog = gewog
+			doc.village = village
+			doc.agree = 1
+			doc.gross_salary = salary
+			doc.mobile_no = mobile_no
+			doc.email_id = email
+			doc.ministry_agency = ministry_agency
+			doc.grade = grade
+			doc.agree = 1
+			doc.flat_no = i.flat_no
+			doc.old_flat_no = frappe.db.get_value("Flat No", i.flat_no, "old_flat_no")
+			doc.total_floor_area = frappe.db.get_value("Flat No", i.flat_no, "total_floor_area")
+			doc.application_status = "Allotted"
+			doc.gender = "Female" if gender == 'F' else "Male"
+			doc.date_of_birth = datetime.strptime(dob, "%d/%m/%Y").strftime("%Y-%m-%d") if dob else ""
+			doc.date_of_appointment = datetime.strptime(date_of_appointment, "%d/%m/%Y").strftime("%Y-%m-%d") if date_of_appointment else ""
+			doc.save()
+			doc.submit()
+
+			print(count)
+			print(data1)
+			print(data2)
+	# frappe.db.commit()
+
 
 	# frappe.msgprint(f"CSV file created at: {file_path}")
 
