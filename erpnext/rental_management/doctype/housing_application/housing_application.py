@@ -76,13 +76,18 @@ class HousingApplication(Document):
 			gross_sal = 0.0
 			spouse_gross = 0.0
 
+		allowed_dzongkhags = frappe.get_all(
+			"Dzongkhag",
+			filters={"allow_in_online_housing_application": 1},
+			pluck="name"
+		)
 		# Assign values if they exist
 			if self.gross_salary:
 				gross_sal = self.gross_salary
 			if self.spouse_gross_salary:
 				spouse_gross = self.spouse_gross_salary
 			self.total_gross_salary = flt(gross_sal, 2) + flt(spouse_gross, 2)
-			if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2 and self.work_station in ("Thimphu"):
+			if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2 and self.work_station not in allowed_dzongkhags:
 				if self.employment_type == "Civil Servant":
 					# # frappe.throw(str(self.total_gross_salary))
 					# # if self.total_gross_salary < 80001:
@@ -104,11 +109,7 @@ class HousingApplication(Document):
 				if self.employment_type == "Corporation, Private and etc":
 					frappe.throw("Not Eligible right now")
    
-		allowed_dzongkhags = frappe.get_all(
-			"Dzongkhag",
-			filters={"allow_in_online_housing_application": 1},
-			pluck="name"
-		)
+		
 
 		if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2 and self.work_station not in allowed_dzongkhags:
 			if len(allowed_dzongkhags) == 1:
@@ -123,13 +124,12 @@ class HousingApplication(Document):
 				)
 			frappe.throw(f"Applications are currently only allowed for {allowed_names}")
    
-   
 	def check_app_limit(self):
 		limit = frappe.db.sql('''
-                        select name from `tabHousing Application` where work_station="Thimphu" and employment_type="Corporation, Private and etc"
-                        and application_status="Pending"
+						select name from `tabHousing Application` where work_station="Thimphu" and employment_type="Corporation, Private and etc"
+						and application_status="Pending"
 
-                        ''')
+						''')
 		if self.is_new() and len(limit) > 29:
 			frappe.throw("The number of applications has reached the limit of 30 for now.")
 
@@ -163,7 +163,7 @@ class HousingApplication(Document):
 		# 	frappe.throw("Private applicants of gross houshold income below Nu.16,000 is accepted for now")
 
 	def update_ranks(self):
-    # Fetch the applicant list filtered by application_status, building_classification, and work_station, sorted by application_date_time
+	# Fetch the applicant list filtered by application_status, building_classification, and work_station, sorted by application_date_time
 		applicant_list = frappe.get_all(
 			"Housing Application",
 			filters={
@@ -259,7 +259,7 @@ class HousingApplication(Document):
 	def on_submit(self):
 		pass
 
-     
+	 
 	def check_agree(self):
 		if not self.agree:
 			frappe.throw("You must <b>Agree to Terms</b> in order to submit the application")
