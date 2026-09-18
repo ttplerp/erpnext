@@ -328,15 +328,42 @@ def get_data(filters):
 		cond += " and fn.old_flat_no like '%{}%'".format(filters.get("old_flat_no"))
 
 	query = """select 
-				COALESCE(ha.applicant_name, ti.tenant_name) as tenant_name, ha.gender, ti.tenant_cid as cid, ha.employee_id, ha.grade, ha.designation, ti.ministry_and_agency, 
+				COALESCE(ha.applicant_name, ti.tenant_name) as tenant_name, ti.tenant_cid as cid, ha.designation, ti.ministry_and_agency, 
 				ti.tenant_department, fn.old_flat_no, ti.initial_allotment_date, ti.total_floor_area, trc.rental_amount as current_rent, ti.rate_per_sqft, ti.block, ti.flat, 
-				ti.flat_no, ti.block_no, ti.building_classification, ti.locations, ti.employment_type, ha.application_date_time, ha.gross_salary, ti.security_deposit, ha.mobile_no,
+				ti.flat_no, ti.block_no, ti.building_classification, ti.locations, ti.employment_type, ha.application_date_time, ti.security_deposit, ha.mobile_no,
 				ha.email_id, ha.marital_status, ha.work_station, COALESCE(trc.increment, 0) as last_increment, ti.status, ti.name as ti_name, trc.idx,
+				CASE
+					WHEN ti.is_nhdcl_employee = 1 THEN ti.employee
+					ELSE ha.employee_id
+				END AS employee_id,
+				CASE
+					WHEN ti.is_nhdcl_employee = 1 THEN (select gender from `tabEmployee` where name = ti.employee)
+					ELSE ha.gender
+				END AS gender,
+				CASE
+					WHEN ti.is_nhdcl_employee = 1 THEN (select grade from `tabEmployee` where name = ti.employee)
+					ELSE ha.grade
+				END AS grade,
+				CASE
+					WHEN ti.is_nhdcl_employee = 1 THEN (select designation from `tabEmployee` where name = ti.employee)
+					ELSE ha.designation
+				END AS designation,
+				CASE
+					WHEN ti.is_nhdcl_employee = 1 THEN (select designation from `tabEmployee` where name = ti.employee)
+					ELSE ha.designation
+				END AS designation,
+				CASE
+					WHEN ti.is_nhdcl_employee = 1 THEN (select designation from `tabEmployee` where name = ti.employee)
+					ELSE ha.designation
+				END AS designation,
+				CASE
+					WHEN ti.is_nhdcl_employee = 1 THEN (select total_earning from `tabSalary Structure` where employee = ti.employee)
+					ELSE ha.gross_salary
+				END AS gross_salary,
 				CASE
 					WHEN ha.marital_status = 'Divorced' THEN NULL
 					ELSE ha.spouse_gross_salary
 				END AS spouse_gross_salary,
-
 				CASE
 					WHEN ha.marital_status = 'Divorced' THEN NULL
 					ELSE ha.spouse_name
@@ -372,11 +399,18 @@ def get_data(filters):
 					ELSE ha.spouse_employment_type
 				END AS spouse_employment_type,
 
-				ha.gross_salary +
 				CASE
-					WHEN ha.marital_status = 'Married'
-						THEN IFNULL(ha.spouse_gross_salary, 0)
-					ELSE 0
+					WHEN ti.is_nhdcl_employee = 1 THEN
+						(
+							SELECT ss.total_earning
+							FROM `tabSalary Structure` ss
+							WHERE ss.employee = ti.employee
+							LIMIT 1
+						)
+					WHEN ha.marital_status = 'Married' THEN
+						ha.gross_salary + IFNULL(ha.spouse_gross_salary, 0)
+					ELSE
+						ha.gross_salary
 				END AS total_gross_salary
 			from `tabTenant Information` ti
 			left join `tabHousing Application` ha 

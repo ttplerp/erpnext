@@ -72,46 +72,13 @@ class HousingApplication(Document):
 		# if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2 and not self.employment_type == "Civil Servant":
 		# 	# frappe.throw("New applications for civil servants are temporarily suspended, due to a substantial backlog")
 		# 	frappe.throw("Applications are currently only allowed for Civil Servants")
-		if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2:
-			gross_sal = 0.0
-			spouse_gross = 0.0
-
 		allowed_dzongkhags = frappe.get_all(
 			"Dzongkhag",
 			filters={"allow_in_online_housing_application": 1},
 			pluck="name"
 		)
-		# Assign values if they exist
-			if self.gross_salary:
-				gross_sal = self.gross_salary
-			if self.spouse_gross_salary:
-				spouse_gross = self.spouse_gross_salary
-			self.total_gross_salary = flt(gross_sal, 2) + flt(spouse_gross, 2)
-			if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2 and self.work_station not in allowed_dzongkhags:
-				if self.employment_type == "Civil Servant":
-					# # frappe.throw(str(self.total_gross_salary))
-					# # if self.total_gross_salary < 80001:
-					# # frappe.throw("Only total gross salary above Nu.800001 are open for civil servant ")
-					# if frappe.utils.now_datetime() >= datetime(2026, 3, 9):
-					# 	# frappe.throw(str(self.total_gross_salary))
-					# 	if self.total_gross_salary < 80001:
-					# 		frappe.throw("Currently, applications are open only for the Class 1A category for civil servants in Thimphu, and your gross income does not meet the eligibility criteria for this category.")
-					# 	if self.total_gross_salary > 300000:
-					# 		frappe.throw("Currently, applications are open only for the Class 1A category for civil servants in Thimphu, and your gross income does not meet the eligibility criteria for this category.")
-					# else: 
-
-					frappe.throw("Applications currently not open")
-				elif self.employment_type == "Corporation, Private and etc":
-					frappe.throw("Not Eligible Right row")
-					if self.total_gross_salary > 16000:
-						frappe.throw("only total gross salary Nu.16000 and below is open for Private and Corporate")
-			if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2:
-				if self.employment_type == "Corporation, Private and etc":
-					frappe.throw("Not Eligible right now")
-   
 		
-
-		if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2 and self.work_station not in allowed_dzongkhags:
+		if self.work_station not in allowed_dzongkhags:
 			if len(allowed_dzongkhags) == 1:
 				allowed_names = allowed_dzongkhags[0]
 			elif len(allowed_dzongkhags) == 2:
@@ -123,6 +90,40 @@ class HousingApplication(Document):
 					+ allowed_dzongkhags[-1]
 				)
 			frappe.throw(f"Applications are currently only allowed for {allowed_names}")
+
+		# if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2:
+		gross_sal = 0.0
+		spouse_gross = 0.0
+
+	
+	# Assign values if they exist
+		if self.gross_salary:
+			gross_sal = self.gross_salary
+		if self.spouse_gross_salary:
+			spouse_gross = self.spouse_gross_salary
+		self.total_gross_salary = flt(gross_sal, 2) + flt(spouse_gross, 2)
+		if self.work_station in allowed_dzongkhags:
+			if self.employment_type == "Civil Servant" and frappe.db.get_value("Dzongkhag", self.work_station, "allow_for_civil_servant") == 0:
+				# # frappe.throw(str(self.total_gross_salary))
+				# # if self.total_gross_salary < 80001:
+				# # frappe.throw("Only total gross salary above Nu.800001 are open for civil servant ")
+				# if frappe.utils.now_datetime() >= datetime(2026, 3, 9):
+				# 	# frappe.throw(str(self.total_gross_salary))
+				# 	if self.total_gross_salary < 80001:
+				# 		frappe.throw("Currently, applications are open only for the Class 1A category for civil servants in Thimphu, and your gross income does not meet the eligibility criteria for this category.")
+				# 	if self.total_gross_salary > 300000:
+				# 		frappe.throw("Currently, applications are open only for the Class 1A category for civil servants in Thimphu, and your gross income does not meet the eligibility criteria for this category.")
+				# else: 
+
+				frappe.throw("Applications currently not open for Civil Servant")
+			elif self.employment_type == "Corporation, Private and etc" and frappe.db.get_value("Dzongkhag", self.work_station, "allow_for_corporate_and_private") == 0:
+				# if self.total_gross_salary > 16000:
+				# 	frappe.throw("only total gross salary Nu.16000 and below is open for Private and Corporate")
+				frappe.throw("Applications currently not open for Corporation, Private and etc")
+			
+		# if creation_time and (frappe.utils.now_datetime() - creation_time).total_seconds() <= 2:
+		# 	if self.employment_type == "Corporation, Private and etc":
+		# 		frappe.throw("Not Eligible right now")
    
 	def check_app_limit(self):
 		limit = frappe.db.sql('''
