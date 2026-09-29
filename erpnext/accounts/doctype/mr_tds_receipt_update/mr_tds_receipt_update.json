@@ -1,0 +1,377 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "MRTDSRC.YY.####",
+ "creation": "2026-09-02 10:46:26.960823",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "purpose",
+  "branch",
+  "cost_center",
+  "cb_6",
+  "company",
+  "tax_withholding_category",
+  "region",
+  "fiscal_year",
+  "month",
+  "number_of_employees",
+  "pbva",
+  "bulk_leave_encashment",
+  "sb_filters",
+  "from_date",
+  "cb_9",
+  "to_date",
+  "sb_receipt_details",
+  "tds_receipt_number",
+  "cb_15",
+  "tds_receipt_date",
+  "cb_18",
+  "cheque_no",
+  "21",
+  "cheque_date",
+  "section_break_5h4of",
+  "employees",
+  "section_break_llhcs",
+  "total_gross_salary",
+  "column_break_qfmka",
+  "total_salary_tax",
+  "column_break_tbaom",
+  "total_health_contribution",
+  "sb_invoice_details",
+  "items",
+  "sb_totals",
+  "total_bill_amount",
+  "cb_21",
+  "total_tax_amount",
+  "sb_journal_entry",
+  "journal_entry",
+  "col_je_1",
+  "journal_entry_status",
+  "col_je_2",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "purpose",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Purpose",
+   "options": "Employee Salary\nBulk Leave Encashment",
+   "reqd": 1
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "branch.cost_center",
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "tax_withholding_category",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Tax Withholding Category",
+   "options": "Tax Withholding Category"
+  },
+  {
+   "fieldname": "region",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Region",
+   "options": "Region"
+  },
+  {
+   "depends_on": "eval:in_list([\"Employee Salary\",\"Bonus\",\"PBVA\"], doc.purpose)",
+   "fieldname": "fiscal_year",
+   "fieldtype": "Link",
+   "label": "Fiscal Year",
+   "mandatory_depends_on": "eval:in_list([\"Employee Salary\",\"Annual Bonus\",\"PBVA\"], doc.purpose)",
+   "options": "Fiscal Year"
+  },
+  {
+   "depends_on": "eval:doc.purpose == \"MR Employee Salary\"",
+   "fieldname": "month",
+   "fieldtype": "Select",
+   "label": "Month",
+   "mandatory_depends_on": "eval:doc.purpose == \"Employee Salary\"",
+   "options": "\n01\n02\n03\n04\n05\n06\n07\n08\n09\n10\n11\n12"
+  },
+  {
+   "depends_on": "eval:doc.purpose == \"Employee Salary\"",
+   "fieldname": "number_of_employees",
+   "fieldtype": "Int",
+   "label": "Number Of Employees",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:in_list([\"PBVA\"], doc.purpose)",
+   "fieldname": "pbva",
+   "fieldtype": "Data",
+   "label": "PBVA",
+   "mandatory_depends_on": "eval:in_list([\"PBVA\"], doc.purpose)"
+  },
+  {
+   "depends_on": "eval:doc.purpose === \"Bulk Leave Encashment\"",
+   "fieldname": "bulk_leave_encashment",
+   "fieldtype": "Link",
+   "label": "Bulk Leave Encashment",
+   "mandatory_depends_on": "eval:doc.purpose === \"Bulk Leave Encashment\"",
+   "options": "Bulk Leave Encashment"
+  },
+  {
+   "fieldname": "sb_filters",
+   "fieldtype": "Section Break",
+   "label": "Filters"
+  },
+  {
+   "depends_on": "eval:!in_list([\"Employee Salary\",\"Bulk Leave Encashment\",\"Bonus\",\"PBVA\"], doc.purpose)",
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "From Date",
+   "mandatory_depends_on": "eval:!in_list([\"Employee Salary\",\"Bulk Leave Encashment\",\"Bonus\",\"PBVA\"], doc.purpose)"
+  },
+  {
+   "fieldname": "cb_9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:!in_list([\"Employee Salary\",\"Bulk Leave Encashment\",\"Bonus\",\"PBVA\"], doc.purpose)",
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date",
+   "mandatory_depends_on": "eval:!in_list([\"Employee Salary\",\"Bulk Leave Encashment\",\"Bonus\",\"PBVA\"], doc.purpose)"
+  },
+  {
+   "fieldname": "sb_receipt_details",
+   "fieldtype": "Section Break",
+   "label": "Receipt Details"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "tds_receipt_number",
+   "fieldtype": "Data",
+   "label": "TDS Receipt Number",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_15",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "tds_receipt_date",
+   "fieldtype": "Date",
+   "label": "TDS Receipt Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_18",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "cheque_no",
+   "fieldtype": "Data",
+   "label": "Cheque No",
+   "reqd": 1
+  },
+  {
+   "fieldname": "21",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "cheque_date",
+   "fieldtype": "Date",
+   "label": "Cheque Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_5h4of",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.purpose===\"Employee Salary\"",
+   "fieldname": "employees",
+   "fieldtype": "Table",
+   "label": "Employee Details",
+   "options": "MR Employee TDS Item"
+  },
+  {
+   "depends_on": "eval:doc.purpose===\"Employee Salary\"",
+   "fieldname": "section_break_llhcs",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "total_gross_salary",
+   "fieldtype": "Currency",
+   "label": "Total Gross Salary",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_qfmka",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_salary_tax",
+   "fieldtype": "Currency",
+   "label": "Total Salary Tax",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_tbaom",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_health_contribution",
+   "fieldtype": "Currency",
+   "label": "Total Health Contribution",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_invoice_details",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:!in_list([\"Employee Salary\",\"Bulk Leave Encashment\",\"Bonus\",\"PBVA\"], doc.purpose)",
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Invoice Details",
+   "options": "TDS Remittance Item"
+  },
+  {
+   "depends_on": "eval:doc.purpose !=\"Employee Salary\"",
+   "fieldname": "sb_totals",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "total_bill_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total Bill Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_21",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_tax_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total Tax Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_journal_entry",
+   "fieldtype": "Section Break",
+   "label": "Journal Entry Details"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "journal_entry",
+   "fieldtype": "Link",
+   "label": "Journal Entry",
+   "options": "Journal Entry"
+  },
+  {
+   "fieldname": "col_je_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.docstatus==1",
+   "fieldname": "journal_entry_status",
+   "fieldtype": "Data",
+   "label": "Journal Entry Status",
+   "read_only": 1
+  },
+  {
+   "fieldname": "col_je_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "TDS Receipt Update",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-09-29 12:00:01.975439",
+ "modified_by": "Administrator",
+ "module": "Accounts",
+ "name": "MR TDS Receipt Update",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_views": 1
+}
