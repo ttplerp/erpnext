@@ -214,11 +214,15 @@ class SalesInvoice(SellingController):
 		customer_type = frappe.db.get_value("Customer", self.customer, "customer_type")
 		total_charges = 0
 		total_qty = 0
+		for tax in self.taxes:
+			if tax.is_gst == 1 and frappe.db.get_value("Customer", self.customer, "country") == "Bhutan":
+				total_gst += flt(tax.tax_amount)
 		for i in self.items:
 			total_qty += i.qty
 		for d in self.other_charges:
 			d.amount = flt(flt(d.rate) * flt(total_qty),2)
-			total_charges += flt(d.amount)
+			d.gst_amount = flt(d.amount)*0.05
+			# total_charges += flt(d.amount)
 		self.total_charges = total_charges
 		self.grand_total = flt(self.total + self.total_charges,2)
 		if customer_type == "International Customer":
@@ -1135,6 +1139,10 @@ class SalesInvoice(SellingController):
 	def make_customer_gl_entry(self, gl_entries):
 		# Checked both rounding_adjustment and rounded_total
 		# because rounded_total had value even before introcution of posting GLE based on rounded total
+		total_gst = 0
+		for tax in self.taxes:
+			if tax.is_gst == 1:
+				total_gst += tax.base_tax_amount_after_discount_amount
 		grand_total = (
 			self.rounded_total if (self.rounding_adjustment and self.rounded_total) else self.grand_total
 		)
@@ -1144,6 +1152,9 @@ class SalesInvoice(SellingController):
 			else self.base_grand_total,
 			self.precision("base_grand_total"),
 		) - flt(self.total_advance) - flt(self.total_normal_loss) - flt(self.total_abnormal_loss),2)
+		if frappe.db.get_value("Customer", self.customer, "country") != "Bhutan":
+			grand_total -= total_gst
+			base_grand_total -= total_gst
 		if grand_total and not self.is_internal_transfer():
 			# Did not use base_grand_total to book rounding loss gle
 			gl_entries.append(
@@ -1184,23 +1195,43 @@ class SalesInvoice(SellingController):
 
 			if flt(tax.base_tax_amount_after_discount_amount):
 				account_currency = get_account_currency(tax.account_head)
-				gl_entries.append(
-					self.get_gl_dict(
-						{
-							"account": tax.account_head,
-							"against": self.customer,
-							"credit": flt(base_amount, tax.precision("tax_amount_after_discount_amount")),
-							"credit_in_account_currency": (
-								flt(base_amount, tax.precision("base_tax_amount_after_discount_amount"))
-								if account_currency == self.company_currency
-								else flt(amount, tax.precision("tax_amount_after_discount_amount"))
-							),
-							"cost_center": tax.cost_center,
-						},
-						account_currency,
-						item=tax,
+				if tax.is_gst == 0:
+					gl_entries.append(
+						self.get_gl_dict(
+							{
+								"account": tax.account_head,
+								"against": self.customer,
+								"credit": flt(base_amount, tax.precision("tax_amount_after_discount_amount")),
+								"credit_in_account_currency": (
+									flt(base_amount, tax.precision("base_tax_amount_after_discount_amount"))
+									if account_currency == self.company_currency
+									else flt(amount, tax.precision("tax_amount_after_discount_amount"))
+								),
+								"cost_center": tax.cost_center,
+							},
+							account_currency,
+							item=tax,
+						)
 					)
-				)
+				else:
+					if frappe.db.get_value("Customer", self.customer, "country") == "Bhutan":
+						gl_entries.append(
+							self.get_gl_dict(
+								{
+									"account": tax.account_head,
+									"against": self.customer,
+									"credit": flt(base_amount, tax.precision("tax_amount_after_discount_amount")),
+									"credit_in_account_currency": (
+										flt(base_amount, tax.precision("base_tax_amount_after_discount_amount"))
+										if account_currency == self.company_currency
+										else flt(amount, tax.precision("tax_amount_after_discount_amount"))
+									),
+									"cost_center": tax.cost_center,
+								},
+								account_currency,
+								item=tax,
+							)
+						)
 
 	def make_internal_transfer_gl_entries(self, gl_entries):
 		if self.is_internal_transfer() and flt(self.base_total_taxes_and_charges):
