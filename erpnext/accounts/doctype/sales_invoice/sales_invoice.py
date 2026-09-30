@@ -214,6 +214,7 @@ class SalesInvoice(SellingController):
 		customer_type = frappe.db.get_value("Customer", self.customer, "customer_type")
 		total_charges = 0
 		total_qty = 0
+		total_gst = 0
 		for tax in self.taxes:
 			if tax.is_gst == 1 and frappe.db.get_value("Customer", self.customer, "country") == "Bhutan":
 				total_gst += flt(tax.tax_amount)
