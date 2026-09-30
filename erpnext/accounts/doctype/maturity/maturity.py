@@ -259,7 +259,7 @@ class Maturity(Document):
 			if not treasury.maturity_amount:
 				frappe.throw("Please set maturity amount in Treasury Master Data for {}".format(treasury.name))
 			self.interest_amount = flt(((flt(treasury.maturity_amount)-flt(treasury.principal_amount))/treasury.day)*self.days,2)
-		elif self.party == 'RGOB Bond':
+		elif frappe.db.get_value("Treasury", self.treasury_id, "party") == 'RGOB Bond':
 			self.interest_amount = (flt(treasury.principal_amount)*flt(self.interest_rate*0.01)*flt(self.days))/flt(360)
 		else:
 			self.interest_amount = (flt(treasury.principal_amount)*flt(self.interest_rate*0.01)*flt(self.days))/flt(days_in_year)
