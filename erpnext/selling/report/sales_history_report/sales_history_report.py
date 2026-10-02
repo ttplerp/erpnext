@@ -205,7 +205,9 @@ def get_data(filters):
 
 	if query:
 		for a in query:
-			total_biiled_amt = flt(a.si_amount) + flt(a.gst_amount) + flt(a.total_charges) + flt(a.excess_amt) - flt(a.normal_loss_amt) - flt(a.abnormal_loss_amt)
+			# total_biiled_amt = flt(a.si_amount) + flt(a.gst_amount) + flt(a.total_charges) + flt(a.excess_amt) - flt(a.normal_loss_amt) - flt(a.abnormal_loss_amt)
+			total_biiled_amt = flt(a.si_amount) + flt(a.total_charges) + flt(a.excess_amt) - flt(a.normal_loss_amt) - flt(a.abnormal_loss_amt)#added for 5%gst and 0%gst in sales history report report by Lek
+			gst_amount = flt(total_biiled_amt * 0.05, 2) if a.country == "Bhutan" else 0 #added for 5%gst and 0%gst in sales history report report by Lek
 
 			row = {
 				"sales_no": a.name,
@@ -232,7 +234,7 @@ def get_data(filters):
 				"due_date": a.due_date,
 				"accepted_qty": a.accepted_qty if a.status != "Return" else -1 * a.delivered_qty,
 				"si_amount": a.si_amount,
-				"gst_amount": a.gst_amount,
+				"gst_amount": gst_amount , #made for 5%gst and 0%gst in sales history report report by Lek
 				"other_charges": a.total_charges,
 				"nl_qty": a.normal_loss,
 				"nl_amt": a.normal_loss_amt,
@@ -242,7 +244,8 @@ def get_data(filters):
 				"excess_amt": a.excess_amt,
 				"transporter_name": a.supplier,
 				"equipment_no": a.vehicle_number if flt(a.others_equipment) == 1 else a.equipment,
-				"bill_amount": a.si_amount+a.gst_amount,
+				# "bill_amount": a.si_amount+a.gst_amount,
+				"bill_amount": a.si_amount+gst_amount,#made for 5%gst and 0%gst in sales history report report by Lek
 				"total_biiled_amt": total_biiled_amt,
 				"location": a.location,
 				"remarks": a.remarks,
