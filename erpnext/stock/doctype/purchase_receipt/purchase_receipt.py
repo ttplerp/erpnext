@@ -285,7 +285,7 @@ class PurchaseReceipt(BuyingController):
 
 	#Update asset entries if asset
 	def update_asset_receive_entries(self):
-		asset_item_groups = ["Fixed Asset", "Electrical Equipment", "Tools & Plants", "Automobiles", "Electrical Accessories"]
+		asset_item_groups = ["Fixed Asset", "Electrical Equipment", "Tools & Plants", "Automobiles", "Electrical Accessories", "Culinary Arts"]
 		for a in self.items:
 			item_group = frappe.db.get_value("Item", a.item_code, "item_group")
 			if item_group and item_group in asset_item_groups:

@@ -431,6 +431,7 @@
    "options": "fa fa-file-text"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "mode_of_payment",
    "fieldtype": "Link",
    "label": "Mode of Payment",
@@ -615,7 +616,7 @@
  "idx": 176,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-02-16 17:08:16.919823",
+ "modified": "2026-09-24 16:45:00.632120",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Journal Entry",
