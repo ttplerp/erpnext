@@ -123,6 +123,7 @@
   },
   {
    "depends_on": "eval:doc.party_type === \"Customer\" && doc.invoice_type!=\"Hire Income\"",
+   
    "fieldname": "equipment_type",
    "fieldtype": "Link",
    "label": "Equipment Type",
