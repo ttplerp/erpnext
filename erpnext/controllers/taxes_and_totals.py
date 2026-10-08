@@ -1364,6 +1364,11 @@ class calculate_taxes_and_totals(object):
 
 		if not self.discount_amount_applied:
 			for item in self.doc.get("items"):
+				# Fetch is_gst_exempted from the Item master
+				is_exempted = False
+				if item.item_code and self.doc.taxes_and_charges == "5% GST Inward - DS":
+					is_exempted = frappe.db.get_value("Item", item.item_code, "is_gst_exempted") or 0
+
 				self.doc.round_floats_in(item)
 
 				if item.discount_percentage == 100:
@@ -1706,6 +1711,15 @@ class calculate_taxes_and_totals(object):
 					tax.total = flt(self.doc.get("taxes")[row_idx - 1].total, tax.precision("total"))
 
 	def get_current_tax_amount(self, item, tax, item_tax_map):
+		# Check if item is GST exempted from Item master
+		is_exempted = False
+		if item.item_code and self.doc.taxes_and_charges == "5% GST Inward - DS":
+			is_exempted = frappe.db.get_value("Item", item.item_code, "is_gst_exempted") or 0
+		
+		if is_exempted:
+			# Skip tax calculation for this item
+			return 0.0
+
 		tax_rate = self._get_tax_rate(tax, item_tax_map)
 		current_tax_amount = 0.0
 
@@ -1738,6 +1752,7 @@ class calculate_taxes_and_totals(object):
 			self.set_item_wise_tax(item, tax, tax_rate, current_tax_amount)
 
 		return current_tax_amount
+
 
 	# Previous Code
 	# def set_item_wise_tax(self, item, tax, tax_rate, current_tax_amount):

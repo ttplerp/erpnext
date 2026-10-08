@@ -170,14 +170,13 @@
   {
    "fieldname": "journal",
    "fieldtype": "Attach Image",
-   "label": "Payment Screenshot",
-   "reqd": 1
+   "label": "Payment Screenshot"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-05-13 16:43:36.991258",
+ "modified": "2026-09-18 12:00:21.073026",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Online Order",

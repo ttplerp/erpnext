@@ -28,7 +28,6 @@
   "is_production_item",
   "is_pol_item",
   "is_selling_item",
-  "is_gst_exempted",
   "include_item_in_manufacturing",
   "opening_stock",
   "valuation_rate",
@@ -974,6 +973,7 @@
    "default": "0",
    "fieldname": "is_gst_exempted",
    "fieldtype": "Check",
+   "in_list_view": 1,
    "label": "Is GST Exempted"
   }
  ],
@@ -982,7 +982,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-01-20 14:44:15.614815",
+ "modified": "2026-08-16 23:31:44.947413",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Item",

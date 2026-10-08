@@ -320,9 +320,9 @@ def place_order(orders, location):
         frappe.throw("Invalid orders")
     if not location or not frappe.db.exists("Pickup Location", location):
         frappe.throw("Invalid location")
-    file = frappe.request.files.get("file")
-    if not file:
-        frappe.throw("Journal Screenshot is mandatory")
+    #file = frappe.request.files.get("file")
+    #if not file:
+    #    frappe.throw("Journal Screenshot is mandatory")
 
     desup = frappe.get_doc("Desuup", get_desuup())
     order = frappe.new_doc("Online Order")
@@ -333,8 +333,8 @@ def place_order(orders, location):
     order.journal = "Initial"
     order.insert(ignore_permissions=True)
 
-    file_doc = upload_file(file, order.doctype, order.name) 
-    order.journal = file_doc.file_url
+    #file_doc = upload_file(file, order.doctype, order.name) 
+    #order.journal = file_doc.file_url
     order.docstatus = 1
     for a in json.loads(orders):
         item = a.get('item_code')

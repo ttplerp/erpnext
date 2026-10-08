@@ -60,7 +60,7 @@ frappe.ui.form.on('Deployment Announcement', {
 		frm.set_query("cohort", function(){
 			return {
 				filters: {
-					'status': "ACTIVE",
+					'end_date': [">", frappe.datetime.get_today()],
 				}
 			}
 		})
@@ -74,5 +74,8 @@ frappe.ui.form.on('Deployment Announcement', {
 				    }
 			      }
         	});
+
+		cur_frm.set_value("cohort", "end_date", "registration_deadline")
+
 	},
 });

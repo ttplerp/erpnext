@@ -200,176 +200,554 @@ def download_bank_statement(bank='BOBL', bs_date=None):
 		print("INFO : Press Ctrl+C to terminate the process")
 		if sftp: sftp.close()
 
+# @frappe.whitelist()
+# def process_files(bank='BOBL'):
+# 	''' download the acknowledgement files from bank and process and update the status accordingly '''
+# 	print("#"*80)
+# 	print("# Method : {}".format(__name__))
+# 	print("# Info : Press Ctrl+C to terminate the process")
+# 	print("# PID: {}".format(os.getpid()))
+# 	print("#"*80)
+# 	remote_base = frappe.db.get_value('Bank Payment Settings', bank, 'acknowledgement_path')
+
+# 	try:
+# 		while True:
+# 			logging.info("*** update_file_status started ***")
+# 			waiting_list = get_files_waiting_ack()
+# 			if not waiting_list:
+# 				logging.info("No files found waiting for acknowledgement")
+# 				sleep(60)
+# 				continue
+
+# 			try:
+# 				sftp = SftpClient(bank)
+# 			except Exception as e:
+# 				logging.critical("CONNECTION_FAILURE {}".format(traceback.format_exc()))
+# 				logging.info("Re-trying to connect ...")
+# 				sleep(10)
+# 				continue
+# 			logging.info("Files waiting for acknowledgement: {}".format(waiting_list))
+
+# 			local_list = []
+# 			remote_list = []
+# 			for m in waiting_list: # monthly folder list
+# 				remote_path = '/'.join([str(remote_base),str(m)])
+# 				if sftp.file_exists(remote_path):
+# 					for d in waiting_list[m]: # daily folder list
+# 						remote_path = '/'.join([str(remote_base),str(m),str(d)])
+# 						if sftp.file_exists(remote_path):
+# 							local_list  += [i.replace('.csv','_VALSUC.csv') if i.endswith('.csv') else i.replace('.txt','_SUC.txt') for i in waiting_list[m][d]]
+# 							local_list  += [i.replace('.csv','_VALERR.csv') if i.endswith('.csv') else i.replace('.txt','_ERR.txt') for i in waiting_list[m][d]]
+# 							remote_list = sftp.listdir(remote_path)
+# 							download_list = list(set(local_list).intersection(remote_list))
+
+# 							# create local directories
+# 							filepath = get_site_path('private','files','epayment','processed').rstrip("/")+"/"
+# 							if not os.path.exists(filepath):
+# 								os.makedirs(filepath)
+							
+# 							# download the files from bank and process
+# 							if download_list:
+# 								logging.info("Acknowledgement found for : {}".format(download_list))
+# 								for file in download_list:
+# 									file_name = file.replace('_VALSUC','').replace('_VALERR','').replace('_SUC','').replace('_ERR','')
+# 									if not frappe.db.exists('Bank Payment Upload', {'file_name': file_name}):
+# 										continue
+# 									update_bank_payment_status(file_name=file_name, file_status='Processing Acknowledgement', bank=bank, ack_file=None)								
+
+# 									# download the acknowledgement file						
+# 									try:
+# 										sftp.download(remote_path='/'.join([remote_path, file]),
+# 											local_path = '/'.join([filepath, file]))
+# 									except Exception as e:
+# 										logging.error("DOWNLOAD_FAILED {}".format(traceback.format_exc()))
+# 									else:
+# 										''' read the acknowledgement file and update status '''
+# 										downloaded_file = '/'.join([filepath, file])
+# 										file_status = str(downloaded_file).split('_')[-1].lower()
+# 										if file_status in ('valsuc.csv', 'suc.txt'):
+# 											update_bank_payment_status(file_name=file_name, file_status='Completed', bank=bank, ack_file=downloaded_file)
+# 										elif file_status in ('valerr.csv', 'err.txt'):
+# 											update_bank_payment_status(file_name=file_name, file_status='Failed', bank=bank, ack_file=downloaded_file)
+# 							else:
+# 								# update last_updated time if no acknowledgement files found at bank
+# 								logging.info("No acknowledgement found ...") 
+# 								local_list = list(set([i.replace('_VALSUC','').replace('_VALERR','').replace('_SUC','').replace('_ERR','') for i in local_list]))
+# 								for file_name in local_list:
+# 									if not frappe.db.exists('Bank Payment Upload', {'file_name': file_name}):
+# 										continue
+# 									update_bank_payment_status(file_name=file_name, file_status=None, bank=bank, ack_file=None)
+# 			frappe.db.commit()
+# 			sftp.close()
+# 			sleep(60)
+# 	except KeyboardInterrupt:
+# 		print("INFO : Press Ctrl+C to terminate the process")
+# 		if sftp: sftp.close()
+
+# def update_bank_payment_status(file_name, file_status, bank, ack_file=None):
+# 	''' update status of the file '''
+# 	if not frappe.db.exists('Bank Payment Upload', {'file_name': file_name}):
+# 		return
+
+# 	processing = completed = failed = 0
+# 	doc = frappe.get_doc('Bank Payment', frappe.db.get_value('Bank Payment Upload', {'file_name': file_name}, "parent"))
+# 	doc_modified = 0	
+# 	# update status in Bank Payment Upload
+# 	for rec in doc.uploads:
+# 		status = rec.status
+# 		if rec.file_name and file_name and rec.file_name.lower() == file_name.lower():
+# 			doc_modified += 1
+# 			bpu = frappe.get_doc('Bank Payment Upload', rec.name)
+# 			bpu.db_set('last_updated', get_datetime())
+# 			# rec.last_updated = get_datetime()
+# 			if file_status:
+# 				# rec.status = file_status
+# 				bpu.db_set('status', file_status)
+# 				status = file_status
+
+# 		if status == 'Processing Acknowledgement':
+# 			processing += 1
+# 		elif status == 'Failed':
+# 			failed += 1
+# 		elif status == 'Completed':
+# 			completed += 1
+
+# 	# update bank's response in the respective bank payment item
+# 	if ack_file:
+# 		logging.info("Updating Bank Response...")
+# 		with open(ack_file, 'r') as file:
+# 			csv_reader = csv.reader(file)
+# 			rows = list(csv_reader)
+
+# 			for idx, row in enumerate(rows):
+# 				if ack_file.endswith('_VALERR.csv'):
+# 					if idx == len(rows) - 1:
+# 						continue
+
+# 				try:
+# 					bank_account_no_from_ack = row[1]
+# 					bank_response = row[8]
+# 				except Exception as e:
+# 					bank_account_no_from_ack = ""
+# 					bank_response = "No Response from Bank in file"
+# 				for rec in doc.items:
+# 					if rec.bank_account_no == bank_account_no_from_ack:
+# 						doc_modified += 1
+# 						bpi = frappe.get_doc('Bank Payment Item', rec.name)
+# 						bpi.db_set('error_message', bank_response)
+
+# 	counter = 0
+# 	for rec in doc.items:
+# 		if rec.file_name and file_name and rec.file_name.lower() == file_name.lower():
+# 			if file_status:
+# 				doc_modified += 1
+# 				bpi = frappe.get_doc('Bank Payment Item', rec.name)
+# 				bpi.db_set('status', file_status)
+# 				# rec.status = file_status
+    
+# 			# if rec.file_name.startswith('PEMSPAY') and rec.bank_name = bank:
+# 			# 	rec.error 
+
+# 	# update status in Bank Payment
+# 	status = None
+# 	if processing:
+# 		status = 'Processing Acknowledgement'
+# 	elif completed and failed:
+# 		status = 'Partial Payment'
+# 	elif completed:
+# 		status = 'Completed'
+# 	elif failed:
+# 		status = 'Failed'
+
+# 	if status or doc_modified:
+# 		# doc.status = status if status else doc.status
+# 		# doc.workflow_state = doc.status
+# 		# doc.save(ignore_permissions=True)
+# 		doc.reload()
+# 		doc.db_set('status', status if status else doc.status)
+# 		doc.db_set('workflow_state', status if status else doc.status)
+# 		doc.reload()
+# 		doc.update_transaction_status()
+# 		doc.append_bank_response_in_bpi()
+# 		doc.reload()
+
 @frappe.whitelist()
 def process_files(bank='BOBL'):
-	''' download the acknowledgement files from bank and process and update the status accordingly '''
-	print("#"*80)
-	print("# Method : {}".format(__name__))
-	print("# Info : Press Ctrl+C to terminate the process")
-	print("# PID: {}".format(os.getpid()))
-	print("#"*80)
-	remote_base = frappe.db.get_value('Bank Payment Settings', bank, 'acknowledgement_path')
+    ''' download the acknowledgement files from bank and process and update the status accordingly '''
+    print("#"*80)
+    print("# Method : {}".format(__name__))
+    print("# Info : Press Ctrl+C to terminate the process")
+    print("# PID: {}".format(os.getpid()))
+    print("#"*80)
+    remote_base = frappe.db.get_value('Bank Payment Settings', bank, 'acknowledgement_path')
 
-	try:
-		while True:
-			logging.info("*** update_file_status started ***")
-			waiting_list = get_files_waiting_ack()
-			if not waiting_list:
-				logging.info("No files found waiting for acknowledgement")
-				sleep(60)
-				continue
+    # Set session timeout at the start
+    try:
+        frappe.db.sql("SET SESSION innodb_lock_wait_timeout = 1000")
+    except:
+        pass
 
-			try:
-				sftp = SftpClient(bank)
-			except Exception as e:
-				logging.critical("CONNECTION_FAILURE {}".format(traceback.format_exc()))
-				logging.info("Re-trying to connect ...")
-				sleep(10)
-				continue
-			logging.info("Files waiting for acknowledgement: {}".format(waiting_list))
+    sftp = None
+    retry_count = 0
+    max_retries = 3
+    
+    try:
+        while True:
+            logging.info("*** update_file_status started ***")
+            
+            # Rollback any hanging transaction
+            try:
+                frappe.db.rollback()
+            except:
+                pass
+            
+            waiting_list = get_files_waiting_ack()
+            if not waiting_list:
+                logging.info("No files found waiting for acknowledgement")
+                sleep(60)
+                continue
 
-			local_list = []
-			remote_list = []
-			for m in waiting_list: # monthly folder list
-				remote_path = '/'.join([str(remote_base),str(m)])
-				if sftp.file_exists(remote_path):
-					for d in waiting_list[m]: # daily folder list
-						remote_path = '/'.join([str(remote_base),str(m),str(d)])
-						if sftp.file_exists(remote_path):
-							local_list  += [i.replace('.csv','_VALSUC.csv') if i.endswith('.csv') else i.replace('.txt','_SUC.txt') for i in waiting_list[m][d]]
-							local_list  += [i.replace('.csv','_VALERR.csv') if i.endswith('.csv') else i.replace('.txt','_ERR.txt') for i in waiting_list[m][d]]
-							remote_list = sftp.listdir(remote_path)
-							download_list = list(set(local_list).intersection(remote_list))
+            # Create new connection or reconnect if needed
+            if sftp is None or not is_connection_alive(sftp):
+                try:
+                    if sftp:
+                        try:
+                            sftp.close()
+                        except:
+                            pass
+                    sftp = SftpClient(bank)
+                    retry_count = 0
+                except Exception as e:
+                    logging.critical("CONNECTION_FAILURE {}".format(traceback.format_exc()))
+                    logging.info("Re-trying to connect ...")
+                    sleep(10)
+                    retry_count += 1
+                    if retry_count >= max_retries:
+                        logging.error("Max retries reached, exiting...")
+                        break
+                    continue
+                
+            logging.info("Files waiting for acknowledgement: {}".format(waiting_list))
 
-							# create local directories
-							filepath = get_site_path('private','files','epayment','processed').rstrip("/")+"/"
-							if not os.path.exists(filepath):
-								os.makedirs(filepath)
-							
-							# download the files from bank and process
-							if download_list:
-								logging.info("Acknowledgement found for : {}".format(download_list))
-								for file in download_list:
-									file_name = file.replace('_VALSUC','').replace('_VALERR','').replace('_SUC','').replace('_ERR','')
-									if not frappe.db.exists('Bank Payment Upload', {'file_name': file_name}):
-										continue
-									update_bank_payment_status(file_name=file_name, file_status='Processing Acknowledgement', bank=bank, ack_file=None)								
+            # Process each month
+            for m in waiting_list: # monthly folder list
+                remote_path = '/'.join([str(remote_base), str(m)])
+                
+                # Check if connection is still alive
+                if not is_connection_alive(sftp):
+                    logging.info("Connection lost, reconnecting...")
+                    try:
+                        sftp.close()
+                    except:
+                        pass
+                    sftp = SftpClient(bank)
+                    retry_count = 0
+                
+                if sftp.file_exists(remote_path):
+                    for d in waiting_list[m]: # daily folder list
+                        remote_path = '/'.join([str(remote_base), str(m), str(d)])
+                        
+                        # Check connection again before each operation
+                        if not is_connection_alive(sftp):
+                            logging.info("Connection lost, reconnecting...")
+                            try:
+                                sftp.close()
+                            except:
+                                pass
+                            sftp = SftpClient(bank)
+                            retry_count = 0
+                        
+                        if sftp.file_exists(remote_path):
+                            local_list = []
+                            remote_list = []
+                            
+                            # Build file lists
+                            for file_name in waiting_list[m][d]:
+                                if file_name.endswith('.csv'):
+                                    local_list.append(file_name.replace('.csv', '_VALSUC.csv'))
+                                    local_list.append(file_name.replace('.csv', '_VALERR.csv'))
+                                else:
+                                    local_list.append(file_name.replace('.txt', '_SUC.txt'))
+                                    local_list.append(file_name.replace('.txt', '_ERR.txt'))
+                            
+                            # Get remote file list with retry
+                            try:
+                                remote_list = sftp.listdir(remote_path)
+                            except Exception as e:
+                                logging.error(f"Failed to list directory {remote_path}: {e}")
+                                # Try to reconnect and retry
+                                try:
+                                    sftp.close()
+                                except:
+                                    pass
+                                sftp = SftpClient(bank)
+                                remote_list = sftp.listdir(remote_path)
+                            
+                            download_list = list(set(local_list).intersection(remote_list))
 
-									# download the acknowledgement file						
-									try:
-										sftp.download(remote_path='/'.join([remote_path, file]),
-											local_path = '/'.join([filepath, file]))
-									except Exception as e:
-										logging.error("DOWNLOAD_FAILED {}".format(traceback.format_exc()))
-									else:
-										''' read the acknowledgement file and update status '''
-										downloaded_file = '/'.join([filepath, file])
-										file_status = str(downloaded_file).split('_')[-1].lower()
-										if file_status in ('valsuc.csv', 'suc.txt'):
-											update_bank_payment_status(file_name=file_name, file_status='Completed', bank=bank, ack_file=downloaded_file)
-										elif file_status in ('valerr.csv', 'err.txt'):
-											update_bank_payment_status(file_name=file_name, file_status='Failed', bank=bank, ack_file=downloaded_file)
-							else:
-								# update last_updated time if no acknowledgement files found at bank
-								logging.info("No acknowledgement found ...") 
-								local_list = list(set([i.replace('_VALSUC','').replace('_VALERR','').replace('_SUC','').replace('_ERR','') for i in local_list]))
-								for file_name in local_list:
-									if not frappe.db.exists('Bank Payment Upload', {'file_name': file_name}):
-										continue
-									update_bank_payment_status(file_name=file_name, file_status=None, bank=bank, ack_file=None)
-			frappe.db.commit()
-			sftp.close()
-			sleep(60)
-	except KeyboardInterrupt:
-		print("INFO : Press Ctrl+C to terminate the process")
-		if sftp: sftp.close()
+                            # create local directories
+                            filepath = get_site_path('private', 'files', 'epayment', 'processed').rstrip("/") + "/"
+                            if not os.path.exists(filepath):
+                                os.makedirs(filepath)
+                            
+                            # download the files from bank and process
+                            if download_list:
+                                logging.info("Acknowledgement found for : {}".format(download_list))
+                                for file in download_list:
+                                    file_name = file.replace('_VALSUC','').replace('_VALERR','').replace('_SUC','').replace('_ERR','')
+                                    
+                                    try:
+                                        # Check if file exists in database
+                                        if not frappe.db.exists('Bank Payment Upload', {'file_name': file_name}):
+                                            continue
+                                        
+                                        # Update status before download
+                                        update_bank_payment_status(file_name=file_name, file_status='Processing Acknowledgement', bank=bank, ack_file=None)
+                                        
+                                        # Check connection before download
+                                        if not is_connection_alive(sftp):
+                                            logging.info("Reconnecting before download...")
+                                            try:
+                                                sftp.close()
+                                            except:
+                                                pass
+                                            sftp = SftpClient(bank)
+                                        
+                                        # download the acknowledgement file
+                                        try:
+                                            sftp.download(remote_path='/'.join([remote_path, file]),
+                                                local_path='/'.join([filepath, file]))
+                                        except Exception as e:
+                                            logging.error(f"DOWNLOAD_FAILED for {file}: {e}")
+                                            # Try one more time with reconnection
+                                            try:
+                                                sftp.close()
+                                            except:
+                                                pass
+                                            sftp = SftpClient(bank)
+                                            sftp.download(remote_path='/'.join([remote_path, file]),
+                                                local_path='/'.join([filepath, file]))
+                                        
+                                        # Process downloaded file
+                                        downloaded_file = '/'.join([filepath, file])
+                                        if os.path.exists(downloaded_file):
+                                            file_status = str(downloaded_file).split('_')[-1].lower()
+                                            
+                                            if file_status in ('valsuc.csv', 'suc.txt'):
+                                                update_bank_payment_status(file_name=file_name, file_status='Completed', bank=bank, ack_file=downloaded_file)
+                                            elif file_status in ('valerr.csv', 'err.txt'):
+                                                update_bank_payment_status(file_name=file_name, file_status='Failed', bank=bank, ack_file=downloaded_file)
+                                                
+                                    except Exception as e:
+                                        logging.error(f"Error processing file {file_name}: {e}")
+                                        # Continue with next file
+                                        continue
+                            else:
+                                # update last_updated time if no acknowledgement files found
+                                logging.info("No acknowledgement found ...") 
+                                local_list = list(set([i.replace('_VALSUC','').replace('_VALERR','').replace('_SUC','').replace('_ERR','') for i in local_list]))
+                                for file_name in local_list:
+                                    try:
+                                        if not frappe.db.exists('Bank Payment Upload', {'file_name': file_name}):
+                                            continue
+                                        update_bank_payment_status(file_name=file_name, file_status=None, bank=bank, ack_file=None)
+                                    except Exception as e:
+                                        logging.error(f"Error updating status for {file_name}: {e}")
+                            
+                            # Commit after each folder to release locks
+                            try:
+                                frappe.db.commit()
+                            except:
+                                pass
+                            
+                            # Small delay to prevent overwhelming the server
+                            sleep(0.5)
+            
+            # Close connection and recreate for next cycle
+            try:
+                if sftp:
+                    sftp.close()
+                    sftp = None
+            except:
+                pass
+            
+            # Commit any remaining changes
+            try:
+                frappe.db.commit()
+            except:
+                pass
+            
+            sleep(60)
+            
+    except KeyboardInterrupt:
+        print("INFO : Press Ctrl+C to terminate the process")
+        if sftp: 
+            try:
+                sftp.close()
+            except:
+                pass
+        try:
+            frappe.db.sql("SET SESSION innodb_lock_wait_timeout = 50")
+        except:
+            pass
+    except Exception as e:
+        logging.error(f"Fatal error in process_files: {e}")
+        if sftp: 
+            try:
+                sftp.close()
+            except:
+                pass
+        try:
+            frappe.db.rollback()
+            frappe.db.sql("SET SESSION innodb_lock_wait_timeout = 50")
+        except:
+            pass
+        raise
+
+def is_connection_alive(sftp):
+    """Check if SFTP connection is still alive"""
+    if sftp is None:
+        return False
+    try:
+        # Try to get current directory - if this fails, connection is dead
+        sftp._connection.getcwd()
+        return True
+    except:
+        return False
+        raise
 
 def update_bank_payment_status(file_name, file_status, bank, ack_file=None):
-	''' update status of the file '''
-	if not frappe.db.exists('Bank Payment Upload', {'file_name': file_name}):
-		return
+    ''' update status of the file '''
+    try:
+        # Start fresh - rollback any pending transaction
+        frappe.db.rollback()
+        
+        # Set longer timeout for this session
+        frappe.db.sql("SET SESSION innodb_lock_wait_timeout = 1000")
+        
+        if not frappe.db.exists('Bank Payment Upload', {'file_name': file_name}):
+            return
 
-	processing = completed = failed = 0
-	doc = frappe.get_doc('Bank Payment', frappe.db.get_value('Bank Payment Upload', {'file_name': file_name}, "parent"))
-	doc_modified = 0	
-	# update status in Bank Payment Upload
-	for rec in doc.uploads:
-		status = rec.status
-		if rec.file_name and file_name and rec.file_name.lower() == file_name.lower():
-			doc_modified += 1
-			bpu = frappe.get_doc('Bank Payment Upload', rec.name)
-			bpu.db_set('last_updated', get_datetime())
-			# rec.last_updated = get_datetime()
-			if file_status:
-				# rec.status = file_status
-				bpu.db_set('status', file_status)
-				status = file_status
-
-		if status == 'Processing Acknowledgement':
-			processing += 1
-		elif status == 'Failed':
-			failed += 1
-		elif status == 'Completed':
-			completed += 1
-
-	# update bank's response in the respective bank payment item
-	if ack_file:
-		logging.info("Updating Bank Response...")
-		with open(ack_file, 'r') as file:
-			csv_reader = csv.reader(file)
-			rows = list(csv_reader)
-
-			for idx, row in enumerate(rows):
-				if ack_file.endswith('_VALERR.csv'):
-					if idx == len(rows) - 1:
-						continue
-
-				try:
-					bank_account_no_from_ack = row[1]
-					bank_response = row[8]
-				except Exception as e:
-					bank_account_no_from_ack = ""
-					bank_response = "No Response from Bank in file"
-				for rec in doc.items:
-					if rec.bank_account_no == bank_account_no_from_ack:
-						doc_modified += 1
-						bpi = frappe.get_doc('Bank Payment Item', rec.name)
-						bpi.db_set('error_message', bank_response)
-
-	counter = 0
-	for rec in doc.items:
-		if rec.file_name and file_name and rec.file_name.lower() == file_name.lower():
-			if file_status:
-				doc_modified += 1
-				bpi = frappe.get_doc('Bank Payment Item', rec.name)
-				bpi.db_set('status', file_status)
-				# rec.status = file_status
-    
-			# if rec.file_name.startswith('PEMSPAY') and rec.bank_name = bank:
-			# 	rec.error 
-
-	# update status in Bank Payment
-	status = None
-	if processing:
-		status = 'Processing Acknowledgement'
-	elif completed and failed:
-		status = 'Partial Payment'
-	elif completed:
-		status = 'Completed'
-	elif failed:
-		status = 'Failed'
-
-	if status or doc_modified:
-		# doc.status = status if status else doc.status
-		# doc.workflow_state = doc.status
-		# doc.save(ignore_permissions=True)
-		doc.reload()
-		doc.db_set('status', status if status else doc.status)
-		doc.db_set('workflow_state', status if status else doc.status)
-		doc.reload()
-		doc.update_transaction_status()
-		doc.append_bank_response_in_bpi()
-		doc.reload()
+        processing = completed = failed = 0
+        
+        # Get the Bank Payment Upload record
+        bpu_name = frappe.db.get_value('Bank Payment Upload', {'file_name': file_name}, "name")
+        if not bpu_name:
+            return
+            
+        parent = frappe.db.get_value('Bank Payment Upload', bpu_name, "parent")
+        if not parent:
+            return
+            
+        # Update Bank Payment Upload status directly with SQL
+        if file_status:
+            frappe.db.sql("""
+                UPDATE `tabBank Payment Upload` 
+                SET status = %s, last_updated = NOW() 
+                WHERE name = %s
+            """, (file_status, bpu_name))
+        else:
+            frappe.db.sql("""
+                UPDATE `tabBank Payment Upload` 
+                SET last_updated = NOW() 
+                WHERE name = %s
+            """, bpu_name)
+        
+        # Process acknowledgement file if provided
+        if ack_file:
+            logging.info("Updating Bank Response...")
+            try:
+                with open(ack_file, 'r') as file:
+                    csv_reader = csv.reader(file)
+                    rows = list(csv_reader)
+                    
+                    # Get all items for this bank payment
+                    items = frappe.db.get_all('Bank Payment Item', 
+                        filters={'parent': parent},
+                        fields=['name', 'bank_account_no']
+                    )
+                    
+                    # Create a dict for quick lookup
+                    item_map = {item.bank_account_no: item.name for item in items if item.bank_account_no}
+                    
+                    # Process each row
+                    for idx, row in enumerate(rows):
+                        if ack_file.endswith('_VALERR.csv') and idx == len(rows) - 1:
+                            continue
+                        
+                        try:
+                            bank_account_no_from_ack = row[1]
+                            bank_response = row[8] if len(row) > 8 else "No Response from Bank"
+                        except Exception:
+                            bank_account_no_from_ack = ""
+                            bank_response = "No Response from Bank in file"
+                        
+                        if bank_account_no_from_ack and bank_account_no_from_ack in item_map:
+                            # Update Bank Payment Item directly with SQL
+                            frappe.db.sql("""
+                                UPDATE `tabBank Payment Item` 
+                                SET error_message = %s 
+                                WHERE name = %s
+                            """, (bank_response, item_map[bank_account_no_from_ack]))
+                            
+            except Exception as e:
+                logging.error(f"Error processing acknowledgement file {ack_file}: {e}")
+        
+        # Get counts for status calculation
+        status_counts = frappe.db.sql("""
+            SELECT status, COUNT(*) as count
+            FROM `tabBank Payment Upload`
+            WHERE parent = %s
+            GROUP BY status
+        """, parent, as_dict=True)
+        
+        for count_row in status_counts:
+            if count_row.status == 'Processing Acknowledgement':
+                processing = count_row.count
+            elif count_row.status == 'Failed':
+                failed = count_row.count
+            elif count_row.status == 'Completed':
+                completed = count_row.count
+        
+        # Determine overall status
+        status = None
+        if processing:
+            status = 'Processing Acknowledgement'
+        elif completed and failed:
+            status = 'Partial Payment'
+        elif completed:
+            status = 'Completed'
+        elif failed:
+            status = 'Failed'
+        
+        # Update Bank Payment status
+        if status:
+            frappe.db.sql("""
+                UPDATE `tabBank Payment` 
+                SET status = %s, workflow_state = %s 
+                WHERE name = %s
+            """, (status, status, parent))
+        
+        # Commit all changes
+        frappe.db.commit()
+        
+        # Trigger any post-update processes
+        try:
+            doc = frappe.get_doc('Bank Payment', parent)
+            doc.update_transaction_status()
+            doc.append_bank_response_in_bpi()
+        except Exception as e:
+            logging.error(f"Error in post-update processing: {e}")
+            
+        # Reset timeout to default
+        frappe.db.sql("SET SESSION innodb_lock_wait_timeout = 50")
+        
+    except Exception as e:
+        frappe.db.rollback()
+        logging.error(f"Error in update_bank_payment_status for {file_name}: {e}")
+        # Don't raise the exception - let the process continue
+        # But log it for debugging
+        frappe.db.sql("SET SESSION innodb_lock_wait_timeout = 50")
 
 def check_kill_process(pstring):
 	for line in os.popen("ps ax | grep " + pstring + " | grep -v grep"):
