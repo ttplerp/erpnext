@@ -728,7 +728,7 @@ class PaymentEntry(AccountsController):
 
 	def get_valid_reference_doctypes(self):
 		if self.party_type == "Customer":
-			return ("Sales Order", "Sales Invoice", "Journal Entry", "Dunning", "Project Invoice")
+			return ("Sales Order", "Sales Invoice", "Journal Entry", "Dunning", "Project Invoice","Transportation and Hire Charges")
 		elif self.party_type == "Supplier":
 			return (
 				"Purchase Order",

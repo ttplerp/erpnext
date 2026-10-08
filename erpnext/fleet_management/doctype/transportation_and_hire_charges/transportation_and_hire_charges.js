@@ -192,3 +192,50 @@ frappe.ui.form.on('Material Issue Amount Detail', {
 		frm.events.calculate_totals(frm);
 	}
 });
+// Hire Income calculations
+frappe.ui.form.on('Hire Income', {
+	total_km: function(frm, cdt, cdn) {
+		calculate_hire_income_row(frm, cdt, cdn);
+	},
+
+	rate: function(frm, cdt, cdn) {
+		calculate_hire_income_row(frm, cdt, cdn);
+	},
+
+	hire_income_remove: function(frm, cdt, cdn) {
+		calculate_hire_income_total(frm);
+	}
+});
+
+
+function calculate_hire_income_row(frm, cdt, cdn) {
+	let row = locals[cdt][cdn];
+
+	// Amount = Total Km × Rate
+	let amount = flt(row.total_km) * flt(row.rate);
+
+	frappe.model.set_value(cdt, cdn, 'amount', amount);
+
+	calculate_hire_income_total(frm);
+}
+
+
+function calculate_hire_income_total(frm) {
+	// Only calculate from Hire Income table
+	// when Invoice Type is Hire Income
+	if (frm.doc.invoice_type !== "Hire Income") {
+		return;
+	}
+
+	let total_amount = 0;
+
+	(frm.doc.hire_income || []).forEach(function(row) {
+		total_amount += flt(row.amount);
+	});
+
+	// Put total Hire Income into parent Amount
+	frm.set_value('amount', total_amount);
+
+	// Recalculate grand total, GST, TDS, etc.
+	frm.events.calculate_totals(frm);
+}

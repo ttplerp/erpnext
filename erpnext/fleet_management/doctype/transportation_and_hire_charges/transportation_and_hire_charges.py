@@ -41,6 +41,8 @@ class TransportationandHireCharges(AccountsController):
 		check_future_date(self.posting_date)		
 		self.calculate_totals()
 		self.validate_amount()
+		# if self.docstatus == 1 and self.invoice_type == "Hire Income":
+		# 	self.payment_status="Paid"
 
 	def on_submit(self):
 		self.update_reference_document()
@@ -117,37 +119,72 @@ class TransportationandHireCharges(AccountsController):
 			total += flt(d.amount)
 		return total
 
+
 	@frappe.whitelist()
 	def calculate_totals(self):
-		# Calculate basic totals
+		# Hire Income
+		if self.invoice_type == "Hire Income":
+			hire_income_total = 0
+
+			for row in self.hire_income:
+				row.amount = flt(row.total_km) * flt(row.rate)
+				hire_income_total += flt(row.amount)
+
+			self.amount = hire_income_total
+
+		# Existing calculations
 		self.total_additional_amount = self.get_total_additional()
 		self.total_allocated_amount = self.get_total_allocated()
 		self.total_deduction_amount = self.get_total_deduction()
-		
-		# Calculate grand total (amount + additional items)
-		self.grand_total = flt(self.amount) + flt(self.total_additional_amount) if self.total_additional_amount else self.amount
-		
-		# Calculate grand total after deduction (for TDS calculation)
-		self.grand_total_after_deduction = flt(self.grand_total) - flt(self.total_deduction_amount)
-		
+
+		# Calculate grand total
+		self.grand_total = (
+			flt(self.amount) + flt(self.total_additional_amount)
+			if self.total_additional_amount
+			else self.amount
+		)
+
+		# Calculate grand total after deduction
+		self.grand_total_after_deduction = (
+			flt(self.grand_total) - flt(self.total_deduction_amount)
+		)
+
 		# Calculate GST if applicable
 		if self.apply_gst and self.taxes_and_charges:
 			self.calculate_gst()
 		else:
 			self.gst_amount = 0
 			self.gst_account = None
-		
-		# Calculate TDS on grand_total_after_deduction + gst_amount
+
+		# Calculate TDS
 		if self.tds_percent:
-			self.tds_amount = flt(flt(self.grand_total_after_deduction, 2) * flt(self.tds_percent, 2) / 100.0, 2)
-			self.tds_account = get_tds_account(self.tds_percent, self.company, self.party_type)
+			self.tds_amount = flt(
+				flt(self.grand_total_after_deduction, 2)
+				* flt(self.tds_percent, 2)
+				/ 100.0,
+				2
+			)
+
+			# self.tds_account = get_tds_account(
+			# 	self.tds_percent,
+			# 	self.company,
+			# 	self.party_type
+			# )
 		else:
 			self.tds_amount = 0
 			self.tds_account = None
 
 		# Calculate net payable and outstanding amount
-		base_amount = flt(self.grand_total_after_deduction) + flt(self.gst_amount)
-		self.net_payable = self.outstanding_amount = flt(base_amount) - flt(self.total_allocated_amount) - flt(self.tds_amount)
+		base_amount = (
+			flt(self.grand_total_after_deduction)
+			+ flt(self.gst_amount)
+		)
+
+		self.net_payable = self.outstanding_amount = (
+			flt(base_amount)
+			- flt(self.total_allocated_amount)
+			- flt(self.tds_amount)
+		)
 	
 	def calculate_gst(self):
 		"""Calculate GST based on the selected tax template"""
@@ -353,82 +390,253 @@ class TransportationandHireCharges(AccountsController):
 	def make_party_gl_entries(self, gl_entries):
 		def add_gl_entry(account, debit, credit, party_type=None, party=None):
 			gl_entries.append(
-				self.get_gl_dict({
-					"account": account,
-					"debit": debit,
-					"credit": credit,
-					"debit_in_account_currency": debit,
-					"credit_in_account_currency": credit,
-					"against_voucher": self.name,
-					"against_voucher_type": self.doctype,
-					"party_type": party_type,
-					"party": party,
-					"cost_center": self.cost_center,
-					"voucher_type": self.doctype,
-					"voucher_no": self.name,
-				}, self.currency)
+				self.get_gl_dict(
+					{
+						"account": account,
+						"debit": debit,
+						"credit": credit,
+						"debit_in_account_currency": debit,
+						"credit_in_account_currency": credit,
+						"against_voucher": self.name,
+						"against_voucher_type": self.doctype,
+						"party_type": party_type,
+						"party": party,
+						"cost_center": self.cost_center,
+						"voucher_type": self.doctype,
+						"voucher_no": self.name,
+					},
+					self.currency,
+				)
 			)
 
 		if self.party_type == "Supplier":
+			# ---------------------------------------------------------
+			# SUPPLIER
+			# ---------------------------------------------------------
 			if self.settle_imprest_advance:
-				payable_account = frappe.db.get_value("Company", self.company, "imprest_advance_account")
+				payable_account = frappe.db.get_value(
+					"Company",
+					self.company,
+					"imprest_advance_account"
+				)
+
 				if not payable_account:
 					frappe.throw(
 						title="Missing Imprest Advance Account",
-						msg="Please set the Imprest Advance Account in the company settings: {}".format(
-							frappe.get_desk_link("Company", self.company)
-						)
+						msg=(
+							"Please set the Imprest Advance Account in the "
+							"company settings: {}".format(
+								frappe.get_desk_link("Company", self.company)
+							)
+						),
 					)
 			else:
-				payable_account = frappe.db.get_value("Charge Type", self.invoice_type, "default_payable_account")
-				if not payable_account:
-					frappe.throw("The default payable account is not set for the selected Charge Type. Please configure it in the Charge Type record: {}".format(frappe.get_desk_link("Charge Type", self.invoice_type)), title="Payable Account Missing")
+				payable_account = frappe.db.get_value(
+					"Charge Type",
+					self.invoice_type,
+					"default_payable_account"
+				)
 
-			party_account = frappe.db.get_value("Charge Type", self.invoice_type, "default_expense_account")
+				if not payable_account:
+					frappe.throw(
+						"The default payable account is not set for the "
+						"selected Charge Type. Please configure it in the "
+						"Charge Type record: {}".format(
+							frappe.get_desk_link(
+								"Charge Type",
+								self.invoice_type
+							)
+						),
+						title="Payable Account Missing",
+					)
+
+			party_account = frappe.db.get_value(
+				"Charge Type",
+				self.invoice_type,
+				"default_expense_account"
+			)
+
 			if not party_account:
-				frappe.throw("The default expense account is not set for the selected Charge Type. Please configure it in the Charge Type record: {}".format(frappe.get_desk_link("Charge Type", self.invoice_type)), title="Expense Account Missing")
-			
-			# For supplier, debit expense account with amount + gst
-			total_expense = flt(self.amount) 
-			add_gl_entry(party_account, total_expense, 0, party_type=self.party_type, party=self.party)
-			
-			party_type = ""
-			party = ""
+				frappe.throw(
+					"The default expense account is not set for the "
+					"selected Charge Type. Please configure it in the "
+					"Charge Type record: {}".format(
+						frappe.get_desk_link(
+							"Charge Type",
+							self.invoice_type
+						)
+					),
+					title="Expense Account Missing",
+				)
+
+			# Debit expense account
+			total_expense = flt(self.amount)
+
+			add_gl_entry(
+				party_account,
+				total_expense,
+				0,
+				party_type=self.party_type,
+				party=self.party,
+			)
+
+			# Payable / Imprest Advance account
 			if self.settle_imprest_advance:
 				party_type = "Employee"
 				party = self.imprest_party
 			else:
 				party_type = self.party_type
 				party = self.party
-			add_gl_entry(payable_account, 0, flt(self.outstanding_amount), party_type=party_type, party=party)
-			
+
+			add_gl_entry(
+				payable_account,
+				0,
+				flt(self.outstanding_amount),
+				party_type=party_type,
+				party=party,
+			)
+
 		else:
-			party_account = frappe.db.get_value("Equipment Type", self.equipment_type, "default_income_account")
+			# ---------------------------------------------------------
+			# CUSTOMER
+			# ---------------------------------------------------------
 
 			Customer = frappe.qb.DocType("Customer")
 			PartyAccount = frappe.qb.DocType("Party Account")
 
+			# Get the receivable account ONLY for the current customer
 			query = (
 				frappe.qb.from_(Customer)
 				.join(PartyAccount)
 				.on(Customer.name == PartyAccount.parent)
-				.where(PartyAccount.company == self.company)
+				.where(
+					(Customer.name == self.party)
+					& (PartyAccount.company == self.company)
+				)
 				.select(PartyAccount.account)
 			)
-			result = query.run()
-			if result:
-				default_receivable_account = result[0][0]
-			else:
-				default_receivable_account = None
-			
-			if not party_account:
-				frappe.throw("The default income account is not set for the selected Equipment Type. Please configure it in the Equipment Type record: {}".format(frappe.get_desk_link("Equipment Type", self.equipment_type)), title="Income Account Missing")
-			if not default_receivable_account:
-				frappe.throw("The default receivable account is not set for the selected Customer. Please configure it in the Customer: {}".format(frappe.get_desk_link("Customer", self.party)), title="Default Receivable Account Missing")
 
-			# For customer, credit income account with amount only (GST is separate)
-			add_gl_entry(party_account, 0, self.amount)
-			add_gl_entry(default_receivable_account, flt(self.outstanding_amount), 0)
+			result = query.run()
+
+			default_receivable_account = result[0][0] if result else None
+
+			if not default_receivable_account:
+				frappe.throw(
+					"The default receivable account is not set for the "
+					"selected Customer. Please configure it in the Customer: {}".format(
+						frappe.get_desk_link("Customer", self.party)
+					),
+					title="Default Receivable Account Missing",
+				)
+
+			# ---------------------------------------------------------
+			# HIRE INCOME
+			# ---------------------------------------------------------
+			if self.invoice_type == "Hire Income":
+
+				if not self.hire_income:
+					frappe.throw(
+						_("Hire Income table is empty. Please add at least one row."),
+						title=_("Missing Hire Income Rows"),
+					)
+
+				for row in self.hire_income:
+
+					eq_type = row.equipment_type
+
+					if not eq_type:
+						frappe.throw(
+							_("Row #{0}: Equipment Type is required.").format(
+								row.idx
+							),
+							title=_("Equipment Type Missing"),
+						)
+
+					income_account = frappe.db.get_value(
+						"Equipment Type",
+						eq_type,
+						"default_income_account"
+					)
+
+					if not income_account:
+						frappe.throw(
+							_(
+								"The default income account is not set for "
+								"Equipment Type {0}. Please configure it in "
+								"the Equipment Type record: {1}"
+							).format(
+								frappe.bold(eq_type),
+								frappe.get_desk_link(
+									"Equipment Type",
+									eq_type
+								),
+							),
+							title=_("Income Account Missing"),
+						)
+
+					# Credit income account
+					add_gl_entry(
+						income_account,
+						0,
+						flt(row.amount),
+						party_type=self.party_type,
+						party=self.party,
+					)
+
+			# ---------------------------------------------------------
+			# NON-HIRE INCOME
+			# ---------------------------------------------------------
+			else:
+
+				if not self.equipment_type:
+					frappe.throw(
+						_("Equipment Type is required for Customer transactions."),
+						title=_("Equipment Type Missing"),
+					)
+
+				party_account = frappe.db.get_value(
+					"Equipment Type",
+					self.equipment_type,
+					"default_income_account"
+				)
+
+				if not party_account:
+					frappe.throw(
+						"The default income account is not set for Equipment "
+						"Type {}. Please configure it in the Equipment Type "
+						"record: {}".format(
+							frappe.bold(self.equipment_type),
+							frappe.get_desk_link(
+								"Equipment Type",
+								self.equipment_type
+							),
+						),
+						title="Income Account Missing",
+					)
+
+				# Credit income account
+				add_gl_entry(
+					party_account,
+					0,
+					flt(self.amount),
+					party_type=self.party_type,
+					party=self.party,
+				)
+
+			# ---------------------------------------------------------
+			# RECEIVABLE ENTRY
+			# ---------------------------------------------------------
+			# IMPORTANT:
+			# Receivable accounts require Customer party information.
+			add_gl_entry(
+				default_receivable_account,
+				flt(self.outstanding_amount),
+				0,
+				party_type=self.party_type,
+				party=self.party,
+			)
+
+
 
 @frappe.whitelist()
 def make_payment_entry(dt,

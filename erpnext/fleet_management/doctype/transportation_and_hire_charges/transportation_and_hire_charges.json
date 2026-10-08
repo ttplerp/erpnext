@@ -28,6 +28,7 @@
   "column_break_93nxz",
   "equipment",
   "section_break_lnbyk",
+  "hire_income",
   "amount",
   "addition_items",
   "deduction_items",
@@ -121,15 +122,16 @@
    "fieldtype": "Section Break"
   },
   {
-   "depends_on": "eval:doc.party_type === \"Customer\"",
+   "depends_on": "eval:doc.party_type === \"Customer\" && doc.invoice_type!=\"Hire Income\"",
    "fieldname": "equipment_type",
    "fieldtype": "Link",
    "label": "Equipment Type",
-   "mandatory_depends_on": "eval:doc.party_type === \"Customer\"",
+   "mandatory_depends_on": "eval:doc.party_type === \"Customer\" && doc.invoice_type!=\"Hire Income\"",
    "options": "Equipment Type"
   },
   {
    "default": "0",
+   "depends_on": "eval:doc.invoice_type!=\"Hire Income\"",
    "fieldname": "settle_imprest_advance",
    "fieldtype": "Check",
    "label": "Settle Imprest Advance Account"
@@ -237,7 +239,7 @@
   },
   {
    "default": "[]",
-   "depends_on": "eval:doc.party_type === \"Supplier\"",
+   "depends_on": "eval:doc.party_type === \"Supplier\" && doc.invoice_type !=\"Hire Income\"",
    "fieldname": "deduction_items",
    "fieldtype": "Table",
    "label": "Deduction Details",
@@ -262,14 +264,14 @@
    "read_only": 1
   },
   {
-   "depends_on": "eval:doc.party_type === \"Supplier\"",
+   "depends_on": "eval:doc.party_type === \"Supplier\" && doc.invoice_type !=\"Hire Income\"",
    "fieldname": "addition_items",
    "fieldtype": "Table",
    "label": "Addition Details",
    "options": "Transportation and Hire Charges Addition"
   },
   {
-   "depends_on": "eval:doc.party_type === \"Supplier\"",
+   "depends_on": "eval:doc.party_type === \"Supplier\" && doc.invoice_type!=\"Hire Income\"",
    "fieldname": "material_issue_details",
    "fieldtype": "Table",
    "label": "Material Issue Amount Details",
@@ -299,11 +301,11 @@
    "fieldtype": "Section Break"
   },
   {
-   "depends_on": "eval:doc.party_type === \"Customer\"",
+   "depends_on": "eval:doc.party_type === \"Customer\" && doc.invoice_type!=\"Hire Income\"",
    "fieldname": "equipment",
    "fieldtype": "Link",
    "label": "Equipment",
-   "mandatory_depends_on": "eval:doc.party_type === \"Customer\"",
+   "mandatory_depends_on": "eval:doc.party_type === \"Customer\" && doc.invoice_type!=\"Hire Income\"",
    "options": "Equipment"
   },
   {
@@ -355,15 +357,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Transportation and Hire Charges",
-   "print_hide": 1,
-   "read_only": 1
-  },
-  {
    "depends_on": "eval:doc.settle_imprest_advance",
    "fetch_from": "imprest_party.branch",
    "fieldname": "expense_branch",
@@ -373,8 +366,10 @@
    "options": "Branch"
   },
   {
+   "depends_on": "eval:doc.invoice_type==\"Hire Income\"",
    "fieldname": "section_break_lnbyk",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Hire Income"
   },
   {
    "default": "0",
@@ -420,11 +415,25 @@
    "fieldname": "grand_total_after_deduction",
    "fieldtype": "Currency",
    "label": "Grand Total After Deduction"
+  },
+  {
+   "fieldname": "hire_income",
+   "fieldtype": "Table",
+   "options": "Hire Income"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Transportation and Hire Charges",
+   "print_hide": 1,
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2026-02-08 11:21:19.090000",
+ "modified": "2026-10-06 16:10:11.865584",
  "modified_by": "Administrator",
  "module": "Fleet Management",
  "name": "Transportation and Hire Charges",

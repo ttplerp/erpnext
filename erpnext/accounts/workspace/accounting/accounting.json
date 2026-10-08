@@ -5,7 +5,7 @@
    "label": "Profit and Loss"
   }
  ],
- "content": "[{\"id\":\"PWskMV9Uub\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"id\":\"cyf6WIUTNZ\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Profit and Loss\",\"col\":12}},{\"id\":\"f1MPiMPgii\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Chart of Accounts\",\"col\":3}},{\"id\":\"tZSSko6Xbx\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Invoice\",\"col\":3}},{\"id\":\"NeGNRaBHHU\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Purchase Invoice\",\"col\":3}},{\"id\":\"vh0jqoEFTF\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Journal Entry\",\"col\":3}},{\"id\":\"RWzttXWipK\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Payment Entry\",\"col\":3}},{\"id\":\"iw4TZ8TGoZ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Accounts Receivable\",\"col\":3}},{\"id\":\"pnj9GopDaG\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"General Ledger\",\"col\":3}},{\"id\":\"tzxIjb-6ga\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Trial Balance\",\"col\":3}},{\"id\":\"8axb187t5i\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Masters Data, Transaction &amp; Reports</b></span>\",\"col\":12}},{\"id\":\"kzpZxtD9CK\",\"type\":\"card\",\"data\":{\"card_name\":\"Accounting Masters\",\"col\":4}},{\"id\":\"ecdJBSgcAi\",\"type\":\"card\",\"data\":{\"card_name\":\"Transaction &amp; General Ledger\",\"col\":4}},{\"id\":\"0NU50KIKDl\",\"type\":\"card\",\"data\":{\"card_name\":\"Taxes\",\"col\":4}},{\"id\":\"uE1FgkyqF7\",\"type\":\"card\",\"data\":{\"card_name\":\"Trade/Accounts Receivable\",\"col\":4}},{\"id\":\"sfLBzWIYWm\",\"type\":\"card\",\"data\":{\"card_name\":\"Accounts Payable\",\"col\":4}},{\"id\":\"V_NS1lNTJw\",\"type\":\"card\",\"data\":{\"card_name\":\"Bank Statement\",\"col\":4}},{\"id\":\"dzoiwyfMVi\",\"type\":\"card\",\"data\":{\"card_name\":\"Financial Statements\",\"col\":4}},{\"id\":\"F3j_wx-AVN\",\"type\":\"card\",\"data\":{\"card_name\":\"Multi Currency\",\"col\":4}},{\"id\":\"g8PNK0FNN5\",\"type\":\"card\",\"data\":{\"card_name\":\"Opening and Closing\",\"col\":4}}]",
+ "content": "[{\"id\":\"dY_9glzWUe\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"id\":\"j8gpXEMqbH\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Profit and Loss\",\"col\":12}},{\"id\":\"x_usgCMnus\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Chart of Accounts\",\"col\":3}},{\"id\":\"4Aq-9QGt3z\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Invoice\",\"col\":3}},{\"id\":\"bJZP66uedV\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Purchase Invoice\",\"col\":3}},{\"id\":\"AXVjXZgb6q\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Journal Entry\",\"col\":3}},{\"id\":\"4Kd6k6JCfS\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Payment Entry\",\"col\":3}},{\"id\":\"K6LenL28ji\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Accounts Receivable\",\"col\":3}},{\"id\":\"XiRnldSs3r\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"General Ledger\",\"col\":3}},{\"id\":\"er7amquiSx\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Trial Balance\",\"col\":3}},{\"id\":\"nmlX0xZTaz\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Masters Data, Transaction &amp; Reports</b></span>\",\"col\":12}},{\"id\":\"n_LnlegbLv\",\"type\":\"card\",\"data\":{\"card_name\":\"Accounting Masters\",\"col\":4}},{\"id\":\"x_s1JgJd-t\",\"type\":\"card\",\"data\":{\"card_name\":\"Transaction &amp; General Ledger\",\"col\":4}},{\"id\":\"6NkWqRZziz\",\"type\":\"card\",\"data\":{\"card_name\":\"Taxes\",\"col\":4}},{\"id\":\"8dAKp9aPTi\",\"type\":\"card\",\"data\":{\"card_name\":\"Trade/Accounts Receivable\",\"col\":4}},{\"id\":\"kD3DTBlsbI\",\"type\":\"card\",\"data\":{\"card_name\":\"Accounts Payable\",\"col\":4}},{\"id\":\"uyEGfXzTAo\",\"type\":\"card\",\"data\":{\"card_name\":\"Bank Statement\",\"col\":4}},{\"id\":\"_kdMqNRn6_\",\"type\":\"card\",\"data\":{\"card_name\":\"Financial Statements\",\"col\":4}},{\"id\":\"ecrpPlFN-K\",\"type\":\"card\",\"data\":{\"card_name\":\"Multi Currency\",\"col\":4}},{\"id\":\"EPCR6uiye1\",\"type\":\"card\",\"data\":{\"card_name\":\"Opening and Closing\",\"col\":4}}]",
  "creation": "2020-03-02 15:41:59.515192",
  "custom_blocks": [],
  "docstatus": 0,
@@ -767,7 +767,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Transaction &amp; General Ledger",
-   "link_count": 13,
+   "link_count": 12,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -853,16 +853,6 @@
    "type": "Link"
   },
   {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Transportation and Hire Charge Entry",
-   "link_count": 0,
-   "link_to": "Transportation and Hire Charge Entry",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
    "dependencies": "GL Entry",
    "hidden": 0,
    "is_query_report": 1,
@@ -904,7 +894,7 @@
    "type": "Link"
   }
  ],
- "modified": "2025-04-03 11:25:30.865265",
+ "modified": "2026-09-30 15:47:55.583656",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Accounting",
