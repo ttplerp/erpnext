@@ -195,14 +195,15 @@ def change_present_address(country, dzongkhag, gewog):
     if dzongkhag:
         if not frappe.db.exists("Dzongkhags", {"name": dzongkhag, "country_name": country}):
             frappe.throw("Invalid Present Dzongkhag")
-    if gewog:
+    if country == "Bhutan" and gewog:
         if not frappe.db.exists("Gewogs", {"name": gewog, "dzongkhag": dzongkhag}):
             frappe.throw("Invalid Present Gewog")
         
     desup = frappe.get_doc("Desuup", get_desuup())
     desup.db_set("present_country", country, update_modified=False)
     desup.db_set("present_dzongkhag", dzongkhag, update_modified=False)
-    desup.db_set("present_gewog", gewog, update_modified=False)
+    if country == "Bhutan":
+        desup.db_set("present_gewog", gewog, update_modified=False)
     return desup
 
 @frappe.whitelist()

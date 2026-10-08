@@ -260,13 +260,13 @@ class BankPayment(Document):
                                 if idx == len(rows) - 1:
                                     continue
                             try:
-								# if frappe.session.user == "Administrator":
-								# 	print(str(row))
-								bank_account_no_from_ack = row[1]
-								bank_response = row[8]
-							except Exception as e:
-								bank_account_no_from_ack = ""
-								bank_response = "No Response from Bank in file"
+                                # if frappe.session.user == "Administrator":
+                                # 	print(str(row))
+                                bank_account_no_from_ack = row[1]
+                                bank_response = row[8]
+                            except Exception as e:
+                                bank_account_no_from_ack = ""
+                                bank_response = "No Response from Bank in file"
 
                             for rec in self.items:
                                 if rec.bank_account_no == bank_account_no_from_ack:
@@ -582,22 +582,22 @@ class BankPayment(Document):
        
         for a in frappe.db.sql(
             """SELECT je.name transaction_id, je.posting_date transaction_date, je.voucher_type,
-								je.user_remark
-								FROM `tabJournal Entry` je 
-								where je.docstatus = 1
-								{cond}
-								AND je.voucher_type in ('Bank Entry','Contra Entry') 
-								AND NOT EXISTS(select 1
-									FROM `tabBank Payment Item` bpi
-									WHERE bpi.transaction_type = 'Journal Entry'
-									AND bpi.transaction_id = je.name
-									AND bpi.parent != '{bank_payment}'
-									AND bpi.docstatus != 2
-									AND bpi.status NOT IN ('Cancelled')
+                                je.user_remark
+                                FROM `tabJournal Entry` je 
+                                where je.docstatus = 1
+                                {cond}
+                                AND je.voucher_type in ('Bank Entry','Contra Entry') 
+                                AND NOT EXISTS(select 1
+                                    FROM `tabBank Payment Item` bpi
+                                    WHERE bpi.transaction_type = 'Journal Entry'
+                                    AND bpi.transaction_id = je.name
+                                    AND bpi.parent != '{bank_payment}'
+                                    AND bpi.docstatus != 2
+                                    AND bpi.status NOT IN ('Cancelled')
                                     AND (select count(bpii.name) from `tabBank Payment Item` bpii where bpii.parent = bpi.parent and bpii.status IN ('Cancelled')) = (select count(bpii.name) from `tabBank Payment Item` bpii where bpii.parent = bpi.parent and bpii.status NOT IN ('Cancelled') )
-								)
-								ORDER BY je.posting_date
-							""".format(
+                                )
+                                ORDER BY je.posting_date
+                            """.format(
                 bank_payment=self.name, cond=cond
             ),
             as_dict=True,
@@ -607,13 +607,13 @@ class BankPayment(Document):
                 debit_bank_account = 0
                 for p in frappe.db.sql(
                     """select a.account, round(a.debit_in_account_currency,2) as debit, 
-									round(a.credit_in_account_currency,2) as credit,
-									b.bank_name, b.bank_branch, b.bank_account_type, b.bank_account_no, b.company
-									from `tabJournal Entry Account` a
-									inner join `tabAccount` b on a.account = b.name
-									where a.parent = '{journal_entry}'
-									and b.account_type = "Bank"
-									""".format(
+                                    round(a.credit_in_account_currency,2) as credit,
+                                    b.bank_name, b.bank_branch, b.bank_account_type, b.bank_account_no, b.company
+                                    from `tabJournal Entry Account` a
+                                    inner join `tabAccount` b on a.account = b.name
+                                    where a.parent = '{journal_entry}'
+                                    and b.account_type = "Bank"
+                                    """.format(
                         journal_entry=a.transaction_id
                     ),
                     as_dict=True,
@@ -644,14 +644,14 @@ class BankPayment(Document):
                 party_type = party = reference_type = reference_name = ""
                 for b in frappe.db.sql(
                     """select party, party_type,
-										sum(if(credit>0, credit, credit_in_account_currency)) as credit,
-										sum(if(debit>0, debit, debit_in_account_currency)) as debit,
-										sum(tax_amount) as tax_amount
-									from `tabJournal Entry Account` 
-									where parent = '{journal_entry}'
-									AND party!="" AND party is NOT NULL
-									group by party
-								""".format(
+                                        sum(if(credit>0, credit, credit_in_account_currency)) as credit,
+                                        sum(if(debit>0, debit, debit_in_account_currency)) as debit,
+                                        sum(tax_amount) as tax_amount
+                                    from `tabJournal Entry Account` 
+                                    where parent = '{journal_entry}'
+                                    AND party!="" AND party is NOT NULL
+                                    group by party
+                                """.format(
                         journal_entry=a.transaction_id
                     ),
                     as_dict=True,
@@ -671,34 +671,34 @@ class BankPayment(Document):
                     party=i["party"]
                     if i["party_type"] == "Supplier":
                         query = """select s.bank_name, s.bank_branch, s.bank_account_type, 
-										s.account_number as bank_account_no, s.supplier_name as beneficiary_name,
-										(CASE WHEN s.bank_name = "INR" THEN s.inr_bank_code ELSE NULL END) inr_bank_code,
-										(CASE WHEN s.bank_name = "INR" THEN s.inr_purpose_code ELSE NULL END) inr_purpose_code
-										from `tabSupplier` s
-										WHERE s.name = %s
-									"""
+                                        s.account_number as bank_account_no, s.supplier_name as beneficiary_name,
+                                        (CASE WHEN s.bank_name = "INR" THEN s.inr_bank_code ELSE NULL END) inr_bank_code,
+                                        (CASE WHEN s.bank_name = "INR" THEN s.inr_purpose_code ELSE NULL END) inr_purpose_code
+                                        from `tabSupplier` s
+                                        WHERE s.name = %s
+                                    """
                         
                         supplier = i["party"]
                     elif i["party_type"] == "Employee":
                         query = """select e.bank_name, e.bank_branch, e.bank_account_type, e.employee_name as beneficiary_name,
-										e.bank_ac_no as bank_account_no, NULL inr_bank_code, NULL inr_purpose_code
-										from `tabEmployee` e
-										WHERE e.name = %s
-									"""
+                                        e.bank_ac_no as bank_account_no, NULL inr_bank_code, NULL inr_purpose_code
+                                        from `tabEmployee` e
+                                        WHERE e.name = %s
+                                    """
                         employee = i["party"]
                     elif i["party_type"] == "Muster Roll Employee":
                         query = """select e.bank_name, e.bank_branch, e.bank_account_type, e.person_name as beneficiary_name,
-										e.bank_ac_no as bank_account_no, NULL inr_bank_code, NULL inr_purpose_code
-										from `tabMuster Roll Employee` e
-										WHERE e.name = %s
-									"""
+                                        e.bank_ac_no as bank_account_no, NULL inr_bank_code, NULL inr_purpose_code
+                                        from `tabMuster Roll Employee` e
+                                        WHERE e.name = %s
+                                    """
                         employee = i["party"]
                     elif i["party_type"] == "Desuup":
                         query = """select d.bank_name, d.bank_branch, d.bank_account_type, d.desuup_name as beneficiary_name,
-										d.bank_account_number as bank_account_no, NULL inr_bank_code, NULL inr_purpose_code
-										from `tabDesuup` d
-										WHERE d.name = %s
-									"""
+                                        d.bank_account_number as bank_account_no, NULL inr_bank_code, NULL inr_purpose_code
+                                        from `tabDesuup` d
+                                        WHERE d.name = %s
+                                    """
                         desuup = i["party"]
                         
                     dtl = frappe.db.sql(query, party, as_dict=True)
@@ -1513,32 +1513,32 @@ def get_child_cost_centers(current_cs=None):
     return allchilds
 
 def merge_similar_entries(data):
-	merged_data = []
-	for entry in data:
-		# if there is already an entry in this account then just add it
-		# to that entry
-		same_head = check_if_in_list(
-			entry, merged_data)
-		if same_head:
-			same_head.amount = flt(same_head.amount) + flt(entry.amount)
-		else:
-			merged_data.append(entry)
-	merged_data = list(merged_data)
+    merged_data = []
+    for entry in data:
+        # if there is already an entry in this account then just add it
+        # to that entry
+        same_head = check_if_in_list(
+            entry, merged_data)
+        if same_head:
+            same_head.amount = flt(same_head.amount) + flt(entry.amount)
+        else:
+            merged_data.append(entry)
+    merged_data = list(merged_data)
 
-	return merged_data
+    return merged_data
 
 def check_if_in_list(entry, data):
-	transaction_fieldnames = ['bank_name', 'bank_branch', 'bank_account_no', 'employee', 'desuup', 'supplier']
-	for e in data:
-		same_head = True
-		if e.transaction_id != entry.transaction_id:
-			same_head = False
+    transaction_fieldnames = ['bank_name', 'bank_branch', 'bank_account_no', 'employee', 'desuup', 'supplier']
+    for e in data:
+        same_head = True
+        if e.transaction_id != entry.transaction_id:
+            same_head = False
 
-		for fieldname in transaction_fieldnames:
-			if cstr(e.get(fieldname)) != cstr(entry.get(fieldname)):
-				same_head = False
+        for fieldname in transaction_fieldnames:
+            if cstr(e.get(fieldname)) != cstr(entry.get(fieldname)):
+                same_head = False
 
-		if same_head:
-			return e
+        if same_head:
+            return e
 
           

@@ -116,11 +116,12 @@ class DesuupPayoutEntry(Document):
 					adv_amt = flt(item.monthly_mess_amount)
 
 					item.stipend_amount = flt(stipend, 2)
-					item.mess_advance_used = flt(adv_amt, 2)	
+					item.mess_advance_used = flt(adv_amt, 2)
 				else:
 					# frappe.throw("gggg")
 					stipend = flt(item.monthly_stipend_amount - item.monthly_mess_amount)/flt(days_to_pro_rate)
 					adv_amt = flt(item.monthly_mess_amount)/flt(days_to_pro_rate)
+					# frappe.throw(str(total_days))	
 
 					item.stipend_amount = flt(stipend * total_days, 2)
 					item.mess_advance_used = flt(adv_amt * total_days, 2)

@@ -61,6 +61,34 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "Deployment Record",
+   "link_count": 4,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Deployment Category",
+   "link_count": 0,
+   "link_to": "Deployment Category",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Deployment Title",
+   "link_count": 0,
+   "link_to": "Deployment Title",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "Desuup Deployment",
    "link_count": 0,
    "link_to": "Deployment",
@@ -245,54 +273,6 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "DSP Stipend Disbursement",
-   "link_count": 4,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Trainee Payout Entry",
-   "link_count": 0,
-   "link_to": "Desuup Payout Entry",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Desuup Mess Allowance",
-   "link_count": 0,
-   "link_to": "Desuup Mess Advance",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Trainee Attendance Tool",
-   "link_count": 0,
-   "link_to": "Desuup Attendance Tool",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Desuup Travel Payment",
-   "link_count": 0,
-   "link_to": "Desuup Travel Payment",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "OJT/Apprenticeship &amp; Payout Entry",
    "link_count": 6,
    "onboard": 0,
@@ -425,9 +405,57 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "DSP Stipend Disbursement",
+   "link_count": 4,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Trainee Payout Entry",
+   "link_count": 0,
+   "link_to": "Desuup Payout Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Desuup Mess Allowance",
+   "link_count": 0,
+   "link_to": "Desuup Mess Advance",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Trainee Attendance Tool",
+   "link_count": 0,
+   "link_to": "Desuup Attendance Tool",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Desuup Travel Payment",
+   "link_count": 0,
+   "link_to": "Desuup Travel Payment",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2024-10-22 16:19:07.264041",
+ "modified": "2026-07-06 16:10:53.294455",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training And Skilling",
