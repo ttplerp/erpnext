@@ -138,42 +138,44 @@ function get_employee_detail(applicant_cid, category){
 	});
 }
 
-function check_housing_and_employment(work_station, employment_type){
-	frappe.call({
-		method: 'erpnext.rental_management.doctype.housing_application.housing_application.check_housing_and_employment',
-		args: {
-			work_station: work_station,
-			employment_type: employment_type,
-		},
-		callback: function(r) {
-			// Handle the response from the server
-			console.log(r.message);
-			if(r.message) {
-				if(category=="Applicant"){
-					$('[data-fieldname="designation"]').val(r.message['positionTitle']);
-					$('[data-fieldname="ministry_agency"]').val(r.message['OrganogramLevel1']);
-					$('[data-fieldname="grade"]').val(r.message['positionLevel']);
-					$('[data-fieldname="department"]').val(r.message['OrganogramLevel2']);
-					$('[data-fieldname="employee_id"]').val(r.message['employeeNumber']);
-					$('[data-fieldname="gross_salary"]').val(r.message['GrossPay']);
-					$('[data-fieldname="email_id"]').val(r.message['Email']);
-					$('[data-fieldname="mobile_no"]').val(r.message['MobileNo']);
-					$('[data-fieldname="date_of_appointment"]').val(r.message['dateOfAppointment']);
-					$('[data-fieldname="date_of_birth"]').val(r.message['dateOfBirth']);
-					
-				} else if(category=="Spouse"){
-					$('[data-fieldname="spouse_designation"]').val(r.message['positionTitle']);
-					$('[data-fieldname="spouse_ministry"]').val(r.message['OrganogramLevel1']);
-					$('[data-fieldname="spouse_grade"]').val(r.message['positionLevel']);
-					$('[data-fieldname="spouse_department"]').val(r.message['OrganogramLevel2']);
-					$('[data-fieldname="employee_id"]').val(r.message['employeeNumber']);
-					$('[data-fieldname="spouse_gross_salary"]').val(r.message['GrossPay']);
-				}
-			}else{
-				frappe.throw("No record found in Civil Servant DB for provided CID ")
-			}
-		},
-	});
+async function check_housing_and_employment(work_station, employment_type){
+	if (!allowed_dzongkhags.includes(work_station)) {
+		let allowed_names;
+	
+		if (allowed_dzongkhags.length === 0) {
+			frappe.throw("Applications are currently not open for any Dzongkhag");
+		} else if (allowed_dzongkhags.length === 1) {
+			allowed_names = allowed_dzongkhags[0];
+		} else {
+			allowed_names =
+				allowed_dzongkhags.slice(0, -1).join(", ") +
+				" and " +
+				allowed_dzongkhags[allowed_dzongkhags.length - 1];
+		}
+	
+		frappe.throw(
+			`Applications are currently only allowed for ${allowed_names}`
+		);
+	}
+	const { message: allotments } = await frappe.db.get_value(
+		"Dzongkhag",
+		work_station,
+		["civil_servant_allotment", "corporate_and_private_allotment"]
+	);
+	
+	if (
+		employment_type === "Civil Servant" &&
+		Number(allotments.allow_for_civil_servant) === 0
+	) {
+		frappe.throw("Applications currently not open for Civil Servant");
+	} else if (
+		employment_type === "Corporation, Private and etc" &&
+		Number(allotments.allow_for_corporate_and_private) === 0
+	) {
+		frappe.throw(
+			"Applications currently not open for Corporation, Private and etc"
+		);
+	}
 }
 
 /*

@@ -362,6 +362,7 @@ def check_housing_and_employment(work_station, employment_type):
 		filters={"allow_in_online_housing_application": 1},
 		pluck="name"
 	)
+	return allowed_dzongkhags
 	
 	if work_station not in allowed_dzongkhags:
 		if len(allowed_dzongkhags) == 1:
