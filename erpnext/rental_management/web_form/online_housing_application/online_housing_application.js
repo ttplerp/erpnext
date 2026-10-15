@@ -1,6 +1,8 @@
 frappe.ready(function() {
 	// bind events here
 	var applicant_cid = ""
+	var employment_type = ""
+	var work_station = ""
 	var spouse_cid = ""
 	frappe.web_form.on('cid', (field, value) => {
 		applicant_cid=value;
@@ -14,6 +16,7 @@ frappe.ready(function() {
 	}); 
 	// Auto Populate details if the applicant it civil servant
 	frappe.web_form.on('employment_type', (field, value) => {
+		employment_type = value;
 		if(value=="Civil Servant"){
 			// frappe.throw("New applications for civil servants are temporarily suspended, due to a substantial backlog")
 			get_employee_detail(applicant_cid, category="Applicant");
@@ -40,17 +43,14 @@ frappe.ready(function() {
 		}
 	});
 
-	// frappe.web_form.validate = () => {
-		
-	// 		frappe.msgprint('Value must be more than 1000');
-			
-	// 	}
-	// });
+	frappe.web_form.on('work_station', (field, value) => {
+		work_station = value;
+	});
 
-
-
-
-	
+	frappe.web_form.validate = () => {
+		check_housing_and_employment(work_station, employment_type)
+		frappe.msgprint('Value must be more than 1000');
+	}
 });
 
 function get_cid_detail(cid, category){
@@ -106,6 +106,44 @@ function get_employee_detail(applicant_cid, category){
 		method: 'erpnext.rental_management.doctype.api_setting.api_setting.get_civil_servant_detail',
 		args: {
 			cid: applicant_cid,
+		},
+		callback: function(r) {
+			// Handle the response from the server
+			console.log(r.message);
+			if(r.message) {
+				if(category=="Applicant"){
+					$('[data-fieldname="designation"]').val(r.message['positionTitle']);
+					$('[data-fieldname="ministry_agency"]').val(r.message['OrganogramLevel1']);
+					$('[data-fieldname="grade"]').val(r.message['positionLevel']);
+					$('[data-fieldname="department"]').val(r.message['OrganogramLevel2']);
+					$('[data-fieldname="employee_id"]').val(r.message['employeeNumber']);
+					$('[data-fieldname="gross_salary"]').val(r.message['GrossPay']);
+					$('[data-fieldname="email_id"]').val(r.message['Email']);
+					$('[data-fieldname="mobile_no"]').val(r.message['MobileNo']);
+					$('[data-fieldname="date_of_appointment"]').val(r.message['dateOfAppointment']);
+					$('[data-fieldname="date_of_birth"]').val(r.message['dateOfBirth']);
+					
+				} else if(category=="Spouse"){
+					$('[data-fieldname="spouse_designation"]').val(r.message['positionTitle']);
+					$('[data-fieldname="spouse_ministry"]').val(r.message['OrganogramLevel1']);
+					$('[data-fieldname="spouse_grade"]').val(r.message['positionLevel']);
+					$('[data-fieldname="spouse_department"]').val(r.message['OrganogramLevel2']);
+					$('[data-fieldname="employee_id"]').val(r.message['employeeNumber']);
+					$('[data-fieldname="spouse_gross_salary"]').val(r.message['GrossPay']);
+				}
+			}else{
+				frappe.throw("No record found in Civil Servant DB for provided CID ")
+			}
+		},
+	});
+}
+
+function check_housing_and_employment(work_station, employment_type){
+	frappe.call({
+		method: 'erpnext.rental_management.doctype.housing_application.housing_application.check_housing_and_employment',
+		args: {
+			work_station: work_station,
+			employment_type: employment_type,
 		},
 		callback: function(r) {
 			// Handle the response from the server

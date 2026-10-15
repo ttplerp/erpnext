@@ -74,7 +74,7 @@ class HousingApplication(Document):
 		# 	frappe.throw("Applications are currently only allowed for Civil Servants")
 		allowed_dzongkhags = frappe.get_all(
 			"Dzongkhag",
-			filters={"allow_in_online_housing_application": 1},
+			filters={"allow_in_allotment": 1},
 			pluck="name"
 		)
 		
@@ -355,6 +355,32 @@ def make_tenant_information(source_name, target_doc=None):
 	}, target_doc, ignore_permissions=True)
 	return doc
 
+@frappe.whitelist()
+def check_housing_and_employment(work_station, employment_type):
+	allowed_dzongkhags = frappe.get_all(
+		"Dzongkhag",
+		filters={"allow_in_online_housing_application": 1},
+		pluck="name"
+	)
+	
+	if work_station not in allowed_dzongkhags:
+		if len(allowed_dzongkhags) == 1:
+			allowed_names = allowed_dzongkhags[0]
+		elif len(allowed_dzongkhags) == 2:
+			allowed_names = " and ".join(allowed_dzongkhags)
+		else:
+			allowed_names = (
+				", ".join(allowed_dzongkhags[:-1])
+				+ " and "
+				+ allowed_dzongkhags[-1]
+			)
+		frappe.throw(f"Applications are currently only allowed for {allowed_names}")
+
+	if work_station in allowed_dzongkhags:
+		if employment_type == "Civil Servant" and frappe.db.get_value("Dzongkhag", work_station, "civil_servant_allotment") == 0:
+			frappe.throw("Applications currently not open for Civil Servant")
+		elif employment_type == "Corporation, Private and etc" and frappe.db.get_value("Dzongkhag", work_station, "corporate_and_private_allotment") == 0:
+			frappe.throw("Applications currently not open for Corporation, Private and etc")
 
 def get_permission_query_conditions(user):
 	if not user: user = frappe.session.user
