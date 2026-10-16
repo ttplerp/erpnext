@@ -406,6 +406,44 @@ class TrainingSelection(Document):
     @frappe.whitelist()
     def get_applicants(self):
         pass
+        self.set('item', [])
+        if not self.cohort:
+            frappe.throw("Cohort is mandatory to fetch applicants")
+        if not self.course:
+            frappe.throw("Course is mandatory to fetch applicants")
+
+        data = null  #Get list of desuups based on criteria
+        self.set('applicant', [])
+        for d in data:
+            did = d['profile']['did']
+            for a in frappe.db.sql(""" select desuung_id did, cid_number cid, profile_id, desuup_name, 
+									gender, mobile_number mobile, email_id email, date_of_birth, employment_type
+									from `tabDesuup`
+									where name = "{did}"
+						""".format(did = did), as_dict=True):
+                if frappe.db.exists("Desuup", a.did):
+                    row = self.append('item', {})
+                    if frappe.db.exists("Desuup Qualification", {"parent":a.did}):
+                        edu_doc = frappe.get_doc("Desuup Qualification", {"parent":a.did})
+                        row.qualification = edu_doc.qualification
+                        row.level = edu_doc.level
+                        row.year_of_completion = edu_doc.year_of_completion
+                        row.course_name = edu_doc.course_name
+                    if frappe.db.exists("Desuup Employment History", {"parent":a.did}):
+                        emp_doc = frappe.get_doc("Desuup Employment History", {"parent":a.did})
+                        row.agency_type = emp_doc.agency_type
+                        row.agency = emp_doc.agency
+                        row.profession = emp_doc.profession
+                    desuup_doc = frappe.get_doc("Desuup", a.did)
+                    row.country = desuup_doc.present_country 
+                    row.present_address = desuup_doc.present_address
+                    row.dzongkhag = desuup_doc.dzongkhag
+                    row.gewog = desuup_doc.gewog
+                    row.village = desuup_doc.village
+                    row.status = "Registered"
+                    row.update(a)
+                else:
+                    frappe.msgprint("Desuup ID <b>{}</b> details are missing from Desuung database".format(a.did))
 
     @frappe.whitelist()
     def get_applicants_old(self):

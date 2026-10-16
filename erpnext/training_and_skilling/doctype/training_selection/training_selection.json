@@ -53,7 +53,7 @@
  ],
  "fields": [
   {
-   "fetch_from": "deployment_announcement.cohort",
+   "fetch_from": "deployment_announcement.event",
    "fieldname": "cohort",
    "fieldtype": "Link",
    "label": "Cohort",
@@ -90,7 +90,7 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "deployment_announcement.course",
+   "fetch_from": "deployment_announcement.category",
    "fieldname": "course",
    "fieldtype": "Link",
    "in_standard_filter": 1,
@@ -333,7 +333,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-04-14 12:08:04.634355",
+ "modified": "2026-10-14 15:16:44.640376",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Selection",

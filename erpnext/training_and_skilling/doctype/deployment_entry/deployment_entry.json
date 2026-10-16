@@ -26,7 +26,8 @@
   "code",
   "description",
   "dzongkhag",
-  "amended_from"
+  "amended_from",
+  "points_updated"
  ],
  "fields": [
   {
@@ -161,6 +162,7 @@
    "fieldname": "description",
    "fieldtype": "Data",
    "label": "Description",
+   "length": 600,
    "read_only": 1
   },
   {
@@ -178,12 +180,18 @@
    "fieldtype": "Data",
    "label": "Type of Event",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "points_updated",
+   "fieldtype": "Check",
+   "label": "Points Updated"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-06-05 16:19:50.464345",
+ "modified": "2026-10-16 14:47:43.901757",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Deployment Entry",
@@ -200,6 +208,38 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Deployment Chief",
+   "select": 1,
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Deployment Manager",
+   "select": 1,
+   "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],

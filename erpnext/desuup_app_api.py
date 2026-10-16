@@ -13,12 +13,17 @@ def get_desuup():
     name = frappe.db.get_value("Desuup", {"cid_number": frappe.auth.get_logged_user()}, "name")
     return name
 
+def get_deploy_history(name):
+    history = frappe.db.sql("select * from `tabDeployment Entry` where desuup = %(desuup)s and docstatus = 1", {"desuup": name}, as_dict=1)
+    return {"history": history}
+
 @frappe.whitelist()
 def get_desuup_detail():
     desuup = frappe.get_doc("Desuup", get_desuup())
     result = desuup.as_dict()
-    result.desuup_deployment_history = frappe.db.sql("select * from `tabDeployment Entry` where desuup = %(desuup)s", {"desuup": desuup.name}, as_dict=1)
-    result.total_hearts = sum(dep["heart_points"] for dep in result.desuup_deployment_history)
+    history = get_deploy_history(desuup.name)
+    result.desuup_deployment_history = history["history"]
+    result.total_hearts = result.heart_points
     return result
 
 @frappe.whitelist()

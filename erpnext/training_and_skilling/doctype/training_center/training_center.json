@@ -9,9 +9,11 @@
  "field_order": [
   "center",
   "location",
-  "column_break_4",
   "code",
+  "column_break_4",
+  "country",
   "dzongkhag",
+  "gewog",
   "section_break_9",
   "item",
   "mess_advance_party_detaiils_section",
@@ -82,11 +84,25 @@
    "fieldtype": "Data",
    "label": "Party Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "gewog",
+   "fieldtype": "Link",
+   "label": "Gewog",
+   "options": "Gewogs",
+   "reqd": 1
+  },
+  {
+   "default": "Bhutan",
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-08-06 09:52:32.952641",
+ "modified": "2026-10-13 12:14:07.047529",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Training Center",

@@ -9,12 +9,14 @@
   "type_of_deployment",
   "column_break_2",
   "funding_source",
+  "column_break_4",
+  "registration_deadline",
   "section_break_1",
+  "event_cohort",
+  "category_course",
   "event",
   "category",
-  "cohort",
-  "course",
-  "registration_deadline",
+  "course_name",
   "column_break_3",
   "start_date",
   "end_date",
@@ -28,6 +30,7 @@
   "dzongkhag",
   "gewog",
   "reporting_place",
+  "training_center",
   "column_break_15",
   "objective",
   "section_break_17",
@@ -62,24 +65,18 @@
    "label": "Event Details"
   },
   {
-   "depends_on": "eval:[\"Deployment\", \"Desuung National Service\"].includes(doc.type_of_deployment)",
    "fieldname": "event",
-   "fieldtype": "Link",
+   "fieldtype": "Dynamic Link",
    "in_list_view": 1,
    "label": "Type of Event",
-   "mandatory_depends_on": "eval:[\"Deployment\", \"Desuung National Service\"].includes(doc.type_of_deployment)",
-   "options": "Type of Event",
-   "read_only_depends_on": "eval:[\"Skilling\", \"\"].includes(doc.type_of_deployment)"
+   "options": "event_cohort"
   },
   {
-   "depends_on": "eval:[\"Deployment\", \"Desuung National Service\"].includes(doc.type_of_deployment)",
    "fetch_from": "deployment_event.event_name",
    "fieldname": "category",
-   "fieldtype": "Link",
+   "fieldtype": "Dynamic Link",
    "label": "Category of Deployment",
-   "mandatory_depends_on": "eval:[\"Deployment\", \"Desuung National Service\"].includes(doc.type_of_deployment)",
-   "options": "Category of Deployment",
-   "read_only_depends_on": "eval:[\"Skilling\", \"\"].includes(doc.type_of_deployment)"
+   "options": "category_course"
   },
   {
    "fieldname": "registration_deadline",
@@ -203,9 +200,9 @@
   },
   {
    "fieldname": "type_of_deployment",
-   "fieldtype": "Select",
+   "fieldtype": "Link",
    "label": "Type of Deployment",
-   "options": "\nDeployment\nSkilling\nDesuung National Service",
+   "options": "Type of Deployment",
    "reqd": 1
   },
   {
@@ -328,28 +325,42 @@
    "reqd": 1
   },
   {
-   "depends_on": "eval:doc.type_of_deployment == \"Skilling\"",
-   "fieldname": "cohort",
-   "fieldtype": "Link",
-   "label": "Cohort",
-   "mandatory_depends_on": "eval:doc.type_of_deployment == \"Skilling\"",
-   "options": "Cohort",
-   "read_only_depends_on": "eval:doc.type_of_deployment != \"Skilling\""
+   "default": "Type of Event",
+   "fieldname": "event_cohort",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Event Cohort",
+   "options": "Type of Event\nCohort"
   },
   {
-   "depends_on": "eval:doc.type_of_deployment == \"Skilling\"",
-   "fieldname": "course",
+   "default": "Category of Deployment",
+   "fieldname": "category_course",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Category Course",
+   "options": "Category of Deployment\nCourse"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "course_name",
+   "fieldtype": "Read Only",
+   "label": "Course Name"
+  },
+  {
+   "fieldname": "training_center",
    "fieldtype": "Link",
-   "label": "Course",
-   "mandatory_depends_on": "eval:doc.type_of_deployment == \"Skilling\"",
-   "options": "Course",
-   "read_only_depends_on": "eval:doc.type_of_deployment != \"Skilling\""
+   "label": "Training Center",
+   "options": "Training Center",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-05-26 17:07:59.798273",
+ "modified": "2026-10-16 16:11:41.468841",
  "modified_by": "Administrator",
  "module": "Training And Skilling",
  "name": "Deployment Announcement",

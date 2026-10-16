@@ -548,3 +548,23 @@ def create_desuup(desuup_details=None):
         except Exception as e:
             desuuplog().error(f"ERROR while creating desuup {desuung_id} : {e}")
 
+
+
+def allocate_points():
+    created = failed = pending = 0
+    for d in frappe.db.sql("select name from `tabDeployment Entry` where points_updated = 0 and heart_points > 0", as_dict=1):
+        try:
+            frappe.db.savepoint("update_heart_points")
+            doc = frappe.get_doc("Deployment Entry", d.name)
+            doc.update_points()
+        except Exception as e:
+            frappe.db.rollback(save_point="update_heart_points")
+            failed += 1
+            print("Issue allocating points for user for " + str(d.name) + " : " + str(e))
+            continue
+        created += 1
+        pending += 1
+        if pending >= 10:
+            frappe.db.commit()
+            pending = 0
+    print(f"Summary => Successful: {created}, failed: {failed}")

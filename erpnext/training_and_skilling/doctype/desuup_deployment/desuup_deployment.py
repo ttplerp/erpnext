@@ -10,9 +10,11 @@ from erpnext.custom_utils import queue_sms, queue_message
 class DesuupDeployment(Document):
     def validate(self):
         self.generate_code()
+        self.set_course_details()
 
     def generate_code(self):
-        if self.deployment_code:
+        if self.type_of_deployment == "Skilling":
+            self.deployment_code = self.category + " : " + self.event
             return
         type_abbr = frappe.db.get_value("Type of Event", self.event, "abbreviation")
         cat_abbr = frappe.db.get_value("Category of Deployment", self.category, "abbreviation")
@@ -24,7 +26,20 @@ class DesuupDeployment(Document):
         num = frappe.db.sql("select count(1) as num from `tabDesuup Deployment` where deployment_code LIKE %(dep_code)s and name != %(name)s", {"dep_code": f"%{code}%", "name": self.name}, as_dict=1)
         self.deployment_code = code + "-" + str(num[0].num)
 
+    def set_course_details(self):
+        if self.type_of_deployment == "Skilling":
+            doc = frappe.get_doc("Course", self.category)
+            self.programme = doc.programme
+            self.domain = doc.domain
+            self.course_level = doc.course_level
+        else:
+            self.programme = None 
+            self.domain = None
+            self.course_level = None
+
     def on_submit(self):
+        if not self.items:
+            frappe.throw("Shortlist the applicants before submitting this document")
         self.update_applicants()
         self.update_announcement()
 

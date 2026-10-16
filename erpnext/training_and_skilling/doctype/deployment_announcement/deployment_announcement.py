@@ -55,12 +55,18 @@ def make_deployment(source_name, target_doc=None):
         "Deployment Announcement",
         source_name,
         {
-            "Deployment Announcement": {"doctype": "Desuup Deployment", "validation": {"docstatus": "0"}},
-            "field_map": {"deployment_announcement": "name", "type_of_event": "event", "category_of_deployment": "category"}
+            "Deployment Announcement": {
+                "doctype": "Desuup Deployment", 
+                "validation": {
+                    "docstatus": "0"
+                },
+                "field_map": {
+                    "deployment_announcement": "name"
+                }
+            }
         },
         target_doc,
     )
-
     return doclist
 
 @frappe.whitelist()
@@ -69,8 +75,21 @@ def make_training_selection(source_name, target_doc=None):
         "Deployment Announcement",
         source_name,
         {
-            "Deployment Announcement": {"doctype": "Training Selection", "validation": {"docstatus": "1"}},
-            "field_map": {"deployment_announcement": "name", "course_start_date": "start_date", "course_end_date": "end_date", "male_slot": "male_desuups", "female_slot": "female_desuups", "slot": "total_desuups", "gender_base_selection": "by_gender"}
+            "Deployment Announcement": {
+                "doctype": "Training Selection", 
+                "validation": {"docstatus": "1"},
+                "field_map": {
+                    "deployment_announcement": "name", 
+                    "start_date": "course_start_date", 
+                    "end_date": "course_end_date", 
+                    "male_desuups": "male_slot", 
+                    "female_desuups": "female_slot", 
+                    "total_desuups": "slot", 
+                    "by_gender": "gender_base_selection", 
+                    "event": "cohort", 
+                    "category": "course"
+                }
+            }
         },
         target_doc,
     )
@@ -78,27 +97,41 @@ def make_training_selection(source_name, target_doc=None):
     return doclist
 
 @frappe.whitelist()
+def get_course_details(cohort, course):
+    if not cohort:
+        frappe.throw("Select cohort first")
+    if not course:
+        frappe.throw("Select course first")
+
+    result = frappe.db.sql("""
+            select start_date, end_date, training_center, dzongkhag, gewog, location
+            from `tabCohort Item`
+            where parent = %(cohort)s and course = %(course)s
+            """, {
+                "cohort": cohort,
+                "course": course
+                }, as_dict=1);
+    return result[0] if result else None
+
+@frappe.whitelist()
 def get_courses(doctype, txt, searchfield, start, page_len, filters):
     if not filters.get("cohort"):
         frappe.throw("Select cohort first")
     return frappe.db.sql("""
-            select name, course_name, domain, description from `tabCourse`
-                    where name in (
-                        select course
-                        from `tabCohort Item`
-                        where parent = '{cohort}'
-                    )
+            select c.name as course, c.course_name, c.domain, c.description, ci.name as ciname, ci.parent 
+            from `tabCourse` c, `tabCohort Item` ci
+            where c.name = ci.course and ci.parent = %(cohort)s 
                     and ({key} like %(txt)s
-                            or course_name like %(txt)s
-                            or domain like %(txt)s)
+                    or c.course_name like %(txt)s
+                    or c.domain like %(txt)s)
             order by
-                    name, domain, course_name
+                    course, c.domain, course_name
             limit %(start)s, %(page_len)s""".format(**{
-                                            'cohort': filters.get("cohort"),
-                                            'key': searchfield,
+                                            'key': "c.name",
                             }), {
                                             'txt': "%%%s%%" % txt,
                                             '_txt': txt.replace("%", ""),
                                             'start': start,
+                                            'cohort': filters.get("cohort"),
                                             'page_len': page_len
     })

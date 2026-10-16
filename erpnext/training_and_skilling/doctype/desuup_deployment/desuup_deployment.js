@@ -13,6 +13,10 @@ frappe.ui.form.on('Desuup Deployment', {
 			frm.page.set_inner_btn_group_as_primary(__('Create'));
 		}
 	},
+	onload: function(frm) {
+		frm.set_df_property("event", 'label', frm.doc.event_cohort)
+		frm.set_df_property("category", 'label', frm.doc.category_course)
+	},
 	get_applicants: function(frm) {
 		if(frm.doc.deployment_announcement){
 			return frappe.call({
