@@ -93,8 +93,8 @@ class POLReceive(StockController):
 			gl_entries.append(
 					self.get_gl_dict({
 						"account": expense_account,
-						"debit": flt(self.total_amount_before_gst) if self.apply_gst else flt(self.total_amount),
-						"debit_in_account_currency": flt(self.total_amount_before_gst) if self.apply_gst else flt(self.total_amount),
+						"debit": flt(self.total_amount),
+						"debit_in_account_currency": flt(self.total_amount),
 						"against_voucher": self.name,
 						"against_voucher_type": self.doctype,
 						"cost_center": self.cost_center,

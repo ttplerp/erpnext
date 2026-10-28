@@ -133,10 +133,14 @@ var populate_child_table=(frm)=>{
 function calculate_total(frm) {
 	if(frm.doc.qty && frm.doc.rate) {
 		frm.set_value("total_amount", frm.doc.qty * frm.doc.rate)
+		frm.set_value("total_amount_before_gst", frm.doc.qty * frm.doc.rate);
+
 	}
 
 	if(frm.doc.qty && frm.doc.rate && frm.doc.discount_amount) {
 		frm.set_value("total_amount", (frm.doc.qty * frm.doc.rate) - frm.doc.discount_amount)
+		frm.set_value("total_amount_before_gst", (frm.doc.qty * frm.doc.rate) - frm.doc.discount_amount);
+
 	}
 }	
 
