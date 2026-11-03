@@ -6,8 +6,12 @@ from frappe import msgprint
 from frappe.utils import today, now, flt, cint, nowdate, getdate, formatdate, add_to_date
 from erpnext.stock.utils import get_latest_stock_qty
 from frappe.utils.file_manager import save_file
+from erpnext.custom_utils import _read_uploaded_file, _replace_attachment, _is_image, _is_pdf
 import json
 import re
+
+MAX_CV_SIZE = 5 * 1024 * 1024      # 5 MB
+MAX_PHOTO_SIZE = 2 * 1024 * 1024   # 2 MB
 
 def get_desuup():
     name = frappe.db.get_value("Desuup", {"cid_number": frappe.auth.get_logged_user()}, "name")
@@ -235,35 +239,67 @@ def change_mobile(mobile):
         user.db_set("phone", mobile, update_modified=False)
     return desup
 
-@frappe.whitelist()
+@frappe.whitelist(methods=["POST"])
 def upload_cv():
-    file = frappe.request.files.get("file")
-    if file:
-        desup = frappe.get_doc("Desuup", get_desuup())
-        if desup.cv:
-            existing_file = frappe.db.sql("select name from tabFile where file_url = %(file)s", {"file": desup.cv}, as_dict=1)
-            if existing_file:
-                frappe.delete_doc("File", existing_file[0].name, ignore_permissions=True)
+    filename, content = _read_uploaded_file(MAX_CV_SIZE)
+    if not _is_pdf(content):
+        frappe.throw(_("CV must be a PDF file"), title=_("Invalid File Type"))
+    desuup = frappe.get_doc("Desuup", get_desuup())
+    file_url = _replace_attachment(desuup, "cv", filename, content, is_private=1)
+    return {"file_url": file_url}
 
-        file_doc = upload_file(file, desup.doctype, desup.name) 
-        desup.db_set("cv", file_doc.file_url, update_modified=False)
-    else:
-        frappe.throw("File is mandatory")
+@frappe.whitelist(methods=["GET"])
+def download_cv():
+    desup = get_desuup()
+    doc = frappe.get_doc("Desuup", desup)
+    if not doc.cv:
+        frappe.throw(_("No CV uploaded"), frappe.DoesNotExistError)
+    file_name = frappe.db.get_value("File", {"file_url": doc.cv}, "name")
+    if not file_name:
+        frappe.throw(_("CV file not found"), frappe.DoesNotExistError)
+    file_doc = frappe.get_doc("File", file_name)
+    frappe.local.response.filename = file_doc.file_name
+    frappe.local.response.filecontent = file_doc.get_content()
+    frappe.local.response.type = "download"
+
+@frappe.whitelist(methods=["GET"])
+def download_profile():
+    desup = get_desuup()
+    doc = frappe.get_doc("Desuup", desup)
+    if not doc.photo:
+        frappe.throw(_("No Profile uploaded"), frappe.DoesNotExistError)
+    file_name = frappe.db.get_value("File", {"file_url": doc.photo}, "name")
+    if not file_name:
+        frappe.throw(_("Profile file not found"), frappe.DoesNotExistError)
+    file_doc = frappe.get_doc("File", file_name)
+    frappe.local.response.filename = file_doc.file_name
+    frappe.local.response.filecontent = file_doc.get_content()
+    frappe.local.response.type = "download"
+
+@frappe.whitelist(methods=["GET"])
+def get_country():
+    return frappe.db.sql("select name from tabCountry", as_dict=1)
+
+@frappe.whitelist(methods=["GET"])
+def get_dzongkhag(country):
+    if not country:
+        frappe.throw("Country is mandatory")
+    return frappe.db.sql("select name from tabDzongkhags where disabled = 0 and country_name = %(country)s", {"country": country}, as_dict=1)
+
+@frappe.whitelist(methods=["GET"])
+def get_gewog(dzongkhag):
+    if not dzongkhag:
+        frappe.throw("Dzongkhag is mandatory")
+    return frappe.db.sql("select name from tabGewogs where disabled = 0 and dzongkhag = %(dzongkhag)s", {"dzongkhag": dzongkhag}, as_dict=1)
 
 @frappe.whitelist()
 def upload_profile():
-    file = frappe.request.files.get("file")
-    if file and file.mimetype.startswith("image/"):
-        desup = frappe.get_doc("Desuup", get_desuup())
-        if desup.photo:
-            existing_file = frappe.db.sql("select name from tabFile where file_url = %(file)s", {"file": desup.cv}, as_dict=1)
-            if existing_file:
-                frappe.delete_doc("File", existing_file[0].name, ignore_permissions=True)
-
-        file_doc = upload_file(file, desup.doctype, desup.name) 
-        desup.db_set("photo", file_doc.file_url, update_modified=False)
-    else:
-        frappe.throw("An image file is mandatory")
+    filename, content = _read_uploaded_file(MAX_PHOTO_SIZE)
+    if not _is_image(content):
+        frappe.throw(_("Profile photo must be a PNG, JPG, GIF or WEBP image"), title=_("Invalid File Type"))
+    desuup = frappe.get_doc("Desuup", get_desuup())
+    file_url = _replace_attachment(desuup, "photo", filename, content, is_private=0)
+    return {"file_url": file_url}
 
 @frappe.whitelist()
 def get_dress_requisitions():
