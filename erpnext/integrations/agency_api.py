@@ -109,7 +109,7 @@ def loan_account_inq(account_no=None):
         outstanding_amt = root.find('.//ns:Total_Outstanding', namespaces=namespace).text
         next_payment_date = root.find('.//ns:NEXT_DMD_DATE', namespaces=namespace).text 
         emi_amt = root.find('.//ns:installment_Amount', namespaces=namespace).text
-        acc_status = root.find('.//ns:ACCT_STATUS', namespaces=namespace).text
+        # acc_status = root.find('.//ns:ACCT_STATUS', namespaces=namespace).text
         
         #dt = datetime.strptime(sanction_date, "%Y-%m-%dT%H:%M:%S.%f")
         #sanction_date = dt.strftime("%d-%m-%Y")
