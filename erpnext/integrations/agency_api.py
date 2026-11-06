@@ -27,9 +27,7 @@ def loan_account_inq(account_no=None):
     buffer = BytesIO()
     doc = frappe.get_doc("API Detail","MULTI LEDGER")
     url = str(doc.api_link)
-    #url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
-    #url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
-    # url = "https://was1-dc-srv.bdbl.bt:11300/FISERVLET/fihttp"
+    
     c = pycurl.Curl()
     c.setopt(c.URL, url)
     c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
@@ -144,9 +142,7 @@ def account_inq(account_no=None, uuid=None, posting_date=None):
     buffer = BytesIO()
     doc = frappe.get_doc("API Detail","MULTI LEDGER")
     url = str(doc.api_link)
-    #url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
-    #url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
-    # url = "https://was1-dc-srv.bdbl.bt:11300/FISERVLET/fihttp"
+    
     c = pycurl.Curl()
     c.setopt(c.URL, url)
     c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
@@ -281,9 +277,7 @@ def td_account_inq(account_no=None, uuid=None, posting_date=None):
     buffer = BytesIO()
     doc = frappe.get_doc("API Detail","MULTI LEDGER")
     url = str(doc.api_link)
-    #url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
-    #url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
-    # url = "https://was1-dc-srv.bdbl.bt:11300/FISERVLET/fihttp"
+    
     c = pycurl.Curl()
     c.setopt(c.URL, url)
     c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
@@ -440,8 +434,7 @@ def multi_fund_transfer(data):
     buffer = BytesIO()
     doc = frappe.get_doc("API Detail","MULTI LEDGER")
     url = str(doc.api_link)
-    #url = "https://uat-dc-srv.bdbl.bt:22000/FISERVLET/fihttp"
-    # url = "https://was1-dc-srv.bdbl.bt:11300/FISERVLET/fihttp"
+    
     c = pycurl.Curl()
     c.setopt(c.URL, url)
     c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
@@ -540,9 +533,7 @@ def fund_transfer(from_account=None, to_account=None, amount=None, remark=None):
     buffer = BytesIO()
     doc = frappe.get_doc("API Detail","MULTI LEDGER")
     url = str(doc.api_link)
-    #url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
-    #url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
-    # url = "https://uat-dc-srv.bdbl.bt:22000/FISERVLET/fihttp"
+    
     c = pycurl.Curl()
     c.setopt(c.URL, url)
     c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
@@ -635,9 +626,6 @@ def loan_payment(loan_account=None, payment_account=None, amount=None, remark=No
     buffer = BytesIO()
     doc = frappe.get_doc("API Detail","MULTI LEDGER")
     url = str(doc.api_link)
-    #url = "https://was1-dc-srv.bdbl.bt:11300/FISERVLET/fihttp" #New Pro Server
-    # url = "https://uat-dc-srv.bdbl.bt:22000/FISERVLET/fihttp" #New UAT Server
-    #url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
     c = pycurl.Curl()
     c.setopt(c.URL, url)
     c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
@@ -724,8 +712,6 @@ def getLastTransactions(account=None, tran_nos=None):
     buffer = BytesIO()
     doc = frappe.get_doc("API Detail","MULTI LEDGER")
     url = str(doc.api_link)
-    #url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
-    # url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
     c = pycurl.Curl()
     c.setopt(c.URL, url)
     c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
@@ -813,8 +799,6 @@ def getFullStatement(account=None, from_date=None, to_date=None):
     buffer = BytesIO()
     doc = frappe.get_doc("API Detail","MULTI LEDGER")
     url = str(doc.api_link)
-    #url = "https://bdbl-fcstaging-uat.bdbl.bt:11000/FISERVLET/fihttp"
-    # url = "https://bdbl-was-srv01.bdbl.bt:10300/FISERVLET/fihttp"
     c = pycurl.Curl()
     c.setopt(c.URL, url)
     c.setopt(c.SSL_CIPHER_LIST, 'HIGH:!aNULL:!MD5')
