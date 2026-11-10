@@ -357,7 +357,7 @@ def get_items_for_sale():
     return response
 
 @frappe.whitelist()
-def place_order(orders, location):
+def place_order(orders, location, journal_no):
     if not orders:
         frappe.throw("Invalid orders")
     if not location or not frappe.db.exists("Pickup Location", location):
@@ -373,6 +373,7 @@ def place_order(orders, location):
     order.total_amount = 0 
     order.location = location
     order.journal = "Initial"
+    order.journal_no = journal_no
     order.insert(ignore_permissions=True)
 
     #file_doc = upload_file(file, order.doctype, order.name) 
