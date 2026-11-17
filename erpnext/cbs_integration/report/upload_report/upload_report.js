@@ -29,41 +29,45 @@ frappe.query_reports["Upload Report"] = {
 			frappe.call({
 				method: "erpnext.cbs_integration.report.upload_report.upload_report.check_against_linked_docs",
 				args: {"transaction_list": checked_rows},
+				freeze: true,
+				freeze_message: "Please Wait....Checking Linked Transactions.....",
 				callback: function(r){
 					if(r.message){
 						r.message.forEach(item => {
 							checked_rows.push(item)
 						});
+						//moved the following block here to ensure pickup of linked transaction...this block was previously outside this frappe.call function
+						frappe.prompt({
+										fieldtype: 'Data',
+										label: __('Entry Title'),
+										fieldname: 'entry_title',
+										description: __('* Title is mandatory for creating upload entry'),
+										reqd: 1
+									}, (data) => {
+										frappe.call({
+											method: "erpnext.cbs_integration.doctype.cbs_entry.cbs_entry.make_cbs_entry",
+											args: {
+												'entry_title': data.entry_title,
+												'from_date': frappe.query_report.get_filter_value('from_date'),
+												'to_date': frappe.query_report.get_filter_value('to_date'),
+												'transaction_list': checked_rows
+											},
+											callback: function(r){
+												if(r.message){
+													frappe.set_route("Form", "CBS Entry", r.message);
+												}
+											},
+											freeze: true,
+											freeze_message: '<span style="color:white; background-color: red; padding: 10px 50px; border-radius: 5px;">Creating CBS Entry.... Please Wait</span>',
+										});	
+									})
 					}
 				}
 
 			})
 			// console.log("checked : " + checked_rows);
 
-			frappe.prompt({
-				fieldtype: 'Data',
-				label: __('Entry Title'),
-				fieldname: 'entry_title',
-				description: __('* Title is mandatory for creating upload entry'),
-				reqd: 1
-			}, (data) => {
-				frappe.call({
-					method: "erpnext.cbs_integration.doctype.cbs_entry.cbs_entry.make_cbs_entry",
-					args: {
-						'entry_title': data.entry_title,
-						'from_date': frappe.query_report.get_filter_value('from_date'),
-						'to_date': frappe.query_report.get_filter_value('to_date'),
-						'transaction_list': checked_rows
-					},
-					callback: function(r){
-						if(r.message){
-							frappe.set_route("Form", "CBS Entry", r.message);
-						}
-					},
-					freeze: true,
-					freeze_message: '<span style="color:white; background-color: red; padding: 10px 50px; border-radius: 5px;">Creating CBS Entry.... Please Wait</span>',
-				});	
-			})
+			
 		}).addClass("btn-primary");
 	}, 
 	"filters": [

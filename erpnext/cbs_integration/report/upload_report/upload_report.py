@@ -161,7 +161,7 @@ def check_against_linked_docs(transaction_list):
 				if not frappe.db.exists("CBS Entry Upload", {"voucher_no": b_link.against_voucher}) and (b_link.against_voucher_type in cbs_doctypes) and frappe.db.exists("GL Entry", {"voucher_no": b_link.against_voucher}):
 					list_transactions.append(b_link.against_voucher_type+"||"+b_link.against_voucher)
 				# if frappe.db.exists("GL Entry", {"voucher_no": b_link.against_voucher}):
-					
+	# frappe.throw("<pre>{}</pre>".format(frappe.as_json(list_transactions)))
 	return list_transactions
 
 
