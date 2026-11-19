@@ -1,0 +1,106 @@
+{
+ "actions": [],
+ "creation": "2024-01-01 00:00:00",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "asset",
+  "asset_name",
+  "company",
+  "branch",
+  "status",
+  "gross_purchase_amount",
+  "pending_schedules",
+  "total_pending_amount",
+  "schedule_dates",
+  "processed",
+  "processed_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "asset",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Asset",
+   "options": "Asset"
+  },
+  {
+   "fieldname": "asset_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Asset Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Branch",
+   "read_only": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Status",
+   "read_only": 1
+  },
+  {
+   "fieldname": "gross_purchase_amount",
+   "fieldtype": "Currency",
+   "label": "Gross Purchase Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "pending_schedules",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Pending Schedules",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_pending_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total Pending Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "schedule_dates",
+   "fieldtype": "Small Text",
+   "label": "Schedule Dates",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "processed",
+   "fieldtype": "Check",
+   "label": "Processed"
+  },
+  {
+   "fieldname": "processed_date",
+   "fieldtype": "Date",
+   "label": "Processed Date"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-07-16 09:28:40.602285",
+ "modified_by": "Administrator",
+ "module": "Assets",
+ "name": "Bulk Depreciation Asset",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

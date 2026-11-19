@@ -175,6 +175,7 @@ def get_data(
 ):
 
 	accounts = get_accounts(company, root_type)
+	# frappe.throw(str(accounts))
 	if not accounts:
 		return None
 
@@ -189,6 +190,7 @@ def get_data(
 		root_type,
 		as_dict=1,
 	):
+		# frappe.throw(str(root))
 
 		set_gl_entries_by_account(
 			company,
@@ -200,7 +202,7 @@ def get_data(
 			gl_entries_by_account,
 			ignore_closing_entries=ignore_closing_entries,
 		)
-
+    
 	calculate_values(
 		accounts_by_name,
 		gl_entries_by_account,
@@ -208,6 +210,7 @@ def get_data(
 		accumulated_values,
 		ignore_accumulated_values_for_fy,
 	)
+	# frappe.throw(str(accounts_by_name))
 	accumulate_values_into_parents(accounts, accounts_by_name, period_list)
 	out = prepare_data(accounts, balance_must_be, period_list, company_currency)
 	out = filter_out_zero_value_rows(out, parent_children_map)
@@ -303,7 +306,24 @@ def calculate_values(
 ):
 	for entries in gl_entries_by_account.values():
 		for entry in entries:
-			d = accounts_by_name.get(entry.account)
+			account_name = entry.account.replace("\xa0", " ")
+			d = accounts_by_name.get(account_name)
+			
+			if not d:
+				frappe.log_error(
+					title="Balance Sheet Account Lookup Error",
+					message=frappe.as_json({
+						"missing_account": repr(entry.account),
+						"account_length": len(entry.account),
+						"available_account": accounts_by_name.get(
+							"11.2.004 - PNB - 110210010626 - CD"
+						) is not None,
+						"company": frappe.db.get_value(
+							"Account", entry.account, "company"
+						),
+						"accounts_by_name_sample": list(accounts_by_name.keys())[:20],
+					}),
+				)
 			if not d:
 				frappe.msgprint(
 					_("Could not retrieve information for {0}.").format(entry.account),
@@ -501,8 +521,8 @@ def set_gl_entries_by_account(
 
     accounts = frappe.db.sql_list(
         """select name from `tabAccount`
-        where lft >= %s and rgt <= %s and company = %s and name != %s""",
-        (root_lft, root_rgt, company, "11.2.004 - PNB - 110210010626 - CD"),
+        where lft >= %s and rgt <= %s and company = %s """,
+        (root_lft, root_rgt, company),
     )
     
     if accounts:
@@ -526,8 +546,8 @@ def set_gl_entries_by_account(
         if value:
             gl_filters.update({key: value})
 
-    additional_conditions += " and account != %(exclude_account)s"
-    gl_filters["exclude_account"] = "11.2.004 - PNB - 110210010626 - CD"
+    # additional_conditions += " and account != %(exclude_account)s"
+    # gl_filters["exclude_account"] = "11.2.004 - PNB - 110210010626 - CD"
 
     gl_entries = frappe.db.sql(
         """

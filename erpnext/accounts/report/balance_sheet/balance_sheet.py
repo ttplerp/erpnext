@@ -37,6 +37,7 @@ def execute(filters=None):
 		accumulated_values=filters.accumulated_values,
 	)
 
+
 	liability = get_data(
 		filters.company,
 		"Liability",
