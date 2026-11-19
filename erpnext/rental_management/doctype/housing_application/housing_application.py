@@ -103,7 +103,7 @@ class HousingApplication(Document):
 			spouse_gross = self.spouse_gross_salary
 		self.total_gross_salary = flt(gross_sal, 2) + flt(spouse_gross, 2)
 		if self.work_station in allowed_dzongkhags:
-			if self.employment_type == "Civil Servant" and frappe.db.get_value("Dzongkhag", self.work_station, "allow_for_civil_servant") == 0:
+			if self.employment_type == "Civil Servant" and frappe.db.get_value("Dzongkhag", self.work_station, "civil_servant_allotment") == 0:
 				# # frappe.throw(str(self.total_gross_salary))
 				# # if self.total_gross_salary < 80001:
 				# # frappe.throw("Only total gross salary above Nu.800001 are open for civil servant ")
@@ -116,7 +116,7 @@ class HousingApplication(Document):
 				# else: 
 
 				frappe.throw("Applications currently not open for Civil Servant")
-			elif self.employment_type == "Corporation, Private and etc" and frappe.db.get_value("Dzongkhag", self.work_station, "allow_for_corporate_and_private") == 0:
+			elif self.employment_type == "Corporation, Private and etc" and frappe.db.get_value("Dzongkhag", self.work_station, "corporate_and_private_allotment") == 0:
 				# if self.total_gross_salary > 16000:
 				# 	frappe.throw("only total gross salary Nu.16000 and below is open for Private and Corporate")
 				frappe.throw("Applications currently not open for Corporation, Private and etc")
@@ -354,35 +354,7 @@ def make_tenant_information(source_name, target_doc=None):
 			},
 	}, target_doc, ignore_permissions=True)
 	return doc
-
-@frappe.whitelist()
-def check_housing_and_employment(work_station, employment_type):
-	allowed_dzongkhags = frappe.get_all(
-		"Dzongkhag",
-		filters={"allow_in_online_housing_application": 1},
-		pluck="name"
-	)
-	return allowed_dzongkhags
 	
-	if work_station not in allowed_dzongkhags:
-		if len(allowed_dzongkhags) == 1:
-			allowed_names = allowed_dzongkhags[0]
-		elif len(allowed_dzongkhags) == 2:
-			allowed_names = " and ".join(allowed_dzongkhags)
-		else:
-			allowed_names = (
-				", ".join(allowed_dzongkhags[:-1])
-				+ " and "
-				+ allowed_dzongkhags[-1]
-			)
-		frappe.throw(f"Applications are currently only allowed for {allowed_names}")
-
-	if work_station in allowed_dzongkhags:
-		if employment_type == "Civil Servant" and frappe.db.get_value("Dzongkhag", work_station, "civil_servant_allotment") == 0:
-			frappe.throw("Applications currently not open for Civil Servant")
-		elif employment_type == "Corporation, Private and etc" and frappe.db.get_value("Dzongkhag", work_station, "corporate_and_private_allotment") == 0:
-			frappe.throw("Applications currently not open for Corporation, Private and etc")
-
 def get_permission_query_conditions(user):
 	if not user: user = frappe.session.user
 	user_roles = frappe.get_roles(user)

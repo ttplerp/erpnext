@@ -307,7 +307,7 @@ def inter_payment(Amt, PayeeAcctNum, BnfcryAcct, BnfcryName, BnfcryAcctTyp, Bnfc
     'Authorization': 'Basic RVBBWVRUUDpwYXNzd29yZDEyMyQ=',
     'Content-Type': 'application/xml'
     }
-    response = requests.request("POST", url, headers=headers, data=payload)
+    response = requests.request("POST", url, headers=headers, data=payload.encode("utf-8"))
     from xml.etree import ElementTree
 
     namespaces = {

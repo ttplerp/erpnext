@@ -48,8 +48,7 @@ frappe.ready(function() {
 	});
 
 	frappe.web_form.validate = () => {
-		check_housing_and_employment(work_station, employment_type)
-		frappe.msgprint('Value must be more than 1000');
+		validate_housing_application(work_station, employment_type)
 	}
 });
 
@@ -137,47 +136,56 @@ function get_employee_detail(applicant_cid, category){
 		},
 	});
 }
+async function validate_housing_application(work_station, employment_type) {
+    const dzongkhags = await frappe.db.get_list("Dzongkhag", {
+        filters: {
+            allow_in_online_housing_application: 1
+        },
+        fields: [
+            "name",
+            "allow_for_civil_servant",
+            "allow_for_corporate_and_private"
+        ],
+        limit: 0
+    });
 
-async function check_housing_and_employment(work_station, employment_type){
-	if (!allowed_dzongkhags.includes(work_station)) {
-		let allowed_names;
-	
-		if (allowed_dzongkhags.length === 0) {
-			frappe.throw("Applications are currently not open for any Dzongkhag");
-		} else if (allowed_dzongkhags.length === 1) {
-			allowed_names = allowed_dzongkhags[0];
-		} else {
-			allowed_names =
-				allowed_dzongkhags.slice(0, -1).join(", ") +
-				" and " +
-				allowed_dzongkhags[allowed_dzongkhags.length - 1];
-		}
-	
-		frappe.throw(
-			`Applications are currently only allowed for ${allowed_names}`
-		);
-	}
-	const { message: allotments } = await frappe.db.get_value(
-		"Dzongkhag",
-		work_station,
-		["civil_servant_allotment", "corporate_and_private_allotment"]
-	);
-	
-	if (
-		employment_type === "Civil Servant" &&
-		Number(allotments.allow_for_civil_servant) === 0
-	) {
-		frappe.throw("Applications currently not open for Civil Servant");
-	} else if (
-		employment_type === "Corporation, Private and etc" &&
-		Number(allotments.allow_for_corporate_and_private) === 0
-	) {
-		frappe.throw(
-			"Applications currently not open for Corporation, Private and etc"
-		);
-	}
+    const allowed_dzongkhags = dzongkhags.map(row => row.name);
+
+    if (!allowed_dzongkhags.length) {
+        frappe.throw("Applications are currently not open for any Dzongkhag");
+    }
+
+    if (!allowed_dzongkhags.includes(work_station)) {
+        const allowed_names =
+            allowed_dzongkhags.length === 1
+                ? allowed_dzongkhags[0]
+                : allowed_dzongkhags.slice(0, -1).join(", ") +
+                  " and " +
+                  allowed_dzongkhags[allowed_dzongkhags.length - 1];
+
+        frappe.throw(
+            `Applications are currently only allowed for ${allowed_names}`
+        );
+    }
+
+    const dzongkhag = dzongkhags.find(row => row.name === work_station);
+
+    if (
+        employment_type === "Civil Servant" &&
+        Number(dzongkhag.allow_for_civil_servant) === 0
+    ) {
+        frappe.throw("Applications currently not open for Civil Servant");
+    } else if (
+        employment_type === "Corporation, Private and etc" &&
+        Number(dzongkhag.allow_for_corporate_and_private) === 0
+    ) {
+        frappe.throw(
+            "Applications currently not open for Corporation, Private and etc"
+        );
+    }
+
+    return true;
 }
-
 /*
 
 "citizendetail": [
